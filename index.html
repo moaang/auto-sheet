@@ -395,6 +395,57 @@
       background: #fcfcfc;
       margin-top: 10px;
     }
+    .input-mode-select-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .input-mode-button-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+      margin-top: 6px;
+      align-items: stretch;
+    }
+    .input-mode-btn {
+      min-height: 38px;
+      border: 1px solid var(--soft);
+      border-radius: 10px;
+      background: white;
+      color: var(--text);
+      font: inherit;
+      font-size: 10.5px;
+      line-height: 1.12;
+      font-weight: 900;
+      letter-spacing: -0.035em;
+      cursor: pointer;
+      text-align: center;
+      padding: 3px 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+      word-break: keep-all;
+      overflow: hidden;
+      text-overflow: clip;
+      font-stretch: condensed;
+    }
+    html[lang="ja"] .input-mode-btn {
+      font-size: 10px;
+      letter-spacing: -0.055em;
+      transform: scaleX(0.96);
+      transform-origin: center center;
+    }
+    .input-mode-btn.active {
+      background: #1f6feb;
+      border-color: #1f6feb;
+      color: white;
+      box-shadow: 0 0 0 2px rgba(207,42,42,.95), 0 0 16px rgba(207,42,42,.45);
+      outline: 1px solid rgba(207,42,42,.75);
+      outline-offset: 2px;
+    }
     .hidden { display: none; }
     .checkbox-list {
       display: grid;
@@ -448,11 +499,53 @@
     .paper-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
     .paper-primary-actions {
       display: grid;
-      grid-template-columns: minmax(180px, 1fr) auto;
+      grid-template-columns: minmax(156px, 1fr) auto auto;
       gap: 8px;
       margin-bottom: 12px;
+      align-items: center;
     }
     .paper-primary-actions .paper-mini-btn { height: 42px; font-size: 13px; }
+    .paper-magnet-controls {
+      height: 42px;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 4px;
+      border: 1px solid var(--soft);
+      border-radius: 10px;
+      background: white;
+      white-space: nowrap;
+    }
+    .paper-magnet-icon {
+      width: 22px;
+      text-align: center;
+      font-size: 14px;
+      line-height: 1;
+      color: var(--text);
+      user-select: none;
+    }
+    .paper-magnet-btn {
+      width: 26px;
+      height: 30px;
+      min-width: 26px;
+      padding: 0;
+      border: 1px solid var(--soft);
+      border-radius: 7px;
+      background: white;
+      color: var(--text);
+      font: inherit;
+      font-size: 11px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+    .paper-magnet-btn.active {
+      background: #1f6feb;
+      border-color: #1f6feb;
+      color: white;
+      box-shadow: 0 0 0 2px rgba(207,42,42,.95), 0 0 12px rgba(207,42,42,.36);
+      outline: 1px solid rgba(207,42,42,.68);
+      outline-offset: 1px;
+    }
     .paper-primary-actions .position-edit-main-btn {
       background: var(--text);
       border-color: var(--text);
@@ -836,16 +929,18 @@
       min-height: 30px;
       max-width: min(720px, calc(100vw - 16px));
       max-height: min(360px, calc(100vh - 16px));
-      padding: 5px 7px 34px 7px;
-      border: 2px solid var(--red);
-      border-radius: 8px;
-      background: rgba(255,255,255,.98);
+      padding: 5px 7px;
+      border: 1.6px dashed rgba(207,42,42,.82);
+      border-radius: 6px;
+      background: transparent;
       color: var(--text);
-      box-shadow: 0 8px 22px rgba(0,0,0,.22);
+      caret-color: var(--red);
+      box-shadow: none;
       outline: none;
       resize: none;
-      overflow: auto;
+      overflow: hidden;
       font-family: Arial, Helvetica, sans-serif;
+      font-weight: 600;
       line-height: 1.25;
       white-space: pre-wrap;
     }
@@ -1370,19 +1465,25 @@
         <details id="paperLayoutDetails">
           <summary>
             <span class="manual-summary-main">
-              <span id="paperLayoutSummaryTitle" class="manual-summary-title">外部用紙読み込み</span>
-              <span id="paperLayoutSummaryHint" class="manual-summary-hint">外部用紙、プリセット、位置編集をまとめて設定する。</span>
+              <span id="paperLayoutSummaryTitle" class="manual-summary-title">会社指定用紙を敷く</span>
+              <span id="paperLayoutSummaryHint" class="manual-summary-hint">会社指定用紙画像、プリセット、位置編集をまとめて設定する。</span>
             </span>
             <span class="manual-chevron">⌄</span>
           </summary>
           <div class="paper-layout-content">
             <div class="paper-primary-actions">
               <button id="headerPositionModeBtn" class="paper-mini-btn position-edit-main-btn" type="button">Position Edit</button>
+              <div class="paper-magnet-controls" id="paperMagnetControls" aria-label="Line magnet sensitivity">
+                <span class="paper-magnet-icon" aria-hidden="true">🧲</span>
+                <button class="paper-magnet-btn" type="button" data-paper-magnet-sensitivity="high" title="High sensitivity">上</button>
+                <button class="paper-magnet-btn active" type="button" data-paper-magnet-sensitivity="medium" title="Medium sensitivity">中</button>
+                <button class="paper-magnet-btn" type="button" data-paper-magnet-sensitivity="low" title="Low sensitivity">下</button>
+              </div>
               <button id="resetLayoutAdjustBtn" class="paper-mini-btn" type="button">Position Reset</button>
             </div>
 
             <div id="paperFileSelectSection" class="guide-target-section">
-            <label id="paperImageInputLabel" for="paperImageInput">Paper Image Upload (JPG / PNG / PSD)</label>
+            <label id="paperImageInputLabel" for="paperImageInput">会社指定用紙画像（JPG / PNG / PSD）</label>
             <input id="paperImageInput" type="file" accept="image/jpeg,image/png,.jpg,.jpeg,.png,.psd,image/vnd.adobe.photoshop" />
             </div>
             <div id="paperImageStatus" class="status">No paper image loaded.</div>
@@ -1417,11 +1518,16 @@
       <div class="card">
         <h3 data-ui-text="originalCellTitle">シート入力</h3>
         <label for="cellInputMode" data-ui-text="inputModeLabel">Input Mode</label>
-        <select id="cellInputMode">
+        <select id="cellInputMode" class="input-mode-select-hidden" aria-hidden="true" tabindex="-1">
           <option value="text" selected data-ui-text="inputModeTextCommands">Text Commands</option>
           <option value="csv" data-ui-text="inputModeCsvClip">CSV Upload(CLIP STUDIO)</option>
           <option value="csv_tvpaint" data-ui-text="inputModeCsvTvpaint">CSV Upload(TVPaint)</option>
         </select>
+        <div id="cellInputModeButtons" class="input-mode-button-row" role="tablist" aria-label="Input Mode">
+          <button class="input-mode-btn active" type="button" data-input-mode="text" data-ui-text="inputModeTextCommands" role="tab" aria-selected="true">Text Commands</button>
+          <button class="input-mode-btn" type="button" data-input-mode="csv" data-ui-text="inputModeCsvClip" role="tab" aria-selected="false">CSV Upload(CLIP STUDIO)</button>
+          <button class="input-mode-btn" type="button" data-input-mode="csv_tvpaint" data-ui-text="inputModeCsvTvpaint" role="tab" aria-selected="false">CSV Upload(TVPaint)</button>
+        </div>
         <div id="textModeBox" class="mode-box">
           <label for="timelineCommandInput" data-ui-text="textCommandsLabel">Text Commands</label>
           <textarea id="timelineCommandInput"></textarea>
@@ -1623,6 +1729,7 @@
     const CSV_AUTO_END = '# CSV AUTO GENERATED END';
     const DEFAULT_DIALOG_SAMPLE_LINE = '0+01 | 1+00 | SPEAKER | SAMPLE';
     const DEFAULT_CAMERA_SAMPLE_LINE = '0+01 | 1+00 | A | SAMPLE | B';
+    const MAX_CELL_COLUMN_PLACEMENT_COUNT = 32;
 
     const svg = document.getElementById('sheetSvg');
     const appTitleEl = document.getElementById('appTitle');
@@ -1697,6 +1804,8 @@
     const showHeaderOutputTextEl = document.getElementById('showHeaderOutputText');
     const showCellLabelOutputTextEl = document.getElementById('showCellLabelOutputText');
     const paperLayoutHintEl = document.getElementById('paperLayoutHint');
+    const paperMagnetSensitivityButtons = Array.from(document.querySelectorAll('[data-paper-magnet-sensitivity]'));
+    const cellInputModeButtons = Array.from(document.querySelectorAll('[data-input-mode]'));
     const csvEncodingSectionEl = document.getElementById('csvEncodingSection');
     const csvColumnRoleSectionEl = document.getElementById('csvColumnRoleSection');
     const paperFileSelectSectionEl = document.getElementById('paperFileSelectSection');
@@ -1717,7 +1826,12 @@
     const SETTINGS_DIRECTORY_DB_NAME = 'autoSheetDirectoryHandleDb.v1';
     const SETTINGS_DIRECTORY_STORE_NAME = 'handles';
     const SETTINGS_DIRECTORY_HANDLE_KEY = 'settings-json-directory';
-    const PAPER_MAGNET_SNAP_PX = 8;
+    const PAPER_MAGNET_DEFAULT_SENSITIVITY = 'medium';
+    const PAPER_MAGNET_SENSITIVITY_PRESETS = {
+      high:{ key:'high', snapPx:12, colorTolerance:48, nearWhiteLum:248, rowCoverage:0.075, colCoverage:0.052, rowRun:0.16, colRun:0.12, clusterGap:3 },
+      medium:{ key:'medium', snapPx:8, colorTolerance:34, nearWhiteLum:238, rowCoverage:0.12, colCoverage:0.08, rowRun:0.25, colRun:0.18, clusterGap:2 },
+      low:{ key:'low', snapPx:5, colorTolerance:22, nearWhiteLum:224, rowCoverage:0.20, colCoverage:0.14, rowRun:0.42, colRun:0.30, clusterGap:1 }
+    };
     const SHORTCUT_ACTIONS = ['brushCycle', 'eraserToggle', 'sizeDown', 'sizeUp', 'memoOff'];
     const SHORTCUT_DEFAULTS = { brushCycle:'b', eraserToggle:'e', sizeDown:'[', sizeUp:']', memoOff:'backspace' };
     let paperMemorySaveTimer = null;
@@ -1777,6 +1891,7 @@
       loadedSettingsDirectoryHandle: null,
       paperMagnetLines: { x:[], y:[], sourceKey:'' },
       paperMagnetBuildToken: 0,
+      paperMagnetSensitivity: PAPER_MAGNET_DEFAULT_SENSITIVITY,
       memoMode: false,
       sidebarCollapsed: false,
       memoTool: 'pen',
@@ -1960,18 +2075,18 @@
         csvEditHelp: 'Selected Cell columns are converted to editable Text Commands. Correct the generated command text here when needed.',
         dialogHelp: '24fps fixed. Minimum: start | end |. Extra fields: start | end | first-frame box | vertical text.',
         cameraHelp: '24fps fixed. Minimum: start | end |. Extended: start | end | first-frame box | second-frame text | last-frame box.',
-        previewMeta: 'White paper UI / cel + dialog + inbetween + camera / 6-second dual block or 3-second single block auto-switch.',
+        previewMeta: '6秒左右2面と3秒単面を自動切替。',
         noCsv: 'No CSV loaded.',
         csvLoaded: count => `CSV loaded. ${count} displayable columns detected.`,
         csvError: msg => `CSV read failed: ${msg}`
       },
       ja: {
-        textHelp: '1行につき1つのセル行を入力する。形式: A: 1 n n dot n n 2\nトークン\n- 数字/文字: セル番号\n- n: 継続線\n- dot: 動画点/中割点\n- x: X印開始\n- _: 空欄フレーム\n- rep: リピート注記',
+        textHelp: '1行につき1つのセル行を入力する。形式: A: 1 n n dot n n 2\nトークン\n- 数字/文字: セル番号\n- n: 継続線\n- dot: 動画点/中割点\n- x: X印開始\n- _: 空欄フレーム\n- rep: リピート',
         csvHelp: 'CSVはFrame列を基準フレームとして使う。列の役割は Cell / Hide / Dialog / Camera から選ぶ。Dialog / Camera にした列は通常のDialog / Cameraコマンド形式に変換される。列名は変換前に編集できる。原画欄は最低8列、必要なら10列まで拡張し、実セル行が10列を超えると3秒単面シートに切り替える。',
         csvEditHelp: 'Cellに設定した列をText Commands形式に変換する。必要な場合はここで生成済みコマンドを修正する。',
         dialogHelp: '24fps固定。最小形式: start | end |。追加形式: start | end | 開始枠文字 | 縦書き本文。',
         cameraHelp: '24fps固定。最小形式: start | end |。拡張形式: start | end | 開始枠文字 | 2コマ目文字 | 終了枠文字。',
-        previewMeta: '白地の紙UI / セル + 台詞 + 動画 + カメラ / 6秒左右2面と3秒単面を自動切替。',
+        previewMeta: '6秒左右2面と3秒単面を自動切替。',
         noCsv: 'CSV未読込。',
         csvLoaded: count => `CSV読込完了。表示可能列 ${count} 個を検出。`,
         csvError: msg => `CSV読込失敗: ${msg}`
@@ -1982,7 +2097,7 @@
         csvEditHelp: 'Cell로 지정한 열을 Text Commands 형식으로 변환한다. 필요하면 생성된 커맨드를 여기서 수정한다.',
         dialogHelp: '24fps 고정. 최소 형식: start | end |. 추가 형식: start | end | 시작 네모 글자 | 세로 본문.',
         cameraHelp: '24fps 고정. 최소 형식: start | end |. 확장 형식: start | end | 시작 네모 글자 | 두 번째 칸 글자 | 종료 네모 글자.',
-        previewMeta: '흰 종이 UI / 셀 + 대사 + 동화 + 카메라 / 6초 좌우 2칸과 3초 단면을 자동 전환.',
+        previewMeta: '6秒左右2面と3秒単面を自動切替。',
         noCsv: 'CSV가 아직 로드되지 않았다.',
         csvLoaded: count => `CSV 로드 완료. 표시 가능한 열 ${count}개를 인식했다.`,
         csvError: msg => `CSV 읽기 실패: ${msg}`
@@ -1993,7 +2108,7 @@
         csvEditHelp: '指定为 Cell 的列会转换为 Text Commands 格式。需要时可在这里修正生成的命令。',
         dialogHelp: '固定 24fps。最小格式: start | end |。追加格式: start | end | 起始框文字 | 竖排正文。',
         cameraHelp: '固定 24fps。最小格式: start | end |。扩展格式: start | end | 起始框文字 | 第二格文字 | 结束框文字。',
-        previewMeta: '白色纸面 UI / Cell + Dialog + Inbetween + Camera / 自动切换 6 秒双面或 3 秒单面。',
+        previewMeta: '6秒左右2面と3秒単面を自動切替。',
         noCsv: '尚未读取 CSV。',
         csvLoaded: count => `CSV 读取完成。检测到 ${count} 个可显示列。`,
         csvError: msg => `CSV 读取失败: ${msg}`
@@ -2026,9 +2141,10 @@
           '<li>Cel frame text editing now uses normal click, while Shift-click handles mark/dot operations.</li>' +
           '<li>Name-tag outlines stay visible instead of disappearing after other operations.</li>' +
           '<li>Cel number hover uses a hand cursor for easier recognition.</li>' +
-          '<li>Black hold lines and dots now use click for dot ON/OFF and Shift-click for text input. Red hold lines still open text editing on click.</li><li>Dialog lines like <code>0+20 | 5+10 | × |</code> now render as a completely empty block: no label, no range lines, and no hold/guide line.</li>' +
+          '<li>Black hold lines and dots now use click for dot ON/OFF and Shift-click for text input. Red hold lines still open text editing on click.</li><li>Dialog lines like <code>0+20 | 5+10 | × |</code> now render as a completely empty block: no label, no range lines, and no hold/guide line.</li><li>Fixed CLIP STUDIO CSV imports whose layer names include suffixes such as <code>A_ls</code>, <code>B_ls</code>, and <code>C_ls</code>; these names are no longer mistaken for distant alphabet columns.</li><li>Restored free Space input in Text Commands and CSV command editing by preserving user-entered whitespace during live preview updates.</li><li>Input Mode buttons are now arranged horizontally in one compact row.</li><li>Built-in template frame lines now skip the Dialog body column; only the line under the Dialog header remains there.</li><li>When reopening a text memo, the SVG preview text is hidden while the transparent editor is active to prevent doubled text.</li>' +
           '</ul>' +
-          '<h4>Recent detailed records</h4>' +
+          '<h4>Recent detailed records</h4><details open><summary>ver521 · Japanese Input Mode label fit</summary><div><ul><li>Changed Japanese CSV input mode labels to half-width parentheses.</li><li>Tightened the Input Mode button font width and spacing so labels stay inside the horizontal buttons.</li></ul></div></details><details open><summary>ver520 · Dialog grid-line skip and text-memo edit de-duplication</summary><div><ul><li>Changed the built-in sheet template so horizontal body frame lines skip the Dialog column.</li><li>Only the separator line under the Dialog header remains across the Dialog column.</li><li>When the text-memo textarea opens, the memo’s SVG preview text is hidden until editing closes, preventing doubled text on re-edit.</li></ul></div></details><details open><summary>ver519 · Input Mode buttons arranged horizontally</summary><div><ul><li>Changed the Input Mode buttons to a compact three-column horizontal row.</li><li>Centered the button labels and allowed wrapping so long CSV labels stay inside the buttons.</li></ul></div></details><details open><summary>ver518 · Transparent text-memo editor, input-mode buttons, magnet sensitivity</summary><div><ul><li>Made the text-memo editor transparent and closer to the preview appearance while editing.</li><li>Changed Input Mode from a select menu to direct buttons with the project active-state styling.</li><li>Added compact paper-line magnet sensitivity buttons: high, medium, low. Medium is the default.</li><li>Improved paper-line detection to recognize long horizontal/vertical runs of similar non-background colors.</li><li>Updated Japanese/Korean labels and simplified the preview meta text.</li></ul></div></details>' +
+          '<details open><summary>ver517 · Text Commands Space input restored</summary><div><ul><li>Preserved user-entered whitespace during live Text Commands and CSV command editing.</li><li>The leading-cross-gap normalizer no longer rebuilds the whole command line, so pressing Space no longer disappears immediately.</li></ul></div></details><details><summary>ver516 · CLIP CSV suffix layer-name crash fix</summary><div><ul><li>Restricted absolute cel-column placement to pure A-Z labels within the supported column range.</li><li>Layer names such as <code>A_ls</code>, <code>B_ls</code>, and <code>C_ls</code> now import as normal layers instead of creating thousands of filler columns.</li></ul></div></details>' +
           '<details open><summary>ver515 · Dialog × block renders nothing</summary><div><ul><li>Changed Dialog lines with <code>×</code>/<code>x</code> as the first box and no body text so they render nothing at all.</li><li>No red range lines, vertical guide line, label, or text is drawn for that empty Dialog block.</li></ul></div></details>' +
           '<details><summary>ver514 · Dot toggle separated from text editing</summary><div><ul><li>Restored black hold line and dot behavior: click toggles dot ON/OFF, while Shift-click opens text input.</li><li>Kept red hold lines as click-to-text, without dot toggling.</li></ul></div></details>' +
           '<details><summary>ver513 · Click edits text, Shift-click opens name tags and mark operations</summary><div><ul><li>Changed cel label/header cells so normal click edits the label text and Shift-click shows the name-tag add button.</li><li>Changed cel frame cells so normal click opens text editing and Shift-click performs circle/triangle/cross or dot operations.</li></ul></div></details>' +
@@ -2067,9 +2183,10 @@
           '<li>セル欄の文字編集は通常クリック、Shiftクリックは丸・三角・X・動画点などの操作に統一する。</li>' +
           '<li>ネームタグのアウトラインが他の操作後も表示され続けるようにする。</li>' +
           '<li>原画番号にカーソルを乗せた時の表示を、テキスト入力カーソルではなく手のカーソルに統一する。</li>' +
-          '<li>黒い継続線/動画点はクリックで動画点ON/OFF、Shiftクリックで文字入力に戻す。赤い継続線はクリックで文字入力のままにする。</li><li>セリフ欄の <code>0+20 | 5+10 | × |</code> のような行は、ラベル・赤い範囲線・縦線を含めて完全に非表示にする。</li>' +
+          '<li>黒い継続線/動画点はクリックで動画点ON/OFF、Shiftクリックで文字入力に戻す。赤い継続線はクリックで文字入力のままにする。</li><li>セリフ欄の <code>0+20 | 5+10 | × |</code> のような行は、ラベル・赤い範囲線・縦線を含めて完全に非表示にする。</li><li><code>A_ls</code>、<code>B_ls</code>、<code>C_ls</code> のような接尾辞付きレイヤー名を含む CLIP STUDIO CSV 読込の停止問題を修正する。遠いアルファベット列として誤判定しない。</li><li>Text Commands と CSV編集欄で、ライブプレビュー更新中も入力中のスペースを保持し、自由に連続入力できる状態に戻す。</li><li>入力モードボタンを1行の横並びに変更する。</li><li>内蔵シートテンプレートのDialog本文欄には横罫線を出さず、Dialog見出し下の区切り線だけを残す。</li><li>テキストメモを再編集するとき、透明エディター表示中はSVGプレビュー側の文字を非表示にし、二重表示を防ぐ。</li>' +
           '</ul>' +
-          '<h4>最近の詳細履歴</h4>' +
+          '<h4>最近の詳細履歴</h4><details open><summary>ver521 · 入力モード日本語ラベルの収まり調整</summary><div><ul><li>CSV入力モードの日本語ラベルを半角括弧表記に変更。</li><li>横並びボタンから文字がはみ出さないよう、フォント幅・字間・余白を調整。</li></ul></div></details><details open><summary>ver520 · Dialog横罫線除外とテキストメモ二重表示防止</summary><div><ul><li>内蔵シートテンプレートで、Dialog本文欄にはフレーム横罫線を引かないように変更。</li><li>Dialog欄に残る横線は、見出し下の区切り線だけにする。</li><li>テキストメモ編集用textareaを開いた時点で、SVGプレビュー側の同じ文字を非表示にし、再編集時の二重表示を防止。</li></ul></div></details><details open><summary>ver519 · 入力モードボタンを横並び化</summary><div><ul><li>入力モードボタンを3列のコンパクトな横並びに変更。</li><li>長いCSVラベルがボタン内に収まるよう、中央揃えと折り返し表示に調整。</li></ul></div></details><details open><summary>ver518 · テキストメモ透明編集、入力モードボタン、マグネット感度</summary><div><ul><li>テキストメモ編集UIの白背景をなくし、プレビューに近い見え方で編集できるようにした。</li><li>入力モードをプルダウンから直接ボタンへ変更し、選択中ボタンは本プロジェクトの青＋赤発光UIにした。</li><li>位置編集の横に、用紙線マグネット感度の上・中・下ボタンを追加した。初期値は中。</li><li>外部用紙画像のガイド線検出を改善し、類似色が横/縦に続く線も検出対象にした。</li><li>日本語/韓国語ラベルとシートプレビュー下の表示文を整理した。</li></ul></div></details>' +
+          '<details open><summary>ver517 · Text Commands のスペース入力復旧</summary><div><ul><li>Text Commands と CSV編集欄で、ライブプレビュー更新中もユーザーが入力した空白を保持する。</li><li>先頭X空白補正処理がコマンド行全体を組み直さないようにし、Spaceを押した直後に空白が消えないようにする。</li></ul></div></details><details><summary>ver516 · CLIP CSV 接尾辞レイヤー名の停止修正</summary><div><ul><li>絶対位置配置に使うセル列名を、対応範囲内の純粋な A-Z ラベルだけに制限する。</li><li><code>A_ls</code>、<code>B_ls</code>、<code>C_ls</code> のようなレイヤー名は通常レイヤーとして読み込み、数千個の補助列を生成しない。</li></ul></div></details>' +
           '<details open><summary>ver515 · セリフ欄の×ブロックを完全非表示化</summary><div><ul><li>セリフ欄で開始枠が <code>×</code>/<code>x</code> かつ本文が空の行は、シート上に何も描画しない。</li><li>赤い範囲線、縦ガイド線、ラベル、本文をすべて非表示にする。</li></ul></div></details>' +
           '<details><summary>ver514 · 動画点トグルと文字入力を分離</summary><div><ul><li>黒い継続線/動画点はクリックで動画点ON/OFF、Shiftクリックで文字入力に戻した。</li><li>赤い継続線は動画点化せず、クリックで文字入力する挙動を維持した。</li></ul></div></details>' +
           '<details><summary>ver513 · 通常クリックで文字編集、Shiftクリックでネームタグ・記号操作</summary><div><ul><li>セルラベル/ヘッダーは通常クリックでラベル文字編集、Shiftクリックでネームタグ追加ボタン表示に変更。</li><li>セル欄は通常クリックで文字編集、Shiftクリックで丸・三角・X・動画点などの操作に統一。</li></ul></div></details>' +
@@ -2108,9 +2225,10 @@
           '<li>셀란 텍스트 편집은 일반 클릭, Shift+클릭은 원화 ○/△/X 및 동화점 조작으로 통일했다.</li>' +
           '<li>네임태그 아웃라인이 다른 조작 뒤에도 계속 표시되도록 고정했다.</li>' +
           '<li>원화번호에 커서를 올렸을 때 텍스트 입력 커서가 아니라 손 커서로 통일한다.</li>' +
-          '<li>검은 지속선/동화점은 클릭으로 동화점 ON/OFF, Shift+클릭으로 텍스트 입력하도록 되돌린다. 빨간 지속선은 클릭 텍스트 입력을 유지한다.</li><li>대사란의 <code>0+20 | 5+10 | × |</code> 같은 행은 라벨, 빨간 범위선, 세로 지속선까지 전부 표시하지 않는다.</li>' +
+          '<li>검은 지속선/동화점은 클릭으로 동화점 ON/OFF, Shift+클릭으로 텍스트 입력하도록 되돌린다. 빨간 지속선은 클릭 텍스트 입력을 유지한다.</li><li>대사란의 <code>0+20 | 5+10 | × |</code> 같은 행은 라벨, 빨간 범위선, 세로 지속선까지 전부 표시하지 않는다.</li><li><code>A_ls</code>, <code>B_ls</code>, <code>C_ls</code> 같은 접미사 레이어명을 포함한 CLIP STUDIO CSV 읽기 정지 문제를 수정한다. 먼 알파벳 열로 오인하지 않는다.</li><li>텍스트 커맨드와 CSV 편집란에서 라이브 프리뷰 갱신 중에도 입력 중인 스페이스를 보존해, 자유로운 연속 입력을 되돌렸다.</li><li>입력 모드 버튼을 한 줄 가로 배치로 변경했다.</li><li>내장 시트 템플릿의 Dialog 본문 열에는 가로선을 출력하지 않고, Dialog 헤더 밑 구분선만 남긴다.</li><li>텍스트 메모를 다시 편집할 때 투명 편집기가 열린 동안 SVG 프리뷰 쪽 문자를 숨겨 이중 표시를 막는다.</li>' +
           '</ul>' +
-          '<h4>최근 상세 내역</h4>' +
+          '<h4>최근 상세 내역</h4><details open><summary>ver521 · 입력 모드 일본어 라벨 폭 조정</summary><div><ul><li>CSV 입력 모드의 일본어 라벨을 반각 괄호 표기로 변경했다.</li><li>가로 버튼에서 글자가 삐져나가지 않도록 폰트 폭, 자간, 여백을 조정했다.</li></ul></div></details><details open><summary>ver520 · Dialog 가로선 제외와 텍스트 메모 이중 표시 방지</summary><div><ul><li>내장 시트 템플릿에서 Dialog 본문 열에는 프레임 가로선을 긋지 않도록 변경했다.</li><li>Dialog 열에 남는 가로선은 헤더 밑 구분선뿐이다.</li><li>텍스트 메모 textarea가 열리는 순간 SVG 프리뷰 쪽 같은 문자를 숨겨, 재편집 때 이중으로 보이지 않게 했다.</li></ul></div></details><details open><summary>ver519 · 입력 모드 버튼 가로 배치</summary><div><ul><li>입력 모드 버튼을 3열 가로 배치로 변경했다.</li><li>긴 CSV 라벨이 버튼 안에 들어가도록 중앙 정렬과 줄바꿈을 적용했다.</li></ul></div></details><details open><summary>ver518 · 텍스트 메모 투명 편집, 입력 모드 버튼화, 자석 민감도</summary><div><ul><li>텍스트 메모 편집 UI의 흰 배경을 없애고 프리뷰에 가까운 상태로 편집하도록 바꿨다.</li><li>입력 모드를 선택 탭이 아니라 직접 누르는 버튼으로 바꾸고, 선택 중 버튼은 프로젝트의 파랑＋빨간 발광 UI를 적용했다.</li><li>위치편집 버튼 옆에 용지 선 자석 민감도 상/중/하 버튼을 추가했다. 초기값은 중이다.</li><li>외부용지 이미지의 선 인식을 개선해 유사 색상이 가로/세로로 길게 이어지는 정보도 선으로 잡도록 했다.</li><li>일본어/한국어 라벨과 시트 프리뷰 하단 문구를 정리했다.</li></ul></div></details>' +
+          '<details open><summary>ver517 · Text Commands 스페이스 입력 복구</summary><div><ul><li>Text Commands와 CSV 편집란에서 라이브 프리뷰 갱신 중에도 사용자가 입력한 공백을 유지한다.</li><li>선두 X 공백 보정 처리가 커맨드 행 전체를 재조립하지 않도록 바꿔, Space를 누른 직후 공백이 사라지지 않게 한다.</li></ul></div></details><details><summary>ver516 · CLIP CSV 접미사 레이어명 정지 수정</summary><div><ul><li>절대 위치 배치에 쓰는 셀 열 이름을 지원 범위 안의 순수 A-Z 라벨로 제한한다.</li><li><code>A_ls</code>, <code>B_ls</code>, <code>C_ls</code> 같은 레이어명은 일반 레이어로 읽고, 수천 개의 보조 열을 만들지 않는다.</li></ul></div></details>' +
           '<details open><summary>ver515 · 대사란 × 블록 완전 비표시</summary><div><ul><li>대사란에서 시작 박스가 <code>×</code>/<code>x</code>이고 본문이 비어 있는 행은 시트에 아무것도 표시하지 않는다.</li><li>빨간 범위선, 세로 가이드선, 라벨, 본문을 모두 숨긴다.</li></ul></div></details>' +
           '<details><summary>ver514 · 동화점 토글과 텍스트 입력 분리</summary><div><ul><li>검은 지속선/동화점은 클릭으로 동화점 ON/OFF, Shift+클릭으로 텍스트 입력하도록 되돌렸다.</li><li>빨간 지속선은 동화점으로 바뀌지 않고 클릭으로 텍스트 입력하는 동작을 유지했다.</li></ul></div></details>' +
           '<details><summary>ver513 · 일반 클릭은 텍스트 편집, Shift+클릭은 네임태그/기호 조작</summary><div><ul><li>셀 라벨/헤더는 일반 클릭으로 라벨 텍스트를 편집하고, Shift+클릭으로 네임태그 추가 버튼을 표시한다.</li><li>셀란은 일반 클릭으로 텍스트를 편집하고, Shift+클릭으로 원화 ○/△/X 및 동화점 조작을 실행한다.</li></ul></div></details>' +
@@ -2149,9 +2267,10 @@
           '<li>Cell 区文字编辑改为普通点击，Shift 点击用于圆形/三角/X/动画点等操作。</li>' +
           '<li>名称标签外框在其他操作后也会保持显示。</li>' +
           '<li>原画编号悬停时统一为手形光标，而不是文字输入光标。</li>' +
-          '<li>黑色保持线/动画点恢复为点击切换动画点 ON/OFF，Shift 点击输入文字。红色保持线保持点击输入文字。</li><li>对白栏中类似 <code>0+20 | 5+10 | × |</code> 的行会完全不显示，包括标签、红色范围线和竖线。</li>' +
+          '<li>黑色保持线/动画点恢复为点击切换动画点 ON/OFF，Shift 点击输入文字。红色保持线保持点击输入文字。</li><li>对白栏中类似 <code>0+20 | 5+10 | × |</code> 的行会完全不显示，包括标签、红色范围线和竖线。</li><li>修正含有 <code>A_ls</code>、<code>B_ls</code>、<code>C_ls</code> 等后缀图层名的 CLIP STUDIO CSV 导入停止问题；这些名称不会再被误判为远处的字母列。</li><li>恢复 Text Commands 与 CSV 编辑栏中的自由空格输入，实时预览更新时也保留正在输入的空白。</li><li>输入模式按钮改为一行横向排列。</li><li>内置模板的 Dialog 正文列不再输出横线，只保留 Dialog 标题下方的分隔线。</li><li>重新编辑文字备注时，透明编辑器打开期间隐藏 SVG 预览文字，避免双重显示。</li>' +
           '</ul>' +
-          '<h4>最近详细记录</h4>' +
+          '<h4>最近详细记录</h4><details open><summary>ver521 · 输入模式日文标签宽度调整</summary><div><ul><li>将 CSV 输入模式的日文标签改为半角括号。</li><li>调整横向按钮的字体宽度、字距和内边距，避免文字溢出。</li></ul></div></details><details open><summary>ver520 · Dialog 横线排除与文字备注双重显示修正</summary><div><ul><li>内置 Sheet 模板中，Dialog 正文列不再绘制帧横线。</li><li>Dialog 列只保留标题下方的分隔线。</li><li>文字备注 textarea 打开时隐藏 SVG 预览中的同一文字，避免重新编辑时双重显示。</li></ul></div></details><details open><summary>ver519 · 输入模式按钮横向排列</summary><div><ul><li>将输入模式按钮改为紧凑的三列横向排列。</li><li>按钮文字居中并允许换行，使较长的 CSV 标签保持在按钮内。</li></ul></div></details><details open><summary>ver518 · 透明文字备注编辑、输入模式按钮、磁吸灵敏度</summary><div><ul><li>移除文字备注编辑 UI 的白色背景，使编辑时更接近预览外观。</li><li>输入模式由下拉菜单改为直接按钮，当前按钮使用项目的蓝色＋红色发光 UI。</li><li>在位置编辑旁新增纸张线条磁吸灵敏度上/中/下按钮，默认值为中。</li><li>改进外部纸张图像线条检测，可识别相近颜色横向/纵向连续形成的线。</li><li>整理日文/韩文标签和 Sheet 预览下方显示文本。</li></ul></div></details>' +
+          '<details open><summary>ver517 · 恢复 Text Commands 空格输入</summary><div><ul><li>Text Commands 与 CSV 编辑栏在实时预览更新时保留用户输入的空白。</li><li>开头 X 空白修正处理不再重建整行命令，因此按下 Space 后空白不会立刻消失。</li></ul></div></details><details><summary>ver516 · 修正 CLIP CSV 后缀图层名停止问题</summary><div><ul><li>绝对 Cell 列定位只使用支持范围内的纯 A-Z 标签。</li><li><code>A_ls</code>、<code>B_ls</code>、<code>C_ls</code> 等图层名会作为普通图层导入，不再生成数千个填充列。</li></ul></div></details>' +
           '<details open><summary>ver515 · 对白栏 × 块完全隐藏</summary><div><ul><li>对白栏中开始框为 <code>×</code>/<code>x</code> 且正文为空的行，不在 Sheet 上绘制任何内容。</li><li>红色范围线、竖向引导线、标签和正文全部隐藏。</li></ul></div></details>' +
           '<details><summary>ver514 · 分离动画点切换与文字输入</summary><div><ul><li>黑色保持线/动画点恢复为点击切换动画点 ON/OFF，Shift 点击输入文字。</li><li>红色保持线不切换动画点，继续使用点击输入文字。</li></ul></div></details>' +
           '<details><summary>ver513 · 普通点击编辑文字，Shift 点击名称标签/符号操作</summary><div><ul><li>Cell 标签/表头改为普通点击编辑标签文字，Shift 点击显示名称标签添加按钮。</li><li>Cell 区改为普通点击编辑文字，Shift 点击执行圆形/三角/X/动画点等操作。</li></ul></div></details>' +
@@ -2178,7 +2297,7 @@
       },
       ja: {
         languageLabel:'言語', headerCardTitle:'ヘッダー', episodeLabel:'話数', titleLabel:'タイトル', cutNoLabel:'カット番号', secondsLabel:'尺 秒', framesLabel:'尺 コマ', authorLabel:'名前', pageLabel:'ページ',
-        originalCellTitle:'シート入力', inputModeLabel:'入力モード', inputModeTextCommands:'テキストコマンド', inputModeCsvClip:'CSV読込（CLIP STUDIO）', inputModeCsvTvpaint:'CSV読込（TVPaint）', csvExportClipBtn:'CLIP STUDIO CSV出力', csvExportTvpaintBtn:'TVPaint CSV出力', shakuEditBtn:'尺編集', shakuEditHint:'青いフレーム線をドラッグして尺を選択', shakuCutBtn:'切る', shakuStretchBtn:'伸ばす', shakuSelectedLabel:'選択', shakuUndoBtn:'取り消し', shakuRedoBtn:'やり直し', shakuFlashCut:'切る 反映', shakuFlashStretch:'伸ばす 反映',
+        originalCellTitle:'シート入力', inputModeLabel:'入力モード', inputModeTextCommands:'テキストコマンド', inputModeCsvClip:'CSV読込(CLIP STUDIO)', inputModeCsvTvpaint:'CSV読込(TVPaint)', csvExportClipBtn:'CLIP STUDIO CSV出力', csvExportTvpaintBtn:'TVPaint CSV出力', shakuEditBtn:'尺編集(演出向け)', shakuEditHint:'青いフレーム線をドラッグして尺を選択', shakuCutBtn:'切る', shakuStretchBtn:'伸ばす', shakuSelectedLabel:'選択', shakuUndoBtn:'取り消し', shakuRedoBtn:'やり直し', shakuFlashCut:'切る 反映', shakuFlashStretch:'伸ばす 反映',
         textCommandsLabel:'テキストコマンド', csvFileLabel:'CSVファイル', csvEncodingLabel:'CSV文字コード', csvCommandEditLabel:'CSVから生成された編集可能コマンド',
         dialogBlocksTitle:'セリフ欄', dialogFormatLabel:'形式: 0+01 | 1+00 | 話者 | セリフ例', cameraBlocksTitle:'カメラ欄', cameraFormatLabel:'形式: 0+01 | 1+00 | 記号 | 指示例',
         sheetPreviewTitle:'シートプレビュー', chooseExportDirBtn:'保存先', downloadAllBtn:'出力', memoModeBtn:'メモモード', memoUndoBtn:'取り消し', memoRedoBtn:'やり直し', memoPenLabel:'ペン', memoEraserLabel:'消しゴム', memoEraserButton:'消しゴム',
@@ -2186,7 +2305,7 @@
       },
       ko: {
         languageLabel:'언어', headerCardTitle:'헤더', episodeLabel:'화수', titleLabel:'제목', cutNoLabel:'컷 번호', secondsLabel:'길이 초', framesLabel:'길이 프레임', authorLabel:'이름', pageLabel:'페이지',
-        originalCellTitle:'시트 입력', inputModeLabel:'입력 방식', inputModeTextCommands:'텍스트 커맨드', inputModeCsvClip:'CSV 읽기(CLIP STUDIO)', inputModeCsvTvpaint:'CSV 읽기(TVPaint)', csvExportClipBtn:'CLIP STUDIO CSV 내보내기', csvExportTvpaintBtn:'TVPaint CSV 내보내기', shakuEditBtn:'척 편집', shakuEditHint:'파란 프레임선을 드래그해 길이를 선택', shakuCutBtn:'자르기', shakuStretchBtn:'늘리기', shakuSelectedLabel:'선택', shakuUndoBtn:'되돌리기', shakuRedoBtn:'다시 실행', shakuFlashCut:'자르기 반영', shakuFlashStretch:'늘리기 반영',
+        originalCellTitle:'시트 입력', inputModeLabel:'입력 방식', inputModeTextCommands:'텍스트 커맨드', inputModeCsvClip:'CSV 읽기(CLIP STUDIO)', inputModeCsvTvpaint:'CSV 읽기(TVPaint)', csvExportClipBtn:'CLIP STUDIO CSV 내보내기', csvExportTvpaintBtn:'TVPaint CSV 내보내기', shakuEditBtn:'연출용 편집툴', shakuEditHint:'파란 프레임선을 드래그해 길이를 선택', shakuCutBtn:'자르기', shakuStretchBtn:'늘리기', shakuSelectedLabel:'선택', shakuUndoBtn:'되돌리기', shakuRedoBtn:'다시 실행', shakuFlashCut:'자르기 반영', shakuFlashStretch:'늘리기 반영',
         textCommandsLabel:'텍스트 커맨드', csvFileLabel:'CSV 파일', csvEncodingLabel:'CSV 인코딩', csvCommandEditLabel:'CSV에서 생성된 편집 가능 커맨드',
         dialogBlocksTitle:'대사란', dialogFormatLabel:'형식: 0+01 | 1+00 | 화자 | 예시', cameraBlocksTitle:'카메라란', cameraFormatLabel:'형식: 0+01 | 1+00 | 기호 | 지시 예시',
         sheetPreviewTitle:'시트 프리뷰', chooseExportDirBtn:'저장처', downloadAllBtn:'출력', memoModeBtn:'메모 모드', memoUndoBtn:'되돌리기', memoRedoBtn:'다시 실행', memoPenLabel:'펜', memoEraserLabel:'지우개', memoEraserButton:'지우개',
@@ -2213,6 +2332,7 @@
       updateCsvExportButtonVisibility();
       updateSidebarToggleButton();
       updateExportDirectoryButton();
+      updateInputModeButtons();
       refreshLoadedSettingsSelect();
       renderUpdateLog();
     }
@@ -2308,10 +2428,10 @@
         `
       },
       ja: {
-        title: '簡易説明書',
+        title: '簡単説明書',
         hint: 'CSV、編集、メモ、ズーム、ショートカット、PNG/JPG/PSD出力。',
         html: `
-          <h4>Auto Sheet Prototype · 簡易説明書</h4>
+          <h4>Auto Sheet Prototype · 簡単説明書</h4>
           <p>CLIP STUDIO PAINT のCSVを読み込み、タイムシートプレビューを作成する使い方が基本になる。</p>
           <h5>CLIP STUDIO CSV読込</h5>
           <p>CLIP STUDIO PAINT でタイムシート情報を書き出し、そのCSVをこのツールに読み込む。</p>
@@ -2452,9 +2572,9 @@
         rasterMeta:function(w, h){ return w + '×' + h + ' rasterized to ' + PAGE_W + '×' + PAGE_H; }
       },
       ja: {
-        title:'外部用紙読み込み',
-        hint:'外部用紙、プリセット、位置編集をまとめて設定する。',
-        upload:'外部用紙画像（JPG / PNG / PSD）',
+        title:'会社指定用紙を敷く',
+        hint:'会社指定用紙画像、プリセット、位置編集をまとめて設定する。',
+        upload:'会社指定用紙画像（JPG / PNG / PSD）',
         noPaper:'用紙画像は未読込。',
         loading:'用紙画像を読み込み中...',
         loaded:function(name, meta){ return '読込完了: ' + name + (meta ? ' · ' + meta : ''); },
@@ -2477,7 +2597,7 @@
         showCellLabel:'Cellラベル出力を表示',
         cellColumns:'Cell列数',
         cellColumnsHint:'',
-        body:'外部用紙を読み込み、位置編集でヘッダー、セル、セリフ、カメラの出力位置を合わせる。プリセットには位置と表示設定だけを保存する。',
+        body:'会社指定用紙画像を敷き、位置編集でヘッダー、セル、セリフ、カメラの出力位置を合わせる。プリセットには位置と表示設定だけを保存する。',
         psdMeta:function(){ return 'PSDレイヤーを1枚の用紙ラスターレイヤーに合成'; },
         rasterMeta:function(w, h){ return w + '×' + h + ' を ' + PAGE_W + '×' + PAGE_H + ' にラスタライズ'; }
       },
@@ -2635,7 +2755,7 @@
       ja: {
         csvEncoding: '文字化けしたら、ここでCSVのエンコーディングを確認する。',
         csvColumns: '各列をセル表示にするか、セリフ欄・カメラ欄へ出すかをここで設定する。',
-        paperFile: 'ここで外部用紙ファイルを選択する。'
+        paperFile: 'ここで会社指定用紙画像を選択する。'
       },
       ko: {
         csvEncoding: '문자 깨짐이 있으면 여기서 CSV 인코딩을 확인한다.',
@@ -2696,7 +2816,11 @@
           paperImagePixelInfoEl.textContent = doc.pixelEmpty;
         }
       }
-      if (!state.paperMagnetLines || state.paperMagnetLines.sourceKey !== String(state.paperImageDataUrl || '').slice(0, 80)) rebuildPaperMagnetLines();
+      if (state.paperImageDataUrl) {
+        if (!state.paperMagnetLines || state.paperMagnetLines.sourceKey !== makePaperMagnetSourceKey(state.paperImageDataUrl || '')) rebuildPaperMagnetLines();
+      } else {
+        state.paperMagnetLines = { x:[], y:[], sourceKey:'' };
+      }
     }
 
 
@@ -2706,6 +2830,7 @@
       if (showCellLabelOutputToggleEl) showCellLabelOutputToggleEl.checked = !!state.showCellLabelOutput;
       if (cellColumnCountInputEl) cellColumnCountInputEl.value = String(getCellColumnCount());
       if (headerPositionModeBtn) headerPositionModeBtn.classList.toggle('active', !!state.positionMode);
+      updatePaperMagnetSensitivityUI();
     }
 
     function setLayoutPresetStatus(message) {
@@ -2945,11 +3070,37 @@
         const idx = lineText.indexOf(':');
         if (idx === -1) return lineText;
         const head = lineText.slice(0, idx + 1);
-        const body = lineText.slice(idx + 1).trim();
-        if (!body) return lineText;
-        const tokens = body.split(/\s+/).filter(Boolean);
-        const normalized = normalizeLeadingCrossGapTokens(tokens);
-        return head + (normalized.length ? ' ' + normalized.join(' ') : '');
+        const body = lineText.slice(idx + 1);
+        if (!body.trim()) return lineText;
+
+        // Preserve the user's exact typing rhythm in Text Commands.
+        // The older implementation used trim() + split() + join(), which removed
+        // trailing spaces immediately after Space was pressed. That made the field
+        // feel like Space input was blocked. Only normalize the specific legacy
+        // "x _" / "x -" leading-gap case, and leave all other whitespace intact.
+        const chunks = body.match(/\s+|\S+/g) || [];
+        let seenFirstToken = false;
+        let firstTokenIsCross = false;
+        let inLeadingCrossGap = false;
+        const normalized = chunks.map(function(chunk){
+          if (/^\s+$/.test(chunk)) return chunk;
+          const token = String(chunk || '').trim();
+          if (!seenFirstToken) {
+            seenFirstToken = true;
+            firstTokenIsCross = token.toLowerCase() === 'x';
+            inLeadingCrossGap = firstTokenIsCross;
+            return chunk;
+          }
+          if (!firstTokenIsCross || !inLeadingCrossGap) return chunk;
+          if (isCommandLabelToken(token)) {
+            inLeadingCrossGap = false;
+            return chunk;
+          }
+          const lower = token.toLowerCase();
+          if (lower === '_' || isLegacyNeutralEmptyToken(token)) return 'n';
+          return chunk;
+        });
+        return head + normalized.join('');
       }).join('\n');
     }
 
@@ -3123,6 +3274,23 @@
       state.csvDurationAutofillPending = false;
     }
 
+    function updateInputModeButtons() {
+      const mode = getCurrentInputMode();
+      cellInputModeButtons.forEach(function(btn){
+        const active = btn.dataset.inputMode === mode;
+        btn.classList.toggle('active', active);
+        btn.setAttribute('aria-selected', active ? 'true' : 'false');
+      });
+    }
+
+    function setCurrentInputMode(mode) {
+      const select = document.getElementById('cellInputMode');
+      if (!select) return;
+      const allowed = ['text', 'csv', 'csv_tvpaint'];
+      select.value = allowed.includes(mode) ? mode : 'text';
+      updateModeUI();
+    }
+
     function getCurrentInputMode() {
       return document.getElementById('cellInputMode').value;
     }
@@ -3251,12 +3419,13 @@
     function nearestPaperMagnetLine(axis, value) {
       const lines = state.paperMagnetLines && Array.isArray(state.paperMagnetLines[axis]) ? state.paperMagnetLines[axis] : [];
       let best = null;
-      let bestDist = PAPER_MAGNET_SNAP_PX + 1;
+      const snapPx = getPaperMagnetSnapPx();
+      let bestDist = snapPx + 1;
       lines.forEach(function(lineValue){
         const dist = Math.abs(Number(lineValue) - value);
         if (dist < bestDist) { bestDist = dist; best = Number(lineValue); }
       });
-      return bestDist <= PAPER_MAGNET_SNAP_PX ? best : null;
+      return bestDist <= snapPx ? best : null;
     }
 
     function snapLayoutRectToPaperLines(rect, mode) {
@@ -3746,30 +3915,88 @@
       });
     }
 
-    function clusterLinePositions(values, scale) {
+    function getPaperMagnetSensitivity() {
+      return PAPER_MAGNET_SENSITIVITY_PRESETS[state.paperMagnetSensitivity] ? state.paperMagnetSensitivity : PAPER_MAGNET_DEFAULT_SENSITIVITY;
+    }
+
+    function getPaperMagnetSettings() {
+      return PAPER_MAGNET_SENSITIVITY_PRESETS[getPaperMagnetSensitivity()] || PAPER_MAGNET_SENSITIVITY_PRESETS.medium;
+    }
+
+    function getPaperMagnetSnapPx() {
+      return getPaperMagnetSettings().snapPx || 8;
+    }
+
+    function makePaperMagnetSourceKey(source) {
+      return String(source || '').slice(0, 80) + '::' + getPaperMagnetSensitivity();
+    }
+
+    function updatePaperMagnetSensitivityUI() {
+      const current = getPaperMagnetSensitivity();
+      paperMagnetSensitivityButtons.forEach(function(btn){
+        const active = btn.dataset.paperMagnetSensitivity === current;
+        btn.classList.toggle('active', active);
+        btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+      });
+    }
+
+    function setPaperMagnetSensitivity(value) {
+      if (!PAPER_MAGNET_SENSITIVITY_PRESETS[value]) value = PAPER_MAGNET_DEFAULT_SENSITIVITY;
+      if (state.paperMagnetSensitivity === value) {
+        updatePaperMagnetSensitivityUI();
+        return;
+      }
+      state.paperMagnetSensitivity = value;
+      updatePaperMagnetSensitivityUI();
+      rebuildPaperMagnetLines();
+      queueSavePaperMemory();
+      render();
+    }
+
+    function clusterLinePositions(values, scale, gap) {
       if (!values.length) return [];
       values.sort(function(a,b){ return a-b; });
       const clusters = [];
+      const clusterGap = Number.isFinite(Number(gap)) ? Number(gap) : 2;
       let start = values[0], prev = values[0], count = 1;
       for (let i = 1; i < values.length; i++) {
         const v = values[i];
-        if (v <= prev + 2) { prev = v; count += 1; continue; }
+        if (v <= prev + clusterGap) { prev = v; count += 1; continue; }
         clusters.push(Math.round(((start + prev) / 2) * scale));
         start = prev = v; count = 1;
       }
       clusters.push(Math.round(((start + prev) / 2) * scale));
-      return clusters.filter(function(v, i, arr){ return i === 0 || Math.abs(v - arr[i - 1]) > 3; }).slice(0, 600);
+      return clusters.filter(function(v, i, arr){ return i === 0 || Math.abs(v - arr[i - 1]) > 3; }).slice(0, 900);
+    }
+
+    function colorDistanceSqAt(data, idxA, idxB) {
+      const dr = data[idxA] - data[idxB];
+      const dg = data[idxA + 1] - data[idxB + 1];
+      const db = data[idxA + 2] - data[idxB + 2];
+      return dr * dr + dg * dg + db * db;
+    }
+
+    function isPaperLinePixel(data, idx, settings) {
+      const a = data[idx + 3];
+      if (a < 40) return false;
+      const r = data[idx], g = data[idx + 1], b = data[idx + 2];
+      const lum = r * 0.299 + g * 0.587 + b * 0.114;
+      const chroma = Math.max(r, g, b) - Math.min(r, g, b);
+      return lum < settings.nearWhiteLum || chroma > 16;
     }
 
     function rebuildPaperMagnetLines() {
       const source = state.paperImageDataUrl || '';
       const token = ++state.paperMagnetBuildToken;
+      const sourceKey = makePaperMagnetSourceKey(source);
       state.paperMagnetLines = { x:[], y:[], sourceKey:source ? 'building' : '' };
+      updatePaperMagnetSensitivityUI();
       if (!source || typeof Image === 'undefined') return;
       const img = new Image();
       img.onload = function(){
         if (token !== state.paperMagnetBuildToken) return;
         try {
+          const settings = getPaperMagnetSettings();
           const scale = 4;
           const w = Math.max(1, Math.round(PAGE_W / scale));
           const h = Math.max(1, Math.round(PAGE_H / scale));
@@ -3781,29 +4008,47 @@
           const data = ctx.getImageData(0, 0, w, h).data;
           const yCandidates = [];
           const xCandidates = [];
+          const toleranceSq = settings.colorTolerance * settings.colorTolerance;
+
           for (let y = 0; y < h; y++) {
-            let dark = 0;
+            let ink = 0;
+            let run = 0;
+            let maxRun = 0;
+            let prevIdx = -1;
             for (let x = 0; x < w; x++) {
               const idx = (y * w + x) * 4;
-              const a = data[idx + 3];
-              if (a < 40) continue;
-              const lum = data[idx] * 0.299 + data[idx + 1] * 0.587 + data[idx + 2] * 0.114;
-              if (lum < 190) dark += 1;
+              if (!isPaperLinePixel(data, idx, settings)) { run = 0; prevIdx = -1; continue; }
+              ink += 1;
+              if (prevIdx >= 0 && colorDistanceSqAt(data, idx, prevIdx) <= toleranceSq) run += 1;
+              else run = 1;
+              if (run > maxRun) maxRun = run;
+              prevIdx = idx;
             }
-            if (dark > w * 0.18) yCandidates.push(y);
+            if (ink >= w * settings.rowCoverage || maxRun >= w * settings.rowRun) yCandidates.push(y);
           }
+
           for (let x = 0; x < w; x++) {
-            let dark = 0;
+            let ink = 0;
+            let run = 0;
+            let maxRun = 0;
+            let prevIdx = -1;
             for (let y = 0; y < h; y++) {
               const idx = (y * w + x) * 4;
-              const a = data[idx + 3];
-              if (a < 40) continue;
-              const lum = data[idx] * 0.299 + data[idx + 1] * 0.587 + data[idx + 2] * 0.114;
-              if (lum < 190) dark += 1;
+              if (!isPaperLinePixel(data, idx, settings)) { run = 0; prevIdx = -1; continue; }
+              ink += 1;
+              if (prevIdx >= 0 && colorDistanceSqAt(data, idx, prevIdx) <= toleranceSq) run += 1;
+              else run = 1;
+              if (run > maxRun) maxRun = run;
+              prevIdx = idx;
             }
-            if (dark > h * 0.12) xCandidates.push(x);
+            if (ink >= h * settings.colCoverage || maxRun >= h * settings.colRun) xCandidates.push(x);
           }
-          state.paperMagnetLines = { x:clusterLinePositions(xCandidates, scale), y:clusterLinePositions(yCandidates, scale), sourceKey:source.slice(0, 80) };
+
+          state.paperMagnetLines = {
+            x:clusterLinePositions(xCandidates, scale, settings.clusterGap),
+            y:clusterLinePositions(yCandidates, scale, settings.clusterGap),
+            sourceKey:sourceKey
+          };
         } catch (err) {
           state.paperMagnetLines = { x:[], y:[], sourceKey:'' };
         }
@@ -4997,13 +5242,16 @@
     }
 
     function cellColumnLabelToIndex(label) {
-      const parsed = parseAlphabetLayerSort(label);
-      if (!parsed || parsed.modifier !== 0) return -1;
-      const base = String(parsed.base || '').toUpperCase();
-      if (!/^[A-Z]+$/.test(base)) return -1;
+      const raw = normalizeCsvCellValue(label).replace(/\s+/g, '');
+      // Only pure A-Z cel column labels are used for absolute placement.
+      // Layer names like A_ls / B_ls / C_ls must stay ordinary imported layers,
+      // not be interpreted as far-away Excel-style columns ALS / BLS / CLS.
+      if (!/^[A-Za-z]+$/.test(raw)) return -1;
+      const base = raw.toUpperCase();
       let index = 0;
       for (let i = 0; i < base.length; i++) index = index * 26 + (base.charCodeAt(i) - 64);
-      return index - 1;
+      index -= 1;
+      return index >= 0 && index < MAX_CELL_COLUMN_PLACEMENT_COUNT ? index : -1;
     }
 
     function getCellEntryOrderKey(entry) {
@@ -5037,7 +5285,8 @@
       const actualEntries = (layers || []).map(function(layer){ return { uid:layer.uid, label:layer.name, isActual:true }; });
       let maxLabelIndex = -1;
       actualEntries.forEach(function(entry){ maxLabelIndex = Math.max(maxLabelIndex, cellColumnLabelToIndex(entry.label)); });
-      const targetCount = Math.max(getCellColumnCount(), actualEntries.length, maxLabelIndex + 1, 1);
+      const placementCount = maxLabelIndex >= 0 ? Math.min(maxLabelIndex + 1, MAX_CELL_COLUMN_PLACEMENT_COUNT) : 0;
+      const targetCount = Math.max(getCellColumnCount(), actualEntries.length, placementCount, 1);
       const entries = [];
       for (let i = 0; i < targetCount; i++) entries.push({ uid:'filler-' + makeCellColumnLabel(i), label:makeCellColumnLabel(i), isActual:false });
       const overflow = [];
@@ -6226,7 +6475,13 @@
             const is24FrameBoundary = r > 0 && r % 24 === 0;
             const is6FrameBoundary = r > 0 && r % 6 === 0;
             const strokeW = is24FrameBoundary ? 3.8 : (is6FrameBoundary ? 2.3 : 0.7);
-            line(templateMinX, y, templateMaxX, y, '#111', strokeW);
+            if (r === 0) {
+              line(templateMinX, y, templateMaxX, y, '#111', strokeW);
+            } else {
+              if (templateDialogArea.x > templateMinX) line(templateMinX, y, templateDialogArea.x, y, '#111', strokeW);
+              const dialogBodyRight = templateDialogArea.x + templateDialogArea.w;
+              if (dialogBodyRight < templateMaxX) line(dialogBodyRight, y, templateMaxX, y, '#111', strokeW);
+            }
           }
           for (let i = 0; i < params.frameCount; i++) {
             const frameNumber = params.startFrame + i;
@@ -6276,7 +6531,12 @@
             const is24FrameBoundary = r > 0 && r % 24 === 0;
             const is6FrameBoundary = r > 0 && r % 6 === 0;
             const strokeW = is24FrameBoundary ? 3.8 : (is6FrameBoundary ? 2.3 : 0.7);
-            line(params.blockX, y, params.blockX + params.blockW, y, '#111', strokeW);
+            if (r === 0) {
+              line(params.blockX, y, params.blockX + params.blockW, y, '#111', strokeW);
+            } else {
+              line(params.blockX, y, xOriginalRight, y, '#111', strokeW);
+              line(xDialogRight, y, params.blockX + params.blockW, y, '#111', strokeW);
+            }
           }
           for (let i = 0; i < params.frameCount; i++) {
             const frameNumber = params.startFrame + i;
@@ -6936,8 +7196,9 @@
         getTextMemoPageData(pageIndex).forEach(function(memo){
           clampTextMemoBox(memo);
           const isActive = state.activeTextMemo && state.activeTextMemo.pageIndex === pageIndex && state.activeTextMemo.id === memo.id;
+          const isEditingThisMemo = !!(state.textMemoEditor && Number(state.textMemoEditor.pageIndex || 0) === Number(pageIndex || 0) && state.textMemoEditor.id === memo.id);
           renderTextMemoSelectionHit(memo, pageIndex, interactive, isActive);
-          if (memo.text || isActive) renderTextMemoText(memo);
+          if ((memo.text || isActive) && !isEditingThisMemo) renderTextMemoText(memo);
           if (interactive && isActive && currentSvgTarget === svg) renderTextMemoControls(memo);
         });
       });
@@ -7069,6 +7330,9 @@
       active.editor.style.height = height + 'px';
       active.editor.style.fontSize = Math.max(8, memo.fontSize * box.scale) + 'px';
       active.editor.style.color = memo.color || '#111111';
+      active.editor.style.fontWeight = '600';
+      active.editor.style.lineHeight = '1.25';
+      active.editor.style.background = 'transparent';
       if (active.applyButton) {
         const buttonW = Math.max(54, Math.min(76, Math.round(width * 0.34)));
         const buttonH = 28;
@@ -7202,6 +7466,9 @@
       document.body.appendChild(editor);
       document.body.appendChild(applyButton);
       state.textMemoEditor = { editor:editor, applyButton:applyButton, pageIndex:state.activeTextMemo.pageIndex, id:memo.id };
+      // Hide the SVG preview text while the HTML textarea editor is open.
+      // This avoids the doubled text that appeared when reopening an already-applied memo.
+      render();
       updateTextMemoEditorPosition();
       editor.addEventListener('beforeinput', function(event){
         editor._textMemoBeforeValue = editor.value;
@@ -7724,7 +7991,7 @@
       updateShakuEditUI();
       if (headerPositionModeBtn) headerPositionModeBtn.classList.toggle('active', !!state.positionMode);
       updateTextMemoEditorPosition();
-      previewMetaEl.textContent = t('previewMeta') + ' · Page ' + (state.currentPreviewPage + 1) + '/' + model.totalPages;
+      previewMetaEl.textContent = '6秒左右2面と3秒単面を自動切替。 · Page ' + (state.currentPreviewPage + 1) + '/' + model.totalPages;
       if (!state.csvRawRows.length) csvInfoEl.textContent = state.csvLoadError || t('noCsv');
     }
 
@@ -8500,7 +8767,8 @@
           cellColumnCount:getCellColumnCount(),
           cellDisplayOrder:JSON.parse(JSON.stringify(state.cellDisplayOrder || [])),
           layoutBoxes:JSON.parse(JSON.stringify(state.layoutBoxes || {})),
-          selectedCompanyPresetId:companyPresetSelectEl ? companyPresetSelectEl.value : ''
+          selectedCompanyPresetId:companyPresetSelectEl ? companyPresetSelectEl.value : '',
+          paperMagnetSensitivity:getPaperMagnetSensitivity()
         }
       };
     }
@@ -8543,6 +8811,7 @@
       state.cellColumnCount = paper.cellColumnCount !== undefined ? clampCellColumnCount(paper.cellColumnCount) : state.cellColumnCount;
       state.cellDisplayOrder = Array.isArray(paper.cellDisplayOrder) ? paper.cellDisplayOrder : [];
       state.layoutBoxes = paper.layoutBoxes && typeof paper.layoutBoxes === 'object' ? paper.layoutBoxes : {};
+      state.paperMagnetSensitivity = PAPER_MAGNET_SENSITIVITY_PRESETS[paper.paperMagnetSensitivity] ? paper.paperMagnetSensitivity : PAPER_MAGNET_DEFAULT_SENSITIVITY;
       state.layoutBoxBaseRects = {};
       if (companyPresetSelectEl && paper.selectedCompanyPresetId) companyPresetSelectEl.value = paper.selectedCompanyPresetId;
       syncPaperLayoutControls();
@@ -8638,7 +8907,8 @@
           showTemplate:!!state.showTemplate,
           showHeaderOutput:!!state.showHeaderOutput,
           showCellLabelOutput:!!state.showCellLabelOutput,
-          cellColumnCount:getCellColumnCount()
+          cellColumnCount:getCellColumnCount(),
+          paperMagnetSensitivity:getPaperMagnetSensitivity()
         },
         layoutBoxes:JSON.parse(JSON.stringify(state.layoutBoxes || {}))
       };
@@ -8670,6 +8940,7 @@
       if (typeof options.showHeaderOutput === 'boolean') state.showHeaderOutput = options.showHeaderOutput;
       if (typeof options.showCellLabelOutput === 'boolean') state.showCellLabelOutput = options.showCellLabelOutput;
       if (options.cellColumnCount !== undefined) state.cellColumnCount = clampCellColumnCount(options.cellColumnCount);
+      if (PAPER_MAGNET_SENSITIVITY_PRESETS[options.paperMagnetSensitivity]) state.paperMagnetSensitivity = options.paperMagnetSensitivity;
       syncPaperLayoutControls();
       setLayoutPresetStatus(getPaperLayoutTexts().presetLoaded(filename || 'layout preset'));
       queueSavePaperMemory();
@@ -8849,7 +9120,8 @@
           showCellLabelOutput:!!state.showCellLabelOutput,
           cellColumnCount:getCellColumnCount(),
           cellDisplayOrder:JSON.parse(JSON.stringify(state.cellDisplayOrder || [])),
-          layoutBoxes:JSON.parse(JSON.stringify(state.layoutBoxes || {}))
+          layoutBoxes:JSON.parse(JSON.stringify(state.layoutBoxes || {})),
+          paperMagnetSensitivity:getPaperMagnetSensitivity()
         },
         overrides:{
           markerOverrides:JSON.parse(JSON.stringify(state.markerOverrides || {})),
@@ -8885,7 +9157,7 @@
       });
       const ui = payload.ui || {};
       if (ui.lang && document.getElementById('languageSelect')) document.getElementById('languageSelect').value = ui.lang;
-      if (ui.inputMode && document.getElementById('cellInputMode')) document.getElementById('cellInputMode').value = ui.inputMode;
+      if (ui.inputMode && document.getElementById('cellInputMode')) document.getElementById('cellInputMode').value = ['text','csv','csv_tvpaint'].includes(ui.inputMode) ? ui.inputMode : 'text';
       if (exportFormatSelectEl && ui.exportFormat) exportFormatSelectEl.value = ui.exportFormat;
       if (ui.sheetZoom !== undefined) state.sheetZoom = clampSheetZoom(ui.sheetZoom);
       normalizeDurationInputs();
@@ -8928,6 +9200,7 @@
       state.cellColumnCount = paper.cellColumnCount !== undefined ? clampCellColumnCount(paper.cellColumnCount) : state.cellColumnCount;
       state.cellDisplayOrder = Array.isArray(paper.cellDisplayOrder) ? paper.cellDisplayOrder : [];
       state.layoutBoxes = paper.layoutBoxes && typeof paper.layoutBoxes === 'object' ? paper.layoutBoxes : {};
+      state.paperMagnetSensitivity = PAPER_MAGNET_SENSITIVITY_PRESETS[paper.paperMagnetSensitivity] ? paper.paperMagnetSensitivity : state.paperMagnetSensitivity;
       state.layoutBoxBaseRects = {};
       const overrides = payload.overrides || {};
       state.markerOverrides = overrides.markerOverrides && typeof overrides.markerOverrides === 'object' ? overrides.markerOverrides : {};
@@ -9748,6 +10021,7 @@
 
     function updateModeUI() {
       const mode = getCurrentInputMode();
+      updateInputModeButtons();
       document.getElementById('textModeBox').classList.toggle('hidden', mode !== 'text');
       document.getElementById('csvModeBox').classList.toggle('hidden', !isCsvMode(mode));
       updateCsvExportButtonVisibility();
@@ -9799,6 +10073,16 @@
 
     document.getElementById('languageSelect').addEventListener('change', updateLanguage);
     document.getElementById('cellInputMode').addEventListener('change', updateModeUI);
+    cellInputModeButtons.forEach(function(btn){
+      btn.addEventListener('click', function(){
+        setCurrentInputMode(btn.dataset.inputMode || 'text');
+      });
+    });
+    paperMagnetSensitivityButtons.forEach(function(btn){
+      btn.addEventListener('click', function(){
+        setPaperMagnetSensitivity(btn.dataset.paperMagnetSensitivity || PAPER_MAGNET_DEFAULT_SENSITIVITY);
+      });
+    });
     memoModeBtn.addEventListener('click', toggleMemoMode);
     memoUndoBtn.addEventListener('click', memoUndo);
     memoRedoBtn.addEventListener('click', memoRedo);
