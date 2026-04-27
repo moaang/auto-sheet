@@ -605,6 +605,29 @@
     .paper-inline-control { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; white-space: nowrap; color: var(--text); font-size: 12px; font-weight: 800; }
     .paper-inline-control input { width: 64px; height: 30px; padding: 4px 6px; text-align: center; font-weight: 800; }
     .paper-preset-actions { align-items: center; }
+    .paper-preset-control-group {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .paper-preset-file-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 0;
+    }
+    .paper-preset-apply-actions {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+      margin-top: 0;
+      align-items: center;
+    }
+    .paper-preset-file-actions .paper-mini-btn,
+    .paper-preset-apply-actions .paper-mini-btn {
+      width: 100%;
+      min-width: 0;
+    }
     .paper-subsection-title {
       margin-top: 14px;
       padding-top: 10px;
@@ -1475,9 +1498,9 @@
               <button id="headerPositionModeBtn" class="paper-mini-btn position-edit-main-btn" type="button">Position Edit</button>
               <div class="paper-magnet-controls" id="paperMagnetControls" aria-label="Line magnet sensitivity">
                 <span class="paper-magnet-icon" aria-hidden="true">🧲</span>
-                <button class="paper-magnet-btn" type="button" data-paper-magnet-sensitivity="high" title="High sensitivity">上</button>
+                <button class="paper-magnet-btn" type="button" data-paper-magnet-sensitivity="high" title="High sensitivity">強</button>
                 <button class="paper-magnet-btn active" type="button" data-paper-magnet-sensitivity="medium" title="Medium sensitivity">中</button>
-                <button class="paper-magnet-btn" type="button" data-paper-magnet-sensitivity="low" title="Low sensitivity">下</button>
+                <button class="paper-magnet-btn" type="button" data-paper-magnet-sensitivity="low" title="Low sensitivity">弱</button>
               </div>
               <button id="resetLayoutAdjustBtn" class="paper-mini-btn" type="button">Position Reset</button>
             </div>
@@ -1493,14 +1516,18 @@
             </div>
 
             <div class="paper-subsection-title" id="layoutPresetTitle">Preset</div>
-            <div class="paper-actions paper-preset-actions">
-              <select id="companyPresetSelect" class="paper-preset-select" aria-label="Preset list">
-                <option value="mappa-1788-2514">MAPPA 1788 × 2514</option>
-              </select>
-              <button id="applyCompanyPresetBtn" class="paper-mini-btn" type="button">Apply</button>
-              <button id="saveLayoutPresetBtn" class="paper-mini-btn" type="button">Save Preset</button>
-              <button id="loadLayoutPresetBtn" class="paper-mini-btn" type="button">Load Preset</button>
-              <input id="layoutPresetInput" class="paper-file-input-hidden" type="file" accept=".json,.autosheet-layout.json,application/json" />
+            <div class="paper-preset-control-group">
+              <div class="paper-actions paper-preset-actions paper-preset-file-actions">
+                <button id="saveLayoutPresetBtn" class="paper-mini-btn" type="button">Save Preset</button>
+                <button id="loadLayoutPresetBtn" class="paper-mini-btn" type="button">Load Preset</button>
+                <input id="layoutPresetInput" class="paper-file-input-hidden" type="file" accept=".json,.autosheet-layout.json,application/json" />
+              </div>
+              <div class="paper-actions paper-preset-actions paper-preset-apply-actions">
+                <select id="companyPresetSelect" class="paper-preset-select" aria-label="Preset list">
+                  <option value="mappa-1788-2514">MAPPA 1788 × 2514</option>
+                </select>
+                <button id="applyCompanyPresetBtn" class="paper-mini-btn" type="button">Apply</button>
+              </div>
             </div>
             <div id="layoutPresetStatus" class="status paper-preset-status">Preset stores only position boxes and visibility options, not the paper image itself.</div>
 
@@ -2075,7 +2102,8 @@
         csvEditHelp: 'Selected Cell columns are converted to editable Text Commands. Correct the generated command text here when needed.',
         dialogHelp: '24fps fixed. Minimum: start | end |. Extra fields: start | end | first-frame box | vertical text.',
         cameraHelp: '24fps fixed. Minimum: start | end |. Extended: start | end | first-frame box | second-frame text | last-frame box.',
-        previewMeta: '6秒左右2面と3秒単面を自動切替。',
+        previewMeta: 'Auto-switches 6-second left/right two-panel and 3-second single-panel.',
+        previewMetaPage: function(current, total){ return 'Page ' + current + '/' + total; },
         noCsv: 'No CSV loaded.',
         csvLoaded: count => `CSV loaded. ${count} displayable columns detected.`,
         csvError: msg => `CSV read failed: ${msg}`
@@ -2087,6 +2115,7 @@
         dialogHelp: '24fps固定。最小形式: start | end |。追加形式: start | end | 開始枠文字 | 縦書き本文。',
         cameraHelp: '24fps固定。最小形式: start | end |。拡張形式: start | end | 開始枠文字 | 2コマ目文字 | 終了枠文字。',
         previewMeta: '6秒左右2面と3秒単面を自動切替。',
+        previewMetaPage: function(current, total){ return 'Page ' + current + '/' + total; },
         noCsv: 'CSV未読込。',
         csvLoaded: count => `CSV読込完了。表示可能列 ${count} 個を検出。`,
         csvError: msg => `CSV読込失敗: ${msg}`
@@ -2097,7 +2126,8 @@
         csvEditHelp: 'Cell로 지정한 열을 Text Commands 형식으로 변환한다. 필요하면 생성된 커맨드를 여기서 수정한다.',
         dialogHelp: '24fps 고정. 최소 형식: start | end |. 추가 형식: start | end | 시작 네모 글자 | 세로 본문.',
         cameraHelp: '24fps 고정. 최소 형식: start | end |. 확장 형식: start | end | 시작 네모 글자 | 두 번째 칸 글자 | 종료 네모 글자.',
-        previewMeta: '6秒左右2面と3秒単面を自動切替。',
+        previewMeta: '6초 좌우 2면과 3초 단면을 자동 전환.',
+        previewMetaPage: function(current, total){ return '페이지 ' + current + '/' + total; },
         noCsv: 'CSV가 아직 로드되지 않았다.',
         csvLoaded: count => `CSV 로드 완료. 표시 가능한 열 ${count}개를 인식했다.`,
         csvError: msg => `CSV 읽기 실패: ${msg}`
@@ -2108,7 +2138,8 @@
         csvEditHelp: '指定为 Cell 的列会转换为 Text Commands 格式。需要时可在这里修正生成的命令。',
         dialogHelp: '固定 24fps。最小格式: start | end |。追加格式: start | end | 起始框文字 | 竖排正文。',
         cameraHelp: '固定 24fps。最小格式: start | end |。扩展格式: start | end | 起始框文字 | 第二格文字 | 结束框文字。',
-        previewMeta: '6秒左右2面と3秒単面を自動切替。',
+        previewMeta: '自动切换 6 秒左右双面与 3 秒单面。',
+        previewMetaPage: function(current, total){ return '页 ' + current + '/' + total; },
         noCsv: '尚未读取 CSV。',
         csvLoaded: count => `CSV 读取完成。检测到 ${count} 个可显示列。`,
         csvError: msg => `CSV 读取失败: ${msg}`
@@ -2143,7 +2174,7 @@
           '<li>Cel number hover uses a hand cursor for easier recognition.</li>' +
           '<li>Black hold lines and dots now use click for dot ON/OFF and Shift-click for text input. Red hold lines still open text editing on click.</li><li>Dialog lines like <code>0+20 | 5+10 | × |</code> now render as a completely empty block: no label, no range lines, and no hold/guide line.</li><li>Fixed CLIP STUDIO CSV imports whose layer names include suffixes such as <code>A_ls</code>, <code>B_ls</code>, and <code>C_ls</code>; these names are no longer mistaken for distant alphabet columns.</li><li>Restored free Space input in Text Commands and CSV command editing by preserving user-entered whitespace during live preview updates.</li><li>Input Mode buttons are now arranged horizontally in one compact row.</li><li>Built-in template frame lines now skip the Dialog body column; only the line under the Dialog header remains there.</li><li>When reopening a text memo, the SVG preview text is hidden while the transparent editor is active to prevent doubled text.</li>' +
           '</ul>' +
-          '<h4>Recent detailed records</h4><details open><summary>ver521 · Japanese Input Mode label fit</summary><div><ul><li>Changed Japanese CSV input mode labels to half-width parentheses.</li><li>Tightened the Input Mode button font width and spacing so labels stay inside the horizontal buttons.</li></ul></div></details><details open><summary>ver520 · Dialog grid-line skip and text-memo edit de-duplication</summary><div><ul><li>Changed the built-in sheet template so horizontal body frame lines skip the Dialog column.</li><li>Only the separator line under the Dialog header remains across the Dialog column.</li><li>When the text-memo textarea opens, the memo’s SVG preview text is hidden until editing closes, preventing doubled text on re-edit.</li></ul></div></details><details open><summary>ver519 · Input Mode buttons arranged horizontally</summary><div><ul><li>Changed the Input Mode buttons to a compact three-column horizontal row.</li><li>Centered the button labels and allowed wrapping so long CSV labels stay inside the buttons.</li></ul></div></details><details open><summary>ver518 · Transparent text-memo editor, input-mode buttons, magnet sensitivity</summary><div><ul><li>Made the text-memo editor transparent and closer to the preview appearance while editing.</li><li>Changed Input Mode from a select menu to direct buttons with the project active-state styling.</li><li>Added compact paper-line magnet sensitivity buttons: high, medium, low. Medium is the default.</li><li>Improved paper-line detection to recognize long horizontal/vertical runs of similar non-background colors.</li><li>Updated Japanese/Korean labels and simplified the preview meta text.</li></ul></div></details>' +
+          '<h4>Recent detailed records</h4><details open><summary>ver522 · Preset layout, preview meta localization, duration sync, magnet labels</summary><div><ul><li>Moved Save Preset and Load Preset to the first row of the External Paper preset controls, and moved preset selection plus Apply to the second row.</li><li>Localized the Sheet Preview meta text and page label.</li><li>When a duration boundary line is shown from actual sheet content and the Duration fields are empty or zero, the Duration sec/frame fields now sync back to that boundary frame.</li><li>Changed paper-line magnet buttons from upper/middle/lower wording to strong/medium/weak wording.</li></ul></div></details><details open><summary>ver521 · Japanese Input Mode label fit</summary><div><ul><li>Changed Japanese CSV input mode labels to half-width parentheses.</li><li>Tightened the Input Mode button font width and spacing so labels stay inside the horizontal buttons.</li></ul></div></details><details open><summary>ver520 · Dialog grid-line skip and text-memo edit de-duplication</summary><div><ul><li>Changed the built-in sheet template so horizontal body frame lines skip the Dialog column.</li><li>Only the separator line under the Dialog header remains across the Dialog column.</li><li>When the text-memo textarea opens, the memo’s SVG preview text is hidden until editing closes, preventing doubled text on re-edit.</li></ul></div></details><details open><summary>ver519 · Input Mode buttons arranged horizontally</summary><div><ul><li>Changed the Input Mode buttons to a compact three-column horizontal row.</li><li>Centered the button labels and allowed wrapping so long CSV labels stay inside the buttons.</li></ul></div></details><details open><summary>ver518 · Transparent text-memo editor, input-mode buttons, magnet sensitivity</summary><div><ul><li>Made the text-memo editor transparent and closer to the preview appearance while editing.</li><li>Changed Input Mode from a select menu to direct buttons with the project active-state styling.</li><li>Added compact paper-line magnet sensitivity buttons: high, medium, low. Medium is the default.</li><li>Improved paper-line detection to recognize long horizontal/vertical runs of similar non-background colors.</li><li>Updated Japanese/Korean labels and simplified the preview meta text.</li></ul></div></details>' +
           '<details open><summary>ver517 · Text Commands Space input restored</summary><div><ul><li>Preserved user-entered whitespace during live Text Commands and CSV command editing.</li><li>The leading-cross-gap normalizer no longer rebuilds the whole command line, so pressing Space no longer disappears immediately.</li></ul></div></details><details><summary>ver516 · CLIP CSV suffix layer-name crash fix</summary><div><ul><li>Restricted absolute cel-column placement to pure A-Z labels within the supported column range.</li><li>Layer names such as <code>A_ls</code>, <code>B_ls</code>, and <code>C_ls</code> now import as normal layers instead of creating thousands of filler columns.</li></ul></div></details>' +
           '<details open><summary>ver515 · Dialog × block renders nothing</summary><div><ul><li>Changed Dialog lines with <code>×</code>/<code>x</code> as the first box and no body text so they render nothing at all.</li><li>No red range lines, vertical guide line, label, or text is drawn for that empty Dialog block.</li></ul></div></details>' +
           '<details><summary>ver514 · Dot toggle separated from text editing</summary><div><ul><li>Restored black hold line and dot behavior: click toggles dot ON/OFF, while Shift-click opens text input.</li><li>Kept red hold lines as click-to-text, without dot toggling.</li></ul></div></details>' +
@@ -2185,7 +2216,7 @@
           '<li>原画番号にカーソルを乗せた時の表示を、テキスト入力カーソルではなく手のカーソルに統一する。</li>' +
           '<li>黒い継続線/動画点はクリックで動画点ON/OFF、Shiftクリックで文字入力に戻す。赤い継続線はクリックで文字入力のままにする。</li><li>セリフ欄の <code>0+20 | 5+10 | × |</code> のような行は、ラベル・赤い範囲線・縦線を含めて完全に非表示にする。</li><li><code>A_ls</code>、<code>B_ls</code>、<code>C_ls</code> のような接尾辞付きレイヤー名を含む CLIP STUDIO CSV 読込の停止問題を修正する。遠いアルファベット列として誤判定しない。</li><li>Text Commands と CSV編集欄で、ライブプレビュー更新中も入力中のスペースを保持し、自由に連続入力できる状態に戻す。</li><li>入力モードボタンを1行の横並びに変更する。</li><li>内蔵シートテンプレートのDialog本文欄には横罫線を出さず、Dialog見出し下の区切り線だけを残す。</li><li>テキストメモを再編集するとき、透明エディター表示中はSVGプレビュー側の文字を非表示にし、二重表示を防ぐ。</li>' +
           '</ul>' +
-          '<h4>最近の詳細履歴</h4><details open><summary>ver521 · 入力モード日本語ラベルの収まり調整</summary><div><ul><li>CSV入力モードの日本語ラベルを半角括弧表記に変更。</li><li>横並びボタンから文字がはみ出さないよう、フォント幅・字間・余白を調整。</li></ul></div></details><details open><summary>ver520 · Dialog横罫線除外とテキストメモ二重表示防止</summary><div><ul><li>内蔵シートテンプレートで、Dialog本文欄にはフレーム横罫線を引かないように変更。</li><li>Dialog欄に残る横線は、見出し下の区切り線だけにする。</li><li>テキストメモ編集用textareaを開いた時点で、SVGプレビュー側の同じ文字を非表示にし、再編集時の二重表示を防止。</li></ul></div></details><details open><summary>ver519 · 入力モードボタンを横並び化</summary><div><ul><li>入力モードボタンを3列のコンパクトな横並びに変更。</li><li>長いCSVラベルがボタン内に収まるよう、中央揃えと折り返し表示に調整。</li></ul></div></details><details open><summary>ver518 · テキストメモ透明編集、入力モードボタン、マグネット感度</summary><div><ul><li>テキストメモ編集UIの白背景をなくし、プレビューに近い見え方で編集できるようにした。</li><li>入力モードをプルダウンから直接ボタンへ変更し、選択中ボタンは本プロジェクトの青＋赤発光UIにした。</li><li>位置編集の横に、用紙線マグネット感度の上・中・下ボタンを追加した。初期値は中。</li><li>外部用紙画像のガイド線検出を改善し、類似色が横/縦に続く線も検出対象にした。</li><li>日本語/韓国語ラベルとシートプレビュー下の表示文を整理した。</li></ul></div></details>' +
+          '<h4>最近の詳細履歴</h4><details open><summary>ver522 · プリセット配置、プレビューメタ多言語化、尺同期、マグネット表記</summary><div><ul><li>外部用紙プリセットの1行目にプリセット保存/読込、2行目にプリセット選択/適用を配置。</li><li>シートプレビュー下のメタ文言とページ表示を言語対応。</li><li>実内容からDuration終了線が表示される場合、Duration秒/コマが空または0なら、その終了フレームをDuration入力欄へ同期。</li><li>用紙線マグネットの表記を上/中/下から強/中/弱へ変更。</li></ul></div></details><details open><summary>ver521 · 入力モード日本語ラベルの収まり調整</summary><div><ul><li>CSV入力モードの日本語ラベルを半角括弧表記に変更。</li><li>横並びボタンから文字がはみ出さないよう、フォント幅・字間・余白を調整。</li></ul></div></details><details open><summary>ver520 · Dialog横罫線除外とテキストメモ二重表示防止</summary><div><ul><li>内蔵シートテンプレートで、Dialog本文欄にはフレーム横罫線を引かないように変更。</li><li>Dialog欄に残る横線は、見出し下の区切り線だけにする。</li><li>テキストメモ編集用textareaを開いた時点で、SVGプレビュー側の同じ文字を非表示にし、再編集時の二重表示を防止。</li></ul></div></details><details open><summary>ver519 · 入力モードボタンを横並び化</summary><div><ul><li>入力モードボタンを3列のコンパクトな横並びに変更。</li><li>長いCSVラベルがボタン内に収まるよう、中央揃えと折り返し表示に調整。</li></ul></div></details><details open><summary>ver518 · テキストメモ透明編集、入力モードボタン、マグネット感度</summary><div><ul><li>テキストメモ編集UIの白背景をなくし、プレビューに近い見え方で編集できるようにした。</li><li>入力モードをプルダウンから直接ボタンへ変更し、選択中ボタンは本プロジェクトの青＋赤発光UIにした。</li><li>位置編集の横に、用紙線マグネット感度の上・中・下ボタンを追加した。初期値は中。</li><li>外部用紙画像のガイド線検出を改善し、類似色が横/縦に続く線も検出対象にした。</li><li>日本語/韓国語ラベルとシートプレビュー下の表示文を整理した。</li></ul></div></details>' +
           '<details open><summary>ver517 · Text Commands のスペース入力復旧</summary><div><ul><li>Text Commands と CSV編集欄で、ライブプレビュー更新中もユーザーが入力した空白を保持する。</li><li>先頭X空白補正処理がコマンド行全体を組み直さないようにし、Spaceを押した直後に空白が消えないようにする。</li></ul></div></details><details><summary>ver516 · CLIP CSV 接尾辞レイヤー名の停止修正</summary><div><ul><li>絶対位置配置に使うセル列名を、対応範囲内の純粋な A-Z ラベルだけに制限する。</li><li><code>A_ls</code>、<code>B_ls</code>、<code>C_ls</code> のようなレイヤー名は通常レイヤーとして読み込み、数千個の補助列を生成しない。</li></ul></div></details>' +
           '<details open><summary>ver515 · セリフ欄の×ブロックを完全非表示化</summary><div><ul><li>セリフ欄で開始枠が <code>×</code>/<code>x</code> かつ本文が空の行は、シート上に何も描画しない。</li><li>赤い範囲線、縦ガイド線、ラベル、本文をすべて非表示にする。</li></ul></div></details>' +
           '<details><summary>ver514 · 動画点トグルと文字入力を分離</summary><div><ul><li>黒い継続線/動画点はクリックで動画点ON/OFF、Shiftクリックで文字入力に戻した。</li><li>赤い継続線は動画点化せず、クリックで文字入力する挙動を維持した。</li></ul></div></details>' +
@@ -2227,7 +2258,7 @@
           '<li>원화번호에 커서를 올렸을 때 텍스트 입력 커서가 아니라 손 커서로 통일한다.</li>' +
           '<li>검은 지속선/동화점은 클릭으로 동화점 ON/OFF, Shift+클릭으로 텍스트 입력하도록 되돌린다. 빨간 지속선은 클릭 텍스트 입력을 유지한다.</li><li>대사란의 <code>0+20 | 5+10 | × |</code> 같은 행은 라벨, 빨간 범위선, 세로 지속선까지 전부 표시하지 않는다.</li><li><code>A_ls</code>, <code>B_ls</code>, <code>C_ls</code> 같은 접미사 레이어명을 포함한 CLIP STUDIO CSV 읽기 정지 문제를 수정한다. 먼 알파벳 열로 오인하지 않는다.</li><li>텍스트 커맨드와 CSV 편집란에서 라이브 프리뷰 갱신 중에도 입력 중인 스페이스를 보존해, 자유로운 연속 입력을 되돌렸다.</li><li>입력 모드 버튼을 한 줄 가로 배치로 변경했다.</li><li>내장 시트 템플릿의 Dialog 본문 열에는 가로선을 출력하지 않고, Dialog 헤더 밑 구분선만 남긴다.</li><li>텍스트 메모를 다시 편집할 때 투명 편집기가 열린 동안 SVG 프리뷰 쪽 문자를 숨겨 이중 표시를 막는다.</li>' +
           '</ul>' +
-          '<h4>최근 상세 내역</h4><details open><summary>ver521 · 입력 모드 일본어 라벨 폭 조정</summary><div><ul><li>CSV 입력 모드의 일본어 라벨을 반각 괄호 표기로 변경했다.</li><li>가로 버튼에서 글자가 삐져나가지 않도록 폰트 폭, 자간, 여백을 조정했다.</li></ul></div></details><details open><summary>ver520 · Dialog 가로선 제외와 텍스트 메모 이중 표시 방지</summary><div><ul><li>내장 시트 템플릿에서 Dialog 본문 열에는 프레임 가로선을 긋지 않도록 변경했다.</li><li>Dialog 열에 남는 가로선은 헤더 밑 구분선뿐이다.</li><li>텍스트 메모 textarea가 열리는 순간 SVG 프리뷰 쪽 같은 문자를 숨겨, 재편집 때 이중으로 보이지 않게 했다.</li></ul></div></details><details open><summary>ver519 · 입력 모드 버튼 가로 배치</summary><div><ul><li>입력 모드 버튼을 3열 가로 배치로 변경했다.</li><li>긴 CSV 라벨이 버튼 안에 들어가도록 중앙 정렬과 줄바꿈을 적용했다.</li></ul></div></details><details open><summary>ver518 · 텍스트 메모 투명 편집, 입력 모드 버튼화, 자석 민감도</summary><div><ul><li>텍스트 메모 편집 UI의 흰 배경을 없애고 프리뷰에 가까운 상태로 편집하도록 바꿨다.</li><li>입력 모드를 선택 탭이 아니라 직접 누르는 버튼으로 바꾸고, 선택 중 버튼은 프로젝트의 파랑＋빨간 발광 UI를 적용했다.</li><li>위치편집 버튼 옆에 용지 선 자석 민감도 상/중/하 버튼을 추가했다. 초기값은 중이다.</li><li>외부용지 이미지의 선 인식을 개선해 유사 색상이 가로/세로로 길게 이어지는 정보도 선으로 잡도록 했다.</li><li>일본어/한국어 라벨과 시트 프리뷰 하단 문구를 정리했다.</li></ul></div></details>' +
+          '<h4>최근 상세 내역</h4><details open><summary>ver522 · 프리셋 배치, 프리뷰 메타 다국어화, Duration 동기화, 자석 표기</summary><div><ul><li>외부용지 프리셋 1행에 프리셋 저장/불러오기, 2행에 프리셋 선택/적용을 배치했다.</li><li>시트 프리뷰 아래 메타 문구와 페이지 표시를 언어 대응했다.</li><li>실제 시트 내용으로 Duration 종료선이 표시될 때 Duration 초/프레임 값이 비어 있거나 0이면, 해당 종료 프레임을 Duration 입력값에 동기화한다.</li><li>용지선 자석 버튼 표기를 상/중/하에서 강/중/약으로 변경했다.</li></ul></div></details><details open><summary>ver521 · 입력 모드 일본어 라벨 폭 조정</summary><div><ul><li>CSV 입력 모드의 일본어 라벨을 반각 괄호 표기로 변경했다.</li><li>가로 버튼에서 글자가 삐져나가지 않도록 폰트 폭, 자간, 여백을 조정했다.</li></ul></div></details><details open><summary>ver520 · Dialog 가로선 제외와 텍스트 메모 이중 표시 방지</summary><div><ul><li>내장 시트 템플릿에서 Dialog 본문 열에는 프레임 가로선을 긋지 않도록 변경했다.</li><li>Dialog 열에 남는 가로선은 헤더 밑 구분선뿐이다.</li><li>텍스트 메모 textarea가 열리는 순간 SVG 프리뷰 쪽 같은 문자를 숨겨, 재편집 때 이중으로 보이지 않게 했다.</li></ul></div></details><details open><summary>ver519 · 입력 모드 버튼 가로 배치</summary><div><ul><li>입력 모드 버튼을 3열 가로 배치로 변경했다.</li><li>긴 CSV 라벨이 버튼 안에 들어가도록 중앙 정렬과 줄바꿈을 적용했다.</li></ul></div></details><details open><summary>ver518 · 텍스트 메모 투명 편집, 입력 모드 버튼화, 자석 민감도</summary><div><ul><li>텍스트 메모 편집 UI의 흰 배경을 없애고 프리뷰에 가까운 상태로 편집하도록 바꿨다.</li><li>입력 모드를 선택 탭이 아니라 직접 누르는 버튼으로 바꾸고, 선택 중 버튼은 프로젝트의 파랑＋빨간 발광 UI를 적용했다.</li><li>위치편집 버튼 옆에 용지 선 자석 민감도 상/중/하 버튼을 추가했다. 초기값은 중이다.</li><li>외부용지 이미지의 선 인식을 개선해 유사 색상이 가로/세로로 길게 이어지는 정보도 선으로 잡도록 했다.</li><li>일본어/한국어 라벨과 시트 프리뷰 하단 문구를 정리했다.</li></ul></div></details>' +
           '<details open><summary>ver517 · Text Commands 스페이스 입력 복구</summary><div><ul><li>Text Commands와 CSV 편집란에서 라이브 프리뷰 갱신 중에도 사용자가 입력한 공백을 유지한다.</li><li>선두 X 공백 보정 처리가 커맨드 행 전체를 재조립하지 않도록 바꿔, Space를 누른 직후 공백이 사라지지 않게 한다.</li></ul></div></details><details><summary>ver516 · CLIP CSV 접미사 레이어명 정지 수정</summary><div><ul><li>절대 위치 배치에 쓰는 셀 열 이름을 지원 범위 안의 순수 A-Z 라벨로 제한한다.</li><li><code>A_ls</code>, <code>B_ls</code>, <code>C_ls</code> 같은 레이어명은 일반 레이어로 읽고, 수천 개의 보조 열을 만들지 않는다.</li></ul></div></details>' +
           '<details open><summary>ver515 · 대사란 × 블록 완전 비표시</summary><div><ul><li>대사란에서 시작 박스가 <code>×</code>/<code>x</code>이고 본문이 비어 있는 행은 시트에 아무것도 표시하지 않는다.</li><li>빨간 범위선, 세로 가이드선, 라벨, 본문을 모두 숨긴다.</li></ul></div></details>' +
           '<details><summary>ver514 · 동화점 토글과 텍스트 입력 분리</summary><div><ul><li>검은 지속선/동화점은 클릭으로 동화점 ON/OFF, Shift+클릭으로 텍스트 입력하도록 되돌렸다.</li><li>빨간 지속선은 동화점으로 바뀌지 않고 클릭으로 텍스트 입력하는 동작을 유지했다.</li></ul></div></details>' +
@@ -2269,7 +2300,7 @@
           '<li>原画编号悬停时统一为手形光标，而不是文字输入光标。</li>' +
           '<li>黑色保持线/动画点恢复为点击切换动画点 ON/OFF，Shift 点击输入文字。红色保持线保持点击输入文字。</li><li>对白栏中类似 <code>0+20 | 5+10 | × |</code> 的行会完全不显示，包括标签、红色范围线和竖线。</li><li>修正含有 <code>A_ls</code>、<code>B_ls</code>、<code>C_ls</code> 等后缀图层名的 CLIP STUDIO CSV 导入停止问题；这些名称不会再被误判为远处的字母列。</li><li>恢复 Text Commands 与 CSV 编辑栏中的自由空格输入，实时预览更新时也保留正在输入的空白。</li><li>输入模式按钮改为一行横向排列。</li><li>内置模板的 Dialog 正文列不再输出横线，只保留 Dialog 标题下方的分隔线。</li><li>重新编辑文字备注时，透明编辑器打开期间隐藏 SVG 预览文字，避免双重显示。</li>' +
           '</ul>' +
-          '<h4>最近详细记录</h4><details open><summary>ver521 · 输入模式日文标签宽度调整</summary><div><ul><li>将 CSV 输入模式的日文标签改为半角括号。</li><li>调整横向按钮的字体宽度、字距和内边距，避免文字溢出。</li></ul></div></details><details open><summary>ver520 · Dialog 横线排除与文字备注双重显示修正</summary><div><ul><li>内置 Sheet 模板中，Dialog 正文列不再绘制帧横线。</li><li>Dialog 列只保留标题下方的分隔线。</li><li>文字备注 textarea 打开时隐藏 SVG 预览中的同一文字，避免重新编辑时双重显示。</li></ul></div></details><details open><summary>ver519 · 输入模式按钮横向排列</summary><div><ul><li>将输入模式按钮改为紧凑的三列横向排列。</li><li>按钮文字居中并允许换行，使较长的 CSV 标签保持在按钮内。</li></ul></div></details><details open><summary>ver518 · 透明文字备注编辑、输入模式按钮、磁吸灵敏度</summary><div><ul><li>移除文字备注编辑 UI 的白色背景，使编辑时更接近预览外观。</li><li>输入模式由下拉菜单改为直接按钮，当前按钮使用项目的蓝色＋红色发光 UI。</li><li>在位置编辑旁新增纸张线条磁吸灵敏度上/中/下按钮，默认值为中。</li><li>改进外部纸张图像线条检测，可识别相近颜色横向/纵向连续形成的线。</li><li>整理日文/韩文标签和 Sheet 预览下方显示文本。</li></ul></div></details>' +
+          '<h4>最近详细记录</h4><details open><summary>ver522 · 预设布局、预览信息多语言、Duration 同步、磁吸标签</summary><div><ul><li>外部纸张预设控制中，第一行放置保存/读取预设，第二行放置预设选择/应用。</li><li>Sheet 预览下方的说明文字和页码显示支持多语言。</li><li>根据实际内容显示 Duration 结束线时，如果 Duration 秒/帧为空或为 0，会把该结束帧同步回 Duration 输入框。</li><li>纸张线条磁吸按钮由上/中/下改为强/中/弱。</li></ul></div></details><details open><summary>ver521 · 输入模式日文标签宽度调整</summary><div><ul><li>将 CSV 输入模式的日文标签改为半角括号。</li><li>调整横向按钮的字体宽度、字距和内边距，避免文字溢出。</li></ul></div></details><details open><summary>ver520 · Dialog 横线排除与文字备注双重显示修正</summary><div><ul><li>内置 Sheet 模板中，Dialog 正文列不再绘制帧横线。</li><li>Dialog 列只保留标题下方的分隔线。</li><li>文字备注 textarea 打开时隐藏 SVG 预览中的同一文字，避免重新编辑时双重显示。</li></ul></div></details><details open><summary>ver519 · 输入模式按钮横向排列</summary><div><ul><li>将输入模式按钮改为紧凑的三列横向排列。</li><li>按钮文字居中并允许换行，使较长的 CSV 标签保持在按钮内。</li></ul></div></details><details open><summary>ver518 · 透明文字备注编辑、输入模式按钮、磁吸灵敏度</summary><div><ul><li>移除文字备注编辑 UI 的白色背景，使编辑时更接近预览外观。</li><li>输入模式由下拉菜单改为直接按钮，当前按钮使用项目的蓝色＋红色发光 UI。</li><li>在位置编辑旁新增纸张线条磁吸灵敏度上/中/下按钮，默认值为中。</li><li>改进外部纸张图像线条检测，可识别相近颜色横向/纵向连续形成的线。</li><li>整理日文/韩文标签和 Sheet 预览下方显示文本。</li></ul></div></details>' +
           '<details open><summary>ver517 · 恢复 Text Commands 空格输入</summary><div><ul><li>Text Commands 与 CSV 编辑栏在实时预览更新时保留用户输入的空白。</li><li>开头 X 空白修正处理不再重建整行命令，因此按下 Space 后空白不会立刻消失。</li></ul></div></details><details><summary>ver516 · 修正 CLIP CSV 后缀图层名停止问题</summary><div><ul><li>绝对 Cell 列定位只使用支持范围内的纯 A-Z 标签。</li><li><code>A_ls</code>、<code>B_ls</code>、<code>C_ls</code> 等图层名会作为普通图层导入，不再生成数千个填充列。</li></ul></div></details>' +
           '<details open><summary>ver515 · 对白栏 × 块完全隐藏</summary><div><ul><li>对白栏中开始框为 <code>×</code>/<code>x</code> 且正文为空的行，不在 Sheet 上绘制任何内容。</li><li>红色范围线、竖向引导线、标签和正文全部隐藏。</li></ul></div></details>' +
           '<details><summary>ver514 · 分离动画点切换与文字输入</summary><div><ul><li>黑色保持线/动画点恢复为点击切换动画点 ON/OFF，Shift 点击输入文字。</li><li>红色保持线不切换动画点，继续使用点击输入文字。</li></ul></div></details>' +
@@ -2846,6 +2877,14 @@
       return typeof value === 'function' ? value.apply(null, args) : value;
     }
 
+
+    function updatePreviewMetaText(totalPages) {
+      if (!previewMetaEl) return;
+      const pages = Math.max(1, Number(totalPages || state.totalPages || 1));
+      const current = Math.min(pages, Math.max(1, Number(state.currentPreviewPage || 0) + 1));
+      previewMetaEl.textContent = t('previewMeta') + ' · ' + t('previewMetaPage', current, pages);
+    }
+
     function bindInput(id, handler) {
       const node = document.getElementById(id);
       if (node) node.addEventListener('input', handler);
@@ -3341,7 +3380,7 @@
       document.getElementById('csvEditHelp').textContent = t('csvEditHelp');
       document.getElementById('dialogHelp').textContent = t('dialogHelp');
       document.getElementById('cameraHelp').textContent = t('cameraHelp');
-      previewMetaEl.textContent = t('previewMeta');
+      updatePreviewMetaText(state.totalPages || 1);
       if (!state.csvRawRows.length) csvInfoEl.textContent = state.csvLoadError || t('noCsv');
       render();
     }
@@ -3931,10 +3970,27 @@
       return String(source || '').slice(0, 80) + '::' + getPaperMagnetSensitivity();
     }
 
+
+    function getPaperMagnetLabelSet() {
+      const sets = {
+        en:{ high:'Strong', medium:'Medium', low:'Weak', title:'Line magnet sensitivity' },
+        ja:{ high:'強', medium:'中', low:'弱', title:'線マグネット感度' },
+        ko:{ high:'강', medium:'중', low:'약', title:'선 자석 민감도' },
+        zh:{ high:'强', medium:'中', low:'弱', title:'线条磁吸灵敏度' }
+      };
+      return sets[state.lang] || sets.en;
+    }
+
     function updatePaperMagnetSensitivityUI() {
       const current = getPaperMagnetSensitivity();
+      const labels = getPaperMagnetLabelSet();
+      const controls = document.getElementById('paperMagnetControls');
+      if (controls) controls.setAttribute('aria-label', labels.title || 'Line magnet sensitivity');
       paperMagnetSensitivityButtons.forEach(function(btn){
-        const active = btn.dataset.paperMagnetSensitivity === current;
+        const key = btn.dataset.paperMagnetSensitivity || PAPER_MAGNET_DEFAULT_SENSITIVITY;
+        const active = key === current;
+        btn.textContent = labels[key] || key;
+        btn.title = (labels.title || 'Line magnet sensitivity') + ': ' + (labels[key] || key);
         btn.classList.toggle('active', active);
         btn.setAttribute('aria-pressed', active ? 'true' : 'false');
       });
@@ -7723,6 +7779,25 @@
       };
     }
 
+
+    function durationInputsHavePositiveExplicitValue() {
+      const secEl = document.getElementById('seconds');
+      const frameEl = document.getElementById('frames');
+      if (!secEl || !frameEl) return false;
+      const secRaw = String(secEl.value || '').trim();
+      const frameRaw = String(frameEl.value || '').trim();
+      const sec = Number(secRaw);
+      const frame = Number(frameRaw);
+      return (secRaw !== '' && Number.isFinite(sec) && sec > 0) || (frameRaw !== '' && Number.isFinite(frame) && frame > 0);
+    }
+
+    function syncDurationInputsToRenderedBoundary(model) {
+      if (!model || !model.hasContent) return;
+      if (durationInputsHavePositiveExplicitValue()) return;
+      const frame = Math.max(0, Math.round(Number(model.contentMaxFrame || 0)));
+      if (frame > 0) setDurationFrameCount(frame);
+    }
+
     function getDurationFrameCount() {
       const sec = Number(document.getElementById('seconds').value || 0);
       const frame = Number(document.getElementById('frames').value || 0);
@@ -7978,6 +8053,7 @@
         if (String(cellColumnCountInputEl.value) !== String(state.cellColumnCount)) cellColumnCountInputEl.value = String(state.cellColumnCount);
       }
       const model = getRenderModel();
+      syncDurationInputsToRenderedBoundary(model);
       state.currentPreviewPage = Math.min(model.totalPages - 1, Math.max(0, state.currentPreviewPage || 0));
       updatePreviewControls(model.totalPages);
       state.showTemplate = showTemplateToggleEl ? !!showTemplateToggleEl.checked : true;
@@ -7991,7 +8067,7 @@
       updateShakuEditUI();
       if (headerPositionModeBtn) headerPositionModeBtn.classList.toggle('active', !!state.positionMode);
       updateTextMemoEditorPosition();
-      previewMetaEl.textContent = '6秒左右2面と3秒単面を自動切替。 · Page ' + (state.currentPreviewPage + 1) + '/' + model.totalPages;
+      updatePreviewMetaText(model.totalPages);
       if (!state.csvRawRows.length) csvInfoEl.textContent = state.csvLoadError || t('noCsv');
     }
 
