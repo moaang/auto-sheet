@@ -585,6 +585,7 @@
       height: 34px; border: 1px solid var(--soft); border-radius: 9px; background: white; color: var(--text);
       font: inherit; font-size: 12px; font-weight: 800; padding: 0 10px; cursor: pointer;
     }
+    .paper-mini-btn:disabled { opacity: 0.45; cursor: default; }
     .paper-mini-btn.active { background: var(--text); color: white; border-color: var(--text); }
     .paper-auto-align-btn {
       min-width: 86px;
@@ -1620,14 +1621,16 @@
               <button id="resetLayoutAdjustBtn" class="paper-mini-btn" type="button">Position Reset</button>
             </div>
 
-            <label id="paperImageInputLabel" for="paperImageInput">会社指定用紙画像（JPG / PNG / PSD）</label>
+            <label id="paperImageInputLabel" for="paperImageInput">会社指定用紙画像（JPG / PNG / PSD / CLIP）</label>
             <div id="paperFileSelectSection" class="guide-target-section">
-              <input id="paperImageInput" type="file" accept="image/jpeg,image/png,.jpg,.jpeg,.png,.psd,image/vnd.adobe.photoshop" />
+              <input id="paperImageInput" type="file" accept="image/jpeg,image/png,.jpg,.jpeg,.png,.psd,image/vnd.adobe.photoshop,.clip" />
             </div>
             <div id="paperImageStatus" class="status">No paper image loaded.</div>
             <div id="paperImagePixelInfo" class="paper-pixel-info">Source pixels: -</div>
             <div class="paper-actions">
               <button id="clearPaperImageBtn" class="paper-mini-btn" type="button">Clear Paper</button>
+              <button id="paperUndoBtn" class="paper-mini-btn" type="button" disabled>Undo</button>
+              <button id="paperRedoBtn" class="paper-mini-btn" type="button" disabled>Redo</button>
             </div>
 
             <div class="paper-subsection-title" id="layoutPresetTitle">Preset</div>
@@ -1853,6 +1856,8 @@
     const paperImageStatusEl = document.getElementById('paperImageStatus');
     const paperImagePixelInfoEl = document.getElementById('paperImagePixelInfo');
     const clearPaperImageBtn = document.getElementById('clearPaperImageBtn');
+    const paperUndoBtn = document.getElementById('paperUndoBtn');
+    const paperRedoBtn = document.getElementById('paperRedoBtn');
     const autoAlignPaperBtn = document.getElementById('autoAlignPaperBtn');
     const resetLayoutAdjustBtn = document.getElementById('resetLayoutAdjustBtn');
     const saveLayoutPresetBtn = document.getElementById('saveLayoutPresetBtn');
@@ -1909,7 +1914,7 @@
       low:{ key:'low', snapPx:5, colorTolerance:22, nearWhiteLum:224, rowCoverage:0.20, colCoverage:0.14, rowRun:0.42, colRun:0.30, clusterGap:1 }
     };
     const PAPER_AUTO_ALIGN_MIN_COLUMNS = 7;
-    const PAPER_AUTO_ALIGN_MAX_COLUMNS = 9;
+    const PAPER_AUTO_ALIGN_MAX_COLUMNS = 10;
     const PAPER_AUTO_ALIGN_TARGET_BODY_LINES = 73;
     const PAPER_AUTO_ALIGN_PAIR_CANDIDATE_LIMIT = 72;
     const PAPER_AUTO_ALIGN_PAIR_CENTER_TOLERANCE = PAGE_W * 0.20;
@@ -1976,6 +1981,8 @@
       paperAutoAlignToken: 0,
       paperAutoAlignResult: null,
       paperAutoAlignOverlay: null,
+      paperUndoStack: [],
+      paperRedoStack: [],
       memoMode: false,
       sidebarCollapsed: false,
       memoTool: 'pen',
@@ -2209,7 +2216,7 @@
         subtitle: 'Click the Auto Sheet title to open this history. Only implemented changes are listed.',
         html: '<h4><span class="update-log-badge">Today</span>2026-04-28 update summary</h4>' +
           '<ul>' +
-          '<li>ver532: kept the standard ver530 Auto Align as the default result, then selectively accepts JDG-style dotted 9-column recovery only when both Camera boxes can expand to full strong vertical borders.</li><li>ver530: added a narrow CSM/MAD-style Camera correction that uses a bold divider after a 7-column follower grid when the Cell count differs across the Dialog column.</li><li>ver529: added Auto Align performance guards, candidate-pair caching, and bounded follower-grid search so complex sheets do not freeze during line matching.</li>' +
+          '<li>ver536: added full 10-column Auto Align scoring, penalized sparse matches that skip dense internal grid lines, and infers weak terminal Camera edges for Enishiya PSD-style sheets.</li><li>ver535: improved External Paper Auto Align for Enishiya/SARU Camera boxes, preserved header episode/title/name during Reset All, keeps Page at 1/1, and added Undo/Redo beside Clear Paper.</li><li>ver534: PSD paper imports now scale layered PSD canvases to the program paper size only when the PSD canvas differs from 1753×2480, preventing large PSD sheets from being cropped while leaving normal-size imports unchanged.</li><li>ver533: added External Paper import for CLIP STUDIO .clip files by reading the embedded CanvasPreview PNG from the internal CLIP database.</li><li>ver532: kept the standard ver530 Auto Align as the default result, then selectively accepts JDG-style dotted 9-column recovery only when both Camera boxes can expand to full strong vertical borders.</li><li>ver530: added a narrow CSM/MAD-style Camera correction that uses a bold divider after a 7-column follower grid when the Cell count differs across the Dialog column.</li><li>ver529: added Auto Align performance guards, candidate-pair caching, and bounded follower-grid search so complex sheets do not freeze during line matching.</li>' +
           '<li>ver528: refined External Paper Auto Align with stronger bold-divider scoring, safer page-edge filtering, Toei-style 9-column recovery, 7-column follower tolerance, and stronger Camera start locking at the end of the repeated CELL grid.</li>' +
           '<li>ver527: strengthened External Paper Auto Align using Dialog horizontal-line absence, sparse/missing cell-line reconstruction, left-aligned special H handling, and Camera start protection after repeated CELL grids.</li>' +
           '<li>ver526: refined External Paper Auto Align for 7-9 column sheets, including Toei-style A-H plus blank cells before the Dialog column.</li>' +
@@ -2260,7 +2267,7 @@
         subtitle: 'Auto Sheet のタイトルをクリックすると、この履歴を開く。実装済みの変更だけを掲載する。',
         html: '<h4><span class="update-log-badge">Today</span>2026-04-28 更新まとめ</h4>' +
           '<ul>' +
-          '<li>ver532: ver530の標準Auto Align結果を基本に保ち、JDG系の点線9列復元は左右Camera欄が強い外側縦線まで拡張できる場合だけ採用するようにした。</li><li>ver530: Dialog前後でCELL数が異なるCSM/MAD系用紙向けに、7列後続CELL欄の後ろの太い区切り線をCamera開始として補正する限定処理を追加。</li><li>ver529: 複雑な用紙で自動整列が停止しないよう、候補ペア数制限、解決結果キャッシュ、後続CELL探索範囲制限を追加。</li>' +
+          '<li>ver536: 10列CELLを正式な自動整列候補として強化し、密な内部罫線を飛ばす候補を減点。Enishiya PSD系の弱い右端Camera境界も推定するよう修正。</li><li>ver535: Enishiya/SARU系のCamera欄自動整列を補強。全体初期化では話数・タイトル・名前を残し、ページは1/1に戻す。用紙クリア横に取り消し/やり直しを追加。</li><li>ver534: レイヤー付きPSD用紙のキャンバスが1753×2480と異なる場合だけプログラム用紙サイズへ合わせて合成し、大きいPSD用紙が切れないようにした。標準サイズの読込結果は従来通り。</li><li>ver533: CLIP STUDIOの.clipファイル内部データベースからCanvasPreview PNGを読み取り、外部用紙として読み込めるようにした。</li><li>ver532: ver530の標準Auto Align結果を基本に保ち、JDG系の点線9列復元は左右Camera欄が強い外側縦線まで拡張できる場合だけ採用するようにした。</li><li>ver530: Dialog前後でCELL数が異なるCSM/MAD系用紙向けに、7列後続CELL欄の後ろの太い区切り線をCamera開始として補正する限定処理を追加。</li><li>ver529: 複雑な用紙で自動整列が停止しないよう、候補ペア数制限、解決結果キャッシュ、後続CELL探索範囲制限を追加。</li>' +
           '<li>ver528: 太い区切り線の優先度、ページ端ノイズ除外、東映式9列復元、7列の後続CELL欄許容、反復CELL欄末尾でのCamera開始固定を強化して外部用紙自動整列を調整。</li>' +
           '<li>ver527: Dialog欄の横罫線の少なさ、欠けたセル線の復元、特殊なH欄の左揃え、反復CELL欄後のCamera開始保護を使って外部用紙自動整列を強化。</li>' +
           '<li>ver526: 東映式のA-H＋空欄を含む7-9列シートで、H/空欄をDialogとして誤認しにくいよう外部用紙自動整列を調整。</li>' +
@@ -2311,7 +2318,7 @@
         subtitle: 'Auto Sheet 제목을 클릭하면 이 내역을 열 수 있다. 실제 반영된 변경만 정리한다.',
         html: '<h4><span class="update-log-badge">Today</span>2026-04-28 업데이트 전체 정리</h4>' +
           '<ul>' +
-          '<li>ver532: ver530의 표준 Auto Align 결과를 기본으로 유지하고, JDG식 점선 9칸 복원은 좌우 Camera 박스가 강한 바깥 세로선까지 확장될 때만 채택하도록 했다.</li><li>ver530: 대사칸 좌우의 CELL 수가 다른 CSM/MAD 계열 용지에서, 7칸 후속 CELL 뒤의 굵은 구획선을 Camera 시작점으로 보정하는 제한 규칙을 추가했다.</li><li>ver529: 복잡한 용지에서 자동 정렬이 멈추지 않도록 후보 페어 수 제한, 해석 결과 캐시, 후속 CELL 탐색 범위 제한을 추가했다.</li>' +
+          '<li>ver536: 10칸 CELL을 자동정렬 정식 후보로 강화하고, 촘촘한 내부 세로선을 건너뛰는 후보를 감점했다. Enishiya PSD 계열의 약한 오른쪽 Camera 경계도 추정하도록 수정했다.</li><li>ver535: Enishiya/SARU 계열 Camera 자동정렬을 보강했다. 전체 초기화는 화수·제목·이름을 남기고 페이지를 1/1로 되돌리며, 용지 삭제 옆에 되돌리기/다시 실행을 추가했다.</li><li>ver534: 레이어 PSD 용지의 캔버스가 1753×2480과 다를 때만 프로그램 용지 크기에 맞춰 합성해, 큰 PSD 용지가 잘리지 않도록 했다. 표준 크기 파일의 불러오기 결과는 기존과 같다.</li><li>ver533: CLIP STUDIO .clip 파일 내부 데이터베이스의 CanvasPreview PNG를 읽어 외부용지로 불러올 수 있게 했다.</li><li>ver532: ver530의 표준 Auto Align 결과를 기본으로 유지하고, JDG식 점선 9칸 복원은 좌우 Camera 박스가 강한 바깥 세로선까지 확장될 때만 채택하도록 했다.</li><li>ver530: 대사칸 좌우의 CELL 수가 다른 CSM/MAD 계열 용지에서, 7칸 후속 CELL 뒤의 굵은 구획선을 Camera 시작점으로 보정하는 제한 규칙을 추가했다.</li><li>ver529: 복잡한 용지에서 자동 정렬이 멈추지 않도록 후보 페어 수 제한, 해석 결과 캐시, 후속 CELL 탐색 범위 제한을 추가했다.</li>' +
           '<li>ver528: 굵은 구획선 우선도, 페이지 가장자리 노이즈 제거, TOEI식 9칸 복원, 7칸 후속 CELL 허용, 반복 CELL 끝에서 Camera 시작 고정을 강화해 외부용지 자동 정렬을 조정했다.</li>' +
           '<li>ver527: 대사칸의 가로줄 공백, 누락된 셀선 복원, 특수 H칸 좌측 정렬, 반복 CELL 격자 이후 Camera 시작 보호를 이용해 외부용지 자동 정렬을 강화했다.</li>' +
           '<li>ver526: 도에이식 A-H＋빈칸을 포함한 7-9칸 시트에서 H/빈칸을 대사란으로 오인하지 않도록 외부용지 자동 정렬을 조정했다.</li>' +
@@ -2362,7 +2369,7 @@
         subtitle: '点击 Auto Sheet 标题即可打开此记录。这里只列出已经实际实现的更新。',
         html: '<h4><span class="update-log-badge">Today</span>2026-04-28 更新总览</h4>' +
           '<ul>' +
-          '<li>ver532：保留 ver530 标准 Auto Align 结果作为默认，仅当 JDG 类虚线 9 列恢复能把左右 Camera 框扩展到完整强竖线时才采用该结果。</li><li>ver530：为 Dialog 两侧 CELL 数不同的 CSM/MAD 类纸张加入限定 Camera 修正，可把 7 列后续 CELL 之后的粗分隔线作为 Camera 起点。</li><li>ver529：加入自动对齐性能保护、候选配对缓存和后续 CELL 网格搜索范围限制，避免复杂纸张在线条匹配时卡住。</li>' +
+          '<li>ver536：强化 10 列 CELL 的自动对齐评分，并降低跳过密集内部竖线的候选分数；同时推断 Enishiya PSD 类纸张较弱的右端 Camera 边界。</li><li>ver535：改进 Enishiya/SARU 类 Camera 框自动对齐；全部重置会保留集数、标题、姓名并把页码恢复为 1/1；在清除纸张旁加入撤销/重做。</li><li>ver534：导入带图层的 PSD 纸张时，仅当 PSD 画布不同于 1753×2480 才缩放到程序纸张尺寸，避免大型 PSD 被裁切；标准尺寸文件保持原有导入结果。</li><li>ver533：可从 CLIP STUDIO .clip 文件的内部数据库读取 CanvasPreview PNG，并作为外部纸张导入。</li><li>ver532：保留 ver530 标准 Auto Align 结果作为默认，仅当 JDG 类虚线 9 列恢复能把左右 Camera 框扩展到完整强竖线时才采用该结果。</li><li>ver530：为 Dialog 两侧 CELL 数不同的 CSM/MAD 类纸张加入限定 Camera 修正，可把 7 列后续 CELL 之后的粗分隔线作为 Camera 起点。</li><li>ver529：加入自动对齐性能保护、候选配对缓存和后续 CELL 网格搜索范围限制，避免复杂纸张在线条匹配时卡住。</li>' +
           '<li>ver528：提高粗分隔线优先级，过滤页面边缘噪声，恢复东映式 9 列，允许 7 列后续 CELL 网格，并加强在重复 CELL 网格末端锁定 Camera 起点。</li>' +
           '<li>ver527：通过 Dialog 横线空白、缺失 Cell 线重建、特殊 H 栏左对齐，以及重复 CELL 网格后的 Camera 起点保护，强化外部纸张自动对齐。</li>' +
           '<li>ver526：改进 7-9 列外部纸张自动对齐，减少将东映式 A-H＋空白格误判为 Dialog 的情况。</li>' +
@@ -2656,12 +2663,12 @@
       en: {
         title:'External Paper Load',
         hint:'',
-        upload:'External Paper Image (JPG / PNG / PSD)',
+        upload:'External Paper Image (JPG / PNG / PSD / CLIP)',
         noPaper:'No paper image loaded.',
         loading:'Loading paper image...',
         loaded:function(name, meta){ return 'Loaded: ' + name + (meta ? ' · ' + meta : ''); },
         failed:function(msg){ return 'Paper image load failed: ' + msg; },
-        clear:'Clear Paper', reset:'Position Reset', position:'Position Edit', autoAlign:'Auto Align',
+        clear:'Clear Paper', undo:'Undo', redo:'Redo', reset:'Position Reset', position:'Position Edit', autoAlign:'Auto Align',
         pixelEmpty:'Source pixels: -',
         pixelInfo:function(w, h){ return 'Source pixels: ' + w + ' × ' + h; },
         companyPresetTitle:'Preset',
@@ -2693,17 +2700,18 @@
         cellColumnsHint:'',
         body:'',
         psdMeta:function(){ return 'PSD layers composited to one raster paper layer'; },
+        clipMeta:function(w, h){ return 'CLIP canvas preview ' + w + '×' + h + ' rasterized to ' + PAGE_W + '×' + PAGE_H; },
         rasterMeta:function(w, h){ return w + '×' + h + ' rasterized to ' + PAGE_W + '×' + PAGE_H; }
       },
       ja: {
         title:'会社指定用紙を敷く',
         hint:'',
-        upload:'会社指定用紙画像（JPG / PNG / PSD）',
+        upload:'会社指定用紙画像（JPG / PNG / PSD / CLIP）',
         noPaper:'用紙画像は未読込。',
         loading:'用紙画像を読み込み中...',
         loaded:function(name, meta){ return '読込完了: ' + name + (meta ? ' · ' + meta : ''); },
         failed:function(msg){ return '用紙画像の読込失敗: ' + msg; },
-        clear:'用紙をクリア', reset:'位置初期化', position:'位置編集', autoAlign:'自動整列',
+        clear:'用紙をクリア', undo:'取り消し', redo:'やり直し', reset:'位置初期化', position:'位置編集', autoAlign:'自動整列',
         pixelEmpty:'元画像ピクセル: -',
         pixelInfo:function(w, h){ return '元画像ピクセル: ' + w + ' × ' + h; },
         companyPresetTitle:'プリセット',
@@ -2735,17 +2743,18 @@
         cellColumnsHint:'',
         body:'',
         psdMeta:function(){ return 'PSDレイヤーを1枚の用紙ラスターレイヤーに合成'; },
+        clipMeta:function(w, h){ return 'CLIPのキャンバスプレビュー ' + w + '×' + h + ' を ' + PAGE_W + '×' + PAGE_H + ' にラスタライズ'; },
         rasterMeta:function(w, h){ return w + '×' + h + ' を ' + PAGE_W + '×' + PAGE_H + ' にラスタライズ'; }
       },
       ko: {
         title:'외부용지 불러오기',
         hint:'',
-        upload:'외부용지 이미지 (JPG / PNG / PSD)',
+        upload:'외부용지 이미지 (JPG / PNG / PSD / CLIP)',
         noPaper:'용지 이미지가 로드되지 않았다.',
         loading:'용지 이미지를 로드 중...',
         loaded:function(name, meta){ return '로드 완료: ' + name + (meta ? ' · ' + meta : ''); },
         failed:function(msg){ return '용지 이미지 로드 실패: ' + msg; },
-        clear:'용지 삭제', reset:'위치 초기화', position:'위치 편집', autoAlign:'자동 정렬',
+        clear:'용지 삭제', undo:'되돌리기', redo:'다시 실행', reset:'위치 초기화', position:'위치 편집', autoAlign:'자동 정렬',
         pixelEmpty:'원본 픽셀: -',
         pixelInfo:function(w, h){ return '원본 픽셀: ' + w + ' × ' + h; },
         companyPresetTitle:'프리셋',
@@ -2777,17 +2786,18 @@
         cellColumnsHint:'',
         body:'',
         psdMeta:function(){ return 'PSD 레이어를 한 장의 용지 래스터 레이어로 합성'; },
+        clipMeta:function(w, h){ return 'CLIP 캔버스 미리보기 ' + w + '×' + h + '를 ' + PAGE_W + '×' + PAGE_H + '로 래스터화'; },
         rasterMeta:function(w, h){ return w + '×' + h + '를 ' + PAGE_W + '×' + PAGE_H + '로 래스터화'; }
       },
       zh: {
         title:'导入外部纸张',
         hint:'',
-        upload:'外部纸张图像（JPG / PNG / PSD）',
+        upload:'外部纸张图像（JPG / PNG / PSD / CLIP）',
         noPaper:'尚未载入纸张图像。',
         loading:'正在载入纸张图像...',
         loaded:function(name, meta){ return '载入完成: ' + name + (meta ? ' · ' + meta : ''); },
         failed:function(msg){ return '纸张图像载入失败: ' + msg; },
-        clear:'清除纸张', reset:'位置重置', position:'位置编辑', autoAlign:'自动对齐',
+        clear:'清除纸张', undo:'撤销', redo:'重做', reset:'位置重置', position:'位置编辑', autoAlign:'自动对齐',
         pixelEmpty:'原始像素: -',
         pixelInfo:function(w, h){ return '原始像素: ' + w + ' × ' + h; },
         companyPresetTitle:'预设',
@@ -2819,6 +2829,7 @@
         cellColumnsHint:'',
         body:'',
         psdMeta:function(){ return 'PSD 图层已合成为单张纸张栅格层'; },
+        clipMeta:function(w, h){ return 'CLIP 画布预览 ' + w + '×' + h + ' 已栅格化为 ' + PAGE_W + '×' + PAGE_H; },
         rasterMeta:function(w, h){ return w + '×' + h + ' 已栅格化为 ' + PAGE_W + '×' + PAGE_H; }
       }
     };
@@ -2943,6 +2954,8 @@
       if (paperLayoutSummaryHintEl) paperLayoutSummaryHintEl.textContent = doc.hint;
       if (paperImageInputLabelEl) paperImageInputLabelEl.textContent = doc.upload;
       if (clearPaperImageBtn) clearPaperImageBtn.textContent = doc.clear;
+      if (paperUndoBtn) paperUndoBtn.textContent = doc.undo || 'Undo';
+      if (paperRedoBtn) paperRedoBtn.textContent = doc.redo || 'Redo';
       if (resetLayoutAdjustBtn) resetLayoutAdjustBtn.textContent = doc.reset;
       if (headerPositionModeBtn) headerPositionModeBtn.textContent = doc.position;
       if (autoAlignPaperBtn) autoAlignPaperBtn.textContent = doc.autoAlign || 'Auto Align';
@@ -2993,6 +3006,8 @@
       if (cellColumnCountInputEl) cellColumnCountInputEl.value = String(getCellColumnCount());
       if (headerPositionModeBtn) headerPositionModeBtn.classList.toggle('active', !!state.positionMode);
       if (autoAlignPaperBtn) autoAlignPaperBtn.disabled = !state.paperImageDataUrl || (state.paperAutoAlignResult && state.paperAutoAlignResult.status === 'working');
+      if (paperUndoBtn) paperUndoBtn.disabled = !state.paperUndoStack.length;
+      if (paperRedoBtn) paperRedoBtn.disabled = !state.paperRedoStack.length;
       updatePaperMagnetSensitivityUI();
     }
 
@@ -4775,7 +4790,7 @@
       function pushCandidate(startIndex, rightIndex, displayColumns, cellW, options) {
         options = options || {};
         if (rightIndex <= startIndex || rightIndex + 1 >= lines.length) return;
-        if (displayColumns < PAPER_AUTO_ALIGN_MIN_COLUMNS || displayColumns > PAPER_AUTO_ALIGN_MAX_COLUMNS + 1) return;
+        if (displayColumns < PAPER_AUTO_ALIGN_MIN_COLUMNS || displayColumns > PAPER_AUTO_ALIGN_MAX_COLUMNS) return;
         if (cellW < 18 || cellW > 82) return;
         const actualActionW = lines[rightIndex] - lines[startIndex];
         const cellRight = options.variableTail ? lines[startIndex] + cellW * displayColumns : lines[rightIndex];
@@ -4796,11 +4811,14 @@
           const leftSimilarGapCount = countPaperAutoAlignSimilarLeftGaps(lines, startIndex, cellW);
           const nearSheetStart = lines[startIndex] < Math.max(96, cellW * 3.2);
           const dialogEmptyBonus = Math.max(0, 84 - dialogAvg * 175 - dialogHit * 22);
+          const extraInternalLines = Math.max(0, (rightIndex - startIndex + 1) - (displayColumns + 1));
           let score = 180 - gapDeviation * 4 - Math.abs(displayColumns - 8) * 8;
           if (displayColumns === 8) score += 18;
           if (displayColumns === 9) score += 18;
-          if (displayColumns === 10) score += 2;
+          if (displayColumns === 10) score += 20;
           const dialogRatio = dialogW / Math.max(1, cellW);
+          if (displayColumns === 10 && !options.sparseGrid && dialogRatio >= 2.55 && dialogRatio <= 3.45) score += 42;
+          if (displayColumns === 9 && options.sparseGrid && leftSimilarGapCount > 0 && dialogRatio >= 2.55 && dialogRatio <= 3.45) score -= 24;
           score += Math.max(0, 32 - Math.abs(dialogRatio - 2.45) * 9);
           score -= Math.max(0, dialogRatio - 3.25) * 46;
           score += dialogEmptyBonus;
@@ -4810,7 +4828,8 @@
           score -= leftSimilarGapCount * ((displayColumns >= 9 && nearSheetStart) ? 8 : 28);
           if (displayColumns >= 9 && leftSimilarGapCount > 0 && dialogAvg < 0.30) score += 24;
           if (options.variableHead) score += 30;
-          if (options.sparseGrid) score += Math.max(0, (options.matchRatio || 0) - 0.58) * 130 - 28;
+          if (options.sparseGrid) score += Math.max(0, (options.matchRatio || 0) - 0.58) * 130 - 28 - extraInternalLines * 34;
+          if (displayColumns === 10 && !options.sparseGrid && gapDeviation <= Math.max(2, cellW * 0.08)) score += 16;
           if (options.variableTail) {
             const tailMetric = analysis && typeof analysis.sampleHorizontalBand === 'function' ? analysis.sampleHorizontalBand(lines[rightIndex - 1], lines[rightIndex], bodyLines) : null;
             const tailAvg = tailMetric ? tailMetric.avgDarkRatio : 0.55;
@@ -4837,6 +4856,7 @@
             variableTail:!!options.variableTail,
             variableHead:!!options.variableHead,
             sparseGrid:!!options.sparseGrid,
+            extraInternalLines:extraInternalLines,
             dialogMetric:metric,
             leftStrength:leftStrength,
             cellEndStrength:cellEndStrength,
@@ -4858,7 +4878,7 @@
         for (let rightIndex = i + 5; rightIndex < Math.min(lines.length - 1, i + 14); rightIndex++) {
           const width = lines[rightIndex] - lines[i];
           if (width < 120 || width > 520) continue;
-          for (let displayColumns = PAPER_AUTO_ALIGN_MIN_COLUMNS; displayColumns <= PAPER_AUTO_ALIGN_MAX_COLUMNS + 1; displayColumns++) {
+          for (let displayColumns = PAPER_AUTO_ALIGN_MIN_COLUMNS; displayColumns <= PAPER_AUTO_ALIGN_MAX_COLUMNS; displayColumns++) {
             const cellW = width / displayColumns;
             if (cellW < 18 || cellW > 82) continue;
             const tolerance = Math.max(6, cellW * 0.30);
@@ -5078,6 +5098,7 @@
           }
           if (left.columns === 8 && right.columns === 8) score += 10;
           if (left.columns === 9 && right.columns === 9) score += 16;
+          if (left.columns === 10 && right.columns === 10) score += 18;
           score += Math.min(leftSide.camera.w, rightSide.camera.w) * 0.04;
           if (!best || score > best.score) best = { left:left, right:right, score:score, leftSide:leftSide, rightSide:rightSide };
         });
@@ -5120,6 +5141,24 @@
       }
       blockEndIndex = Math.max(group.dialogEndIndex + 1, Math.min(searchEndIndex - 1, blockEndIndex));
       if (!Number.isFinite(blockEndIndex) || blockEndIndex <= group.dialogEndIndex || blockEndIndex >= lines.length) throw new Error('Invalid candidate block end');
+      if (!peerGroup && follower && blockEndIndex <= follower.endIndex) {
+        const cameraStart = lines[follower.endIndex];
+        const inferredCameraW = Math.max(group.cellW * 3.00, group.dialogW * 1.05);
+        const inferredEnd = Math.min(PAGE_W - 22, cameraStart + inferredCameraW);
+        if (inferredEnd - cameraStart >= Math.max(group.cellW * 1.35, group.dialogW * 0.60)) {
+          return {
+            cell:{ x:group.left, w:Math.max(18, group.right - group.left) },
+            dialog:{ x:group.dialogStart || group.right, w:Math.max(18, group.dialogEnd - (group.dialogStart || group.right)) },
+            follow:follower,
+            camera:{ x:cameraStart, w:Math.max(18, inferredEnd - cameraStart) },
+            blockEnd:inferredEnd,
+            cameraStartIndex:follower.endIndex,
+            blockEndIndex:follower.endIndex,
+            structureScore:follower ? follower.score : 0,
+            inferredTerminalCamera:true
+          };
+        }
+      }
       const blockEnd = lines[blockEndIndex];
       const cameraChoice = choosePaperAutoAlignCameraStart(lines, xDetailed, group, blockEndIndex, cameraStartMinIndex);
       if (cameraChoice) {
@@ -5200,12 +5239,16 @@
     function expandPaperAutoAlignRecoveredCameraSide(analysis, side, cellW, upperLimit) {
       if (!analysis || !side || !side.camera || !Number(analysis.dottedVerticalLineCount || 0)) return side;
       const minCameraW = Math.max(1, cellW) * 3.00;
-      if (Number(side.camera.w || 0) >= minCameraW) return side;
       const start = Number(side.camera.x || 0);
       const currentEnd = start + Number(side.camera.w || 0);
+      const currentW = Number(side.camera.w || 0);
+      const allowOneMoreColumn = currentW >= minCameraW && currentW < Math.max(minCameraW + cellW * 1.25, cellW * 4.25);
+      if (currentW >= minCameraW && !allowOneMoreColumn) return side;
       const maxCameraW = Math.max(minCameraW + cellW * 1.6, cellW * 6.6);
       let candidates = (analysis.xLines || []).map(Number).filter(function(x){
-        return Number.isFinite(x) && x > currentEnd + 2 && x - start >= minCameraW && x - start <= maxCameraW;
+        const width = x - start;
+        const minW = allowOneMoreColumn ? Math.max(minCameraW, currentW + cellW * 0.70) : minCameraW;
+        return Number.isFinite(x) && x > currentEnd + 2 && width >= minW && width <= maxCameraW;
       }).sort(function(a,b){ return a-b; });
       if (Number.isFinite(Number(upperLimit))) {
         const limit = Number(upperLimit);
@@ -5242,6 +5285,66 @@
       return { left:expandedLeft, right:expandedRight };
     }
 
+    function estimatePaperAutoAlignCandidateCameraEnd(analysis, start, currentWidth, upperLimit, bodyGrid) {
+      const lines = (analysis.xLines || []).map(Number).filter(Number.isFinite).sort(function(a,b){ return a-b; });
+      const limit = Number.isFinite(Number(upperLimit)) ? Number(upperLimit) : PAGE_W - 12;
+      const minW = Math.max(18, currentWidth * 0.70);
+      const maxW = Math.max(minW + 10, currentWidth * 1.85);
+      const sample = typeof analysis.sampleHorizontalBand === 'function' ? analysis.sampleHorizontalBand : null;
+      let best = null;
+      lines.forEach(function(x){
+        const width = x - start;
+        if (width < minW || width > maxW || x > limit + 2) return;
+        const hit = sample ? sample(start, x, bodyGrid.lines).hitRatio : 0;
+        const strength = getPaperAutoAlignLineStrength(analysis.xDetailed, x);
+        const score = (1 - hit) * 180 + strength + width * 0.15;
+        if (!best || score > best.score) best = { x:x, width:width, hit:hit, score:score };
+      });
+      if (best) return best;
+      const fallbackWidth = Math.min(maxW, Math.max(minW, currentWidth));
+      const fallbackEnd = Math.min(limit, start + fallbackWidth);
+      if (fallbackEnd - start >= minW) {
+        const hit = sample ? sample(start, fallbackEnd, bodyGrid.lines).hitRatio : 0;
+        return { x:fallbackEnd, width:fallbackEnd - start, hit:hit, score:(1 - hit) * 120 };
+      }
+      return null;
+    }
+
+    function correctPaperAutoAlignCameraByHorizontalAbsence(analysis, bodyGrid, side, upperLimit) {
+      if (!analysis || !bodyGrid || !side || !side.follow || !side.camera || typeof analysis.sampleHorizontalBand !== 'function') return side;
+      const currentStart = Number(side.camera.x || 0);
+      const currentWidth = Number(side.camera.w || 0);
+      const currentEnd = currentStart + currentWidth;
+      const followWidth = Number(side.follow.right || 0) - Number(side.follow.left || 0);
+      const cellWidth = Number(side.cell && side.cell.w || 0);
+      if (!currentWidth || !cellWidth || followWidth >= cellWidth * 0.86) return side;
+      const currentSample = analysis.sampleHorizontalBand(currentStart, currentEnd, bodyGrid.lines);
+      if (Number(currentSample.hitRatio || 0) < 0.48) return side;
+      const startStrength = getPaperAutoAlignLineStrength(analysis.xDetailed, currentEnd);
+      const cameraStart = (analysis.xLines || []).map(Number).reduce(function(best, x){
+        if (!Number.isFinite(x)) return best;
+        if (Math.abs(x - currentEnd) > 4) return best;
+        if (best == null || Math.abs(x - currentEnd) < Math.abs(best - currentEnd)) return x;
+        return best;
+      }, null);
+      if (!Number.isFinite(Number(cameraStart))) return side;
+      const end = estimatePaperAutoAlignCandidateCameraEnd(analysis, Number(cameraStart), currentWidth, upperLimit, bodyGrid);
+      if (!end || Number(end.hit || 0) > 0.28) return side;
+      if (Number(currentSample.hitRatio || 0) - Number(end.hit || 0) < 0.32 && startStrength < 42) return side;
+      return Object.assign({}, side, {
+        camera:{ x:Number(cameraStart), w:Math.max(18, end.width) },
+        blockEnd:end.x,
+        cameraStartIndex:side.blockEndIndex,
+        correctedByHorizontalAbsence:true
+      });
+    }
+
+    function correctPaperAutoAlignCamerasByHorizontalAbsence(analysis, bodyGrid, leftSide, rightSide) {
+      const correctedLeft = correctPaperAutoAlignCameraByHorizontalAbsence(analysis, bodyGrid, leftSide, rightSide && rightSide.cell ? rightSide.cell.x : null);
+      const correctedRight = correctPaperAutoAlignCameraByHorizontalAbsence(analysis, bodyGrid, rightSide, PAGE_W - 12);
+      return { left:correctedLeft, right:correctedRight };
+    }
+
     function makePaperAutoAlignLayoutResult(analysis, bodyGrid, variantName) {
       const columnGroups = makePaperAutoAlignColumnGroups(analysis.xLines, analysis.xDetailed, bodyGrid, analysis);
       const pair = choosePaperAutoAlignColumnPair(columnGroups, analysis.xLines, analysis.xDetailed);
@@ -5251,6 +5354,9 @@
       const expandedSides = expandPaperAutoAlignRecoveredCameras(analysis, pair, leftSide, rightSide, columns);
       leftSide = expandedSides.left;
       rightSide = expandedSides.right;
+      const horizontalAbsenceSides = correctPaperAutoAlignCamerasByHorizontalAbsence(analysis, bodyGrid, leftSide, rightSide);
+      leftSide = horizontalAbsenceSides.left;
+      rightSide = horizontalAbsenceSides.right;
       const bodyY = bodyGrid.bodyTop;
       const bodyH = Math.max(24, bodyGrid.bodyBottom - bodyGrid.bodyTop);
       const labelTop = Math.max(0, Math.min(bodyY - 8, bodyGrid.labelTop));
@@ -5352,6 +5458,7 @@
       state.paperAutoAlignOverlay = null;
       setPaperAutoAlignResult({ status:'working', steps:[doc.working || 'Analyzing paper lines and matching the sheet boxes...'] });
       syncPaperLayoutControls();
+      const beforeSnapshot = options.skipHistory ? null : getPaperStateSnapshot();
       try {
         const analysis = await analyzePaperAutoAlignLines(state.paperImageDataUrl);
         if (token !== state.paperAutoAlignToken) return;
@@ -5364,6 +5471,7 @@
         state.positionMode = true;
         setPaperAutoAlignResult({ status:'done', confidence:result.confidence, diagnostics:result.diagnostics });
         syncPaperLayoutControls();
+        if (beforeSnapshot) pushPaperHistory(beforeSnapshot, getPaperStateSnapshot());
         queueSavePaperMemory();
         render();
       } catch (err) {
@@ -9891,6 +9999,234 @@
       return out;
     }
 
+    function readAsciiFromBytes(bytes, offset, length) {
+      let out = '';
+      for (let i = 0; i < length && offset + i < bytes.length; i++) out += String.fromCharCode(bytes[offset + i]);
+      return out;
+    }
+
+    function findBytePattern(bytes, pattern, start) {
+      const begin = Math.max(0, start || 0);
+      const last = bytes.length - pattern.length;
+      for (let i = begin; i <= last; i++) {
+        let ok = true;
+        for (let j = 0; j < pattern.length; j++) {
+          if (bytes[i + j] !== pattern[j]) { ok = false; break; }
+        }
+        if (ok) return i;
+      }
+      return -1;
+    }
+
+    function readUint16BE(bytes, offset) {
+      return ((bytes[offset] || 0) << 8) | (bytes[offset + 1] || 0);
+    }
+
+    function readUint32BE(bytes, offset) {
+      return ((bytes[offset] || 0) * 0x1000000) +
+        ((bytes[offset + 1] || 0) << 16) +
+        ((bytes[offset + 2] || 0) << 8) +
+        (bytes[offset + 3] || 0);
+    }
+
+    function readSignedIntegerBE(bytes, offset, length) {
+      let value = 0;
+      for (let i = 0; i < length; i++) value = value * 256 + (bytes[offset + i] || 0);
+      const sign = Math.pow(2, length * 8 - 1);
+      if (value >= sign) value -= Math.pow(2, length * 8);
+      return value;
+    }
+
+    function readSqliteVarint(bytes, offset, limit) {
+      const end = Math.min(bytes.length, limit || bytes.length);
+      let value = 0;
+      for (let i = 0; i < 9 && offset + i < end; i++) {
+        const b = bytes[offset + i] || 0;
+        if (i === 8) return { value:value * 256 + b, length:9 };
+        value = value * 128 + (b & 0x7f);
+        if ((b & 0x80) === 0) return { value:value, length:i + 1 };
+      }
+      throw new Error('Invalid CLIP SQLite varint');
+    }
+
+    function getSqliteSerialLength(serialType) {
+      if (serialType === 0) return 0;
+      if (serialType === 1) return 1;
+      if (serialType === 2) return 2;
+      if (serialType === 3) return 3;
+      if (serialType === 4) return 4;
+      if (serialType === 5) return 6;
+      if (serialType === 6 || serialType === 7) return 8;
+      if (serialType === 8 || serialType === 9) return 0;
+      if (serialType >= 12) return Math.floor((serialType - 12) / 2);
+      return 0;
+    }
+
+    function decodeSqliteText(bytes) {
+      if (typeof TextDecoder !== 'undefined') return new TextDecoder('utf-8').decode(bytes);
+      let raw = '';
+      for (let i = 0; i < bytes.length; i++) raw += String.fromCharCode(bytes[i]);
+      try { return decodeURIComponent(escape(raw)); } catch (err) { return raw; }
+    }
+
+    function readSqliteRecordValue(bytes, offset, serialType, length) {
+      if (serialType === 0) return null;
+      if (serialType === 8) return 0;
+      if (serialType === 9) return 1;
+      if (serialType >= 1 && serialType <= 6) return readSignedIntegerBE(bytes, offset, length);
+      if (serialType === 7) return new DataView(bytes.buffer, bytes.byteOffset + offset, 8).getFloat64(0, false);
+      if (serialType >= 13 && (serialType % 2) === 1) return decodeSqliteText(bytes.subarray(offset, offset + length));
+      if (serialType >= 12 && (serialType % 2) === 0) return bytes.slice(offset, offset + length);
+      return null;
+    }
+
+    function parseSqliteRecord(payload) {
+      const header = readSqliteVarint(payload, 0, payload.length);
+      const headerEnd = Math.min(payload.length, Math.floor(header.value));
+      let cursor = header.length;
+      const serials = [];
+      while (cursor < headerEnd) {
+        const serial = readSqliteVarint(payload, cursor, headerEnd);
+        serials.push(Math.floor(serial.value));
+        cursor += serial.length;
+      }
+      cursor = headerEnd;
+      return serials.map(function(serialType) {
+        const length = getSqliteSerialLength(serialType);
+        const value = cursor + length <= payload.length ? readSqliteRecordValue(payload, cursor, serialType, length) : null;
+        cursor += length;
+        return value;
+      });
+    }
+
+    function getSqliteLocalPayloadLength(payloadSize, usableSize) {
+      const maxLocal = usableSize - 35;
+      const minLocal = Math.floor((usableSize - 12) * 32 / 255) - 23;
+      if (payloadSize <= maxLocal) return payloadSize;
+      let local = minLocal + ((payloadSize - minLocal) % (usableSize - 4));
+      if (local > maxLocal) local = minLocal;
+      return Math.max(0, Math.min(local, payloadSize));
+    }
+
+    function readSqliteOverflowBytes(db, pageSize, usableSize, firstPage, expectedLength) {
+      const out = new Uint8Array(expectedLength);
+      let pageNo = firstPage;
+      let written = 0;
+      let guard = 0;
+      while (pageNo > 0 && written < expectedLength && guard < 10000) {
+        guard += 1;
+        const pageStart = (pageNo - 1) * pageSize;
+        if (pageStart < 0 || pageStart + 4 > db.length) break;
+        const nextPage = readUint32BE(db, pageStart);
+        const chunkStart = pageStart + 4;
+        const chunkLength = Math.min(usableSize - 4, expectedLength - written, Math.max(0, db.length - chunkStart));
+        out.set(db.subarray(chunkStart, chunkStart + chunkLength), written);
+        written += chunkLength;
+        pageNo = nextPage;
+      }
+      if (written < expectedLength) throw new Error('Truncated CLIP SQLite overflow data');
+      return out;
+    }
+
+    function readSqliteTablePayload(db, pageSize, usableSize, payloadStart, payloadSize) {
+      const localLength = getSqliteLocalPayloadLength(payloadSize, usableSize);
+      const payload = new Uint8Array(payloadSize);
+      const firstLength = Math.min(localLength, payloadSize, Math.max(0, db.length - payloadStart));
+      payload.set(db.subarray(payloadStart, payloadStart + firstLength), 0);
+      if (firstLength < payloadSize) {
+        const overflowPageOffset = payloadStart + localLength;
+        if (overflowPageOffset + 4 > db.length) throw new Error('Missing CLIP SQLite overflow page');
+        const overflowPage = readUint32BE(db, overflowPageOffset);
+        payload.set(readSqliteOverflowBytes(db, pageSize, usableSize, overflowPage, payloadSize - firstLength), firstLength);
+      }
+      return payload;
+    }
+
+    function collectSqliteTableRows(db, pageSize, usableSize, pageNo, rows, seen) {
+      if (!pageNo || seen[pageNo]) return;
+      seen[pageNo] = true;
+      const pageStart = (pageNo - 1) * pageSize;
+      if (pageStart < 0 || pageStart >= db.length) throw new Error('Invalid CLIP SQLite page');
+      const header = pageStart + (pageNo === 1 ? 100 : 0);
+      const pageType = db[header];
+      const cellCount = readUint16BE(db, header + 3);
+      const cellPointerStart = header + (pageType === 0x05 ? 12 : 8);
+      if (pageType === 0x05) {
+        for (let i = 0; i < cellCount; i++) {
+          const cellOffset = pageStart + readUint16BE(db, cellPointerStart + i * 2);
+          collectSqliteTableRows(db, pageSize, usableSize, readUint32BE(db, cellOffset), rows, seen);
+        }
+        collectSqliteTableRows(db, pageSize, usableSize, readUint32BE(db, header + 8), rows, seen);
+        return;
+      }
+      if (pageType !== 0x0d) throw new Error('Unsupported CLIP SQLite page type');
+      for (let i = 0; i < cellCount; i++) {
+        const cellOffset = pageStart + readUint16BE(db, cellPointerStart + i * 2);
+        let cursor = cellOffset;
+        const payloadSizeInfo = readSqliteVarint(db, cursor, pageStart + pageSize);
+        cursor += payloadSizeInfo.length;
+        const rowidInfo = readSqliteVarint(db, cursor, pageStart + pageSize);
+        cursor += rowidInfo.length;
+        const payloadSize = Math.floor(payloadSizeInfo.value);
+        rows.push({ rowid:rowidInfo.value, values:parseSqliteRecord(readSqliteTablePayload(db, pageSize, usableSize, cursor, payloadSize)) });
+      }
+    }
+
+    function readClipSqliteTableRows(arrayBuffer, tableName) {
+      const bytes = new Uint8Array(arrayBuffer);
+      const sqliteSignature = [0x53,0x51,0x4c,0x69,0x74,0x65,0x20,0x66,0x6f,0x72,0x6d,0x61,0x74,0x20,0x33,0x00];
+      const dbOffset = findBytePattern(bytes, sqliteSignature, 0);
+      if (dbOffset < 0) throw new Error('CLIP preview database not found');
+      const db = bytes.subarray(dbOffset);
+      let pageSize = readUint16BE(db, 16);
+      if (pageSize === 1) pageSize = 65536;
+      if (!pageSize || pageSize > db.length) throw new Error('Invalid CLIP SQLite page size');
+      const usableSize = pageSize - (db[20] || 0);
+      const masterRows = [];
+      collectSqliteTableRows(db, pageSize, usableSize, 1, masterRows, {});
+      let rootPage = 0;
+      masterRows.some(function(row) {
+        const values = row.values || [];
+        if (values[0] === 'table' && values[1] === tableName) {
+          rootPage = Number(values[3]) || 0;
+          return true;
+        }
+        return false;
+      });
+      if (!rootPage) throw new Error('CLIP ' + tableName + ' table not found');
+      const rows = [];
+      collectSqliteTableRows(db, pageSize, usableSize, rootPage, rows, {});
+      return rows;
+    }
+
+    function getClipPreviewImageType(bytes) {
+      if (!bytes || bytes.length < 4) return '';
+      if (bytes.length >= 8 &&
+          bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47 &&
+          bytes[4] === 0x0d && bytes[5] === 0x0a && bytes[6] === 0x1a && bytes[7] === 0x0a) return 'image/png';
+      if (bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) return 'image/jpeg';
+      return '';
+    }
+
+    function extractClipCanvasPreview(arrayBuffer) {
+      const rows = readClipSqliteTableRows(arrayBuffer, 'CanvasPreview');
+      const candidates = [];
+      rows.forEach(function(row) {
+        const values = row.values || [];
+        const width = Number(values[4]) || 0;
+        const height = Number(values[5]) || 0;
+        const imageBytes = values[6];
+        const mime = getClipPreviewImageType(imageBytes);
+        if (mime) candidates.push({ width:width, height:height, bytes:imageBytes, mime:mime });
+      });
+      candidates.sort(function(a, b) {
+        return ((b.width * b.height) || 0) - ((a.width * a.height) || 0) || b.bytes.length - a.bytes.length;
+      });
+      if (!candidates.length) throw new Error('CLIP canvas preview image not found');
+      const best = candidates[0];
+      return { blob:new Blob([best.bytes], { type:best.mime }), width:best.width, height:best.height };
+    }
+
     function decodePackBitsRow(bytes, offset, expected) {
       const out = new Uint8Array(expected);
       let o = 0;
@@ -10025,6 +10361,10 @@
       const ctx = canvas.getContext('2d');
       ctx.clearRect(0, 0, PAGE_W, PAGE_H);
       if (records.length) {
+        const scaleX = width && width !== PAGE_W ? PAGE_W / width : 1;
+        const scaleY = height && height !== PAGE_H ? PAGE_H / height : 1;
+        ctx.save();
+        ctx.scale(scaleX, scaleY);
         records.slice().reverse().forEach(function(record){
           if (record.hidden || !record.width || !record.height) return;
           try {
@@ -10041,6 +10381,7 @@
             ctx.restore();
           } catch (err) {}
         });
+        ctx.restore();
         return canvas;
       }
       if (o < bytes.length) {
@@ -10084,26 +10425,123 @@
       return canvas;
     }
 
-    function loadRasterImageFileToDataUrl(file) {
+    function loadRasterBlobToDataUrl(blob, makeMeta) {
       return new Promise(function(resolve, reject){
-        const reader = new FileReader();
-        reader.onload = function(){
-          const img = new Image();
-          img.onload = function(){
-            const canvas = document.createElement('canvas');
-            canvas.width = PAGE_W;
-            canvas.height = PAGE_H;
-            const ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, PAGE_W, PAGE_H);
-            ctx.drawImage(img, 0, 0, PAGE_W, PAGE_H);
-            resolve({ dataUrl:canvas.toDataURL('image/png'), meta:getPaperLayoutTexts().rasterMeta(img.naturalWidth, img.naturalHeight), width:img.naturalWidth, height:img.naturalHeight });
-          };
-          img.onerror = function(){ reject(new Error('Image load failed')); };
-          img.src = String(reader.result || '');
+        const url = URL.createObjectURL(blob);
+        const img = new Image();
+        img.onload = function(){
+          const canvas = document.createElement('canvas');
+          canvas.width = PAGE_W;
+          canvas.height = PAGE_H;
+          const ctx = canvas.getContext('2d');
+          ctx.clearRect(0, 0, PAGE_W, PAGE_H);
+          ctx.drawImage(img, 0, 0, PAGE_W, PAGE_H);
+          URL.revokeObjectURL(url);
+          const width = img.naturalWidth || 0;
+          const height = img.naturalHeight || 0;
+          resolve({ dataUrl:canvas.toDataURL('image/png'), meta:makeMeta ? makeMeta(width, height) : getPaperLayoutTexts().rasterMeta(width, height), width:width, height:height });
         };
-        reader.onerror = function(){ reject(new Error('File read failed')); };
-        reader.readAsDataURL(file);
+        img.onerror = function(){
+          URL.revokeObjectURL(url);
+          reject(new Error('Image load failed'));
+        };
+        img.src = url;
       });
+    }
+
+    function loadRasterImageFileToDataUrl(file) {
+      return loadRasterBlobToDataUrl(file, function(w, h){ return getPaperLayoutTexts().rasterMeta(w, h); });
+    }
+
+    async function loadClipFileToDataUrl(file) {
+      const preview = extractClipCanvasPreview(await file.arrayBuffer());
+      return loadRasterBlobToDataUrl(preview.blob, function(w, h){ return getPaperLayoutTexts().clipMeta(w || preview.width, h || preview.height); });
+    }
+
+    function clonePaperData(value) {
+      if (value == null) return value;
+      try { return JSON.parse(JSON.stringify(value || {})); }
+      catch (err) { return {}; }
+    }
+
+    function getPaperStateSnapshot() {
+      return {
+        imageDataUrl:state.paperImageDataUrl || '',
+        imageName:state.paperImageName || '',
+        imageMeta:state.paperImageMeta || '',
+        imagePixelInfo:state.paperImagePixelInfo || '',
+        sourceWidth:state.paperImageSourceWidth || 0,
+        sourceHeight:state.paperImageSourceHeight || 0,
+        showTemplate:!!state.showTemplate,
+        showHeaderOutput:!!state.showHeaderOutput,
+        showCellLabelOutput:!!state.showCellLabelOutput,
+        cellColumnCount:state.cellColumnCount,
+        cellDisplayOrder:clonePaperData(state.cellDisplayOrder || []),
+        layoutBoxes:clonePaperData(state.layoutBoxes || {}),
+        layoutBoxBaseRects:clonePaperData(state.layoutBoxBaseRects || {}),
+        positionMode:!!state.positionMode,
+        autoAlignResult:clonePaperData(state.paperAutoAlignResult || null),
+        autoAlignOverlay:clonePaperData(state.paperAutoAlignOverlay || null)
+      };
+    }
+
+    function restorePaperStateSnapshot(snapshot) {
+      if (!snapshot) return;
+      state.paperImageDataUrl = snapshot.imageDataUrl || '';
+      state.paperImageName = snapshot.imageName || '';
+      state.paperImageMeta = snapshot.imageMeta || '';
+      state.paperImagePixelInfo = snapshot.imagePixelInfo || '';
+      state.paperImageSourceWidth = Number(snapshot.sourceWidth) || 0;
+      state.paperImageSourceHeight = Number(snapshot.sourceHeight) || 0;
+      state.showTemplate = !!snapshot.showTemplate;
+      state.showHeaderOutput = typeof snapshot.showHeaderOutput === 'boolean' ? snapshot.showHeaderOutput : true;
+      state.showCellLabelOutput = typeof snapshot.showCellLabelOutput === 'boolean' ? snapshot.showCellLabelOutput : true;
+      state.cellColumnCount = snapshot.cellColumnCount !== undefined ? clampCellColumnCount(snapshot.cellColumnCount) : state.cellColumnCount;
+      state.cellDisplayOrder = Array.isArray(snapshot.cellDisplayOrder) ? clonePaperData(snapshot.cellDisplayOrder) : [];
+      state.layoutBoxes = clonePaperData(snapshot.layoutBoxes || {});
+      state.layoutBoxBaseRects = clonePaperData(snapshot.layoutBoxBaseRects || {});
+      state.positionMode = !!snapshot.positionMode;
+      state.paperAutoAlignResult = snapshot.autoAlignResult ? clonePaperData(snapshot.autoAlignResult) : null;
+      state.paperAutoAlignOverlay = snapshot.autoAlignOverlay ? clonePaperData(snapshot.autoAlignOverlay) : null;
+      state.layoutDrag = null;
+      document.documentElement.classList.remove('position-edit-dragging');
+      updatePaperImageStatus();
+      syncPaperLayoutControls();
+      queueSavePaperMemory();
+      render();
+    }
+
+    function pushPaperHistory(before, after) {
+      if (!before || !after) return;
+      let beforeText = '';
+      let afterText = '';
+      try {
+        beforeText = JSON.stringify(before);
+        afterText = JSON.stringify(after);
+      } catch (err) {
+        return;
+      }
+      if (beforeText === afterText) return;
+      state.paperUndoStack.push({ before:before, after:after });
+      if (state.paperUndoStack.length > 60) state.paperUndoStack.shift();
+      state.paperRedoStack = [];
+      syncPaperLayoutControls();
+    }
+
+    function undoPaperChange() {
+      const op = state.paperUndoStack.pop();
+      if (!op) return;
+      state.paperRedoStack.push(op);
+      restorePaperStateSnapshot(op.before);
+      syncPaperLayoutControls();
+    }
+
+    function redoPaperChange() {
+      const op = state.paperRedoStack.pop();
+      if (!op) return;
+      state.paperUndoStack.push(op);
+      restorePaperStateSnapshot(op.after);
+      syncPaperLayoutControls();
     }
 
     function collectPaperMemoryPayload() {
@@ -10191,6 +10629,7 @@
       if (!file) return;
       if (paperImageStatusEl) paperImageStatusEl.textContent = getPaperLayoutTexts().loading;
       const lower = String(file.name || '').toLowerCase();
+      const beforeSnapshot = getPaperStateSnapshot();
       try {
         let result;
         if (lower.endsWith('.psd') || file.type === 'image/vnd.adobe.photoshop') {
@@ -10198,6 +10637,8 @@
           const size = readPsdPixelSize(buffer);
           const canvas = compositePsdLayersToCanvas(buffer);
           result = { dataUrl:canvas.toDataURL('image/png'), meta:getPaperLayoutTexts().psdMeta(), width:size.width, height:size.height };
+        } else if (lower.endsWith('.clip')) {
+          result = await loadClipFileToDataUrl(file);
         } else {
           result = await loadRasterImageFileToDataUrl(file);
         }
@@ -10213,6 +10654,7 @@
         state.positionMode = true;
         syncPaperLayoutControls();
         updatePaperImageStatus();
+        pushPaperHistory(beforeSnapshot, getPaperStateSnapshot());
         queueSavePaperMemory();
         render();
         runPaperAutoAlign({ silent:true });
@@ -10232,6 +10674,7 @@
     }
 
     function clearPaperImage() {
+      const beforeSnapshot = getPaperStateSnapshot();
       state.paperImageDataUrl = '';
       state.paperImageName = '';
       state.paperImageMeta = '';
@@ -10251,6 +10694,7 @@
       if (paperImageInputEl) paperImageInputEl.value = '';
       syncPaperLayoutControls();
       updatePaperImageStatus();
+      pushPaperHistory(beforeSnapshot, getPaperStateSnapshot());
       queueSavePaperMemory();
       render();
     }
@@ -10369,10 +10813,12 @@
     }
 
     function clearSheetData() {
-      ['episode', 'title', 'cutNo', 'seconds', 'frames', 'author', 'page'].forEach(function(id){
+      ['cutNo', 'seconds', 'frames'].forEach(function(id){
         const input = document.getElementById(id);
         if (input) input.value = '';
       });
+      const pageInput = document.getElementById('page');
+      if (pageInput) pageInput.value = '1/1';
       const textInput = document.getElementById('timelineCommandInput');
       if (textInput) textInput.value = 'A:';
       if (csvCommandEditEl) csvCommandEditEl.value = 'A:';
@@ -10404,6 +10850,7 @@
       state.activeLayerNameTagTarget = null;
       state.activeLayerNameTag = null;
       state.currentPreviewPage = 0;
+      state.totalPages = 1;
       if (csvColumnPickerEl) csvColumnPickerEl.innerHTML = '';
       const csvFileInput = document.getElementById('csvFileInput');
       if (csvFileInput) csvFileInput.value = '';
@@ -10413,12 +10860,14 @@
     }
 
     function resetLayoutAdjustments() {
+      const beforeSnapshot = getPaperStateSnapshot();
       state.layoutBoxes = {};
       state.layoutBoxBaseRects = {};
       state.layoutDrag = null;
       state.paperAutoAlignOverlay = null;
       setPaperAutoAlignResult(null);
       document.documentElement.classList.remove('position-edit-dragging');
+      pushPaperHistory(beforeSnapshot, getPaperStateSnapshot());
       queueSavePaperMemory();
       render();
     }
@@ -11615,6 +12064,8 @@
       paperImageInputEl.addEventListener('change', function(event){ handlePaperImageUpload(event.target.files && event.target.files[0]); });
     }
     if (clearPaperImageBtn) clearPaperImageBtn.addEventListener('click', clearPaperImage);
+    if (paperUndoBtn) paperUndoBtn.addEventListener('click', undoPaperChange);
+    if (paperRedoBtn) paperRedoBtn.addEventListener('click', redoPaperChange);
     if (resetLayoutAdjustBtn) resetLayoutAdjustBtn.addEventListener('click', resetLayoutAdjustments);
     if (autoAlignPaperBtn) autoAlignPaperBtn.addEventListener('click', function(){ runPaperAutoAlign({ silent:false }); });
     if (saveLayoutPresetBtn) saveLayoutPresetBtn.addEventListener('click', saveLayoutPreset);
