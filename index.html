@@ -503,7 +503,7 @@
     .paper-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
     .paper-primary-actions {
       display: grid;
-      grid-template-columns: minmax(156px, 1fr) auto auto;
+      grid-template-columns: minmax(128px, 1fr) auto auto auto;
       gap: 8px;
       margin-bottom: 12px;
       align-items: center;
@@ -586,6 +586,16 @@
       font: inherit; font-size: 12px; font-weight: 800; padding: 0 10px; cursor: pointer;
     }
     .paper-mini-btn.active { background: var(--text); color: white; border-color: var(--text); }
+    .paper-auto-align-btn {
+      min-width: 86px;
+      background: #f8fbff;
+      border-color: #b8cee9;
+      color: #184f90;
+    }
+    .paper-auto-align-btn:disabled {
+      opacity: .55;
+      cursor: default;
+    }
     .paper-preset-select {
       height: 34px;
       flex: 1 1 190px;
@@ -654,6 +664,35 @@
     }
     .paper-file-input-hidden { display: none; }
     .paper-preset-status { margin-top: 8px; }
+    .paper-auto-align-status {
+      display: none;
+      margin-top: 8px;
+      padding: 9px 10px;
+      border: 1px solid #b8cee9;
+      border-radius: 10px;
+      background: #f8fbff;
+      color: #184f90;
+      font-size: 11px;
+      line-height: 1.45;
+    }
+    .paper-auto-align-status.active { display: block; }
+    .paper-auto-align-status strong {
+      display: block;
+      color: #123b6f;
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+    .paper-auto-align-status ol {
+      margin: 4px 0 0 18px;
+      padding: 0;
+    }
+    .paper-auto-align-status li { margin: 2px 0; }
+    .paper-auto-align-status.error {
+      border-color: rgba(207,42,42,.45);
+      background: #fff8f8;
+      color: #a22222;
+    }
+    .paper-auto-align-status.error strong { color: #8a1717; }
     .position-edit-box { cursor: move; pointer-events: all; touch-action: none; }
     .position-edit-grip { pointer-events: all; touch-action: none; }
     .position-edit-grip.n, .position-edit-grip.s { cursor: ns-resize; }
@@ -1577,6 +1616,7 @@
                 <button class="paper-magnet-btn active" type="button" data-paper-magnet-sensitivity="medium" title="Medium sensitivity">中</button>
                 <button class="paper-magnet-btn" type="button" data-paper-magnet-sensitivity="low" title="Low sensitivity">弱</button>
               </div>
+              <button id="autoAlignPaperBtn" class="paper-mini-btn paper-auto-align-btn" type="button">Auto Align</button>
               <button id="resetLayoutAdjustBtn" class="paper-mini-btn" type="button">Position Reset</button>
             </div>
 
@@ -1605,6 +1645,7 @@
               </div>
             </div>
             <div id="layoutPresetStatus" class="status paper-preset-status">Preset stores only position boxes and visibility options, not the paper image itself.</div>
+            <div id="paperAutoAlignStatus" class="paper-auto-align-status" aria-live="polite"></div>
 
             <label class="paper-check-row"><input id="showTemplateToggle" type="checkbox" checked /> <span id="showTemplateText">Show built-in sheet template</span></label>
             <label class="paper-check-row"><input id="showHeaderOutputToggle" type="checkbox" checked /> <span id="showHeaderOutputText">Show header output</span></label>
@@ -1812,6 +1853,7 @@
     const paperImageStatusEl = document.getElementById('paperImageStatus');
     const paperImagePixelInfoEl = document.getElementById('paperImagePixelInfo');
     const clearPaperImageBtn = document.getElementById('clearPaperImageBtn');
+    const autoAlignPaperBtn = document.getElementById('autoAlignPaperBtn');
     const resetLayoutAdjustBtn = document.getElementById('resetLayoutAdjustBtn');
     const saveLayoutPresetBtn = document.getElementById('saveLayoutPresetBtn');
     const loadLayoutPresetBtn = document.getElementById('loadLayoutPresetBtn');
@@ -1837,6 +1879,7 @@
     const showHeaderOutputTextEl = document.getElementById('showHeaderOutputText');
     const showCellLabelOutputTextEl = document.getElementById('showCellLabelOutputText');
     const paperLayoutHintEl = document.getElementById('paperLayoutHint');
+    const paperAutoAlignStatusEl = document.getElementById('paperAutoAlignStatus');
     const paperMagnetSensitivityButtons = Array.from(document.querySelectorAll('[data-paper-magnet-sensitivity]'));
     const cellInputModeButtons = Array.from(document.querySelectorAll('[data-input-mode]'));
     const csvEncodingSectionEl = document.getElementById('csvEncodingSection');
@@ -1865,6 +1908,11 @@
       medium:{ key:'medium', snapPx:8, colorTolerance:34, nearWhiteLum:238, rowCoverage:0.12, colCoverage:0.08, rowRun:0.25, colRun:0.18, clusterGap:2 },
       low:{ key:'low', snapPx:5, colorTolerance:22, nearWhiteLum:224, rowCoverage:0.20, colCoverage:0.14, rowRun:0.42, colRun:0.30, clusterGap:1 }
     };
+    const PAPER_AUTO_ALIGN_MIN_COLUMNS = 7;
+    const PAPER_AUTO_ALIGN_MAX_COLUMNS = 9;
+    const PAPER_AUTO_ALIGN_TARGET_BODY_LINES = 73;
+    const PAPER_AUTO_ALIGN_PAIR_CANDIDATE_LIMIT = 72;
+    const PAPER_AUTO_ALIGN_PAIR_CENTER_TOLERANCE = PAGE_W * 0.20;
     const SHORTCUT_ACTIONS = ['brushCycle', 'eraserToggle', 'sizeDown', 'sizeUp', 'memoOff'];
     const SHORTCUT_DEFAULTS = { brushCycle:'b', eraserToggle:'e', sizeDown:'[', sizeUp:']', memoOff:'backspace' };
     let paperMemorySaveTimer = null;
@@ -1925,6 +1973,9 @@
       paperMagnetLines: { x:[], y:[], sourceKey:'' },
       paperMagnetBuildToken: 0,
       paperMagnetSensitivity: PAPER_MAGNET_DEFAULT_SENSITIVITY,
+      paperAutoAlignToken: 0,
+      paperAutoAlignResult: null,
+      paperAutoAlignOverlay: null,
       memoMode: false,
       sidebarCollapsed: false,
       memoTool: 'pen',
@@ -2156,8 +2207,13 @@
       en: {
         title: 'Update History',
         subtitle: 'Click the Auto Sheet title to open this history. Only implemented changes are listed.',
-        html: '<h4><span class="update-log-badge">Today</span>2026-04-27 update summary</h4>' +
+        html: '<h4><span class="update-log-badge">Today</span>2026-04-28 update summary</h4>' +
           '<ul>' +
+          '<li>ver532: kept the standard ver530 Auto Align as the default result, then selectively accepts JDG-style dotted 9-column recovery only when both Camera boxes can expand to full strong vertical borders.</li><li>ver530: added a narrow CSM/MAD-style Camera correction that uses a bold divider after a 7-column follower grid when the Cell count differs across the Dialog column.</li><li>ver529: added Auto Align performance guards, candidate-pair caching, and bounded follower-grid search so complex sheets do not freeze during line matching.</li>' +
+          '<li>ver528: refined External Paper Auto Align with stronger bold-divider scoring, safer page-edge filtering, Toei-style 9-column recovery, 7-column follower tolerance, and stronger Camera start locking at the end of the repeated CELL grid.</li>' +
+          '<li>ver527: strengthened External Paper Auto Align using Dialog horizontal-line absence, sparse/missing cell-line reconstruction, left-aligned special H handling, and Camera start protection after repeated CELL grids.</li>' +
+          '<li>ver526: refined External Paper Auto Align for 7-9 column sheets, including Toei-style A-H plus blank cells before the Dialog column.</li>' +
+          '<li>ver525: added External Paper Auto Align, which detects page grid lines, estimates body rows, Cell/Dialog/Camera boxes, and shows the matching process.</li>' +
           '<li>ver524: removed the remaining Camera 24fps-fixed sentence from the Camera helper text.</li>' +
           '<li>ver523: updated the multilingual update history, removed remaining grey helper text, removed the Dialog 24fps-fixed sentence, hid Sheet Preview meta text, and localized the CSV load status refresh.</li>' +
           '<li>Cleaned the guide UI: removed quick-guide and external-paper summary descriptions, moved External Paper Load below Camera, restricted the paper-file highlight to the file picker, removed CSV import highlights, hid CSV encoding unless garbled text is detected, and removed the help text under Editable Commands from CSV.</li>' +
@@ -2184,7 +2240,7 @@
           '<li>Cel number hover uses a hand cursor for easier recognition.</li>' +
           '<li>Black hold lines and dots now use click for dot ON/OFF and Shift-click for text input. Red hold lines still open text editing on click.</li><li>Dialog lines like <code>0+20 | 5+10 | × |</code> now render as a completely empty block: no label, no range lines, and no hold/guide line.</li><li>Fixed CLIP STUDIO CSV imports whose layer names include suffixes such as <code>A_ls</code>, <code>B_ls</code>, and <code>C_ls</code>; these names are no longer mistaken for distant alphabet columns.</li><li>Restored free Space input in Text Commands and CSV command editing by preserving user-entered whitespace during live preview updates.</li><li>Input Mode buttons are now arranged horizontally in one compact row.</li><li>Built-in template frame lines now skip the Dialog body column; only the line under the Dialog header remains there.</li><li>When reopening a text memo, the SVG preview text is hidden while the transparent editor is active to prevent doubled text.</li>' +
           '</ul>' +
-          '<h4>Recent detailed records</h4><details open><summary>ver524 · Camera helper cleanup</summary><div><ul><li>Removed the remaining 24fps-fixed sentence from the Camera helper text in every supported language.</li></ul></div></details><details open><summary>ver523 · Update history, hint cleanup, CSV status localization</summary><div><ul><li>Added this version entry to the update history and kept it in all supported languages.</li><li>Removed the grey shortcut-setting description, the Dialog 24fps-fixed sentence, and all grey Sheet Preview meta text.</li><li>CSV load-complete status now follows the selected UI language even after changing languages with a CSV already loaded.</li></ul></div></details><details open><summary>ver522 · Preset layout, preview meta localization, duration sync, magnet labels</summary><div><ul><li>Moved Save Preset and Load Preset to the first row of the External Paper preset controls, and moved preset selection plus Apply to the second row.</li><li>Localized the Sheet Preview meta text and page label.</li><li>When a duration boundary line is shown from actual sheet content and the Duration fields are empty or zero, the Duration sec/frame fields now sync back to that boundary frame.</li><li>Changed paper-line magnet buttons from upper/middle/lower wording to strong/medium/weak wording.</li></ul></div></details><details open><summary>ver521 · Japanese Input Mode label fit</summary><div><ul><li>Changed Japanese CSV input mode labels to half-width parentheses.</li><li>Tightened the Input Mode button font width and spacing so labels stay inside the horizontal buttons.</li></ul></div></details><details open><summary>ver520 · Dialog grid-line skip and text-memo edit de-duplication</summary><div><ul><li>Changed the built-in sheet template so horizontal body frame lines skip the Dialog column.</li><li>Only the separator line under the Dialog header remains across the Dialog column.</li><li>When the text-memo textarea opens, the memo’s SVG preview text is hidden until editing closes, preventing doubled text on re-edit.</li></ul></div></details><details open><summary>ver519 · Input Mode buttons arranged horizontally</summary><div><ul><li>Changed the Input Mode buttons to a compact three-column horizontal row.</li><li>Centered the button labels and allowed wrapping so long CSV labels stay inside the buttons.</li></ul></div></details><details open><summary>ver518 · Transparent text-memo editor, input-mode buttons, magnet sensitivity</summary><div><ul><li>Made the text-memo editor transparent and closer to the preview appearance while editing.</li><li>Changed Input Mode from a select menu to direct buttons with the project active-state styling.</li><li>Added compact paper-line magnet sensitivity buttons: high, medium, low. Medium is the default.</li><li>Improved paper-line detection to recognize long horizontal/vertical runs of similar non-background colors.</li><li>Updated Japanese/Korean labels and simplified the preview meta text.</li></ul></div></details>' +
+          '<h4>Recent detailed records</h4><details open><summary>ver530 · CSM/MAD Camera bold-divider correction</summary><div><ul><li>When the first grid has 8 narrow cells but the repeated grid after Dialog is 7 wider cells, Auto Align can now stop the follower grid at the stronger divider and start Camera there.</li><li>The correction is limited to compact Dialog bands and wide follower-cell ratios so 8bit, KINEMA, TOEI, bones, and TOHO layouts keep their previous matches.</li></ul></div></details><details open><summary>ver529 · Auto Align performance guard</summary><div><ul><li>Reduced the left/right column-pair search set to the strongest candidates and skips pairs whose center balance is too far from the page center.</li><li>Cached resolved side structures during pair matching so the same right-side group is not recomputed repeatedly.</li><li>Bounded follower CELL grid search by plausible span width, preventing complex line arrays from causing long matching stalls.</li></ul></div></details><details open><summary>ver528 · External Paper Auto Align bold-divider stabilization</summary><div><ul><li>Bold vertical divider strength is now added directly to Cell/Dialog candidate scoring, so pale 9-column Toei-style blocks and Kinema-style 8-column blocks are less likely to collapse to 7 columns.</li><li>Follower CELL grids may differ by one column from the first CELL block, covering CSM/MAD structures where the grid after Dialog has 7 columns.</li><li>Camera starts are locked more strongly to the end of the repeated CELL grid, and near-page edge shadows are filtered before column matching.</li></ul></div></details><details open><summary>ver527 · External Paper Auto Align feedback fixes</summary><div><ul><li>Dialog candidates now use the absence of horizontal body lines, so 8bit and MAD-style Dialog bands are separated from neighboring CELL columns more reliably.</li><li>Special H/blank gaps can keep the CELL box left-aligned while leaving a margin before Dialog, and sparse/missing vertical lines can be reconstructed for pale sheets.</li><li>Camera detection now starts after the repeated CELL grid and ignores full-page border lines, improving bones and TOHO camera boxes.</li></ul></div></details><details open><summary>ver526 · External Paper Auto Align column refinement</summary><div><ul><li>Auto Align now verifies the repeated CELL grid after the Dialog column before choosing a 7/8/9-column candidate, preventing Toei-style H/blank cells from being mistaken for Dialog.</li><li>Camera start detection now favors stronger divider lines so the Camera box is less likely to absorb the last CELL grid column.</li><li>The status panel and preview overlay now show the repeated grid used during the inference.</li></ul></div></details><details open><summary>ver525 · External Paper Auto Align</summary><div><ul><li>Added an Auto Align button for External Paper that analyzes detected horizontal and vertical page lines, estimates the 72-frame body rows, and places Header, Cell, Dialog, and Camera boxes automatically.</li><li>Paper image loading now runs the same estimation once, then leaves Position Edit active for manual correction.</li><li>The auto-align status panel and preview overlay show the detected line count, row sequence, column pattern, confidence, and applied boxes.</li></ul></div></details><details open><summary>ver524 · Camera helper cleanup</summary><div><ul><li>Removed the remaining 24fps-fixed sentence from the Camera helper text in every supported language.</li></ul></div></details><details open><summary>ver523 · Update history, hint cleanup, CSV status localization</summary><div><ul><li>Added this version entry to the update history and kept it in all supported languages.</li><li>Removed the grey shortcut-setting description, the Dialog 24fps-fixed sentence, and all grey Sheet Preview meta text.</li><li>CSV load-complete status now follows the selected UI language even after changing languages with a CSV already loaded.</li></ul></div></details><details open><summary>ver522 · Preset layout, preview meta localization, duration sync, magnet labels</summary><div><ul><li>Moved Save Preset and Load Preset to the first row of the External Paper preset controls, and moved preset selection plus Apply to the second row.</li><li>Localized the Sheet Preview meta text and page label.</li><li>When a duration boundary line is shown from actual sheet content and the Duration fields are empty or zero, the Duration sec/frame fields now sync back to that boundary frame.</li><li>Changed paper-line magnet buttons from upper/middle/lower wording to strong/medium/weak wording.</li></ul></div></details><details open><summary>ver521 · Japanese Input Mode label fit</summary><div><ul><li>Changed Japanese CSV input mode labels to half-width parentheses.</li><li>Tightened the Input Mode button font width and spacing so labels stay inside the horizontal buttons.</li></ul></div></details><details open><summary>ver520 · Dialog grid-line skip and text-memo edit de-duplication</summary><div><ul><li>Changed the built-in sheet template so horizontal body frame lines skip the Dialog column.</li><li>Only the separator line under the Dialog header remains across the Dialog column.</li><li>When the text-memo textarea opens, the memo’s SVG preview text is hidden until editing closes, preventing doubled text on re-edit.</li></ul></div></details><details open><summary>ver519 · Input Mode buttons arranged horizontally</summary><div><ul><li>Changed the Input Mode buttons to a compact three-column horizontal row.</li><li>Centered the button labels and allowed wrapping so long CSV labels stay inside the buttons.</li></ul></div></details><details open><summary>ver518 · Transparent text-memo editor, input-mode buttons, magnet sensitivity</summary><div><ul><li>Made the text-memo editor transparent and closer to the preview appearance while editing.</li><li>Changed Input Mode from a select menu to direct buttons with the project active-state styling.</li><li>Added compact paper-line magnet sensitivity buttons: high, medium, low. Medium is the default.</li><li>Improved paper-line detection to recognize long horizontal/vertical runs of similar non-background colors.</li><li>Updated Japanese/Korean labels and simplified the preview meta text.</li></ul></div></details>' +
           '<details open><summary>ver517 · Text Commands Space input restored</summary><div><ul><li>Preserved user-entered whitespace during live Text Commands and CSV command editing.</li><li>The leading-cross-gap normalizer no longer rebuilds the whole command line, so pressing Space no longer disappears immediately.</li></ul></div></details><details><summary>ver516 · CLIP CSV suffix layer-name crash fix</summary><div><ul><li>Restricted absolute cel-column placement to pure A-Z labels within the supported column range.</li><li>Layer names such as <code>A_ls</code>, <code>B_ls</code>, and <code>C_ls</code> now import as normal layers instead of creating thousands of filler columns.</li></ul></div></details>' +
           '<details open><summary>ver515 · Dialog × block renders nothing</summary><div><ul><li>Changed Dialog lines with <code>×</code>/<code>x</code> as the first box and no body text so they render nothing at all.</li><li>No red range lines, vertical guide line, label, or text is drawn for that empty Dialog block.</li></ul></div></details>' +
           '<details><summary>ver514 · Dot toggle separated from text editing</summary><div><ul><li>Restored black hold line and dot behavior: click toggles dot ON/OFF, while Shift-click opens text input.</li><li>Kept red hold lines as click-to-text, without dot toggling.</li></ul></div></details>' +
@@ -2202,8 +2258,13 @@
       ja: {
         title: '更新履歴',
         subtitle: 'Auto Sheet のタイトルをクリックすると、この履歴を開く。実装済みの変更だけを掲載する。',
-        html: '<h4><span class="update-log-badge">Today</span>2026-04-27 更新まとめ</h4>' +
+        html: '<h4><span class="update-log-badge">Today</span>2026-04-28 更新まとめ</h4>' +
           '<ul>' +
+          '<li>ver532: ver530の標準Auto Align結果を基本に保ち、JDG系の点線9列復元は左右Camera欄が強い外側縦線まで拡張できる場合だけ採用するようにした。</li><li>ver530: Dialog前後でCELL数が異なるCSM/MAD系用紙向けに、7列後続CELL欄の後ろの太い区切り線をCamera開始として補正する限定処理を追加。</li><li>ver529: 複雑な用紙で自動整列が停止しないよう、候補ペア数制限、解決結果キャッシュ、後続CELL探索範囲制限を追加。</li>' +
+          '<li>ver528: 太い区切り線の優先度、ページ端ノイズ除外、東映式9列復元、7列の後続CELL欄許容、反復CELL欄末尾でのCamera開始固定を強化して外部用紙自動整列を調整。</li>' +
+          '<li>ver527: Dialog欄の横罫線の少なさ、欠けたセル線の復元、特殊なH欄の左揃え、反復CELL欄後のCamera開始保護を使って外部用紙自動整列を強化。</li>' +
+          '<li>ver526: 東映式のA-H＋空欄を含む7-9列シートで、H/空欄をDialogとして誤認しにくいよう外部用紙自動整列を調整。</li>' +
+          '<li>ver525: 外部用紙の線検出から本文行、Cell/Dialog/Camera枠を推定し、照合過程を表示する自動整列を追加。</li>' +
           '<li>ver524: カメラ欄ヘルプに残っていた24fps固定文を削除。</li>' +
           '<li>ver523: 多言語更新履歴を追加し、残っていたグレー説明文、セリフ欄の24fps固定文、シートプレビュー下のメタ表示を削除。CSV読込状態表示の言語更新も修正。</li>' +
           '<li>ガイドUIを整理。簡単説明書と外部用紙のサマリー説明を削除し、外部用紙読込をカメラ欄の下へ移動。用紙ファイル選択の強調範囲をファイル選択UIだけに限定し、CSV読込時の強調表示を削除。CSV文字コード欄は文字化け検出時だけ表示し、CSVから生成された編集可能コマンド下の説明文を削除。</li>' +
@@ -2230,7 +2291,7 @@
           '<li>原画番号にカーソルを乗せた時の表示を、テキスト入力カーソルではなく手のカーソルに統一する。</li>' +
           '<li>黒い継続線/動画点はクリックで動画点ON/OFF、Shiftクリックで文字入力に戻す。赤い継続線はクリックで文字入力のままにする。</li><li>セリフ欄の <code>0+20 | 5+10 | × |</code> のような行は、ラベル・赤い範囲線・縦線を含めて完全に非表示にする。</li><li><code>A_ls</code>、<code>B_ls</code>、<code>C_ls</code> のような接尾辞付きレイヤー名を含む CLIP STUDIO CSV 読込の停止問題を修正する。遠いアルファベット列として誤判定しない。</li><li>Text Commands と CSV編集欄で、ライブプレビュー更新中も入力中のスペースを保持し、自由に連続入力できる状態に戻す。</li><li>入力モードボタンを1行の横並びに変更する。</li><li>内蔵シートテンプレートのDialog本文欄には横罫線を出さず、Dialog見出し下の区切り線だけを残す。</li><li>テキストメモを再編集するとき、透明エディター表示中はSVGプレビュー側の文字を非表示にし、二重表示を防ぐ。</li>' +
           '</ul>' +
-          '<h4>最近の詳細履歴</h4><details open><summary>ver524 · カメラ欄ヘルプ整理</summary><div><ul><li>カメラ欄ヘルプに残っていた24fps固定文を、対応言語すべてから削除。</li></ul></div></details><details open><summary>ver523 · 更新履歴、説明文整理、CSV状態表示の言語対応</summary><div><ul><li>このバージョンを更新履歴に追加し、対応言語すべてで同じ内容を記録。</li><li>ショートカット設定のグレー説明文、セリフ欄の24fps固定文、シートプレビュー下のグレーメタ表示を削除。</li><li>CSV読込完了表示は、CSV読込後に言語を切り替えた場合も選択中のUI言語へ追従。</li></ul></div></details><details open><summary>ver522 · プリセット配置、プレビューメタ多言語化、尺同期、マグネット表記</summary><div><ul><li>外部用紙プリセットの1行目にプリセット保存/読込、2行目にプリセット選択/適用を配置。</li><li>シートプレビュー下のメタ文言とページ表示を言語対応。</li><li>実内容からDuration終了線が表示される場合、Duration秒/コマが空または0なら、その終了フレームをDuration入力欄へ同期。</li><li>用紙線マグネットの表記を上/中/下から強/中/弱へ変更。</li></ul></div></details><details open><summary>ver521 · 入力モード日本語ラベルの収まり調整</summary><div><ul><li>CSV入力モードの日本語ラベルを半角括弧表記に変更。</li><li>横並びボタンから文字がはみ出さないよう、フォント幅・字間・余白を調整。</li></ul></div></details><details open><summary>ver520 · Dialog横罫線除外とテキストメモ二重表示防止</summary><div><ul><li>内蔵シートテンプレートで、Dialog本文欄にはフレーム横罫線を引かないように変更。</li><li>Dialog欄に残る横線は、見出し下の区切り線だけにする。</li><li>テキストメモ編集用textareaを開いた時点で、SVGプレビュー側の同じ文字を非表示にし、再編集時の二重表示を防止。</li></ul></div></details><details open><summary>ver519 · 入力モードボタンを横並び化</summary><div><ul><li>入力モードボタンを3列のコンパクトな横並びに変更。</li><li>長いCSVラベルがボタン内に収まるよう、中央揃えと折り返し表示に調整。</li></ul></div></details><details open><summary>ver518 · テキストメモ透明編集、入力モードボタン、マグネット感度</summary><div><ul><li>テキストメモ編集UIの白背景をなくし、プレビューに近い見え方で編集できるようにした。</li><li>入力モードをプルダウンから直接ボタンへ変更し、選択中ボタンは本プロジェクトの青＋赤発光UIにした。</li><li>位置編集の横に、用紙線マグネット感度の上・中・下ボタンを追加した。初期値は中。</li><li>外部用紙画像のガイド線検出を改善し、類似色が横/縦に続く線も検出対象にした。</li><li>日本語/韓国語ラベルとシートプレビュー下の表示文を整理した。</li></ul></div></details>' +
+          '<h4>最近の詳細履歴</h4><details open><summary>ver530 · CSM/MAD Camera太線補正</summary><div><ul><li>前側が細い8列、Dialog後の反復欄が太い7列になる場合、後続CELL欄を強い区切り線で止め、その位置からCameraを開始できるようにした。</li><li>補正条件を短いDialog幅と広い後続CELL幅比に限定し、8bit、KINEMA、TOEI、bones、TOHOの既存マッチに影響しにくくした。</li></ul></div></details><details open><summary>ver529 · 自動整列の停止防止</summary><div><ul><li>左右の列候補ペア探索を強い候補に絞り、ページ中心から大きく外れるペアは事前に除外する。</li><li>ペア照合中に同じ右側グループを何度も再計算しないよう、解決結果をキャッシュする。</li><li>後続CELL欄の探索範囲を妥当な幅で制限し、複雑な線配列で照合が長時間止まる問題を防ぐ。</li></ul></div></details><details open><summary>ver528 · 外部用紙自動整列の太線区切り安定化</summary><div><ul><li>太い縦区切り線の強さをCell/Dialog候補の点数へ直接加算し、薄い東映式9列やKINEMA式8列が7列に崩れにくくした。</li><li>Dialog後の後続CELL欄は最初のCELL欄と1列差まで許容し、CSM/MADのように後続側だけ7列になる構造に対応した。</li><li>Camera開始位置は反復CELL欄の終端へより強く固定し、ページ端の影ノイズは列照合前に除外する。</li></ul></div></details><details open><summary>ver527 · 外部用紙自動整列のフィードバック修正</summary><div><ul><li>Dialog候補は本文横罫線の少なさを使って判定し、8bit/MAD系のDialog欄を隣のCELL欄から分離しやすくした。</li><li>特殊なH欄や空き幅はCELL枠を左揃えにしてDialog前に余白を残し、薄い用紙では欠けた縦線も復元候補にする。</li><li>Camera検出は反復CELL欄の後から開始し、全面の外枠線を除外してbones/TOHO系のCamera枠を改善した。</li></ul></div></details><details open><summary>ver526 · 外部用紙自動整列の列判定調整</summary><div><ul><li>Dialog後に続く反復CELL欄まで確認してから7/8/9列候補を選ぶようにし、東映式のH/空欄をDialogとして誤認しにくくした。</li><li>Camera開始位置は細い内部線より強い区切り線を優先する。</li><li>推定に使った反復CELL欄をステータスとプレビューオーバーレイに表示する。</li></ul></div></details><details open><summary>ver525 · 外部用紙の自動整列</summary><div><ul><li>外部用紙に自動整列ボタンを追加し、検出した横線・縦線から72フレーム本文行とHeader/Cell/Dialog/Cameraの位置ボックスを推定する。</li><li>用紙画像を読み込んだ直後にも同じ推定を1回実行し、位置編集で手直しできる状態にする。</li><li>自動整列ステータスとプレビュー上のオーバーレイで、検出線数、本文行、列パターン、信頼度、適用ボックスを表示する。</li></ul></div></details><details open><summary>ver524 · カメラ欄ヘルプ整理</summary><div><ul><li>カメラ欄ヘルプに残っていた24fps固定文を、対応言語すべてから削除。</li></ul></div></details><details open><summary>ver523 · 更新履歴、説明文整理、CSV状態表示の言語対応</summary><div><ul><li>このバージョンを更新履歴に追加し、対応言語すべてで同じ内容を記録。</li><li>ショートカット設定のグレー説明文、セリフ欄の24fps固定文、シートプレビュー下のグレーメタ表示を削除。</li><li>CSV読込完了表示は、CSV読込後に言語を切り替えた場合も選択中のUI言語へ追従。</li></ul></div></details><details open><summary>ver522 · プリセット配置、プレビューメタ多言語化、尺同期、マグネット表記</summary><div><ul><li>外部用紙プリセットの1行目にプリセット保存/読込、2行目にプリセット選択/適用を配置。</li><li>シートプレビュー下のメタ文言とページ表示を言語対応。</li><li>実内容からDuration終了線が表示される場合、Duration秒/コマが空または0なら、その終了フレームをDuration入力欄へ同期。</li><li>用紙線マグネットの表記を上/中/下から強/中/弱へ変更。</li></ul></div></details><details open><summary>ver521 · 入力モード日本語ラベルの収まり調整</summary><div><ul><li>CSV入力モードの日本語ラベルを半角括弧表記に変更。</li><li>横並びボタンから文字がはみ出さないよう、フォント幅・字間・余白を調整。</li></ul></div></details><details open><summary>ver520 · Dialog横罫線除外とテキストメモ二重表示防止</summary><div><ul><li>内蔵シートテンプレートで、Dialog本文欄にはフレーム横罫線を引かないように変更。</li><li>Dialog欄に残る横線は、見出し下の区切り線だけにする。</li><li>テキストメモ編集用textareaを開いた時点で、SVGプレビュー側の同じ文字を非表示にし、再編集時の二重表示を防止。</li></ul></div></details><details open><summary>ver519 · 入力モードボタンを横並び化</summary><div><ul><li>入力モードボタンを3列のコンパクトな横並びに変更。</li><li>長いCSVラベルがボタン内に収まるよう、中央揃えと折り返し表示に調整。</li></ul></div></details><details open><summary>ver518 · テキストメモ透明編集、入力モードボタン、マグネット感度</summary><div><ul><li>テキストメモ編集UIの白背景をなくし、プレビューに近い見え方で編集できるようにした。</li><li>入力モードをプルダウンから直接ボタンへ変更し、選択中ボタンは本プロジェクトの青＋赤発光UIにした。</li><li>位置編集の横に、用紙線マグネット感度の上・中・下ボタンを追加した。初期値は中。</li><li>外部用紙画像のガイド線検出を改善し、類似色が横/縦に続く線も検出対象にした。</li><li>日本語/韓国語ラベルとシートプレビュー下の表示文を整理した。</li></ul></div></details>' +
           '<details open><summary>ver517 · Text Commands のスペース入力復旧</summary><div><ul><li>Text Commands と CSV編集欄で、ライブプレビュー更新中もユーザーが入力した空白を保持する。</li><li>先頭X空白補正処理がコマンド行全体を組み直さないようにし、Spaceを押した直後に空白が消えないようにする。</li></ul></div></details><details><summary>ver516 · CLIP CSV 接尾辞レイヤー名の停止修正</summary><div><ul><li>絶対位置配置に使うセル列名を、対応範囲内の純粋な A-Z ラベルだけに制限する。</li><li><code>A_ls</code>、<code>B_ls</code>、<code>C_ls</code> のようなレイヤー名は通常レイヤーとして読み込み、数千個の補助列を生成しない。</li></ul></div></details>' +
           '<details open><summary>ver515 · セリフ欄の×ブロックを完全非表示化</summary><div><ul><li>セリフ欄で開始枠が <code>×</code>/<code>x</code> かつ本文が空の行は、シート上に何も描画しない。</li><li>赤い範囲線、縦ガイド線、ラベル、本文をすべて非表示にする。</li></ul></div></details>' +
           '<details><summary>ver514 · 動画点トグルと文字入力を分離</summary><div><ul><li>黒い継続線/動画点はクリックで動画点ON/OFF、Shiftクリックで文字入力に戻した。</li><li>赤い継続線は動画点化せず、クリックで文字入力する挙動を維持した。</li></ul></div></details>' +
@@ -2248,8 +2309,13 @@
       ko: {
         title: '업데이트 내역',
         subtitle: 'Auto Sheet 제목을 클릭하면 이 내역을 열 수 있다. 실제 반영된 변경만 정리한다.',
-        html: '<h4><span class="update-log-badge">Today</span>2026-04-27 업데이트 전체 정리</h4>' +
+        html: '<h4><span class="update-log-badge">Today</span>2026-04-28 업데이트 전체 정리</h4>' +
           '<ul>' +
+          '<li>ver532: ver530의 표준 Auto Align 결과를 기본으로 유지하고, JDG식 점선 9칸 복원은 좌우 Camera 박스가 강한 바깥 세로선까지 확장될 때만 채택하도록 했다.</li><li>ver530: 대사칸 좌우의 CELL 수가 다른 CSM/MAD 계열 용지에서, 7칸 후속 CELL 뒤의 굵은 구획선을 Camera 시작점으로 보정하는 제한 규칙을 추가했다.</li><li>ver529: 복잡한 용지에서 자동 정렬이 멈추지 않도록 후보 페어 수 제한, 해석 결과 캐시, 후속 CELL 탐색 범위 제한을 추가했다.</li>' +
+          '<li>ver528: 굵은 구획선 우선도, 페이지 가장자리 노이즈 제거, TOEI식 9칸 복원, 7칸 후속 CELL 허용, 반복 CELL 끝에서 Camera 시작 고정을 강화해 외부용지 자동 정렬을 조정했다.</li>' +
+          '<li>ver527: 대사칸의 가로줄 공백, 누락된 셀선 복원, 특수 H칸 좌측 정렬, 반복 CELL 격자 이후 Camera 시작 보호를 이용해 외부용지 자동 정렬을 강화했다.</li>' +
+          '<li>ver526: 도에이식 A-H＋빈칸을 포함한 7-9칸 시트에서 H/빈칸을 대사란으로 오인하지 않도록 외부용지 자동 정렬을 조정했다.</li>' +
+          '<li>ver525: 외부용지의 선 검출로 본문 행과 Cell/Dialog/Camera 박스를 추정하고, 대조 과정을 보여주는 자동 정렬을 추가했다.</li>' +
           '<li>ver524: 카메라란 도움말에 남아 있던 24fps 고정 문장을 삭제했다.</li>' +
           '<li>ver523: 다국어 업데이트 이력을 추가하고, 남아 있던 회색 설명문, 대사란의 24fps 고정 문장, 시트 프리뷰 하단 메타 표시를 삭제했다. CSV 읽기 상태 표시의 언어 갱신도 수정했다.</li>' +
           '<li>가이드 UI를 정리했다. 간단 설명서와 외부용지 요약 설명을 삭제하고, 외부용지 불러오기를 카메라란 아래로 이동했다. 용지 파일 선택 강조 범위를 파일 선택 UI로 한정하고, CSV 읽기 시 강조 표시를 삭제했다. CSV 인코딩은 문자 깨짐 감지 시에만 표시하며, CSV에서 생성된 편집 가능 커맨드 아래 설명문을 삭제했다.</li>' +
@@ -2276,7 +2342,7 @@
           '<li>원화번호에 커서를 올렸을 때 텍스트 입력 커서가 아니라 손 커서로 통일한다.</li>' +
           '<li>검은 지속선/동화점은 클릭으로 동화점 ON/OFF, Shift+클릭으로 텍스트 입력하도록 되돌린다. 빨간 지속선은 클릭 텍스트 입력을 유지한다.</li><li>대사란의 <code>0+20 | 5+10 | × |</code> 같은 행은 라벨, 빨간 범위선, 세로 지속선까지 전부 표시하지 않는다.</li><li><code>A_ls</code>, <code>B_ls</code>, <code>C_ls</code> 같은 접미사 레이어명을 포함한 CLIP STUDIO CSV 읽기 정지 문제를 수정한다. 먼 알파벳 열로 오인하지 않는다.</li><li>텍스트 커맨드와 CSV 편집란에서 라이브 프리뷰 갱신 중에도 입력 중인 스페이스를 보존해, 자유로운 연속 입력을 되돌렸다.</li><li>입력 모드 버튼을 한 줄 가로 배치로 변경했다.</li><li>내장 시트 템플릿의 Dialog 본문 열에는 가로선을 출력하지 않고, Dialog 헤더 밑 구분선만 남긴다.</li><li>텍스트 메모를 다시 편집할 때 투명 편집기가 열린 동안 SVG 프리뷰 쪽 문자를 숨겨 이중 표시를 막는다.</li>' +
           '</ul>' +
-          '<h4>최근 상세 내역</h4><details open><summary>ver524 · 카메라란 도움말 정리</summary><div><ul><li>카메라란 도움말에 남아 있던 24fps 고정 문장을 지원 언어 전체에서 삭제했다.</li></ul></div></details><details open><summary>ver523 · 업데이트 이력, 설명문 정리, CSV 상태 표시 언어 대응</summary><div><ul><li>이번 버전을 업데이트 이력에 추가하고, 지원 언어 전체에 같은 내용을 기록했다.</li><li>단축키 설정의 회색 설명문, 대사란의 24fps 고정 문장, 시트 프리뷰 밑 회색 메타 표시를 삭제했다.</li><li>CSV 읽기 완료 표시는 CSV를 불러온 뒤 언어를 바꿔도 선택 중인 UI 언어를 따라가도록 수정했다.</li></ul></div></details><details open><summary>ver522 · 프리셋 배치, 프리뷰 메타 다국어화, Duration 동기화, 자석 표기</summary><div><ul><li>외부용지 프리셋 1행에 프리셋 저장/불러오기, 2행에 프리셋 선택/적용을 배치했다.</li><li>시트 프리뷰 아래 메타 문구와 페이지 표시를 언어 대응했다.</li><li>실제 시트 내용으로 Duration 종료선이 표시될 때 Duration 초/프레임 값이 비어 있거나 0이면, 해당 종료 프레임을 Duration 입력값에 동기화한다.</li><li>용지선 자석 버튼 표기를 상/중/하에서 강/중/약으로 변경했다.</li></ul></div></details><details open><summary>ver521 · 입력 모드 일본어 라벨 폭 조정</summary><div><ul><li>CSV 입력 모드의 일본어 라벨을 반각 괄호 표기로 변경했다.</li><li>가로 버튼에서 글자가 삐져나가지 않도록 폰트 폭, 자간, 여백을 조정했다.</li></ul></div></details><details open><summary>ver520 · Dialog 가로선 제외와 텍스트 메모 이중 표시 방지</summary><div><ul><li>내장 시트 템플릿에서 Dialog 본문 열에는 프레임 가로선을 긋지 않도록 변경했다.</li><li>Dialog 열에 남는 가로선은 헤더 밑 구분선뿐이다.</li><li>텍스트 메모 textarea가 열리는 순간 SVG 프리뷰 쪽 같은 문자를 숨겨, 재편집 때 이중으로 보이지 않게 했다.</li></ul></div></details><details open><summary>ver519 · 입력 모드 버튼 가로 배치</summary><div><ul><li>입력 모드 버튼을 3열 가로 배치로 변경했다.</li><li>긴 CSV 라벨이 버튼 안에 들어가도록 중앙 정렬과 줄바꿈을 적용했다.</li></ul></div></details><details open><summary>ver518 · 텍스트 메모 투명 편집, 입력 모드 버튼화, 자석 민감도</summary><div><ul><li>텍스트 메모 편집 UI의 흰 배경을 없애고 프리뷰에 가까운 상태로 편집하도록 바꿨다.</li><li>입력 모드를 선택 탭이 아니라 직접 누르는 버튼으로 바꾸고, 선택 중 버튼은 프로젝트의 파랑＋빨간 발광 UI를 적용했다.</li><li>위치편집 버튼 옆에 용지 선 자석 민감도 상/중/하 버튼을 추가했다. 초기값은 중이다.</li><li>외부용지 이미지의 선 인식을 개선해 유사 색상이 가로/세로로 길게 이어지는 정보도 선으로 잡도록 했다.</li><li>일본어/한국어 라벨과 시트 프리뷰 하단 문구를 정리했다.</li></ul></div></details>' +
+          '<h4>최근 상세 내역</h4><details open><summary>ver530 · CSM/MAD Camera 굵은선 보정</summary><div><ul><li>앞쪽 격자는 좁은 8칸이고 Dialog 뒤 반복 격자는 넓은 7칸인 경우, 후속 CELL을 강한 구획선에서 멈추고 그 선부터 Camera를 시작하도록 했다.</li><li>짧은 Dialog 폭과 넓은 후속 CELL 폭 비율을 동시에 만족할 때만 보정해 8bit, KINEMA, TOEI, bones, TOHO의 기존 매칭에 영향이 적도록 했다.</li></ul></div></details><details open><summary>ver529 · 자동 정렬 멈춤 방지</summary><div><ul><li>좌우 열 후보 페어 탐색을 강한 후보 위주로 제한하고, 페이지 중심에서 크게 벗어난 페어는 해석 전에 제외한다.</li><li>페어 매칭 중 같은 오른쪽 그룹을 반복 계산하지 않도록 해석 결과를 캐시한다.</li><li>후속 CELL 격자 탐색을 가능한 폭 안으로 제한해, 복잡한 선 배열에서 매칭이 오래 멈추는 문제를 막는다.</li></ul></div></details><details open><summary>ver528 · 외부용지 자동 정렬 굵은선 안정화</summary><div><ul><li>굵은 세로 구획선 강도를 Cell/Dialog 후보 점수에 직접 반영해, 옅은 TOEI식 9칸이나 KINEMA식 8칸이 7칸으로 줄어드는 문제를 줄였다.</li><li>Dialog 뒤의 후속 CELL 격자는 앞쪽 CELL과 1칸 차이까지 허용해 CSM/MAD처럼 뒤쪽만 7칸인 구조에 대응했다.</li><li>Camera 시작점은 반복 CELL 격자의 끝에 더 강하게 고정하고, 페이지 가장자리 그림자 노이즈는 열 매칭 전에 제거한다.</li></ul></div></details><details open><summary>ver527 · 외부용지 자동 정렬 피드백 수정</summary><div><ul><li>대사 후보는 본문 가로줄이 적은지를 직접 점수화해서 8bit/MAD 계열 대사칸을 이웃 CELL칸과 더 잘 분리한다.</li><li>특수 H칸/빈 여백은 CELL 박스를 왼쪽 정렬로 유지하고 Dialog 앞 여백을 남기며, 흐린 용지에서는 누락된 세로선도 복원 후보로 사용한다.</li><li>Camera 검출은 반복 CELL 격자 뒤에서 시작하고 전체 페이지 외곽선을 제외해 bones/TOHO 계열 Camera 박스를 개선했다.</li></ul></div></details><details open><summary>ver526 · 외부용지 자동 정렬 열 판정 조정</summary><div><ul><li>대사란 뒤 반복 CELL 격자까지 확인한 뒤 7/8/9칸 후보를 고르도록 해, 도에이식 H/빈칸을 대사란으로 오인하기 어렵게 했다.</li><li>카메라 시작 위치는 얇은 내부선보다 강한 구획선을 우선한다.</li><li>추정에 사용한 반복 CELL 격자를 상태 패널과 프리뷰 오버레이에 표시한다.</li></ul></div></details><details open><summary>ver525 · 외부용지 자동 정렬</summary><div><ul><li>외부용지에 자동 정렬 버튼을 추가해, 감지한 가로선·세로선으로 72프레임 본문 행과 Header/Cell/Dialog/Camera 위치 박스를 추정한다.</li><li>용지 이미지를 불러온 직후 같은 추정을 1회 실행하고, 위치 편집 상태를 유지해 수동 보정할 수 있게 했다.</li><li>자동 정렬 상태 패널과 프리뷰 오버레이에 감지 선 수, 본문 행 배열, 열 패턴, 신뢰도, 적용 박스를 표시한다.</li></ul></div></details><details open><summary>ver524 · 카메라란 도움말 정리</summary><div><ul><li>카메라란 도움말에 남아 있던 24fps 고정 문장을 지원 언어 전체에서 삭제했다.</li></ul></div></details><details open><summary>ver523 · 업데이트 이력, 설명문 정리, CSV 상태 표시 언어 대응</summary><div><ul><li>이번 버전을 업데이트 이력에 추가하고, 지원 언어 전체에 같은 내용을 기록했다.</li><li>단축키 설정의 회색 설명문, 대사란의 24fps 고정 문장, 시트 프리뷰 밑 회색 메타 표시를 삭제했다.</li><li>CSV 읽기 완료 표시는 CSV를 불러온 뒤 언어를 바꿔도 선택 중인 UI 언어를 따라가도록 수정했다.</li></ul></div></details><details open><summary>ver522 · 프리셋 배치, 프리뷰 메타 다국어화, Duration 동기화, 자석 표기</summary><div><ul><li>외부용지 프리셋 1행에 프리셋 저장/불러오기, 2행에 프리셋 선택/적용을 배치했다.</li><li>시트 프리뷰 아래 메타 문구와 페이지 표시를 언어 대응했다.</li><li>실제 시트 내용으로 Duration 종료선이 표시될 때 Duration 초/프레임 값이 비어 있거나 0이면, 해당 종료 프레임을 Duration 입력값에 동기화한다.</li><li>용지선 자석 버튼 표기를 상/중/하에서 강/중/약으로 변경했다.</li></ul></div></details><details open><summary>ver521 · 입력 모드 일본어 라벨 폭 조정</summary><div><ul><li>CSV 입력 모드의 일본어 라벨을 반각 괄호 표기로 변경했다.</li><li>가로 버튼에서 글자가 삐져나가지 않도록 폰트 폭, 자간, 여백을 조정했다.</li></ul></div></details><details open><summary>ver520 · Dialog 가로선 제외와 텍스트 메모 이중 표시 방지</summary><div><ul><li>내장 시트 템플릿에서 Dialog 본문 열에는 프레임 가로선을 긋지 않도록 변경했다.</li><li>Dialog 열에 남는 가로선은 헤더 밑 구분선뿐이다.</li><li>텍스트 메모 textarea가 열리는 순간 SVG 프리뷰 쪽 같은 문자를 숨겨, 재편집 때 이중으로 보이지 않게 했다.</li></ul></div></details><details open><summary>ver519 · 입력 모드 버튼 가로 배치</summary><div><ul><li>입력 모드 버튼을 3열 가로 배치로 변경했다.</li><li>긴 CSV 라벨이 버튼 안에 들어가도록 중앙 정렬과 줄바꿈을 적용했다.</li></ul></div></details><details open><summary>ver518 · 텍스트 메모 투명 편집, 입력 모드 버튼화, 자석 민감도</summary><div><ul><li>텍스트 메모 편집 UI의 흰 배경을 없애고 프리뷰에 가까운 상태로 편집하도록 바꿨다.</li><li>입력 모드를 선택 탭이 아니라 직접 누르는 버튼으로 바꾸고, 선택 중 버튼은 프로젝트의 파랑＋빨간 발광 UI를 적용했다.</li><li>위치편집 버튼 옆에 용지 선 자석 민감도 상/중/하 버튼을 추가했다. 초기값은 중이다.</li><li>외부용지 이미지의 선 인식을 개선해 유사 색상이 가로/세로로 길게 이어지는 정보도 선으로 잡도록 했다.</li><li>일본어/한국어 라벨과 시트 프리뷰 하단 문구를 정리했다.</li></ul></div></details>' +
           '<details open><summary>ver517 · Text Commands 스페이스 입력 복구</summary><div><ul><li>Text Commands와 CSV 편집란에서 라이브 프리뷰 갱신 중에도 사용자가 입력한 공백을 유지한다.</li><li>선두 X 공백 보정 처리가 커맨드 행 전체를 재조립하지 않도록 바꿔, Space를 누른 직후 공백이 사라지지 않게 한다.</li></ul></div></details><details><summary>ver516 · CLIP CSV 접미사 레이어명 정지 수정</summary><div><ul><li>절대 위치 배치에 쓰는 셀 열 이름을 지원 범위 안의 순수 A-Z 라벨로 제한한다.</li><li><code>A_ls</code>, <code>B_ls</code>, <code>C_ls</code> 같은 레이어명은 일반 레이어로 읽고, 수천 개의 보조 열을 만들지 않는다.</li></ul></div></details>' +
           '<details open><summary>ver515 · 대사란 × 블록 완전 비표시</summary><div><ul><li>대사란에서 시작 박스가 <code>×</code>/<code>x</code>이고 본문이 비어 있는 행은 시트에 아무것도 표시하지 않는다.</li><li>빨간 범위선, 세로 가이드선, 라벨, 본문을 모두 숨긴다.</li></ul></div></details>' +
           '<details><summary>ver514 · 동화점 토글과 텍스트 입력 분리</summary><div><ul><li>검은 지속선/동화점은 클릭으로 동화점 ON/OFF, Shift+클릭으로 텍스트 입력하도록 되돌렸다.</li><li>빨간 지속선은 동화점으로 바뀌지 않고 클릭으로 텍스트 입력하는 동작을 유지했다.</li></ul></div></details>' +
@@ -2294,8 +2360,13 @@
       zh: {
         title: '更新记录',
         subtitle: '点击 Auto Sheet 标题即可打开此记录。这里只列出已经实际实现的更新。',
-        html: '<h4><span class="update-log-badge">Today</span>2026-04-27 更新总览</h4>' +
+        html: '<h4><span class="update-log-badge">Today</span>2026-04-28 更新总览</h4>' +
           '<ul>' +
+          '<li>ver532：保留 ver530 标准 Auto Align 结果作为默认，仅当 JDG 类虚线 9 列恢复能把左右 Camera 框扩展到完整强竖线时才采用该结果。</li><li>ver530：为 Dialog 两侧 CELL 数不同的 CSM/MAD 类纸张加入限定 Camera 修正，可把 7 列后续 CELL 之后的粗分隔线作为 Camera 起点。</li><li>ver529：加入自动对齐性能保护、候选配对缓存和后续 CELL 网格搜索范围限制，避免复杂纸张在线条匹配时卡住。</li>' +
+          '<li>ver528：提高粗分隔线优先级，过滤页面边缘噪声，恢复东映式 9 列，允许 7 列后续 CELL 网格，并加强在重复 CELL 网格末端锁定 Camera 起点。</li>' +
+          '<li>ver527：通过 Dialog 横线空白、缺失 Cell 线重建、特殊 H 栏左对齐，以及重复 CELL 网格后的 Camera 起点保护，强化外部纸张自动对齐。</li>' +
+          '<li>ver526：改进 7-9 列外部纸张自动对齐，减少将东映式 A-H＋空白格误判为 Dialog 的情况。</li>' +
+          '<li>ver525：新增外部纸张自动对齐，会根据线条检测推断正文行与 Cell/Dialog/Camera 框，并显示匹配过程。</li>' +
           '<li>ver524：删除 Camera 栏帮助文字中残留的 24fps 固定句。</li>' +
           '<li>ver523：追加多语言更新记录，删除剩余灰色说明、对白栏 24fps 固定句和 Sheet 预览下方信息，并修正 CSV 读取状态的语言刷新。</li>' +
           '<li>整理 Guide UI：删除简易说明书与外部纸张的摘要说明，将外部纸张导入移动到摄影栏下方；纸张文件选择高亮只包围文件选择 UI；删除 CSV 导入时的高亮；CSV 编码栏仅在检测到乱码时显示；删除 Editable Commands from CSV 下方说明文字。</li>' +
@@ -2322,7 +2393,7 @@
           '<li>原画编号悬停时统一为手形光标，而不是文字输入光标。</li>' +
           '<li>黑色保持线/动画点恢复为点击切换动画点 ON/OFF，Shift 点击输入文字。红色保持线保持点击输入文字。</li><li>对白栏中类似 <code>0+20 | 5+10 | × |</code> 的行会完全不显示，包括标签、红色范围线和竖线。</li><li>修正含有 <code>A_ls</code>、<code>B_ls</code>、<code>C_ls</code> 等后缀图层名的 CLIP STUDIO CSV 导入停止问题；这些名称不会再被误判为远处的字母列。</li><li>恢复 Text Commands 与 CSV 编辑栏中的自由空格输入，实时预览更新时也保留正在输入的空白。</li><li>输入模式按钮改为一行横向排列。</li><li>内置模板的 Dialog 正文列不再输出横线，只保留 Dialog 标题下方的分隔线。</li><li>重新编辑文字备注时，透明编辑器打开期间隐藏 SVG 预览文字，避免双重显示。</li>' +
           '</ul>' +
-          '<h4>最近详细记录</h4><details open><summary>ver524 · Camera 栏帮助文字整理</summary><div><ul><li>删除 Camera 栏帮助文字中残留的 24fps 固定句，并同步到所有支持语言。</li></ul></div></details><details open><summary>ver523 · 更新记录、说明文字整理、CSV 状态显示语言支持</summary><div><ul><li>将本次版本加入更新记录，并在所有支持语言中记录同一内容。</li><li>删除快捷键设置的灰色说明、对白栏的 24fps 固定句，以及 Sheet 预览下方的灰色信息文字。</li><li>CSV 读取完成提示在读取 CSV 后切换语言时，也会跟随当前 UI 语言。</li></ul></div></details><details open><summary>ver522 · 预设布局、预览信息多语言、Duration 同步、磁吸标签</summary><div><ul><li>外部纸张预设控制中，第一行放置保存/读取预设，第二行放置预设选择/应用。</li><li>Sheet 预览下方的说明文字和页码显示支持多语言。</li><li>根据实际内容显示 Duration 结束线时，如果 Duration 秒/帧为空或为 0，会把该结束帧同步回 Duration 输入框。</li><li>纸张线条磁吸按钮由上/中/下改为强/中/弱。</li></ul></div></details><details open><summary>ver521 · 输入模式日文标签宽度调整</summary><div><ul><li>将 CSV 输入模式的日文标签改为半角括号。</li><li>调整横向按钮的字体宽度、字距和内边距，避免文字溢出。</li></ul></div></details><details open><summary>ver520 · Dialog 横线排除与文字备注双重显示修正</summary><div><ul><li>内置 Sheet 模板中，Dialog 正文列不再绘制帧横线。</li><li>Dialog 列只保留标题下方的分隔线。</li><li>文字备注 textarea 打开时隐藏 SVG 预览中的同一文字，避免重新编辑时双重显示。</li></ul></div></details><details open><summary>ver519 · 输入模式按钮横向排列</summary><div><ul><li>将输入模式按钮改为紧凑的三列横向排列。</li><li>按钮文字居中并允许换行，使较长的 CSV 标签保持在按钮内。</li></ul></div></details><details open><summary>ver518 · 透明文字备注编辑、输入模式按钮、磁吸灵敏度</summary><div><ul><li>移除文字备注编辑 UI 的白色背景，使编辑时更接近预览外观。</li><li>输入模式由下拉菜单改为直接按钮，当前按钮使用项目的蓝色＋红色发光 UI。</li><li>在位置编辑旁新增纸张线条磁吸灵敏度上/中/下按钮，默认值为中。</li><li>改进外部纸张图像线条检测，可识别相近颜色横向/纵向连续形成的线。</li><li>整理日文/韩文标签和 Sheet 预览下方显示文本。</li></ul></div></details>' +
+          '<h4>最近详细记录</h4><details open><summary>ver530 · CSM/MAD Camera 粗线修正</summary><div><ul><li>当前方为较窄 8 列、Dialog 后方重复网格为较宽 7 列时，自动对齐会在强分隔线处结束后续 CELL，并从该线开始 Camera。</li><li>该修正只在短 Dialog 宽度和较宽后续 CELL 比例同时满足时启用，以尽量不影响 8bit、KINEMA、TOEI、bones、TOHO 的既有匹配。</li></ul></div></details><details open><summary>ver529 · 自动对齐防卡顿</summary><div><ul><li>将左右列候选配对限制在较强候选内，并在解析前跳过明显偏离页面中心的组合。</li><li>配对匹配中缓存已解析的侧边结构，避免同一右侧组被反复计算。</li><li>按合理宽度限制后续 CELL 网格搜索范围，防止复杂线条数组导致长时间卡住。</li></ul></div></details><details open><summary>ver528 · 外部纸张自动对齐粗线分隔稳定化</summary><div><ul><li>将粗竖向分隔线强度直接加入 Cell/Dialog 候选评分，减少浅色东映式 9 列或 KINEMA 式 8 列被压成 7 列的情况。</li><li>Dialog 后方的后续 CELL 网格允许与前方 CELL 相差一列，以适应 CSM/MAD 中后方只有 7 列的结构。</li><li>Camera 起点更强地锁定在重复 CELL 网格末端，并在列匹配前过滤页面边缘阴影噪声。</li></ul></div></details><details open><summary>ver527 · 外部纸张自动对齐反馈修正</summary><div><ul><li>Dialog 候选会直接评分正文横线缺失程度，更可靠地区分 8bit/MAD 类 Dialog 栏和相邻 CELL 栏。</li><li>特殊 H 栏/空白间距会保持 CELL 框左对齐并在 Dialog 前留出空隙，浅色纸张也会尝试重建缺失竖线。</li><li>Camera 检测从重复 CELL 网格之后开始，并排除整页边框线，改善 bones/TOHO 类 Camera 框。</li></ul></div></details><details open><summary>ver526 · 外部纸张自动对齐列判断调整</summary><div><ul><li>选择 7/8/9 列候选前，会同时验证 Dialog 后方的重复 CELL 网格，减少将东映式 H/空白格误判为 Dialog 的情况。</li><li>Camera 起点会优先使用更强的分隔线，减少吸入最后一个 CELL 网格列。</li><li>状态面板和预览叠层会显示推断时使用的重复 CELL 网格。</li></ul></div></details><details open><summary>ver525 · 外部纸张自动对齐</summary><div><ul><li>为外部纸张新增自动对齐按钮，根据检测到的横线、竖线推断 72 帧正文行以及 Header/Cell/Dialog/Camera 位置框。</li><li>载入纸张图像后会自动执行一次同样的推断，并保持位置编辑开启，便于手动修正。</li><li>自动对齐状态面板和预览叠层会显示检测线数、正文行序列、列模式、置信度和已应用框。</li></ul></div></details><details open><summary>ver524 · Camera 栏帮助文字整理</summary><div><ul><li>删除 Camera 栏帮助文字中残留的 24fps 固定句，并同步到所有支持语言。</li></ul></div></details><details open><summary>ver523 · 更新记录、说明文字整理、CSV 状态显示语言支持</summary><div><ul><li>将本次版本加入更新记录，并在所有支持语言中记录同一内容。</li><li>删除快捷键设置的灰色说明、对白栏的 24fps 固定句，以及 Sheet 预览下方的灰色信息文字。</li><li>CSV 读取完成提示在读取 CSV 后切换语言时，也会跟随当前 UI 语言。</li></ul></div></details><details open><summary>ver522 · 预设布局、预览信息多语言、Duration 同步、磁吸标签</summary><div><ul><li>外部纸张预设控制中，第一行放置保存/读取预设，第二行放置预设选择/应用。</li><li>Sheet 预览下方的说明文字和页码显示支持多语言。</li><li>根据实际内容显示 Duration 结束线时，如果 Duration 秒/帧为空或为 0，会把该结束帧同步回 Duration 输入框。</li><li>纸张线条磁吸按钮由上/中/下改为强/中/弱。</li></ul></div></details><details open><summary>ver521 · 输入模式日文标签宽度调整</summary><div><ul><li>将 CSV 输入模式的日文标签改为半角括号。</li><li>调整横向按钮的字体宽度、字距和内边距，避免文字溢出。</li></ul></div></details><details open><summary>ver520 · Dialog 横线排除与文字备注双重显示修正</summary><div><ul><li>内置 Sheet 模板中，Dialog 正文列不再绘制帧横线。</li><li>Dialog 列只保留标题下方的分隔线。</li><li>文字备注 textarea 打开时隐藏 SVG 预览中的同一文字，避免重新编辑时双重显示。</li></ul></div></details><details open><summary>ver519 · 输入模式按钮横向排列</summary><div><ul><li>将输入模式按钮改为紧凑的三列横向排列。</li><li>按钮文字居中并允许换行，使较长的 CSV 标签保持在按钮内。</li></ul></div></details><details open><summary>ver518 · 透明文字备注编辑、输入模式按钮、磁吸灵敏度</summary><div><ul><li>移除文字备注编辑 UI 的白色背景，使编辑时更接近预览外观。</li><li>输入模式由下拉菜单改为直接按钮，当前按钮使用项目的蓝色＋红色发光 UI。</li><li>在位置编辑旁新增纸张线条磁吸灵敏度上/中/下按钮，默认值为中。</li><li>改进外部纸张图像线条检测，可识别相近颜色横向/纵向连续形成的线。</li><li>整理日文/韩文标签和 Sheet 预览下方显示文本。</li></ul></div></details>' +
           '<details open><summary>ver517 · 恢复 Text Commands 空格输入</summary><div><ul><li>Text Commands 与 CSV 编辑栏在实时预览更新时保留用户输入的空白。</li><li>开头 X 空白修正处理不再重建整行命令，因此按下 Space 后空白不会立刻消失。</li></ul></div></details><details><summary>ver516 · 修正 CLIP CSV 后缀图层名停止问题</summary><div><ul><li>绝对 Cell 列定位只使用支持范围内的纯 A-Z 标签。</li><li><code>A_ls</code>、<code>B_ls</code>、<code>C_ls</code> 等图层名会作为普通图层导入，不再生成数千个填充列。</li></ul></div></details>' +
           '<details open><summary>ver515 · 对白栏 × 块完全隐藏</summary><div><ul><li>对白栏中开始框为 <code>×</code>/<code>x</code> 且正文为空的行，不在 Sheet 上绘制任何内容。</li><li>红色范围线、竖向引导线、标签和正文全部隐藏。</li></ul></div></details>' +
           '<details><summary>ver514 · 分离动画点切换与文字输入</summary><div><ul><li>黑色保持线/动画点恢复为点击切换动画点 ON/OFF，Shift 点击输入文字。</li><li>红色保持线不切换动画点，继续使用点击输入文字。</li></ul></div></details>' +
@@ -2590,7 +2661,7 @@
         loading:'Loading paper image...',
         loaded:function(name, meta){ return 'Loaded: ' + name + (meta ? ' · ' + meta : ''); },
         failed:function(msg){ return 'Paper image load failed: ' + msg; },
-        clear:'Clear Paper', reset:'Position Reset', position:'Position Edit',
+        clear:'Clear Paper', reset:'Position Reset', position:'Position Edit', autoAlign:'Auto Align',
         pixelEmpty:'Source pixels: -',
         pixelInfo:function(w, h){ return 'Source pixels: ' + w + ' × ' + h; },
         companyPresetTitle:'Preset',
@@ -2603,6 +2674,18 @@
         presetSaved:function(name){ return 'Preset saved: ' + name; },
         presetLoaded:function(name){ return 'Preset loaded: ' + name; },
         presetFailed:function(msg){ return 'Preset load failed: ' + msg; },
+        autoAlignStatus:{
+          ready:'Auto Align compares the detected paper grid with the sheet UI.',
+          working:'Analyzing paper lines and matching the sheet boxes...',
+          noPaper:'Load a paper image before Auto Align.',
+          done:function(confidence){ return 'Auto Align applied · confidence ' + confidence + '%'; },
+          failed:function(msg){ return 'Auto Align failed: ' + msg; },
+          detected:'Detected lines',
+          rows:'Body row sequence',
+          columns:'Column pattern',
+          follow:'Repeated cell grid',
+          applied:'Applied layout'
+        },
         showTemplate:'Show built-in sheet template',
         showHeader:'Show header output',
         showCellLabel:'Show cell label output',
@@ -2620,7 +2703,7 @@
         loading:'用紙画像を読み込み中...',
         loaded:function(name, meta){ return '読込完了: ' + name + (meta ? ' · ' + meta : ''); },
         failed:function(msg){ return '用紙画像の読込失敗: ' + msg; },
-        clear:'用紙をクリア', reset:'位置初期化', position:'位置編集',
+        clear:'用紙をクリア', reset:'位置初期化', position:'位置編集', autoAlign:'自動整列',
         pixelEmpty:'元画像ピクセル: -',
         pixelInfo:function(w, h){ return '元画像ピクセル: ' + w + ' × ' + h; },
         companyPresetTitle:'プリセット',
@@ -2633,6 +2716,18 @@
         presetSaved:function(name){ return 'プリセット保存完了: ' + name; },
         presetLoaded:function(name){ return 'プリセット読込完了: ' + name; },
         presetFailed:function(msg){ return 'プリセット読込失敗: ' + msg; },
+        autoAlignStatus:{
+          ready:'自動整列は、検出した用紙グリッドとシートUIを照合する。',
+          working:'用紙の線を解析し、シートの位置ボックスと照合中...',
+          noPaper:'自動整列の前に用紙画像を読み込む。',
+          done:function(confidence){ return '自動整列を適用 · 信頼度 ' + confidence + '%'; },
+          failed:function(msg){ return '自動整列失敗: ' + msg; },
+          detected:'検出した線',
+          rows:'本文行の連続',
+          columns:'列パターン',
+          follow:'Dialog後の反復セル欄',
+          applied:'適用した配置'
+        },
         showTemplate:'内蔵シートテンプレートを表示',
         showHeader:'Header出力を表示',
         showCellLabel:'Cellラベル出力を表示',
@@ -2650,7 +2745,7 @@
         loading:'용지 이미지를 로드 중...',
         loaded:function(name, meta){ return '로드 완료: ' + name + (meta ? ' · ' + meta : ''); },
         failed:function(msg){ return '용지 이미지 로드 실패: ' + msg; },
-        clear:'용지 삭제', reset:'위치 초기화', position:'위치 편집',
+        clear:'용지 삭제', reset:'위치 초기화', position:'위치 편집', autoAlign:'자동 정렬',
         pixelEmpty:'원본 픽셀: -',
         pixelInfo:function(w, h){ return '원본 픽셀: ' + w + ' × ' + h; },
         companyPresetTitle:'프리셋',
@@ -2663,6 +2758,18 @@
         presetSaved:function(name){ return '프리셋 저장 완료: ' + name; },
         presetLoaded:function(name){ return '프리셋 불러오기 완료: ' + name; },
         presetFailed:function(msg){ return '프리셋 불러오기 실패: ' + msg; },
+        autoAlignStatus:{
+          ready:'자동 정렬은 감지한 용지 격자와 시트 UI를 대조한다.',
+          working:'용지 선을 분석하고 시트 위치 박스와 대조 중...',
+          noPaper:'자동 정렬 전에 용지 이미지를 먼저 불러온다.',
+          done:function(confidence){ return '자동 정렬 적용 · 신뢰도 ' + confidence + '%'; },
+          failed:function(msg){ return '자동 정렬 실패: ' + msg; },
+          detected:'감지한 선',
+          rows:'본문 행 배열',
+          columns:'열 패턴',
+          follow:'대사 뒤 반복 셀칸',
+          applied:'적용한 배치'
+        },
         showTemplate:'내장 시트 용지양식 표시',
         showHeader:'헤더 출력 표시',
         showCellLabel:'셀 라벨 출력 표시',
@@ -2680,7 +2787,7 @@
         loading:'正在载入纸张图像...',
         loaded:function(name, meta){ return '载入完成: ' + name + (meta ? ' · ' + meta : ''); },
         failed:function(msg){ return '纸张图像载入失败: ' + msg; },
-        clear:'清除纸张', reset:'位置重置', position:'位置编辑',
+        clear:'清除纸张', reset:'位置重置', position:'位置编辑', autoAlign:'自动对齐',
         pixelEmpty:'原始像素: -',
         pixelInfo:function(w, h){ return '原始像素: ' + w + ' × ' + h; },
         companyPresetTitle:'预设',
@@ -2693,6 +2800,18 @@
         presetSaved:function(name){ return '预设已保存: ' + name; },
         presetLoaded:function(name){ return '预设已载入: ' + name; },
         presetFailed:function(msg){ return '预设载入失败: ' + msg; },
+        autoAlignStatus:{
+          ready:'自动对齐会比较检测到的纸张网格和 Sheet UI。',
+          working:'正在分析纸张线条并匹配 Sheet 位置框...',
+          noPaper:'请先载入纸张图像，再使用自动对齐。',
+          done:function(confidence){ return '已应用自动对齐 · 置信度 ' + confidence + '%'; },
+          failed:function(msg){ return '自动对齐失败: ' + msg; },
+          detected:'检测到的线',
+          rows:'正文行序列',
+          columns:'列模式',
+          follow:'对白后的重复 Cell 网格',
+          applied:'已应用布局'
+        },
         showTemplate:'显示内置 Sheet 模板',
         showHeader:'显示 Header 输出',
         showCellLabel:'显示 Cell 标签输出',
@@ -2826,6 +2945,7 @@
       if (clearPaperImageBtn) clearPaperImageBtn.textContent = doc.clear;
       if (resetLayoutAdjustBtn) resetLayoutAdjustBtn.textContent = doc.reset;
       if (headerPositionModeBtn) headerPositionModeBtn.textContent = doc.position;
+      if (autoAlignPaperBtn) autoAlignPaperBtn.textContent = doc.autoAlign || 'Auto Align';
       if (layoutPresetTitleEl) layoutPresetTitleEl.textContent = doc.presetTitle;
       if (saveLayoutPresetBtn) saveLayoutPresetBtn.textContent = doc.savePreset;
       if (loadLayoutPresetBtn) loadLayoutPresetBtn.textContent = doc.loadPreset;
@@ -2839,6 +2959,7 @@
       if (cellColumnCountLabelEl) cellColumnCountLabelEl.textContent = doc.cellColumns;
       if (cellColumnCountHintEl) cellColumnCountHintEl.textContent = doc.cellColumnsHint;
       if (paperLayoutHintEl) paperLayoutHintEl.textContent = doc.body;
+      renderPaperAutoAlignStatus();
       updatePaperImageStatus();
     }
 
@@ -2871,6 +2992,7 @@
       if (showCellLabelOutputToggleEl) showCellLabelOutputToggleEl.checked = !!state.showCellLabelOutput;
       if (cellColumnCountInputEl) cellColumnCountInputEl.value = String(getCellColumnCount());
       if (headerPositionModeBtn) headerPositionModeBtn.classList.toggle('active', !!state.positionMode);
+      if (autoAlignPaperBtn) autoAlignPaperBtn.disabled = !state.paperImageDataUrl || (state.paperAutoAlignResult && state.paperAutoAlignResult.status === 'working');
       updatePaperMagnetSensitivityUI();
     }
 
@@ -2879,6 +3001,68 @@
       layoutPresetStatusEl.textContent = message || getPaperLayoutTexts().presetReady;
       if (message) layoutPresetStatusEl.dataset.locked = '1';
       else delete layoutPresetStatusEl.dataset.locked;
+    }
+
+    function escapeStatusHtml(value) {
+      return String(value == null ? '' : value).replace(/[&<>"']/g, function(ch){
+        return ch === '&' ? '&amp;' : (ch === '<' ? '&lt;' : (ch === '>' ? '&gt;' : (ch === '"' ? '&quot;' : '&#39;')));
+      });
+    }
+
+    function getPaperAutoAlignTexts() {
+      const doc = getPaperLayoutTexts();
+      return doc.autoAlignStatus || paperLayoutTexts.en.autoAlignStatus;
+    }
+
+    function setPaperAutoAlignResult(result) {
+      state.paperAutoAlignResult = result || null;
+      renderPaperAutoAlignStatus();
+    }
+
+    function makePaperAutoAlignStatusSteps(info, doc) {
+      if (Array.isArray(info && info.steps)) return info.steps;
+      const d = info && info.diagnostics ? info.diagnostics : null;
+      if (!d) return [];
+      const lines = [];
+      lines.push((doc.detected || 'Detected lines') + ': X ' + (d.xLineCount || 0) + ' / Y ' + (d.yLineCount || 0) + ', threshold ' + (d.darkThreshold || '-'));
+      if (d.bodyTop !== undefined) {
+        lines.push((doc.rows || 'Body row sequence') + ': y ' + Math.round(d.bodyTop) + '-' + Math.round(d.bodyBottom || 0) + ', ' + (d.bodyLineCount || 0) + ' lines, row ' + (Number(d.rowH || 0).toFixed(2)) + 'px');
+      }
+      if (d.columns !== undefined) {
+        lines.push((doc.columns || 'Column pattern') + ': ' + d.columns + ' columns, CellW ' + (Number(d.cellW || 0).toFixed(1)) + 'px, Dialog ' + Math.round(d.leftDialogW || 0) + '/' + Math.round(d.rightDialogW || 0) + 'px');
+      }
+      if (d.leftFollowColumns !== undefined) {
+        lines.push((doc.follow || 'Repeated cell grid') + ': ' + d.leftFollowColumns + '/' + d.rightFollowColumns + ' columns after Dialog');
+      }
+      if (d.leftCameraW !== undefined) {
+        lines.push((doc.applied || 'Applied layout') + ': Camera ' + Math.round(d.leftCameraW || 0) + '/' + Math.round(d.rightCameraW || 0) + 'px, label top y ' + Math.round(d.labelTop || 0));
+      }
+      return lines;
+    }
+
+    function renderPaperAutoAlignStatus() {
+      if (!paperAutoAlignStatusEl) return;
+      const info = state.paperAutoAlignResult;
+      if (!info) {
+        paperAutoAlignStatusEl.className = 'paper-auto-align-status';
+        paperAutoAlignStatusEl.innerHTML = '';
+        return;
+      }
+      const doc = getPaperAutoAlignTexts();
+      const isError = info.status === 'error';
+      paperAutoAlignStatusEl.className = 'paper-auto-align-status active' + (isError ? ' error' : '');
+      const confidence = Math.max(0, Math.min(100, Math.round(Number(info.confidence || 0))));
+      let title = doc.ready || 'Auto Align';
+      if (info.status === 'working') title = doc.working || title;
+      else if (info.status === 'done') title = (doc.done || paperLayoutTexts.en.autoAlignStatus.done)(confidence);
+      else if (isError) title = (doc.failed || paperLayoutTexts.en.autoAlignStatus.failed)(info.message || '');
+
+      const steps = makePaperAutoAlignStatusSteps(info, doc);
+      let html = '<strong>' + escapeStatusHtml(title) + '</strong>';
+      if (steps.length) {
+        html += '<ol>' + steps.map(function(step){ return '<li>' + escapeStatusHtml(step) + '</li>'; }).join('') + '</ol>';
+      }
+      paperAutoAlignStatusEl.innerHTML = html;
     }
 
     function getActiveLang() {
@@ -3981,6 +4165,50 @@
       });
     }
 
+    function renderPaperAutoAlignOverlay() {
+      if (currentSvgTarget !== svg || !state.positionMode || !state.paperAutoAlignOverlay) return;
+      const overlay = state.paperAutoAlignOverlay;
+      const boxes = overlay.boxes || {};
+      withDrawLayer('output', function(){
+        const group = el('g', { 'data-paper-auto-align-overlay':'1', 'pointer-events':'none' });
+        const yLines = Array.isArray(overlay.yLines) ? overlay.yLines : [];
+        yLines.forEach(function(y, index){
+          if (index !== 0 && index !== yLines.length - 1 && index % 12 !== 0) return;
+          group.appendChild(el('line', {
+            x1:36, y1:y, x2:PAGE_W - 36, y2:y,
+            stroke:'#1f6feb', 'stroke-width':index === 0 || index === yLines.length - 1 ? 2.4 : 1.1,
+            'stroke-dasharray':index === 0 || index === yLines.length - 1 ? 'none' : '5 7',
+            opacity:index === 0 || index === yLines.length - 1 ? .72 : .34
+          }));
+        });
+        ['cell-left', 'dialog-left', 'follow-left', 'camera-left', 'cell-right', 'dialog-right', 'follow-right', 'camera-right'].forEach(function(key){
+          const box = boxes[key];
+          if (!box) return;
+          const isDialog = key.indexOf('dialog') === 0;
+          const isCamera = key.indexOf('camera') === 0;
+          const isFollow = key.indexOf('follow') === 0;
+          const stroke = isDialog ? '#cf2a2a' : (isCamera ? '#2f9d50' : (isFollow ? '#b26a00' : '#1f6feb'));
+          const fill = isDialog ? 'rgba(207,42,42,.07)' : (isCamera ? 'rgba(47,157,80,.07)' : (isFollow ? 'rgba(178,106,0,.06)' : 'rgba(31,111,235,.07)'));
+          group.appendChild(el('rect', {
+            x:box.x, y:box.y, width:box.w, height:box.h,
+            fill:fill, stroke:stroke, 'stroke-width':isFollow ? 1.6 : 2.2, 'stroke-dasharray':isFollow ? '3 7' : '9 6', rx:3, ry:3
+          }));
+        });
+        const labelBox = boxes['cell-left'];
+        if (labelBox) {
+          group.appendChild(el('text', {
+            x:labelBox.x,
+            y:Math.max(18, labelBox.y - 18),
+            fill:'#1f6feb',
+            'font-size':15,
+            'font-family':'Arial, Helvetica, sans-serif',
+            'font-weight':'900'
+          }, 'Auto Align: detected grid match'));
+        }
+        appendSvgNode(group);
+      });
+    }
+
     function getPaperMagnetSensitivity() {
       return PAPER_MAGNET_SENSITIVITY_PRESETS[state.paperMagnetSensitivity] ? state.paperMagnetSensitivity : PAPER_MAGNET_DEFAULT_SENSITIVITY;
     }
@@ -4138,6 +4366,1013 @@
       };
       img.onerror = function(){ if (token === state.paperMagnetBuildToken) state.paperMagnetLines = { x:[], y:[], sourceKey:'' }; };
       img.src = source;
+    }
+
+    function medianPaperAutoAlignNumber(values) {
+      const arr = (values || []).map(Number).filter(Number.isFinite).sort(function(a,b){ return a-b; });
+      if (!arr.length) return 0;
+      const mid = Math.floor(arr.length / 2);
+      return arr.length % 2 ? arr[mid] : (arr[mid - 1] + arr[mid]) / 2;
+    }
+
+    function averageAbsDeviation(values, center) {
+      const arr = (values || []).map(Number).filter(Number.isFinite);
+      if (!arr.length) return 0;
+      const c = Number(center) || 0;
+      return arr.reduce(function(sum, value){ return sum + Math.abs(value - c); }, 0) / arr.length;
+    }
+
+    function clusterPaperAutoAlignPositions(items, gap) {
+      const arr = (items || []).slice().sort(function(a,b){ return a.pos - b.pos; });
+      if (!arr.length) return [];
+      const clusters = [];
+      const clusterGap = Number.isFinite(Number(gap)) ? Number(gap) : 6;
+      let start = arr[0].pos;
+      let prev = arr[0].pos;
+      let weighted = arr[0].pos * Math.max(1, arr[0].maxRun || 1);
+      let weight = Math.max(1, arr[0].maxRun || 1);
+      let maxRun = arr[0].maxRun || 0;
+      let ink = arr[0].ink || 0;
+      function pushCluster() {
+        clusters.push({
+          pos:Math.round(weighted / Math.max(1, weight)),
+          start:start,
+          end:prev,
+          thickness:Math.max(1, prev - start + 1),
+          maxRun:maxRun,
+          ink:ink
+        });
+      }
+      for (let i = 1; i < arr.length; i++) {
+        const item = arr[i];
+        if (item.pos <= prev + clusterGap) {
+          prev = item.pos;
+          const itemWeight = Math.max(1, item.maxRun || 1);
+          weighted += item.pos * itemWeight;
+          weight += itemWeight;
+          maxRun = Math.max(maxRun, item.maxRun || 0);
+          ink += item.ink || 0;
+          continue;
+        }
+        pushCluster();
+        start = prev = item.pos;
+        weighted = item.pos * Math.max(1, item.maxRun || 1);
+        weight = Math.max(1, item.maxRun || 1);
+        maxRun = item.maxRun || 0;
+        ink = item.ink || 0;
+      }
+      pushCluster();
+      return clusters.filter(function(line, index, all){ return index === 0 || Math.abs(line.pos - all[index - 1].pos) > 5; });
+    }
+
+    function getPaperAutoAlignLuma(data, idx) {
+      return data[idx] * 0.299 + data[idx + 1] * 0.587 + data[idx + 2] * 0.114;
+    }
+
+    function loadPaperAutoAlignImage(source) {
+      return new Promise(function(resolve, reject){
+        if (!source || typeof Image === 'undefined') {
+          reject(new Error('No image source'));
+          return;
+        }
+        const img = new Image();
+        img.onload = function(){ resolve(img); };
+        img.onerror = function(){ reject(new Error('Image decode failed')); };
+        img.src = source;
+      });
+    }
+
+    async function analyzePaperAutoAlignLines(source) {
+      const img = await loadPaperAutoAlignImage(source);
+      const canvas = document.createElement('canvas');
+      canvas.width = PAGE_W;
+      canvas.height = PAGE_H;
+      const ctx = canvas.getContext('2d', { willReadFrequently:true });
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, PAGE_W, PAGE_H);
+      ctx.imageSmoothingEnabled = true;
+      ctx.drawImage(img, 0, 0, PAGE_W, PAGE_H);
+      const data = ctx.getImageData(0, 0, PAGE_W, PAGE_H).data;
+      const samples = [];
+      for (let y = 0; y < PAGE_H; y += 8) {
+        for (let x = 0; x < PAGE_W; x += 8) {
+          samples.push(getPaperAutoAlignLuma(data, (y * PAGE_W + x) * 4));
+        }
+      }
+      const median = medianPaperAutoAlignNumber(samples);
+      const darkThreshold = Math.min(240, Math.max(140, median - 15));
+      const rowCandidates = [];
+      const colCandidates = [];
+      const rowRunThreshold = PAGE_W * 0.04;
+      const colRunThreshold = PAGE_H * 0.04;
+
+      for (let y = 0; y < PAGE_H; y++) {
+        let ink = 0;
+        let run = 0;
+        let maxRun = 0;
+        const rowBase = y * PAGE_W * 4;
+        for (let x = 0; x < PAGE_W; x++) {
+          const lum = getPaperAutoAlignLuma(data, rowBase + x * 4);
+          if (lum < darkThreshold) {
+            ink += 1;
+            run += 1;
+            if (run > maxRun) maxRun = run;
+          } else {
+            run = 0;
+          }
+        }
+        if (maxRun >= rowRunThreshold) rowCandidates.push({ pos:y, maxRun:maxRun, ink:ink });
+      }
+
+      for (let x = 0; x < PAGE_W; x++) {
+        let ink = 0;
+        let run = 0;
+        let maxRun = 0;
+        for (let y = 0; y < PAGE_H; y++) {
+          const lum = getPaperAutoAlignLuma(data, (y * PAGE_W + x) * 4);
+          if (lum < darkThreshold) {
+            ink += 1;
+            run += 1;
+            if (run > maxRun) maxRun = run;
+          } else {
+            run = 0;
+          }
+        }
+        if (maxRun >= colRunThreshold) colCandidates.push({ pos:x, maxRun:maxRun, ink:ink });
+      }
+
+      const xDetailedRaw = clusterPaperAutoAlignPositions(colCandidates, 6);
+      const yDetailed = clusterPaperAutoAlignPositions(rowCandidates, 6);
+      const xDetailed = xDetailedRaw.filter(function(line){
+        const pos = Number(line.pos || 0);
+        const fullHeightRun = Number(line.maxRun || 0) > PAGE_H * 0.90;
+        const nearPageEdge = pos <= 12 || pos >= PAGE_W - 12;
+        const thickEdgeShadow = (pos <= 24 || pos >= PAGE_W - 24) && Number(line.thickness || 1) >= 12;
+        return !(nearPageEdge || thickEdgeShadow || (pos >= PAGE_W - 3 && fullHeightRun));
+      });
+      const sampleHorizontalBand = function(x1, x2, yPositions) {
+        const left = Math.max(0, Math.min(PAGE_W - 1, Math.round(Math.min(x1, x2) + 2)));
+        const right = Math.max(0, Math.min(PAGE_W - 1, Math.round(Math.max(x1, x2) - 2)));
+        const ys = (yPositions || []).map(Number).filter(function(y){ return Number.isFinite(y) && y >= 0 && y < PAGE_H; });
+        if (right <= left + 2 || !ys.length) return { hitRatio:1, avgDarkRatio:1, count:0 };
+        const step = Math.max(1, Math.ceil(ys.length / 22));
+        let hit = 0;
+        let sum = 0;
+        let count = 0;
+        for (let yi = 0; yi < ys.length; yi += step) {
+          const y0 = Math.round(ys[yi]);
+          let darkPix = 0;
+          let total = 0;
+          for (let yy = Math.max(0, y0 - 1); yy <= Math.min(PAGE_H - 1, y0 + 1); yy++) {
+            const rowBase = yy * PAGE_W * 4;
+            for (let x = left; x <= right; x += 2) {
+              if (getPaperAutoAlignLuma(data, rowBase + x * 4) < darkThreshold) darkPix += 1;
+              total += 1;
+            }
+          }
+          const ratio = darkPix / Math.max(1, total);
+          sum += ratio;
+          if (ratio > 0.055) hit += 1;
+          count += 1;
+        }
+        return { hitRatio:hit / Math.max(1, count), avgDarkRatio:sum / Math.max(1, count), count:count };
+      };
+      const findDottedVerticalLines = function(bodyGrid) {
+        const gridLines = bodyGrid && Array.isArray(bodyGrid.lines) ? bodyGrid.lines : [];
+        const bodyTop = Math.max(0, Math.round(Number(bodyGrid && bodyGrid.bodyTop) || 0));
+        const bodyBottom = Math.min(PAGE_H - 1, Math.round(Number(bodyGrid && bodyGrid.bodyBottom) || 0));
+        if (!gridLines.length || bodyBottom <= bodyTop) return [];
+        const rowMask = new Uint8Array(PAGE_H);
+        gridLines.forEach(function(yValue){
+          const y = Math.round(Number(yValue) || 0);
+          for (let yy = Math.max(0, y - 2); yy <= Math.min(PAGE_H - 1, y + 2); yy++) rowMask[yy] = 1;
+        });
+        let validRows = 0;
+        for (let y = bodyTop; y <= bodyBottom; y++) {
+          if (!rowMask[y]) validRows += 1;
+        }
+        if (validRows < 120) return [];
+        const candidates = [];
+        const bandCount = 24;
+        const maxRunLimit = Math.max(18, Math.min(90, (Number(bodyGrid && bodyGrid.rowH) || 24) * 1.25));
+        for (let x = 0; x < PAGE_W; x++) {
+          let ink = 0;
+          let run = 0;
+          let maxRun = 0;
+          let bandHits = 0;
+          for (let band = 0; band < bandCount; band++) {
+            const y1 = bodyTop + Math.round((bodyBottom - bodyTop + 1) * band / bandCount);
+            const y2 = bodyTop + Math.round((bodyBottom - bodyTop + 1) * (band + 1) / bandCount) - 1;
+            let bandInk = 0;
+            let bandValid = 0;
+            for (let y = y1; y <= y2; y++) {
+              if (y < 0 || y >= PAGE_H || rowMask[y]) continue;
+              bandValid += 1;
+              let dark = false;
+              for (let xx = Math.max(0, x - 1); xx <= Math.min(PAGE_W - 1, x + 1); xx++) {
+                if (getPaperAutoAlignLuma(data, (y * PAGE_W + xx) * 4) < darkThreshold) {
+                  dark = true;
+                  break;
+                }
+              }
+              if (dark) {
+                ink += 1;
+                bandInk += 1;
+                run += 1;
+                if (run > maxRun) maxRun = run;
+              } else {
+                run = 0;
+              }
+            }
+            if (bandValid > 0 && bandInk / bandValid > 0.035) bandHits += 1;
+          }
+          const hitRatio = ink / Math.max(1, validRows);
+          if (hitRatio >= 0.12 && bandHits >= 16 && maxRun <= maxRunLimit) {
+            candidates.push({ pos:x, maxRun:maxRun, ink:ink });
+          }
+        }
+        return clusterPaperAutoAlignPositions(candidates, 6).map(function(line){
+          line.dotted = true;
+          line.hitRatio = Number(line.ink || 0) / Math.max(1, validRows * Math.max(1, Number(line.thickness || 1)));
+          return line;
+        }).filter(function(line){
+          const pos = Number(line.pos || 0);
+          return pos > 12 && pos < PAGE_W - 12 && Number(line.hitRatio || 0) >= 0.10;
+        });
+      };
+      return {
+        xDetailed:xDetailed,
+        yDetailed:yDetailed,
+        xLines:xDetailed.map(function(line){ return line.pos; }),
+        yLines:yDetailed.map(function(line){ return line.pos; }),
+        medianLum:median,
+        darkThreshold:Math.round(darkThreshold),
+        sampleHorizontalBand:sampleHorizontalBand,
+        findDottedVerticalLines:findDottedVerticalLines
+      };
+    }
+
+    function findPaperAutoAlignBodyGrid(yLines) {
+      const lines = (yLines || []).map(Number).filter(Number.isFinite).sort(function(a,b){ return a-b; });
+      let best = null;
+      [PAPER_AUTO_ALIGN_TARGET_BODY_LINES, 74, 72, 75].forEach(function(count){
+        for (let startIndex = 0; startIndex + count <= lines.length; startIndex++) {
+          const subset = lines.slice(startIndex, startIndex + count);
+          const diffs = [];
+          for (let i = 1; i < subset.length; i++) diffs.push(subset[i] - subset[i - 1]);
+          const rowH = medianPaperAutoAlignNumber(diffs);
+          if (rowH < 18 || rowH > 35) continue;
+          const tolerance = Math.max(8, rowH * 0.38);
+          const valid = diffs.filter(function(diff){ return Math.abs(diff - rowH) <= tolerance; }).length;
+          const validRatio = valid / Math.max(1, diffs.length);
+          const bodyTop = subset[0];
+          const bodyBottom = subset[subset.length - 1];
+          if (validRatio < 0.88) continue;
+          if (bodyTop < 260 || bodyTop > PAGE_H * 0.70) continue;
+          if (bodyBottom < PAGE_H * 0.75) continue;
+          const avgDev = averageAbsDeviation(diffs, rowH);
+          let score = 1000 + validRatio * 120 - avgDev * 16 - Math.abs(count - PAPER_AUTO_ALIGN_TARGET_BODY_LINES) * 48;
+          if (count === PAPER_AUTO_ALIGN_TARGET_BODY_LINES) score += 90;
+          score += bodyTop * 0.02;
+          if (!best || score > best.score) {
+            best = {
+              lines:subset,
+              bodyTop:bodyTop,
+              bodyBottom:bodyBottom,
+              rowH:rowH,
+              lineCount:count,
+              startIndex:startIndex,
+              labelTop:lines[startIndex - 1] || Math.max(0, bodyTop - rowH),
+              actionTop:lines[startIndex - 2] || null,
+              score:score
+            };
+          }
+        }
+      });
+      if (!best) {
+        let fallback = null;
+        for (let startIndex = 0; startIndex < lines.length; startIndex++) {
+          for (let endIndex = startIndex + 40; endIndex < lines.length; endIndex++) {
+            const subset = lines.slice(startIndex, endIndex + 1);
+            const diffs = [];
+            for (let i = 1; i < subset.length; i++) diffs.push(subset[i] - subset[i - 1]);
+            const normalDiffs = diffs.filter(function(diff){ return diff >= 18 && diff <= 36; });
+            if (normalDiffs.length < 32) continue;
+            const rowH = medianPaperAutoAlignNumber(normalDiffs);
+            if (rowH < 20 || rowH > 32) continue;
+            const bodyTop = subset[0];
+            const bodyBottom = subset[subset.length - 1];
+            const estimatedLineCount = (bodyBottom - bodyTop) / Math.max(1, rowH) + 1;
+            if (bodyTop < 260 || bodyTop > PAGE_H * 0.72) continue;
+            if (bodyBottom < PAGE_H * 0.75) continue;
+            if (estimatedLineCount < 62 || estimatedLineCount > 84) continue;
+            const tolerance = Math.max(9, rowH * 0.42);
+            const valid = diffs.filter(function(diff){
+              return Math.abs(diff - rowH) <= tolerance ||
+                Math.abs(diff - rowH * 2) <= Math.max(10, rowH * 0.48) ||
+                Math.abs(diff - rowH * 3) <= Math.max(12, rowH * 0.50);
+            }).length;
+            const validRatio = valid / Math.max(1, diffs.length);
+            if (validRatio < 0.68) continue;
+            const score = 760 + validRatio * 180 + subset.length * 3 - averageAbsDeviation(normalDiffs, rowH) * 12 - Math.abs(estimatedLineCount - PAPER_AUTO_ALIGN_TARGET_BODY_LINES) * 10;
+            if (!fallback || score > fallback.score) {
+              fallback = {
+                lines:subset,
+                bodyTop:bodyTop,
+                bodyBottom:bodyBottom,
+                rowH:rowH,
+                lineCount:subset.length,
+                estimatedLineCount:Math.round(estimatedLineCount),
+                startIndex:startIndex,
+                labelTop:lines[startIndex - 1] || Math.max(0, bodyTop - rowH),
+                actionTop:lines[startIndex - 2] || null,
+                score:score
+              };
+            }
+          }
+        }
+        best = fallback;
+      }
+      if (!best) throw new Error('72-frame body rows were not found');
+      best.labelTop = Math.max(0, Math.min(best.bodyTop - 8, best.labelTop));
+      return best;
+    }
+
+    function augmentPaperAutoAlignDottedVerticalLines(analysis, bodyGrid) {
+      if (!analysis || typeof analysis.findDottedVerticalLines !== 'function') return analysis;
+      const base = Array.isArray(analysis.xDetailed) ? analysis.xDetailed.slice() : [];
+      const dotted = analysis.findDottedVerticalLines(bodyGrid) || [];
+      if (!dotted.length) return analysis;
+      let added = 0;
+      dotted.forEach(function(line){
+        const pos = Number(line.pos || 0);
+        if (!Number.isFinite(pos)) return;
+        const alreadyDetected = base.some(function(existing){
+          return Math.abs(Number(existing.pos || 0) - pos) <= 6;
+        });
+        if (!alreadyDetected) {
+          base.push(line);
+          added += 1;
+        }
+      });
+      if (!added) return analysis;
+      base.sort(function(a,b){ return Number(a.pos || 0) - Number(b.pos || 0); });
+      return Object.assign({}, analysis, {
+        xDetailed:base,
+        xLines:base.map(function(line){ return line.pos; }),
+        dottedVerticalLineCount:added
+      });
+    }
+
+    function evaluatePaperAutoAlignCellGaps(gaps, columns) {
+      const allW = medianPaperAutoAlignNumber(gaps);
+      const allDev = Math.max.apply(null, gaps.map(function(gap){ return Math.abs(gap - allW); }));
+      const allTol = Math.max(8, allW * 0.30);
+      if (allW >= 18 && allW <= 80 && allDev <= allTol) {
+        return { ok:true, cellW:allW, columns:columns, variableTail:false, variableHead:false, tailSlack:0, headSlack:0, baseGaps:gaps };
+      }
+      if (columns >= 7 && gaps.length >= columns) {
+        const tailBase = gaps.slice(0, -1);
+        const tailBaseW = medianPaperAutoAlignNumber(tailBase);
+        const tailBaseDev = tailBase.length ? Math.max.apply(null, tailBase.map(function(gap){ return Math.abs(gap - tailBaseW); })) : Infinity;
+        const tailBaseTol = Math.max(8, tailBaseW * 0.30);
+        const lastGap = gaps[gaps.length - 1];
+        if (tailBase.length >= 5 && tailBaseW >= 18 && tailBaseW <= 80 && tailBaseDev <= tailBaseTol && lastGap > tailBaseW * 1.18 && lastGap < tailBaseW * 2.55) {
+          return { ok:true, cellW:tailBaseW, columns:columns, variableTail:true, variableHead:false, tailSlack:Math.max(0, lastGap - tailBaseW), headSlack:0, baseGaps:tailBase, lastGap:lastGap };
+        }
+        const headBase = gaps.slice(1);
+        const headBaseW = medianPaperAutoAlignNumber(headBase);
+        const headBaseDev = headBase.length ? Math.max.apply(null, headBase.map(function(gap){ return Math.abs(gap - headBaseW); })) : Infinity;
+        const headBaseTol = Math.max(8, headBaseW * 0.32);
+        const firstGap = gaps[0];
+        if (headBase.length >= 5 && headBaseW >= 18 && headBaseW <= 80 && headBaseDev <= headBaseTol && firstGap > headBaseW * 1.55 && firstGap < headBaseW * 2.65) {
+          const missing = Math.max(1, Math.round(firstGap / Math.max(1, headBaseW)) - 1);
+          return { ok:true, cellW:headBaseW, columns:columns + missing, variableTail:false, variableHead:true, tailSlack:0, headSlack:Math.max(0, firstGap - headBaseW), baseGaps:headBase, firstGap:firstGap };
+        }
+      }
+      return { ok:false };
+    }
+
+    function countPaperAutoAlignSimilarLeftGaps(lines, startIndex, cellW) {
+      let count = 0;
+      const tolerance = Math.max(8, cellW * 0.32);
+      for (let idx = startIndex - 1; idx >= 0 && count < 4; idx--) {
+        const gap = lines[idx + 1] - lines[idx];
+        if (Math.abs(gap - cellW) <= tolerance) {
+          count += 1;
+          continue;
+        }
+        break;
+      }
+      return count;
+    }
+
+    function makePaperAutoAlignColumnGroups(xLines, xDetailed, bodyGrid, analysis) {
+      const lines = (xLines || []).map(Number).filter(Number.isFinite).sort(function(a,b){ return a-b; });
+      const groups = [];
+      const seen = new Set();
+      const bodyLines = bodyGrid && Array.isArray(bodyGrid.lines) ? bodyGrid.lines : [];
+      function pushCandidate(startIndex, rightIndex, displayColumns, cellW, options) {
+        options = options || {};
+        if (rightIndex <= startIndex || rightIndex + 1 >= lines.length) return;
+        if (displayColumns < PAPER_AUTO_ALIGN_MIN_COLUMNS || displayColumns > PAPER_AUTO_ALIGN_MAX_COLUMNS + 1) return;
+        if (cellW < 18 || cellW > 82) return;
+        const actualActionW = lines[rightIndex] - lines[startIndex];
+        const cellRight = options.variableTail ? lines[startIndex] + cellW * displayColumns : lines[rightIndex];
+        for (let dialogEndIndex = rightIndex + 1; dialogEndIndex <= Math.min(rightIndex + 4, lines.length - 1); dialogEndIndex++) {
+          const dialogW = lines[dialogEndIndex] - lines[rightIndex];
+          if (dialogW < cellW * 0.82 || dialogW > cellW * 8.20) continue;
+          const key = [startIndex, rightIndex, dialogEndIndex, displayColumns, Math.round(cellW * 10)].join(':');
+          if (seen.has(key)) continue;
+          seen.add(key);
+          const metric = analysis && typeof analysis.sampleHorizontalBand === 'function' ? analysis.sampleHorizontalBand(lines[rightIndex], lines[dialogEndIndex], bodyLines) : null;
+          const dialogAvg = metric ? metric.avgDarkRatio : 0.25;
+          const dialogHit = metric ? metric.hitRatio : 0.50;
+          const baseGaps = options.baseGaps || [];
+          const gapDeviation = baseGaps.length ? averageAbsDeviation(baseGaps, cellW) : (options.matchRatio ? Math.max(0, 1 - options.matchRatio) * cellW : 0);
+          const leftStrength = getPaperAutoAlignLineStrength(xDetailed, lines[startIndex]);
+          const cellEndStrength = getPaperAutoAlignLineStrength(xDetailed, lines[rightIndex]);
+          const dialogEndStrength = getPaperAutoAlignLineStrength(xDetailed, lines[dialogEndIndex]);
+          const leftSimilarGapCount = countPaperAutoAlignSimilarLeftGaps(lines, startIndex, cellW);
+          const nearSheetStart = lines[startIndex] < Math.max(96, cellW * 3.2);
+          const dialogEmptyBonus = Math.max(0, 84 - dialogAvg * 175 - dialogHit * 22);
+          let score = 180 - gapDeviation * 4 - Math.abs(displayColumns - 8) * 8;
+          if (displayColumns === 8) score += 18;
+          if (displayColumns === 9) score += 18;
+          if (displayColumns === 10) score += 2;
+          const dialogRatio = dialogW / Math.max(1, cellW);
+          score += Math.max(0, 32 - Math.abs(dialogRatio - 2.45) * 9);
+          score -= Math.max(0, dialogRatio - 3.25) * 46;
+          score += dialogEmptyBonus;
+          if (dialogAvg > 0.34 && dialogHit > 0.70) score -= 70;
+          score -= Math.max(0, dialogAvg - 0.52) * 170;
+          score += Math.min(42, leftStrength / 10) + Math.min(34, cellEndStrength / 12) + Math.min(34, dialogEndStrength / 12);
+          score -= leftSimilarGapCount * ((displayColumns >= 9 && nearSheetStart) ? 8 : 28);
+          if (displayColumns >= 9 && leftSimilarGapCount > 0 && dialogAvg < 0.30) score += 24;
+          if (options.variableHead) score += 30;
+          if (options.sparseGrid) score += Math.max(0, (options.matchRatio || 0) - 0.58) * 130 - 28;
+          if (options.variableTail) {
+            const tailMetric = analysis && typeof analysis.sampleHorizontalBand === 'function' ? analysis.sampleHorizontalBand(lines[rightIndex - 1], lines[rightIndex], bodyLines) : null;
+            const tailAvg = tailMetric ? tailMetric.avgDarkRatio : 0.55;
+            score += 38 + Math.min(28, options.tailSlack || 0);
+            if (tailAvg > 0.28 && dialogAvg < tailAvg * 0.72) score += 34;
+            else score -= 22;
+          }
+          groups.push({
+            leftIndex:startIndex,
+            rightIndex:rightIndex,
+            dialogEndIndex:dialogEndIndex,
+            left:lines[startIndex],
+            right:cellRight,
+            dialogStart:lines[rightIndex],
+            dialogEnd:lines[dialogEndIndex],
+            columns:displayColumns,
+            observedColumns:rightIndex - startIndex,
+            cellW:cellW,
+            actionW:cellW * displayColumns,
+            actualActionW:actualActionW,
+            dialogW:dialogW,
+            center:(lines[startIndex] + cellRight) / 2,
+            score:score,
+            variableTail:!!options.variableTail,
+            variableHead:!!options.variableHead,
+            sparseGrid:!!options.sparseGrid,
+            dialogMetric:metric,
+            leftStrength:leftStrength,
+            cellEndStrength:cellEndStrength,
+            dialogEndStrength:dialogEndStrength,
+            leftSimilarGapCount:leftSimilarGapCount
+          });
+        }
+      }
+      for (let i = 0; i < lines.length; i++) {
+        for (let observedColumns = PAPER_AUTO_ALIGN_MIN_COLUMNS; observedColumns <= PAPER_AUTO_ALIGN_MAX_COLUMNS; observedColumns++) {
+          const rightIndex = i + observedColumns;
+          if (rightIndex + 1 >= lines.length) continue;
+          const gaps = [];
+          for (let g = 0; g < observedColumns; g++) gaps.push(lines[i + g + 1] - lines[i + g]);
+          const evaluation = evaluatePaperAutoAlignCellGaps(gaps, observedColumns);
+          if (!evaluation.ok) continue;
+          pushCandidate(i, rightIndex, evaluation.columns || observedColumns, evaluation.cellW, Object.assign({}, evaluation, { gaps:gaps }));
+        }
+        for (let rightIndex = i + 5; rightIndex < Math.min(lines.length - 1, i + 14); rightIndex++) {
+          const width = lines[rightIndex] - lines[i];
+          if (width < 120 || width > 520) continue;
+          for (let displayColumns = PAPER_AUTO_ALIGN_MIN_COLUMNS; displayColumns <= PAPER_AUTO_ALIGN_MAX_COLUMNS + 1; displayColumns++) {
+            const cellW = width / displayColumns;
+            if (cellW < 18 || cellW > 82) continue;
+            const tolerance = Math.max(6, cellW * 0.30);
+            let matches = 0;
+            let deviation = 0;
+            for (let col = 0; col <= displayColumns; col++) {
+              const target = lines[i] + cellW * col;
+              let nearest = Infinity;
+              for (let idx = i; idx <= rightIndex; idx++) nearest = Math.min(nearest, Math.abs(lines[idx] - target));
+              if (nearest <= tolerance) {
+                matches += 1;
+                deviation += nearest;
+              }
+            }
+            const matchRatio = matches / Math.max(1, displayColumns + 1);
+            if (matchRatio < 0.58) continue;
+            const avgNearest = deviation / Math.max(1, matches);
+            if (avgNearest > Math.max(7, cellW * 0.24)) continue;
+            pushCandidate(i, rightIndex, displayColumns, cellW, { sparseGrid:true, matchRatio:matchRatio });
+          }
+        }
+      }
+      return groups;
+    }
+
+    function findPaperAutoAlignLineInfo(lineDetails, pos) {
+      const details = Array.isArray(lineDetails) ? lineDetails : [];
+      let best = null;
+      let bestDist = Infinity;
+      details.forEach(function(line){
+        const dist = Math.abs(Number(line.pos || 0) - pos);
+        if (dist < bestDist) {
+          best = line;
+          bestDist = dist;
+        }
+      });
+      return bestDist <= 6 ? best : null;
+    }
+
+    function getPaperAutoAlignLineStrength(lineDetails, pos) {
+      const info = findPaperAutoAlignLineInfo(lineDetails, pos);
+      if (!info) return 0;
+      if (info.dotted) {
+        return (Number(info.maxRun || 0) / 12) +
+          (Number(info.ink || 0) / 80) +
+          Math.min(8, Number(info.thickness || 1)) * 18 +
+          36;
+      }
+      return (Number(info.maxRun || 0) / 12) + (Number(info.ink || 0) / 45) + Number(info.thickness || 1) * 24;
+    }
+
+    function scorePaperAutoAlignGridSpan(lines, startIndex, endIndex, columns, preferredColumns) {
+      if (columns < 6 || columns > 10 || endIndex <= startIndex) return null;
+      const left = lines[startIndex];
+      const right = lines[endIndex];
+      const width = right - left;
+      const cellW = width / columns;
+      if (cellW < 18 || cellW > 82) return null;
+      const tolerance = Math.max(5, cellW * 0.28);
+      let matches = 0;
+      let deviation = 0;
+      for (let i = 0; i <= columns; i++) {
+        const target = left + cellW * i;
+        let nearest = Infinity;
+        for (let idx = startIndex; idx <= endIndex; idx++) {
+          nearest = Math.min(nearest, Math.abs(lines[idx] - target));
+        }
+        if (nearest <= tolerance) {
+          matches += 1;
+          deviation += nearest;
+        }
+      }
+      const matchRatio = matches / Math.max(1, columns + 1);
+      if (matchRatio < 0.72) return null;
+      const extraLines = Math.max(0, (endIndex - startIndex + 1) - (columns + 1));
+      return {
+        left:left,
+        right:right,
+        startIndex:startIndex,
+        endIndex:endIndex,
+        columns:columns,
+        cellW:cellW,
+        matchRatio:matchRatio,
+        score:matchRatio * 140 - (deviation / Math.max(1, matches)) * 4 - Math.abs(columns - preferredColumns) * 11 - extraLines * 3
+      };
+    }
+
+    function findPaperAutoAlignFollowerGrid(xLines, group, peerGroup) {
+      const lines = (xLines || []).map(Number).filter(Number.isFinite).sort(function(a,b){ return a-b; });
+      const searchEndIndex = peerGroup ? peerGroup.leftIndex : lines.length;
+      const startIndex = group.dialogEndIndex;
+      if (startIndex + 5 >= searchEndIndex) return null;
+      let best = null;
+      const minColumns = Math.max(6, group.columns - 2);
+      const maxColumns = Math.min(10, group.columns + 2);
+      const maxFollowerSpan = Math.max(group.actionW * 2.55, group.cellW * (group.columns + 7));
+      for (let endIndex = startIndex + 5; endIndex < searchEndIndex; endIndex++) {
+        if (lines[endIndex] - lines[startIndex] > maxFollowerSpan) break;
+        for (let columns = minColumns; columns <= maxColumns; columns++) {
+          const candidate = scorePaperAutoAlignGridSpan(lines, startIndex, endIndex, columns, group.columns);
+          if (!candidate) continue;
+          const widthRatio = (candidate.right - candidate.left) / Math.max(1, group.actionW);
+          if (widthRatio < 0.55 || widthRatio > 2.45) continue;
+          candidate.score -= Math.abs(widthRatio - 1.15) * 8;
+          if (!best || candidate.score > best.score) best = candidate;
+        }
+      }
+      return best;
+    }
+
+
+    function adjustPaperAutoAlignFollowerGridForBoldCameraStart(lines, lineDetails, group, follower, searchEndIndex) {
+      if (!follower || follower.columns <= 6 || follower.endIndex <= follower.startIndex + 5) return follower;
+      if (Number(group && group.columns) !== 8 || Number(follower.columns) !== 8) return follower;
+      const compactDialogLimit = Math.max(48, Number(group && group.cellW || 0) * 1.86);
+      if (Number(group && group.dialogW || 0) > compactDialogLimit) return follower;
+      const shrinkEndIndex = follower.endIndex - 1;
+      const shrinkColumns = follower.columns - 1;
+      if (shrinkColumns < 6 || shrinkEndIndex <= follower.startIndex + 4) return follower;
+      const shrunk = scorePaperAutoAlignGridSpan(lines, follower.startIndex, shrinkEndIndex, shrinkColumns, group.columns);
+      if (!shrunk || shrunk.matchRatio < 0.82) return follower;
+      const boldStartStrength = getPaperAutoAlignLineStrength(lineDetails, lines[shrinkEndIndex]);
+      const absorbedLineStrength = getPaperAutoAlignLineStrength(lineDetails, lines[follower.endIndex]);
+      const strengthDelta = boldStartStrength - absorbedLineStrength;
+      if (strengthDelta < 48 && boldStartStrength < absorbedLineStrength * 1.16) return follower;
+      const trailingGap = lines[follower.endIndex] - lines[shrinkEndIndex];
+      if (Math.abs(trailingGap - shrunk.cellW) > Math.max(9, shrunk.cellW * 0.38)) return follower;
+      const minCameraW = Math.max(group.cellW * 2.20, shrunk.cellW * 2.00, group.dialogW * 1.15);
+      const maxCameraW = Math.max(group.actionW * 1.08, shrunk.cellW * 5.00, group.dialogW * 3.50);
+      const maxEndIndex = Math.min((Number.isFinite(Number(searchEndIndex)) ? Number(searchEndIndex) - 1 : lines.length - 1), shrinkEndIndex + 6, lines.length - 1);
+      let bestCameraEnd = null;
+      for (let i = follower.endIndex + 1; i <= maxEndIndex; i++) {
+        const cameraW = lines[i] - lines[shrinkEndIndex];
+        if (cameraW < minCameraW || cameraW > maxCameraW) continue;
+        const endStrength = getPaperAutoAlignLineStrength(lineDetails, lines[i]);
+        const widthRatio = cameraW / Math.max(1, group.actionW);
+        const score = endStrength + Math.max(0, 96 - Math.abs(widthRatio - 0.72) * 72) + i * 0.20;
+        if (!bestCameraEnd || score > bestCameraEnd.score) bestCameraEnd = { index:i, score:score, w:cameraW };
+      }
+      if (!bestCameraEnd) return follower;
+      shrunk.score = Math.max(shrunk.score, Number(follower.score || 0) - 6);
+      shrunk.adjustedByBoldCameraStart = true;
+      shrunk.originalEndIndex = follower.endIndex;
+      shrunk.boldCameraStartIndex = shrinkEndIndex;
+      shrunk.boldCameraEndIndex = bestCameraEnd.index;
+      return shrunk;
+    }
+
+    function choosePaperAutoAlignCameraStart(lines, lineDetails, group, blockEndIndex, minStartIndex) {
+      const blockEnd = lines[blockEndIndex];
+      const minCameraW = Math.max(group.dialogW * 0.62, group.cellW * 1.65);
+      const maxCameraW = Math.max(group.dialogW * 1.85, group.actionW * 1.38, group.cellW * 5.2);
+      const startIndex = Math.max(group.dialogEndIndex + 1, Number.isFinite(Number(minStartIndex)) ? Number(minStartIndex) : group.dialogEndIndex + 1);
+      let best = null;
+      for (let i = startIndex; i < blockEndIndex; i++) {
+        const width = blockEnd - lines[i];
+        if (width < minCameraW || width > maxCameraW) continue;
+        const ratio = width / Math.max(1, group.actionW);
+        const preferredStartBonus = i === startIndex ? 230 : -Math.max(0, i - startIndex) * 42;
+        const score = getPaperAutoAlignLineStrength(lineDetails, lines[i]) + Math.max(0, 105 - Math.abs(ratio - 0.82) * 85) + preferredStartBonus;
+        if (!best || score > best.score) {
+          best = { index:i, x:lines[i], w:width, score:score, ratio:ratio };
+        }
+      }
+      return best;
+    }
+
+    function choosePaperAutoAlignColumnPair(groups, xLines, xDetailed) {
+      const pairLimit = Math.max(36, Number(PAPER_AUTO_ALIGN_PAIR_CANDIDATE_LIMIT) || 72);
+      const leftGroups = groups.filter(function(group){ return group.center < PAGE_W / 2; }).sort(function(a,b){ return b.score - a.score; }).slice(0, pairLimit);
+      const rightGroups = groups.filter(function(group){ return group.center > PAGE_W / 2; }).sort(function(a,b){ return b.score - a.score; }).slice(0, pairLimit);
+      const resolveCache = new Map();
+      function getResolveCacheKey(group, peerGroup) {
+        return [group.leftIndex, group.rightIndex, group.dialogEndIndex, Math.round(group.cellW * 10), peerGroup ? peerGroup.leftIndex : 'end'].join(':');
+      }
+      function resolveSideCached(group, peerGroup) {
+        const key = getResolveCacheKey(group, peerGroup);
+        if (resolveCache.has(key)) return resolveCache.get(key);
+        const value = resolvePaperAutoAlignTimelineSide(xLines, group, peerGroup, xDetailed);
+        resolveCache.set(key, value);
+        return value;
+      }
+      let best = null;
+      leftGroups.forEach(function(left){
+        rightGroups.forEach(function(right){
+          if (right.left <= left.left) return;
+          const columnDiff = Math.abs(left.columns - right.columns);
+          if (columnDiff > 1) return;
+          const cellRatio = Math.abs(left.cellW - right.cellW) / Math.max(left.cellW, right.cellW, 1);
+          if (cellRatio > 0.38) return;
+          const dialogRatio = Math.abs(left.dialogW - right.dialogW) / Math.max(left.dialogW, right.dialogW, 1);
+          if (dialogRatio > 0.48) return;
+          const centerBalance = Math.abs(((left.center + right.center) / 2) - PAGE_W / 2);
+          if (centerBalance > PAPER_AUTO_ALIGN_PAIR_CENTER_TOLERANCE) return;
+          let leftSide;
+          let rightSide;
+          try {
+            leftSide = resolveSideCached(left, right);
+            rightSide = resolveSideCached(right, null);
+          } catch (err) {
+            return;
+          }
+          const minLeftCamera = Math.max(left.dialogW * 0.60, left.cellW * 1.35);
+          const minRightCamera = Math.max(right.dialogW * 0.60, right.cellW * 1.35);
+          if (!leftSide || !rightSide || leftSide.camera.w < minLeftCamera || rightSide.camera.w < minRightCamera) return;
+          if (leftSide.camera.x <= left.dialogEnd || rightSide.camera.x <= right.dialogEnd) return;
+          let score = left.score + right.score - columnDiff * 26 - cellRatio * 80 - dialogRatio * 70 - centerBalance * 0.03;
+          if (left.columns === right.columns) score += 28;
+          if (leftSide.follow && rightSide.follow) {
+            const leftFollowDiff = Math.abs(leftSide.follow.columns - left.columns);
+            const rightFollowDiff = Math.abs(rightSide.follow.columns - right.columns);
+            score += leftSide.follow.score + rightSide.follow.score;
+            score -= leftFollowDiff * 14;
+            score -= rightFollowDiff * 14;
+            if (leftFollowDiff === 0 && rightFollowDiff === 0) score += 34;
+            else if (leftFollowDiff <= 1 && rightFollowDiff <= 1) score += 22;
+          }
+          if (left.columns === 8 && right.columns === 8) score += 10;
+          if (left.columns === 9 && right.columns === 9) score += 16;
+          score += Math.min(leftSide.camera.w, rightSide.camera.w) * 0.04;
+          if (!best || score > best.score) best = { left:left, right:right, score:score, leftSide:leftSide, rightSide:rightSide };
+        });
+      });
+      if (!best) throw new Error('Left/right matching column groups were not found');
+      return best;
+    }
+
+    function resolvePaperAutoAlignTimelineSide(xLines, group, peerGroup, xDetailed) {
+      const lines = (xLines || []).map(Number).filter(Number.isFinite).sort(function(a,b){ return a-b; });
+      let searchEndIndex = peerGroup ? peerGroup.leftIndex : lines.length;
+      while (searchEndIndex > 0) {
+        const edge = lines[searchEndIndex - 1];
+        const info = findPaperAutoAlignLineInfo(xDetailed, edge);
+        if (edge >= PAGE_W - 3 && info && Number(info.maxRun || 0) > PAGE_H * 0.90) searchEndIndex -= 1;
+        else break;
+      }
+      if (searchEndIndex <= group.dialogEndIndex + 1) throw new Error('No candidate block end after Dialog');
+      let follower = findPaperAutoAlignFollowerGrid(lines, group, peerGroup);
+      follower = adjustPaperAutoAlignFollowerGridForBoldCameraStart(lines, xDetailed, group, follower, searchEndIndex);
+      let blockEndIndex = -1;
+      const cameraStartMinIndex = follower ? follower.endIndex : group.dialogEndIndex + 1;
+      const cameraSearchStart = follower ? follower.endIndex + 1 : group.dialogEndIndex + 1;
+      let bestBlockEnd = null;
+      for (let i = cameraSearchStart; i < searchEndIndex; i++) {
+        const prevGap = lines[i] - lines[i - 1];
+        if (prevGap >= group.cellW * 1.25) {
+          const widthFromFollower = lines[i] - lines[cameraStartMinIndex];
+          const cameraWidthRatio = widthFromFollower / Math.max(1, group.actionW);
+          const plausibleCameraW = widthFromFollower >= group.cellW * 1.55 && widthFromFollower <= Math.max(group.actionW * 1.55, group.cellW * 6.2);
+          const dividerStrength = getPaperAutoAlignLineStrength(xDetailed, lines[i]);
+          const score = dividerStrength + (plausibleCameraW ? 120 : -80) + Math.min(90, Math.max(0, cameraWidthRatio) * 42) + i * 0.45;
+          if (!bestBlockEnd || score > bestBlockEnd.score) bestBlockEnd = { index:i, score:score };
+          blockEndIndex = i;
+        }
+      }
+      if (bestBlockEnd) blockEndIndex = bestBlockEnd.index;
+      if (blockEndIndex === -1) {
+        blockEndIndex = Math.min(searchEndIndex - 1, (follower ? follower.endIndex : group.dialogEndIndex) + Math.max(2, Math.round(group.columns / 2)));
+      }
+      blockEndIndex = Math.max(group.dialogEndIndex + 1, Math.min(searchEndIndex - 1, blockEndIndex));
+      if (!Number.isFinite(blockEndIndex) || blockEndIndex <= group.dialogEndIndex || blockEndIndex >= lines.length) throw new Error('Invalid candidate block end');
+      const blockEnd = lines[blockEndIndex];
+      const cameraChoice = choosePaperAutoAlignCameraStart(lines, xDetailed, group, blockEndIndex, cameraStartMinIndex);
+      if (cameraChoice) {
+        return {
+          cell:{ x:group.left, w:Math.max(18, group.right - group.left) },
+          dialog:{ x:group.dialogStart || group.right, w:Math.max(18, group.dialogEnd - (group.dialogStart || group.right)) },
+          follow:follower,
+          camera:{ x:cameraChoice.x, w:Math.max(18, cameraChoice.w) },
+          blockEnd:blockEnd,
+          cameraStartIndex:cameraChoice.index,
+          blockEndIndex:blockEndIndex,
+          structureScore:(follower ? follower.score : 0) + cameraChoice.score * 0.08
+        };
+      }
+      const minFallbackIndex = Math.max(cameraStartMinIndex, group.dialogEndIndex + 1);
+      let cameraStartIndex = Math.max(minFallbackIndex, blockEndIndex - 1);
+      const cameraStart = lines[cameraStartIndex];
+      return {
+        cell:{ x:group.left, w:Math.max(18, group.right - group.left) },
+        dialog:{ x:group.dialogStart || group.right, w:Math.max(18, group.dialogEnd - (group.dialogStart || group.right)) },
+        follow:follower,
+        camera:{ x:cameraStart, w:Math.max(18, blockEnd - cameraStart) },
+        blockEnd:blockEnd,
+        cameraStartIndex:cameraStartIndex,
+        blockEndIndex:blockEndIndex,
+        structureScore:follower ? follower.score : 0
+      };
+    }
+
+    function inferPaperAutoAlignHeaderBoxes(xLines, yLines, bodyGrid, sides) {
+      const upperY = (yLines || []).filter(function(y){ return y > 20 && y < Math.min(bodyGrid.bodyTop - 180, 240); }).sort(function(a,b){ return a-b; });
+      if (!upperY.length) return {};
+      const headerTop = upperY[0];
+      let headerBottom = null;
+      for (let i = 1; i < upperY.length; i++) {
+        if (upperY[i] - headerTop >= 70) { headerBottom = upperY[i]; break; }
+      }
+      if (!headerBottom) headerBottom = upperY[upperY.length - 1];
+      if (headerBottom - headerTop < 44) return {};
+      const lines = (xLines || []).slice().sort(function(a,b){ return a-b; });
+      const leftCellX = sides.left.cell.x;
+      const headerLeftCandidates = lines.filter(function(x){ return x > 8 && x <= leftCellX; });
+      const headerLeft = headerLeftCandidates.length ? headerLeftCandidates[0] : Math.max(0, leftCellX - 20);
+      const desiredRight = Math.max(sides.right.dialog.x + sides.right.dialog.w + sides.right.dialog.w, sides.right.cell.x + sides.right.cell.w + sides.right.dialog.w + 80);
+      const headerRightCandidates = lines.filter(function(x){ return x > sides.right.dialog.x + sides.right.dialog.w && x < PAGE_W - 24; });
+      let headerRight = desiredRight;
+      if (headerRightCandidates.length) {
+        headerRight = headerRightCandidates.reduce(function(best, x){
+          return Math.abs(x - desiredRight) < Math.abs(best - desiredRight) ? x : best;
+        }, headerRightCandidates[0]);
+      }
+      headerRight = Math.max(headerLeft + 520, Math.min(PAGE_W - 24, headerRight));
+      const scale = (headerRight - headerLeft) / 1636;
+      const headerH = headerBottom - headerTop;
+      const y = Math.round(headerTop + Math.min(28, Math.max(10, headerH * 0.30)));
+      const h = Math.max(24, Math.round(headerBottom - y - 2));
+      const base = {
+        episode:{ x:68, w:124 },
+        title:{ x:210, w:590 },
+        cutNo:{ x:830, w:200 },
+        seconds:{ x:1080, w:56 },
+        frames:{ x:1144, w:56 },
+        author:{ x:1260, w:240 },
+        page:{ x:1520, w:156 }
+      };
+      const out = {};
+      Object.keys(base).forEach(function(field){
+        out['header-' + field] = normalizeRect({
+          x:headerLeft + (base[field].x - 60) * scale,
+          y:y,
+          w:base[field].w * scale,
+          h:h
+        }, 18, 18);
+      });
+      return out;
+    }
+
+    function expandPaperAutoAlignRecoveredCameraSide(analysis, side, cellW, upperLimit) {
+      if (!analysis || !side || !side.camera || !Number(analysis.dottedVerticalLineCount || 0)) return side;
+      const minCameraW = Math.max(1, cellW) * 3.00;
+      if (Number(side.camera.w || 0) >= minCameraW) return side;
+      const start = Number(side.camera.x || 0);
+      const currentEnd = start + Number(side.camera.w || 0);
+      const maxCameraW = Math.max(minCameraW + cellW * 1.6, cellW * 6.6);
+      let candidates = (analysis.xLines || []).map(Number).filter(function(x){
+        return Number.isFinite(x) && x > currentEnd + 2 && x - start >= minCameraW && x - start <= maxCameraW;
+      }).sort(function(a,b){ return a-b; });
+      if (Number.isFinite(Number(upperLimit))) {
+        const limit = Number(upperLimit);
+        candidates = candidates.filter(function(x){ return x <= limit + 2; });
+        const last = candidates[candidates.length - 1];
+        const prev = candidates[candidates.length - 2];
+        if (Number.isFinite(last) && Math.abs(last - limit) <= 3 && Number.isFinite(prev) && last - prev < cellW * 0.82) {
+          const lastStrength = getPaperAutoAlignLineStrength(analysis.xDetailed, last);
+          const prevStrength = getPaperAutoAlignLineStrength(analysis.xDetailed, prev);
+          if (lastStrength <= prevStrength * 1.12) candidates = candidates.slice(0, -1);
+        }
+      }
+      let best = null;
+      candidates.forEach(function(x){
+        const width = x - start;
+        const strength = getPaperAutoAlignLineStrength(analysis.xDetailed, x);
+        const score = strength + width * 0.85;
+        if (!best || score > best.score) best = { x:x, width:width, score:score };
+      });
+      if (!best) return side;
+      return Object.assign({}, side, {
+        camera:{ x:start, w:Math.max(18, best.width) },
+        blockEnd:best.x
+      });
+    }
+
+    function expandPaperAutoAlignRecoveredCameras(analysis, pair, leftSide, rightSide, columns) {
+      if (!analysis || !Number(analysis.dottedVerticalLineCount || 0) || Number(columns || 0) < 9) {
+        return { left:leftSide, right:rightSide };
+      }
+      const cellW = Math.max(1, ((Number(pair.left && pair.left.cellW) || 0) + (Number(pair.right && pair.right.cellW) || 0)) / 2);
+      const expandedLeft = expandPaperAutoAlignRecoveredCameraSide(analysis, leftSide, cellW, rightSide && rightSide.cell ? rightSide.cell.x : null);
+      const expandedRight = expandPaperAutoAlignRecoveredCameraSide(analysis, rightSide, cellW, PAGE_W - 12);
+      return { left:expandedLeft, right:expandedRight };
+    }
+
+    function makePaperAutoAlignLayoutResult(analysis, bodyGrid, variantName) {
+      const columnGroups = makePaperAutoAlignColumnGroups(analysis.xLines, analysis.xDetailed, bodyGrid, analysis);
+      const pair = choosePaperAutoAlignColumnPair(columnGroups, analysis.xLines, analysis.xDetailed);
+      let leftSide = pair.leftSide || resolvePaperAutoAlignTimelineSide(analysis.xLines, pair.left, pair.right, analysis.xDetailed);
+      let rightSide = pair.rightSide || resolvePaperAutoAlignTimelineSide(analysis.xLines, pair.right, null, analysis.xDetailed);
+      const columns = pair.left.columns === pair.right.columns ? pair.left.columns : Math.round((pair.left.columns + pair.right.columns) / 2);
+      const expandedSides = expandPaperAutoAlignRecoveredCameras(analysis, pair, leftSide, rightSide, columns);
+      leftSide = expandedSides.left;
+      rightSide = expandedSides.right;
+      const bodyY = bodyGrid.bodyTop;
+      const bodyH = Math.max(24, bodyGrid.bodyBottom - bodyGrid.bodyTop);
+      const labelTop = Math.max(0, Math.min(bodyY - 8, bodyGrid.labelTop));
+      const labelH = Math.max(14, bodyY - labelTop);
+      const boxes = {
+        'cell-left':{ x:leftSide.cell.x, y:bodyY, w:leftSide.cell.w, h:bodyH },
+        'dialog-left':{ x:leftSide.dialog.x, y:bodyY, w:leftSide.dialog.w, h:bodyH },
+        'camera-left':{ x:leftSide.camera.x, y:bodyY, w:leftSide.camera.w, h:bodyH },
+        'cell-right':{ x:rightSide.cell.x, y:bodyY, w:rightSide.cell.w, h:bodyH },
+        'dialog-right':{ x:rightSide.dialog.x, y:bodyY, w:rightSide.dialog.w, h:bodyH },
+        'camera-right':{ x:rightSide.camera.x, y:bodyY, w:rightSide.camera.w, h:bodyH },
+        'cell-label-left':{ x:leftSide.cell.x, y:labelTop, w:leftSide.cell.w, h:labelH },
+        'cell-label-right':{ x:rightSide.cell.x, y:labelTop, w:rightSide.cell.w, h:labelH }
+      };
+      Object.assign(boxes, inferPaperAutoAlignHeaderBoxes(analysis.xLines, analysis.yLines, bodyGrid, { left:leftSide, right:rightSide }));
+      Object.keys(boxes).forEach(function(key){ boxes[key] = normalizeRect(boxes[key], isCellLabelBoxKey(key) ? 18 : 18, isCellLabelBoxKey(key) ? 12 : 18); });
+      const overlayBoxes = Object.assign({}, boxes);
+      if (leftSide.follow) overlayBoxes['follow-left'] = normalizeRect({ x:leftSide.follow.left, y:bodyY, w:leftSide.follow.right - leftSide.follow.left, h:bodyH }, 18, 18);
+      if (rightSide.follow) overlayBoxes['follow-right'] = normalizeRect({ x:rightSide.follow.left, y:bodyY, w:rightSide.follow.right - rightSide.follow.left, h:bodyH }, 18, 18);
+      const avgPairScore = Math.max(0, Math.min(240, pair.score));
+      const rowScore = Math.max(0, Math.min(120, bodyGrid.score / 10));
+      const confidence = Math.max(35, Math.min(98, Math.round(42 + avgPairScore * 0.14 + rowScore * 0.16)));
+      return {
+        layoutBoxes:boxes,
+        cellColumnCount:columns,
+        confidence:confidence,
+        overlay:{
+          xLines:analysis.xLines.slice(0, 160),
+          yLines:bodyGrid.lines,
+          bodyTop:bodyGrid.bodyTop,
+          bodyBottom:bodyGrid.bodyBottom,
+          labelTop:labelTop,
+          boxes:overlayBoxes
+        },
+        diagnostics:{
+          xLineCount:analysis.xLines.length,
+          yLineCount:analysis.yLines.length,
+          darkThreshold:analysis.darkThreshold,
+          bodyTop:bodyGrid.bodyTop,
+          bodyBottom:bodyGrid.bodyBottom,
+          bodyLineCount:bodyGrid.lineCount,
+          rowH:bodyGrid.rowH,
+          labelTop:labelTop,
+          columns:columns,
+          cellW:(pair.left.cellW + pair.right.cellW) / 2,
+          leftFollowColumns:leftSide.follow ? leftSide.follow.columns : 0,
+          rightFollowColumns:rightSide.follow ? rightSide.follow.columns : 0,
+          leftDialogW:leftSide.dialog.w,
+          rightDialogW:rightSide.dialog.w,
+          leftCameraW:leftSide.camera.w,
+          rightCameraW:rightSide.camera.w,
+          variant:variantName || 'standard',
+          dottedVerticalLineCount:Number(analysis.dottedVerticalLineCount || 0)
+        }
+      };
+    }
+
+    function shouldUseDottedPaperAutoAlignResult(baseResult, dottedResult) {
+      if (!baseResult || !dottedResult || !dottedResult.diagnostics) return false;
+      const base = baseResult.diagnostics || {};
+      const dotted = dottedResult.diagnostics;
+      const dottedColumns = Number(dotted.columns || 0);
+      const baseColumns = Number(base.columns || 0);
+      const cellW = Math.max(1, Number(dotted.cellW || 0));
+      const leftCameraW = Number(dotted.leftCameraW || 0);
+      const rightCameraW = Number(dotted.rightCameraW || 0);
+      const leftFollow = Number(dotted.leftFollowColumns || 0);
+      const rightFollow = Number(dotted.rightFollowColumns || 0);
+      if (Number(dotted.dottedVerticalLineCount || 0) < 2) return false;
+      if (dottedColumns < 9 || dottedColumns <= baseColumns) return false;
+      if (leftCameraW < cellW * 3.00 || rightCameraW < cellW * 3.00) return false;
+      if (Math.abs(leftFollow - dottedColumns) > 1 || Math.abs(rightFollow - dottedColumns) > 1) return false;
+      return true;
+    }
+
+    function inferPaperAutoAlignLayoutFromLines(analysis) {
+      const bodyGrid = findPaperAutoAlignBodyGrid(analysis.yLines);
+      const baseResult = makePaperAutoAlignLayoutResult(analysis, bodyGrid, 'standard');
+      const dottedAnalysis = augmentPaperAutoAlignDottedVerticalLines(analysis, bodyGrid);
+      if (dottedAnalysis !== analysis) {
+        try {
+          const dottedResult = makePaperAutoAlignLayoutResult(dottedAnalysis, bodyGrid, 'dotted');
+          if (shouldUseDottedPaperAutoAlignResult(baseResult, dottedResult)) return dottedResult;
+        } catch (err) {
+          // Keep the ver530 standard result if the dotted recovery path is not a stronger full match.
+        }
+      }
+      return baseResult;
+    }
+
+    async function runPaperAutoAlign(options) {
+      options = options || {};
+      const doc = getPaperAutoAlignTexts();
+      if (!state.paperImageDataUrl) {
+        setPaperAutoAlignResult({ status:'error', message:doc.noPaper || 'No paper image loaded', steps:[doc.noPaper || 'No paper image loaded'] });
+        return;
+      }
+      const token = ++state.paperAutoAlignToken;
+      state.paperAutoAlignOverlay = null;
+      setPaperAutoAlignResult({ status:'working', steps:[doc.working || 'Analyzing paper lines and matching the sheet boxes...'] });
+      syncPaperLayoutControls();
+      try {
+        const analysis = await analyzePaperAutoAlignLines(state.paperImageDataUrl);
+        if (token !== state.paperAutoAlignToken) return;
+        const result = inferPaperAutoAlignLayoutFromLines(analysis);
+        state.layoutBoxes = result.layoutBoxes;
+        state.layoutBoxBaseRects = {};
+        state.cellColumnCount = clampCellColumnCount(result.cellColumnCount);
+        state.paperAutoAlignOverlay = result.overlay;
+        state.showTemplate = false;
+        state.positionMode = true;
+        setPaperAutoAlignResult({ status:'done', confidence:result.confidence, diagnostics:result.diagnostics });
+        syncPaperLayoutControls();
+        queueSavePaperMemory();
+        render();
+      } catch (err) {
+        if (token !== state.paperAutoAlignToken) return;
+        state.paperAutoAlignOverlay = null;
+        setPaperAutoAlignResult({ status:'error', message:err && err.message ? err.message : String(err || 'Unknown error') });
+        syncPaperLayoutControls();
+        if (!options.silent) render();
+      }
     }
 
     function clampNumber(value, min, max) {
@@ -8087,6 +9322,7 @@
       renderTextMemos(pageIndex, isInteractive);
       renderPastedImages(pageIndex, isInteractive);
       renderLayerNameTags(pageIndex, model.layout, isInteractive);
+      renderPaperAutoAlignOverlay();
       if (targetSvg !== svg) setSvgTarget(svg);
       currentRenderLayerFilter = previousRenderLayerFilter;
       currentDrawLayer = previousDrawLayer;
@@ -8971,12 +10207,15 @@
         state.paperImageSourceWidth = Number(result.width) || 0;
         state.paperImageSourceHeight = Number(result.height) || 0;
         state.paperImagePixelInfo = state.paperImageSourceWidth && state.paperImageSourceHeight ? (state.paperImageSourceWidth + '×' + state.paperImageSourceHeight) : '';
+        state.paperAutoAlignOverlay = null;
+        setPaperAutoAlignResult(null);
         state.showTemplate = false;
         state.positionMode = true;
         syncPaperLayoutControls();
         updatePaperImageStatus();
         queueSavePaperMemory();
         render();
+        runPaperAutoAlign({ silent:true });
       } catch (err) {
         state.paperImageDataUrl = '';
         state.paperImageName = '';
@@ -8984,6 +10223,8 @@
         state.paperImagePixelInfo = '';
         state.paperImageSourceWidth = 0;
         state.paperImageSourceHeight = 0;
+        state.paperAutoAlignOverlay = null;
+        setPaperAutoAlignResult(null);
         if (paperImageStatusEl) paperImageStatusEl.textContent = getPaperLayoutTexts().failed(err && err.message ? err.message : err);
         if (paperImagePixelInfoEl) paperImagePixelInfoEl.textContent = getPaperLayoutTexts().pixelEmpty;
         render();
@@ -8997,6 +10238,9 @@
       state.paperImagePixelInfo = '';
       state.paperImageSourceWidth = 0;
       state.paperImageSourceHeight = 0;
+      state.paperAutoAlignToken += 1;
+      state.paperAutoAlignOverlay = null;
+      setPaperAutoAlignResult(null);
       state.showTemplate = true;
       state.showHeaderOutput = true;
       state.showCellLabelOutput = true;
@@ -9056,6 +10300,8 @@
       });
       state.layoutBoxes = nextBoxes;
       state.layoutBoxBaseRects = {};
+      state.paperAutoAlignOverlay = null;
+      setPaperAutoAlignResult(null);
       const options = payload.options || {};
       if (typeof options.showTemplate === 'boolean') state.showTemplate = options.showTemplate;
       if (typeof options.showHeaderOutput === 'boolean') state.showHeaderOutput = options.showHeaderOutput;
@@ -9170,6 +10416,8 @@
       state.layoutBoxes = {};
       state.layoutBoxBaseRects = {};
       state.layoutDrag = null;
+      state.paperAutoAlignOverlay = null;
+      setPaperAutoAlignResult(null);
       document.documentElement.classList.remove('position-edit-dragging');
       queueSavePaperMemory();
       render();
@@ -10368,6 +11616,7 @@
     }
     if (clearPaperImageBtn) clearPaperImageBtn.addEventListener('click', clearPaperImage);
     if (resetLayoutAdjustBtn) resetLayoutAdjustBtn.addEventListener('click', resetLayoutAdjustments);
+    if (autoAlignPaperBtn) autoAlignPaperBtn.addEventListener('click', function(){ runPaperAutoAlign({ silent:false }); });
     if (saveLayoutPresetBtn) saveLayoutPresetBtn.addEventListener('click', saveLayoutPreset);
     if (loadLayoutPresetBtn) loadLayoutPresetBtn.addEventListener('click', function(){ if (layoutPresetInputEl) layoutPresetInputEl.click(); });
     if (layoutPresetInputEl) layoutPresetInputEl.addEventListener('change', function(event){ loadLayoutPresetFile(event.target.files && event.target.files[0]); });
