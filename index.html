@@ -504,6 +504,16 @@
       padding: 6px 8px;
       font-size: 11px;
     }
+    .csv-column-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 8px;
+    }
+    .csv-column-actions .section-mini-btn {
+      min-width: 84px;
+      height: 30px;
+      font-size: 11px;
+    }
     .paper-layout-card { padding: 0; overflow: hidden; }
     .paper-layout-card details { width: 100%; }
     .paper-layout-card summary {
@@ -1011,16 +1021,21 @@
     .text-memo-apply-fixed {
       position: fixed;
       z-index: 10002;
-      min-width: 54px;
-      height: 28px;
-      padding: 0 10px;
+      width: 22px;
+      min-width: 22px;
+      height: 22px;
+      padding: 0;
       border: 1px solid var(--red);
-      border-radius: 8px;
+      border-radius: 999px;
       background: var(--red);
       color: white;
-      font: inherit;
-      font-size: 12px;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 14px;
       font-weight: 900;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
       box-shadow: 0 4px 14px rgba(0,0,0,.18);
       touch-action: none;
@@ -1637,6 +1652,9 @@
           </div>
           <div id="csvInfo" class="status"></div>
           <div id="csvColumnRoleSection" class="guide-target-section">
+          <div class="csv-column-actions">
+            <button id="csvColumnSortBtn" class="section-mini-btn" type="button" data-ui-text="csvColumnSortBtn">Sort A-Z</button>
+          </div>
           <div id="csvColumnPicker" class="checkbox-list"></div>
           </div>
           <label for="csvCommandEdit" style="margin-top:10px;" data-ui-text="csvCommandEditLabel">Editable Commands from CSV</label>
@@ -1877,6 +1895,7 @@
     const updateLogCloseBtn = document.getElementById('updateLogCloseBtn');
     const csvInfoEl = document.getElementById('csvInfo');
     const csvColumnPickerEl = document.getElementById('csvColumnPicker');
+    const csvColumnSortBtn = document.getElementById('csvColumnSortBtn');
     const textCommandColumnPickerEl = document.getElementById('textCommandColumnPicker');
     const dougaSheetBtn = document.getElementById('dougaSheetBtn');
     const previewMetaEl = document.getElementById('previewMeta');
@@ -1973,6 +1992,10 @@
     const LANGUAGE_STORAGE_KEY = 'autoSheetLanguage.v1';
     const SUPPORTED_LANGUAGES = ['en', 'ja', 'ko', 'zh'];
     const PAPER_MEMORY_STORAGE_KEY = 'autoSheetPaperLayoutMemory.v2';
+    const HEADER_MEMORY_STORAGE_KEY = 'autoSheetHeaderMemory.v1';
+    const PAPER_IMAGE_DB_NAME = 'autoSheetPaperImageMemoryDb.v1';
+    const PAPER_IMAGE_STORE_NAME = 'paperImages';
+    const PAPER_IMAGE_MEMORY_KEY = 'latest-paper-image';
     const SETTINGS_JSON_CACHE_STORAGE_KEY = 'autoSheetSettingsJsonFolderCache.v1';
     const SETTINGS_DIRECTORY_DB_NAME = 'autoSheetDirectoryHandleDb.v1';
     const SETTINGS_DIRECTORY_STORE_NAME = 'handles';
@@ -2092,6 +2115,7 @@
       previewPan: null,
       suppressNextClick: false,
       cellLongPressDrag: null,
+      dragPreviewBox: null,
       shakuMode: false,
       shakuDrag: null,
       shakuSelection: null,
@@ -2500,7 +2524,7 @@
       en: {
         languageLabel:'Language', headerCardTitle:'Header', episodeLabel:'Ep.no', titleLabel:'Title', cutNoLabel:'Cut.no', secondsLabel:'Duration sec', framesLabel:'Duration frame', authorLabel:'name', pageLabel:'Page',
         originalCellTitle:'Sheet Input', inputModeLabel:'Input Mode', inputModeTextCommands:'Text Commands', inputModeCsvClip:'CSV Upload(CLIP STUDIO)', inputModeCsvTvpaint:'CSV Upload(TVPaint)', csvExportClipBtn:'Export CLIP STUDIO CSV', csvExportTvpaintBtn:'Export TVPaint CSV', shakuEditBtn:'Length Edit', shakuEditHint:'Drag a blue frame line to select a range.', shakuCutBtn:'Cut', shakuStretchBtn:'Extend', shakuSelectedLabel:'Selected', shakuUndoBtn:'Undo', shakuRedoBtn:'Redo', shakuFlashCut:'Cut applied', shakuFlashStretch:'Extend applied', dougaSheetCreate:'Make Douga', dougaSheetRefresh:'Refresh Douga', dougaSheetTitle:'Generate a read-only douga sheet from Cell numbers and dot marks', cellReadabilityTitle:'Large Cell text',
-        textCommandsLabel:'Text Commands', csvFileLabel:'CSV File', csvEncodingLabel:'CSV Encoding', csvCommandEditLabel:'Editable Commands from CSV',
+        textCommandsLabel:'Text Commands', csvFileLabel:'CSV File', csvEncodingLabel:'CSV Encoding', csvCommandEditLabel:'Editable Commands from CSV', csvColumnSortBtn:'Sort A-Z',
         dialogBlocksTitle:'Dialog Area', dialogFormatLabel:'Format: 0+01 | 1+00 | SPEAKER | SAMPLE', cameraBlocksTitle:'Camera Area', cameraFormatLabel:'Format: 0+01 | 1+00 | TERM | SAMPLE',
         sheetPreviewTitle:'Sheet Preview', chooseExportDirBtn:'Folder', downloadAllBtn:'Output', memoModeBtn:'Memo Mode', memoUndoBtn:'Undo', memoRedoBtn:'Redo', memoPenLabel:'Pen', memoEraserLabel:'Eraser', memoEraserButton:'Eraser',
         createdByLabel:'Created by', settingsExportBtn:'Export', settingsFileBtn:'Load', settingsImportBtn:'Path', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'Settings JSON', settingsSelectEmpty:'Select settings', settingsSelectNoSettings:'No settings JSON', textMemoApplyBtn:'Apply', clearSheetDataBtn:'Reset All', hideSidebarBtn:'Hide UI', showSidebarBtn:'Show UI', shortcutSummaryTopHint:''
@@ -2508,23 +2532,23 @@
       ja: {
         languageLabel:'言語', headerCardTitle:'ヘッダー', episodeLabel:'話数', titleLabel:'タイトル', cutNoLabel:'カット番号', secondsLabel:'尺 秒', framesLabel:'尺 コマ', authorLabel:'名前', pageLabel:'ページ',
         originalCellTitle:'シート入力', inputModeLabel:'入力モード', inputModeTextCommands:'テキストコマンド', inputModeCsvClip:'CSV読込(CLIP STUDIO)', inputModeCsvTvpaint:'CSV読込(TVPaint)', csvExportClipBtn:'CLIP STUDIO CSV出力', csvExportTvpaintBtn:'TVPaint CSV出力', shakuEditBtn:'尺編集(演出向け)', shakuEditHint:'青いフレーム線をドラッグして尺を選択', shakuCutBtn:'切る', shakuStretchBtn:'伸ばす', shakuSelectedLabel:'選択', shakuUndoBtn:'取り消し', shakuRedoBtn:'やり直し', shakuFlashCut:'切る 反映', shakuFlashStretch:'伸ばす 反映', dougaSheetCreate:'動画作成', dougaSheetRefresh:'動画更新', dougaSheetTitle:'Cell番号と動画点から編集不可の動画欄を生成', cellReadabilityTitle:'Cell文字を大きく表示',
-        textCommandsLabel:'テキストコマンド', csvFileLabel:'CSVファイル', csvEncodingLabel:'CSV文字コード', csvCommandEditLabel:'CSVから生成された編集可能コマンド',
+        textCommandsLabel:'テキストコマンド', csvFileLabel:'CSVファイル', csvEncodingLabel:'CSV文字コード', csvCommandEditLabel:'CSVから生成された編集可能コマンド', csvColumnSortBtn:'ABC順',
         dialogBlocksTitle:'セリフ欄', dialogFormatLabel:'形式: 0+01 | 1+00 | 話者 | セリフ例', cameraBlocksTitle:'カメラ欄', cameraFormatLabel:'形式: 0+01 | 1+00 | 記号 | 指示例',
         sheetPreviewTitle:'シートプレビュー', chooseExportDirBtn:'保存先', downloadAllBtn:'出力', memoModeBtn:'メモモード', memoUndoBtn:'取り消し', memoRedoBtn:'やり直し', memoPenLabel:'ペン', memoEraserLabel:'消しゴム', memoEraserButton:'消しゴム',
-        createdByLabel:'作成', settingsExportBtn:'出力', settingsFileBtn:'読込', settingsImportBtn:'読込先指定', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'設定JSON', settingsSelectEmpty:'設定選択', settingsSelectNoSettings:'設定JSONなし', textMemoApplyBtn:'適用', clearSheetDataBtn:'全体初期化', hideSidebarBtn:'UIを隠す', showSidebarBtn:'UIを表示', shortcutSummaryTopHint:''
+        createdByLabel:'作成', settingsExportBtn:'出力', settingsFileBtn:'読込', settingsImportBtn:'読込先', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'設定JSON', settingsSelectEmpty:'設定選択', settingsSelectNoSettings:'設定JSONなし', textMemoApplyBtn:'適用', clearSheetDataBtn:'全体初期化', hideSidebarBtn:'UIを隠す', showSidebarBtn:'UIを表示', shortcutSummaryTopHint:''
       },
       ko: {
         languageLabel:'언어', headerCardTitle:'헤더', episodeLabel:'화수', titleLabel:'제목', cutNoLabel:'컷 번호', secondsLabel:'길이 초', framesLabel:'길이 프레임', authorLabel:'이름', pageLabel:'페이지',
         originalCellTitle:'시트 입력', inputModeLabel:'입력 방식', inputModeTextCommands:'텍스트 커맨드', inputModeCsvClip:'CSV 읽기(CLIP STUDIO)', inputModeCsvTvpaint:'CSV 읽기(TVPaint)', csvExportClipBtn:'CLIP STUDIO CSV 내보내기', csvExportTvpaintBtn:'TVPaint CSV 내보내기', shakuEditBtn:'연출용 편집툴', shakuEditHint:'파란 프레임선을 드래그해 길이를 선택', shakuCutBtn:'자르기', shakuStretchBtn:'늘리기', shakuSelectedLabel:'선택', shakuUndoBtn:'되돌리기', shakuRedoBtn:'다시 실행', shakuFlashCut:'자르기 반영', shakuFlashStretch:'늘리기 반영', dougaSheetCreate:'동화시트 작성', dougaSheetRefresh:'동화시트 갱신', dougaSheetTitle:'셀 번호와 동화점으로 수정 불가능한 동화칸 생성', cellReadabilityTitle:'셀 글자 크게 보기',
-        textCommandsLabel:'텍스트 커맨드', csvFileLabel:'CSV 파일', csvEncodingLabel:'CSV 인코딩', csvCommandEditLabel:'CSV에서 생성된 편집 가능 커맨드',
+        textCommandsLabel:'텍스트 커맨드', csvFileLabel:'CSV 파일', csvEncodingLabel:'CSV 인코딩', csvCommandEditLabel:'CSV에서 생성된 편집 가능 커맨드', csvColumnSortBtn:'ABC 정렬',
         dialogBlocksTitle:'대사란', dialogFormatLabel:'형식: 0+01 | 1+00 | 화자 | 예시', cameraBlocksTitle:'카메라란', cameraFormatLabel:'형식: 0+01 | 1+00 | 기호 | 지시 예시',
-        sheetPreviewTitle:'시트 프리뷰', chooseExportDirBtn:'저장처', downloadAllBtn:'출력', memoModeBtn:'메모 모드', memoUndoBtn:'되돌리기', memoRedoBtn:'다시 실행', memoPenLabel:'펜', memoEraserLabel:'지우개', memoEraserButton:'지우개',
+        sheetPreviewTitle:'시트 프리뷰', chooseExportDirBtn:'경로지정', downloadAllBtn:'출력', memoModeBtn:'메모 모드', memoUndoBtn:'되돌리기', memoRedoBtn:'다시 실행', memoPenLabel:'펜', memoEraserLabel:'지우개', memoEraserButton:'지우개',
         createdByLabel:'제작', settingsExportBtn:'내보내기', settingsFileBtn:'불러오기', settingsImportBtn:'경로지정', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'설정 JSON', settingsSelectEmpty:'설정 선택', settingsSelectNoSettings:'설정 JSON 없음', textMemoApplyBtn:'적용', clearSheetDataBtn:'전체 초기화', hideSidebarBtn:'UI 숨기기', showSidebarBtn:'UI 펼치기', shortcutSummaryTopHint:''
       },
       zh: {
         languageLabel:'语言', headerCardTitle:'页眉', episodeLabel:'集数', titleLabel:'标题', cutNoLabel:'镜头编号', secondsLabel:'时长 秒', framesLabel:'时长 帧', authorLabel:'姓名', pageLabel:'页码',
         originalCellTitle:'表格输入', inputModeLabel:'输入模式', inputModeTextCommands:'文本命令', inputModeCsvClip:'CSV 导入（CLIP STUDIO）', inputModeCsvTvpaint:'CSV 导入（TVPaint）', csvExportClipBtn:'导出 CLIP STUDIO CSV', csvExportTvpaintBtn:'导出 TVPaint CSV', shakuEditBtn:'时长编辑', shakuEditHint:'拖动蓝色帧线选择范围', shakuCutBtn:'切除', shakuStretchBtn:'延长', shakuSelectedLabel:'选择', shakuUndoBtn:'撤销', shakuRedoBtn:'重做', shakuFlashCut:'切除已应用', shakuFlashStretch:'延长已应用', dougaSheetCreate:'生成动画栏', dougaSheetRefresh:'刷新动画栏', dougaSheetTitle:'由 Cell 编号和动画点生成只读动画栏', cellReadabilityTitle:'放大 Cell 文字',
-        textCommandsLabel:'文本命令', csvFileLabel:'CSV 文件', csvEncodingLabel:'CSV 编码', csvCommandEditLabel:'从 CSV 生成的可编辑命令',
+        textCommandsLabel:'文本命令', csvFileLabel:'CSV 文件', csvEncodingLabel:'CSV 编码', csvCommandEditLabel:'从 CSV 生成的可编辑命令', csvColumnSortBtn:'ABC排序',
         dialogBlocksTitle:'对白栏', dialogFormatLabel:'格式: 0+01 | 1+00 | 说话人 | 示例', cameraBlocksTitle:'摄影机栏', cameraFormatLabel:'格式: 0+01 | 1+00 | 标记 | 指示示例',
         sheetPreviewTitle:'Sheet 预览', chooseExportDirBtn:'保存处', downloadAllBtn:'输出', memoModeBtn:'备注模式', memoUndoBtn:'撤销', memoRedoBtn:'重做', memoPenLabel:'笔', memoEraserLabel:'橡皮', memoEraserButton:'橡皮',
         createdByLabel:'制作', settingsExportBtn:'导出', settingsFileBtn:'导入', settingsImportBtn:'路径', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'设置 JSON', settingsSelectEmpty:'选择设置', settingsSelectNoSettings:'无设置 JSON', textMemoApplyBtn:'应用', clearSheetDataBtn:'全部重置', hideSidebarBtn:'隐藏 UI', showSidebarBtn:'显示 UI', shortcutSummaryTopHint:''
@@ -2609,6 +2633,94 @@
       zh: '<h4><span class="update-log-badge">ver564</span>快速说明整理</h4><ul><li>删除不会显示的说明文字数据和显示过滤处理，只保留实际显示的说明区块。</li></ul><h4><span class="update-log-badge">ver563</span>快速说明输出区块</h4><ul><li>将输出说明作为独立区块恢复，并放在整体设置保存与导入上方。</li></ul>'
     };
 
+    const updateLogVer574Docs = {
+      en: '<h4><span class="update-log-badge">ver574</span>CSV role row order</h4><ul><li>The CSV column role rows now list Cell columns in the same order used by the Sheet Preview and generated Text Commands, including manual Cell label reordering.</li></ul>'
+    };
+
+    const updateLogVer575Docs = {
+      en: '<h4><span class="update-log-badge">ver575</span>Camera connected segments</h4><ul><li>Adjacent Camera manual segments with matching boundary symbols now stay on the same guide line, and same-symbol Camera ranges display as FIX.</li></ul>'
+    };
+
+    const updateLogVer576Docs = {
+      en: '<h4><span class="update-log-badge">ver576</span>CSV source order and sort button</h4><ul><li>CSV import now keeps the original column order by default for the role picker, Sheet Preview, and generated CSV commands.</li><li>Added a CSV column sort button that alphabetically sorts Cell columns on demand while keeping Book rows near their source neighbor and non-Cell roles after the Cell group.</li></ul>'
+    };
+
+    const updateLogVer577Docs = {
+      en: '<h4><span class="update-log-badge">ver577</span>Reload memory</h4><ul><li>Episode, Title, and Author are now restored after browser reloads.</li><li>External paper image data is also backed up in IndexedDB, so large paper images that exceed localStorage are more likely to survive reloads.</li></ul>'
+    };
+
+    const updateLogVer578Docs = {
+      en: '<h4><span class="update-log-badge">ver578</span>CSV cell editing and drag edges</h4><ul><li>CSV-imported Cell edits and token drags now map to the correct command row even when original CSV column numbers differ from displayed Cell order.</li><li>Dialog and Camera drag previews place the start guide above the first frame and the end guide below the last frame.</li><li>Entering a cel number on a dot frame clears the dot overlay for that frame.</li></ul>'
+    };
+
+    const updateLogVer579Docs = {
+      en: '<h4><span class="update-log-badge">ver579</span>Auto X preservation</h4><ul><li>Automatic leading red X marks are no longer written back as explicit black x tokens after Cell edits or dot toggles.</li><li>Clearing an entered x/dot/rep token now removes that mark instead of preserving it.</li></ul>'
+    };
+
+    const updateLogVer580Docs = {
+      en: '<h4><span class="update-log-badge">ver580</span>Explicit X rendering</h4><ul><li>All x tokens entered in Cell commands render as black X marks.</li><li>When the last Cell entry is x, the Duration extension now starts as a red hold line from the next frame.</li></ul>'
+    };
+
+    const updateLogVer581Docs = {
+      en: '<h4><span class="update-log-badge">ver581</span>X hold before next cel</h4><ul><li>When an entered x is followed by later Cell input, the frames between x and that next input now render as a black hold line without drawing a duplicate hold line inside the x cell.</li></ul>'
+    };
+
+    const updateLogVer582Docs = {
+      en: '<h4><span class="update-log-badge">ver582</span>Black hold dot toggle</h4><ul><li>Black hold lines that continue after an entered x can now be clicked to toggle douga dots, matching normal cel hold lines.</li></ul>'
+    };
+
+    const updateLogVer583Docs = {
+      en: '<h4><span class="update-log-badge">ver583</span>Douga X holds</h4><ul><li>Douga refresh now keeps hold lines after x entries, including automatic leading x ranges.</li><li>Douga hold extensions now render in black instead of red.</li></ul>'
+    };
+
+    const updateLogVer573Docs = {
+      en: '<h4><span class="update-log-badge">ver573</span>Camera FI/FO/OL shapes</h4><ul><li>Camera segments whose layer/text tokens are FI, FO, or OL now render as simple fade-in, fade-out, and overlap vector shapes instead of plain camera text.</li></ul>'
+    };
+
+    const updateLogVer572Docs = {
+      en: '<h4><span class="update-log-badge">ver572</span>Duration line and CSV role defaults</h4><ul><li>The red Duration boundary line now follows the current Position Edit horizontal boxes instead of the built-in block width.</li><li>CSV columns whose names contain BG/background labels default to Hide, and common camera direction labels such as fix, pan, TU/TB, QTU/QTB, SL, follow, じわ, and 目盛り default to Camera.</li></ul>'
+    };
+
+    const updateLogVer571Docs = {
+      en: '<h4><span class="update-log-badge">ver571</span>Memo resize edge stop</h4><ul><li>When resizing a text memo from the left or top edge, the opposite edge now stays fixed and the box stops at the movement limit instead of growing in the other direction.</li></ul>'
+    };
+
+    const updateLogVer570Docs = {
+      en: '<h4><span class="update-log-badge">ver570</span>Memo resize bounds</h4><ul><li>Text memo move/resize limits now use the current Position Edit header and cell boxes, including moved cell-label positions.</li></ul>'
+    };
+
+    const updateLogVer569Docs = {
+      en: '<h4><span class="update-log-badge">ver569</span>Memo position edit and SARU episode</h4><ul><li>Position Edit now enables the text memo box move/resize controls regardless of whether an external paper image is loaded.</li><li>SARU-style Episode detection expands across the short leading header split before Title instead of keeping only the narrow right-side part.</li></ul>',
+      ja: '<h4><span class="update-log-badge">ver569</span>メモ位置編集とSARU話数欄</h4><ul><li>外部用紙の有無に関係なく、位置編集ONでテキストメモ欄の移動/リサイズUIを出すようにした。</li><li>SARU系の話数欄は、Title直前の短い分割線をまたいで広い欄として扱うように補正した。</li></ul>',
+      ko: '<h4><span class="update-log-badge">ver569</span>메모 위치편집과 SARU 화수란</h4><ul><li>외부용지 여부와 관계없이 위치편집 ON이면 기본 텍스트 메모란의 이동/리사이즈 UI가 나오도록 수정했다.</li><li>SARU 계열 화수란은 Title 직전의 짧은 분할선을 건너 넓은 칸으로 결합해 잡도록 보정했다.</li></ul>',
+      zh: '<h4><span class="update-log-badge">ver569</span>备注位置编辑与 SARU 集数字段</h4><ul><li>无论是否载入外部纸张，只要开启位置编辑，就显示文本备注框的移动/缩放控件。</li><li>SARU 类集数字段会跨过 Title 前方的短分隔线，按更宽的栏位识别。</li></ul>'
+    };
+
+    const updateLogVer568Docs = {
+      en: '<h4><span class="update-log-badge">ver568</span>PSD layer import rules</h4><ul><li>Renamed the Japanese JSON folder button to <code>読込先</code> and the Korean output-folder button to <code>경로지정</code>.</li><li>PSD import now ignores hidden PSD layers, then builds the paper raster from a generated white base, near-solid visible layers, and visible layers detected as sheet/grid layers.</li><li>Visible PSD layers that are not classified as paper are separated into the PSD memo layer and can be shown or hidden with the existing checkbox.</li></ul>',
+      ja: '<h4><span class="update-log-badge">ver568</span>PSDレイヤー読込ルール</h4><ul><li>JSONフォルダボタン名を<code>読込先</code>に変更。</li><li>PSD読込では非表示レイヤーを最初から除外し、生成した白背景、単色に近い表示レイヤー、用紙罫線として検出した表示レイヤーを用紙ラスタとして合成するようにした。</li><li>用紙として分類されなかった表示レイヤーは分離PSDメモに送り、既存のチェックボックスで表示切替できる。</li></ul>',
+      ko: '<h4><span class="update-log-badge">ver568</span>PSD 레이어 불러오기 규칙</h4><ul><li>일본어 JSON 폴더 버튼은 <code>読込先</code>, 한국어 출력 저장처 버튼은 <code>경로지정</code>으로 변경했다.</li><li>PSD 불러오기는 PSD상 비표시 레이어를 처음부터 제외하고, 프로그램이 만든 흰 배경, 단색에 가까운 표시 레이어, 용지/격자 형식으로 검출된 표시 레이어를 용지 래스터로 합성한다.</li><li>용지로 분류되지 않은 표시 레이어는 분리 PSD 메모로 보내며 기존 체크박스로 표시 여부를 바꿀 수 있다.</li></ul>',
+      zh: '<h4><span class="update-log-badge">ver568</span>PSD 图层导入规则</h4><ul><li>日语 JSON 文件夹按钮改为 <code>読込先</code>，韩语输出文件夹按钮改为 <code>경로지정</code>。</li><li>PSD 导入会先排除 PSD 中的隐藏图层，并用程序生成的白色底层、近似纯色的可见图层、检测为纸张网格的可见图层合成为纸张栅格。</li><li>未被分类为纸张的可见图层会进入分离 PSD 备注层，可用现有复选框显示或隐藏。</li></ul>'
+    };
+
+    const updateLogVer567Docs = {
+      en: '<h4><span class="update-log-badge">ver567</span>Drag preview and memo controls</h4><ul><li>Cell token dragging now highlights the actual destination cell with a blue outline.</li><li>Dialog and Camera range dragging now shows a blue line on the destination frame edge and applies the change on release.</li><li>External-paper Position Edit shows text memo move/resize controls, and the red text memo close button is centered.</li><li>SARU Episode auto-align uses the full detected header box before Title.</li></ul>'
+    };
+
+    const updateLogVer566Docs = {
+      en: '<h4><span class="update-log-badge">ver566</span>Export size and drag performance</h4><ul><li>SARU Episode auto-align now expands to the whole detected box before Title.</li><li>Text command input and Dialog/Camera/cell token dragging use deferred rendering and a blue drag preview, applying the edit on release.</li><li>Text memo placement controls now live in external-paper Position Edit, and external-paper export uses the source pixel size for PNG/JPG/PSD.</li><li>Douga refresh reuses unchanged layer calculations and recalculates only changed cel layers.</li></ul>',
+      ja: '<h4><span class="update-log-badge">ver566</span>出力サイズとドラッグ軽量化</h4><ul><li>SARU系の話数欄はTitle直前の検出枠全体を使うよう補正。</li><li>Text Commands入力とセリフ/カメラ/セルのドラッグは、青いプレビューだけを動かして離した時に反映する。</li><li>テキストメモの位置調整は外部用紙の位置編集へ移し、外部用紙出力はPNG/JPG/PSDで元画像ピクセル数を使う。</li><li>動画更新は変更のないレイヤー計算を再利用し、変更されたセルレイヤーだけ再計算する。</li></ul>',
+      ko: '<h4><span class="update-log-badge">ver566</span>출력 크기와 드래그 경량화</h4><ul><li>SARU 계열 화수란은 Title 바로 앞의 검출 박스 전체를 쓰도록 보정했다.</li><li>텍스트 커맨드 입력과 대사/카메라/셀 토큰 드래그는 파란 프리뷰만 움직이고 놓을 때 반영한다.</li><li>텍스트 메모 위치 조정은 외부용지 위치편집으로 옮기고, 외부용지 출력은 PNG/JPG/PSD에서 원본 픽셀수를 사용한다.</li><li>동화 갱신은 바뀌지 않은 레이어 계산을 재사용하고 변경된 셀 레이어만 다시 계산한다.</li></ul>',
+      zh: '<h4><span class="update-log-badge">ver566</span>输出尺寸与拖动性能</h4><ul><li>SARU 类 Episode 会扩展到 Title 前方检测到的完整格子。</li><li>Text Commands 输入与对白/摄影机/Cell token 拖动改为只移动蓝色预览框，松开后再应用。</li><li>文本 Memo 的位置调整移到外部纸张位置编辑中，外部纸张导出 PNG/JPG/PSD 时使用原图像素尺寸。</li><li>动画栏刷新会复用未变化图层的计算结果，只重新计算变化的 Cell 图层。</li></ul>'
+    };
+
+    const updateLogPatchDocs = {
+      en: '<h4><span class="update-log-badge">ver565</span>SARU header episode correction</h4><ul><li>Auto Align now ignores decorative leading header-line candidates when choosing the Episode field, so SARU-style sheets place the episode number in the cell immediately before Title.</li></ul>',
+      ja: '<h4><span class="update-log-badge">ver565</span>SARUヘッダー話数補正</h4><ul><li>自動整列でヘッダー左側の装飾的な線候補を話数欄として使わず、Title直前の欄を優先するようにした。</li></ul>',
+      ko: '<h4><span class="update-log-badge">ver565</span>SARU 헤더 화수 위치 보정</h4><ul><li>자동정렬에서 헤더 왼쪽의 장식성 선 후보를 화수란으로 쓰지 않고, Title 바로 앞의 칸을 우선하도록 수정했다.</li></ul>',
+      zh: '<h4><span class="update-log-badge">ver565</span>SARU 页眉集数位置修正</h4><ul><li>自动对齐选择集数字段时会避开页眉左侧的装饰性线候选，优先使用 Title 正前方的格子。</li></ul>'
+    };
+
     function getUpdateLogDoc() {
       return UPDATE_LOG_DOCS[state.lang] || UPDATE_LOG_DOCS.en;
     }
@@ -2617,7 +2729,7 @@
       const doc = getUpdateLogDoc();
       if (updateLogTitleEl) updateLogTitleEl.textContent = doc.title || 'Update History';
       if (updateLogSubtitleEl) updateLogSubtitleEl.textContent = doc.subtitle || '';
-      if (updateLogContentEl) updateLogContentEl.innerHTML = (updateLogTopDocs[state.lang] || updateLogTopDocs.en || '') + (updateLogLatestDocs[state.lang] || '') + (updateLogAddonDocs[state.lang] || updateLogAddonDocs.en || '') + (doc.html || '');
+      if (updateLogContentEl) updateLogContentEl.innerHTML = (updateLogVer583Docs[state.lang] || updateLogVer583Docs.en || '') + (updateLogVer582Docs[state.lang] || updateLogVer582Docs.en || '') + (updateLogVer581Docs[state.lang] || updateLogVer581Docs.en || '') + (updateLogVer580Docs[state.lang] || updateLogVer580Docs.en || '') + (updateLogVer579Docs[state.lang] || updateLogVer579Docs.en || '') + (updateLogVer578Docs[state.lang] || updateLogVer578Docs.en || '') + (updateLogVer577Docs[state.lang] || updateLogVer577Docs.en || '') + (updateLogVer576Docs[state.lang] || updateLogVer576Docs.en || '') + (updateLogVer575Docs[state.lang] || updateLogVer575Docs.en || '') + (updateLogVer574Docs[state.lang] || updateLogVer574Docs.en || '') + (updateLogVer573Docs[state.lang] || updateLogVer573Docs.en || '') + (updateLogVer572Docs[state.lang] || updateLogVer572Docs.en || '') + (updateLogVer571Docs[state.lang] || updateLogVer571Docs.en || '') + (updateLogVer570Docs[state.lang] || updateLogVer570Docs.en || '') + (updateLogVer569Docs[state.lang] || updateLogVer569Docs.en || '') + (updateLogVer568Docs[state.lang] || updateLogVer568Docs.en || '') + (updateLogVer567Docs[state.lang] || updateLogVer567Docs.en || '') + (updateLogVer566Docs[state.lang] || updateLogVer566Docs.en || '') + (updateLogPatchDocs[state.lang] || updateLogPatchDocs.en || '') + (updateLogTopDocs[state.lang] || updateLogTopDocs.en || '') + (updateLogLatestDocs[state.lang] || '') + (updateLogAddonDocs[state.lang] || updateLogAddonDocs.en || '') + (doc.html || '');
       if (appTitleEl) {
         appTitleEl.setAttribute('title', doc.title || 'Update History');
         appTitleEl.setAttribute('aria-label', doc.title || 'Update History');
@@ -3232,6 +3344,50 @@
       if (node) node.addEventListener('input', handler);
     }
 
+    function saveHeaderMemoryNow() {
+      if (!window.localStorage) return;
+      try {
+        const payload = {
+          schema:'auto-sheet-header-memory',
+          version:1,
+          header:{
+            episode:document.getElementById('episode') ? document.getElementById('episode').value : '',
+            title:document.getElementById('title') ? document.getElementById('title').value : '',
+            author:document.getElementById('author') ? document.getElementById('author').value : ''
+          }
+        };
+        localStorage.setItem(HEADER_MEMORY_STORAGE_KEY, JSON.stringify(payload));
+      } catch (err) {}
+    }
+
+    function restoreHeaderMemory() {
+      if (!window.localStorage) return false;
+      try {
+        const raw = localStorage.getItem(HEADER_MEMORY_STORAGE_KEY);
+        if (!raw) return false;
+        const payload = JSON.parse(raw);
+        const header = payload && payload.header ? payload.header : {};
+        ['episode', 'title', 'author'].forEach(function(id){
+          const input = document.getElementById(id);
+          if (input && header[id] !== undefined) input.value = String(header[id] == null ? '' : header[id]);
+        });
+        return true;
+      } catch (err) {
+        return false;
+      }
+    }
+
+    function setRememberedHeaderValue(id, value) {
+      const input = document.getElementById(id);
+      if (input) input.value = value == null ? '' : String(value);
+      saveHeaderMemoryNow();
+    }
+
+    function handleRememberedHeaderInput() {
+      saveHeaderMemoryNow();
+      render();
+    }
+
 
     function frameToTimecode(frameNumber) {
       const frame = Math.max(1, Math.round(Number(frameNumber) || 1));
@@ -3276,6 +3432,33 @@
       return /^BOOK[0-9A-Z]*$/.test(normalized) || /^BGBOOK[0-9A-Z]*$/.test(normalized);
     }
 
+    function normalizeCsvLayerNameKey(name) {
+      return String(name || '')
+        .normalize('NFKC')
+        .replace(/[\s_\-./\\,，、]+/g, '')
+        .toLowerCase();
+    }
+
+    function isHiddenCsvLayerName(name) {
+      const key = normalizeCsvLayerNameKey(name);
+      if (!key) return false;
+      return key.indexOf('bg') !== -1
+        || key.indexOf('background') !== -1
+        || key.indexOf('背景') !== -1
+        || key.indexOf('배경') !== -1;
+    }
+
+    function isCameraDirectiveLayerName(name) {
+      const key = normalizeCsvLayerNameKey(name);
+      const raw = String(name || '');
+      if (!key) return false;
+      const compact = key.replace(/[0-9]+$/g, '');
+      if (/(camera|cam|撮影|摄影|카메라)/i.test(raw)) return true;
+      if (/(じわ|ジワ|目盛り|目盛|메모리|눈금)/.test(raw)) return true;
+      return /^(fix|pan|qpan|tu|tb|qtb|qtu|sl|follow|tiltup|tiltdown|trackup|trackdown|zoomin|zoomout|zi|zo|fi|fo|fio|ol|wipe|camfollow)$/.test(compact)
+        || /^(fix|pan|qpan|tu|tb|qtb|qtu|sl|follow)/.test(compact);
+    }
+
     function isCameraLayerName(name) {
       const normalized = normalizeCameraLayerName(name);
       if (!normalized) return false;
@@ -3297,6 +3480,14 @@
       const source = Array.isArray(state.csvOriginalCellColumns) ? state.csvOriginalCellColumns : [];
       const idx = source.findIndex(function(item){ return String(item.index) === String(col && col.index); });
       return idx === -1 ? 999999 : idx;
+    }
+
+    function compareCsvSourceColumnOrder(a, b) {
+      return Number(a && a.index || 0) - Number(b && b.index || 0);
+    }
+
+    function hasCsvCellDisplayOrder() {
+      return Array.isArray(state.cellDisplayOrder) && state.cellDisplayOrder.length > 0;
     }
 
     function stripDefaultCsvSampleLines(raw) {
@@ -3359,11 +3550,76 @@
       return -1;
     }
 
+    function isCsvLayerUid(uid) {
+      return /^csv-\d+$/.test(String(uid || '').trim());
+    }
+
+    function getCsvOriginalColumnsForCommandOrder() {
+      const originals = (state.csvColumns || []).filter(function(col){
+        return getCsvColumnRole(col) === 'original';
+      }).slice().sort(compareCsvSourceColumnOrder);
+      if (!originals.length || !hasCsvCellDisplayOrder()) return originals;
+      const byUid = new Map(originals.map(function(col){ return ['csv-' + col.index, col]; }));
+      const used = new Set();
+      const ordered = [];
+      (state.cellDisplayOrder || []).forEach(function(key){
+        const col = byUid.get(String(key || ''));
+        if (!col || used.has(col)) return;
+        ordered.push(col);
+        used.add(col);
+      });
+      originals.forEach(function(col){
+        if (!used.has(col)) ordered.push(col);
+      });
+      return ordered;
+    }
+
+    function getCsvCommandLineAssignments(lines) {
+      const columns = getCsvOriginalColumnsForCommandOrder();
+      const buckets = new Map();
+      columns.forEach(function(col){
+        const key = String(col.name || '').trim().toLowerCase();
+        if (!key) return;
+        if (!buckets.has(key)) buckets.set(key, []);
+        buckets.get(key).push(col);
+      });
+      const assignments = [];
+      (lines || []).forEach(function(lineText, lineIndex){
+        const roleInfo = splitTextCommandRoleSuffix(lineText);
+        if (roleInfo.role !== 'cell') return;
+        const cleanLine = roleInfo.cleanLine;
+        const colonIndex = cleanLine.indexOf(':');
+        if (colonIndex === -1) return;
+        const nameKey = cleanLine.slice(0, colonIndex).trim().toLowerCase();
+        const bucket = buckets.get(nameKey);
+        if (!bucket || !bucket.length) return;
+        const col = bucket.shift();
+        assignments.push({ lineIndex:lineIndex, uid:'csv-' + col.index, column:col });
+      });
+      return assignments;
+    }
+
+    function findCommandLineIndexForUid(lines, uid) {
+      if (isCsvMode(getCurrentInputMode()) && isCsvLayerUid(uid)) {
+        const found = getCsvCommandLineAssignments(lines).find(function(item){
+          return item.uid === String(uid || '');
+        });
+        if (found) return found.lineIndex;
+      }
+      return findCommandLineIndexByUid(lines, uid);
+    }
+
+    function findCommandLineIndexForEntry(lines, entry) {
+      if (!entry) return -1;
+      if (String(entry.uid || '').indexOf('filler-') === 0) return -1;
+      return findCommandLineIndexForUid(lines, entry.uid);
+    }
+
     function updateCommandLayerNameByUid(uid, nextName) {
       const textarea = isCsvMode(getCurrentInputMode()) ? csvCommandEditEl : document.getElementById('timelineCommandInput');
       if (!textarea) return;
       const lines = String(textarea.value || '').replace(/\r/g, '').split('\n');
-      const lineIndex = findCommandLineIndexByUid(lines, uid);
+      const lineIndex = findCommandLineIndexForUid(lines, uid);
       if (lineIndex === -1) return;
       const colonIndex = lines[lineIndex].indexOf(':');
       if (colonIndex === -1) return;
@@ -3377,7 +3633,7 @@
       if (!textarea || !entry) return;
       const safeName = String(nextName || '').trim() || String(entry.label || '').trim() || 'A';
       const lines = String(textarea.value || '').replace(/\r/g, '').split('\n');
-      let lineIndex = String(entry.uid || '').indexOf('filler-') === 0 ? -1 : findCommandLineIndexByUid(lines, entry.uid);
+      let lineIndex = findCommandLineIndexForEntry(lines, entry);
       if (lineIndex === -1) lineIndex = findOrCreateCommandLineForEntry(lines, entry);
       if (lineIndex === -1) return;
       const colonIndex = lines[lineIndex].indexOf(':');
@@ -3390,7 +3646,7 @@
       const textarea = isCsvMode(getCurrentInputMode()) ? csvCommandEditEl : document.getElementById('timelineCommandInput');
       if (!textarea) return;
       const lines = String(textarea.value || '').replace(/\r/g, '').split('\n');
-      const lineIndex = findCommandLineIndexByUid(lines, uid);
+      const lineIndex = findCommandLineIndexForUid(lines, uid);
       if (lineIndex === -1) return;
       const colonIndex = lines[lineIndex].indexOf(':');
       if (colonIndex === -1) return;
@@ -3398,6 +3654,7 @@
       const tokens = lines[lineIndex].slice(colonIndex + 1).trim().split(/\s+/).filter(Boolean);
       const idx = Math.max(0, Number(frame || 1) - 1);
       setCommandLabelAtFrame(tokens, idx, nextLabel);
+      clearCellFrameTransientOverrides({ uid:uid }, frame);
       lines[lineIndex] = tokens.length ? (namePart + ' ' + tokens.join(' ')) : namePart;
       textarea.value = lines.join('\n');
     }
@@ -3532,6 +3789,11 @@
       const token = sanitizeCommandToken(nextLabel);
       if (!token) {
         if (idx >= tokens.length) return;
+        if (isCommandPreservedMarkToken(tokens[idx])) {
+          tokens[idx] = 'n';
+          trimTrailingCommandFillers(tokens);
+          return;
+        }
         const nextLabelIdx = findNextCommandLabelIndex(tokens, idx);
         if (nextLabelIdx === -1) {
           tokens.splice(idx);
@@ -3559,12 +3821,25 @@
       return isCsvMode(getCurrentInputMode()) ? csvCommandEditEl : document.getElementById('timelineCommandInput');
     }
 
+    function clearCellFrameTransientOverrides(entry, frame) {
+      const uid = String(entry && entry.uid || '').trim();
+      const frameNumber = Math.max(1, Math.round(Number(frame || 1)));
+      if (!uid || !frameNumber) return;
+      if (state.dotOverrides) delete state.dotOverrides[frameNumber + '::' + uid];
+      if (state.markerOverrides) {
+        const suffix = '-' + frameNumber + '-' + uid;
+        Object.keys(state.markerOverrides).forEach(function(key){
+          if (String(key || '').slice(-suffix.length) === suffix) delete state.markerOverrides[key];
+        });
+      }
+    }
+
     function findOrCreateCommandLineForEntry(lines, entry) {
       if (!entry) return -1;
       if (Number.isInteger(entry._createdLineIndex) && entry._createdLineIndex >= 0 && entry._createdLineIndex < lines.length) {
         return entry._createdLineIndex;
       }
-      let lineIndex = String(entry.uid || '').indexOf('filler-') === 0 ? -1 : findCommandLineIndexByUid(lines, entry.uid);
+      let lineIndex = findCommandLineIndexForEntry(lines, entry);
       if (lineIndex !== -1) return lineIndex;
       const layerName = String(entry.label || '').trim() || makeCellColumnLabel(lines.length);
       lines.push(layerName + ':');
@@ -3584,6 +3859,7 @@
       const tokens = bodyPart ? bodyPart.split(/\s+/).filter(Boolean) : [];
       const idx = Math.max(0, Number(frame || 1) - 1);
       setCommandLabelAtFrame(tokens, idx, nextLabel);
+      clearCellFrameTransientOverrides(entry, frame);
       lines[lineIndex] = tokens.length ? (namePart + ' ' + tokens.join(' ')) : namePart;
       textarea.value = lines.join('\n');
     }
@@ -3606,6 +3882,7 @@
         while (tokens.length <= idx) tokens.push('n');
         tokens[idx] = token;
       }
+      clearCellFrameTransientOverrides(entry, frame);
       trimTrailingCommandFillers(tokens);
       lines[lineIndex] = tokens.length ? (namePart + ' ' + tokens.join(' ')) : namePart;
       textarea.value = lines.join('\n');
@@ -3624,6 +3901,7 @@
       const idx = Math.max(0, Number(frame || 1) - 1);
       while (tokens.length <= idx) tokens.push('n');
       tokens[idx] = String(rawToken || '_');
+      clearCellFrameTransientOverrides(entry, frame);
       trimTrailingCommandFillers(tokens);
       lines[lineIndex] = tokens.length ? (namePart + ' ' + tokens.join(' ')) : namePart;
       textarea.value = lines.join('\n');
@@ -5995,7 +6273,7 @@
         }, null);
       }
       function boxFromBounds(left, right, pad) {
-        const p = Math.max(2, Number(pad) || 0);
+        const p = Number(pad) === 0 ? 0 : Math.max(2, Number(pad) || 0);
         return { x:left + p, y:y, w:Math.max(18, right - left - p * 2), h:h };
       }
       function boxFromInterval(interval, pad) {
@@ -6218,6 +6496,32 @@
       if (titleInterval) {
         const nonTitle = beforeCut.filter(function(interval){ return interval !== titleInterval; });
         const nextAfterTitle = nonTitle.filter(function(interval){ return interval.left >= titleInterval.right - 5; })[0] || null;
+        function expandEpisodeIntervalLeft(interval) {
+          if (!interval) return interval;
+          let current = interval;
+          while (current) {
+            const leftLines = headerLines.filter(function(line){ return line < current.left - 1; });
+            const prevLine = leftLines.length ? leftLines[leftLines.length - 1] : null;
+            if (!Number.isFinite(prevLine)) break;
+            const gapToPrev = current.left - prevLine;
+            const joinedW = current.right - prevLine;
+            if (gapToPrev > 0 &&
+              gapToPrev <= Math.max(72, headerWidth * 0.055) &&
+              joinedW >= Math.max(58, headerWidth * 0.045) &&
+              joinedW <= Math.max(210, headerWidth * 0.18)) {
+              current = { left:prevLine, right:current.right, w:joinedW, index:current.index };
+              continue;
+            }
+            break;
+          }
+          return current;
+        }
+        const beforeTitleCandidates = nonTitle.filter(function(interval){
+          return interval.right <= titleInterval.left + 5 &&
+            interval.w >= Math.max(38, Math.min(82, headerWidth * 0.032)) &&
+            interval.w <= Math.max(190, headerWidth * 0.16);
+        });
+        const previousBeforeTitle = beforeTitleCandidates.length ? expandEpisodeIntervalLeft(beforeTitleCandidates[beforeTitleCandidates.length - 1]) : null;
         const titleFirstWithEpisodeAfter = beforeCut[0] === titleInterval &&
           nextAfterTitle &&
           nextAfterTitle.w >= 42 &&
@@ -6227,7 +6531,7 @@
         } else if (beforeCut[0] === titleInterval && nonTitle.length && titleInterval.w > nonTitle[0].w * 1.45) {
           episodeInterval = { left:titleInterval.left, right:Math.min(titleInterval.right, titleInterval.left + Math.max(70, Math.min(180, titleInterval.w * 0.32))), w:Math.max(70, Math.min(180, titleInterval.w * 0.32)) };
         } else {
-          episodeInterval = nonTitle.length ? nonTitle[0] : { left:titleInterval.left, right:Math.min(titleInterval.right, titleInterval.left + Math.max(60, titleInterval.w * 0.20)), w:Math.max(60, titleInterval.w * 0.20) };
+          episodeInterval = previousBeforeTitle || (nonTitle.length ? nonTitle[0] : { left:titleInterval.left, right:Math.min(titleInterval.right, titleInterval.left + Math.max(60, titleInterval.w * 0.20)), w:Math.max(60, titleInterval.w * 0.20) });
         }
       }
       if (!titleInterval) titleInterval = intervals[1] || intervals[0] || { left:headerLeft + 120, right:headerLeft + 420, w:300 };
@@ -6308,7 +6612,7 @@
         }
       }
       const base = {
-        episode:boxFromInterval(episodeInterval, 8),
+        episode:boxFromInterval(episodeInterval, 0),
         title:boxFromInterval(titleInterval, 10),
         cutNo:boxFromInterval(cutInterval, 10),
         seconds:secondsBox,
@@ -7121,8 +7425,12 @@
       return (segments || []).map(function(seg){
         const copy = Object.assign({}, seg);
         if (copy.kind === 'cross') {
-          const hasLaterText = sorted.some(function(other){ return other && other.kind !== 'cross' && (other.from || 0) > (copy.from || 0); });
-          copy.showCrossMarker = (Math.round(Number(copy.from) || 1) <= 1) || !hasLaterText;
+          if (copy.explicitCross || copy.singleFrameCross) {
+            copy.showCrossMarker = true;
+          } else {
+            const hasLaterText = sorted.some(function(other){ return other && other.kind !== 'cross' && (other.from || 0) > (copy.from || 0); });
+            copy.showCrossMarker = (Math.round(Number(copy.from) || 1) <= 1) || !hasLaterText;
+          }
         }
         return copy;
       });
@@ -7178,20 +7486,18 @@
         const marks = [];
         let active = null;
         function closeActive(endFrame) {
-          if (active && endFrame >= active.from) segments.push({ from:active.from, to:endFrame, label:active.label, kind:active.kind });
+          if (active && endFrame >= active.from) segments.push({ from:active.from, to:endFrame, label:active.label, kind:active.kind, explicitCross:!!active.explicitCross });
           active = null;
         }
-        function hasLaterLabelToken(startIndex) {
+        function findNextCommandTimelineEventFrame(startIndex) {
           for (let j = startIndex + 1; j < tokens.length; j++) {
-            if (isCommandLabelToken(tokens[j])) return true;
+            const raw = String(tokens[j] || '').trim();
+            if (!raw) continue;
+            const lower = raw.toLowerCase();
+            if (lower === 'n' || lower === 'dot') continue;
+            if (lower === '_' || isLegacyNeutralEmptyToken(raw) || lower === 'x' || isCommandRepeatToken(raw) || isCommandLabelToken(raw)) return j + 1;
           }
-          return false;
-        }
-        function hasLaterRepeatToken(startIndex) {
-          for (let j = startIndex + 1; j < tokens.length; j++) {
-            if (isCommandRepeatToken(tokens[j])) return true;
-          }
-          return false;
+          return 0;
         }
         tokens.forEach(function(token, i) {
           const frame = i + 1;
@@ -7200,12 +7506,10 @@
           if (lower === 'n') return;
           if (lower === 'dot') { marks.push({ frame:frame, type:'dot' }); return; }
           if (lower === 'x') {
-            if (!hasLaterLabelToken(i) && !hasLaterRepeatToken(i)) {
-              closeActive(frame - 1);
-              active = { from:frame, label:'', kind:'cross' };
-            } else {
-              marks.push({ frame:frame, type:'cross' });
-            }
+            closeActive(frame - 1);
+            const nextFrame = findNextCommandTimelineEventFrame(i);
+            const toFrame = nextFrame ? Math.max(frame, nextFrame - 1) : frame;
+            segments.push({ from:frame, to:toFrame, label:'', kind:'cross', explicitCross:true, singleFrameCross:toFrame === frame });
             return;
           }
           if (isCommandRepeatToken(token)) { closeActive(frame - 1); marks.push({ frame:frame, type:'repeat', text:'リピート' }); return; }
@@ -7494,56 +7798,112 @@
       if (frameIndex === -1) frameIndex = 0;
       state.csvFrameIndex = frameIndex;
       state.csvDataStartRow = dataStart;
-      state.csvColumns = header.map(function(name, index){ return { name:name || ('col_' + index), index:index }; }).filter(function(c){ return c.index !== frameIndex && c.name; }).sort(function(a, b){
-        return compareAlphabetLayerNames(a.name, b.name);
-      });
+      state.csvColumns = header.map(function(name, index){ return { name:name || ('col_' + index), index:index }; }).filter(function(c){ return c.index !== frameIndex && c.name; });
       state.csvColumns.forEach(function(c){
         const name = String(c.name || '').trim();
+        if (isHiddenCsvLayerName(name)) { setCsvColumnRole(c, 'hidden'); return; }
         if (/^(音声|dialog|dialogue|セリフ|台詞)/i.test(name)) setCsvColumnRole(c, 'dialog');
         else if (isBookLayerName(name)) setCsvColumnRole(c, 'book');
         else if (/camera/i.test(name)) setCsvColumnRole(c, 'camera');
+        else if (isCameraDirectiveLayerName(name)) setCsvColumnRole(c, 'camera');
         else if (isCameraLayerName(name)) setCsvColumnRole(c, 'camera');
         else setCsvColumnRole(c, 'original');
       });
       rememberCsvOriginalCellColumnOrder();
-      state.csvColumns.forEach(function(c){
-        const label = document.createElement('label');
-        label.className = 'check-item';
-        const roleSelect = document.createElement('select');
-        roleSelect.className = 'col-role-select';
-        getCsvColumnRoleOptions().forEach(function(pair){
-          const option = document.createElement('option');
-          option.value = pair[0];
-          option.textContent = pair[1];
-          roleSelect.appendChild(option);
-        });
-        roleSelect.value = getCsvColumnRole(c);
-        roleSelect.addEventListener('change', function(){
-          setCsvColumnRole(c, roleSelect.value);
-          updateCsvOutputsFromSelection();
-          render();
-        });
-        const nameInput = document.createElement('input');
-        nameInput.type = 'text';
-        nameInput.value = c.name;
-        nameInput.className = 'col-name-input';
-        nameInput.addEventListener('input', function(){
-          c.name = nameInput.value.trim() || ('col_' + c.index);
-          updateCsvOutputsFromSelection();
-          render();
-        });
-        label.appendChild(roleSelect);
-        label.appendChild(nameInput);
-        csvColumnPickerEl.appendChild(label);
-      });
+      refreshCsvColumnPicker();
       updateCsvStatusText();
       updateCsvOutputsFromSelection();
+    }
+
+    function findCsvNeighborCellColumn(col, direction) {
+      const columns = (state.csvColumns || []).slice().sort(compareCsvSourceColumnOrder);
+      const sourceIndex = Number(col && col.index || 0);
+      if (direction < 0) {
+        for (let i = columns.length - 1; i >= 0; i--) {
+          if (Number(columns[i].index || 0) < sourceIndex && getCsvColumnRole(columns[i]) === 'original') return columns[i];
+        }
+        return null;
+      }
+      for (let i = 0; i < columns.length; i++) {
+        if (Number(columns[i].index || 0) > sourceIndex && getCsvColumnRole(columns[i]) === 'original') return columns[i];
+      }
+      return null;
+    }
+
+    function insertCsvBookColumnsNearCellNeighbors(cells, books) {
+      const cellKeys = new Set((cells || []).map(function(col){ return String(col.index); }));
+      const beforeMap = new Map();
+      const afterMap = new Map();
+      const unplaced = [];
+      function addToMap(map, key, col) {
+        if (!map.has(key)) map.set(key, []);
+        map.get(key).push(col);
+      }
+      (books || []).slice().sort(compareCsvSourceColumnOrder).forEach(function(bookCol){
+        const prev = findCsvNeighborCellColumn(bookCol, -1);
+        const next = findCsvNeighborCellColumn(bookCol, 1);
+        if (prev && cellKeys.has(String(prev.index))) {
+          addToMap(afterMap, String(prev.index), bookCol);
+        } else if (next && cellKeys.has(String(next.index))) {
+          addToMap(beforeMap, String(next.index), bookCol);
+        } else {
+          unplaced.push(bookCol);
+        }
+      });
+      const out = [];
+      (cells || []).forEach(function(cellCol){
+        const key = String(cellCol.index);
+        (beforeMap.get(key) || []).forEach(function(bookCol){ out.push(bookCol); });
+        out.push(cellCol);
+        (afterMap.get(key) || []).forEach(function(bookCol){ out.push(bookCol); });
+      });
+      return out.concat(unplaced);
+    }
+
+    function getCsvColumnPickerDisplayColumns() {
+      const columns = (state.csvColumns || []).slice().sort(compareCsvSourceColumnOrder);
+      if (!columns.length || !hasCsvCellDisplayOrder()) return columns;
+      const orderedLayers = orderLayersByCellDisplayOrder(layersFromCsvSelection());
+      const rank = new Map();
+      orderedLayers.forEach(function(layer, index){
+        const sourceIndex = layer && layer.sourceColumnIndex;
+        if (sourceIndex === undefined || sourceIndex === null) return;
+        const key = String(sourceIndex);
+        if (!rank.has(key)) rank.set(key, index);
+      });
+      const cells = columns.filter(function(col){ return getCsvColumnRole(col) === 'original'; }).sort(function(a, b){
+        const ar = rank.has(String(a.index)) ? rank.get(String(a.index)) : 999999;
+        const br = rank.has(String(b.index)) ? rank.get(String(b.index)) : 999999;
+        return ar - br || compareCsvSourceColumnOrder(a, b);
+      });
+      const books = columns.filter(function(col){ return getCsvColumnRole(col) === 'book'; });
+      const nonCells = columns.filter(function(col){
+        const role = getCsvColumnRole(col);
+        return role !== 'original' && role !== 'book';
+      }).sort(compareCsvSourceColumnOrder);
+      return insertCsvBookColumnsNearCellNeighbors(cells, books).concat(nonCells);
+    }
+
+    function sortCsvCellColumnsAlphabetically() {
+      const cells = (state.csvColumns || []).filter(function(col){
+        return getCsvColumnRole(col) === 'original';
+      }).slice().sort(function(a, b){
+        return compareAlphabetLayerNames(a.name, b.name) || compareCsvSourceColumnOrder(a, b);
+      });
+      if (!cells.length) return;
+      state.cellDisplayOrder = cells.map(function(col){ return 'csv-' + col.index; });
+      updateCsvOutputsFromSelection();
+      refreshCsvColumnPicker();
+      render();
     }
 
     function refreshCsvColumnPicker() {
       if (!csvColumnPickerEl) return;
       csvColumnPickerEl.innerHTML = '';
-      (state.csvColumns || []).forEach(function(c){
+      if (csvColumnSortBtn) {
+        csvColumnSortBtn.disabled = !(state.csvColumns || []).some(function(col){ return getCsvColumnRole(col) === 'original'; });
+      }
+      getCsvColumnPickerDisplayColumns().forEach(function(c){
         const label = document.createElement('label');
         label.className = 'check-item';
         const roleSelect = document.createElement('select');
@@ -7558,6 +7918,7 @@
         roleSelect.addEventListener('change', function(){
           setCsvColumnRole(c, roleSelect.value);
           updateCsvOutputsFromSelection();
+          refreshCsvColumnPicker();
           render();
         });
         const nameInput = document.createElement('input');
@@ -7569,6 +7930,7 @@
           updateCsvOutputsFromSelection();
           render();
         });
+        nameInput.addEventListener('change', refreshCsvColumnPicker);
         label.appendChild(roleSelect);
         label.appendChild(nameInput);
         csvColumnPickerEl.appendChild(label);
@@ -7819,7 +8181,7 @@
       const lastFrame = dataRows[dataRows.length - 1].frame;
       const breakSymbols = new Set(['_']);
       const lines = [];
-      state.csvColumns.forEach(function(col){
+      (state.csvColumns || []).slice().sort(compareCsvSourceColumnOrder).forEach(function(col){
         if (getCsvColumnRole(col) !== role) return;
         const layerName = String(col.name || '').trim();
         const values = dataRows.map(function(v){ return { frame:v.frame, value:normalizeCsvCellValue(v.row[col.index] || '') }; }).filter(function(v){ return v.value !== '' && !isCsvDotValue(v.value); });
@@ -7847,7 +8209,7 @@
       const lastFrame = dataRows[dataRows.length - 1].frame;
       const breakSymbols = new Set(['_']);
       const layers = [];
-      state.csvColumns.forEach(function(col){
+      (state.csvColumns || []).slice().sort(compareCsvSourceColumnOrder).forEach(function(col){
         if (getCsvColumnRole(col) !== 'original') return;
         const values = dataRows.map(function(v){ return { frame:v.frame, value:normalizeCsvCellValue(v.row[col.index] || '') }; }).filter(function(v){ return v.value !== ''; });
         const timelineEvents = values.filter(function(v){ return !isCsvDotValue(v.value); });
@@ -7856,17 +8218,19 @@
           if (breakSymbols.has(eventValue.value)) return null;
           const nextEvent = timelineEvents[idx + 1];
           const isCross = isCsvCrossValue(eventValue.value);
+          const toFrame = isCross ? (nextEvent ? Math.max(eventValue.frame, nextEvent.frame - 1) : eventValue.frame) : (nextEvent ? nextEvent.frame - 1 : lastFrame);
           return {
             from:eventValue.frame,
-            to:isCross ? eventValue.frame : (nextEvent ? nextEvent.frame - 1 : lastFrame),
+            to:toFrame,
             label:isCross ? '' : eventValue.value,
             kind:isCross ? 'cross' : 'circle',
-            singleFrameCross:isCross
+            singleFrameCross:isCross && toFrame === eventValue.frame,
+            explicitCross:isCross
           };
         }).filter(function(seg){ return seg && seg.to >= seg.from; });
         layers.push({ uid:'csv-' + col.index, name:col.name, sourceColumnIndex:col.index, segments:annotateCrossSegmentMarkers(segments), marks:marks });
       });
-      return sortLayersByName(layers);
+      return layers;
     }
 
     function syncCsvBookNameTags() {
@@ -7926,6 +8290,23 @@
       });
     }
 
+    function parseCsvCommandEditText(raw) {
+      const prefix = 'csv-edit';
+      const parsed = parseCommandText(raw, prefix);
+      const byUid = new Map(parsed.map(function(layer){ return [String(layer.uid || ''), layer]; }));
+      const lines = String(raw || '').split(String.fromCharCode(10)).map(function(v){ return v.trim(); }).filter(Boolean);
+      const out = [];
+      lines.forEach(function(lineText, lineIndex){
+        const colonIndex = lineText.indexOf(':');
+        if (colonIndex === -1) return;
+        const name = lineText.slice(0, colonIndex).trim();
+        if (!name) return;
+        const uid = prefix + '-' + lineIndex;
+        out.push(byUid.get(uid) || { uid:uid, name:name, segments:[], marks:[] });
+      });
+      return out;
+    }
+
     function layersToCommandText(layers) {
       const maxFrame = Math.max(1, ...layers.flatMap(function(layer){
         return [].concat((layer.segments || []).map(function(s){ return s.to || s.from || 1; })).concat((layer.marks || []).map(function(m){ return m.frame || 1; }));
@@ -7934,6 +8315,7 @@
         const tokens = Array.from({ length:maxFrame }, function(){ return 'n'; });
         if (layer.suppressAutoLeadingCross && tokens.length) tokens[0] = '_';
         (layer.segments || []).forEach(function(seg){
+          if (seg && seg.autoLeadingCross) return;
           tokens[seg.from - 1] = seg.kind === 'cross' ? 'x' : (seg.label || 'x');
           if (!(seg.kind === 'cross' && (seg.singleFrameCross || Math.round(Number(seg.to) || 0) <= Math.round(Number(seg.from) || 0)))) {
             for (let f = seg.from + 1; f <= seg.to; f++) tokens[f - 1] = 'n';
@@ -7958,14 +8340,14 @@
       syncTextCommandBookNameTags();
       if (isCsvMode(mode)) {
         const edited = csvCommandEditEl.value.trim();
-        return edited ? stabilizeCsvEditedLayerUids(parseCommandText(edited, 'csv-edit')) : layersFromCsvSelection();
+        return edited ? stabilizeCsvEditedLayerUids(parseCsvCommandEditText(edited)) : layersFromCsvSelection();
       }
       return parseCommandText(document.getElementById('timelineCommandInput').value, 'text');
     }
 
     function applyDotOverrides(baseLayers) {
       return baseLayers.map(function(layer){
-        const segments = (layer.segments || []).map(function(seg){ return { from:seg.from, to:seg.to, label:seg.label, kind:seg.kind, autoLeadingCross:!!seg.autoLeadingCross, showCrossMarker:seg.showCrossMarker !== false }; });
+        const segments = (layer.segments || []).map(function(seg){ return { from:seg.from, to:seg.to, label:seg.label, kind:seg.kind, autoLeadingCross:!!seg.autoLeadingCross, explicitCross:!!seg.explicitCross, singleFrameCross:!!seg.singleFrameCross, showCrossMarker:seg.showCrossMarker !== false }; });
         const nonDotMarks = (layer.marks || []).filter(function(mark){ return mark.type !== 'dot'; }).map(function(mark){ return Object.assign({}, mark); });
         const dotSet = new Set((layer.marks || []).filter(function(mark){ return mark.type === 'dot'; }).map(function(mark){ return mark.frame; }));
         const repeatFrames = new Set((layer.marks || []).filter(function(mark){ return mark.type === 'repeat'; }).map(function(mark){ return mark.frame; }));
@@ -7986,9 +8368,9 @@
 
     function applyLeadingCrossSegments(baseLayers) {
       return (baseLayers || []).map(function(layer){
-        const segments = annotateCrossSegmentMarkers((layer.segments || []).map(function(seg){ return { from:seg.from, to:seg.to, label:seg.label, kind:seg.kind, autoLeadingCross:!!seg.autoLeadingCross, showCrossMarker:seg.showCrossMarker !== false }; })).sort(function(a,b){ return (a.from || 0) - (b.from || 0); });
+        const segments = annotateCrossSegmentMarkers((layer.segments || []).map(function(seg){ return { from:seg.from, to:seg.to, label:seg.label, kind:seg.kind, autoLeadingCross:!!seg.autoLeadingCross, explicitCross:!!seg.explicitCross, singleFrameCross:!!seg.singleFrameCross, showCrossMarker:seg.showCrossMarker !== false }; })).sort(function(a,b){ return (a.from || 0) - (b.from || 0); });
         if (!layer.suppressAutoLeadingCross) {
-          const firstDrawing = segments.find(function(seg){ return seg && seg.kind !== 'cross' && Math.round(Number(seg.from) || 0) > 0; });
+          const firstDrawing = segments.find(function(seg){ return seg && !seg.autoLeadingCross && Math.round(Number(seg.from) || 0) > 0; });
           const hasFirstFrameSegment = segments.some(function(seg){ return seg && Math.round(Number(seg.from) || 0) <= 1 && Math.round(Number(seg.to) || seg.from || 0) >= 1; });
           if (firstDrawing && firstDrawing.from > 1 && !hasFirstFrameSegment) {
             segments.unshift({ from:1, to:Math.max(1, Math.round(firstDrawing.from) - 1), label:'', kind:'cross', autoLeadingCross:true, showCrossMarker:true });
@@ -8030,7 +8412,7 @@
     }
 
     function syncCommandTextFromCurrentState() {
-      const commandText = layersToCommandText(orderLayersByCellDisplayOrder(getInputLayers()));
+      const commandText = layersToCommandText(orderLayersByCellDisplayOrder(applyDotOverrides(getBaseInputLayers())));
       if (isCsvMode(getCurrentInputMode())) csvCommandEditEl.value = commandText;
       else document.getElementById('timelineCommandInput').value = mergeTextCommandSyncWithRoleLines(commandText);
     }
@@ -8052,7 +8434,7 @@
       const textarea = getCommandTextarea();
       if (!textarea || !entry) return null;
       const lines = String(textarea.value || '').replace(/\r/g, '').split('\n');
-      const lineIndex = createIfMissing ? findOrCreateCommandLineForEntry(lines, entry) : findCommandLineIndexByUid(lines, entry.uid);
+      const lineIndex = createIfMissing ? findOrCreateCommandLineForEntry(lines, entry) : findCommandLineIndexForEntry(lines, entry);
       if (lineIndex === -1) return null;
       const colonIndex = lines[lineIndex].indexOf(':');
       const namePart = colonIndex === -1 ? ((String(entry.label || '').trim() || 'A') + ':') : lines[lineIndex].slice(0, colonIndex + 1);
@@ -8139,12 +8521,105 @@
       clearSuppressedClickSoon(delay);
     }
 
+    function clearDragPreviewBox() {
+      const box = state.dragPreviewBox;
+      if (box && box.parentNode) box.parentNode.removeChild(box);
+      state.dragPreviewBox = null;
+      ['cellTokenDragPreview', 'timelineEdgeDragPreview'].forEach(function(id){
+        const old = document.getElementById(id);
+        if (old && old.parentNode) old.parentNode.removeChild(old);
+      });
+    }
+
+    function updateCellTokenDragPreview(drag, frame) {
+      const old = document.getElementById('cellTokenDragPreview');
+      if (old && old.parentNode) old.parentNode.removeChild(old);
+      if (!drag || !drag.previewBlock || drag.previewColIndex == null || !frame || currentSvgTarget !== svg) return;
+      const block = drag.previewBlock;
+      const colIndex = Math.max(0, Math.round(Number(drag.previewColIndex) || 0));
+      const bounds = getOutputCellBounds(block, colIndex);
+      const y = getOutputRowTop(block, frame, 'cell');
+      const h = getOutputRowH(block, 'cell');
+      const g = el('g', { id:'cellTokenDragPreview', 'pointer-events':'none' });
+      g.appendChild(el('rect', {
+        x:bounds.x1 + 1,
+        y:y + 1,
+        width:Math.max(1, bounds.x2 - bounds.x1 - 2),
+        height:Math.max(1, h - 2),
+        fill:'rgba(31,111,235,.12)',
+        stroke:SHAKU_BLUE,
+        'stroke-width':3,
+        rx:3,
+        ry:3
+      }));
+      svg.appendChild(g);
+    }
+
+    function findTimelineDragPreviewBlock(frame, blockType) {
+      const model = getRenderModel();
+      const blocks = getBlocksForPage(model.layout, state.currentPreviewPage || 0);
+      let found = null;
+      blocks.forEach(function(block){
+        if (found || frame < block.start || frame >= block.start + block.count) return;
+        const top = 450;
+        const nameStripH = 44;
+        const bodyH = 1912;
+        const rowH = bodyH / block.count;
+        const xOriginalRight = block.x + block.metrics.originalAreaW;
+        const xDialogRight = xOriginalRight + block.metrics.dialogW;
+        const xInbetweenRight = xDialogRight + block.metrics.inbetweenW;
+        found = {
+          blockX:block.x,
+          blockW:block.w,
+          originalColW:block.metrics.originalAreaW / Math.max(1, model.layout.originalEntries.length),
+          originalAreaW:block.metrics.originalAreaW,
+          originalEntriesCount:model.layout.originalEntries.length,
+          top:top,
+          nameStripH:nameStripH,
+          rowH:rowH,
+          frameCount:block.count,
+          start:block.start,
+          end:block.start + block.count - 1,
+          xOriginalRight:xOriginalRight,
+          xDialogRight:xDialogRight,
+          xInbetweenRight:xInbetweenRight,
+          dialogW:block.metrics.dialogW,
+          cameraW:block.metrics.cameraW,
+          previewBlockType:blockType
+        };
+      });
+      return found;
+    }
+
+    function updateTimelineEdgeDragPreview(drag, frame) {
+      const old = document.getElementById('timelineEdgeDragPreview');
+      if (old && old.parentNode) old.parentNode.removeChild(old);
+      if (!drag || !frame || currentSvgTarget !== svg) return;
+      const block = findTimelineDragPreviewBlock(frame, drag.blockType);
+      if (!block) return;
+      const area = drag.blockType === 'camera' ? getCameraArea(block) : getDialogArea(block);
+      const rowTop = getOutputRowTop(block, frame, drag.blockType);
+      const y = drag.edge === 'from' ? rowTop : rowTop + getOutputRowH(block, drag.blockType);
+      const g = el('g', { id:'timelineEdgeDragPreview', 'pointer-events':'none' });
+      g.appendChild(el('line', {
+        x1:area.x,
+        y1:y,
+        x2:area.x + area.w,
+        y2:y,
+        stroke:SHAKU_BLUE,
+        'stroke-width':4,
+        'stroke-linecap':'round'
+      }));
+      svg.appendChild(g);
+    }
+
     function cancelCellLongPressDrag() {
       const drag = state.cellLongPressDrag;
       if (!drag) return;
       if (drag.timer) clearTimeout(drag.timer);
       state.cellLongPressDrag = null;
       document.documentElement.classList.remove('cell-dragging');
+      clearDragPreviewBox();
     }
 
     function activateCellLongPressDrag() {
@@ -8152,17 +8627,22 @@
       if (!drag || drag.active) return;
       drag.token = getMovableCellToken(drag.entry, drag.currentFrame);
       if (!drag.token) { cancelCellLongPressDrag(); return; }
+      const info = getCommandLineInfoForEntry(drag.entry, false);
+      drag.tokensSnapshot = info ? info.tokens.slice() : [];
+      drag.previewFrame = drag.currentFrame;
       drag.active = true;
       suppressNextClickBriefly(300);
       document.documentElement.classList.add('cell-dragging');
+      updateCellTokenDragPreview(drag, drag.previewFrame);
       if (state.inlineTextEditor) closeInlineTextEditor({ render:false });
     }
 
-    function beginCellLongPressDrag(event, entry, frame, range) {
+    function beginCellLongPressDrag(event, entry, frame, range, options) {
       if (!entry || state.memoMode || state.positionMode || state.textMemoEditor || state.shakuMode) return;
       if (event.shiftKey) return;
       if (event.button !== undefined && event.button !== 0) return;
       cancelCellLongPressDrag();
+      const dragOptions = options || {};
       const drag = {
         pointerId:event.pointerId,
         entry:entry,
@@ -8174,6 +8654,10 @@
         startClientY:event.clientY,
         active:false,
         token:null,
+        tokensSnapshot:null,
+        previewFrame:null,
+        previewBlock:dragOptions.block ? Object.assign({}, dragOptions.block) : null,
+        previewColIndex:dragOptions.colIndex,
         sourceTarget:event.currentTarget || null,
         timer:null
       };
@@ -8197,8 +8681,10 @@
       event.stopPropagation();
       const targetFrame = getFrameFromPointerEvent(event);
       if (!targetFrame) return;
-      const movedTo = moveCommandCellToken(drag.entry, drag.currentFrame, targetFrame, drag.token, drag.minFrame, drag.maxFrame);
-      if (movedTo && movedTo !== drag.currentFrame) drag.currentFrame = movedTo;
+      const tokens = Array.isArray(drag.tokensSnapshot) ? drag.tokensSnapshot : [];
+      const previewFrame = findAvailableCellMoveFrame(tokens, targetFrame, drag.startFrame, drag.minFrame, drag.maxFrame);
+      if (previewFrame) drag.previewFrame = previewFrame;
+      updateCellTokenDragPreview(drag, drag.previewFrame || drag.startFrame);
       suppressNextClickBriefly(300);
     }
 
@@ -8215,8 +8701,12 @@
       if (target && target.releasePointerCapture) {
         try { target.releasePointerCapture(event.pointerId); } catch (err) {}
       }
+      if (drag.active && drag.previewFrame && drag.previewFrame !== drag.startFrame) {
+        moveCommandCellToken(drag.entry, drag.startFrame, drag.previewFrame, drag.token, drag.minFrame, drag.maxFrame);
+      }
       state.cellLongPressDrag = null;
       document.documentElement.classList.remove('cell-dragging');
+      clearDragPreviewBox();
       flushQueuedRender();
     }
 
@@ -8224,7 +8714,7 @@
       if (!node || !entry) return node;
       node.classList.add('cell-drag-hit');
       if (options && options.tokenDragCursor) node.classList.add('cell-token-drag-hit');
-      node.addEventListener('pointerdown', function(event){ beginCellLongPressDrag(event, entry, frame, range); }, { passive:false });
+      node.addEventListener('pointerdown', function(event){ beginCellLongPressDrag(event, entry, frame, range, options || {}); }, { passive:false });
       return node;
     }
 
@@ -8336,6 +8826,15 @@
 
     function computeOriginalDisplayEntries(layers) {
       const actualEntries = (layers || []).map(function(layer){ return { uid:layer.uid, label:layer.name, isActual:true }; });
+      const hasCsvSourceEntries = actualEntries.some(function(entry){ return /^csv-/.test(String(entry.uid || '')); });
+      if (hasCsvSourceEntries) {
+        const targetCount = Math.max(getCellColumnCount(), actualEntries.length, 1);
+        const sourceOrderEntries = actualEntries.slice();
+        for (let i = sourceOrderEntries.length; i < targetCount; i++) {
+          sourceOrderEntries.push({ uid:'filler-' + makeCellColumnLabel(i), label:makeCellColumnLabel(i), isActual:false });
+        }
+        return applyCellDisplayOrder(sourceOrderEntries);
+      }
       let maxLabelIndex = -1;
       actualEntries.forEach(function(entry){ maxLabelIndex = Math.max(maxLabelIndex, cellColumnLabelToIndex(entry.label)); });
       const placementCount = maxLabelIndex >= 0 ? Math.min(maxLabelIndex + 1, MAX_CELL_COLUMN_PLACEMENT_COUNT) : 0;
@@ -8438,6 +8937,52 @@
       return sorted;
     }
 
+    function normalizeCameraBoundaryLabel(value) {
+      return String(value || '').normalize('NFKC').trim().toUpperCase();
+    }
+
+    function cameraBoundaryLabelsMatch(a, b) {
+      const aa = normalizeCameraBoundaryLabel(a);
+      const bb = normalizeCameraBoundaryLabel(b);
+      return !!aa && aa === bb;
+    }
+
+    function findConnectedCameraBefore(seg, segments) {
+      return (segments || []).find(function(other){
+        return other !== seg && other.to === seg.from && cameraBoundaryLabelsMatch(other.endLabel, seg.label);
+      }) || null;
+    }
+
+    function findConnectedCameraAfter(seg, segments) {
+      return (segments || []).find(function(other){
+        return other !== seg && other.from === seg.to && cameraBoundaryLabelsMatch(seg.endLabel, other.label);
+      }) || null;
+    }
+
+    function getCameraConnectionState(seg, segments) {
+      return {
+        start:!!findConnectedCameraBefore(seg, segments),
+        end:!!findConnectedCameraAfter(seg, segments)
+      };
+    }
+
+    function assignCameraLanes(segments) {
+      const sorted = assignLanes(segments);
+      sorted.forEach(function(seg){
+        const previous = findConnectedCameraBefore(seg, sorted);
+        if (previous && Number.isFinite(previous.lane)) seg.lane = previous.lane;
+      });
+      return sorted;
+    }
+
+    function isCameraFixedHoldSegment(seg) {
+      return cameraBoundaryLabelsMatch(seg && seg.label, seg && seg.endLabel);
+    }
+
+    function getCameraSegmentDisplayText(seg) {
+      return isCameraFixedHoldSegment(seg) ? 'FIX' : String(seg && seg.text || '');
+    }
+
     function renderHeader(offsetY, pageIndex, pageCount) {
       const hx = 60, hy = offsetY + 52, hw = 1636, hh = 120;
       const wEp = 140, wTitle = 610, wCut = 220, wDuration = 220, wName = 260, wPage = 186;
@@ -8492,8 +9037,8 @@
 
       withDrawLayer('output', function(){
         if (state.showHeaderOutput) {
-          headerText('episode', hx + wEp / 2, hy + 68, ep, 24, 'middle', '700', '#111', { get:function(){ return document.getElementById('episode').value; }, set:function(v){ document.getElementById('episode').value = v; } }, boxes.episode);
-          headerText('title', x1 + wTitle / 2, hy + 68, titleValue, 24, 'middle', '700', '#111', { get:function(){ return document.getElementById('title').value; }, set:function(v){ document.getElementById('title').value = v; } }, boxes.title);
+          headerText('episode', hx + wEp / 2, hy + 68, ep, 24, 'middle', '700', '#111', { get:function(){ return document.getElementById('episode').value; }, set:function(v){ setRememberedHeaderValue('episode', v); } }, boxes.episode);
+          headerText('title', x1 + wTitle / 2, hy + 68, titleValue, 24, 'middle', '700', '#111', { get:function(){ return document.getElementById('title').value; }, set:function(v){ setRememberedHeaderValue('title', v); } }, boxes.title);
           headerText('cutNo', x2 + wCut / 2, hy + 68, cutNo, 22, 'middle', '700', '#111', { get:function(){ return document.getElementById('cutNo').value; }, set:function(v){ document.getElementById('cutNo').value = v; } }, boxes.cutNo);
           headerText('seconds', x3 + wDuration / 2 - 16, hy + 68, String(sec), 22, 'middle', '700', '#111', { durationStepper:'seconds', get:function(){ return document.getElementById('seconds').value; }, set:function(v){ document.getElementById('seconds').value = v; normalizeDurationInputs(); } }, boxes.seconds);
           headerText('frames', x3 + wDuration / 2 + 16, hy + 68, String(frame), 22, 'middle', '700', '#111', { durationStepper:'frames', get:function(){ return document.getElementById('frames').value; }, set:function(v){ document.getElementById('frames').value = v; normalizeDurationInputs(); } }, boxes.frames);
@@ -8501,7 +9046,7 @@
           const frameBox = getHeaderFieldRect('frames', boxes.frames);
           text((secBox.x + secBox.w + frameBox.x) / 2, (secBox.y + secBox.h / 2 + frameBox.y + frameBox.h / 2) / 2, '+', 22, 'middle', '700');
           renderDurationStepperButtons(secBox, frameBox);
-          headerText('author', x4 + wName / 2, hy + 68, author, 22, 'middle', '700', '#111', { get:function(){ return document.getElementById('author').value; }, set:function(v){ document.getElementById('author').value = v; } }, boxes.author);
+          headerText('author', x4 + wName / 2, hy + 68, author, 22, 'middle', '700', '#111', { get:function(){ return document.getElementById('author').value; }, set:function(v){ setRememberedHeaderValue('author', v); } }, boxes.author);
           headerText('page', x5 + wPage / 2, hy + 68, page, 22, 'middle', '700', '#111', { get:function(){ return document.getElementById('page').value; }, set:function(v){ document.getElementById('page').value = v; } }, boxes.page);
         }
         Object.keys(boxes).forEach(function(field){ addPositionEditBox('header-' + field, boxes[field], 'Header ' + field); });
@@ -8544,13 +9089,71 @@
     }
 
     function drawCameraSecondFrameText(block, areaX, areaW, lane, laneCount, seg, editConfig) {
-      if (!seg || !String(seg.text || '').trim()) return;
+      const displayText = getCameraSegmentDisplayText(seg);
+      if (!seg || !String(displayText || '').trim()) return;
       const textFrame = Math.min(seg.to, seg.from + 1);
       if (textFrame < block.start || textFrame > block.end) return;
       const rowTop = getOutputRowTop(block, textFrame, 'camera');
       const x = getDistributedLaneX(areaX, areaW, lane || 0, laneCount, 12);
       const y = rowTop + getOutputRowH(block, 'camera') / 2;
-      drawCompactText(x, y, String(seg.text || ''), 22, 'start', '600', '#111', editConfig);
+      drawCompactText(x, y, String(displayText || ''), 22, 'start', '600', '#111', editConfig);
+    }
+
+    function normalizeCameraShapeToken(value) {
+      return String(value || '')
+        .normalize('NFKC')
+        .replace(/[.\s_\-・/\\()（）\[\]【】]+/g, '')
+        .toUpperCase();
+    }
+
+    function getCameraSpecialShape(seg) {
+      const candidates = [seg && seg.text, seg && seg.label, seg && seg.endLabel];
+      for (let i = 0; i < candidates.length; i++) {
+        const token = normalizeCameraShapeToken(candidates[i]);
+        if (!token) continue;
+        if (/^(FI|FADEIN|FADEINN|フェードイン|フェイドイン)$/.test(token)) return 'fi';
+        if (/^(FO|FADEOUT|フェードアウト|フェイドアウト)$/.test(token)) return 'fo';
+        if (/^(OL|OVERLAP|OVERLAPPU|オーバーラップ)$/.test(token)) return 'ol';
+      }
+      return '';
+    }
+
+    function appendCameraSpecialShapePolygon(points, fill, stroke) {
+      appendSvgNode(el('polygon', {
+        points:points.map(function(point){ return point[0] + ',' + point[1]; }).join(' '),
+        fill:fill || 'rgba(31,111,235,.42)',
+        stroke:stroke || '#111111',
+        'stroke-width':1.4,
+        'pointer-events':'none'
+      }));
+    }
+
+    function renderCameraSpecialShape(shape, areaX, areaW, rowTop, height, lane, laneCount) {
+      if (!shape) return false;
+      const laneX = getDistributedLaneX(areaX, areaW, lane || 0, laneCount, 12);
+      const usableW = Math.max(18, Math.min(areaW - 10, areaW / Math.max(1, laneCount) * 0.82));
+      const halfW = usableW / 2;
+      const x1 = Math.max(areaX + 4, laneX - halfW);
+      const x2 = Math.min(areaX + areaW - 4, laneX + halfW);
+      const cx = (x1 + x2) / 2;
+      const y1 = rowTop + 2;
+      const y2 = rowTop + Math.max(4, height - 2);
+      const midY = (y1 + y2) / 2;
+      if (y2 <= y1 + 2) return false;
+      if (shape === 'fi') {
+        appendCameraSpecialShapePolygon([[cx, y1], [x2, y2], [x1, y2]]);
+        return true;
+      }
+      if (shape === 'fo') {
+        appendCameraSpecialShapePolygon([[x1, y1], [x2, y1], [cx, y2]]);
+        return true;
+      }
+      if (shape === 'ol') {
+        appendCameraSpecialShapePolygon([[x1, y1], [x2, y1], [cx, midY]]);
+        appendCameraSpecialShapePolygon([[cx, midY], [x2, y2], [x1, y2]]);
+        return true;
+      }
+      return false;
     }
 
     function addTimelineEdgeHandle(block, rowTop, blockType, seg, edge, areaX, areaW) {
@@ -8624,20 +9227,28 @@
         if (to < from) return;
         const rowTop = getOutputRowTop(block, from, 'camera');
         const height = (to - from + 1) * getOutputRowH(block, 'camera');
+        const rowH = getOutputRowH(block, 'camera');
         const cameraArea = getCameraArea(block);
         const x = cameraArea.x;
         const w = cameraArea.w;
         const guideX = getDistributedLaneX(x, w, seg.lane || 0, cameraLaneCount, 12);
-        line(x, rowTop, x + w, rowTop, RED, 2.6);
-        line(x, rowTop + height, x + w, rowTop + height, RED, 2.6);
-        line(guideX, rowTop, guideX, rowTop + height, RED, 1.1);
-        if (seg.from >= block.start && seg.from <= block.end) {
-          drawTimelineFirstFrameLabel(x, w, rowTop, getOutputRowH(block, 'camera'), seg.lane || 0, cameraLaneCount, seg.label, { get:function(){ return seg.label || ''; }, set:function(v){ updateManualBlockField('camera', seg.id, 'label', v); } });
+        const cameraShape = getCameraSpecialShape(seg);
+        const cameraConnection = getCameraConnectionState(seg, cameraSegs);
+        if (!cameraConnection.start) line(x, rowTop, x + w, rowTop, RED, 2.6);
+        if (!cameraConnection.end) line(x, rowTop + height, x + w, rowTop + height, RED, 2.6);
+        if (cameraShape) renderCameraSpecialShape(cameraShape, x, w, rowTop, height, seg.lane || 0, cameraLaneCount);
+        else {
+          const guideTop = rowTop + (cameraConnection.start ? rowH : 0);
+          const guideBottom = rowTop + height - (cameraConnection.end && seg.endLabel ? rowH : 0);
+          if (guideBottom > guideTop) line(guideX, guideTop, guideX, guideBottom, RED, 1.1);
         }
-        drawCameraSecondFrameText(block, x, w, seg.lane || 0, cameraLaneCount, seg, { get:function(){ return seg.text || ''; }, set:function(v){ updateManualBlockField('camera', seg.id, 'text', v); } });
+        if (!cameraConnection.start && seg.from >= block.start && seg.from <= block.end) {
+          drawTimelineFirstFrameLabel(x, w, rowTop, rowH, seg.lane || 0, cameraLaneCount, seg.label, { get:function(){ return seg.label || ''; }, set:function(v){ updateManualBlockField('camera', seg.id, 'label', v); } });
+        }
+        if (!cameraShape) drawCameraSecondFrameText(block, x, w, seg.lane || 0, cameraLaneCount, seg, { get:function(){ return seg.text || ''; }, set:function(v){ updateManualBlockField('camera', seg.id, 'text', v); } });
         if (seg.endLabel && seg.to >= block.start && seg.to <= block.end) {
           const endRowTop = getOutputRowTop(block, seg.to, 'camera');
-          drawTimelineBoxLabel(x, w, endRowTop, getOutputRowH(block, 'camera'), seg.lane || 0, cameraLaneCount, seg.endLabel, { get:function(){ return seg.endLabel || ''; }, set:function(v){ updateManualBlockField('camera', seg.id, 'endLabel', v); } });
+          drawTimelineBoxLabel(x, w, endRowTop, rowH, seg.lane || 0, cameraLaneCount, seg.endLabel, { get:function(){ return seg.endLabel || ''; }, set:function(v){ updateManualBlockField('camera', seg.id, 'endLabel', v); } });
         }
         if (seg.from >= block.start && seg.from <= block.end) addTimelineEdgeHandle(block, rowTop, 'camera', seg, 'from', x, w);
         if (seg.to >= block.start && seg.to <= block.end) addTimelineEdgeHandle(block, rowTop + height, 'camera', seg, 'to', x, w);
@@ -9217,6 +9828,7 @@
         const targetIndex = getCellLabelDragTargetIndex(event, drag.labelArea, drag.entries.length);
         if (moveCellDisplayColumn(drag.startIndex, targetIndex, drag.entries)) {
           reorderCommandTextByDisplayOrder(drag.entries);
+          if (isCsvMode(getCurrentInputMode())) refreshCsvColumnPicker();
           suppressNextClickBriefly(350);
           render();
         }
@@ -9540,7 +10152,7 @@
       (layer && layer.segments || []).forEach(function(seg){
         const frame = Math.max(1, Math.round(Number(seg.from) || 1));
         if (seg && seg.kind === 'cross') {
-          events.push({ frame:frame, to:frame, token:'X', type:'cross', label:'x' });
+          events.push({ frame:frame, to:Math.max(frame, Math.round(Number(seg.to) || frame)), token:'X', type:'cross', label:'x' });
           return;
         }
         const label = String(seg && seg.label || '').trim();
@@ -9704,20 +10316,41 @@
       };
     }
 
-    function buildDougaSheetData(layers) {
+    function makeDougaLayerSourceSignature(layer) {
+      return JSON.stringify({
+        uid:String(layer && layer.uid || ''),
+        name:String(layer && layer.name || ''),
+        segments:(layer && Array.isArray(layer.segments) ? layer.segments : []).map(function(seg){
+          return { from:seg.from, to:seg.to, value:seg.value };
+        }),
+        marks:(layer && Array.isArray(layer.marks) ? layer.marks : []).map(function(mark){
+          return { frame:mark.frame, type:mark.type, value:mark.value };
+        })
+      });
+    }
+
+    function buildDougaSheetData(layers, previousData) {
       const byUid = {};
       const byLabel = {};
+      const sourceSignatures = {};
+      const previous = previousData && typeof previousData === 'object' ? previousData : null;
+      const previousByUid = previous && previous.byUid && typeof previous.byUid === 'object' ? previous.byUid : {};
+      const previousSignatures = previous && previous.sourceSignatures && typeof previous.sourceSignatures === 'object' ? previous.sourceSignatures : {};
       (layers || []).forEach(function(layer){
         if (!layer) return;
-        const layerData = makeDougaLayerData(layer);
-        byUid[String(layer.uid || '')] = layerData;
+        const uid = String(layer.uid || '');
+        const signature = makeDougaLayerSourceSignature(layer);
+        const reusable = previousSignatures[uid] === signature && previousByUid[uid];
+        const layerData = reusable ? previousByUid[uid] : makeDougaLayerData(layer);
+        sourceSignatures[uid] = signature;
+        byUid[uid] = layerData;
         byLabel[String(layer.name || '')] = layerData;
       });
-      return { byUid:byUid, byLabel:byLabel, createdAt:Date.now() };
+      return { byUid:byUid, byLabel:byLabel, sourceSignatures:sourceSignatures, createdAt:Date.now() };
     }
 
     function refreshDougaSheetFromCells() {
-      state.dougaSheetData = buildDougaSheetData(getInputLayers());
+      state.dougaSheetData = buildDougaSheetData(getInputLayers(), state.dougaSheetData);
       state.dougaSheetEnabled = true;
       updateDougaSheetButton();
       render();
@@ -9743,7 +10376,7 @@
 
     function getNextDougaHoldEntry(events, index) {
       for (let i = index + 1; i < events.length; i++) {
-        if (!isDougaCrossEntry(events[i])) return events[i];
+        if (events[i]) return events[i];
       }
       return null;
     }
@@ -9786,7 +10419,7 @@
 
     function getDougaHoldEnd(entry, nextEntry, targetEnd) {
       const frame = Math.max(1, Math.round(Number(entry && entry.frame) || 1));
-      if (isDougaCrossEntry(entry)) return frame;
+      if (isDougaCrossEntry(entry)) return nextEntry ? Math.max(frame, Math.round(Number(nextEntry.frame) || frame) - 1) : targetEnd;
       if (nextEntry) return Math.max(frame, Math.round(Number(nextEntry.frame) || frame) - 1);
       if (entry && entry.generated) return targetEnd;
       return Math.max(frame, Math.round(Number(entry && entry.to) || frame));
@@ -9807,7 +10440,7 @@
       if (end < start) return;
       const y1 = area.y + (start - block.start) * rowH + 1.5;
       const y2 = area.y + (end - block.start + 1) * rowH - 1.5;
-      if (y2 > y1) line(x, y1, x, y2, RED, cellOutputStroke(1.4));
+      if (y2 > y1) line(x, y1, x, y2, '#111', cellOutputStroke(1));
     }
 
     function renderDougaHoldLineSkippingFrames(x, fromFrame, toFrame, block, area, rowH, skipFrames, endHold) {
@@ -9845,12 +10478,10 @@
             return Math.max(1, Math.round(Number(eventValue.frame) || 1));
           }));
           events.forEach(function(eventValue, index){
-            if (isDougaCrossEntry(eventValue)) return;
             const holdEnd = getDougaHoldEnd(eventValue, getNextDougaHoldEntry(events, index), targetEnd);
             renderDougaHoldLineSkippingFrames(x, Math.round(Number(eventValue.frame) || 0) + 1, holdEnd, block, area, rowH, crossFrames, false);
           });
-          const holdEvents = events.filter(function(eventValue){ return !isDougaCrossEntry(eventValue); });
-          const lastEvent = holdEvents.length ? holdEvents[holdEvents.length - 1] : null;
+          const lastEvent = events.length ? events[events.length - 1] : null;
           if (lastEvent) {
             const lastEventIndex = events.indexOf(lastEvent);
             const lastHoldEnd = getDougaHoldEnd(lastEvent, getNextDougaHoldEntry(events, lastEventIndex), targetEnd);
@@ -10048,18 +10679,20 @@
           const repeatMark = layer ? (layer.marks || []).find(function(m){ return m.type === 'repeat' && m.frame === absFrame; }) : null;
           if (repeatMark) dotMark = null;
           const crossMark = layer ? (layer.marks || []).find(function(m){ return m.type === 'cross' && m.frame === absFrame; }) : null;
-          if (params.interactive && !seg && !dotMark && !repeatMark && !crossMark) {
+          const isAutoLeadingCrossSeg = !!(seg && seg.kind === 'cross' && seg.autoLeadingCross);
+          const isExplicitCrossSeg = !!(seg && seg.kind === 'cross' && !seg.autoLeadingCross);
+          if (params.interactive && (!seg || isAutoLeadingCrossSeg) && !dotMark && !repeatMark && !crossMark) {
             addEmptyCellInlineEditHit(entry, absFrame, { x1:x1, y1:y1, x2:x2, y2:y2 });
           }
           if (!layer && !seg && !dotMark && !repeatMark && !crossMark) continue;
           if (seg) {
             if (absFrame > seg.from) {
-              if (!dotMark && !crossMark) line((x1 + x2) / 2, y1 + 1.5, (x1 + x2) / 2, y2 - 1.5, seg.kind === 'cross' ? RED : '#111', seg.kind === 'cross' ? 1.4 : 1);
+              if (!dotMark && !crossMark) line((x1 + x2) / 2, y1 + 1.5, (x1 + x2) / 2, y2 - 1.5, seg.kind === 'cross' ? (isExplicitCrossSeg ? '#111' : RED) : '#111', seg.kind === 'cross' ? 1.4 : 1);
               if (params.interactive && seg.kind !== 'cross') {
                 const hit = el('rect', { x:x1, y:y1, width:x2 - x1, height:y2 - y1, fill:'transparent', stroke:'transparent' });
                 hit.style.cursor = 'pointer';
                 hit.setAttribute('title', 'Click: dot on/off / Shift-click: text');
-                attachCellLongPressDrag(hit, entry, absFrame, { minFrame:params.startFrame, maxFrame:params.startFrame + params.frameCount - 1 });
+                attachCellLongPressDrag(hit, entry, absFrame, { minFrame:params.startFrame, maxFrame:params.startFrame + params.frameCount - 1 }, { block:tempBlock, colIndex:colIndex });
                 hit.addEventListener('click', function(event){
                   if (event.shiftKey) {
                     event.preventDefault();
@@ -10071,30 +10704,40 @@
                   handleDotClick(event, entry, absFrame, baseLayer);
                 });
                 appendSvgNode(hit);
-              } else if (params.interactive && seg.kind === 'cross') {
-                addCellFrameEditHit(entry, absFrame, { x1:x1, y1:y1, x2:x2, y2:y2 }, {
-                  preserveCross:true,
-                  cursor:'pointer',
-                  title:'Click to edit / Shift-click for mark operation'
+              } else if (params.interactive && isExplicitCrossSeg && !dotMark && !crossMark) {
+                const explicitCrossHoldHit = el('rect', { x:x1, y:y1, width:x2 - x1, height:y2 - y1, fill:'transparent', stroke:'transparent', 'pointer-events':'all' });
+                explicitCrossHoldHit.style.cursor = 'pointer';
+                explicitCrossHoldHit.setAttribute('title', 'Click: dot on/off / Shift-click: text');
+                attachCellLongPressDrag(explicitCrossHoldHit, entry, absFrame, { minFrame:params.startFrame, maxFrame:params.startFrame + params.frameCount - 1 }, { block:tempBlock, colIndex:colIndex });
+                explicitCrossHoldHit.addEventListener('click', function(event){
+                  if (event.shiftKey) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+                    openCellFrameTextEditor(explicitCrossHoldHit, entry, absFrame, '', event, false);
+                    return;
+                  }
+                  handleDotClick(event, entry, absFrame, baseLayer);
                 });
+                appendSvgNode(explicitCrossHoldHit);
               }
             } else {
               const key = params.pageIndex + '-' + absFrame + '-' + entry.uid;
-              const markerKind = seg.kind === 'cross' ? (seg.showCrossMarker === false ? 'none' : 'cross') : (state.markerOverrides[key] || seg.kind || 'circle');
-              if (params.interactive) {
+              const markerKind = seg.kind === 'cross' ? (seg.showCrossMarker === false ? 'none' : (isExplicitCrossSeg ? 'black-cross' : 'cross')) : (state.markerOverrides[key] || seg.kind || 'circle');
+              if (params.interactive && !isAutoLeadingCrossSeg) {
                 addCellFrameEditHit(entry, absFrame, { x1:x1, y1:y1, x2:x2, y2:y2 }, {
                   initialValue:seg.kind === 'cross' ? '' : (seg.label || ''),
                   preserveCross:seg.kind === 'cross',
                   cursor:'pointer',
                   dragRange:{ minFrame:params.startFrame, maxFrame:params.startFrame + params.frameCount - 1 },
-                  dragOptions:{ tokenDragCursor:true },
+                  dragOptions:{ tokenDragCursor:true, block:tempBlock, colIndex:colIndex },
                   onClick:function(event){ return handleCellMarkerClick(event, entry, absFrame, seg, key); }
                 });
               }
               drawMarker(markerKind, x1, y1, x2, y2);
-              if (seg.kind === 'cross' && !dotMark && Math.round(Number(seg.to) || 0) > Math.round(Number(seg.from) || 0)) {
+              if (seg.kind === 'cross' && !isExplicitCrossSeg && !dotMark && Math.round(Number(seg.to) || 0) > Math.round(Number(seg.from) || 0)) {
                 const redLineStart = seg.showCrossMarker === false ? (y1 + 1.5) : ((y1 + y2) / 2 + 7);
-                line((x1 + x2) / 2, redLineStart, (x1 + x2) / 2, y2 - 1.5, RED, 1.4);
+                line((x1 + x2) / 2, redLineStart, (x1 + x2) / 2, y2 - 1.5, isExplicitCrossSeg ? '#111' : RED, 1.4);
               }
               if (seg.label) {
                 const labelEditConfig = { get:function(){ return seg.label || ''; }, set:function(v){ updateCommandSegmentLabelByUid(entry.uid, seg.from, v); } };
@@ -10102,7 +10745,7 @@
                 labelNode.style.cursor = 'pointer';
                 labelNode.setAttribute('data-inline-editable', 'shift-only');
                 labelNode.setAttribute('title', 'Click to edit / Shift-click to change mark / drag to move');
-                attachCellLongPressDrag(labelNode, entry, absFrame, { minFrame:params.startFrame, maxFrame:params.startFrame + params.frameCount - 1 }, { tokenDragCursor:false });
+                attachCellLongPressDrag(labelNode, entry, absFrame, { minFrame:params.startFrame, maxFrame:params.startFrame + params.frameCount - 1 }, { tokenDragCursor:false, block:tempBlock, colIndex:colIndex });
                 labelNode.addEventListener('click', function(event){
                   if (state.suppressNextClick) return;
                   if (event.shiftKey) {
@@ -10125,7 +10768,7 @@
                 cursor:'pointer',
                 title:'Click to edit / drag to move',
                 dragRange:{ minFrame:params.startFrame, maxFrame:params.startFrame + params.frameCount - 1 },
-                dragOptions:{ tokenDragCursor:true }
+                dragOptions:{ tokenDragCursor:true, block:tempBlock, colIndex:colIndex }
               });
             }
           }
@@ -10135,7 +10778,7 @@
               const dotHit = el('rect', { x:x1, y:y1, width:x2 - x1, height:y2 - y1, fill:'transparent', stroke:'transparent', 'pointer-events':'all' });
               dotHit.style.cursor = 'pointer';
               dotHit.setAttribute('title', 'Click: dot on/off / Shift-click: text');
-              attachCellLongPressDrag(dotHit, entry, absFrame, { minFrame:params.startFrame, maxFrame:params.startFrame + params.frameCount - 1 }, { tokenDragCursor:true });
+              attachCellLongPressDrag(dotHit, entry, absFrame, { minFrame:params.startFrame, maxFrame:params.startFrame + params.frameCount - 1 }, { tokenDragCursor:true, block:tempBlock, colIndex:colIndex });
               dotHit.addEventListener('click', function(event){
                 if (event.shiftKey) {
                   event.preventDefault();
@@ -10158,7 +10801,7 @@
                 cursor:'pointer',
                 title:'Click to edit / drag to move',
                 dragRange:{ minFrame:params.startFrame, maxFrame:params.startFrame + params.frameCount - 1 },
-                dragOptions:{ tokenDragCursor:true }
+                dragOptions:{ tokenDragCursor:true, block:tempBlock, colIndex:colIndex }
               });
             }
           }
@@ -10190,31 +10833,54 @@
       return state.textMemoPages[key];
     }
 
+    function shouldShowTextMemoControls() {
+      return !!state.positionMode;
+    }
+
+    function getTextMemoConstraintLayoutRect(key) {
+      const base = state.layoutBoxBaseRects && state.layoutBoxBaseRects[key];
+      if (base) return getLayoutBoxRect(key, base);
+      const labelMatch = String(key || '').match(/^cell-label-(left|right|main)$/);
+      if (labelMatch) {
+        const cellBox = getTextMemoConstraintLayoutRect('cell-' + labelMatch[1]);
+        if (cellBox) {
+          const labelStored = state.layoutBoxes && state.layoutBoxes[key];
+          const h = Math.max(12, Math.round(labelStored && Number(labelStored.h) ? Number(labelStored.h) : 44));
+          return normalizeRect({ x:cellBox.x, y:cellBox.y - h, w:cellBox.w, h:h }, 18, 12);
+        }
+      }
+      const stored = state.layoutBoxes && state.layoutBoxes[key];
+      if (stored) return normalizeRect(stored, 18, isCellLabelBoxKey(key) ? 12 : 18);
+      return null;
+    }
+
     function getTextMemoGapRect() {
       const marginX = 60;
       const safeGap = 18;
-      let topLimit = 52 + 120 + safeGap;
-      let bottomLimit = 450 - safeGap;
+      let topLimit = 24;
+      let bottomLimit = PAGE_H - 80;
 
       const headerKeys = ['episode', 'title', 'cutNo', 'seconds', 'frames', 'author', 'page'].map(function(field){ return 'header-' + field; });
       headerKeys.forEach(function(key){
-        const box = (state.layoutBoxes && state.layoutBoxes[key]) || (state.layoutBoxBaseRects && state.layoutBoxBaseRects[key]);
+        const box = getTextMemoConstraintLayoutRect(key);
         if (box) topLimit = Math.max(topLimit, Number(box.y || 0) + Number(box.h || 0) + safeGap);
       });
 
-      const timelineKeys = ['cell-left', 'cell-right', 'cell-main', 'dialog-left', 'dialog-right', 'dialog-main', 'camera-left', 'camera-right', 'camera-main', 'cell-label-left', 'cell-label-right', 'cell-label-main'];
+      const activeSides = Array.isArray(state.activeTimelineSides) && state.activeTimelineSides.length ? state.activeTimelineSides : ['left', 'right'];
+      const timelineKeys = [];
+      activeSides.forEach(function(side){
+        ['cell', 'dialog', 'camera', 'cell-label'].forEach(function(kind){
+          timelineKeys.push(kind + '-' + side);
+        });
+      });
       timelineKeys.forEach(function(key){
-        const box = (state.layoutBoxes && state.layoutBoxes[key]) || (state.layoutBoxBaseRects && state.layoutBoxBaseRects[key]);
+        const box = getTextMemoConstraintLayoutRect(key);
         if (box) bottomLimit = Math.min(bottomLimit, Number(box.y || 450) - safeGap);
       });
 
-      topLimit = Math.round(clampNumber(topLimit, 120, PAGE_H - 120));
-      bottomLimit = Math.round(clampNumber(bottomLimit, topLimit + TEXT_MEMO_MIN_H, PAGE_H - 80));
-      if (bottomLimit - topLimit < TEXT_MEMO_MIN_H) {
-        topLimit = 52 + 120 + safeGap;
-        bottomLimit = 450 - safeGap;
-      }
-      return { x:marginX, y:topLimit, w:PAGE_W - marginX * 2, h:Math.max(TEXT_MEMO_MIN_H, bottomLimit - topLimit) };
+      topLimit = Math.round(clampNumber(topLimit, 24, PAGE_H - 25));
+      bottomLimit = Math.round(clampNumber(bottomLimit, topLimit + 1, PAGE_H - 24));
+      return { x:marginX, y:topLimit, w:PAGE_W - marginX * 2, h:Math.max(1, bottomLimit - topLimit) };
     }
 
     function makeTextMemoId() {
@@ -10235,14 +10901,78 @@
 
     function clampTextMemoBox(memo) {
       const gap = getTextMemoGapRect();
-      memo.w = clampNumber(Number(memo.w) || TEXT_MEMO_DEFAULT_W, TEXT_MEMO_MIN_W, Math.max(TEXT_MEMO_MIN_W, gap.w));
-      memo.h = clampNumber(Number(memo.h) || TEXT_MEMO_DEFAULT_H, TEXT_MEMO_MIN_H, Math.max(TEXT_MEMO_MIN_H, gap.h));
+      const maxW = Math.max(1, Number(gap.w) || 1);
+      const maxH = Math.max(1, Number(gap.h) || 1);
+      const minW = Math.min(TEXT_MEMO_MIN_W, maxW);
+      const minH = Math.min(TEXT_MEMO_MIN_H, maxH);
+      memo.w = clampNumber(Number(memo.w) || TEXT_MEMO_DEFAULT_W, minW, maxW);
+      memo.h = clampNumber(Number(memo.h) || TEXT_MEMO_DEFAULT_H, minH, maxH);
       memo.x = clampNumber(Number(memo.x) || gap.x, gap.x, gap.x + gap.w - memo.w);
       memo.y = clampNumber(Number(memo.y) || gap.y, gap.y, gap.y + gap.h - memo.h);
       memo.fontSize = clampNumber(Number(memo.fontSize) || 18, 8, 96);
       memo.color = String(memo.color || '#111111');
       memo.text = String(memo.text == null ? '' : memo.text);
       return memo;
+    }
+
+    function clampTextMemoResizeBox(rect, origin, mode) {
+      const gap = getTextMemoGapRect();
+      const out = Object.assign({}, rect);
+      const dragMode = mode || 'move';
+      if (dragMode === 'move') return clampTextMemoBox(out);
+      const maxW = Math.max(1, Number(gap.w) || 1);
+      const maxH = Math.max(1, Number(gap.h) || 1);
+      const minW = Math.min(TEXT_MEMO_MIN_W, maxW);
+      const minH = Math.min(TEXT_MEMO_MIN_H, maxH);
+      const gapLeft = Number(gap.x || 0);
+      const gapTop = Number(gap.y || 0);
+      const gapRight = gapLeft + maxW;
+      const gapBottom = gapTop + maxH;
+      const originW = clampNumber(Number(origin && origin.w) || minW, minW, maxW);
+      const originH = clampNumber(Number(origin && origin.h) || minH, minH, maxH);
+      const originX = clampNumber(Number(origin && origin.x) || gapLeft, gapLeft, gapRight - originW);
+      const originY = clampNumber(Number(origin && origin.y) || gapTop, gapTop, gapBottom - originH);
+      const originRight = originX + originW;
+      const originBottom = originY + originH;
+      let left = Number(out.x);
+      let top = Number(out.y);
+      let right = Number(out.x) + Number(out.w);
+      let bottom = Number(out.y) + Number(out.h);
+      if (!Number.isFinite(left)) left = originX;
+      if (!Number.isFinite(top)) top = originY;
+      if (!Number.isFinite(right)) right = originRight;
+      if (!Number.isFinite(bottom)) bottom = originBottom;
+
+      if (dragMode.indexOf('w') !== -1 && dragMode.indexOf('e') === -1) {
+        right = clampNumber(originRight, gapLeft + minW, gapRight);
+        left = clampNumber(left, gapLeft, right - minW);
+      } else if (dragMode.indexOf('e') !== -1 && dragMode.indexOf('w') === -1) {
+        left = clampNumber(originX, gapLeft, gapRight - minW);
+        right = clampNumber(right, left + minW, gapRight);
+      } else {
+        left = clampNumber(originX, gapLeft, gapRight - originW);
+        right = left + originW;
+      }
+
+      if (dragMode.indexOf('n') !== -1 && dragMode.indexOf('s') === -1) {
+        bottom = clampNumber(originBottom, gapTop + minH, gapBottom);
+        top = clampNumber(top, gapTop, bottom - minH);
+      } else if (dragMode.indexOf('s') !== -1 && dragMode.indexOf('n') === -1) {
+        top = clampNumber(originY, gapTop, gapBottom - minH);
+        bottom = clampNumber(bottom, top + minH, gapBottom);
+      } else {
+        top = clampNumber(originY, gapTop, gapBottom - originH);
+        bottom = top + originH;
+      }
+
+      out.x = Math.round(left);
+      out.y = Math.round(top);
+      out.w = Math.max(minW, Math.round(right - left));
+      out.h = Math.max(minH, Math.round(bottom - top));
+      out.fontSize = clampNumber(Number(out.fontSize) || 18, 8, 96);
+      out.color = String(out.color || '#111111');
+      out.text = String(out.text == null ? '' : out.text);
+      return out;
     }
 
     function getTextMemoDurationDefaultWidth(gap) {
@@ -10267,7 +10997,7 @@
         x:opt.x != null ? opt.x : gap.x,
         y:opt.y != null ? opt.y : gap.y,
         w:opt.w != null ? opt.w : getTextMemoDurationDefaultWidth(gap),
-        h:opt.h != null ? opt.h : Math.max(TEXT_MEMO_MIN_H, gap.h),
+        h:opt.h != null ? opt.h : Math.max(1, gap.h),
         text:opt.text || '',
         fontSize:opt.fontSize || 18,
         color:opt.color || (state.memoTool === 'pen' ? state.memoColor : '#111111'),
@@ -10281,6 +11011,18 @@
       const list = getTextMemoPageData(pageIndex);
       if (list[0]) return clampTextMemoBox(list[0]);
       return createDefaultTextMemo(pageIndex, x, y, {});
+    }
+
+    function ensurePositionModeTextMemo(pageIndex) {
+      if (!state.positionMode) return null;
+      const targetPage = Math.max(0, Number(pageIndex || 0));
+      let memo = getTextMemoPageData(targetPage)[0] || null;
+      if (!memo) memo = createDefaultTextMemo(targetPage, null, null, {});
+      if (memo) {
+        clampTextMemoBox(memo);
+        state.activeTextMemo = { pageIndex:targetPage, id:memo.id };
+      }
+      return memo;
     }
 
     function createTextMemoAt(pageIndex, x, y) {
@@ -10707,11 +11449,12 @@
       withDrawLayer('output', function(){
         getTextMemoPageData(pageIndex).forEach(function(memo){
           clampTextMemoBox(memo);
-          const isActive = state.activeTextMemo && state.activeTextMemo.pageIndex === pageIndex && state.activeTextMemo.id === memo.id;
+          const positionAdjustActive = shouldShowTextMemoControls() && currentSvgTarget === svg;
+          const isActive = (state.activeTextMemo && state.activeTextMemo.pageIndex === pageIndex && state.activeTextMemo.id === memo.id) || positionAdjustActive;
           const isEditingThisMemo = !!(state.textMemoEditor && Number(state.textMemoEditor.pageIndex || 0) === Number(pageIndex || 0) && state.textMemoEditor.id === memo.id);
           renderTextMemoSelectionHit(memo, pageIndex, interactive, isActive);
           if ((memo.text || isActive) && !isEditingThisMemo) renderTextMemoText(memo);
-          if (interactive && isActive && currentSvgTarget === svg) renderTextMemoControls(memo);
+          if (interactive && isActive && currentSvgTarget === svg && shouldShowTextMemoControls()) renderTextMemoControls(memo);
         });
       });
     }
@@ -10723,7 +11466,7 @@
       }
       state.activeTextMemo = { pageIndex:state.currentPreviewPage || 0, id:id };
       render();
-      setTimeout(openActiveTextMemoEditor, 0);
+      if (!state.positionMode) setTimeout(openActiveTextMemoEditor, 0);
     }
 
     function svgRectToClientBox(memo) {
@@ -10846,11 +11589,12 @@
       active.editor.style.lineHeight = '1.25';
       active.editor.style.background = 'transparent';
       if (active.applyButton) {
-        const buttonW = Math.max(54, Math.min(76, Math.round(width * 0.34)));
-        const buttonH = 28;
+        const buttonW = 22;
+        const buttonH = 22;
         active.applyButton.style.width = buttonW + 'px';
-        active.applyButton.style.left = clampNumber(left + width - buttonW - 6, 6, Math.max(6, window.innerWidth - buttonW - 6)) + 'px';
-        active.applyButton.style.top = clampNumber(top + height - buttonH - 6, 6, Math.max(6, window.innerHeight - buttonH - 6)) + 'px';
+        active.applyButton.style.height = buttonH + 'px';
+        active.applyButton.style.left = clampNumber(left - 8, 6, Math.max(6, window.innerWidth - buttonW - 6)) + 'px';
+        active.applyButton.style.top = clampNumber(top - 8, 6, Math.max(6, window.innerHeight - buttonH - 6)) + 'px';
       }
     }
 
@@ -10974,7 +11718,9 @@
       editor.setAttribute('aria-label', 'Text memo');
       applyButton.className = 'text-memo-apply-fixed';
       applyButton.type = 'button';
-      applyButton.textContent = getTextMemoUiText('textMemoApplyBtn');
+      applyButton.textContent = 'x';
+      applyButton.setAttribute('aria-label', getTextMemoUiText('textMemoApplyBtn'));
+      applyButton.title = getTextMemoUiText('textMemoApplyBtn');
       document.body.appendChild(editor);
       document.body.appendChild(applyButton);
       state.textMemoEditor = { editor:editor, applyButton:applyButton, pageIndex:state.activeTextMemo.pageIndex, id:memo.id };
@@ -11032,7 +11778,7 @@
     }
 
     function beginTextMemoResize(event, id, mode) {
-      if (state.memoMode || state.positionMode) return;
+      if (state.memoMode || !shouldShowTextMemoControls()) return;
       event.preventDefault();
       event.stopPropagation();
       if (event.stopImmediatePropagation) event.stopImmediatePropagation();
@@ -11067,8 +11813,8 @@
         if (mode.indexOf('n') !== -1) { next.y += dy; next.h -= dy; }
         if (mode.indexOf('s') !== -1) { next.h += dy; }
       }
-      Object.assign(memo, clampTextMemoBox(next));
-      render();
+      Object.assign(memo, clampTextMemoResizeBox(next, drag.origin, mode));
+      requestRender();
     }
 
     function endTextMemoResize(event) {
@@ -11082,7 +11828,7 @@
       state.textMemoResize = null;
       document.documentElement.classList.remove('text-memo-dragging');
       render();
-      setTimeout(openActiveTextMemoEditor, 0);
+      if (!state.positionMode) setTimeout(openActiveTextMemoEditor, 0);
     }
 
     function handleTextMemoWheel(event) {
@@ -11094,7 +11840,7 @@
       const step = Math.max(1, Math.min(6, Math.ceil(Math.abs(delta) / 90)));
       memo.fontSize = clampNumber((Number(memo.fontSize) || 18) + (delta < 0 ? step : -step), 8, 96);
       updateTextMemoEditorPosition();
-      render();
+      requestRender();
       setTimeout(updateTextMemoEditorPosition, 0);
     }
 
@@ -11122,13 +11868,24 @@
       hideTextMemoControls();
     }
 
+    function getDurationBoundaryArea(block) {
+      const areas = [getCellArea(block), getDialogArea(block), getCameraArea(block)].filter(Boolean);
+      const left = Math.min.apply(null, areas.map(function(area){ return Number(area.x || 0); }));
+      const right = Math.max.apply(null, areas.map(function(area){ return Number(area.x || 0) + Number(area.w || 0); }));
+      if (!Number.isFinite(left) || !Number.isFinite(right) || right <= left) {
+        return { x:block.blockX, w:block.blockW };
+      }
+      return { x:left, w:Math.max(1, right - left) };
+    }
+
     function renderDurationBoundary(block, durationFrame, interactive) {
       if (!durationFrame || durationFrame < block.start || durationFrame > block.end) return;
       withDrawLayer('output', function(){
         const y = getOutputRowTop(block, durationFrame + 1, 'cell');
-        line(block.blockX, y, block.blockX + block.blockW, y, RED, 3.2);
+        const boundaryArea = getDurationBoundaryArea(block);
+        line(boundaryArea.x, y, boundaryArea.x + boundaryArea.w, y, RED, 3.2);
         if (interactive && currentSvgTarget === svg && !state.memoMode && !state.positionMode && !state.shakuMode) {
-          const hit = el('rect', { x:block.blockX, y:y - 9, width:block.blockW, height:18, fill:'transparent', stroke:'transparent', class:'duration-boundary-hit', 'pointer-events':'all' });
+          const hit = el('rect', { x:boundaryArea.x, y:y - 9, width:boundaryArea.w, height:18, fill:'transparent', stroke:'transparent', class:'duration-boundary-hit', 'pointer-events':'all' });
           hit.addEventListener('pointerdown', function(event){ beginTimelineEdgeDrag(event, 'duration', 0, 'to'); }, { passive:false });
           appendSvgNode(hit);
         }
@@ -11141,16 +11898,15 @@
       const blocks = getBlocksForPage(model.layout, state.currentPreviewPage || 0);
       let candidate = null;
       blocks.forEach(function(block){
-        const top = 450;
-        const nameStripH = 44;
-        const bodyH = 1912;
-        const rowH = bodyH / block.count;
-        const bodyTop = top + nameStripH;
-        const bodyBottom = bodyTop + bodyH;
-        if (p.x < block.x || p.x > block.x + block.w) return;
-        const y = clampNumber(p.y, bodyTop, bodyBottom);
-        const r = Math.max(1, Math.min(block.count, Math.round((y - bodyTop) / rowH)));
-        candidate = block.start + r - 1;
+        const tempBlock = getLayerNameTagBlockGeometry(model.layout, block);
+        if (!tempBlock) return;
+        const boundaryArea = getDurationBoundaryArea(tempBlock);
+        const cellArea = getCellArea(tempBlock);
+        const rowH = getOutputRowH(tempBlock, 'cell');
+        if (p.x < boundaryArea.x || p.x > boundaryArea.x + boundaryArea.w) return;
+        const y = clampNumber(p.y, cellArea.y, cellArea.y + cellArea.h);
+        const r = Math.max(1, Math.min(tempBlock.frameCount, Math.round((y - cellArea.y) / rowH)));
+        candidate = tempBlock.start + r - 1;
       });
       return candidate;
     }
@@ -11181,14 +11937,14 @@
       return next;
     }
 
-    function addRepeatContinuationDotHit(entry, baseLayer, frame, bounds, block) {
+    function addRepeatContinuationDotHit(entry, baseLayer, frame, bounds, block, columnIndex) {
       if (!entry || !baseLayer || currentSvgTarget !== svg || state.memoMode || state.positionMode || state.shakuMode) return;
       const rowTop = getOutputRowTop(block, frame, 'cell');
       const rowH = getOutputRowH(block, 'cell');
       const hit = el('rect', { x:bounds.x1, y:rowTop, width:bounds.x2 - bounds.x1, height:rowH, fill:'transparent', stroke:'transparent', 'pointer-events':'all' });
       hit.style.cursor = 'pointer';
       hit.setAttribute('title', 'Click: dot on/off / Shift-click: text');
-      attachCellLongPressDrag(hit, entry, frame, { minFrame:block.start, maxFrame:block.end });
+      attachCellLongPressDrag(hit, entry, frame, { minFrame:block.start, maxFrame:block.end }, { block:block, colIndex:columnIndex });
       hit.addEventListener('click', function(event){
         if (event.shiftKey) {
           event.preventDefault();
@@ -11227,7 +11983,7 @@
           line(xCenter, y1, xCenter, y2, '#111', 1);
           if (interactive !== false) {
             for (let frame = fromFrame; frame <= toFrame; frame++) {
-              addRepeatContinuationDotHit(entry, baseLayer, frame, bounds, block);
+              addRepeatContinuationDotHit(entry, baseLayer, frame, bounds, block, columnIndex);
             }
           }
         });
@@ -11243,7 +11999,14 @@
         const from = Math.max(1, Math.round(Number(seg.from) || 0));
         const to = Math.max(from, Math.round(Number(seg.to) || from));
         if (!last || to > last.to || (to === last.to && from > last.from)) {
-          last = { from:from, to:to, kind:seg.kind || 'circle' };
+          last = {
+            from:from,
+            to:to,
+            kind:seg.kind || 'circle',
+            explicitCross:!!seg.explicitCross,
+            singleFrameCross:!!seg.singleFrameCross,
+            autoLeadingCross:!!seg.autoLeadingCross
+          };
         }
       });
       return last;
@@ -11271,7 +12034,8 @@
           if (!lastSeg || targetDuration <= lastSeg.to) return;
           const nextRepeatFrame = getNextRepeatFrameAfter(layer, lastSeg.to);
           const targetLimit = nextRepeatFrame ? Math.min(targetDuration, nextRepeatFrame - 1) : targetDuration;
-          const fromFrame = Math.max(block.start, lastSeg.to);
+          const lastIsExplicitCross = lastSeg.kind === 'cross' && !lastSeg.autoLeadingCross;
+          const fromFrame = Math.max(block.start, lastSeg.to + (lastIsExplicitCross ? 1 : 0));
           const toFrame = Math.min(block.end, targetLimit);
           if (toFrame < fromFrame) return;
           const bounds = getOutputCellBounds(block, columnIndex);
@@ -11357,7 +12121,7 @@
       const baseLayers = getBaseInputLayers();
       const layers = applyLeadingCrossSegments(applyDotOverrides(baseLayers));
       const dialogBlocks = assignLanes(getRenderableDialogBlocks(parseManualBlocks(document.getElementById('dialogManual').value)));
-      const cameraBlocks = assignLanes(parseManualBlocks(document.getElementById('cameraManual').value));
+      const cameraBlocks = assignCameraLanes(parseManualBlocks(document.getElementById('cameraManual').value));
       const contentMaxFrame = getContentMaxFrame(layers, dialogBlocks, cameraBlocks);
       const hasContent = hasRenderableTimelineContent(layers, dialogBlocks, cameraBlocks);
       const maxFrame = Math.max(contentMaxFrame, getDurationFrameCount() || 1);
@@ -11440,14 +12204,32 @@
       event.preventDefault();
       event.stopPropagation();
       if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+      let originalFrom = null;
+      let originalTo = null;
+      if (blockType !== 'duration') {
+        const textarea = document.getElementById(blockType === 'camera' ? 'cameraManual' : 'dialogManual');
+        const lines = textarea ? String(textarea.value || '').replace(/\r/g, '').split('\n') : [];
+        const parsed = parseManualBlockLine(lines[blockId], blockId);
+        if (parsed) {
+          originalFrom = parsed.from;
+          originalTo = parsed.to;
+        }
+      }
       document.documentElement.classList.add('timeline-edge-dragging');
       state.activeTimelineDrag = {
         blockType:blockType,
         blockId:blockId,
         edge:edge,
         pointerId:event.pointerId,
-        sourceTarget:event.currentTarget || null
+        sourceTarget:event.currentTarget || null,
+        originalFrom:originalFrom,
+        originalTo:originalTo,
+        pendingFrom:null,
+        pendingTo:null
       };
+      if (blockType !== 'duration' && originalFrom && originalTo) {
+        updateTimelineEdgeDragPreview(state.activeTimelineDrag, edge === 'from' ? originalFrom : originalTo);
+      }
       if (event.currentTarget && event.currentTarget.setPointerCapture) {
         try { event.currentTarget.setPointerCapture(event.pointerId); } catch (err) {}
       }
@@ -11468,13 +12250,8 @@
       }
       const targetFrame = getFrameFromPointerEvent(event);
       if (!targetFrame) return;
-      const textarea = document.getElementById(drag.blockType === 'camera' ? 'cameraManual' : 'dialogManual');
-      if (!textarea) return;
-      const lines = String(textarea.value || '').replace(/\r/g, '').split('\n');
-      const parsed = parseManualBlockLine(lines[drag.blockId], drag.blockId);
-      if (!parsed) return;
-      let nextFrom = parsed.from;
-      let nextTo = parsed.to;
+      let nextFrom = Math.max(1, Math.round(Number(drag.originalFrom) || 1));
+      let nextTo = Math.max(nextFrom, Math.round(Number(drag.originalTo) || nextFrom));
       if (drag.edge === 'from') {
         nextFrom = targetFrame;
         if (nextFrom > nextTo) nextTo = nextFrom;
@@ -11482,8 +12259,9 @@
         nextTo = targetFrame;
         if (nextTo < nextFrom) nextFrom = nextTo;
       }
-      updateManualBlockLine(drag.blockType, drag.blockId, nextFrom, nextTo, { render:false });
-      requestRender();
+      drag.pendingFrom = nextFrom;
+      drag.pendingTo = nextTo;
+      updateTimelineEdgeDragPreview(drag, drag.edge === 'from' ? nextFrom : nextTo);
     }
 
     function endTimelineEdgeDrag(event) {
@@ -11495,8 +12273,13 @@
       if (target && target.releasePointerCapture && event && event.pointerId !== undefined) {
         try { target.releasePointerCapture(event.pointerId); } catch (err) {}
       }
+      if (drag && drag.blockType && drag.blockType !== 'duration' && drag.pendingFrom && drag.pendingTo) {
+        updateManualBlockLine(drag.blockType, drag.blockId, drag.pendingFrom, drag.pendingTo, { render:false });
+        requestRender();
+      }
       state.activeTimelineDrag = null;
       document.documentElement.classList.remove('timeline-edge-dragging');
+      clearDragPreviewBox();
       flushQueuedRender();
     }
 
@@ -11610,6 +12393,7 @@
         if (String(cellColumnCountInputEl.value) !== String(state.cellColumnCount)) cellColumnCountInputEl.value = String(state.cellColumnCount);
       }
       const model = getRenderModel();
+      state.activeTimelineSides = model.layout && model.layout.singleMode ? ['main'] : ['left', 'right'];
       syncDurationInputsToRenderedBoundary(model);
       state.currentPreviewPage = Math.min(model.totalPages - 1, Math.max(0, state.currentPreviewPage || 0));
       updatePreviewControls(model.totalPages);
@@ -11618,6 +12402,7 @@
       state.showHeaderOutput = showHeaderOutputToggleEl ? !!showHeaderOutputToggleEl.checked : true;
       state.showCellLabelOutput = showCellLabelOutputToggleEl ? !!showCellLabelOutputToggleEl.checked : true;
       getLayoutAdjust();
+      if (state.positionMode) ensurePositionModeTextMemo(state.currentPreviewPage || 0);
       renderPage(svg, state.currentPreviewPage, model, true);
       updateMemoCanvasSize();
       redrawMemoCanvas();
@@ -12210,26 +12995,38 @@
       return '<?xml version="1.0" encoding="UTF-8"?>\n' + new XMLSerializer().serializeToString(clone);
     }
 
-    function svgStringToBlob(svgString, format, memoPageIndex) {
+    function getExportPixelSize() {
+      const sourceW = Math.max(0, Math.round(Number(state.paperImageSourceWidth) || 0));
+      const sourceH = Math.max(0, Math.round(Number(state.paperImageSourceHeight) || 0));
+      if (state.paperImageDataUrl && sourceW >= 16 && sourceH >= 16) {
+        return { width:sourceW, height:sourceH, scaleX:sourceW / PAGE_W, scaleY:sourceH / PAGE_H, usesSourcePixels:true };
+      }
+      return { width:PAGE_W, height:PAGE_H, scaleX:1, scaleY:1, usesSourcePixels:false };
+    }
+
+    function svgStringToBlob(svgString, format, memoPageIndex, exportSize) {
       const mime = format === 'jpg' ? 'image/jpeg' : 'image/png';
+      const size = exportSize || getExportPixelSize();
+      const outW = Math.max(1, Math.round(Number(size.width) || PAGE_W));
+      const outH = Math.max(1, Math.round(Number(size.height) || PAGE_H));
       return new Promise(function(resolve, reject) {
         const svgBlob = new Blob([svgString], { type:'image/svg+xml;charset=utf-8' });
         const svgUrl = URL.createObjectURL(svgBlob);
         const img = new Image();
         img.onload = function() {
           const canvas = document.createElement('canvas');
-          canvas.width = PAGE_W;
-          canvas.height = PAGE_H;
+          canvas.width = outW;
+          canvas.height = outH;
           const ctx = canvas.getContext('2d');
           ctx.fillStyle = '#ffffff';
-          ctx.fillRect(0, 0, PAGE_W, PAGE_H);
-          ctx.drawImage(img, 0, 0, PAGE_W, PAGE_H);
+          ctx.fillRect(0, 0, outW, outH);
+          ctx.drawImage(img, 0, 0, outW, outH);
           const memoCompositeCanvas = document.createElement('canvas');
           memoCompositeCanvas.width = PAGE_W;
           memoCompositeCanvas.height = PAGE_H;
           const memoCompositeCtx = memoCompositeCanvas.getContext('2d');
           renderMemoPageToContext(memoCompositeCtx, memoPageIndex == null ? state.currentPreviewPage : memoPageIndex);
-          ctx.drawImage(memoCompositeCanvas, 0, 0, PAGE_W, PAGE_H);
+          ctx.drawImage(memoCompositeCanvas, 0, 0, outW, outH);
           URL.revokeObjectURL(svgUrl);
           canvas.toBlob(function(blob) {
             if (!blob) reject(new Error('Image export failed'));
@@ -12608,7 +13405,116 @@
       return { height:view.getUint32(14, false), width:view.getUint32(18, false) };
     }
 
-    function compositePsdLayersToCanvas(arrayBuffer) {
+    function decodePsdLayerToCanvas(record) {
+      if (!record || record.hidden || !record.width || !record.height) return null;
+      const empty = new Uint8Array(2 + record.width * record.height);
+      const r = decodePsdChannel(record.channelData[0] || record.channelData[-1] || empty, record.width, record.height, false);
+      const g = record.channelData[1] ? decodePsdChannel(record.channelData[1], record.width, record.height, false) : r;
+      const b = record.channelData[2] ? decodePsdChannel(record.channelData[2], record.width, record.height, false) : r;
+      const a = record.channelData[-1] ? decodePsdChannel(record.channelData[-1], record.width, record.height, false) : null;
+      return makeCanvasFromChannels(record.width, record.height, r, g, b, a);
+    }
+
+    function makePsdLayerPageCanvas(record, psdWidth, psdHeight, background) {
+      const pageCanvas = document.createElement('canvas');
+      pageCanvas.width = PAGE_W;
+      pageCanvas.height = PAGE_H;
+      const pageCtx = pageCanvas.getContext('2d');
+      if (background) {
+        pageCtx.fillStyle = background;
+        pageCtx.fillRect(0, 0, PAGE_W, PAGE_H);
+      } else {
+        pageCtx.clearRect(0, 0, PAGE_W, PAGE_H);
+      }
+      if (!record || !record.layerCanvas) return pageCanvas;
+      const scaleX = psdWidth && psdWidth !== PAGE_W ? PAGE_W / psdWidth : 1;
+      const scaleY = psdHeight && psdHeight !== PAGE_H ? PAGE_H / psdHeight : 1;
+      pageCtx.save();
+      pageCtx.scale(scaleX, scaleY);
+      pageCtx.globalAlpha = Math.max(0, Math.min(1, Number(record.opacity || 255) / 255));
+      pageCtx.globalCompositeOperation = 'source-over';
+      pageCtx.drawImage(record.layerCanvas, record.left, record.top, record.width, record.height);
+      pageCtx.restore();
+      return pageCanvas;
+    }
+
+    function isPsdLayerNearlySolid(record, psdWidth, psdHeight) {
+      if (!record || !record.layerCanvas || !record.width || !record.height || !psdWidth || !psdHeight) return false;
+      const ctx = record.layerCanvas.getContext('2d', { willReadFrequently:true });
+      const data = ctx.getImageData(0, 0, record.width, record.height).data;
+      const step = Math.max(1, Math.round(Math.sqrt((record.width * record.height) / 42000)));
+      let count = 0;
+      let visible = 0;
+      let minR = 255, minG = 255, minB = 255, minA = 255;
+      let maxR = 0, maxG = 0, maxB = 0, maxA = 0;
+      for (let y = 0; y < record.height; y += step) {
+        const row = y * record.width * 4;
+        for (let x = 0; x < record.width; x += step) {
+          count += 1;
+          const idx = row + x * 4;
+          const a = data[idx + 3];
+          if (a <= 12) continue;
+          visible += 1;
+          const r = data[idx], g = data[idx + 1], b = data[idx + 2];
+          if (r < minR) minR = r; if (r > maxR) maxR = r;
+          if (g < minG) minG = g; if (g > maxG) maxG = g;
+          if (b < minB) minB = b; if (b > maxB) maxB = b;
+          if (a < minA) minA = a; if (a > maxA) maxA = a;
+        }
+      }
+      if (!count || !visible) return false;
+      const visibleRatioInLayer = visible / count;
+      const layerAreaRatio = Math.max(0, Math.min(1, (record.width * record.height) / Math.max(1, psdWidth * psdHeight)));
+      const visiblePageRatio = visibleRatioInLayer * layerAreaRatio;
+      const colorRange = Math.max(maxR - minR, maxG - minG, maxB - minB);
+      const alphaRange = maxA - minA;
+      return visiblePageRatio >= 0.45 && colorRange <= 14 && alphaRange <= 36;
+    }
+
+    async function isPsdLayerSheetFormat(record, psdWidth, psdHeight) {
+      if (!record || !record.layerCanvas || !record.width || !record.height) return false;
+      const layerAreaRatio = (record.width * record.height) / Math.max(1, psdWidth * psdHeight);
+      if (layerAreaRatio < 0.08) return false;
+      try {
+        const pageCanvas = makePsdLayerPageCanvas(record, psdWidth, psdHeight, '#ffffff');
+        const analysis = await analyzePaperAutoAlignLines(pageCanvas.toDataURL('image/png'));
+        const bodyGrid = findPaperAutoAlignBodyGrid(analysis.yLines);
+        const xCount = (analysis.xLines || []).length;
+        const yCount = (analysis.yLines || []).length;
+        const strongVerticals = (analysis.xDetailed || []).filter(function(line){
+          return Number(line.maxRun || 0) >= PAGE_H * 0.18;
+        }).length;
+        const bodyLikeY = (analysis.yLines || []).filter(function(y){
+          return y >= PAGE_H * 0.18 && y <= PAGE_H * 0.98;
+        }).length;
+        const headerY = (analysis.yLines || []).filter(function(y){
+          return y >= 36 && y <= PAGE_H * 0.24;
+        }).length;
+        let score = 0;
+        if (bodyGrid) score += 190 + Math.min(90, Number(bodyGrid.lineCount || 0));
+        score += Math.min(110, xCount * 5);
+        score += Math.min(110, yCount * 2.2);
+        score += Math.min(90, strongVerticals * 8);
+        score += Math.min(70, bodyLikeY * 1.4);
+        score += Math.min(40, headerY * 7);
+        record.psdSheetScore = Math.round(score);
+        return !!(bodyGrid && xCount >= 8 && yCount >= 28) || score >= 260;
+      } catch (err) {
+        record.psdSheetScore = 0;
+        return false;
+      }
+    }
+
+    function drawPsdDecodedLayer(targetCtx, record) {
+      if (!record || !record.layerCanvas || record.hidden || !record.width || !record.height) return;
+      targetCtx.save();
+      targetCtx.globalAlpha = Math.max(0, Math.min(1, Number(record.opacity || 255) / 255));
+      targetCtx.globalCompositeOperation = 'source-over';
+      targetCtx.drawImage(record.layerCanvas, record.left, record.top, record.width, record.height);
+      targetCtx.restore();
+    }
+
+    async function compositePsdLayersToCanvas(arrayBuffer) {
       const bytes = new Uint8Array(arrayBuffer);
       const view = new DataView(arrayBuffer);
       let o = 0;
@@ -12672,49 +13578,71 @@
       canvas.width = PAGE_W;
       canvas.height = PAGE_H;
       const ctx = canvas.getContext('2d');
-      ctx.clearRect(0, 0, PAGE_W, PAGE_H);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, PAGE_W, PAGE_H);
       if (records.length) {
         const scaleX = width && width !== PAGE_W ? PAGE_W / width : 1;
         const scaleY = height && height !== PAGE_H ? PAGE_H / height : 1;
-        const memoRecords = records.filter(function(record){ return !record.hidden && isLikelyPsdMemoLayer(record); });
-        const memoRecordSet = new Set(memoRecords);
+        const visibleRecordsTopToBottom = records.map(function(record){
+          if (!record || record.hidden || !record.width || !record.height) return null;
+          try {
+            record.layerCanvas = decodePsdLayerToCanvas(record);
+            return record.layerCanvas ? record : null;
+          } catch (err) {
+            return null;
+          }
+        }).filter(Boolean);
+        const visibleRecordsBottomToTop = visibleRecordsTopToBottom.slice().reverse();
+        const solidRecords = [];
+        let sheetRecords = [];
+        let memoRecords = [];
+        for (let i = 0; i < visibleRecordsBottomToTop.length; i++) {
+          const record = visibleRecordsBottomToTop[i];
+          if (isPsdLayerNearlySolid(record, width, height)) {
+            record.psdImportKind = 'solid';
+            solidRecords.push(record);
+          } else if (await isPsdLayerSheetFormat(record, width, height)) {
+            record.psdImportKind = 'sheet';
+            sheetRecords.push(record);
+          } else {
+            record.psdImportKind = 'memo';
+            memoRecords.push(record);
+          }
+        }
+        if (!sheetRecords.length && visibleRecordsBottomToTop.length) {
+          const fallbackSheetRecords = memoRecords.filter(function(record){ return !isLikelyPsdMemoLayer(record); });
+          if (fallbackSheetRecords.length) {
+            const fallbackSet = new Set(fallbackSheetRecords);
+            sheetRecords = fallbackSheetRecords;
+            memoRecords = memoRecords.filter(function(record){ return !fallbackSet.has(record); });
+          }
+        }
         const memoCanvas = memoRecords.length ? document.createElement('canvas') : null;
         if (memoCanvas) {
           memoCanvas.width = PAGE_W;
           memoCanvas.height = PAGE_H;
           memoCanvas.getContext('2d').clearRect(0, 0, PAGE_W, PAGE_H);
         }
-        function drawRecordTo(targetCtx, record) {
-          if (record.hidden || !record.width || !record.height) return;
-          try {
-            const empty = new Uint8Array(2 + record.width * record.height);
-            const r = decodePsdChannel(record.channelData[0] || record.channelData[-1] || empty, record.width, record.height, false);
-            const g = record.channelData[1] ? decodePsdChannel(record.channelData[1], record.width, record.height, false) : r;
-            const b = record.channelData[2] ? decodePsdChannel(record.channelData[2], record.width, record.height, false) : r;
-            const a = record.channelData[-1] ? decodePsdChannel(record.channelData[-1], record.width, record.height, false) : null;
-            const layerCanvas = makeCanvasFromChannels(record.width, record.height, r, g, b, a);
-            targetCtx.save();
-            targetCtx.globalAlpha = Math.max(0, Math.min(1, record.opacity / 255));
-            targetCtx.globalCompositeOperation = 'source-over';
-            targetCtx.drawImage(layerCanvas, record.left, record.top, record.width, record.height);
-            targetCtx.restore();
-          } catch (err) {}
-        }
         ctx.save();
         ctx.scale(scaleX, scaleY);
+        solidRecords.forEach(function(record){ drawPsdDecodedLayer(ctx, record); });
+        sheetRecords.forEach(function(record){ drawPsdDecodedLayer(ctx, record); });
+        ctx.restore();
         if (memoCanvas) {
           const memoCtx = memoCanvas.getContext('2d');
           memoCtx.save();
           memoCtx.scale(scaleX, scaleY);
-          records.slice().reverse().forEach(function(record){
-            drawRecordTo(memoRecordSet.has(record) ? memoCtx : ctx, record);
-          });
+          memoRecords.forEach(function(record){ drawPsdDecodedLayer(memoCtx, record); });
           memoCtx.restore();
-        } else {
-          records.slice().reverse().forEach(function(record){ drawRecordTo(ctx, record); });
         }
-        ctx.restore();
-        return { paperCanvas:canvas, memoCanvas:memoCanvas, memoLayerCount:memoRecords.length };
+        return {
+          paperCanvas:canvas,
+          memoCanvas:memoCanvas,
+          memoLayerCount:memoRecords.length,
+          paperLayerCount:solidRecords.length + sheetRecords.length,
+          solidLayerCount:solidRecords.length,
+          sheetLayerCount:sheetRecords.length
+        };
       }
       if (o < bytes.length) {
         const channelBytes = bytes.slice(o);
@@ -12794,6 +13722,63 @@
       if (value == null) return value;
       try { return JSON.parse(JSON.stringify(value || {})); }
       catch (err) { return {}; }
+    }
+
+    function openPaperImageMemoryDb() {
+      return new Promise(function(resolve, reject){
+        if (!('indexedDB' in window)) { resolve(null); return; }
+        const req = indexedDB.open(PAPER_IMAGE_DB_NAME, 1);
+        req.onupgradeneeded = function(){
+          try { req.result.createObjectStore(PAPER_IMAGE_STORE_NAME); } catch (err) {}
+        };
+        req.onsuccess = function(){ resolve(req.result); };
+        req.onerror = function(){ reject(req.error || new Error('Paper image memory DB failed')); };
+      });
+    }
+
+    async function storePaperImageMemoryRecord(paper) {
+      try {
+        const db = await openPaperImageMemoryDb();
+        if (!db) return false;
+        await new Promise(function(resolve, reject){
+          const tx = db.transaction(PAPER_IMAGE_STORE_NAME, 'readwrite');
+          const store = tx.objectStore(PAPER_IMAGE_STORE_NAME);
+          const imageDataUrl = paper && paper.imageDataUrl ? String(paper.imageDataUrl) : '';
+          const memoDataUrl = paper && paper.memoDataUrl ? String(paper.memoDataUrl) : '';
+          if (imageDataUrl || memoDataUrl) {
+            store.put({
+              imageDataUrl:imageDataUrl,
+              memoDataUrl:memoDataUrl,
+              savedAt:new Date().toISOString()
+            }, PAPER_IMAGE_MEMORY_KEY);
+          } else {
+            store.delete(PAPER_IMAGE_MEMORY_KEY);
+          }
+          tx.oncomplete = resolve;
+          tx.onerror = function(){ reject(tx.error || new Error('Paper image memory save failed')); };
+        });
+        db.close();
+        return true;
+      } catch (err) {
+        return false;
+      }
+    }
+
+    async function loadPaperImageMemoryRecord() {
+      try {
+        const db = await openPaperImageMemoryDb();
+        if (!db) return null;
+        const record = await new Promise(function(resolve, reject){
+          const tx = db.transaction(PAPER_IMAGE_STORE_NAME, 'readonly');
+          const req = tx.objectStore(PAPER_IMAGE_STORE_NAME).get(PAPER_IMAGE_MEMORY_KEY);
+          req.onsuccess = function(){ resolve(req.result || null); };
+          req.onerror = function(){ reject(req.error || new Error('Paper image memory read failed')); };
+        });
+        db.close();
+        return record || null;
+      } catch (err) {
+        return null;
+      }
     }
 
     function getPaperStateSnapshot() {
@@ -12890,6 +13875,8 @@
         paper:{
           imageDataUrl:state.paperImageDataUrl || '',
           memoDataUrl:state.paperImageMemoDataUrl || '',
+          imageStoredInDb:!!state.paperImageDataUrl,
+          memoStoredInDb:!!state.paperImageMemoDataUrl,
           memoLayerCount:state.paperImageMemoLayerCount || 0,
           imageName:state.paperImageName || '',
           imageMeta:state.paperImageMeta || '',
@@ -12912,6 +13899,7 @@
     function savePaperMemoryNow() {
       if (!window.localStorage) return;
       const payload = collectPaperMemoryPayload();
+      storePaperImageMemoryRecord(payload.paper);
       try {
         localStorage.setItem(PAPER_MEMORY_STORAGE_KEY, JSON.stringify(payload));
       } catch (err) {
@@ -12920,7 +13908,7 @@
           if (lightPayload.paper) lightPayload.paper.imageDataUrl = '';
           if (lightPayload.paper) lightPayload.paper.memoDataUrl = '';
           localStorage.setItem(PAPER_MEMORY_STORAGE_KEY, JSON.stringify(lightPayload));
-          setLayoutPresetStatus('Paper settings saved. Paper image was too large for browser memory, so reload the image manually.');
+          setLayoutPresetStatus('Paper settings saved. Large paper image data was moved to browser image memory.');
         } catch (err2) {}
       }
     }
@@ -12944,6 +13932,8 @@
       state.paperImagePixelInfo = paper.imagePixelInfo || '';
       state.paperImageSourceWidth = Number(paper.sourceWidth) || 0;
       state.paperImageSourceHeight = Number(paper.sourceHeight) || 0;
+      const shouldRestoreImageFromDb = !!paper.imageStoredInDb && !state.paperImageDataUrl;
+      const shouldRestoreMemoFromDb = !!paper.memoStoredInDb && !state.paperImageMemoDataUrl;
       state.showTemplate = typeof paper.showTemplate === 'boolean' ? paper.showTemplate : state.showTemplate;
       state.showHeaderOutput = typeof paper.showHeaderOutput === 'boolean' ? paper.showHeaderOutput : state.showHeaderOutput;
       state.showCellLabelOutput = typeof paper.showCellLabelOutput === 'boolean' ? paper.showCellLabelOutput : state.showCellLabelOutput;
@@ -12956,6 +13946,26 @@
       if (companyPresetSelectEl && paper.selectedCompanyPresetId) companyPresetSelectEl.value = paper.selectedCompanyPresetId;
       syncPaperLayoutControls();
       updatePaperImageStatus();
+      if (shouldRestoreImageFromDb || shouldRestoreMemoFromDb) restorePaperImageMemoryFromDb({ renderAfter:true });
+      return true;
+    }
+
+    async function restorePaperImageMemoryFromDb(options) {
+      const record = await loadPaperImageMemoryRecord();
+      if (!record) return false;
+      let changed = false;
+      if (!state.paperImageDataUrl && record.imageDataUrl) {
+        state.paperImageDataUrl = String(record.imageDataUrl || '');
+        changed = true;
+      }
+      if (!state.paperImageMemoDataUrl && record.memoDataUrl) {
+        state.paperImageMemoDataUrl = String(record.memoDataUrl || '');
+        changed = true;
+      }
+      if (!changed) return false;
+      updatePaperImageStatus();
+      syncPaperLayoutControls();
+      if (!options || options.renderAfter !== false) render();
       return true;
     }
 
@@ -12980,7 +13990,7 @@
         if (lower.endsWith('.psd') || file.type === 'image/vnd.adobe.photoshop') {
           const buffer = await file.arrayBuffer();
           const size = readPsdPixelSize(buffer);
-          const psdComposite = compositePsdLayersToCanvas(buffer);
+          const psdComposite = await compositePsdLayersToCanvas(buffer);
           const canvas = psdComposite && psdComposite.paperCanvas ? psdComposite.paperCanvas : psdComposite;
           const memoCanvas = psdComposite && psdComposite.memoCanvas ? psdComposite.memoCanvas : null;
           const memoLayerCount = psdComposite && psdComposite.memoLayerCount ? psdComposite.memoLayerCount : 0;
@@ -13242,6 +14252,7 @@
       const nextPositionMode = !state.positionMode;
       if (nextPositionMode) setMemoModeEnabled(false);
       state.positionMode = nextPositionMode;
+      if (state.positionMode) ensurePositionModeTextMemo(state.currentPreviewPage || 0);
       if (headerPositionModeBtn) headerPositionModeBtn.classList.toggle('active', !!state.positionMode);
       render();
     }
@@ -13300,6 +14311,8 @@
         paper:{
           imageDataUrl:state.paperImageDataUrl || '',
           memoDataUrl:state.paperImageMemoDataUrl || '',
+          imageStoredInDb:!!state.paperImageDataUrl,
+          memoStoredInDb:!!state.paperImageMemoDataUrl,
           memoLayerCount:state.paperImageMemoLayerCount || 0,
           imageName:state.paperImageName || '',
           imageMeta:state.paperImageMeta || '',
@@ -13422,6 +14435,8 @@
       state.paperImagePixelInfo = paper.imagePixelInfo || '';
       state.paperImageSourceWidth = Number(paper.sourceWidth) || 0;
       state.paperImageSourceHeight = Number(paper.sourceHeight) || 0;
+      const settingsShouldRestoreImageFromDb = !!paper.imageStoredInDb && !state.paperImageDataUrl;
+      const settingsShouldRestoreMemoFromDb = !!paper.memoStoredInDb && !state.paperImageMemoDataUrl;
       state.showTemplate = typeof paper.showTemplate === 'boolean' ? paper.showTemplate : state.showTemplate;
       state.showHeaderOutput = typeof paper.showHeaderOutput === 'boolean' ? paper.showHeaderOutput : state.showHeaderOutput;
       state.showCellLabelOutput = typeof paper.showCellLabelOutput === 'boolean' ? paper.showCellLabelOutput : state.showCellLabelOutput;
@@ -13451,6 +14466,9 @@
       updateModeUI();
       syncMemoSizeSelects();
       refreshShortcutInputs();
+      saveHeaderMemoryNow();
+      queueSavePaperMemory();
+      if (settingsShouldRestoreImageFromDb || settingsShouldRestoreMemoFromDb) restorePaperImageMemoryFromDb({ renderAfter:true });
       updateLanguage();
       applySheetZoom();
       render();
@@ -13816,22 +14834,24 @@
 
     function svgStringToCanvas(svgString, options) {
       const opts = options || {};
+      const outW = Math.max(1, Math.round(Number(opts.width) || PAGE_W));
+      const outH = Math.max(1, Math.round(Number(opts.height) || PAGE_H));
       return new Promise(function(resolve, reject) {
         const svgBlob = new Blob([svgString], { type:'image/svg+xml;charset=utf-8' });
         const svgUrl = URL.createObjectURL(svgBlob);
         const img = new Image();
         img.onload = function() {
           const canvas = document.createElement('canvas');
-          canvas.width = PAGE_W;
-          canvas.height = PAGE_H;
+          canvas.width = outW;
+          canvas.height = outH;
           const ctx = canvas.getContext('2d');
           if (opts.whiteBackground) {
             ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, PAGE_W, PAGE_H);
+            ctx.fillRect(0, 0, outW, outH);
           } else {
-            ctx.clearRect(0, 0, PAGE_W, PAGE_H);
+            ctx.clearRect(0, 0, outW, outH);
           }
-          ctx.drawImage(img, 0, 0, PAGE_W, PAGE_H);
+          ctx.drawImage(img, 0, 0, outW, outH);
           URL.revokeObjectURL(svgUrl);
           resolve(canvas);
         };
@@ -13843,30 +14863,40 @@
       });
     }
 
-    function makeSolidCanvas(fillStyle) {
+    function makeSolidCanvas(fillStyle, exportSize) {
+      const size = exportSize || { width:PAGE_W, height:PAGE_H };
       const canvas = document.createElement('canvas');
-      canvas.width = PAGE_W;
-      canvas.height = PAGE_H;
+      canvas.width = Math.max(1, Math.round(Number(size.width) || PAGE_W));
+      canvas.height = Math.max(1, Math.round(Number(size.height) || PAGE_H));
       const ctx = canvas.getContext('2d');
       ctx.fillStyle = fillStyle || '#ffffff';
-      ctx.fillRect(0, 0, PAGE_W, PAGE_H);
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
       return canvas;
     }
 
-    function makeMemoLayerCanvas(pageIndex) {
-      const canvas = document.createElement('canvas');
-      canvas.width = PAGE_W;
-      canvas.height = PAGE_H;
-      const ctx = canvas.getContext('2d');
-      ctx.clearRect(0, 0, PAGE_W, PAGE_H);
-      renderMemoPageToContext(ctx, pageIndex);
-      return canvas;
+    function makeMemoLayerCanvas(pageIndex, exportSize) {
+      const baseCanvas = document.createElement('canvas');
+      baseCanvas.width = PAGE_W;
+      baseCanvas.height = PAGE_H;
+      const baseCtx = baseCanvas.getContext('2d');
+      baseCtx.clearRect(0, 0, PAGE_W, PAGE_H);
+      renderMemoPageToContext(baseCtx, pageIndex);
+      const size = exportSize || { width:PAGE_W, height:PAGE_H };
+      const outW = Math.max(1, Math.round(Number(size.width) || PAGE_W));
+      const outH = Math.max(1, Math.round(Number(size.height) || PAGE_H));
+      if (outW === PAGE_W && outH === PAGE_H) return baseCanvas;
+      const scaled = document.createElement('canvas');
+      scaled.width = outW;
+      scaled.height = outH;
+      scaled.getContext('2d').drawImage(baseCanvas, 0, 0, outW, outH);
+      return scaled;
     }
 
-    async function renderLayerCanvas(pageIndex, model, layerFilter) {
+    async function renderLayerCanvas(pageIndex, model, layerFilter, exportSize) {
+      const size = exportSize || { width:PAGE_W, height:PAGE_H };
       const tempSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
       renderPage(tempSvg, pageIndex, model, false, { layerFilter: layerFilter });
-      return svgStringToCanvas(serializeSvg(tempSvg), { whiteBackground:false });
+      return svgStringToCanvas(serializeSvg(tempSvg), { whiteBackground:false, width:size.width, height:size.height });
     }
 
     function stringBytes(value) {
@@ -13918,7 +14948,7 @@
       return out;
     }
 
-    function buildPsdLayerRecord(layer, channelLength) {
+    function buildPsdLayerRecord(layer, channelLength, width, height) {
       const pascal = pascalStringPadded(layer.asciiName);
       const unicode = unicodeLayerNameBlock(layer.name);
       const extra = concatUint8Arrays([new Uint8Array(4), new Uint8Array(4), pascal, unicode]);
@@ -13927,8 +14957,8 @@
       let o = 0;
       view.setInt32(o, 0, false); o += 4;
       view.setInt32(o, 0, false); o += 4;
-      view.setInt32(o, PAGE_H, false); o += 4;
-      view.setInt32(o, PAGE_W, false); o += 4;
+      view.setInt32(o, height, false); o += 4;
+      view.setInt32(o, width, false); o += 4;
       view.setUint16(o, 4, false); o += 2;
       [0, 1, 2, -1].forEach(function(channelId){
         view.setInt16(o, channelId, false); o += 2;
@@ -13957,12 +14987,12 @@
       return offset;
     }
 
-    function buildPsdBlobFromCanvases(layers, mergedCanvas) {
-      const width = PAGE_W;
-      const height = PAGE_H;
+    function buildPsdBlobFromCanvases(layers, mergedCanvas, exportSize) {
+      const width = Math.max(1, Math.round(Number(exportSize && exportSize.width) || mergedCanvas.width || PAGE_W));
+      const height = Math.max(1, Math.round(Number(exportSize && exportSize.height) || mergedCanvas.height || PAGE_H));
       const pixelCount = width * height;
       const channelLength = 2 + pixelCount;
-      const layerRecords = layers.map(function(layer){ return buildPsdLayerRecord(layer, channelLength); });
+      const layerRecords = layers.map(function(layer){ return buildPsdLayerRecord(layer, channelLength, width, height); });
       const layerRecordsLength = layerRecords.reduce(function(sum, record){ return sum + record.length; }, 0);
       const layerChannelDataLength = layers.length * 4 * channelLength;
       let layerInfoLength = 2 + layerRecordsLength + layerChannelDataLength;
@@ -14010,22 +15040,26 @@
       return new Blob([bytes], { type:'image/vnd.adobe.photoshop' });
     }
 
-    function makeMergedCanvas(layersBottomToTop) {
+    function makeMergedCanvas(layersBottomToTop, exportSize) {
+      const size = exportSize || { width:PAGE_W, height:PAGE_H };
+      const outW = Math.max(1, Math.round(Number(size.width) || PAGE_W));
+      const outH = Math.max(1, Math.round(Number(size.height) || PAGE_H));
       const canvas = document.createElement('canvas');
-      canvas.width = PAGE_W;
-      canvas.height = PAGE_H;
+      canvas.width = outW;
+      canvas.height = outH;
       const ctx = canvas.getContext('2d');
-      ctx.clearRect(0, 0, PAGE_W, PAGE_H);
-      layersBottomToTop.forEach(function(layer){ ctx.drawImage(layer.canvas, 0, 0); });
+      ctx.clearRect(0, 0, outW, outH);
+      layersBottomToTop.forEach(function(layer){ ctx.drawImage(layer.canvas, 0, 0, outW, outH); });
       return canvas;
     }
 
-    async function renderPageToPsdBlob(pageIndex, model) {
-      const whiteCanvas = makeSolidCanvas('#ffffff');
-      const paperImageCanvas = await renderLayerCanvas(pageIndex, model, 'paperImage');
-      const paperCanvas = await renderLayerCanvas(pageIndex, model, 'paper');
-      const outputCanvas = await renderLayerCanvas(pageIndex, model, 'output');
-      const memoLayerCanvas = makeMemoLayerCanvas(pageIndex);
+    async function renderPageToPsdBlob(pageIndex, model, exportSize) {
+      const size = exportSize || getExportPixelSize();
+      const whiteCanvas = makeSolidCanvas('#ffffff', size);
+      const paperImageCanvas = await renderLayerCanvas(pageIndex, model, 'paperImage', size);
+      const paperCanvas = await renderLayerCanvas(pageIndex, model, 'paper', size);
+      const outputCanvas = await renderLayerCanvas(pageIndex, model, 'output', size);
+      const memoLayerCanvas = makeMemoLayerCanvas(pageIndex, size);
       const layersTopToBottom = [
         { name:'Memo', asciiName:'Memo', canvas:memoLayerCanvas },
         { name:'Text Output', asciiName:'Text Output', canvas:outputCanvas },
@@ -14038,10 +15072,10 @@
         return layer;
       });
       const layersBottomToTop = layersTopToBottom.slice().reverse();
-      const mergedCanvas = makeMergedCanvas(layersBottomToTop);
+      const mergedCanvas = makeMergedCanvas(layersBottomToTop, size);
       // PSD layer records must be written bottom-to-top for Photoshop-style layer panel display.
       // Final visible order: top Memo / Text Output / Template / bottom Background.
-      return buildPsdBlobFromCanvases(layersBottomToTop, mergedCanvas);
+      return buildPsdBlobFromCanvases(layersBottomToTop, mergedCanvas, size);
     }
 
     async function downloadAllPages() {
@@ -14050,21 +15084,22 @@
       updatePreviewControls(state.totalPages);
       const format = exportFormatSelectEl.value || 'png';
       const model = getRenderModel();
+      const exportSize = getExportPixelSize();
       updatePreviewControls(model.totalPages);
-      setExportStatus('Preparing ' + model.totalPages + ' page(s)...');
+      setExportStatus('Preparing ' + model.totalPages + ' page(s)' + (exportSize.usesSourcePixels ? (' at source pixels ' + exportSize.width + '×' + exportSize.height) : '') + '...');
       try {
         for (let pageIndex = 0; pageIndex < model.totalPages; pageIndex++) {
           let blob;
           let filename;
           if (format === 'psd') {
             setExportStatus('Building PSD ' + (pageIndex + 1) + ' / ' + model.totalPages + '...');
-            blob = await renderPageToPsdBlob(pageIndex, model);
+            blob = await renderPageToPsdBlob(pageIndex, model, exportSize);
             filename = makeFilenameBase(pageIndex + 1) + '.psd';
           } else {
             const tempSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
             renderPage(tempSvg, pageIndex, model, false);
             const svgString = serializeSvg(tempSvg);
-            blob = await svgStringToBlob(svgString, format, pageIndex);
+            blob = await svgStringToBlob(svgString, format, pageIndex, exportSize);
             filename = makeFilenameBase(pageIndex + 1) + '.' + format;
           }
           const saveMode = await saveExportBlob(blob, filename);
@@ -14577,6 +15612,7 @@
     const exportCsvTvpaintBtn = document.getElementById('exportCsvTvpaintBtn');
     if (exportCsvClipBtn) exportCsvClipBtn.addEventListener('click', function(){ exportCsvForSoftware('clip'); });
     if (exportCsvTvpaintBtn) exportCsvTvpaintBtn.addEventListener('click', function(){ exportCsvForSoftware('tvpaint'); });
+    if (csvColumnSortBtn) csvColumnSortBtn.addEventListener('click', sortCsvCellColumnsAlphabetically);
     document.getElementById('csvEncodingSelect').addEventListener('change', function(){
       if (!state.csvFileBuffer) return;
       try {
@@ -14599,21 +15635,22 @@
       }
     });
 
-    bindInput('episode', render);
-    bindInput('title', render);
+    bindInput('episode', handleRememberedHeaderInput);
+    bindInput('title', handleRememberedHeaderInput);
     bindInput('cutNo', render);
     bindInput('seconds', function(){ normalizeDurationInputs(); render(); });
     bindInput('frames', function(){ normalizeDurationInputs(); render(); });
-    bindInput('author', render);
+    bindInput('author', handleRememberedHeaderInput);
     bindInput('page', render);
-    bindInput('timelineCommandInput', function(){ normalizeCommandTextareaLeadingCrossGaps(document.getElementById('timelineCommandInput')); render(); });
-    bindInput('dialogManual', render);
-    bindInput('cameraManual', render);
-    bindInput('csvCommandEdit', function(){ normalizeCommandTextareaLeadingCrossGaps(csvCommandEditEl); render(); });
+    bindInput('timelineCommandInput', function(){ normalizeCommandTextareaLeadingCrossGaps(document.getElementById('timelineCommandInput')); requestRender(); });
+    bindInput('dialogManual', requestRender);
+    bindInput('cameraManual', requestRender);
+    bindInput('csvCommandEdit', function(){ normalizeCommandTextareaLeadingCrossGaps(csvCommandEditEl); requestRender(); });
 
     document.getElementById('timelineCommandInput').value = 'A: 1 n n dot n n 2';
     document.getElementById('dialogManual').value = DEFAULT_DIALOG_SAMPLE_LINE;
     document.getElementById('cameraManual').value = DEFAULT_CAMERA_SAMPLE_LINE;
+    restoreHeaderMemory();
     loadPaperMemory();
     restoreLanguagePreference();
     restoreSettingsJsonFolderCache();
