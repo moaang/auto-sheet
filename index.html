@@ -417,6 +417,22 @@
       font-size: 12px;
       line-height: 1.55;
     }
+    .command-filter-toggle {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin: 8px 0 6px;
+      font-size: 12px;
+      color: var(--muted);
+      user-select: none;
+    }
+    .command-filter-toggle input {
+      width: auto;
+      margin: 0;
+    }
+    .command-source-hidden {
+      display: none;
+    }
     .mode-box {
       border: 1px solid var(--soft);
       border-radius: 12px;
@@ -503,16 +519,6 @@
       width: 96px;
       min-width: 96px;
       padding: 6px 8px;
-      font-size: 11px;
-    }
-    .csv-column-actions {
-      display: flex;
-      justify-content: flex-end;
-      margin-top: 8px;
-    }
-    .csv-column-actions .section-mini-btn {
-      min-width: 84px;
-      height: 30px;
       font-size: 11px;
     }
     .paper-layout-card { padding: 0; overflow: hidden; }
@@ -1626,7 +1632,12 @@
         </div>
         <div id="textModeBox" class="mode-box">
           <label for="timelineCommandInput" data-ui-text="textCommandsLabel">Text Commands</label>
+          <label class="command-filter-toggle">
+            <input id="textCommandCellViewToggle" type="checkbox" />
+            <span>Hide non-Cell commands</span>
+          </label>
           <textarea id="timelineCommandInput"></textarea>
+          <textarea id="timelineCommandCellView" class="hidden" spellcheck="false"></textarea>
           <div id="textHelp" class="hint"></div>
           <div id="textCommandColumnRoleSection" class="guide-target-section">
           <div id="textCommandColumnPicker" class="checkbox-list"></div>
@@ -1653,13 +1664,15 @@
           </div>
           <div id="csvInfo" class="status"></div>
           <div id="csvColumnRoleSection" class="guide-target-section">
-          <div class="csv-column-actions">
-            <button id="csvColumnSortBtn" class="section-mini-btn" type="button" data-ui-text="csvColumnSortBtn">Sort A-Z</button>
-          </div>
           <div id="csvColumnPicker" class="checkbox-list"></div>
           </div>
           <label for="csvCommandEdit" style="margin-top:10px;" data-ui-text="csvCommandEditLabel">Editable Commands from CSV</label>
+          <label class="command-filter-toggle">
+            <input id="csvCommandCellViewToggle" type="checkbox" />
+            <span>Hide non-Cell commands</span>
+          </label>
           <textarea id="csvCommandEdit"></textarea>
+          <textarea id="csvCommandCellView" class="hidden" spellcheck="false"></textarea>
           <div id="csvEditHelp" class="hint"></div>
           <div id="csvHelp" class="hint"></div>
         </div>
@@ -1896,8 +1909,11 @@
     const updateLogCloseBtn = document.getElementById('updateLogCloseBtn');
     const csvInfoEl = document.getElementById('csvInfo');
     const csvColumnPickerEl = document.getElementById('csvColumnPicker');
-    const csvColumnSortBtn = document.getElementById('csvColumnSortBtn');
     const textCommandColumnPickerEl = document.getElementById('textCommandColumnPicker');
+    const textCommandCellViewToggleEl = document.getElementById('textCommandCellViewToggle');
+    const csvCommandCellViewToggleEl = document.getElementById('csvCommandCellViewToggle');
+    const textCommandCellViewEl = document.getElementById('timelineCommandCellView');
+    const csvCommandCellViewEl = document.getElementById('csvCommandCellView');
     const dougaSheetBtn = document.getElementById('dougaSheetBtn');
     const previewMetaEl = document.getElementById('previewMeta');
     const csvCommandEditEl = document.getElementById('csvCommandEdit');
@@ -2041,14 +2057,12 @@
       lang: 'ja',
       csvRawRows: [],
       csvColumns: [],
-      csvSelectedColumns: new Set(),
+      csvColumnOrder: [],
       csvColumnRoles: {},
       csvDurationAutofillPending: false,
       activeTimelineDrag: null,
       lastCsvGeneratedDialogLines: [],
       lastCsvGeneratedCameraLines: [],
-      textCommandGeneratedDialogLines: {},
-      textCommandGeneratedCameraLines: {},
       csvFrameIndex: 0,
       csvDataStartRow: 1,
       markerOverrides: {},
@@ -2059,8 +2073,8 @@
       csvOriginalEncoding: 'utf-8',
       csvLoadedMode: '',
       tvpaintCellSourceColumns: [],
-      csvOriginalCellColumns: [],
       csvLoadError: '',
+      commandCellViewSyncing: false,
       currentPreviewPage: 0,
       totalPages: 1,
       isExporting: false,
@@ -2525,7 +2539,7 @@
       en: {
         languageLabel:'Language', headerCardTitle:'Header', episodeLabel:'Ep.no', titleLabel:'Title', cutNoLabel:'Cut.no', secondsLabel:'Duration sec', framesLabel:'Duration frame', authorLabel:'name', pageLabel:'Page',
         originalCellTitle:'Sheet Input', inputModeLabel:'Input Mode', inputModeTextCommands:'Text Commands', inputModeCsvClip:'CSV Upload(CLIP STUDIO)', inputModeCsvTvpaint:'CSV Upload(TVPaint)', csvExportClipBtn:'Export CLIP STUDIO CSV', csvExportTvpaintBtn:'Export TVPaint CSV', shakuEditBtn:'Length Edit', shakuEditHint:'Drag a blue frame line to select a range.', shakuCutBtn:'Cut', shakuStretchBtn:'Extend', shakuSelectedLabel:'Selected', shakuUndoBtn:'Undo', shakuRedoBtn:'Redo', shakuFlashCut:'Cut applied', shakuFlashStretch:'Extend applied', dougaSheetCreate:'Make Douga', dougaSheetRefresh:'Refresh Douga', dougaSheetTitle:'Generate a read-only douga sheet from Cell numbers and dot marks', cellReadabilityTitle:'Large Cell text',
-        textCommandsLabel:'Text Commands', csvFileLabel:'CSV File', csvEncodingLabel:'CSV Encoding', csvCommandEditLabel:'Editable Commands from CSV', csvColumnSortBtn:'Sort A-Z',
+        textCommandsLabel:'Text Commands', csvFileLabel:'CSV File', csvEncodingLabel:'CSV Encoding', csvCommandEditLabel:'Editable Commands from CSV',
         dialogBlocksTitle:'Dialog Area', dialogFormatLabel:'Format: 0+01 | 1+00 | SPEAKER | SAMPLE', cameraBlocksTitle:'Camera Area', cameraFormatLabel:'Format: 0+01 | 1+00 | TERM | SAMPLE',
         sheetPreviewTitle:'Sheet Preview', chooseExportDirBtn:'Folder', downloadAllBtn:'Output', memoModeBtn:'Memo Mode', memoUndoBtn:'Undo', memoRedoBtn:'Redo', memoPenLabel:'Pen', memoEraserLabel:'Eraser', memoEraserButton:'Eraser',
         createdByLabel:'Created by', settingsExportBtn:'Export', settingsFileBtn:'Load', settingsImportBtn:'Path', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'Settings JSON', settingsSelectEmpty:'Select settings', settingsSelectNoSettings:'No settings JSON', textMemoApplyBtn:'Apply', clearSheetDataBtn:'Reset All', hideSidebarBtn:'Hide UI', showSidebarBtn:'Show UI', shortcutSummaryTopHint:''
@@ -2533,7 +2547,7 @@
       ja: {
         languageLabel:'言語', headerCardTitle:'ヘッダー', episodeLabel:'話数', titleLabel:'タイトル', cutNoLabel:'カット番号', secondsLabel:'尺 秒', framesLabel:'尺 コマ', authorLabel:'名前', pageLabel:'ページ',
         originalCellTitle:'シート入力', inputModeLabel:'入力モード', inputModeTextCommands:'テキストコマンド', inputModeCsvClip:'CSV読込(CLIP STUDIO)', inputModeCsvTvpaint:'CSV読込(TVPaint)', csvExportClipBtn:'CLIP STUDIO CSV出力', csvExportTvpaintBtn:'TVPaint CSV出力', shakuEditBtn:'尺編集(演出向け)', shakuEditHint:'青いフレーム線をドラッグして尺を選択', shakuCutBtn:'切る', shakuStretchBtn:'伸ばす', shakuSelectedLabel:'選択', shakuUndoBtn:'取り消し', shakuRedoBtn:'やり直し', shakuFlashCut:'切る 反映', shakuFlashStretch:'伸ばす 反映', dougaSheetCreate:'動画作成', dougaSheetRefresh:'動画更新', dougaSheetTitle:'Cell番号と動画点から編集不可の動画欄を生成', cellReadabilityTitle:'Cell文字を大きく表示',
-        textCommandsLabel:'テキストコマンド', csvFileLabel:'CSVファイル', csvEncodingLabel:'CSV文字コード', csvCommandEditLabel:'CSVから生成された編集可能コマンド', csvColumnSortBtn:'ABC順',
+        textCommandsLabel:'テキストコマンド', csvFileLabel:'CSVファイル', csvEncodingLabel:'CSV文字コード', csvCommandEditLabel:'CSVから生成された編集可能コマンド',
         dialogBlocksTitle:'セリフ欄', dialogFormatLabel:'形式: 0+01 | 1+00 | 話者 | セリフ例', cameraBlocksTitle:'カメラ欄', cameraFormatLabel:'形式: 0+01 | 1+00 | 記号 | 指示例',
         sheetPreviewTitle:'シートプレビュー', chooseExportDirBtn:'保存先', downloadAllBtn:'出力', memoModeBtn:'メモモード', memoUndoBtn:'取り消し', memoRedoBtn:'やり直し', memoPenLabel:'ペン', memoEraserLabel:'消しゴム', memoEraserButton:'消しゴム',
         createdByLabel:'作成', settingsExportBtn:'出力', settingsFileBtn:'読込', settingsImportBtn:'読込先', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'設定JSON', settingsSelectEmpty:'設定選択', settingsSelectNoSettings:'設定JSONなし', textMemoApplyBtn:'適用', clearSheetDataBtn:'全体初期化', hideSidebarBtn:'UIを隠す', showSidebarBtn:'UIを表示', shortcutSummaryTopHint:''
@@ -2541,7 +2555,7 @@
       ko: {
         languageLabel:'언어', headerCardTitle:'헤더', episodeLabel:'화수', titleLabel:'제목', cutNoLabel:'컷 번호', secondsLabel:'길이 초', framesLabel:'길이 프레임', authorLabel:'이름', pageLabel:'페이지',
         originalCellTitle:'시트 입력', inputModeLabel:'입력 방식', inputModeTextCommands:'텍스트 커맨드', inputModeCsvClip:'CSV 읽기(CLIP STUDIO)', inputModeCsvTvpaint:'CSV 읽기(TVPaint)', csvExportClipBtn:'CLIP STUDIO CSV 내보내기', csvExportTvpaintBtn:'TVPaint CSV 내보내기', shakuEditBtn:'연출용 편집툴', shakuEditHint:'파란 프레임선을 드래그해 길이를 선택', shakuCutBtn:'자르기', shakuStretchBtn:'늘리기', shakuSelectedLabel:'선택', shakuUndoBtn:'되돌리기', shakuRedoBtn:'다시 실행', shakuFlashCut:'자르기 반영', shakuFlashStretch:'늘리기 반영', dougaSheetCreate:'동화시트 작성', dougaSheetRefresh:'동화시트 갱신', dougaSheetTitle:'셀 번호와 동화점으로 수정 불가능한 동화칸 생성', cellReadabilityTitle:'셀 글자 크게 보기',
-        textCommandsLabel:'텍스트 커맨드', csvFileLabel:'CSV 파일', csvEncodingLabel:'CSV 인코딩', csvCommandEditLabel:'CSV에서 생성된 편집 가능 커맨드', csvColumnSortBtn:'ABC 정렬',
+        textCommandsLabel:'텍스트 커맨드', csvFileLabel:'CSV 파일', csvEncodingLabel:'CSV 인코딩', csvCommandEditLabel:'CSV에서 생성된 편집 가능 커맨드',
         dialogBlocksTitle:'대사란', dialogFormatLabel:'형식: 0+01 | 1+00 | 화자 | 예시', cameraBlocksTitle:'카메라란', cameraFormatLabel:'형식: 0+01 | 1+00 | 기호 | 지시 예시',
         sheetPreviewTitle:'시트 프리뷰', chooseExportDirBtn:'경로지정', downloadAllBtn:'출력', memoModeBtn:'메모 모드', memoUndoBtn:'되돌리기', memoRedoBtn:'다시 실행', memoPenLabel:'펜', memoEraserLabel:'지우개', memoEraserButton:'지우개',
         createdByLabel:'제작', settingsExportBtn:'내보내기', settingsFileBtn:'불러오기', settingsImportBtn:'경로지정', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'설정 JSON', settingsSelectEmpty:'설정 선택', settingsSelectNoSettings:'설정 JSON 없음', textMemoApplyBtn:'적용', clearSheetDataBtn:'전체 초기화', hideSidebarBtn:'UI 숨기기', showSidebarBtn:'UI 펼치기', shortcutSummaryTopHint:''
@@ -2549,7 +2563,7 @@
       zh: {
         languageLabel:'语言', headerCardTitle:'页眉', episodeLabel:'集数', titleLabel:'标题', cutNoLabel:'镜头编号', secondsLabel:'时长 秒', framesLabel:'时长 帧', authorLabel:'姓名', pageLabel:'页码',
         originalCellTitle:'表格输入', inputModeLabel:'输入模式', inputModeTextCommands:'文本命令', inputModeCsvClip:'CSV 导入（CLIP STUDIO）', inputModeCsvTvpaint:'CSV 导入（TVPaint）', csvExportClipBtn:'导出 CLIP STUDIO CSV', csvExportTvpaintBtn:'导出 TVPaint CSV', shakuEditBtn:'时长编辑', shakuEditHint:'拖动蓝色帧线选择范围', shakuCutBtn:'切除', shakuStretchBtn:'延长', shakuSelectedLabel:'选择', shakuUndoBtn:'撤销', shakuRedoBtn:'重做', shakuFlashCut:'切除已应用', shakuFlashStretch:'延长已应用', dougaSheetCreate:'生成动画栏', dougaSheetRefresh:'刷新动画栏', dougaSheetTitle:'由 Cell 编号和动画点生成只读动画栏', cellReadabilityTitle:'放大 Cell 文字',
-        textCommandsLabel:'文本命令', csvFileLabel:'CSV 文件', csvEncodingLabel:'CSV 编码', csvCommandEditLabel:'从 CSV 生成的可编辑命令', csvColumnSortBtn:'ABC排序',
+        textCommandsLabel:'文本命令', csvFileLabel:'CSV 文件', csvEncodingLabel:'CSV 编码', csvCommandEditLabel:'从 CSV 生成的可编辑命令',
         dialogBlocksTitle:'对白栏', dialogFormatLabel:'格式: 0+01 | 1+00 | 说话人 | 示例', cameraBlocksTitle:'摄影机栏', cameraFormatLabel:'格式: 0+01 | 1+00 | 标记 | 指示示例',
         sheetPreviewTitle:'Sheet 预览', chooseExportDirBtn:'保存处', downloadAllBtn:'输出', memoModeBtn:'备注模式', memoUndoBtn:'撤销', memoRedoBtn:'重做', memoPenLabel:'笔', memoEraserLabel:'橡皮', memoEraserButton:'橡皮',
         createdByLabel:'制作', settingsExportBtn:'导出', settingsFileBtn:'导入', settingsImportBtn:'路径', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'设置 JSON', settingsSelectEmpty:'选择设置', settingsSelectNoSettings:'无设置 JSON', textMemoApplyBtn:'应用', clearSheetDataBtn:'全部重置', hideSidebarBtn:'隐藏 UI', showSidebarBtn:'显示 UI', shortcutSummaryTopHint:''
@@ -2779,11 +2793,75 @@
     };
 
     const visibleUpdateLogDocs = {
-      en: `<h4><span class="update-log-badge">ver590</span>Changelog cleanup</h4><ul><li>Cleaned the update history so it lists only useful user-facing changes, current features, and real workflow fixes.</li></ul><h4><span class="update-log-badge">Recent fixes</span>External paper and CSV/Text command stability</h4><ul><li>External Paper Auto Align fixes: Doga duration plus marks, KINEMA Dialog width, MAPPA Title merging, and SARU/Bones/MAD/TOHO-style Header and Cell/Dialog/Camera placement corrections.</li><li>CSV/Text command fixes: imported Cell edits now target the correct cell, explicit <code>x</code> stays black, automatic leading red X is preserved, black hold lines can toggle douga dots, and invalid <code>rep</code> marks are shown in red.</li><li>Camera and Dialog ranges drag with lightweight preview guides and apply on release.</li><li>Reload recovery keeps Episode, Title, Author, and external paper data when possible.</li></ul><h4><span class="update-log-badge">Current features</span>Import, export, paper, and sheet tools</h4><ul><li>Settings JSON can be loaded from one file or a folder, refreshed, and exported to a chosen save path on supported browsers.</li><li>CSV import keeps source order by default, can sort Cell columns on demand, and supports Cell/Hide/Book/Dialog/Camera role assignment.</li><li>PSD import ignores hidden layers, separates visible non-paper layers as PSD memo content, and supports PSD memo visibility toggling.</li><li>CLIP STUDIO <code>.clip</code> files can be loaded as external paper when a preview image is available inside the file.</li><li>External paper export can output PNG/JPG/PSD using the source image pixel size while keeping preview placement aligned.</li><li>Large Cell Text improves visibility, and Douga Sheet generation reads Cell numbers, dots, X marks, and repeat rules from the original Cell columns.</li><li>Camera FI/FO/OL entries render as simple fade-in, fade-out, and overlap shapes.</li><li>Text memo move/resize follows the current Position Edit boxes and stops at the active bounds.</li></ul><h4><span class="update-log-badge">Older active basics</span>Still-current behavior</h4><ul><li>External Paper Auto Align estimates Header, Cell, Dialog, and Camera boxes from detected sheet lines and keeps Position Edit available for manual correction.</li><li>Duration hold lines extend to the Duration endpoint, and output-folder selection is used where browser support is available.</li><li>Blank header fields, Cell labels, Cell frames, Dialog, Camera, name tags, memo, zoom, and shortcut operations remain directly editable on the sheet.</li></ul>`,
-      ja: `<h4><span class="update-log-badge">ver590</span>更新履歴の整理</h4><ul><li>更新履歴を、実際の利用に関係する変更、現在も使う機能、作業上の不具合修正だけが分かる形に整理しました。</li></ul><h4><span class="update-log-badge">最近の修正</span>外部用紙とCSV/Text Commandの安定化</h4><ul><li>外部用紙自動整列: DogaのDuration＋、KINEMAのDialog幅、MAPPAのTitle結合、SARU/Bones/MAD/TOHO系のHeaderとCell/Dialog/Camera位置を修正。</li><li>CSV/Text Command: CSV読込後のCell編集位置、明示<code>x</code>の黒表示、自動先頭赤X、黒継続線の動画点切替、無効<code>rep</code>の赤表示を修正。</li><li>CameraとDialogの範囲ドラッグは軽いプレビュー線で移動し、離した時に反映します。</li><li>再読み込み後も、可能な場合は話数、タイトル、名前、外部用紙データを復元します。</li></ul><h4><span class="update-log-badge">現在の機能</span>読込・出力・用紙・シート機能</h4><ul><li>設定JSONは単体ファイル読込、フォルダ読込、再読込、対応ブラウザでの保存先指定に対応。</li><li>CSV読込は元の列順を保持し、必要な時だけCell列を並べ替えでき、Cell/Hide/Book/Dialog/Cameraの役割指定に対応。</li><li>PSD読込は非表示レイヤーを除外し、用紙以外の表示レイヤーをPSDメモとして分離し、表示切替できます。</li><li>CLIP STUDIOの<code>.clip</code>は、内部プレビュー画像がある場合に外部用紙として読み込めます。</li><li>外部用紙出力はPNG/JPG/PSDで元画像ピクセル数を使い、プレビュー位置とずれにくく出力します。</li><li>Cell文字拡大表示と、Cell番号・動画点・X・repを読む動画シート生成に対応。</li><li>CameraのFI/FO/OLはフェードイン、フェードアウト、オーバーラップの簡易形状で表示します。</li><li>テキストメモの移動・リサイズ範囲は現在の位置編集ボックスに追従します。</li></ul><h4><span class="update-log-badge">旧機能</span>現在も有効な基本動作</h4><ul><li>外部用紙自動整列は検出線からHeader、Cell、Dialog、Camera枠を推定し、位置編集で手修正できます。</li><li>Duration継続線はDuration終点まで伸び、対応ブラウザでは出力フォルダ指定を使えます。</li><li>空のヘッダー、Cellラベル、Cellフレーム、Dialog、Camera、名前タグ、メモ、ズーム、ショートカットはシート上で編集できます。</li></ul>`,
-      ko: `<h4><span class="update-log-badge">ver590</span>갱신이력 정리</h4><ul><li>갱신이력을 실제 사용에 필요한 변경, 현재 기능 설명, 실사용 오류 수정 중심으로 정리했다.</li></ul><h4><span class="update-log-badge">최근 수정</span>외부용지와 CSV/Text Command 안정화</h4><ul><li>외부용지 자동정렬: Doga Duration +, KINEMA Dialog 폭, MAPPA Title 결합, SARU/Bones/MAD/TOHO 계열 Header와 Cell/Dialog/Camera 위치를 수정했다.</li><li>CSV/Text Command: CSV 불러오기 후 Cell 편집 위치, 명시 <code>x</code> 검은 표시, 자동 선두 빨간 X, 검은 지속선 동화점 토글, 무효 <code>rep</code> 빨간 표시를 수정했다.</li><li>Camera와 Dialog 범위 드래그는 가벼운 프리뷰 선으로 움직이고, 놓을 때 반영된다.</li><li>새로고침 후에도 가능한 경우 화수, 타이틀, 이름, 외부용지 데이터를 복원한다.</li></ul><h4><span class="update-log-badge">현재 기능</span>불러오기, 출력, 용지, 시트 도구</h4><ul><li>설정 JSON은 단일 파일 불러오기, 폴더 불러오기, 재읽기, 지원 브라우저의 저장처 지정에 대응한다.</li><li>CSV 불러오기는 원본 열 순서를 기본 유지하고, 필요할 때 Cell 열 정렬을 적용하며, Cell/Hide/Book/Dialog/Camera 역할 지정에 대응한다.</li><li>PSD 불러오기는 비표시 레이어를 제외하고, 용지가 아닌 표시 레이어를 PSD 메모로 분리해 표시 여부를 바꿀 수 있다.</li><li>CLIP STUDIO <code>.clip</code>은 내부 프리뷰 이미지가 있는 경우 외부용지로 불러올 수 있다.</li><li>외부용지 출력은 PNG/JPG/PSD에서 원본 이미지 픽셀수를 사용하고, 프리뷰 위치와 어긋나지 않게 출력한다.</li><li>셀 글자 크게 보기와, Cell 번호/동화점/X/rep를 읽는 동화시트 생성에 대응한다.</li><li>Camera의 FI/FO/OL은 페이드인, 페이드아웃, 오버랩 간단 도형으로 표시한다.</li><li>텍스트 메모 이동/리사이즈 범위는 현재 위치편집 박스에 맞춰 갱신된다.</li></ul><h4><span class="update-log-badge">기존 기능</span>현재도 유효한 기본 동작</h4><ul><li>외부용지 자동정렬은 검출선으로 Header, Cell, Dialog, Camera 박스를 추정하고 위치편집으로 수동 보정할 수 있다.</li><li>Duration 지속선은 Duration 끝까지 연장되고, 지원 브라우저에서는 출력 폴더 지정이 가능하다.</li><li>빈 헤더, Cell 라벨, Cell 프레임, Dialog, Camera, 이름태그, 메모, 줌, 단축키는 시트 위에서 직접 편집할 수 있다.</li></ul>`,
-      zh: `<h4><span class="update-log-badge">ver590</span>更新记录整理</h4><ul><li>更新记录已整理为只显示真实使用相关的变更、当前功能说明和实际问题修正。</li></ul><h4><span class="update-log-badge">近期修正</span>外部纸张与 CSV/Text Command 稳定性</h4><ul><li>外部纸张自动对齐: 修正 Doga Duration 加号、KINEMA Dialog 宽度、MAPPA Title 合并，以及 SARU/Bones/MAD/TOHO 系 Header 和 Cell/Dialog/Camera 位置。</li><li>CSV/Text Command: 修正 CSV 导入后的 Cell 编辑位置、显式 <code>x</code> 黑色显示、自动开头红 X、黑色保持线切换动画点、无效 <code>rep</code> 红色显示。</li><li>Camera 与 Dialog 范围拖动使用轻量预览线，松开后再应用。</li><li>刷新页面后，在可用时恢复集数、标题、姓名和外部纸张数据。</li></ul><h4><span class="update-log-badge">当前功能</span>导入、导出、纸张与表格工具</h4><ul><li>设置 JSON 支持单文件导入、文件夹导入、刷新，以及支持浏览器中的保存位置指定。</li><li>CSV 导入默认保持原始列顺，可按需排序 Cell 列，并支持 Cell/Hide/Book/Dialog/Camera 角色指定。</li><li>PSD 导入会排除隐藏图层，将非纸张的可见图层分离为 PSD 备注，并可切换显示。</li><li>CLIP STUDIO <code>.clip</code> 在文件内有预览图时可作为外部纸张导入。</li><li>外部纸张导出 PNG/JPG/PSD 时使用原图像素尺寸，并保持与预览位置对齐。</li><li>支持 Cell 文字放大，以及从 Cell 编号、动画点、X、rep 生成动画表。</li><li>Camera 的 FI/FO/OL 会显示为淡入、淡出、重叠的简易图形。</li><li>文字备注的移动和缩放范围会跟随当前的位置编辑框。</li></ul><h4><span class="update-log-badge">旧功能</span>仍然有效的基本行为</h4><ul><li>外部纸张自动对齐会根据检测线推定 Header、Cell、Dialog、Camera 框，并可用位置编辑手动修正。</li><li>Duration 保持线会延伸到 Duration 终点，支持的浏览器可指定输出文件夹。</li><li>空 Header、Cell 标签、Cell 帧、Dialog、Camera、名称标签、备注、缩放和快捷键可在表格上直接编辑。</li></ul>`
+      en: `<h4><span class="update-log-badge">ver590</span>Changelog cleanup</h4><ul><li>Cleaned the update history so it lists only useful user-facing changes, current features, and real workflow fixes.</li></ul><h4><span class="update-log-badge">Recent fixes</span>External paper and CSV/Text command stability</h4><ul><li>External Paper Auto Align fixes: Doga duration plus marks, KINEMA Dialog width, MAPPA Title merging, and SARU/Bones/MAD/TOHO-style Header and Cell/Dialog/Camera placement corrections.</li><li>CSV/Text command fixes: imported Cell edits now target the correct cell, explicit <code>x</code> stays black, automatic leading red X is preserved, black hold lines can toggle douga dots, and invalid <code>rep</code> marks are shown in red.</li><li>Camera and Dialog ranges drag with lightweight preview guides and apply on release.</li><li>Reload recovery keeps Episode, Title, Author, and external paper data when possible.</li></ul><h4><span class="update-log-badge">Current features</span>Import, export, paper, and sheet tools</h4><ul><li>Settings JSON can be loaded from one file or a folder, refreshed, and exported to a chosen save path on supported browsers.</li><li>CSV import keeps source order by default and supports Cell/Hide/Book/Dialog/Camera role assignment.</li><li>PSD import ignores hidden layers, separates visible non-paper layers as PSD memo content, and supports PSD memo visibility toggling.</li><li>CLIP STUDIO <code>.clip</code> files can be loaded as external paper when a preview image is available inside the file.</li><li>External paper export can output PNG/JPG/PSD using the source image pixel size while keeping preview placement aligned.</li><li>Large Cell Text improves visibility, and Douga Sheet generation reads Cell numbers, dots, X marks, and repeat rules from the original Cell columns.</li><li>Camera FI/FO/OL entries render as simple fade-in, fade-out, and overlap shapes.</li><li>Text memo move/resize follows the current Position Edit boxes and stops at the active bounds.</li></ul><h4><span class="update-log-badge">Older active basics</span>Still-current behavior</h4><ul><li>External Paper Auto Align estimates Header, Cell, Dialog, and Camera boxes from detected sheet lines and keeps Position Edit available for manual correction.</li><li>Duration hold lines extend to the Duration endpoint, and output-folder selection is used where browser support is available.</li><li>Blank header fields, Cell labels, Cell frames, Dialog, Camera, name tags, memo, zoom, and shortcut operations remain directly editable on the sheet.</li></ul>`,
+      ja: `<h4><span class="update-log-badge">ver590</span>更新履歴の整理</h4><ul><li>更新履歴を、実際の利用に関係する変更、現在も使う機能、作業上の不具合修正だけが分かる形に整理しました。</li></ul><h4><span class="update-log-badge">最近の修正</span>外部用紙とCSV/Text Commandの安定化</h4><ul><li>外部用紙自動整列: DogaのDuration＋、KINEMAのDialog幅、MAPPAのTitle結合、SARU/Bones/MAD/TOHO系のHeaderとCell/Dialog/Camera位置を修正。</li><li>CSV/Text Command: CSV読込後のCell編集位置、明示<code>x</code>の黒表示、自動先頭赤X、黒継続線の動画点切替、無効<code>rep</code>の赤表示を修正。</li><li>CameraとDialogの範囲ドラッグは軽いプレビュー線で移動し、離した時に反映します。</li><li>再読み込み後も、可能な場合は話数、タイトル、名前、外部用紙データを復元します。</li></ul><h4><span class="update-log-badge">現在の機能</span>読込・出力・用紙・シート機能</h4><ul><li>設定JSONは単体ファイル読込、フォルダ読込、再読込、対応ブラウザでの保存先指定に対応。</li><li>CSV読込は元の列順を保持し、Cell/Hide/Book/Dialog/Cameraの役割指定に対応。</li><li>PSD読込は非表示レイヤーを除外し、用紙以外の表示レイヤーをPSDメモとして分離し、表示切替できます。</li><li>CLIP STUDIOの<code>.clip</code>は、内部プレビュー画像がある場合に外部用紙として読み込めます。</li><li>外部用紙出力はPNG/JPG/PSDで元画像ピクセル数を使い、プレビュー位置とずれにくく出力します。</li><li>Cell文字拡大表示と、Cell番号・動画点・X・repを読む動画シート生成に対応。</li><li>CameraのFI/FO/OLはフェードイン、フェードアウト、オーバーラップの簡易形状で表示します。</li><li>テキストメモの移動・リサイズ範囲は現在の位置編集ボックスに追従します。</li></ul><h4><span class="update-log-badge">旧機能</span>現在も有効な基本動作</h4><ul><li>外部用紙自動整列は検出線からHeader、Cell、Dialog、Camera枠を推定し、位置編集で手修正できます。</li><li>Duration継続線はDuration終点まで伸び、対応ブラウザでは出力フォルダ指定を使えます。</li><li>空のヘッダー、Cellラベル、Cellフレーム、Dialog、Camera、名前タグ、メモ、ズーム、ショートカットはシート上で編集できます。</li></ul>`,
+      ko: `<h4><span class="update-log-badge">ver590</span>갱신이력 정리</h4><ul><li>갱신이력을 실제 사용에 필요한 변경, 현재 기능 설명, 실사용 오류 수정 중심으로 정리했다.</li></ul><h4><span class="update-log-badge">최근 수정</span>외부용지와 CSV/Text Command 안정화</h4><ul><li>외부용지 자동정렬: Doga Duration +, KINEMA Dialog 폭, MAPPA Title 결합, SARU/Bones/MAD/TOHO 계열 Header와 Cell/Dialog/Camera 위치를 수정했다.</li><li>CSV/Text Command: CSV 불러오기 후 Cell 편집 위치, 명시 <code>x</code> 검은 표시, 자동 선두 빨간 X, 검은 지속선 동화점 토글, 무효 <code>rep</code> 빨간 표시를 수정했다.</li><li>Camera와 Dialog 범위 드래그는 가벼운 프리뷰 선으로 움직이고, 놓을 때 반영된다.</li><li>새로고침 후에도 가능한 경우 화수, 타이틀, 이름, 외부용지 데이터를 복원한다.</li></ul><h4><span class="update-log-badge">현재 기능</span>불러오기, 출력, 용지, 시트 도구</h4><ul><li>설정 JSON은 단일 파일 불러오기, 폴더 불러오기, 재읽기, 지원 브라우저의 저장처 지정에 대응한다.</li><li>CSV 불러오기는 원본 열 순서를 기본 유지하고, Cell/Hide/Book/Dialog/Camera 역할 지정에 대응한다.</li><li>PSD 불러오기는 비표시 레이어를 제외하고, 용지가 아닌 표시 레이어를 PSD 메모로 분리해 표시 여부를 바꿀 수 있다.</li><li>CLIP STUDIO <code>.clip</code>은 내부 프리뷰 이미지가 있는 경우 외부용지로 불러올 수 있다.</li><li>외부용지 출력은 PNG/JPG/PSD에서 원본 이미지 픽셀수를 사용하고, 프리뷰 위치와 어긋나지 않게 출력한다.</li><li>셀 글자 크게 보기와, Cell 번호/동화점/X/rep를 읽는 동화시트 생성에 대응한다.</li><li>Camera의 FI/FO/OL은 페이드인, 페이드아웃, 오버랩 간단 도형으로 표시한다.</li><li>텍스트 메모 이동/리사이즈 범위는 현재 위치편집 박스에 맞춰 갱신된다.</li></ul><h4><span class="update-log-badge">기존 기능</span>현재도 유효한 기본 동작</h4><ul><li>외부용지 자동정렬은 검출선으로 Header, Cell, Dialog, Camera 박스를 추정하고 위치편집으로 수동 보정할 수 있다.</li><li>Duration 지속선은 Duration 끝까지 연장되고, 지원 브라우저에서는 출력 폴더 지정이 가능하다.</li><li>빈 헤더, Cell 라벨, Cell 프레임, Dialog, Camera, 이름태그, 메모, 줌, 단축키는 시트 위에서 직접 편집할 수 있다.</li></ul>`,
+      zh: `<h4><span class="update-log-badge">ver590</span>更新记录整理</h4><ul><li>更新记录已整理为只显示真实使用相关的变更、当前功能说明和实际问题修正。</li></ul><h4><span class="update-log-badge">近期修正</span>外部纸张与 CSV/Text Command 稳定性</h4><ul><li>外部纸张自动对齐: 修正 Doga Duration 加号、KINEMA Dialog 宽度、MAPPA Title 合并，以及 SARU/Bones/MAD/TOHO 系 Header 和 Cell/Dialog/Camera 位置。</li><li>CSV/Text Command: 修正 CSV 导入后的 Cell 编辑位置、显式 <code>x</code> 黑色显示、自动开头红 X、黑色保持线切换动画点、无效 <code>rep</code> 红色显示。</li><li>Camera 与 Dialog 范围拖动使用轻量预览线，松开后再应用。</li><li>刷新页面后，在可用时恢复集数、标题、姓名和外部纸张数据。</li></ul><h4><span class="update-log-badge">当前功能</span>导入、导出、纸张与表格工具</h4><ul><li>设置 JSON 支持单文件导入、文件夹导入、刷新，以及支持浏览器中的保存位置指定。</li><li>CSV 导入默认保持原始列顺，并支持 Cell/Hide/Book/Dialog/Camera 角色指定。</li><li>PSD 导入会排除隐藏图层，将非纸张的可见图层分离为 PSD 备注，并可切换显示。</li><li>CLIP STUDIO <code>.clip</code> 在文件内有预览图时可作为外部纸张导入。</li><li>外部纸张导出 PNG/JPG/PSD 时使用原图像素尺寸，并保持与预览位置对齐。</li><li>支持 Cell 文字放大，以及从 Cell 编号、动画点、X、rep 生成动画表。</li><li>Camera 的 FI/FO/OL 会显示为淡入、淡出、重叠的简易图形。</li><li>文字备注的移动和缩放范围会跟随当前的位置编辑框。</li></ul><h4><span class="update-log-badge">旧功能</span>仍然有效的基本行为</h4><ul><li>外部纸张自动对齐会根据检测线推定 Header、Cell、Dialog、Camera 框，并可用位置编辑手动修正。</li><li>Duration 保持线会延伸到 Duration 终点，支持的浏览器可指定输出文件夹。</li><li>空 Header、Cell 标签、Cell 帧、Dialog、Camera、名称标签、备注、缩放和快捷键可在表格上直接编辑。</li></ul>`
     };
+
+    const updateLogVer599VisibleDocs = {
+      en: '<h4><span class="update-log-badge">ver599</span>Command view safety</h4><ul><li>Hide non-Cell commands now uses a separate Cell-only editing view while keeping the full command text intact for preview, save, and output.</li><li>Removed CSV ABC sorting and role regrouping so imported command order stays simple and predictable.</li></ul>',
+      ja: '<h4><span class="update-log-badge">ver599</span>コマンド表示の安全化</h4><ul><li>Hide non-Cell commands は別のCell専用編集ビューで表示し、プレビュー・保存・出力用の全コマンド本文はそのまま保持するようにした。</li><li>CSVのABC順ソートと役割別の並べ替えを削除し、読込時のコマンド順を単純に保つようにした。</li></ul>',
+      ko: '<h4><span class="update-log-badge">ver599</span>커맨드 표시 안정화</h4><ul><li>Hide non-Cell commands는 별도 Cell 전용 편집창으로 표시하고, 프리뷰・저장・출력용 전체 커맨드 원문은 그대로 유지하도록 바꿨다.</li><li>CSV ABC 정렬과 역할별 재배치 규칙을 제거해 불러온 커맨드 순서를 단순하게 유지했다.</li></ul>',
+      zh: '<h4><span class="update-log-badge">ver599</span>命令显示稳定化</h4><ul><li>Hide non-Cell commands 改为使用单独的 Cell 专用编辑视图，预览、保存和输出使用的完整命令文本会保持不变。</li><li>移除了 CSV ABC 排序和按角色重新分组，导入后的命令顺序更简单可控。</li></ul>'
+    };
+    Object.keys(visibleUpdateLogDocs).forEach(function(lang){
+      visibleUpdateLogDocs[lang] = (updateLogVer599VisibleDocs[lang] || updateLogVer599VisibleDocs.en) + visibleUpdateLogDocs[lang];
+    });
+    const updateLogVer600VisibleDocs = {
+      en: '<h4><span class="update-log-badge">ver600</span>Cell label order sync</h4><ul><li>Dragging Cell labels in the preview now updates the CSV role rows and the Cell-only command view immediately.</li><li>Non-Cell command lines keep their positions while only Cell command lines are reordered.</li></ul>',
+      ja: '<h4><span class="update-log-badge">ver600</span>Cellラベル順序の同期</h4><ul><li>プレビュー上でCellラベルをドラッグした時、CSV役割行とCell専用コマンド表示へすぐ反映するようにした。</li><li>Cell以外のコマンド行は位置を保ち、Cell行だけを並べ替えるようにした。</li></ul>',
+      ko: '<h4><span class="update-log-badge">ver600</span>Cell 라벨 순서 동기화</h4><ul><li>프리뷰에서 Cell 라벨 순서를 드래그로 바꾸면 CSV 셀속성 행과 Cell 전용 커맨드 표시창에 즉시 반영되도록 수정했다.</li><li>Cell 이외의 커맨드 줄은 위치를 유지하고 Cell 줄만 재배치하도록 했다.</li></ul>',
+      zh: '<h4><span class="update-log-badge">ver600</span>Cell 标签顺序同步</h4><ul><li>在预览中拖动 Cell 标签后，会立即同步到 CSV 角色行和 Cell 专用命令视图。</li><li>非 Cell 命令行保持位置，只重新排列 Cell 命令行。</li></ul>'
+    };
+    Object.keys(visibleUpdateLogDocs).forEach(function(lang){
+      visibleUpdateLogDocs[lang] = (updateLogVer600VisibleDocs[lang] || updateLogVer600VisibleDocs.en) + visibleUpdateLogDocs[lang];
+    });
+    const updateLogVer601VisibleDocs = {
+      en: '<h4><span class="update-log-badge">ver601</span>Cell-only view cleanup</h4><ul><li>When Hide non-Cell commands is enabled, the command editor and role picker now both show only Cell rows.</li></ul>',
+      ja: '<h4><span class="update-log-badge">ver601</span>Cell専用表示の整理</h4><ul><li>Hide non-Cell commandsがONの時、コマンド欄と役割選択欄の両方でCell行だけを表示するようにした。</li></ul>',
+      ko: '<h4><span class="update-log-badge">ver601</span>Cell 전용 표시 정리</h4><ul><li>Hide non-Cell commands가 ON일 때 커맨드 입력란과 셀속성탭 양쪽 모두 Cell 행만 표시하도록 했다.</li></ul>',
+      zh: '<h4><span class="update-log-badge">ver601</span>Cell 专用显示整理</h4><ul><li>开启 Hide non-Cell commands 时，命令编辑区和角色选择区都会只显示 Cell 行。</li></ul>'
+    };
+    Object.keys(visibleUpdateLogDocs).forEach(function(lang){
+      visibleUpdateLogDocs[lang] = (updateLogVer601VisibleDocs[lang] || updateLogVer601VisibleDocs.en) + visibleUpdateLogDocs[lang];
+    });
+    const updateLogVer602VisibleDocs = {
+      en: '<h4><span class="update-log-badge">ver602</span>Cell-only command sync</h4><ul><li>Cell token drag edits now update the Cell-only command view immediately.</li></ul>',
+      ja: '<h4><span class="update-log-badge">ver602</span>Cell専用コマンド同期</h4><ul><li>Cellトークンのドラッグ編集がCell専用コマンド表示へすぐ反映されるようにした。</li></ul>',
+      ko: '<h4><span class="update-log-badge">ver602</span>Cell 전용 커맨드 동기화</h4><ul><li>Cell 토큰 드래그 편집이 Cell 전용 커맨드 표시창에 즉시 반영되도록 수정했다.</li></ul>',
+      zh: '<h4><span class="update-log-badge">ver602</span>Cell 专用命令同步</h4><ul><li>Cell 标记拖动编辑现在会立即同步到 Cell 专用命令视图。</li></ul>'
+    };
+    Object.keys(visibleUpdateLogDocs).forEach(function(lang){
+      visibleUpdateLogDocs[lang] = (updateLogVer602VisibleDocs[lang] || updateLogVer602VisibleDocs.en) + visibleUpdateLogDocs[lang];
+    });
+    const updateLogVer603VisibleDocs = {
+      en: '<h4><span class="update-log-badge">ver603</span>Cell drag response</h4><ul><li>Cell token drag start now avoids regenerating all command lines, making large sheets lighter to edit.</li></ul>',
+      ja: '<h4><span class="update-log-badge">ver603</span>Cellドラッグ応答</h4><ul><li>Cellトークンのドラッグ開始時に全コマンド行を再生成しないようにし、大きいシートの編集を軽くした。</li></ul>',
+      ko: '<h4><span class="update-log-badge">ver603</span>Cell 드래그 반응</h4><ul><li>Cell 토큰 드래그 시작 시 전체 커맨드 행을 재생성하지 않도록 하여 큰 시트 편집을 가볍게 했다.</li></ul>',
+      zh: '<h4><span class="update-log-badge">ver603</span>Cell 拖动响应</h4><ul><li>Cell 标记开始拖动时不再重新生成全部命令行，大型表的编辑更轻。</li></ul>'
+    };
+    Object.keys(visibleUpdateLogDocs).forEach(function(lang){
+      visibleUpdateLogDocs[lang] = (updateLogVer603VisibleDocs[lang] || updateLogVer603VisibleDocs.en) + visibleUpdateLogDocs[lang];
+    });
+    const updateLogVer604VisibleDocs = {
+      en: '<h4><span class="update-log-badge">ver604</span>Command role cleanup</h4><ul><li>CSV column roles now load through the unified role map, and Text Command dialog/camera links use source tags instead of line-number memory.</li></ul>',
+      ja: '<h4><span class="update-log-badge">ver604</span>コマンド役割整理</h4><ul><li>CSV列の役割を共通の役割マップで復元し、Text Command由来のセリフ/カメラ連携は行番号ではなく出所タグを基準にした。</li></ul>',
+      ko: '<h4><span class="update-log-badge">ver604</span>커맨드 역할 정리</h4><ul><li>CSV 열 역할은 공용 역할 맵으로 복원하고, Text Command의 대사/카메라 연동은 행 번호가 아니라 출처 태그 기준으로 정리했다.</li></ul>',
+      zh: '<h4><span class="update-log-badge">ver604</span>命令角色整理</h4><ul><li>CSV 列角色改为通过统一角色表恢复，Text Command 的对白/摄影联动改用来源标签而不是行号记忆。</li></ul>'
+    };
+    Object.keys(visibleUpdateLogDocs).forEach(function(lang){
+      visibleUpdateLogDocs[lang] = (updateLogVer604VisibleDocs[lang] || updateLogVer604VisibleDocs.en) + visibleUpdateLogDocs[lang];
+    });
+    const updateLogVer605VisibleDocs = {
+      en: '<h4><span class="update-log-badge">ver605</span>Command view scroll</h4><ul><li>Hide non-Cell commands no longer jumps the command editor scroll position.</li></ul>',
+      ja: '<h4><span class="update-log-badge">ver605</span>コマンド欄スクロール</h4><ul><li>Hide non-Cell commands切り替え時にコマンド欄のスクロール位置が飛ばないようにした。</li></ul>',
+      ko: '<h4><span class="update-log-badge">ver605</span>커맨드란 스크롤</h4><ul><li>Hide non-Cell commands 전환 시 커맨드 입력란 스크롤 위치가 튀지 않도록 수정했다.</li></ul>',
+      zh: '<h4><span class="update-log-badge">ver605</span>命令栏滚动</h4><ul><li>切换 Hide non-Cell commands 时，命令编辑区不再跳动滚动位置。</li></ul>'
+    };
+    Object.keys(visibleUpdateLogDocs).forEach(function(lang){
+      visibleUpdateLogDocs[lang] = (updateLogVer605VisibleDocs[lang] || updateLogVer605VisibleDocs.en) + visibleUpdateLogDocs[lang];
+    });
 
     function getUpdateLogDoc() {
       return UPDATE_LOG_DOCS[state.lang] || UPDATE_LOG_DOCS.en;
@@ -3470,9 +3548,30 @@
       return sec + '+' + String(rem).padStart(2, '0');
     }
 
+    function normalizeCsvColumnRole(role) {
+      const raw = String(role || '').trim().toLowerCase();
+      if (raw === 'cell' || raw === 'original') return 'original';
+      if (raw === 'hide' || raw === 'hidden') return 'hidden';
+      if (raw === 'book' || raw === 'dialog' || raw === 'camera') return raw;
+      return '';
+    }
+
+    function migrateCsvColumnRoles(columns, columnRoles, selectedColumns) {
+      const explicitRoles = columnRoles && typeof columnRoles === 'object' ? columnRoles : {};
+      const selected = new Set((Array.isArray(selectedColumns) ? selectedColumns : []).map(function(index){ return String(index); }));
+      const roles = {};
+      (columns || []).forEach(function(col){
+        if (!col) return;
+        const key = String(col.index);
+        const explicit = normalizeCsvColumnRole(explicitRoles[key]);
+        roles[key] = explicit || (selected.has(key) ? 'original' : 'hidden');
+      });
+      return roles;
+    }
+
     function getCsvColumnRole(col) {
       if (!col) return 'hidden';
-      return state.csvColumnRoles[String(col.index)] || (state.csvSelectedColumns.has(col.index) ? 'original' : 'hidden');
+      return normalizeCsvColumnRole((state.csvColumnRoles || {})[String(col.index)]) || 'hidden';
     }
 
     function getCsvColumnRoleOptions() {
@@ -3487,10 +3586,9 @@
 
     function setCsvColumnRole(col, role) {
       if (!col) return;
-      const normalizedRole = ['original', 'hidden', 'book', 'dialog', 'camera'].includes(role) ? role : 'hidden';
+      const normalizedRole = normalizeCsvColumnRole(role) || 'hidden';
+      if (!state.csvColumnRoles || typeof state.csvColumnRoles !== 'object') state.csvColumnRoles = {};
       state.csvColumnRoles[String(col.index)] = normalizedRole;
-      if (normalizedRole === 'original') state.csvSelectedColumns.add(col.index);
-      else state.csvSelectedColumns.delete(col.index);
     }
 
     function normalizeCameraLayerName(name) {
@@ -3540,24 +3638,28 @@
       return /^(PAN|QPAN|TU|TB|QTU|QTB|SL|DTU|DTB|FI|FO|FIO|OL|WIPE|FOLLOW|BOOK|BGSL|BGSLL|BGSLR|TILTUP|TILTDOWN|TRACKUP|TRACKDOWN|ZOOMIN|ZOOMOUT|ZI|ZO|CAMFOLLOW)$/.test(normalized);
     }
 
-    function rememberCsvOriginalCellColumnOrder() {
-      state.csvOriginalCellColumns = (state.csvColumns || []).filter(function(col){
-        return getCsvColumnRole(col) === 'original';
-      }).slice().sort(function(a, b){
-        return Number(a.index || 0) - Number(b.index || 0);
-      }).map(function(col){
-        return { index:col.index, name:col.name };
-      });
-    }
-
-    function getCsvOriginalCellColumnOrderIndex(col) {
-      const source = Array.isArray(state.csvOriginalCellColumns) ? state.csvOriginalCellColumns : [];
-      const idx = source.findIndex(function(item){ return String(item.index) === String(col && col.index); });
-      return idx === -1 ? 999999 : idx;
-    }
-
     function compareCsvSourceColumnOrder(a, b) {
       return Number(a && a.index || 0) - Number(b && b.index || 0);
+    }
+
+    function getCsvColumnsByCommandOrder() {
+      const columns = (state.csvColumns || []).slice();
+      if (!columns.length) return [];
+      const byIndex = new Map(columns.map(function(col){ return [String(col.index), col]; }));
+      const used = new Set();
+      const ordered = [];
+      (state.csvColumnOrder || []).forEach(function(index){
+        const col = byIndex.get(String(index));
+        if (!col || used.has(String(col.index))) return;
+        ordered.push(col);
+        used.add(String(col.index));
+      });
+      columns.slice().sort(compareCsvSourceColumnOrder).forEach(function(col){
+        if (used.has(String(col.index))) return;
+        ordered.push(col);
+        used.add(String(col.index));
+      });
+      return ordered;
     }
 
     function hasCsvCellDisplayOrder() {
@@ -3574,27 +3676,81 @@
     function mergeCsvGeneratedLines(raw, previousGeneratedLines, nextGeneratedLines) {
       const sourceLines = stripDefaultCsvSampleLines(raw).split('\n');
       const previous = new Set((previousGeneratedLines || []).filter(Boolean));
-      const out = sourceLines.filter(function(lineText){ return !previous.has(lineText); });
+      const previousSources = collectManualSourceTokens((previousGeneratedLines || []).join('\n'));
+      const nextSources = collectManualSourceTokens((nextGeneratedLines || []).join('\n'));
+      const out = sourceLines.filter(function(lineText){
+        if (previous.has(lineText)) return false;
+        const sourceToken = splitManualSourceSuffix(lineText).sourceToken;
+        return !(sourceToken && previousSources.has(sourceToken) && !nextSources.has(sourceToken));
+      });
       while (out.length && !out[out.length - 1].trim()) out.pop();
       const generated = (nextGeneratedLines || []).filter(Boolean);
       if (generated.length) {
-        if (out.length) out.push('');
-        generated.forEach(function(lineText){ out.push(lineText); });
+        const existingSources = collectManualSourceTokens(out.join('\n'));
+        const fresh = generated.filter(function(lineText){
+          const sourceToken = splitManualSourceSuffix(lineText).sourceToken;
+          return !(sourceToken && existingSources.has(sourceToken));
+        });
+        if (fresh.length && out.length) out.push('');
+        fresh.forEach(function(lineText){ out.push(lineText); });
       }
       return out.join('\n');
     }
 
-    function replaceAutoGeneratedBlock(raw, generatedLines) {
-      return mergeCsvGeneratedLines(raw, [], generatedLines);
+    const MANUAL_SOURCE_SUFFIX_RE = /\s+\(cell:([^)]+)\)\s*$/i;
+
+    function sanitizeManualSourceToken(value) {
+      return String(value || '').replace(/[()]/g, '').trim();
     }
 
-    function makeTimelineBlockLine(fromFrame, toFrame, label, textValue, endLabel) {
+    function splitManualSourceSuffix(lineText) {
+      const raw = String(lineText || '');
+      const match = raw.match(MANUAL_SOURCE_SUFFIX_RE);
+      if (!match) return { cleanLine:raw, sourceToken:'' };
+      return {
+        cleanLine:raw.slice(0, match.index).trimEnd(),
+        sourceToken:sanitizeManualSourceToken(match[1])
+      };
+    }
+
+    function appendManualSourceSuffix(lineText, sourceToken) {
+      const token = sanitizeManualSourceToken(sourceToken);
+      const cleanLine = splitManualSourceSuffix(lineText).cleanLine.trimEnd();
+      return token ? cleanLine + ' (cell:' + token + ')' : cleanLine;
+    }
+
+    function collectManualSourceTokens(raw) {
+      const tokens = new Set();
+      String(raw || '').replace(/\r/g, '').split('\n').forEach(function(lineText){
+        const sourceToken = splitManualSourceSuffix(lineText).sourceToken;
+        if (sourceToken) tokens.add(sourceToken);
+      });
+      return tokens;
+    }
+
+    function removeManualLinesBySource(textarea, sourceTokens) {
+      if (!textarea) return;
+      const targets = sourceTokens instanceof Set
+        ? sourceTokens
+        : new Set([].concat(sourceTokens || []).map(sanitizeManualSourceToken).filter(Boolean));
+      if (!targets.size) return;
+      const out = String(textarea.value || '').replace(/\r/g, '').split('\n').filter(function(lineText){
+        const sourceToken = splitManualSourceSuffix(lineText).sourceToken;
+        return !(sourceToken && targets.has(sourceToken));
+      });
+      while (out.length && !out[out.length - 1].trim()) out.pop();
+      textarea.value = out.join('\n');
+    }
+
+    function makeTimelineBlockLine(fromFrame, toFrame, label, textValue, endLabel, sourceToken) {
       const cleanLabel = String(label || '').trim();
       const cleanText = String(textValue || '').trim();
       const cleanEndLabel = String(endLabel || '').trim();
-      if (cleanEndLabel) return frameToTimecode(fromFrame) + ' | ' + frameToTimecode(toFrame) + ' | ' + cleanLabel + ' | ' + cleanText + ' | ' + cleanEndLabel;
-      if (cleanLabel) return frameToTimecode(fromFrame) + ' | ' + frameToTimecode(toFrame) + ' | ' + cleanLabel + ' | ' + cleanText;
-      return frameToTimecode(fromFrame) + ' | ' + frameToTimecode(toFrame) + ' | ' + cleanText;
+      let lineText = '';
+      if (cleanEndLabel) lineText = frameToTimecode(fromFrame) + ' | ' + frameToTimecode(toFrame) + ' | ' + cleanLabel + ' | ' + cleanText + ' | ' + cleanEndLabel;
+      else if (cleanLabel) lineText = frameToTimecode(fromFrame) + ' | ' + frameToTimecode(toFrame) + ' | ' + cleanLabel + ' | ' + cleanText;
+      else lineText = frameToTimecode(fromFrame) + ' | ' + frameToTimecode(toFrame) + ' | ' + cleanText;
+      return appendManualSourceSuffix(lineText, sourceToken);
     }
 
     function updateManualBlockLine(blockType, lineIndex, nextFrom, nextTo, options) {
@@ -3606,7 +3762,7 @@
       if (!parsed) return;
       const from = Math.max(1, Math.round(nextFrom || parsed.from));
       const to = Math.max(from, Math.round(nextTo || parsed.to));
-      lines[lineIndex] = makeTimelineBlockLine(from, to, parsed.label, parsed.text, parsed.endLabel);
+      lines[lineIndex] = makeTimelineBlockLine(from, to, parsed.label, parsed.text, parsed.endLabel, parsed.sourceToken);
       textarea.value = lines.join('\n');
       if (!options || options.render !== false) render();
     }
@@ -3629,9 +3785,9 @@
     }
 
     function getCsvOriginalColumnsForCommandOrder() {
-      const originals = (state.csvColumns || []).filter(function(col){
+      const originals = getCsvColumnsByCommandOrder().filter(function(col){
         return getCsvColumnRole(col) === 'original';
-      }).slice().sort(compareCsvSourceColumnOrder);
+      });
       if (!originals.length || !hasCsvCellDisplayOrder()) return originals;
       const byUid = new Map(originals.map(function(col){ return ['csv-' + col.index, col]; }));
       const used = new Set();
@@ -3689,37 +3845,24 @@
       return findCommandLineIndexForUid(lines, entry.uid);
     }
 
-    function updateCommandLayerNameByUid(uid, nextName) {
-      const textarea = isCsvMode(getCurrentInputMode()) ? csvCommandEditEl : document.getElementById('timelineCommandInput');
-      if (!textarea) return;
-      const lines = String(textarea.value || '').replace(/\r/g, '').split('\n');
-      const lineIndex = findCommandLineIndexForUid(lines, uid);
-      if (lineIndex === -1) return;
-      const colonIndex = lines[lineIndex].indexOf(':');
-      if (colonIndex === -1) return;
-      lines[lineIndex] = String(nextName || '').trim() + lines[lineIndex].slice(colonIndex);
-      textarea.value = lines.join('\n');
-    }
-
-
     function updateCommandLayerNameByEntry(entry, nextName) {
       const textarea = getCommandTextarea();
       if (!textarea || !entry) return;
       const safeName = String(nextName || '').trim() || String(entry.label || '').trim() || 'A';
-      const lines = String(textarea.value || '').replace(/\r/g, '').split('\n');
+      const lines = String(getCommandTextValue(textarea) || '').replace(/\r/g, '').split('\n');
       let lineIndex = findCommandLineIndexForEntry(lines, entry);
       if (lineIndex === -1) lineIndex = findOrCreateCommandLineForEntry(lines, entry);
       if (lineIndex === -1) return;
       const colonIndex = lines[lineIndex].indexOf(':');
       if (colonIndex === -1) lines[lineIndex] = safeName + ':';
       else lines[lineIndex] = safeName + lines[lineIndex].slice(colonIndex);
-      textarea.value = lines.join('\n');
+      setCommandTextValue(textarea, lines.join('\n'));
     }
 
     function updateCommandSegmentLabelByUid(uid, frame, nextLabel) {
       const textarea = isCsvMode(getCurrentInputMode()) ? csvCommandEditEl : document.getElementById('timelineCommandInput');
       if (!textarea) return;
-      const lines = String(textarea.value || '').replace(/\r/g, '').split('\n');
+      const lines = String(getCommandTextValue(textarea) || '').replace(/\r/g, '').split('\n');
       const lineIndex = findCommandLineIndexForUid(lines, uid);
       if (lineIndex === -1) return;
       const colonIndex = lines[lineIndex].indexOf(':');
@@ -3730,7 +3873,7 @@
       setCommandLabelAtFrame(tokens, idx, nextLabel);
       clearCellFrameTransientOverrides({ uid:uid }, frame);
       lines[lineIndex] = tokens.length ? (namePart + ' ' + tokens.join(' ')) : namePart;
-      textarea.value = lines.join('\n');
+      setCommandTextValue(textarea, lines.join('\n'));
     }
 
 
@@ -3924,7 +4067,7 @@
     function updateCommandFrameTokenByEntry(entry, frame, nextLabel) {
       const textarea = getCommandTextarea();
       if (!textarea || !entry) return;
-      const lines = String(textarea.value || '').replace(/\r/g, '').split('\n');
+      const lines = String(getCommandTextValue(textarea) || '').replace(/\r/g, '').split('\n');
       const lineIndex = findOrCreateCommandLineForEntry(lines, entry);
       if (lineIndex === -1) return;
       const colonIndex = lines[lineIndex].indexOf(':');
@@ -3935,14 +4078,14 @@
       setCommandLabelAtFrame(tokens, idx, nextLabel);
       clearCellFrameTransientOverrides(entry, frame);
       lines[lineIndex] = tokens.length ? (namePart + ' ' + tokens.join(' ')) : namePart;
-      textarea.value = lines.join('\n');
+      setCommandTextValue(textarea, lines.join('\n'));
     }
 
     function updateCommandFrameTokenPreserveCrossByEntry(entry, frame, nextLabel) {
       const textarea = getCommandTextarea();
       if (!textarea || !entry) return;
       const token = sanitizeCommandToken(nextLabel);
-      const lines = String(textarea.value || '').replace(/\r/g, '').split('\n');
+      const lines = String(getCommandTextValue(textarea) || '').replace(/\r/g, '').split('\n');
       const lineIndex = findOrCreateCommandLineForEntry(lines, entry);
       if (lineIndex === -1) return;
       const colonIndex = lines[lineIndex].indexOf(':');
@@ -3959,13 +4102,13 @@
       clearCellFrameTransientOverrides(entry, frame);
       trimTrailingCommandFillers(tokens);
       lines[lineIndex] = tokens.length ? (namePart + ' ' + tokens.join(' ')) : namePart;
-      textarea.value = lines.join('\n');
+      setCommandTextValue(textarea, lines.join('\n'));
     }
 
     function setCommandRawTokenByEntry(entry, frame, rawToken) {
       const textarea = getCommandTextarea();
       if (!textarea || !entry) return false;
-      const lines = String(textarea.value || '').replace(/\r/g, '').split('\n');
+      const lines = String(getCommandTextValue(textarea) || '').replace(/\r/g, '').split('\n');
       const lineIndex = findOrCreateCommandLineForEntry(lines, entry);
       if (lineIndex === -1) return false;
       const colonIndex = lines[lineIndex].indexOf(':');
@@ -3978,7 +4121,7 @@
       clearCellFrameTransientOverrides(entry, frame);
       trimTrailingCommandFillers(tokens);
       lines[lineIndex] = tokens.length ? (namePart + ' ' + tokens.join(' ')) : namePart;
-      textarea.value = lines.join('\n');
+      setCommandTextValue(textarea, lines.join('\n'));
       return true;
     }
 
@@ -3992,7 +4135,7 @@
       const label = fieldName === 'label' ? nextValue : parsed.label;
       const textValue = fieldName === 'text' ? nextValue : parsed.text;
       const endLabel = fieldName === 'endLabel' ? nextValue : parsed.endLabel;
-      lines[lineIndex] = makeTimelineBlockLine(parsed.from, parsed.to, label, textValue, endLabel);
+      lines[lineIndex] = makeTimelineBlockLine(parsed.from, parsed.to, label, textValue, endLabel, parsed.sourceToken);
       textarea.value = lines.join('\n');
     }
 
@@ -4013,8 +4156,8 @@
     }
 
     function updateCsvOutputsFromSelection() {
-      syncCsvBookNameTags();
       updateCsvCommandEdit();
+      syncCsvBookNameTags();
       updateCsvTimelineBlocksFromRoles();
     }
 
@@ -4621,8 +4764,6 @@
     function continueHeaderPositionDrag(event) { continueLayoutBoxDrag(event); }
     function endHeaderPositionDrag(event) { endLayoutBoxDrag(event); }
 
-    function getOutputAdjust() { return getLayoutAdjust(); }
-
     function getOutputRowH(block, laneKind) {
       let area;
       if (laneKind === 'dialog') area = getDialogArea(block);
@@ -4639,10 +4780,6 @@
       else area = getCellArea(block);
       const rowH = getOutputRowH(block, laneKind);
       return area.y + (frame - block.start) * rowH;
-    }
-
-    function getOutputRowBottom(block, frame, laneKind) {
-      return getOutputRowTop(block, frame, laneKind) + getOutputRowH(block, laneKind);
     }
 
     function getCellArea(block) {
@@ -6153,19 +6290,6 @@
       return runEnd >= top - 8 && runStart <= bottom + 8 && runH >= Math.min(82, Math.max(22, bandH * 0.34));
     }
 
-    function findNearestPaperAutoAlignLine(lines, target, tolerance) {
-      let best = null;
-      let bestDist = Number(tolerance) || 0;
-      (lines || []).forEach(function(line){
-        const dist = Math.abs(Number(line) - target);
-        if (dist <= bestDist) {
-          best = Number(line);
-          bestDist = dist;
-        }
-      });
-      return best;
-    }
-
     function inferPaperAutoAlignHeaderBoxes(analysis, bodyGrid, sides) {
       const xLines = analysis && Array.isArray(analysis.xLines) ? analysis.xLines : [];
       const yLines = analysis && Array.isArray(analysis.yLines) ? analysis.yLines : [];
@@ -7640,10 +7764,6 @@
       return Array.from(String(textValue || '')).map(function(ch){ return ch === ' ' ? ' ' : ch; });
     }
 
-    function cameraTextFromChars(chars) {
-      return chars.map(function(ch){ return ch === ' ' ? ' ' : ch; }).join('');
-    }
-
     function getTimelineTextLayout(totalHeight, rowH, charCount) {
       if (!charCount) return null;
       const startOffset = rowH * 1.5;
@@ -7677,25 +7797,6 @@
       });
     }
 
-    function drawCameraTextSlice(areaX, areaW, topY, lane, laneCount, chars) {
-      if (!chars.length) return;
-      const x = getDistributedLaneX(areaX, areaW, lane, laneCount, 12);
-      const y = topY + 16;
-      const node = el('text', {
-        x: 0,
-        y: 0,
-        fill: '#111',
-        'font-size': 22,
-        'font-family': 'Arial, Helvetica, sans-serif',
-        'text-anchor': 'start',
-        'font-weight': '600',
-        'dominant-baseline': 'middle',
-        'letter-spacing': '-0.4px',
-        transform: 'translate(' + x + ' ' + y + ') scale(0.6667 1)'
-      }, cameraTextFromChars(chars.map(function(item){ return item.ch; })));
-      appendSvgNode(node);
-    }
-
     function parseTimecode(value) {
       const parts = String(value || '').split('+');
       if (parts.length !== 2) return null;
@@ -7709,7 +7810,8 @@
     function parseManualBlockLine(lineText, lineIndex) {
       if (!String(lineText || '').trim()) return null;
       if (String(lineText || '').trim().charAt(0) === '#') return null;
-      const parts = String(lineText || '').replace(/\r/g, '').split('|').map(function(part){ return part.trim(); });
+      const sourceInfo = splitManualSourceSuffix(lineText);
+      const parts = String(sourceInfo.cleanLine || '').replace(/\r/g, '').split('|').map(function(part){ return part.trim(); });
       if (parts.length < 3) return null;
       const from = parseTimecode(parts[0]);
       const to = parseTimecode(parts[1]);
@@ -7727,7 +7829,7 @@
         txt = parts[2] || '';
       }
       if (!from || !to || to < from) return null;
-      return { id:lineIndex, lineIndex:lineIndex, from:from, to:to, label:label, text:txt, endLabel:endLabel };
+      return { id:lineIndex, lineIndex:lineIndex, from:from, to:to, label:label, text:txt, endLabel:endLabel, sourceToken:sourceInfo.sourceToken };
     }
 
     function parseManualBlocks(raw) {
@@ -7783,6 +7885,155 @@
       return normalized === 'cell' ? cleanLine : cleanLine + ' (' + normalized + ')';
     }
 
+    // Command text is the single source of truth. Role suffixes stay in the
+    // editable command text so text, CSV, and preview use the same language.
+    function getCommandModeKey(modeValue) {
+      return isCsvMode(modeValue || getCurrentInputMode()) ? 'csv' : 'text';
+    }
+
+    function getCommandTextareaForModeKey(modeKey) {
+      return modeKey === 'csv' ? csvCommandEditEl : document.getElementById('timelineCommandInput');
+    }
+
+    function getCommandModeKeyForTextarea(textarea) {
+      if (textarea === csvCommandEditEl || textarea === csvCommandCellViewEl) return 'csv';
+      return 'text';
+    }
+
+    function getCommandCellViewTextarea(modeKey) {
+      return modeKey === 'csv' ? csvCommandCellViewEl : textCommandCellViewEl;
+    }
+
+    function getCommandCellViewToggle(modeKey) {
+      return modeKey === 'csv' ? csvCommandCellViewToggleEl : textCommandCellViewToggleEl;
+    }
+
+    function isCommandCellViewEnabled(modeKey) {
+      const toggle = getCommandCellViewToggle(modeKey);
+      return !!(toggle && toggle.checked);
+    }
+
+    function commandLineBelongsToCellView(lineText) {
+      return splitTextCommandRoleSuffix(lineText).role === 'cell';
+    }
+
+    function getCommandCellViewText(fullText) {
+      return String(fullText || '').replace(/\r/g, '').split('\n').filter(function(lineText){
+        return commandLineBelongsToCellView(lineText);
+      }).join('\n');
+    }
+
+    function getEditableCellViewLines(viewText) {
+      return String(viewText || '').replace(/\r/g, '').split('\n').filter(function(lineText){
+        return String(lineText || '').trim();
+      });
+    }
+
+    function mergeCommandCellViewText(fullText, viewText) {
+      const cellLines = getEditableCellViewLines(viewText);
+      let cellIndex = 0;
+      let extraInsertIndex = null;
+      const out = [];
+      String(fullText || '').replace(/\r/g, '').split('\n').forEach(function(lineText){
+        if (!commandLineBelongsToCellView(lineText)) {
+          out.push(lineText);
+          return;
+        }
+        if (cellIndex < cellLines.length) {
+          out.push(cellLines[cellIndex]);
+          cellIndex += 1;
+          extraInsertIndex = out.length;
+        } else {
+          extraInsertIndex = out.length;
+        }
+      });
+      if (cellIndex < cellLines.length) {
+        const extras = cellLines.slice(cellIndex);
+        out.splice(extraInsertIndex === null ? 0 : extraInsertIndex, 0, ...extras);
+      }
+      return out.join('\n');
+    }
+
+    function captureTextareaViewState(textarea) {
+      if (!textarea) return null;
+      return {
+        active:document.activeElement === textarea,
+        scrollTop:textarea.scrollTop || 0,
+        scrollLeft:textarea.scrollLeft || 0,
+        selectionStart:typeof textarea.selectionStart === 'number' ? textarea.selectionStart : null,
+        selectionEnd:typeof textarea.selectionEnd === 'number' ? textarea.selectionEnd : null
+      };
+    }
+
+    function restoreTextareaViewState(textarea, viewState) {
+      if (!textarea || !viewState) return;
+      textarea.scrollTop = viewState.scrollTop || 0;
+      textarea.scrollLeft = viewState.scrollLeft || 0;
+      if (viewState.selectionStart !== null && typeof textarea.setSelectionRange === 'function') {
+        const length = textarea.value.length;
+        const start = Math.max(0, Math.min(length, viewState.selectionStart));
+        const end = Math.max(start, Math.min(length, viewState.selectionEnd));
+        try { textarea.setSelectionRange(start, end); } catch (err) {}
+      }
+      if (viewState.active && document.activeElement !== textarea) {
+        try { textarea.focus({ preventScroll:true }); } catch (err) { textarea.focus(); }
+      }
+    }
+
+    function refreshCommandCellView(modeKey) {
+      const source = getCommandTextareaForModeKey(modeKey);
+      const view = getCommandCellViewTextarea(modeKey);
+      if (!source || !view) return;
+      const enabled = isCommandCellViewEnabled(modeKey);
+      const sourceViewState = captureTextareaViewState(source);
+      const cellViewState = captureTextareaViewState(view);
+      source.classList.toggle('command-source-hidden', enabled);
+      view.classList.toggle('hidden', !enabled);
+      if (enabled && !state.commandCellViewSyncing) {
+        state.commandCellViewSyncing = true;
+        view.value = getCommandCellViewText(source.value);
+        state.commandCellViewSyncing = false;
+      }
+      restoreTextareaViewState(source, sourceViewState);
+      restoreTextareaViewState(view, cellViewState);
+    }
+
+    function refreshCommandCellViews() {
+      refreshCommandCellView('text');
+      refreshCommandCellView('csv');
+    }
+
+    function mergeCommandCellViewToSource(modeKey, force) {
+      const source = getCommandTextareaForModeKey(modeKey);
+      const view = getCommandCellViewTextarea(modeKey);
+      if (!source || !view || (!force && !isCommandCellViewEnabled(modeKey))) return;
+      const sourceViewState = captureTextareaViewState(source);
+      const cellViewState = captureTextareaViewState(view);
+      state.commandCellViewSyncing = true;
+      source.value = mergeCommandCellViewText(source.value, view.value);
+      state.commandCellViewSyncing = false;
+      restoreTextareaViewState(source, sourceViewState);
+      restoreTextareaViewState(view, cellViewState);
+    }
+
+    function getCommandTextValue(modeKeyOrTextarea) {
+      const textarea = typeof modeKeyOrTextarea === 'string'
+        ? getCommandTextareaForModeKey(modeKeyOrTextarea)
+        : modeKeyOrTextarea;
+      return textarea ? textarea.value : '';
+    }
+
+    function setCommandTextValue(modeKeyOrTextarea, value) {
+      const textarea = typeof modeKeyOrTextarea === 'string'
+        ? getCommandTextareaForModeKey(modeKeyOrTextarea)
+        : modeKeyOrTextarea;
+      if (!textarea) return;
+      const viewState = captureTextareaViewState(textarea);
+      textarea.value = String(value || '');
+      restoreTextareaViewState(textarea, viewState);
+      if (!state.commandCellViewSyncing) refreshCommandCellView(getCommandModeKeyForTextarea(textarea));
+    }
+
     function parseCommandText(raw, uidPrefix) {
       const prefix = uidPrefix || 'line';
       const lines = String(raw || '').split(String.fromCharCode(10)).map(function(v){ return v.trim(); }).filter(Boolean);
@@ -7797,7 +8048,7 @@
         const body = lineText.slice(idx + 1).trim();
         const rawTokens = body ? body.split(/\s+/).filter(Boolean) : [];
         const tokens = normalizeLeadingCrossGapTokens(rawTokens);
-        if (!name || !tokens.length) return;
+        if (!name) return;
         const segments = [];
         const marks = [];
         let active = null;
@@ -7982,12 +8233,6 @@
       return String(aName || '').localeCompare(String(bName || ''), 'en', { sensitivity:'base', numeric:true });
     }
 
-    function sortLayersByName(layers) {
-      return (layers || []).slice().sort(function(a, b) {
-        return compareAlphabetLayerNames(a && a.name, b && b.name);
-      });
-    }
-
     function shouldFilterTvpaintLayer(layerName) {
       const raw = normalizeCsvCellValue(layerName);
       const plain = raw.replace(/^\[(.*)\]$/, '$1').trim();
@@ -8094,10 +8339,12 @@
     function setupCsvState(rows) {
       state.csvRawRows = rows;
       state.csvColumns = [];
-      state.csvSelectedColumns = new Set();
+      state.csvColumnOrder = [];
       state.csvColumnRoles = {};
+      state.cellDisplayOrder = [];
       csvColumnPickerEl.innerHTML = '';
-      if (!rows.length) { updateCsvEncodingVisibility(false); csvInfoEl.textContent = t('noCsv'); csvCommandEditEl.value = ''; syncCsvBookNameTags(); return; }
+      setCommandTextValue('csv', '');
+      if (!rows.length) { updateCsvEncodingVisibility(false); csvInfoEl.textContent = t('noCsv'); setCommandTextValue('csv', ''); syncCsvBookNameTags(); return; }
 
       let headerIndex = 0;
       let dataStart = 1;
@@ -8115,6 +8362,7 @@
       state.csvFrameIndex = frameIndex;
       state.csvDataStartRow = dataStart;
       state.csvColumns = header.map(function(name, index){ return { name:name || ('col_' + index), index:index }; }).filter(function(c){ return c.index !== frameIndex && c.name; });
+      state.csvColumnOrder = state.csvColumns.slice().sort(compareCsvSourceColumnOrder).map(function(col){ return col.index; });
       state.csvColumns.forEach(function(c){
         const name = String(c.name || '').trim();
         if (isHiddenCsvLayerName(name)) { setCsvColumnRole(c, 'hidden'); return; }
@@ -8125,101 +8373,16 @@
         else if (isCameraLayerName(name)) setCsvColumnRole(c, 'camera');
         else setCsvColumnRole(c, 'original');
       });
-      rememberCsvOriginalCellColumnOrder();
       refreshCsvColumnPicker();
       updateCsvStatusText();
       updateCsvOutputsFromSelection();
     }
 
-    function findCsvNeighborCellColumn(col, direction) {
-      const columns = (state.csvColumns || []).slice().sort(compareCsvSourceColumnOrder);
-      const sourceIndex = Number(col && col.index || 0);
-      if (direction < 0) {
-        for (let i = columns.length - 1; i >= 0; i--) {
-          if (Number(columns[i].index || 0) < sourceIndex && getCsvColumnRole(columns[i]) === 'original') return columns[i];
-        }
-        return null;
-      }
-      for (let i = 0; i < columns.length; i++) {
-        if (Number(columns[i].index || 0) > sourceIndex && getCsvColumnRole(columns[i]) === 'original') return columns[i];
-      }
-      return null;
-    }
-
-    function insertCsvBookColumnsNearCellNeighbors(cells, books) {
-      const cellKeys = new Set((cells || []).map(function(col){ return String(col.index); }));
-      const beforeMap = new Map();
-      const afterMap = new Map();
-      const unplaced = [];
-      function addToMap(map, key, col) {
-        if (!map.has(key)) map.set(key, []);
-        map.get(key).push(col);
-      }
-      (books || []).slice().sort(compareCsvSourceColumnOrder).forEach(function(bookCol){
-        const prev = findCsvNeighborCellColumn(bookCol, -1);
-        const next = findCsvNeighborCellColumn(bookCol, 1);
-        if (prev && cellKeys.has(String(prev.index))) {
-          addToMap(afterMap, String(prev.index), bookCol);
-        } else if (next && cellKeys.has(String(next.index))) {
-          addToMap(beforeMap, String(next.index), bookCol);
-        } else {
-          unplaced.push(bookCol);
-        }
-      });
-      const out = [];
-      (cells || []).forEach(function(cellCol){
-        const key = String(cellCol.index);
-        (beforeMap.get(key) || []).forEach(function(bookCol){ out.push(bookCol); });
-        out.push(cellCol);
-        (afterMap.get(key) || []).forEach(function(bookCol){ out.push(bookCol); });
-      });
-      return out.concat(unplaced);
-    }
-
-    function getCsvColumnPickerDisplayColumns() {
-      const columns = (state.csvColumns || []).slice().sort(compareCsvSourceColumnOrder);
-      if (!columns.length || !hasCsvCellDisplayOrder()) return columns;
-      const orderedLayers = orderLayersByCellDisplayOrder(layersFromCsvSelection());
-      const rank = new Map();
-      orderedLayers.forEach(function(layer, index){
-        const sourceIndex = layer && layer.sourceColumnIndex;
-        if (sourceIndex === undefined || sourceIndex === null) return;
-        const key = String(sourceIndex);
-        if (!rank.has(key)) rank.set(key, index);
-      });
-      const cells = columns.filter(function(col){ return getCsvColumnRole(col) === 'original'; }).sort(function(a, b){
-        const ar = rank.has(String(a.index)) ? rank.get(String(a.index)) : 999999;
-        const br = rank.has(String(b.index)) ? rank.get(String(b.index)) : 999999;
-        return ar - br || compareCsvSourceColumnOrder(a, b);
-      });
-      const books = columns.filter(function(col){ return getCsvColumnRole(col) === 'book'; });
-      const nonCells = columns.filter(function(col){
-        const role = getCsvColumnRole(col);
-        return role !== 'original' && role !== 'book';
-      }).sort(compareCsvSourceColumnOrder);
-      return insertCsvBookColumnsNearCellNeighbors(cells, books).concat(nonCells);
-    }
-
-    function sortCsvCellColumnsAlphabetically() {
-      const cells = (state.csvColumns || []).filter(function(col){
-        return getCsvColumnRole(col) === 'original';
-      }).slice().sort(function(a, b){
-        return compareAlphabetLayerNames(a.name, b.name) || compareCsvSourceColumnOrder(a, b);
-      });
-      if (!cells.length) return;
-      state.cellDisplayOrder = cells.map(function(col){ return 'csv-' + col.index; });
-      updateCsvOutputsFromSelection();
-      refreshCsvColumnPicker();
-      render();
-    }
-
     function refreshCsvColumnPicker() {
       if (!csvColumnPickerEl) return;
       csvColumnPickerEl.innerHTML = '';
-      if (csvColumnSortBtn) {
-        csvColumnSortBtn.disabled = !(state.csvColumns || []).some(function(col){ return getCsvColumnRole(col) === 'original'; });
-      }
-      getCsvColumnPickerDisplayColumns().forEach(function(c){
+      getCsvColumnsByCommandOrder().forEach(function(c){
+        if (isCommandCellViewEnabled('csv') && getCsvColumnRole(c) !== 'original') return;
         const label = document.createElement('label');
         label.className = 'check-item';
         const roleSelect = document.createElement('select');
@@ -8256,7 +8419,11 @@
     function getTextCommandLineItems() {
       const textarea = document.getElementById('timelineCommandInput');
       if (!textarea) return [];
-      const lines = String(textarea.value || '').replace(/\r/g, '').split('\n');
+      const lines = String(getCommandTextValue('text') || '').replace(/\r/g, '').split('\n');
+      return getCommandLineItemsFromLines(lines);
+    }
+
+    function getCommandLineItemsFromLines(lines) {
       const items = [];
       let parsedLineIndex = -1;
       lines.forEach(function(lineText, lineIndex){
@@ -8269,7 +8436,32 @@
         if (!name) return;
         items.push({ lineIndex:lineIndex, commandIndex:parsedLineIndex, name:name, line:lineText, cleanLine:cleanLine, role:roleInfo.role });
       });
-      return items;
+      return attachCommandSourceTokens(items);
+    }
+
+    function attachCommandSourceTokens(items) {
+      const counts = new Map();
+      (items || []).forEach(function(item){
+        const key = String(item && item.name || '').trim().toLowerCase();
+        if (!key) return;
+        counts.set(key, (counts.get(key) || 0) + 1);
+      });
+      const seen = new Map();
+      return (items || []).map(function(item){
+        const name = String(item && item.name || '').trim();
+        const key = name.toLowerCase();
+        const nextCount = (seen.get(key) || 0) + 1;
+        seen.set(key, nextCount);
+        const sourceToken = counts.get(key) > 1 ? (name + '#' + nextCount) : name;
+        return Object.assign({}, item, { sourceToken:sanitizeManualSourceToken(sourceToken) });
+      });
+    }
+
+    function getCommandSourceTokenForLine(lines, lineIndex) {
+      const item = getCommandLineItemsFromLines(lines).find(function(candidate){
+        return candidate.lineIndex === lineIndex;
+      });
+      return item ? item.sourceToken : '';
     }
 
     function appendUniqueManualLines(textarea, nextLines) {
@@ -8279,7 +8471,11 @@
       const out = stripDefaultCsvSampleLines(textarea.value).replace(/\r/g, '').split('\n');
       while (out.length && !out[out.length - 1].trim()) out.pop();
       const existing = new Set(out.map(function(lineText){ return String(lineText || '').trim(); }).filter(Boolean));
-      const fresh = additions.filter(function(lineText){ return !existing.has(lineText); });
+      const existingSources = collectManualSourceTokens(out.join('\n'));
+      const fresh = additions.filter(function(lineText){
+        const sourceToken = splitManualSourceSuffix(lineText).sourceToken;
+        return !existing.has(lineText) && !(sourceToken && existingSources.has(sourceToken));
+      });
       if (!fresh.length) return;
       if (out.length) out.push('');
       fresh.forEach(function(lineText){ out.push(lineText); });
@@ -8298,7 +8494,7 @@
       textarea.value = out.join('\n');
     }
 
-    function textCommandLineToManualLines(lineText, role) {
+    function textCommandLineToManualLines(lineText, role, sourceToken) {
       const normalizedRole = normalizeTextCommandRole(role);
       if (normalizedRole !== 'dialog' && normalizedRole !== 'camera') return [];
       const cleanLine = splitTextCommandRoleSuffix(lineText).cleanLine;
@@ -8307,77 +8503,126 @@
       const segments = (layer.segments || []).filter(function(seg){ return seg && seg.kind !== 'cross'; }).slice().sort(function(a, b){
         return (a.from || 0) - (b.from || 0);
       });
-      if (!segments.length) return [];
-      const first = segments[0];
-      const last = segments.reduce(function(best, seg){
-        const bestFrame = Math.max(Number(best.to) || 0, Number(best.from) || 0);
-        const segFrame = Math.max(Number(seg.to) || 0, Number(seg.from) || 0);
-        return segFrame >= bestFrame ? seg : best;
-      }, first);
-      const from = Math.max(1, Math.round(Number(first.from) || 1));
-      const to = Math.max(from, Math.round(Math.max(Number(last.to) || 0, Number(last.from) || 0) || from));
-      const startLabel = String(first.label || '').trim();
-      const endLabel = String(last.label || '').trim();
-      if (normalizedRole === 'camera') {
-        return [makeTimelineBlockLine(from, to, startLabel, layer.name || '', endLabel)];
-      }
-      return [makeTimelineBlockLine(from, to, startLabel, '')];
+      if (segments.length < 2) return [];
+      const lines = [];
+      segments.forEach(function(seg, index){
+        const next = segments[index + 1];
+        if (!next) return;
+        const from = Math.max(1, Math.round(Number(seg.from) || 1));
+        const to = Math.max(from, Math.round(Number(next.from) || from));
+        const startLabel = String(seg.label || '').trim();
+        const endLabel = String(next.label || '').trim();
+        if (normalizedRole === 'camera') {
+          lines.push(makeTimelineBlockLine(from, to, startLabel, layer.name || '', endLabel, sourceToken));
+        } else {
+          lines.push(makeTimelineBlockLine(from, to, startLabel, '', '', sourceToken));
+        }
+      });
+      return lines;
     }
 
-    function getTextCommandGeneratedLineStore(role) {
-      const normalizedRole = normalizeTextCommandRole(role);
-      if (normalizedRole === 'camera') {
-        if (!state.textCommandGeneratedCameraLines) state.textCommandGeneratedCameraLines = {};
-        return state.textCommandGeneratedCameraLines;
-      }
-      if (normalizedRole === 'dialog') {
-        if (!state.textCommandGeneratedDialogLines) state.textCommandGeneratedDialogLines = {};
-        return state.textCommandGeneratedDialogLines;
-      }
-      return null;
+    function getCsvDataRows() {
+      const rows = state.csvRawRows || [];
+      return rows.slice(state.csvDataStartRow).map(function(r){
+        return { frame:Number(r[state.csvFrameIndex]), row:r };
+      }).filter(function(v){
+        return Number.isFinite(v.frame) && v.frame > 0;
+      }).sort(function(a, b){ return a.frame - b.frame; });
     }
 
-    function removeTextCommandGeneratedManualLines(lineIndex, cleanLine, role) {
+    function csvColumnToTimelineLayer(col) {
+      const dataRows = getCsvDataRows();
+      const layerName = String(col && col.name || '').trim();
+      if (!col || !layerName || !dataRows.length) {
+        return { uid:'csv-' + (col && col.index != null ? col.index : 'unknown'), name:layerName, sourceColumnIndex:col && col.index, segments:[], marks:[] };
+      }
+      const role = getCsvColumnRole(col);
+      const lastFrame = dataRows[dataRows.length - 1].frame;
+      const breakSymbols = new Set(['_']);
+      const values = dataRows.map(function(v){
+        return { frame:v.frame, value:normalizeCsvCellValue(v.row[col.index] || '') };
+      }).filter(function(v){ return v.value !== ''; });
+      const timelineEvents = values.filter(function(v){ return !isCsvDotValue(v.value); });
+      const marks = role === 'original'
+        ? values.filter(function(v){ return isCsvDotValue(v.value); }).map(function(v){ return { frame:v.frame, type:'dot' }; })
+        : [];
+      const segments = timelineEvents.map(function(eventValue, idx){
+        if (breakSymbols.has(eventValue.value)) return null;
+        const nextEvent = timelineEvents[idx + 1];
+        const isCross = role === 'original' && isCsvCrossValue(eventValue.value);
+        const toFrame = isCross ? (nextEvent ? Math.max(eventValue.frame, nextEvent.frame - 1) : eventValue.frame) : (nextEvent ? nextEvent.frame - 1 : lastFrame);
+        return {
+          from:eventValue.frame,
+          to:toFrame,
+          label:isCross ? '' : eventValue.value,
+          kind:isCross ? 'cross' : 'circle',
+          singleFrameCross:isCross && toFrame === eventValue.frame,
+          explicitCross:isCross
+        };
+      }).filter(function(seg){ return seg && seg.to >= seg.from; });
+      return { uid:'csv-' + col.index, name:layerName, sourceColumnIndex:col.index, segments:annotateCrossSegmentMarkers(segments), marks:marks };
+    }
+
+    function removeTextCommandGeneratedManualLines(lineIndex, cleanLine, role, sourceToken) {
       const normalizedRole = normalizeTextCommandRole(role);
       if (normalizedRole !== 'dialog' && normalizedRole !== 'camera') return;
       const target = document.getElementById(normalizedRole === 'camera' ? 'cameraManual' : 'dialogManual');
-      const store = getTextCommandGeneratedLineStore(normalizedRole);
-      const key = String(lineIndex);
-      const remembered = store && Array.isArray(store[key]) ? store[key] : [];
-      const recalculated = textCommandLineToManualLines(cleanLine, normalizedRole);
-      removeManualLines(target, remembered.concat(recalculated));
-      if (store) delete store[key];
+      const resolvedSourceToken = sourceToken || getCommandSourceTokenForLine(String(getCommandTextValue('text') || '').replace(/\r/g, '').split('\n'), lineIndex);
+      if (resolvedSourceToken) removeManualLinesBySource(target, resolvedSourceToken);
+      const recalculated = textCommandLineToManualLines(cleanLine, normalizedRole, resolvedSourceToken);
+      removeManualLines(target, recalculated);
     }
 
-    function appendTextCommandGeneratedManualLines(lineIndex, cleanLine, role) {
+    function appendTextCommandGeneratedManualLines(lineIndex, cleanLine, role, sourceToken) {
       const normalizedRole = normalizeTextCommandRole(role);
       if (normalizedRole !== 'dialog' && normalizedRole !== 'camera') return;
-      removeTextCommandGeneratedManualLines(lineIndex, cleanLine, normalizedRole);
+      const resolvedSourceToken = sourceToken || getCommandSourceTokenForLine(String(getCommandTextValue('text') || '').replace(/\r/g, '').split('\n'), lineIndex);
+      removeTextCommandGeneratedManualLines(lineIndex, cleanLine, normalizedRole, resolvedSourceToken);
       const target = document.getElementById(normalizedRole === 'camera' ? 'cameraManual' : 'dialogManual');
-      const generated = textCommandLineToManualLines(cleanLine, normalizedRole);
+      const generated = textCommandLineToManualLines(cleanLine, normalizedRole, resolvedSourceToken);
       appendUniqueManualLines(target, generated);
-      const store = getTextCommandGeneratedLineStore(normalizedRole);
-      if (store) store[String(lineIndex)] = generated.slice();
+    }
+
+    function rebuildTextCommandGeneratedManualLines() {
+      const lines = String(getCommandTextValue('text') || '').replace(/\r/g, '').split('\n');
+      const items = getCommandLineItemsFromLines(lines);
+      removeTextCommandGeneratedManualLinesForItems(items);
+      items.forEach(function(item){
+        const role = normalizeTextCommandRole(item.role);
+        if (role !== 'dialog' && role !== 'camera') return;
+        appendTextCommandGeneratedManualLines(item.lineIndex, item.cleanLine, role, item.sourceToken);
+      });
+    }
+
+    function removeTextCommandGeneratedManualLinesForItems(items) {
+      const sourceTokens = new Set();
+      (items || []).forEach(function(item){
+        const role = normalizeTextCommandRole(item.role);
+        if ((role === 'dialog' || role === 'camera') && item.sourceToken) sourceTokens.add(item.sourceToken);
+      });
+      removeManualLinesBySource(document.getElementById('dialogManual'), sourceTokens);
+      removeManualLinesBySource(document.getElementById('cameraManual'), sourceTokens);
     }
 
     function handleTextCommandRoleChange(lineIndex, nextRole) {
       const textarea = document.getElementById('timelineCommandInput');
       if (!textarea) return;
-      const lines = String(textarea.value || '').replace(/\r/g, '').split('\n');
+      const lines = String(getCommandTextValue('text') || '').replace(/\r/g, '').split('\n');
       const idx = Number(lineIndex);
       if (!Number.isInteger(idx) || idx < 0 || idx >= lines.length) return;
       const normalizedRole = normalizeTextCommandRole(nextRole);
       const roleInfo = splitTextCommandRoleSuffix(lines[idx]);
       const cleanLine = roleInfo.cleanLine;
       const currentRole = normalizeTextCommandRole(roleInfo.role);
+      const sourceToken = getCommandSourceTokenForLine(lines, idx);
       if ((currentRole === 'dialog' || currentRole === 'camera') && currentRole !== normalizedRole) {
-        removeTextCommandGeneratedManualLines(idx, cleanLine, currentRole);
+        removeTextCommandGeneratedManualLines(idx, cleanLine, currentRole, sourceToken);
       }
       if (normalizedRole === 'dialog' || normalizedRole === 'camera') {
-        appendTextCommandGeneratedManualLines(idx, cleanLine, normalizedRole);
+        appendTextCommandGeneratedManualLines(idx, cleanLine, normalizedRole, sourceToken);
       }
       lines[idx] = setTextCommandLineRole(cleanLine, normalizedRole);
-      textarea.value = lines.join('\n');
+      setCommandTextValue('text', lines.join('\n'));
       syncTextCommandBookNameTags();
       render();
     }
@@ -8425,6 +8670,7 @@
       const items = getTextCommandLineItems();
       textCommandColumnPickerEl.innerHTML = '';
       items.forEach(function(item){
+        if (isCommandCellViewEnabled('text') && normalizeTextCommandRole(item.role) !== 'cell') return;
         const label = document.createElement('label');
         label.className = 'check-item';
         label.draggable = true;
@@ -8448,14 +8694,17 @@
         nameInput.addEventListener('change', function(){
           const textarea = document.getElementById('timelineCommandInput');
           if (!textarea) return;
-          const lines = String(textarea.value || '').replace(/\r/g, '').split('\n');
+          const lines = String(getCommandTextValue('text') || '').replace(/\r/g, '').split('\n');
+          const beforeItems = getCommandLineItemsFromLines(lines);
           const idx = Number(label.dataset.lineIndex);
           if (!Number.isInteger(idx) || idx < 0 || idx >= lines.length) return;
           const roleInfo = splitTextCommandRoleSuffix(lines[idx]);
           const colonIndex = roleInfo.cleanLine.indexOf(':');
           const suffix = colonIndex === -1 ? ':' : roleInfo.cleanLine.slice(colonIndex);
           lines[idx] = setTextCommandLineRole((nameInput.value.trim() || item.name || 'A') + suffix, roleInfo.role);
-          textarea.value = lines.join('\n');
+          removeTextCommandGeneratedManualLinesForItems(beforeItems);
+          setCommandTextValue('text', lines.join('\n'));
+          rebuildTextCommandGeneratedManualLines();
           render();
         });
         label.addEventListener('dragstart', function(event){
@@ -8475,11 +8724,14 @@
           const toLine = Number(label.dataset.lineIndex);
           const textarea = document.getElementById('timelineCommandInput');
           if (!textarea || !Number.isInteger(fromLine) || !Number.isInteger(toLine) || fromLine === toLine) return;
-          const lines = String(textarea.value || '').replace(/\r/g, '').split('\n');
+          const lines = String(getCommandTextValue('text') || '').replace(/\r/g, '').split('\n');
+          const beforeItems = getCommandLineItemsFromLines(lines);
           if (fromLine < 0 || fromLine >= lines.length || toLine < 0 || toLine >= lines.length) return;
           const moved = lines.splice(fromLine, 1)[0];
           lines.splice(toLine, 0, moved);
-          textarea.value = lines.join('\n');
+          removeTextCommandGeneratedManualLinesForItems(beforeItems);
+          setCommandTextValue('text', lines.join('\n'));
+          rebuildTextCommandGeneratedManualLines();
           state.cellDisplayOrder = getTextCommandLineItems().map(function(nextItem){ return nextItem.name; });
           render();
         });
@@ -8490,61 +8742,24 @@
     }
 
     function csvRoleBlocksToManualLines(role) {
-      const rows = state.csvRawRows;
-      if (!rows.length) return [];
-      const dataRows = rows.slice(state.csvDataStartRow).map(function(r){ return { frame:Number(r[state.csvFrameIndex]), row:r }; }).filter(function(v){ return Number.isFinite(v.frame) && v.frame > 0; }).sort(function(a,b){ return a.frame - b.frame; });
-      if (!dataRows.length) return [];
-      const lastFrame = dataRows[dataRows.length - 1].frame;
-      const breakSymbols = new Set(['_']);
       const lines = [];
-      (state.csvColumns || []).slice().sort(compareCsvSourceColumnOrder).forEach(function(col){
-        if (getCsvColumnRole(col) !== role) return;
-        const layerName = String(col.name || '').trim();
-        const values = dataRows.map(function(v){ return { frame:v.frame, value:normalizeCsvCellValue(v.row[col.index] || '') }; }).filter(function(v){ return v.value !== '' && !isCsvDotValue(v.value); });
-        const events = values.filter(function(v){ return !breakSymbols.has(v.value); });
-        events.forEach(function(eventValue, idx){
-          const nextEvent = events[idx + 1];
-          if (!nextEvent) return;
-          const toFrame = nextEvent.frame;
-          if (toFrame < eventValue.frame) return;
-          if (role === 'camera') {
-            lines.push(makeTimelineBlockLine(eventValue.frame, toFrame, eventValue.value, layerName, nextEvent.value || ''));
-          } else {
-            lines.push(makeTimelineBlockLine(eventValue.frame, toFrame, eventValue.value, ''));
-          }
-        });
+      const normalizedRole = normalizeTextCommandRole(role);
+      const commandLines = String(getCommandTextValue('csv') || '').replace(/\r/g, '').split('\n');
+      const sourceItems = getCommandLineItemsFromLines(commandLines);
+      const sourceByLine = new Map(sourceItems.map(function(item){ return [item.lineIndex, item.sourceToken]; }));
+      commandLines.forEach(function(lineText, lineIndex){
+        const roleInfo = splitTextCommandRoleSuffix(lineText);
+        if (normalizeTextCommandRole(roleInfo.role) !== normalizedRole) return;
+        textCommandLineToManualLines(roleInfo.cleanLine, normalizedRole, sourceByLine.get(lineIndex) || '').forEach(function(line){ lines.push(line); });
       });
       return lines;
     }
 
     function layersFromCsvSelection() {
-      const rows = state.csvRawRows;
-      if (!rows.length) return [];
-      const dataRows = rows.slice(state.csvDataStartRow).map(function(r){ return { frame:Number(r[state.csvFrameIndex]), row:r }; }).filter(function(v){ return Number.isFinite(v.frame) && v.frame > 0; }).sort(function(a,b){ return a.frame - b.frame; });
-      if (!dataRows.length) return [];
-      const lastFrame = dataRows[dataRows.length - 1].frame;
-      const breakSymbols = new Set(['_']);
       const layers = [];
-      (state.csvColumns || []).slice().sort(compareCsvSourceColumnOrder).forEach(function(col){
+      getCsvColumnsByCommandOrder().forEach(function(col){
         if (getCsvColumnRole(col) !== 'original') return;
-        const values = dataRows.map(function(v){ return { frame:v.frame, value:normalizeCsvCellValue(v.row[col.index] || '') }; }).filter(function(v){ return v.value !== ''; });
-        const timelineEvents = values.filter(function(v){ return !isCsvDotValue(v.value); });
-        const marks = values.filter(function(v){ return isCsvDotValue(v.value); }).map(function(v){ return { frame:v.frame, type:'dot' }; });
-        const segments = timelineEvents.map(function(eventValue, idx){
-          if (breakSymbols.has(eventValue.value)) return null;
-          const nextEvent = timelineEvents[idx + 1];
-          const isCross = isCsvCrossValue(eventValue.value);
-          const toFrame = isCross ? (nextEvent ? Math.max(eventValue.frame, nextEvent.frame - 1) : eventValue.frame) : (nextEvent ? nextEvent.frame - 1 : lastFrame);
-          return {
-            from:eventValue.frame,
-            to:toFrame,
-            label:isCross ? '' : eventValue.value,
-            kind:isCross ? 'cross' : 'circle',
-            singleFrameCross:isCross && toFrame === eventValue.frame,
-            explicitCross:isCross
-          };
-        }).filter(function(seg){ return seg && seg.to >= seg.from; });
-        layers.push({ uid:'csv-' + col.index, name:col.name, sourceColumnIndex:col.index, segments:annotateCrossSegmentMarkers(segments), marks:marks });
+        layers.push(csvColumnToTimelineLayer(col));
       });
       return layers;
     }
@@ -8556,31 +8771,62 @@
         state.layerNameTags = manualTags;
         return;
       }
-      const originals = (state.csvColumns || []).filter(function(col){
-        return getCsvColumnRole(col) === 'original';
-      }).slice().sort(function(a, b){ return Number(a.index || 0) - Number(b.index || 0); });
-      const bookTags = [];
-      (state.csvColumns || []).filter(function(col){
-        return getCsvColumnRole(col) === 'book';
-      }).slice().sort(function(a, b){ return Number(a.index || 0) - Number(b.index || 0); }).forEach(function(col){
-        const sourceIndex = Number(col.index || 0);
-        let target = null;
-        originals.forEach(function(candidate){
-          if (Number(candidate.index || 0) < sourceIndex) target = candidate;
-        });
-        if (!target && originals.length) target = originals[0];
-        if (!target) return;
-        const textValue = String(col.name || '').trim();
-        if (!textValue) return;
-        bookTags.push({
-          id:'csv-book-tag-' + col.index,
-          uid:'csv-' + target.index,
-          text:textValue,
-          snap:'right',
-          autoBookTag:true,
-          sourceColumnIndex:col.index
-        });
+      const commandLines = String(getCommandTextValue('csv') || '').replace(/\r/g, '').split('\n');
+      const commandAssignments = getCsvCommandLineAssignmentsForAll(commandLines).map(function(item){
+        const roleInfo = splitTextCommandRoleSuffix(commandLines[item.lineIndex] || '');
+        return Object.assign({}, item, { role:roleInfo.role });
+      }).sort(function(a, b){ return a.lineIndex - b.lineIndex; });
+      const commandCells = commandAssignments.filter(function(item){
+        return item.column && normalizeTextCommandRole(item.role) === 'cell';
       });
+      const bookTags = [];
+      if (commandAssignments.length) {
+        commandAssignments.filter(function(item){
+          return item.column && normalizeTextCommandRole(item.role) === 'book';
+        }).forEach(function(item){
+          let target = null;
+          commandCells.forEach(function(candidate){
+            if (candidate.lineIndex < item.lineIndex) target = candidate.column;
+          });
+          if (!target && commandCells.length) target = commandCells[0].column;
+          if (!target) return;
+          const textValue = String(item.column.name || '').trim();
+          if (!textValue) return;
+          bookTags.push({
+            id:'csv-book-tag-' + item.column.index,
+            uid:'csv-' + target.index,
+            text:textValue,
+            snap:'right',
+            autoBookTag:true,
+            sourceColumnIndex:item.column.index
+          });
+        });
+      } else {
+        const originals = (state.csvColumns || []).filter(function(col){
+          return getCsvColumnRole(col) === 'original';
+        }).slice().sort(function(a, b){ return Number(a.index || 0) - Number(b.index || 0); });
+        (state.csvColumns || []).filter(function(col){
+          return getCsvColumnRole(col) === 'book';
+        }).slice().sort(function(a, b){ return Number(a.index || 0) - Number(b.index || 0); }).forEach(function(col){
+          const sourceIndex = Number(col.index || 0);
+          let target = null;
+          originals.forEach(function(candidate){
+            if (Number(candidate.index || 0) < sourceIndex) target = candidate;
+          });
+          if (!target && originals.length) target = originals[0];
+          if (!target) return;
+          const textValue = String(col.name || '').trim();
+          if (!textValue) return;
+          bookTags.push({
+            id:'csv-book-tag-' + col.index,
+            uid:'csv-' + target.index,
+            text:textValue,
+            snap:'right',
+            autoBookTag:true,
+            sourceColumnIndex:col.index
+          });
+        });
+      }
       state.layerNameTags = manualTags.concat(bookTags);
       if (state.activeLayerNameTag && !state.layerNameTags.some(function(tag){ return tag && tag.id === state.activeLayerNameTag; })) {
         state.activeLayerNameTag = null;
@@ -8589,9 +8835,9 @@
 
     function stabilizeCsvEditedLayerUids(layers) {
       const buckets = new Map();
-      (state.csvColumns || []).filter(function(col){
+      getCsvColumnsByCommandOrder().filter(function(col){
         return getCsvColumnRole(col) === 'original';
-      }).slice().sort(function(a, b){ return Number(a.index || 0) - Number(b.index || 0); }).forEach(function(col){
+      }).forEach(function(col){
         const key = String(col.name || '').trim().toLowerCase();
         if (!key) return;
         if (!buckets.has(key)) buckets.set(key, []);
@@ -8613,14 +8859,23 @@
       const lines = String(raw || '').split(String.fromCharCode(10)).map(function(v){ return v.trim(); }).filter(Boolean);
       const out = [];
       lines.forEach(function(lineText, lineIndex){
-        const colonIndex = lineText.indexOf(':');
+        const roleInfo = splitTextCommandRoleSuffix(lineText);
+        if (roleInfo.role !== 'cell') return;
+        const colonIndex = roleInfo.cleanLine.indexOf(':');
         if (colonIndex === -1) return;
-        const name = lineText.slice(0, colonIndex).trim();
+        const name = roleInfo.cleanLine.slice(0, colonIndex).trim();
         if (!name) return;
         const uid = prefix + '-' + lineIndex;
         out.push(byUid.get(uid) || { uid:uid, name:name, segments:[], marks:[] });
       });
       return out;
+    }
+
+    function setCommandLineName(cleanLine, nextName) {
+      const colonIndex = String(cleanLine || '').indexOf(':');
+      const safeName = String(nextName || '').trim() || 'A';
+      if (colonIndex === -1) return safeName + ':';
+      return safeName + String(cleanLine || '').slice(colonIndex);
     }
 
     function layersToCommandText(layers) {
@@ -8647,18 +8902,202 @@
       }).join(String.fromCharCode(10));
     }
 
+    function csvColumnToCommandLine(col) {
+      const role = csvRoleToTextRole(getCsvColumnRole(col));
+      const line = layersToCommandText([csvColumnToTimelineLayer(col)]);
+      return setTextCommandLineRole(line, role);
+    }
+
+    // CSV columns follow editable command line order. Role changes only rewrite
+    // the command suffix in place; automatic Cell/Hide/Dialog/Camera grouping is
+    // intentionally avoided for Text Commands compatibility.
+    function getCsvCommandColumnsInDisplayOrder() {
+      return getCsvColumnsByCommandOrder();
+    }
+
+    function buildCsvCommandTextFromColumns() {
+      return getCsvCommandColumnsInDisplayOrder().map(csvColumnToCommandLine).join(String.fromCharCode(10));
+    }
+
+    function getCsvCommandLineAssignmentsForAll(lines) {
+      const buckets = new Map();
+      getCsvColumnsByCommandOrder().forEach(function(col){
+        const key = String(col.name || '').trim().toLowerCase();
+        if (!key) return;
+        if (!buckets.has(key)) buckets.set(key, []);
+        buckets.get(key).push(col);
+      });
+      const assignments = [];
+      (lines || []).forEach(function(lineText, lineIndex){
+        const roleInfo = splitTextCommandRoleSuffix(lineText);
+        const cleanLine = roleInfo.cleanLine;
+        const colonIndex = cleanLine.indexOf(':');
+        if (colonIndex === -1) return;
+        const key = cleanLine.slice(0, colonIndex).trim().toLowerCase();
+        const bucket = buckets.get(key);
+        if (!bucket || !bucket.length) return;
+        assignments.push({ lineIndex:lineIndex, column:bucket.shift(), role:roleInfo.role, cleanLine:cleanLine, rawLine:lineText });
+      });
+      return assignments;
+    }
+
+    function syncCsvCommandEditWithColumns(raw) {
+      const sourceLines = String(raw || '').replace(/\r/g, '').split('\n');
+      const assignments = getCsvCommandLineAssignmentsForAll(sourceLines);
+      const usedLineIndexes = new Set();
+      const lineByColumn = new Map();
+      const commandOrder = [];
+      assignments.forEach(function(item){
+        if (!item.column) return;
+        usedLineIndexes.add(item.lineIndex);
+        commandOrder.push(item.column);
+        const role = csvRoleToTextRole(getCsvColumnRole(item.column));
+        const renamed = setCommandLineName(item.cleanLine, item.column.name);
+        lineByColumn.set(String(item.column.index), setTextCommandLineRole(renamed, role));
+      });
+      const out = [];
+      sourceLines.forEach(function(lineText, lineIndex){
+        const assignment = assignments.find(function(item){ return item.lineIndex === lineIndex; });
+        if (assignment && assignment.column) {
+          const key = String(assignment.column.index);
+          out.push(lineByColumn.has(key) ? lineByColumn.get(key) : csvColumnToCommandLine(assignment.column));
+          return;
+        }
+        if (String(lineText || '').trim()) out.push(lineText);
+      });
+      getCsvCommandColumnsInDisplayOrder().forEach(function(col){
+        const key = String(col.index);
+        if (lineByColumn.has(key)) return;
+        commandOrder.push(col);
+        out.push(csvColumnToCommandLine(col));
+      });
+      state.csvColumnOrder = commandOrder.map(function(col){ return col.index; });
+      state.cellDisplayOrder = commandOrder.filter(function(col){
+        return getCsvColumnRole(col) === 'original';
+      }).map(function(col){
+        return 'csv-' + col.index;
+      });
+      return out.join(String.fromCharCode(10));
+    }
+
+    function syncCsvColumnRolesFromCommandEdit() {
+      if (!state.csvRawRows.length || !csvCommandEditEl) return false;
+      const lines = String(getCommandTextValue('csv') || '').replace(/\r/g, '').split('\n');
+      const assignments = getCsvCommandLineAssignmentsForAll(lines);
+      const orderedColumns = [];
+      let changed = false;
+      assignments.forEach(function(item){
+        if (!item.column) return;
+        orderedColumns.push(item.column);
+        const nextRole = textRoleToCsvRole(item.role);
+        if (getCsvColumnRole(item.column) !== nextRole) {
+          setCsvColumnRole(item.column, nextRole);
+          changed = true;
+        }
+      });
+      if (orderedColumns.length) {
+        const used = new Set(orderedColumns.map(function(col){ return String(col.index); }));
+        getCsvColumnsByCommandOrder().forEach(function(col){
+          if (!used.has(String(col.index))) orderedColumns.push(col);
+        });
+        state.csvColumnOrder = orderedColumns.map(function(col){ return col.index; });
+        state.cellDisplayOrder = orderedColumns.filter(function(col){
+          return getCsvColumnRole(col) === 'original';
+        }).map(function(col){
+          return 'csv-' + col.index;
+        });
+      }
+      return changed;
+    }
+
+    function getManualEditorSourceTokens() {
+      const tokens = new Set();
+      ['dialogManual', 'cameraManual'].forEach(function(id){
+        const el = document.getElementById(id);
+        if (!el) return;
+        collectManualSourceTokens(el.value).forEach(function(token){ tokens.add(token); });
+      });
+      return tokens;
+    }
+
+    function getCurrentCommandSourceContext() {
+      const mode = getCurrentInputMode();
+      if (isCsvMode(mode)) {
+        const lines = String(getCommandTextValue('csv') || '').replace(/\r/g, '').split('\n');
+        return { mode:mode, textarea:csvCommandEditEl, lines:lines, items:getCommandLineItemsFromLines(lines) };
+      }
+      const textarea = document.getElementById('timelineCommandInput');
+      const lines = String(getCommandTextValue('text') || '').replace(/\r/g, '').split('\n');
+      return { mode:mode, textarea:textarea, lines:lines, items:getCommandLineItemsFromLines(lines) };
+    }
+
+    function setCommandRoleBySourceToken(sourceToken, nextRole) {
+      const token = sanitizeManualSourceToken(sourceToken);
+      if (!token) return false;
+      const context = getCurrentCommandSourceContext();
+      if (!context.textarea) return false;
+      const item = context.items.find(function(candidate){ return candidate.sourceToken === token; });
+      if (!item || item.lineIndex < 0 || item.lineIndex >= context.lines.length) return false;
+      const roleInfo = splitTextCommandRoleSuffix(context.lines[item.lineIndex]);
+      const normalizedRole = normalizeTextCommandRole(nextRole);
+      const currentRole = normalizeTextCommandRole(roleInfo.role);
+      if (currentRole === normalizedRole) return false;
+      if (!isCsvMode(context.mode) && (currentRole === 'dialog' || currentRole === 'camera') && currentRole !== normalizedRole) {
+        removeTextCommandGeneratedManualLines(item.lineIndex, roleInfo.cleanLine, currentRole, token);
+      }
+      context.lines[item.lineIndex] = setTextCommandLineRole(roleInfo.cleanLine, normalizedRole);
+      setCommandTextValue(context.textarea, context.lines.join('\n'));
+      if (isCsvMode(context.mode)) {
+        syncCsvColumnRolesFromCommandEdit();
+        syncCsvBookNameTags();
+        refreshCsvColumnPicker();
+      } else {
+        syncTextCommandBookNameTags();
+      }
+      return true;
+    }
+
+    function syncManualSourceDeletionsToCommandRoles() {
+      const existingSources = getManualEditorSourceTokens();
+      const context = getCurrentCommandSourceContext();
+      if (!context.textarea) return false;
+      let changed = false;
+      context.items.forEach(function(item){
+        const role = normalizeTextCommandRole(item.role);
+        if (role !== 'dialog' && role !== 'camera') return;
+        if (!item.sourceToken || existingSources.has(item.sourceToken)) return;
+        if (!textCommandLineToManualLines(item.cleanLine, role, item.sourceToken).length) return;
+        changed = setCommandRoleBySourceToken(item.sourceToken, 'hide') || changed;
+      });
+      if (changed && isCsvMode(context.mode)) updateCsvTimelineBlocksFromRoles();
+      return changed;
+    }
+
+    function scheduleManualSourceRoleSync() {
+      clearTimeout(state.manualSourceSyncTimer);
+      state.manualSourceSyncTimer = setTimeout(function(){
+        state.manualSourceSyncTimer = null;
+        if (syncManualSourceDeletionsToCommandRoles()) render();
+      }, 160);
+    }
+
     function updateCsvCommandEdit() {
-      csvCommandEditEl.value = layersToCommandText(orderLayersByCellDisplayOrder(layersFromCsvSelection()));
+      if (!csvCommandEditEl) return;
+      const current = getCommandTextValue('csv');
+      if (!String(current || '').trim()) setCommandTextValue('csv', buildCsvCommandTextFromColumns());
+      else setCommandTextValue('csv', syncCsvCommandEditWithColumns(current));
     }
 
     function getBaseInputLayers() {
       const mode = getCurrentInputMode();
       syncTextCommandBookNameTags();
       if (isCsvMode(mode)) {
-        const edited = csvCommandEditEl.value.trim();
+        syncCsvColumnRolesFromCommandEdit();
+        syncCsvBookNameTags();
+        const edited = getCommandTextValue('csv').trim();
         return edited ? stabilizeCsvEditedLayerUids(parseCsvCommandEditText(edited)) : layersFromCsvSelection();
       }
-      return parseCommandText(document.getElementById('timelineCommandInput').value, 'text');
+      return parseCommandText(getCommandTextValue('text'), 'text');
     }
 
     function applyDotOverrides(baseLayers) {
@@ -8702,7 +9141,7 @@
       const textarea = document.getElementById('timelineCommandInput');
       if (!textarea) return commandText;
       const generated = String(commandText || '').replace(/\r/g, '').split('\n').filter(function(lineText){ return String(lineText || '').trim(); });
-      const existing = String(textarea.value || '').replace(/\r/g, '').split('\n');
+      const existing = String(getCommandTextValue('text') || '').replace(/\r/g, '').split('\n');
       const out = [];
       let generatedIndex = 0;
       existing.forEach(function(lineText){
@@ -8729,8 +9168,8 @@
 
     function syncCommandTextFromCurrentState() {
       const commandText = layersToCommandText(orderLayersByCellDisplayOrder(applyDotOverrides(getBaseInputLayers())));
-      if (isCsvMode(getCurrentInputMode())) csvCommandEditEl.value = commandText;
-      else document.getElementById('timelineCommandInput').value = mergeTextCommandSyncWithRoleLines(commandText);
+      if (isCsvMode(getCurrentInputMode())) setCommandTextValue('csv', commandText);
+      else setCommandTextValue('text', mergeTextCommandSyncWithRoleLines(commandText));
     }
 
     function toggleDotAtFrame(layerUid, frame, baseLayer) {
@@ -8759,6 +9198,32 @@
       return { textarea:textarea, lines:lines, lineIndex:lineIndex, namePart:namePart, tokens:tokens };
     }
 
+    function applyCommandLineDotOverridesForEntry(info, entry) {
+      if (!info || !entry || !state.dotOverrides) return false;
+      const uid = String(entry.uid || '').trim();
+      if (!uid) return false;
+      let changed = false;
+      Object.keys(state.dotOverrides).forEach(function(key){
+        const parts = String(key || '').split('::');
+        const frame = Math.max(1, Math.round(Number(parts[0]) || 0));
+        const layerUid = parts.slice(1).join('::');
+        if (!frame || layerUid !== uid) return;
+        const value = state.dotOverrides[key];
+        const idx = frame - 1;
+        while (info.tokens.length <= idx) info.tokens.push('n');
+        if (value === 'on' && info.tokens[idx] !== 'dot') {
+          info.tokens[idx] = 'dot';
+          changed = true;
+        } else if (value === 'off' && info.tokens[idx] === 'dot') {
+          info.tokens[idx] = 'n';
+          changed = true;
+        }
+        delete state.dotOverrides[key];
+      });
+      if (changed) writeCommandLineInfo(info);
+      return changed;
+    }
+
     function isOccupiedCommandToken(token) {
       const raw = String(token == null ? '' : token).trim();
       if (!raw) return false;
@@ -8768,10 +9233,9 @@
     }
 
     function getMovableCellToken(entry, frame) {
-      syncCommandTextFromCurrentState();
-      state.dotOverrides = {};
       const info = getCommandLineInfoForEntry(entry, false);
       if (!info) return null;
+      applyCommandLineDotOverridesForEntry(info, entry);
       const idx = Math.max(0, Math.round(Number(frame || 1)) - 1);
       const token = info.tokens[idx];
       if (!isOccupiedCommandToken(token)) return null;
@@ -8781,7 +9245,7 @@
     function writeCommandLineInfo(info) {
       trimTrailingCommandFillers(info.tokens);
       info.lines[info.lineIndex] = info.tokens.length ? (info.namePart + ' ' + info.tokens.join(' ')) : info.namePart;
-      info.textarea.value = info.lines.join('\n');
+      setCommandTextValue(info.textarea, info.lines.join('\n'));
     }
 
     function findAvailableCellMoveFrame(tokens, requestedFrame, fromFrame, minFrame, maxFrame) {
@@ -9054,25 +9518,12 @@
       return true;
     }
 
-    function handleCellMarkerShiftClick(event, entry, absFrame, seg, key) {
-      if (!event.shiftKey) return false;
-      return handleCellMarkerClick(event, entry, absFrame, seg, key);
-    }
-
     function handleDotClick(event, entry, absFrame, baseLayer) {
       if (state.suppressNextClick) return false;
       event.preventDefault();
       event.stopPropagation();
       if (event.stopImmediatePropagation) event.stopImmediatePropagation();
       toggleDotAtFrame(entry.uid, absFrame, baseLayer);
-      return true;
-    }
-
-    function handleDotShiftClick(event, entry, absFrame, baseLayer, hitNode) {
-      event.preventDefault();
-      event.stopPropagation();
-      if (event.stopImmediatePropagation) event.stopImmediatePropagation();
-      openCellFrameTextEditor(hitNode || event.currentTarget, entry, absFrame, '', event, false);
       return true;
     }
 
@@ -9197,11 +9648,9 @@
       });
     }
 
-    function reorderCommandTextByDisplayOrder(entries) {
-      const textarea = getCommandTextarea();
-      if (!textarea || !entries || !entries.length) return;
-      const actualEntries = entries.filter(function(entry){ return entry && entry.isActual; });
-      if (!actualEntries.length) return;
+    function getOrderedActualCellEntries(entries) {
+      const actualEntries = (entries || []).filter(function(entry){ return entry && entry.isActual; });
+      if (!actualEntries.length) return [];
       const buckets = new Map();
       actualEntries.forEach(function(entry){
         const key = getCellEntryOrderKey(entry);
@@ -9220,25 +9669,103 @@
           orderedActual.push(entry);
         }
       });
+      return orderedActual;
+    }
+
+    function reorderCsvCommandTextByDisplayOrder(entries) {
+      if (!csvCommandEditEl || !entries || !entries.length) return;
+      const currentOrder = getCsvColumnsByCommandOrder();
+      const columnByUid = new Map((state.csvColumns || []).map(function(col){ return ['csv-' + col.index, col]; }));
+      const usedOriginals = new Set();
+      const orderedOriginals = [];
+      getOrderedActualCellEntries(entries).forEach(function(entry){
+        const col = columnByUid.get(String(entry && entry.uid || ''));
+        if (!col || getCsvColumnRole(col) !== 'original' || usedOriginals.has(String(col.index))) return;
+        orderedOriginals.push(col);
+        usedOriginals.add(String(col.index));
+      });
+      currentOrder.forEach(function(col){
+        if (getCsvColumnRole(col) !== 'original' || usedOriginals.has(String(col.index))) return;
+        orderedOriginals.push(col);
+        usedOriginals.add(String(col.index));
+      });
+      if (!orderedOriginals.length) return;
+
+      const lines = String(getCommandTextValue('csv') || '').replace(/\r/g, '').split('\n');
+      const assignments = getCsvCommandLineAssignmentsForAll(lines);
+      const assignmentByLine = new Map();
+      const lineByColumn = new Map();
+      assignments.forEach(function(item){
+        if (!item || !item.column) return;
+        assignmentByLine.set(item.lineIndex, item);
+        lineByColumn.set(String(item.column.index), item.rawLine || lines[item.lineIndex] || csvColumnToCommandLine(item.column));
+      });
+      const orderedLines = orderedOriginals.map(function(col){
+        return lineByColumn.get(String(col.index)) || csvColumnToCommandLine(col);
+      });
+      let cursor = 0;
+      const out = lines.map(function(lineText, lineIndex){
+        const assignment = assignmentByLine.get(lineIndex);
+        if (!assignment || !assignment.column || getCsvColumnRole(assignment.column) !== 'original') return lineText;
+        const nextLine = orderedLines[cursor];
+        cursor += 1;
+        return nextLine !== undefined ? nextLine : lineText;
+      });
+      while (cursor < orderedLines.length) {
+        out.push(orderedLines[cursor]);
+        cursor += 1;
+      }
+
+      const originalQueue = orderedOriginals.slice();
+      const nextColumnOrder = [];
+      currentOrder.forEach(function(col){
+        if (getCsvColumnRole(col) === 'original') {
+          nextColumnOrder.push(originalQueue.shift() || col);
+        } else {
+          nextColumnOrder.push(col);
+        }
+      });
+      originalQueue.forEach(function(col){ nextColumnOrder.push(col); });
+      state.csvColumnOrder = nextColumnOrder.map(function(col){ return col.index; });
+      setCommandTextValue('csv', out.join('\n'));
+      refreshCsvColumnPicker();
+    }
+
+    function reorderCommandTextByDisplayOrder(entries) {
+      const textarea = getCommandTextarea();
+      if (!textarea || !entries || !entries.length) return;
+      if (isCsvMode(getCurrentInputMode())) {
+        reorderCsvCommandTextByDisplayOrder(entries);
+        return;
+      }
+      const orderedActual = getOrderedActualCellEntries(entries);
+      if (!orderedActual.length) return;
       const rank = new Map();
       orderedActual.forEach(function(entry, index){
         const label = String(entry.label || '').trim().toLowerCase();
         if (label && !rank.has(label)) rank.set(label, index);
       });
-      const lines = String(textarea.value || '').replace(/\r/g, '').split('\n');
-      const commands = [];
-      const others = [];
+      const lines = String(getCommandTextValue(textarea) || '').replace(/\r/g, '').split('\n');
+      const cellCommands = [];
       lines.forEach(function(lineText, index){
-        const colonIndex = lineText.indexOf(':');
-        if (colonIndex === -1) {
-          if (lineText.trim()) others.push({ index:index, text:lineText });
-          return;
-        }
-        const name = lineText.slice(0, colonIndex).trim().toLowerCase();
-        commands.push({ index:index, text:lineText, rank:rank.has(name) ? rank.get(name) : 999999 });
+        const roleInfo = splitTextCommandRoleSuffix(lineText);
+        if (roleInfo.role !== 'cell') return;
+        const cleanLine = roleInfo.cleanLine;
+        const colonIndex = cleanLine.indexOf(':');
+        if (colonIndex === -1) return;
+        const name = cleanLine.slice(0, colonIndex).trim().toLowerCase();
+        cellCommands.push({ index:index, text:lineText, rank:rank.has(name) ? rank.get(name) : 999999 });
       });
-      commands.sort(function(a, b){ return a.rank - b.rank || a.index - b.index; });
-      textarea.value = others.map(function(item){ return item.text; }).concat(commands.map(function(item){ return item.text; })).join('\n');
+      cellCommands.sort(function(a, b){ return a.rank - b.rank || a.index - b.index; });
+      let cursor = 0;
+      const nextLines = lines.map(function(lineText){
+        const roleInfo = splitTextCommandRoleSuffix(lineText);
+        if (roleInfo.role !== 'cell' || roleInfo.cleanLine.indexOf(':') === -1) return lineText;
+        const next = cellCommands[cursor];
+        cursor += 1;
+        return next ? next.text : lineText;
+      });
+      setCommandTextValue(textarea, nextLines.join('\n'));
     }
 
     function assignLanes(segments) {
@@ -9837,31 +10364,10 @@
       setDurationFrameCount(Math.max(0, current + Math.round(Number(delta) || 0)));
     }
 
-    function addDurationStepButton(x, y, w, h, label, frameDelta, titleText) {
-      if (!shouldDrawCurrentLayer()) return;
-      const group = el('g', { 'pointer-events':'all' });
-      group.style.cursor = 'pointer';
-      group.setAttribute('title', titleText || 'Duration');
-      group.appendChild(el('rect', { x:x, y:y, width:w, height:h, fill:'rgba(255,255,255,.92)', stroke:'#111', 'stroke-width':0.8, rx:3, ry:3 }));
-      group.appendChild(el('text', { x:x + w / 2, y:y + h / 2 + 0.5, fill:'#111', 'font-size':10, 'font-family':'Arial, Helvetica, sans-serif', 'font-weight':'800', 'text-anchor':'middle', 'dominant-baseline':'middle', 'pointer-events':'none' }, label));
-      group.addEventListener('click', function(event){
-        event.preventDefault();
-        event.stopPropagation();
-        if (state.inlineTextEditor) closeInlineTextEditor({ render:false });
-        updateDurationByFrameDelta(frameDelta);
-        render();
-      });
-      appendSvgNode(group);
-    }
-
     function renderDurationStepperButtons(secBox, frameBox) {
       // Duration up/down buttons are shown as a compact fixed overlay only while
       // the Duration sec/frame inline text editor is open.
       return;
-    }
-
-    function getCommandTextarea() {
-      return isCsvMode(getCurrentInputMode()) ? csvCommandEditEl : document.getElementById('timelineCommandInput');
     }
 
     function ensureTokenLength(tokens, length) {
@@ -9895,7 +10401,7 @@
         trimTrailingCommandFillers(tokens);
         lines[lineIndex] = tokens.length ? (namePart + ' ' + tokens.join(' ')) : namePart;
       });
-      textarea.value = lines.join('\n');
+      setCommandTextValue(textarea, lines.join('\n'));
     }
 
     function shiftManualSegForCut(seg, fromFrame, toFrame, frameCount) {
@@ -9927,7 +10433,7 @@
         if (!originalParsed) { out.push(lineText); return; }
         const seg = parsedByLine.get(index);
         if (!seg || seg.to < seg.from || seg.to < 1) return;
-        out.push(makeTimelineBlockLine(Math.max(1, seg.from), Math.max(1, seg.to), seg.label, seg.text, seg.endLabel));
+        out.push(makeTimelineBlockLine(Math.max(1, seg.from), Math.max(1, seg.to), seg.label, seg.text, seg.endLabel, seg.sourceToken));
       });
       textarea.value = out.join('\n');
     }
@@ -9952,8 +10458,8 @@
 
     function getShakuEditSnapshot() {
       return {
-        timeline:document.getElementById('timelineCommandInput') ? document.getElementById('timelineCommandInput').value : '',
-        csvCommand:csvCommandEditEl ? csvCommandEditEl.value : '',
+        timeline:document.getElementById('timelineCommandInput') ? getCommandTextValue('text') : '',
+        csvCommand:csvCommandEditEl ? getCommandTextValue('csv') : '',
         dialog:document.getElementById('dialogManual') ? document.getElementById('dialogManual').value : '',
         camera:document.getElementById('cameraManual') ? document.getElementById('cameraManual').value : '',
         seconds:document.getElementById('seconds') ? document.getElementById('seconds').value : '0',
@@ -9965,8 +10471,8 @@
 
     function restoreShakuEditSnapshot(snapshot) {
       if (!snapshot) return;
-      if (document.getElementById('timelineCommandInput')) document.getElementById('timelineCommandInput').value = snapshot.timeline || '';
-      if (csvCommandEditEl) csvCommandEditEl.value = snapshot.csvCommand || '';
+      if (document.getElementById('timelineCommandInput')) setCommandTextValue('text', snapshot.timeline || '');
+      if (csvCommandEditEl) setCommandTextValue('csv', snapshot.csvCommand || '');
       if (document.getElementById('dialogManual')) document.getElementById('dialogManual').value = snapshot.dialog || '';
       if (document.getElementById('cameraManual')) document.getElementById('cameraManual').value = snapshot.camera || '';
       if (document.getElementById('seconds')) document.getElementById('seconds').value = snapshot.seconds == null ? '0' : String(snapshot.seconds);
@@ -11350,15 +11856,6 @@
       setTimeout(openActiveTextMemoEditor, 0);
     }
 
-    function addTextMemoToRight(sourceMemo) {
-      // Text memo is intentionally limited to one box per page.
-      if (sourceMemo) {
-        state.activeTextMemo = { pageIndex:state.currentPreviewPage || 0, id:sourceMemo.id };
-        render();
-        setTimeout(openActiveTextMemoEditor, 0);
-      }
-    }
-
     function normalizeTextMemoRichRuns(memo) {
       if (!memo) return [];
       const textLength = String(memo.text || '').length;
@@ -11805,12 +12302,6 @@
         memo.text = nextText;
         normalizeTextMemoRichRuns(memo);
       }
-    }
-
-    function getTextMemoLineStart(value, position) {
-      const text = String(value || '');
-      const pos = clampNumber(Number(position) || 0, 0, text.length);
-      return text.lastIndexOf('\n', Math.max(0, pos - 1)) + 1;
     }
 
     function bulletizeTextMemoLines(value) {
@@ -12427,10 +12918,6 @@
       dialogBlocks.forEach(function(b){ maxFrame = Math.max(maxFrame, b.to); });
       cameraBlocks.forEach(function(b){ maxFrame = Math.max(maxFrame, b.to); });
       return Math.max(1, maxFrame);
-    }
-
-    function getMaxFrame(layers, dialogBlocks, cameraBlocks) {
-      return Math.max(getContentMaxFrame(layers, dialogBlocks, cameraBlocks), getDurationFrameCount() || 1);
     }
 
     function getRenderModel() {
@@ -13360,12 +13847,6 @@
     function readAsciiFromData(view, offset, length) {
       let out = '';
       for (let i = 0; i < length; i++) out += String.fromCharCode(view.getUint8(offset + i));
-      return out;
-    }
-
-    function readAsciiFromBytes(bytes, offset, length) {
-      let out = '';
-      for (let i = 0; i < length && offset + i < bytes.length; i++) out += String.fromCharCode(bytes[offset + i]);
       return out;
     }
 
@@ -14508,16 +14989,15 @@
       });
       const pageInput = document.getElementById('page');
       if (pageInput) pageInput.value = '1/1';
-      const textInput = document.getElementById('timelineCommandInput');
-      if (textInput) textInput.value = 'A:';
-      if (csvCommandEditEl) csvCommandEditEl.value = 'A:';
+      setCommandTextValue('text', 'A:');
+      setCommandTextValue('csv', 'A:');
       const dialogEl = document.getElementById('dialogManual');
       if (dialogEl) dialogEl.value = '0+00 | 0+00 |  | ';
       const cameraEl = document.getElementById('cameraManual');
       if (cameraEl) cameraEl.value = '0+00 | 0+00 |  |  | ';
       state.csvRawRows = [];
       state.csvColumns = [];
-      state.csvSelectedColumns = new Set();
+      state.csvColumnOrder = [];
       state.csvColumnRoles = {};
       state.csvDurationAutofillPending = false;
       state.lastCsvGeneratedDialogLines = [];
@@ -14532,7 +15012,6 @@
       state.csvOriginalEncoding = 'utf-8';
       state.csvLoadedMode = '';
       state.tvpaintCellSourceColumns = [];
-      state.csvOriginalCellColumns = [];
       state.csvLoadError = '';
       state.cellDisplayOrder = [];
       state.dougaSheetEnabled = false;
@@ -14604,8 +15083,8 @@
           shakuRedoStack:JSON.parse(JSON.stringify(state.shakuRedoStack || []))
         },
         input:{
-          timelineCommand:document.getElementById('timelineCommandInput').value,
-          csvCommandEdit:csvCommandEditEl ? csvCommandEditEl.value : '',
+          timelineCommand:getCommandTextValue('text'),
+          csvCommandEdit:csvCommandEditEl ? getCommandTextValue('csv') : '',
           dialogManual:document.getElementById('dialogManual').value,
           cameraManual:document.getElementById('cameraManual').value
         },
@@ -14616,9 +15095,8 @@
           originalEncoding:state.csvOriginalEncoding || 'utf-8',
           loadedMode:state.csvLoadedMode || '',
           tvpaintCellSourceColumns:state.tvpaintCellSourceColumns || [],
-          csvOriginalCellColumns:state.csvOriginalCellColumns || [],
           columns:state.csvColumns || [],
-          selectedColumns:Array.from(state.csvSelectedColumns || []),
+          columnOrder:state.csvColumnOrder || [],
           columnRoles:state.csvColumnRoles || {},
           frameIndex:state.csvFrameIndex || 0,
           dataStartRow:state.csvDataStartRow || 1,
@@ -14724,8 +15202,8 @@
       updateShakuEditUI();
       state.currentPreviewPage = Math.max(0, Number(ui.currentPreviewPage) || 0);
       const input = payload.input || {};
-      if (document.getElementById('timelineCommandInput') && input.timelineCommand !== undefined) document.getElementById('timelineCommandInput').value = input.timelineCommand;
-      if (csvCommandEditEl && input.csvCommandEdit !== undefined) csvCommandEditEl.value = input.csvCommandEdit;
+      if (document.getElementById('timelineCommandInput') && input.timelineCommand !== undefined) setCommandTextValue('text', input.timelineCommand);
+      if (csvCommandEditEl && input.csvCommandEdit !== undefined) setCommandTextValue('csv', input.csvCommandEdit);
       if (document.getElementById('dialogManual') && input.dialogManual !== undefined) document.getElementById('dialogManual').value = input.dialogManual;
       if (document.getElementById('cameraManual') && input.cameraManual !== undefined) document.getElementById('cameraManual').value = input.cameraManual;
       const csv = payload.csv || {};
@@ -14735,10 +15213,9 @@
       state.csvOriginalEncoding = csv.originalEncoding || 'utf-8';
       state.csvLoadedMode = csv.loadedMode || '';
       state.tvpaintCellSourceColumns = Array.isArray(csv.tvpaintCellSourceColumns) ? csv.tvpaintCellSourceColumns : [];
-      state.csvOriginalCellColumns = Array.isArray(csv.csvOriginalCellColumns) ? csv.csvOriginalCellColumns : [];
       state.csvColumns = Array.isArray(csv.columns) ? csv.columns : [];
-      state.csvSelectedColumns = new Set(Array.isArray(csv.selectedColumns) ? csv.selectedColumns : []);
-      state.csvColumnRoles = csv.columnRoles && typeof csv.columnRoles === 'object' ? csv.columnRoles : {};
+      state.csvColumnOrder = Array.isArray(csv.columnOrder) ? csv.columnOrder : state.csvColumns.slice().sort(compareCsvSourceColumnOrder).map(function(col){ return col.index; });
+      state.csvColumnRoles = migrateCsvColumnRoles(state.csvColumns, csv.columnRoles, csv.selectedColumns);
       state.csvFrameIndex = Number(csv.frameIndex) || 0;
       state.csvDataStartRow = Number(csv.dataStartRow) || 1;
       state.csvLoadError = csv.loadError || '';
@@ -15445,10 +15922,8 @@
     }
 
     function getCsvExportCellColumns() {
-      return (state.csvColumns || []).filter(function(col){ return getCsvColumnRole(col) === 'original'; }).sort(function(a, b){
-        const orderDiff = getCsvOriginalCellColumnOrderIndex(a) - getCsvOriginalCellColumnOrderIndex(b);
-        return orderDiff || (Number(a.index || 0) - Number(b.index || 0));
-      });
+      syncCsvColumnRolesFromCommandEdit();
+      return getCsvColumnsByCommandOrder().filter(function(col){ return getCsvColumnRole(col) === 'original'; });
     }
 
     function getLayerMapForCsvExport() {
@@ -15626,11 +16101,6 @@
       }, SHAKU_FLASH_DURATION_MS);
     }
 
-    function runCsvGuideHighlights() {
-      removeGuideFlash(csvEncodingSectionEl);
-      removeGuideFlash(csvColumnRoleSectionEl);
-    }
-
     function runPaperFileGuideHighlight() {
       const guide = getTransientGuideTexts();
       triggerGuideFlash(paperFileSelectSectionEl, guide.paperFile);
@@ -15641,6 +16111,7 @@
       updateInputModeButtons();
       document.getElementById('textModeBox').classList.toggle('hidden', mode !== 'text');
       document.getElementById('csvModeBox').classList.toggle('hidden', !isCsvMode(mode));
+      refreshCommandCellViews();
       updateCsvExportButtonVisibility();
       updateCsvHelpText();
       if (isCsvMode(mode) && state.csvFileBuffer) {
@@ -15652,12 +16123,11 @@
           state.csvOriginalText = '';
           state.csvLoadedMode = '';
           state.tvpaintCellSourceColumns = [];
-          state.csvOriginalCellColumns = [];
           state.csvColumns = [];
-          state.csvSelectedColumns = new Set();
+          state.csvColumnOrder = [];
           state.csvColumnRoles = {};
           csvColumnPickerEl.innerHTML = '';
-          csvCommandEditEl.value = '';
+          setCommandTextValue('csv', '');
           state.csvLoadError = t('csvError', err.message);
           updateCsvEncodingVisibility(true);
           csvInfoEl.textContent = state.csvLoadError;
@@ -15678,7 +16148,6 @@
       state.csvOriginalEncoding = decoded.encoding;
       state.csvLoadedMode = sourceMode;
       state.tvpaintCellSourceColumns = [];
-      state.csvOriginalCellColumns = [];
       state.cellDisplayOrder = [];
       state.dougaSheetEnabled = false;
       state.dougaSheetData = null;
@@ -15912,12 +16381,11 @@
         state.csvOriginalText = '';
         state.csvLoadedMode = '';
         state.tvpaintCellSourceColumns = [];
-        state.csvOriginalCellColumns = [];
         state.csvColumns = [];
-        state.csvSelectedColumns = new Set();
+        state.csvColumnOrder = [];
         state.csvColumnRoles = {};
         csvColumnPickerEl.innerHTML = '';
-        csvCommandEditEl.value = '';
+        setCommandTextValue('csv', '');
         state.csvLoadError = t('csvError', err.message);
         updateCsvEncodingVisibility(true);
         csvInfoEl.textContent = state.csvLoadError;
@@ -15928,7 +16396,6 @@
     const exportCsvTvpaintBtn = document.getElementById('exportCsvTvpaintBtn');
     if (exportCsvClipBtn) exportCsvClipBtn.addEventListener('click', function(){ exportCsvForSoftware('clip'); });
     if (exportCsvTvpaintBtn) exportCsvTvpaintBtn.addEventListener('click', function(){ exportCsvForSoftware('tvpaint'); });
-    if (csvColumnSortBtn) csvColumnSortBtn.addEventListener('click', sortCsvCellColumnsAlphabetically);
     document.getElementById('csvEncodingSelect').addEventListener('change', function(){
       if (!state.csvFileBuffer) return;
       try {
@@ -15939,11 +16406,11 @@
         state.csvOriginalText = '';
         state.csvLoadedMode = '';
         state.tvpaintCellSourceColumns = [];
-        state.csvOriginalCellColumns = [];
         state.csvColumns = [];
-        state.csvSelectedColumns = new Set();
+        state.csvColumnOrder = [];
+        state.csvColumnRoles = {};
         csvColumnPickerEl.innerHTML = '';
-        csvCommandEditEl.value = '';
+        setCommandTextValue('csv', '');
         state.csvLoadError = t('csvError', err.message);
         updateCsvEncodingVisibility(true);
         csvInfoEl.textContent = state.csvLoadError;
@@ -15958,12 +16425,57 @@
     bindInput('frames', function(){ normalizeDurationInputs(); render(); });
     bindInput('author', handleRememberedHeaderInput);
     bindInput('page', render);
-    bindInput('timelineCommandInput', function(){ normalizeCommandTextareaLeadingCrossGaps(document.getElementById('timelineCommandInput')); requestRender(); });
-    bindInput('dialogManual', requestRender);
-    bindInput('cameraManual', requestRender);
-    bindInput('csvCommandEdit', function(){ normalizeCommandTextareaLeadingCrossGaps(csvCommandEditEl); requestRender(); });
+    function handleTimelineCommandInputChange() {
+      const current = getCommandTextValue('text');
+      const normalized = normalizeLeadingCrossGapCommandTextValue(current);
+      if (normalized !== current) setCommandTextValue('text', normalized);
+      requestRender();
+    }
 
-    document.getElementById('timelineCommandInput').value = 'A: 1 n n dot n n 2';
+    function handleCsvCommandInputChange() {
+      const current = getCommandTextValue('csv');
+      const normalized = normalizeLeadingCrossGapCommandTextValue(current);
+      if (normalized !== current) setCommandTextValue('csv', normalized);
+      if (syncCsvColumnRolesFromCommandEdit()) refreshCsvColumnPicker();
+      syncCsvBookNameTags();
+      updateCsvTimelineBlocksFromRoles();
+      requestRender();
+    }
+
+    bindInput('timelineCommandInput', handleTimelineCommandInputChange);
+    bindInput('dialogManual', function(){ scheduleManualSourceRoleSync(); requestRender(); });
+    bindInput('cameraManual', function(){ scheduleManualSourceRoleSync(); requestRender(); });
+    bindInput('csvCommandEdit', handleCsvCommandInputChange);
+
+    if (textCommandCellViewToggleEl) textCommandCellViewToggleEl.addEventListener('change', function(){
+      if (!textCommandCellViewToggleEl.checked) mergeCommandCellViewToSource('text', true);
+      refreshCommandCellView('text');
+      refreshTextCommandColumnPicker();
+    });
+    if (csvCommandCellViewToggleEl) csvCommandCellViewToggleEl.addEventListener('change', function(){
+      if (!csvCommandCellViewToggleEl.checked) mergeCommandCellViewToSource('csv', true);
+      refreshCommandCellView('csv');
+      refreshCsvColumnPicker();
+    });
+    if (textCommandCellViewEl) textCommandCellViewEl.addEventListener('input', function(){
+      if (state.commandCellViewSyncing) return;
+      mergeCommandCellViewToSource('text');
+      handleTimelineCommandInputChange();
+    });
+    if (textCommandCellViewEl) textCommandCellViewEl.addEventListener('blur', function(){
+      refreshCommandCellView('text');
+    });
+    if (csvCommandCellViewEl) csvCommandCellViewEl.addEventListener('input', function(){
+      if (state.commandCellViewSyncing) return;
+      mergeCommandCellViewToSource('csv');
+      handleCsvCommandInputChange();
+    });
+    if (csvCommandCellViewEl) csvCommandCellViewEl.addEventListener('blur', function(){
+      refreshCommandCellView('csv');
+    });
+
+    setCommandTextValue('text', 'A: 1 n n dot n n 2');
+    setCommandTextValue('csv', '');
     document.getElementById('dialogManual').value = DEFAULT_DIALOG_SAMPLE_LINE;
     document.getElementById('cameraManual').value = DEFAULT_CAMERA_SAMPLE_LINE;
     restoreHeaderMemory();
