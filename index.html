@@ -5292,6 +5292,25 @@
             candidates.push({ x:x, y:y, h:h.length, v:v.length, score:score });
           }
         }
+        if (rect && rect.centeredPlusHint) {
+          const cx = (left + right) / 2;
+          const cy = (top + bottom) / 2;
+          const searchX = Math.max(7, Math.min(74, (right - left) * 0.24));
+          const searchY = Math.max(5, Math.min(42, (bottom - top) * 0.38));
+          for (let y = Math.round(cy - searchY); y <= Math.round(cy + searchY); y += 1) {
+            for (let x = Math.round(cx - searchX); x <= Math.round(cx + searchX); x += 1) {
+              if (!isDarkNear(x, y, 2)) continue;
+              const h = measureDarkSpan(x, y, 'x', 56);
+              const v = measureDarkSpan(x, y, 'y', 56);
+              if (h.length < 9 || v.length < 9 || h.length > 72 || v.length > 72) continue;
+              if (Math.abs(h.before - h.after) > Math.max(7, h.length * 0.62)) continue;
+              if (Math.abs(v.before - v.after) > Math.max(7, v.length * 0.62)) continue;
+              const centerPenalty = Math.hypot((x - cx) / Math.max(1, searchX), (y - cy) / Math.max(1, searchY)) * 18;
+              const score = Math.min(h.length, v.length) * 3.35 - Math.abs(h.length - v.length) * 0.40 - centerPenalty + 42;
+              candidates.push({ x:x, y:y, h:h.length, v:v.length, score:score, centered:true });
+            }
+          }
+        }
         const clustered = [];
         candidates.sort(function(a,b){ return b.score - a.score; });
         candidates.forEach(function(candidate){
@@ -5619,7 +5638,8 @@
         const cellRight = options.variableTail ? lines[startIndex] + cellW * displayColumns : lines[rightIndex];
         for (let dialogEndIndex = rightIndex + 1; dialogEndIndex <= Math.min(rightIndex + 4, lines.length - 1); dialogEndIndex++) {
           const dialogW = lines[dialogEndIndex] - lines[rightIndex];
-          if (dialogW < cellW * 0.82 || dialogW > cellW * 8.20) continue;
+          const minDialogRatio = 0.82;
+          if (dialogW < cellW * minDialogRatio || dialogW > cellW * 8.20) continue;
           const key = [startIndex, rightIndex, dialogEndIndex, displayColumns, Math.round(cellW * 10)].join(':');
           if (seen.has(key)) continue;
           seen.add(key);
@@ -5635,6 +5655,12 @@
           const nearSheetStart = lines[startIndex] < Math.max(96, cellW * 3.2);
           const dialogEmptyBonus = Math.max(0, 84 - dialogAvg * 175 - dialogHit * 22);
           const extraInternalLines = Math.max(0, (rightIndex - startIndex + 1) - (displayColumns + 1));
+          const tailCellMetric = analysis && typeof analysis.sampleHorizontalBand === 'function' && rightIndex > startIndex + 1
+            ? analysis.sampleHorizontalBand(lines[rightIndex - 1], lines[rightIndex], bodyLines)
+            : null;
+          const prevTailCellMetric = analysis && typeof analysis.sampleHorizontalBand === 'function' && rightIndex > startIndex + 2
+            ? analysis.sampleHorizontalBand(lines[rightIndex - 2], lines[rightIndex - 1], bodyLines)
+            : null;
           let score = 180 - gapDeviation * 4 - Math.abs(displayColumns - 8) * 4;
           if (displayColumns === 7 && gapDeviation <= Math.max(2.5, cellW * 0.10)) score += 20;
           if (displayColumns === 8) score += 6;
@@ -5644,7 +5670,8 @@
           if (displayColumns === 10 && !options.sparseGrid && dialogRatio >= 2.55 && dialogRatio <= 3.45) score += 42;
           if (displayColumns === 9 && options.sparseGrid && leftSimilarGapCount > 0 && dialogRatio >= 2.55 && dialogRatio <= 3.45) score -= 24;
           score += Math.max(0, 32 - Math.abs(dialogRatio - 2.45) * 9);
-          const wideEmptyDialog = displayColumns <= 8 && dialogRatio > 4.35 && dialogAvg < 0.18 && dialogHit < 0.46;
+          const wideDialogThreshold = displayColumns === 9 ? 3.30 : 3.20;
+          const wideEmptyDialog = displayColumns <= 9 && dialogRatio > wideDialogThreshold && dialogAvg < 0.18 && dialogHit < 0.46;
           if (wideEmptyDialog) {
             score += Math.min(120, (dialogRatio - 3.25) * 58 + (0.46 - dialogHit) * 72 + (0.18 - dialogAvg) * 180);
           } else {
@@ -5658,6 +5685,15 @@
           if (displayColumns >= 9 && leftSimilarGapCount > 0 && dialogAvg < 0.30) score += 24;
           if (options.variableHead) score += 30;
           if (options.sparseGrid) score += Math.max(0, (options.matchRatio || 0) - 0.58) * 130 - 28 - extraInternalLines * 34;
+          if (displayColumns >= 9 && tailCellMetric && prevTailCellMetric) {
+            const tailHit = Number(tailCellMetric.hitRatio || 0);
+            const prevTailHit = Number(prevTailCellMetric.hitRatio || 0);
+            const tailAvg = Number(tailCellMetric.avgDarkRatio || 0);
+            const tailLooksLikeDialog = tailHit < Math.max(0.16, prevTailHit * 0.58) && tailAvg < Math.max(0.18, Number(prevTailCellMetric.avgDarkRatio || 0) * 0.72);
+            if (tailLooksLikeDialog && dialogHit < 0.52) {
+              score -= displayColumns === 10 ? 136 : 96;
+            }
+          }
           if (displayColumns === 10 && !options.sparseGrid && gapDeviation <= Math.max(2, cellW * 0.08)) score += 16;
           if (options.variableTail) {
             const tailMetric = analysis && typeof analysis.sampleHorizontalBand === 'function' ? analysis.sampleHorizontalBand(lines[rightIndex - 1], lines[rightIndex], bodyLines) : null;
@@ -6073,6 +6109,34 @@
         }).filter(function(segment){
           return segment.maxRun >= 360 && segment.pos < bodyTop - 55;
         });
+        function scoreHeaderComplexity(left, right, top, bottom) {
+          if (!analysis || typeof analysis.findVerticalSegments !== 'function') return { dividerCount:0, penalty:0, bonus:0 };
+          const height = Math.max(1, bottom - top);
+          const verticals = analysis.findVerticalSegments({
+            left:Math.max(0, left - 6),
+            right:Math.min(PAGE_W - 1, right + 6),
+            top:Math.max(0, top - 3),
+            bottom:Math.min(PAGE_H - 1, bottom + 3),
+            minRun:Math.max(18, height * 0.32),
+            minCoverage:0.12
+          }).filter(function(line){
+            const maxRun = Number(line.maxRun || 0);
+            const spanStart = Number(line.spanStart);
+            const spanEnd = Number(line.spanEnd);
+            const spansCandidate = Number.isFinite(spanStart) && Number.isFinite(spanEnd) &&
+              spanStart <= top + Math.max(14, height * 0.22) &&
+              spanEnd >= bottom - Math.max(14, height * 0.22);
+            return line.pos >= left - 5 && line.pos <= right + 5 && (spansCandidate || maxRun >= height * 0.52);
+          });
+          const dividerCount = verticals.length;
+          const excess = Math.max(0, dividerCount - 11);
+          const severeExcess = Math.max(0, dividerCount - 14);
+          return {
+            dividerCount:dividerCount,
+            penalty:excess * 42 + severeExcess * 58,
+            bonus:(dividerCount >= 5 && dividerCount <= 10) ? 42 : 0
+          };
+        }
         let best = null;
         for (let i = 0; i < segments.length; i++) {
           for (let j = i + 1; j < segments.length; j++) {
@@ -6090,7 +6154,15 @@
             const middleBonus = segments.some(function(seg){
               return seg.pos > topSeg.pos + 14 && seg.pos < bottomSeg.pos - 12 && Math.min(seg.end, right) - Math.max(seg.start, left) > width * 0.45;
             }) ? 80 : 0;
-            let score = overlap * 1.6 + width * 0.35 + middleBonus - topSeg.pos * 0.30 - Math.abs(height - 90) * 1.4;
+            const outerLineAbove = segments.some(function(seg){
+              const gapY = topSeg.pos - seg.pos;
+              if (gapY < 12 || gapY > Math.max(56, height * 0.90)) return false;
+              return Math.min(seg.end, right) - Math.max(seg.start, left) > width * 0.45;
+            });
+            const complexity = scoreHeaderComplexity(left, right, topSeg.pos, bottomSeg.pos);
+            let score = overlap * 1.6 + width * 0.35 + middleBonus + complexity.bonus - complexity.penalty - topSeg.pos * 0.30 - Math.abs(height - 90) * 1.4;
+            if (outerLineAbove) score -= 700;
+            if (topSeg.pos > 90 && complexity.dividerCount > 11) score -= Math.min(230, (topSeg.pos - 90) * 0.95 + (complexity.dividerCount - 11) * 26);
             if (left > 8 && left < PAGE_W * 0.22) score += 45;
             if (right > PAGE_W * 0.55 && right < PAGE_W - 8) score += 45;
             if (!best || score > best.score) best = { left:left, right:right, top:topSeg.pos, bottom:bottomSeg.pos, score:score, segments:segments };
@@ -6193,7 +6265,9 @@
         return segment.pos > headerTop + 14 && segment.pos < headerBottom - 12 && Math.min(segment.end, headerRight) - Math.max(segment.start, headerLeft) > (headerRight - headerLeft) * 0.42;
       }).sort(function(a,b){ return Math.abs(a.pos - (headerTop + headerH * 0.42)) - Math.abs(b.pos - (headerTop + headerH * 0.42)); })[0];
       if (!splitY) splitY = { pos:upperY.filter(function(y){ return y > headerTop + 14 && y < headerBottom - 12; })[0] || Math.round(headerTop + headerH * 0.42) };
-      const y = Math.round(splitY.pos + 2);
+      const inputY = Math.round(splitY.pos + 2);
+      const inputH = Math.max(24, Math.round(headerBottom - inputY - 2));
+      const y = Math.round(headerTop + 2);
       const h = Math.max(24, Math.round(headerBottom - y - 2));
       let headerLines = [];
       if (analysis && typeof analysis.findVerticalSegments === 'function') {
@@ -6233,6 +6307,41 @@
       headerLines[0] = headerLeft;
       headerLines[headerLines.length - 1] = headerRight;
       headerLines = uniquePositions(headerLines, 5);
+      function collapseLeadingDecorativeHeaderLines(lines) {
+        const sorted = (lines || []).slice().sort(function(a,b){ return a-b; });
+        if (sorted.length < 8) return sorted;
+        const totalW = Math.max(1, headerRight - headerLeft);
+        let collapseIndex = -1;
+        const maxLook = Math.min(sorted.length - 2, 9);
+        for (let i = 3; i <= maxLook; i++) {
+          const prefixGaps = [];
+          for (let j = 1; j <= i; j++) prefixGaps.push(sorted[j] - sorted[j - 1]);
+          const tightGapLimit = Math.max(82, totalW * 0.065);
+          const smallGapCount = prefixGaps.filter(function(gap){ return gap <= tightGapLimit; }).length;
+          const span = sorted[i] - sorted[0];
+          const nextGap = sorted[i + 1] - sorted[i];
+          if (smallGapCount >= 3 &&
+            span >= Math.max(220, totalW * 0.15) &&
+            span <= Math.max(560, totalW * 0.42) &&
+            nextGap >= Math.max(82, totalW * 0.07) &&
+            nextGap <= Math.max(320, totalW * 0.24)) {
+            collapseIndex = i;
+            break;
+          }
+          if (smallGapCount >= 2 &&
+            prefixGaps.some(function(gap){ return gap >= Math.max(110, totalW * 0.075) && gap <= Math.max(240, totalW * 0.18); }) &&
+            span >= Math.max(220, totalW * 0.15) &&
+            span <= Math.max(560, totalW * 0.42) &&
+            nextGap >= Math.max(82, totalW * 0.07) &&
+            nextGap <= Math.max(320, totalW * 0.24)) {
+            collapseIndex = i;
+            break;
+          }
+        }
+        if (collapseIndex > 1) return [sorted[0]].concat(sorted.slice(collapseIndex));
+        return sorted;
+      }
+      headerLines = collapseLeadingDecorativeHeaderLines(headerLines);
       function makeIntervals(lines) {
         const intervals = [];
         for (let i = 0; i + 1 < lines.length; i++) {
@@ -6283,19 +6392,22 @@
       const headerWidth = Math.max(1, headerRight - headerLeft);
       let durationPlus = null;
       let durationInterval = null;
+      let durationIntervalInferredFromOrderedHeader = false;
       if (analysis && typeof analysis.findPlusMarks === 'function') {
         const plusSearch = {
           left:headerLeft,
           right:headerRight,
-          top:Math.max(headerTop, y - 8),
-          bottom:Math.min(headerBottom, y + h + 8)
+          top:Math.max(headerTop, inputY - Math.max(8, inputH * 0.16)),
+          bottom:Math.min(headerBottom, inputY + inputH + 8)
         };
-        const expectedPlusY = y + h / 2;
+        const expectedPlusY = inputY + inputH / 2;
         const plusMarks = analysis.findPlusMarks(plusSearch);
         let plus = null;
         plusMarks.forEach(function(candidate){
+          if (candidate.y < inputY - Math.max(2, inputH * 0.04)) return;
           const xRatio = (candidate.x - headerLeft) / headerWidth;
-          if (xRatio > 0.80) return;
+          if (xRatio < 0.34) return;
+          if (xRatio > 0.74) return;
           const candidateInterval = intervalContaining(candidate.x);
           const intervalCenterRatio = candidateInterval ? (((candidateInterval.left + candidateInterval.right) / 2) - headerLeft) / headerWidth : xRatio;
           let centerBias = xRatio >= 0.42 && xRatio <= 0.76 ? 52 : -96;
@@ -6315,6 +6427,19 @@
         }
       }
       if (!durationInterval) {
+        const firstTitleOrderedDuration = intervals.length >= 6 &&
+          intervals[0].left <= headerLeft + Math.max(18, headerWidth * 0.025) &&
+          intervals[0].w >= intervals[1].w * 2.20 &&
+          intervals[0].w >= Math.max(220, headerWidth * 0.20) &&
+          intervals[1].w <= Math.max(230, headerWidth * 0.16) &&
+          intervals[2].w <= Math.max(260, headerWidth * 0.18) &&
+          intervals[3].w >= Math.max(92, headerWidth * 0.075);
+        if (firstTitleOrderedDuration) {
+          durationInterval = intervals[3];
+          durationIntervalInferredFromOrderedHeader = true;
+        }
+      }
+      if (!durationInterval) {
         const fallback = intervals.reduce(function(best, interval){
           const centerRatio = (((interval.left + interval.right) / 2) - headerLeft) / headerWidth;
           const leftRatio = (interval.left - headerLeft) / headerWidth;
@@ -6327,6 +6452,39 @@
           return !best || score > best.score ? { interval:interval, score:score } : best;
         }, null) || nearestInterval(headerLeft + (headerRight - headerLeft) * 0.46, headerLeft + (headerRight - headerLeft) * 0.62);
         durationInterval = fallback && fallback.interval;
+      }
+      if (!durationPlus && durationInterval && analysis && typeof analysis.findPlusMarks === 'function') {
+        const expectedPlusX = (durationInterval.left + durationInterval.right) / 2;
+        const expectedPlusY = inputY + inputH / 2;
+        const centeredPlusSearch = {
+          left:durationInterval.left,
+          right:durationInterval.right,
+          top:Math.max(headerTop, inputY - Math.max(8, inputH * 0.18)),
+          bottom:Math.min(headerBottom, inputY + inputH + 8),
+          centeredPlusHint:true
+        };
+        let centeredPlus = null;
+        (analysis.findPlusMarks(centeredPlusSearch) || []).forEach(function(candidate){
+          const xOffset = Math.abs(candidate.x - expectedPlusX) / Math.max(1, durationInterval.w * 0.5);
+          const yOffset = Math.abs(candidate.y - expectedPlusY) / Math.max(1, inputH * 0.5);
+          if (xOffset > 0.48 || yOffset > 0.88) return;
+          const score = Number(candidate.score || 0) - xOffset * 64 - yOffset * 38 + (candidate.centered ? 54 : 0);
+          if (!centeredPlus || score > centeredPlus.finalScore) centeredPlus = Object.assign({}, candidate, { finalScore:score, interval:durationInterval });
+        });
+        if (centeredPlus) durationPlus = centeredPlus;
+      }
+      if (!durationPlus && durationIntervalInferredFromOrderedHeader && durationInterval) {
+        durationPlus = {
+          x:(durationInterval.left + durationInterval.right) / 2,
+          y:inputY + inputH / 2,
+          h:0,
+          v:0,
+          score:0,
+          finalScore:0,
+          interval:durationInterval,
+          inferred:true,
+          centered:true
+        };
       }
       const durationLeft = durationInterval ? durationInterval.left : headerLeft + (headerRight - headerLeft) * 0.50;
       const durationRight = durationInterval ? durationInterval.right : headerLeft + (headerRight - headerLeft) * 0.64;
@@ -6350,7 +6508,7 @@
           const w = right - left;
           if (right < rightBiasStart || w < 34 || w > 292) return;
           if (durationPlus && left <= durationPlus.x + Math.max(24, headerWidth * 0.025)) return;
-          const slashInfo = analyzeSlash({ left:left, right:right, top:y, bottom:headerBottom });
+          const slashInfo = analyzeSlash({ left:left, right:right, top:inputY, bottom:headerBottom });
           const rightBias = (left - headerLeft) / headerWidth;
           const rightEdgeBias = (right - headerLeft) / headerWidth;
           const cornerConnected = Number(slashInfo.cornerScore || 0) > 118 && Number(slashInfo.edgeTouchScore || 0) >= 96;
@@ -6394,7 +6552,7 @@
               const right = left + width;
               const overlap = Math.max(0, Math.min(right, defaultPageRight) - Math.max(left, defaultPageLeft));
               const overlapRatio = overlap / Math.max(1, Math.min(width, defaultPageWidth));
-              const slashInfo = analyzeSlash({ left:left, right:right, top:y, bottom:headerBottom });
+              const slashInfo = analyzeSlash({ left:left, right:right, top:inputY, bottom:headerBottom });
               const rawScore = Number(slashInfo.score || 0);
               const cornerScore = Number(slashInfo.cornerScore || 0);
               const centerScore = Number(slashInfo.centerScore || 0);
@@ -6450,7 +6608,7 @@
       }
       if (pageBox && selectedSlash) {
         const slashCenterX = (selectedSlash.left + selectedSlash.right) / 2;
-        const slashCenterY = y + h / 2;
+        const slashCenterY = inputY + inputH / 2;
         const insidePage = slashCenterX >= pageBox.x && slashCenterX <= pageBox.x + pageBox.w && slashCenterY >= pageBox.y && slashCenterY <= pageBox.y + pageBox.h;
         if (!insidePage) {
           const unionLeft = Math.min(pageBox.x, selectedSlash.left);
@@ -6492,6 +6650,22 @@
       }
       const beforeCut = cutInterval ? intervals.filter(function(interval){ return interval.right <= cutInterval.left + 4; }) : beforeDuration.slice(0, -1);
       let titleInterval = beforeCut.reduce(function(best, interval){ return !best || interval.w > best.w ? interval : best; }, null);
+      if (titleInterval && cutInterval && beforeCut.length >= 4 && titleInterval === beforeCut[beforeCut.length - 1]) {
+        const firstBeforeCut = beforeCut[0];
+        const mergedTitle = {
+          left:beforeCut[1].left,
+          right:titleInterval.right,
+          w:titleInterval.right - beforeCut[1].left,
+          index:beforeCut[1].index
+        };
+        if (firstBeforeCut &&
+          firstBeforeCut.w <= Math.max(170, headerWidth * 0.13) &&
+          mergedTitle.w >= Math.max(260, headerWidth * 0.22) &&
+          mergedTitle.w <= Math.max(620, headerWidth * 0.50) &&
+          mergedTitle.w > titleInterval.w * 1.45) {
+          titleInterval = mergedTitle;
+        }
+      }
       let episodeInterval = null;
       if (titleInterval) {
         const nonTitle = beforeCut.filter(function(interval){ return interval !== titleInterval; });
@@ -6629,10 +6803,10 @@
         y:headerTop,
         w:headerRight - headerLeft,
         h:headerBottom - headerTop,
-        inputTop:y,
+        inputTop:inputY,
         lines:headerLines.filter(function(x){ return x >= headerLeft - 3 && x <= headerRight + 3; }).slice(0, 80),
         durationPlus:durationPlus ? { x:durationPlus.x, y:durationPlus.y } : null,
-        pageSlashBox:selectedSlash ? { x:selectedSlash.left, y:y, w:Math.max(18, selectedSlash.right - selectedSlash.left), h:h, score:selectedSlash.score, mode:selectedSlash.mode } : null,
+        pageSlashBox:selectedSlash ? { x:selectedSlash.left, y:inputY, w:Math.max(18, selectedSlash.right - selectedSlash.left), h:inputH, score:selectedSlash.score, mode:selectedSlash.mode } : null,
         headerScore:headerRect.score || 0
       };
       return out;
@@ -6785,8 +6959,10 @@
         const headerW = Math.max(1, Number(headerOverlay.w || 0));
         if (author.x < headerLeft + headerW * 0.48) add('authorTooFarLeft', 14);
       }
-      const order = [ep, title, cut, sec, frm, author, page].filter(Boolean);
-      if (!order.every(function(box, index){ return index === 0 || box.x >= order[index - 1].x - 8; })) add('headerFieldOrder', 30);
+      function ordered(boxes) {
+        return boxes.filter(Boolean).every(function(box, index, filtered){ return index === 0 || box.x >= filtered[index - 1].x - 8; });
+      }
+      if (!ordered([ep, title, cut, sec, frm, author, page]) && !ordered([title, ep, cut, sec, frm, author, page])) add('headerFieldOrder', 30);
       const avgCellW = Math.max(1, ((leftSide.cell && leftSide.cell.w || 0) + (rightSide.cell && rightSide.cell.w || 0)) / Math.max(2, Number(columns || 0) * 2));
       [leftSide, rightSide].forEach(function(side, index){
         if (!side || !side.camera) return;
