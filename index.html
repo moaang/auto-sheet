@@ -10,7 +10,7 @@
     Every time this HTML is modified, update the in-program update history / changelog only when the change matters to real users.
     The changelog must prioritize actual user-facing fixes, visible feature changes, data compatibility, import/export behavior, and workflow changes. Internal maintenance, scoring cleanup, diagnostics, refactors, and small implementation-only changes should be omitted or folded into a short "Other fixes" note when useful.
     Remove cancelled items, duplicate notes, and obsolete notes that no longer explain a current feature. Keep the visible changelog concise and available in all supported UI languages: English, Japanese, Korean, and Chinese.
-    The changelog UI must work as an independent overlay layer and must not interfere with sheet preview, memo, position editing, CSV import, preset import, export, or text editing.
+    The changelog UI must work as an independent overlay layer and must not interfere with sheet preview, memo, position editing, CSV import, export, or text editing.
   -->
   <script id="autoSheetMaintenanceInstruction" type="application/json">
     {
@@ -637,19 +637,6 @@
       opacity: .55;
       cursor: default;
     }
-    .paper-preset-select {
-      height: 34px;
-      flex: 1 1 190px;
-      min-width: 180px;
-      border: 1px solid var(--soft);
-      border-radius: 9px;
-      background: white;
-      color: var(--text);
-      font: inherit;
-      font-size: 12px;
-      font-weight: 800;
-      padding: 0 10px;
-    }
     .paper-check-row {
       display: flex; align-items: center; gap: 8px; margin-top: 8px; padding: 8px 10px;
       border: 1px solid var(--soft); border-radius: 10px; background: white; font-size: 12px; font-weight: 700;
@@ -660,30 +647,6 @@
     .paper-check-left { display: inline-flex; align-items: center; gap: 8px; min-width: 0; }
     .paper-inline-control { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; white-space: nowrap; color: var(--text); font-size: 12px; font-weight: 800; }
     .paper-inline-control input { width: 64px; height: 30px; padding: 4px 6px; text-align: center; font-weight: 800; }
-    .paper-preset-actions { align-items: center; }
-    .paper-preset-control-group {
-      display: grid;
-      gap: 8px;
-      margin-top: 10px;
-    }
-    .paper-preset-file-actions {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px;
-      margin-top: 0;
-    }
-    .paper-preset-apply-actions {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: 8px;
-      margin-top: 0;
-      align-items: center;
-    }
-    .paper-preset-file-actions .paper-mini-btn,
-    .paper-preset-apply-actions .paper-mini-btn {
-      width: 100%;
-      min-width: 0;
-    }
     .paper-subsection-title {
       margin-top: 14px;
       padding-top: 10px;
@@ -705,7 +668,6 @@
       min-height: 32px;
     }
     .paper-file-input-hidden { display: none; }
-    .paper-preset-status { margin-top: 8px; }
     .paper-auto-align-status {
       display: none;
       margin-top: 8px;
@@ -1722,7 +1684,7 @@
               <button id="resetLayoutAdjustBtn" class="paper-mini-btn" type="button">Position Reset</button>
             </div>
 
-            <label id="paperImageInputLabel" for="paperImageInput">会社指定用紙画像（JPG / PNG / PSD / CLIP）</label>
+            <label id="paperImageInputLabel" for="paperImageInput">会社指定用紙画像（JPG / PNG / PSD）</label>
             <div id="paperFileSelectSection" class="guide-target-section">
               <input id="paperImageInput" type="file" accept="image/jpeg,image/png,.jpg,.jpeg,.png,.psd,image/vnd.adobe.photoshop,.clip" />
             </div>
@@ -1961,15 +1923,6 @@
     const paperRedoBtn = document.getElementById('paperRedoBtn');
     const autoAlignPaperBtn = document.getElementById('autoAlignPaperBtn');
     const resetLayoutAdjustBtn = document.getElementById('resetLayoutAdjustBtn');
-    const saveLayoutPresetBtn = document.getElementById('saveLayoutPresetBtn');
-    const loadLayoutPresetBtn = document.getElementById('loadLayoutPresetBtn');
-    const layoutPresetInputEl = document.getElementById('layoutPresetInput');
-    const layoutPresetStatusEl = document.getElementById('layoutPresetStatus');
-    const layoutPresetTitleEl = document.getElementById('layoutPresetTitle');
-    const companyPresetTitleEl = document.getElementById('companyPresetTitle');
-    const companyPresetSelectEl = document.getElementById('companyPresetSelect');
-    const applyCompanyPresetBtn = document.getElementById('applyCompanyPresetBtn');
-    const companyPresetHintEl = document.getElementById('companyPresetHint');
     const showTemplateToggleEl = document.getElementById('showTemplateToggle');
     const showHeaderOutputToggleEl = document.getElementById('showHeaderOutputToggle');
     const showCellLabelOutputToggleEl = document.getElementById('showCellLabelOutputToggle');
@@ -2081,7 +2034,6 @@
       exportDirectoryHandle: null,
       exportDirectoryName: '',
       loadedSettingsFiles: [],
-      loadedLayoutPresets: [],
       loadedSettingsDirectoryName: '',
       loadedSettingsDirectoryScanned: false,
       loadedSettingsDirectoryHandle: null,
@@ -2157,126 +2109,6 @@
       memoCurrentStroke: null
     };
 
-    const BUILTIN_COMPANY_PRESETS = [
-      {
-        id:'mappa-1788-2514',
-        label:'MAPPA 1788 × 2514',
-        payload:{
-      "schema": "auto-sheet-layout-preset",
-      "version": 1,
-      "app": "Auto Sheet Prototype",
-      "createdAt": "2026-04-26T18:52:02.754Z",
-      "page": {
-            "width": 1753,
-            "height": 2480
-      },
-      "paper": {
-            "name": "csm_タイムシート.png",
-            "sourceWidth": 1788,
-            "sourceHeight": 2514,
-            "meta": "1788×2514 rasterized to 1753×2480"
-      },
-      "options": {
-            "showTemplate": false,
-            "showHeaderOutput": true,
-            "showCellLabelOutput": true
-      },
-      "layoutBoxes": {
-            "cell-left": {
-                  "x": 77,
-                  "y": 546,
-                  "w": 206,
-                  "h": 1889
-            },
-            "cell-right": {
-                  "x": 938,
-                  "y": 546,
-                  "w": 206,
-                  "h": 1889
-            },
-            "dialog-left": {
-                  "x": 287,
-                  "y": 546,
-                  "w": 48,
-                  "h": 1889
-            },
-            "dialog-right": {
-                  "x": 1145,
-                  "y": 546,
-                  "w": 48,
-                  "h": 1889
-            },
-            "camera-left": {
-                  "x": 681,
-                  "y": 546,
-                  "w": 151,
-                  "h": 1889
-            },
-            "camera-right": {
-                  "x": 1539,
-                  "y": 546,
-                  "w": 151,
-                  "h": 1889
-            },
-            "header-episode": {
-                  "x": 81,
-                  "y": 79,
-                  "w": 124,
-                  "h": 52
-            },
-            "header-title": {
-                  "x": 207,
-                  "y": 79,
-                  "w": 444,
-                  "h": 52
-            },
-            "header-cutNo": {
-                  "x": 651,
-                  "y": 79,
-                  "w": 126,
-                  "h": 52
-            },
-            "header-seconds": {
-                  "x": 795,
-                  "y": 79,
-                  "w": 56,
-                  "h": 52
-            },
-            "header-frames": {
-                  "x": 901,
-                  "y": 79,
-                  "w": 56,
-                  "h": 52
-            },
-            "header-author": {
-                  "x": 976,
-                  "y": 79,
-                  "w": 126,
-                  "h": 52
-            },
-            "header-page": {
-                  "x": 1110,
-                  "y": 79,
-                  "w": 121,
-                  "h": 52
-            },
-            "cell-label-left": {
-                  "x": 77,
-                  "y": 502,
-                  "w": 206,
-                  "h": 32
-            },
-            "cell-label-right": {
-                  "x": 938,
-                  "y": 513,
-                  "w": 206,
-                  "h": 32
-            }
-      }
-}
-      }
-    ];
-
     const i18n = {
       en: {
         textHelp: 'One line per cel row. Format: A: 1 n n dot n n 2\nTokens\n- number/text: cel label\n- n: keep vertical hold\n- dot: douga/inbetween point\n- x: X mark start\n- _: empty frame\n- rep: repeat note',
@@ -2349,7 +2181,6 @@
           '<li>Header fields can be clicked and edited even when the text is blank.</li>' +
           '<li>In the Dialog area, <code>×</code> / <code>x</code> in the first box is treated as blank in the sheet preview.</li>' +
           '<li>The top Load button can scan a folder, list only whole-program settings JSON files, and apply them from the selector.</li>' +
-          '<li>External paper layout preset JSON files found in the same folder are added to the preset selector automatically.</li>' +
           '<li>Cel name tags now follow External Paper → Position Edit placement, including adjusted cel label/cel area positions.</li>' +
           '<li>Name-tag delete <code>×</code> stays hidden normally and appears only while the tag text editor is open.</li>' +
           '<li><code>CREATED BY もああん</code> now opens the creator link in a new tab.</li>' +
@@ -2375,7 +2206,6 @@
           '<details><summary>ver510 · Settings cache, Position Edit constraints, cel edit hits</summary><div><ul><li>Restored cached settings JSON lists after reload and reused saved folder handles when permission is granted.</li><li>Linked left/right Position Edit spacing for Cell, Dialog, and Camera areas, with overlap/page-boundary constraints.</li><li>Added broader click editing for red X, dot, and filled cel cells.</li><li>Shortened the title to Auto Sheet and grouped settings controls under JSON.</li><li>Added basic paper-image line magnet snapping when detectable straight lines exist.</li></ul></div></details>' +
           '<details><summary>ver509 · Update history and top bar polish</summary><div><ul><li>Added this multilingual update-history window, opened by clicking the program title.</li><li>Added an internal maintenance instruction so future ChatGPT updates also update this history.</li><li>Adjusted the top-bar button widths and spacing so the title is not truncated.</li></ul></div></details>' +
           '<details><summary>ver508 · Settings selector and name-tag delete button</summary><div><ul><li>Made the loaded settings JSON selector visible beside the top Load button.</li><li>Changed name-tag delete <code>×</code> so it appears only during text editing.</li></ul></div></details>' +
-          '<details><summary>ver507 · Folder JSON import, layout presets, creator link</summary><div><ul><li>Added folder scanning for whole-program settings JSON files.</li><li>Automatically imported external-paper layout preset JSON files into the preset list.</li><li>Made Dialog <code>×</code> render as blank.</li><li>Fixed cel name tags so they follow Position Edit layout boxes.</li><li>Linked <code>CREATED BY もああん</code> to the creator page.</li></ul></div></details>' +
           '<details><summary>ver506 · Blank header click editing</summary><div><ul><li>Added clickable header hit areas so empty header fields can still be edited directly on the sheet.</li></ul></div></details>' +
           '<details><summary>ver505 · CSV sample cleanup</summary><div><ul><li>Removed default Dialog/Camera sample lines automatically when CSV data is imported or regenerated.</li></ul></div></details>' +
           '<details><summary>ver504 · Duration hold extension and output folder</summary><div><ul><li>Extended cel hold lines to the Duration endpoint.</li><li>Added output-folder selection where browser support is available.</li></ul></div></details>'
@@ -2400,7 +2230,6 @@
           '<li>ヘッダー文字が空でも、該当位置をクリックして直接入力できる。</li>' +
           '<li>セリフ欄の開始枠に <code>×</code> / <code>x</code> が入っている場合、シートプレビュー上では空欄として扱う。</li>' +
           '<li>上部の読込ボタンでフォルダを指定し、プログラム全体設定 JSON だけを一覧から選択して適用できる。</li>' +
-          '<li>同じフォルダ内の外部用紙レイアウトプリセット JSON は、自動でプリセット選択欄へ追加する。</li>' +
           '<li>セルのネームタグが、外部用紙読み込み → 位置編集で調整したセルラベル/セル欄の位置に追従する。</li>' +
           '<li>ネームタグの削除 <code>×</code> は通常非表示になり、テキスト入力欄が開いている間だけ表示される。</li>' +
           '<li><code>CREATED BY もああん</code> をクリックすると制作者リンクを新規タブで開く。</li>' +
@@ -2426,7 +2255,6 @@
           '<details><summary>ver510 · 設定キャッシュ、位置編集制限、セル編集ヒット</summary><div><ul><li>リロード後も設定JSON一覧を復元し、権限が残っている場合は保存済みフォルダを再利用。</li><li>位置編集で左右のCell/Dialog/Camera間隔を連動し、重なりとページ外移動を制限。</li><li>赤いX、動画点、原画番号入りセルのクリック編集範囲を拡張。</li><li>タイトルをAuto Sheetに短縮し、設定操作をJSONグループとして整理。</li><li>検出可能な直線がある外部用紙画像では、位置編集に簡易マグネット吸着を追加。</li></ul></div></details>' +
           '<details><summary>ver509 · 更新履歴と上部バー調整</summary><div><ul><li>タイトルクリックで開く多言語更新履歴ウィンドウを追加。</li><li>今後ChatGPTで更新する際、この履歴も更新するための内部メンテナンス指示を追加。</li><li>タイトルが省略されないよう、上部ボタンの幅と間隔を調整。</li></ul></div></details>' +
           '<details><summary>ver508 · 設定選択UIとネームタグ削除ボタン</summary><div><ul><li>上部の読込ボタン横に、読み込んだ設定JSONの選択UIを常時表示。</li><li>ネームタグ削除 <code>×</code> を、テキスト編集中だけ表示する方式に変更。</li></ul></div></details>' +
-          '<details><summary>ver507 · フォルダJSON読込、レイアウトプリセット、制作者リンク</summary><div><ul><li>プログラム全体設定JSONをフォルダから走査する機能を追加。</li><li>外部用紙レイアウトプリセットJSONをプリセット一覧へ自動追加。</li><li>セリフ欄の <code>×</code> を空欄表示に変更。</li><li>セルネームタグが位置編集のレイアウトボックスに追従するよう修正。</li><li><code>CREATED BY もああん</code> に制作者リンクを追加。</li></ul></div></details>' +
           '<details><summary>ver506 · 空ヘッダー直接編集</summary><div><ul><li>ヘッダー文字が空でも、シート上の該当位置クリックで編集できるヒット領域を追加。</li></ul></div></details>' +
           '<details><summary>ver505 · CSV読込時のサンプル整理</summary><div><ul><li>CSV読込/再生成時に Dialog/Camera の初期サンプル行を自動削除。</li></ul></div></details>' +
           '<details><summary>ver504 · Duration 継続線延長と出力先フォルダ</summary><div><ul><li>セル継続線を Duration 終了位置まで延長。</li><li>対応ブラウザで出力先フォルダを選択できる機能を追加。</li></ul></div></details>'
@@ -2436,7 +2264,6 @@
         subtitle: 'Auto Sheet 제목을 클릭하면 이 내역을 열 수 있다. 실제 반영된 변경만 정리한다.',
         html: '<h4><span class="update-log-badge">Today</span>2026-04-28 업데이트 전체 정리</h4>' +
           '<ul>' +
-          '<li>ver550: 셀 글자/마크를 크게 보는 돋보기 버튼과, Cell 번호/동화점으로 동화칸을 생성하는 읽기 전용 동화시트 기능을 추가했다. 반복 패턴은 같은 번호열로 재사용한다.</li><li>ver549: 동화칸 열 수가 표시 중인 Cell 열 수를 따라가도록 수정했다. 10칸 확장과 3초 단면 시트에서도 같은 열 수로 출력된다.</li><li>ver544: Text/CSV 커맨드의 명시적 x가 지속선을 끊지 않도록 하고, Text Commands에도 Cell/Hide/Book/Dialog/Camera 속성 전환을 추가했다. 원본 줄은 삭제하지 않고 유지한다.</li><li>ver543: 글자나 점선 때문에 SARU 헤더 Cut 칸이 쪼개질 때 넓은 칸으로 결합해 잡도록 보정했다. CSV Cell의 명시적 x는 검은 단발 X 마크로 표시하고, 자동 선두 빨간 X는 유지한다.</li><li>ver542: cygames 계열처럼 흐린 헤더 오른쪽 끝을 전체 높이 세로선으로 보완하고, TOHO/studiobono 본문 칸 추정을 복구했다. SARU Author를 칸 안에 맞추고 CSV의 ×를 단발 셀 X로 처리한다.</li><li>ver537: 외부용지 프리셋 조작 UI를 삭제하고, 분리된 PSD 메모 레이어 표시 토글을 추가했다. 헤더 자동정렬은 Duration의 +마크와 시트 매수 칸의 대각선 점수를 보조 판정으로 사용한다.</li><li>ver536: 10칸 CELL을 자동정렬 정식 후보로 강화하고, 촘촘한 내부 세로선을 건너뛰는 후보를 감점했다. Enishiya PSD 계열의 약한 오른쪽 Camera 경계도 추정하도록 수정했다.</li><li>ver535: Enishiya/SARU 계열 Camera 자동정렬을 보강했다. 전체 초기화는 화수·제목·이름을 남기고 페이지를 1/1로 되돌리며, 용지 삭제 옆에 되돌리기/다시 실행을 추가했다.</li><li>ver534: 레이어 PSD 용지의 캔버스가 1753×2480과 다를 때만 프로그램 용지 크기에 맞춰 합성해, 큰 PSD 용지가 잘리지 않도록 했다. 표준 크기 파일의 불러오기 결과는 기존과 같다.</li><li>ver533: CLIP STUDIO .clip 파일 내부 데이터베이스의 CanvasPreview PNG를 읽어 외부용지로 불러올 수 있게 했다.</li><li>ver532: ver530의 표준 Auto Align 결과를 기본으로 유지하고, JDG식 점선 9칸 복원은 좌우 Camera 박스가 강한 바깥 세로선까지 확장될 때만 채택하도록 했다.</li><li>ver530: 대사칸 좌우의 CELL 수가 다른 CSM/MAD 계열 용지에서, 7칸 후속 CELL 뒤의 굵은 구획선을 Camera 시작점으로 보정하는 제한 규칙을 추가했다.</li><li>ver529: 복잡한 용지에서 자동 정렬이 멈추지 않도록 후보 페어 수 제한, 해석 결과 캐시, 후속 CELL 탐색 범위 제한을 추가했다.</li>' +
           '<li>ver528: 굵은 구획선 우선도, 페이지 가장자리 노이즈 제거, TOEI식 9칸 복원, 7칸 후속 CELL 허용, 반복 CELL 끝에서 Camera 시작 고정을 강화해 외부용지 자동 정렬을 조정했다.</li>' +
           '<li>ver527: 대사칸의 가로줄 공백, 누락된 셀선 복원, 특수 H칸 좌측 정렬, 반복 CELL 격자 이후 Camera 시작 보호를 이용해 외부용지 자동 정렬을 강화했다.</li>' +
           '<li>ver526: 도에이식 A-H＋빈칸을 포함한 7-9칸 시트에서 H/빈칸을 대사란으로 오인하지 않도록 외부용지 자동 정렬을 조정했다.</li>' +
@@ -2451,7 +2278,6 @@
           '<li>헤더 텍스트가 비어 있어도 해당 위치를 클릭해 직접 입력할 수 있다.</li>' +
           '<li>대사란의 시작 박스에 <code>×</code> / <code>x</code>가 들어가면 시트 프리뷰에서는 빈칸으로 처리한다.</li>' +
           '<li>상단 불러오기 버튼으로 폴더를 지정하고, 그 안의 프로그램 전체 설정 JSON만 선택해서 적용할 수 있다.</li>' +
-          '<li>같은 폴더 안의 외부용지 레이아웃 프리셋 JSON은 자동으로 외부용지 프리셋 선택 목록에 추가된다.</li>' +
           '<li>셀란 네임태그가 외부용지 불러오기 → 위치편집에서 조정한 셀라벨/셀란 위치를 따라가도록 수정했다.</li>' +
           '<li>네임태그 삭제 <code>×</code>는 평상시 숨겨지고, 텍스트 입력란이 떠 있을 때만 표시된다.</li>' +
           '<li><code>CREATED BY もああん</code>을 클릭하면 제작자 링크가 새 탭으로 열린다.</li>' +
@@ -2467,7 +2293,6 @@
           '<li>원화번호에 커서를 올렸을 때 텍스트 입력 커서가 아니라 손 커서로 통일한다.</li>' +
           '<li>검은 지속선/동화점은 클릭으로 동화점 ON/OFF, Shift+클릭으로 텍스트 입력하도록 되돌린다. 빨간 지속선은 클릭 텍스트 입력을 유지한다.</li><li>대사란의 <code>0+20 | 5+10 | × |</code> 같은 행은 라벨, 빨간 범위선, 세로 지속선까지 전부 표시하지 않는다.</li><li><code>A_ls</code>, <code>B_ls</code>, <code>C_ls</code> 같은 접미사 레이어명을 포함한 CLIP STUDIO CSV 읽기 정지 문제를 수정한다. 먼 알파벳 열로 오인하지 않는다.</li><li>텍스트 커맨드와 CSV 편집란에서 라이브 프리뷰 갱신 중에도 입력 중인 스페이스를 보존해, 자유로운 연속 입력을 되돌렸다.</li><li>입력 모드 버튼을 한 줄 가로 배치로 변경했다.</li><li>내장 시트 템플릿의 Dialog 본문 열에는 가로선을 출력하지 않고, Dialog 헤더 밑 구분선만 남긴다.</li><li>텍스트 메모를 다시 편집할 때 투명 편집기가 열린 동안 SVG 프리뷰 쪽 문자를 숨겨 이중 표시를 막는다.</li>' +
           '</ul>' +
-          '<h4>최근 상세 내역</h4><details open><summary>ver530 · CSM/MAD Camera 굵은선 보정</summary><div><ul><li>앞쪽 격자는 좁은 8칸이고 Dialog 뒤 반복 격자는 넓은 7칸인 경우, 후속 CELL을 강한 구획선에서 멈추고 그 선부터 Camera를 시작하도록 했다.</li><li>짧은 Dialog 폭과 넓은 후속 CELL 폭 비율을 동시에 만족할 때만 보정해 8bit, KINEMA, TOEI, bones, TOHO의 기존 매칭에 영향이 적도록 했다.</li></ul></div></details><details open><summary>ver529 · 자동 정렬 멈춤 방지</summary><div><ul><li>좌우 열 후보 페어 탐색을 강한 후보 위주로 제한하고, 페이지 중심에서 크게 벗어난 페어는 해석 전에 제외한다.</li><li>페어 매칭 중 같은 오른쪽 그룹을 반복 계산하지 않도록 해석 결과를 캐시한다.</li><li>후속 CELL 격자 탐색을 가능한 폭 안으로 제한해, 복잡한 선 배열에서 매칭이 오래 멈추는 문제를 막는다.</li></ul></div></details><details open><summary>ver528 · 외부용지 자동 정렬 굵은선 안정화</summary><div><ul><li>굵은 세로 구획선 강도를 Cell/Dialog 후보 점수에 직접 반영해, 옅은 TOEI식 9칸이나 KINEMA식 8칸이 7칸으로 줄어드는 문제를 줄였다.</li><li>Dialog 뒤의 후속 CELL 격자는 앞쪽 CELL과 1칸 차이까지 허용해 CSM/MAD처럼 뒤쪽만 7칸인 구조에 대응했다.</li><li>Camera 시작점은 반복 CELL 격자의 끝에 더 강하게 고정하고, 페이지 가장자리 그림자 노이즈는 열 매칭 전에 제거한다.</li></ul></div></details><details open><summary>ver527 · 외부용지 자동 정렬 피드백 수정</summary><div><ul><li>대사 후보는 본문 가로줄이 적은지를 직접 점수화해서 8bit/MAD 계열 대사칸을 이웃 CELL칸과 더 잘 분리한다.</li><li>특수 H칸/빈 여백은 CELL 박스를 왼쪽 정렬로 유지하고 Dialog 앞 여백을 남기며, 흐린 용지에서는 누락된 세로선도 복원 후보로 사용한다.</li><li>Camera 검출은 반복 CELL 격자 뒤에서 시작하고 전체 페이지 외곽선을 제외해 bones/TOHO 계열 Camera 박스를 개선했다.</li></ul></div></details><details open><summary>ver526 · 외부용지 자동 정렬 열 판정 조정</summary><div><ul><li>대사란 뒤 반복 CELL 격자까지 확인한 뒤 7/8/9칸 후보를 고르도록 해, 도에이식 H/빈칸을 대사란으로 오인하기 어렵게 했다.</li><li>카메라 시작 위치는 얇은 내부선보다 강한 구획선을 우선한다.</li><li>추정에 사용한 반복 CELL 격자를 상태 패널과 프리뷰 오버레이에 표시한다.</li></ul></div></details><details open><summary>ver525 · 외부용지 자동 정렬</summary><div><ul><li>외부용지에 자동 정렬 버튼을 추가해, 감지한 가로선·세로선으로 72프레임 본문 행과 Header/Cell/Dialog/Camera 위치 박스를 추정한다.</li><li>용지 이미지를 불러온 직후 같은 추정을 1회 실행하고, 위치 편집 상태를 유지해 수동 보정할 수 있게 했다.</li><li>자동 정렬 상태 패널과 프리뷰 오버레이에 감지 선 수, 본문 행 배열, 열 패턴, 신뢰도, 적용 박스를 표시한다.</li></ul></div></details><details open><summary>ver524 · 카메라란 도움말 정리</summary><div><ul><li>카메라란 도움말에 남아 있던 24fps 고정 문장을 지원 언어 전체에서 삭제했다.</li></ul></div></details><details open><summary>ver523 · 업데이트 이력, 설명문 정리, CSV 상태 표시 언어 대응</summary><div><ul><li>이번 버전을 업데이트 이력에 추가하고, 지원 언어 전체에 같은 내용을 기록했다.</li><li>단축키 설정의 회색 설명문, 대사란의 24fps 고정 문장, 시트 프리뷰 밑 회색 메타 표시를 삭제했다.</li><li>CSV 읽기 완료 표시는 CSV를 불러온 뒤 언어를 바꿔도 선택 중인 UI 언어를 따라가도록 수정했다.</li></ul></div></details><details open><summary>ver522 · 프리셋 배치, 프리뷰 메타 다국어화, Duration 동기화, 자석 표기</summary><div><ul><li>외부용지 프리셋 1행에 프리셋 저장/불러오기, 2행에 프리셋 선택/적용을 배치했다.</li><li>시트 프리뷰 아래 메타 문구와 페이지 표시를 언어 대응했다.</li><li>실제 시트 내용으로 Duration 종료선이 표시될 때 Duration 초/프레임 값이 비어 있거나 0이면, 해당 종료 프레임을 Duration 입력값에 동기화한다.</li><li>용지선 자석 버튼 표기를 상/중/하에서 강/중/약으로 변경했다.</li></ul></div></details><details open><summary>ver521 · 입력 모드 일본어 라벨 폭 조정</summary><div><ul><li>CSV 입력 모드의 일본어 라벨을 반각 괄호 표기로 변경했다.</li><li>가로 버튼에서 글자가 삐져나가지 않도록 폰트 폭, 자간, 여백을 조정했다.</li></ul></div></details><details open><summary>ver520 · Dialog 가로선 제외와 텍스트 메모 이중 표시 방지</summary><div><ul><li>내장 시트 템플릿에서 Dialog 본문 열에는 프레임 가로선을 긋지 않도록 변경했다.</li><li>Dialog 열에 남는 가로선은 헤더 밑 구분선뿐이다.</li><li>텍스트 메모 textarea가 열리는 순간 SVG 프리뷰 쪽 같은 문자를 숨겨, 재편집 때 이중으로 보이지 않게 했다.</li></ul></div></details><details open><summary>ver519 · 입력 모드 버튼 가로 배치</summary><div><ul><li>입력 모드 버튼을 3열 가로 배치로 변경했다.</li><li>긴 CSV 라벨이 버튼 안에 들어가도록 중앙 정렬과 줄바꿈을 적용했다.</li></ul></div></details><details open><summary>ver518 · 텍스트 메모 투명 편집, 입력 모드 버튼화, 자석 민감도</summary><div><ul><li>텍스트 메모 편집 UI의 흰 배경을 없애고 프리뷰에 가까운 상태로 편집하도록 바꿨다.</li><li>입력 모드를 선택 탭이 아니라 직접 누르는 버튼으로 바꾸고, 선택 중 버튼은 프로젝트의 파랑＋빨간 발광 UI를 적용했다.</li><li>위치편집 버튼 옆에 용지 선 자석 민감도 상/중/하 버튼을 추가했다. 초기값은 중이다.</li><li>외부용지 이미지의 선 인식을 개선해 유사 색상이 가로/세로로 길게 이어지는 정보도 선으로 잡도록 했다.</li><li>일본어/한국어 라벨과 시트 프리뷰 하단 문구를 정리했다.</li></ul></div></details>' +
           '<details open><summary>ver517 · Text Commands 스페이스 입력 복구</summary><div><ul><li>Text Commands와 CSV 편집란에서 라이브 프리뷰 갱신 중에도 사용자가 입력한 공백을 유지한다.</li><li>선두 X 공백 보정 처리가 커맨드 행 전체를 재조립하지 않도록 바꿔, Space를 누른 직후 공백이 사라지지 않게 한다.</li></ul></div></details><details><summary>ver516 · CLIP CSV 접미사 레이어명 정지 수정</summary><div><ul><li>절대 위치 배치에 쓰는 셀 열 이름을 지원 범위 안의 순수 A-Z 라벨로 제한한다.</li><li><code>A_ls</code>, <code>B_ls</code>, <code>C_ls</code> 같은 레이어명은 일반 레이어로 읽고, 수천 개의 보조 열을 만들지 않는다.</li></ul></div></details>' +
           '<details open><summary>ver515 · 대사란 × 블록 완전 비표시</summary><div><ul><li>대사란에서 시작 박스가 <code>×</code>/<code>x</code>이고 본문이 비어 있는 행은 시트에 아무것도 표시하지 않는다.</li><li>빨간 범위선, 세로 가이드선, 라벨, 본문을 모두 숨긴다.</li></ul></div></details>' +
           '<details><summary>ver514 · 동화점 토글과 텍스트 입력 분리</summary><div><ul><li>검은 지속선/동화점은 클릭으로 동화점 ON/OFF, Shift+클릭으로 텍스트 입력하도록 되돌렸다.</li><li>빨간 지속선은 동화점으로 바뀌지 않고 클릭으로 텍스트 입력하는 동작을 유지했다.</li></ul></div></details>' +
@@ -2477,7 +2302,6 @@
           '<details><summary>ver510 · 설정 캐시, 위치편집 제한, 셀 편집 판정</summary><div><ul><li>새로고침 후에도 설정 JSON 목록을 복원하고, 권한이 남아 있으면 저장된 폴더를 재사용한다.</li><li>위치편집에서 좌우 Cell/Dialog/Camera 간격을 연동하고 겹침과 페이지 바깥 이동을 제한한다.</li><li>빨간 X, 동화점, 원화번호 입력 칸의 클릭 편집 범위를 확장했다.</li><li>제목을 Auto Sheet로 줄이고 설정 조작을 JSON 그룹으로 묶었다.</li><li>감지 가능한 직선이 있는 외부용지 이미지에서는 위치편집에 간이 마그넷 흡착을 추가했다.</li></ul></div></details>' +
           '<details><summary>ver509 · 업데이트 내역과 상단 바 정리</summary><div><ul><li>제목 클릭으로 열리는 다국어 업데이트 내역 창을 추가.</li><li>앞으로 ChatGPT가 HTML을 갱신할 때 이 업데이트 내역도 갱신하라는 내부 유지보수 지시를 추가.</li><li>제목이 생략되지 않도록 상단 버튼 폭과 간격을 조정.</li></ul></div></details>' +
           '<details><summary>ver508 · 설정 선택 UI와 네임태그 삭제 버튼</summary><div><ul><li>상단 불러오기 옆에 읽어온 설정 JSON 선택 UI를 항상 표시.</li><li>네임태그 삭제 <code>×</code>를 텍스트 편집 중에만 표시하도록 변경.</li></ul></div></details>' +
-          '<details><summary>ver507 · 폴더 JSON 불러오기, 레이아웃 프리셋, 제작자 링크</summary><div><ul><li>프로그램 전체 설정 JSON을 폴더에서 스캔하는 기능 추가.</li><li>외부용지 레이아웃 프리셋 JSON을 프리셋 목록에 자동 등록.</li><li>대사란 <code>×</code>를 빈칸 표시로 처리.</li><li>셀 네임태그가 위치편집 레이아웃 박스를 따라가도록 수정.</li><li><code>CREATED BY もああん</code>에 제작자 링크 추가.</li></ul></div></details>' +
           '<details><summary>ver506 · 빈 헤더 직접 입력</summary><div><ul><li>헤더 값이 비어 있어도 시트 위 해당 위치 클릭으로 입력할 수 있는 히트영역 추가.</li></ul></div></details>' +
           '<details><summary>ver505 · CSV 불러오기 샘플 정리</summary><div><ul><li>CSV 불러오기/재생성 시 대사란/카메라란 기본 샘플 라인을 자동 삭제.</li></ul></div></details>' +
           '<details><summary>ver504 · Duration 지속선 연장과 출력 폴더</summary><div><ul><li>셀 지속선을 Duration 끝까지 연장.</li><li>지원 브라우저에서 출력 저장 폴더를 선택하는 기능 추가.</li></ul></div></details>'
@@ -2487,7 +2311,6 @@
         subtitle: '点击 Auto Sheet 标题即可打开此记录。这里只列出已经实际实现的更新。',
         html: '<h4><span class="update-log-badge">Today</span>2026-04-28 更新总览</h4>' +
           '<ul>' +
-          '<li>ver550：新增放大 Cell 文字/标记的放大镜按钮，并加入只读动画栏生成器，可由 Cell 编号和动画点生成动画栏；重复图案会复用同一组编号。</li><li>ver549：让中割/动画栏列数跟随当前显示的 Cell 列数；10 列扩展和 3 秒单面 Sheet 也会使用相同列数。</li><li>ver544：让 Text/CSV 命令中的显式 x 不再切断持续线，并为 Text Commands 加入 Cell/Hide/Book/Dialog/Camera 角色切换；原始行会保留而不会被删除。</li><li>ver543：当文字或虚线把 SARU Header 的 Cut 栏切碎时，会合并为较宽的 Cut 栏；CSV Cell 中显式的 x 会显示为黑色单帧 X 标记，同时保留自动开头红色 X。</li><li>ver542：用完整高度竖线补全 cygames 类较淡的 Header 右边缘，恢复 TOHO/studiobono 正文列推断；让 SARU Author 保持在栏内，并把 CSV 的 × 当作单帧 Cell X。</li><li>ver537：删除外部纸张预设操作，加入分离 PSD 备注图层的显示开关；Header 自动对齐会把 Duration 的 + 标记和张数栏斜线评分作为辅助判断。</li><li>ver536：强化 10 列 CELL 的自动对齐评分，并降低跳过密集内部竖线的候选分数；同时推断 Enishiya PSD 类纸张较弱的右端 Camera 边界。</li><li>ver535：改进 Enishiya/SARU 类 Camera 框自动对齐；全部重置会保留集数、标题、姓名并把页码恢复为 1/1；在清除纸张旁加入撤销/重做。</li><li>ver534：导入带图层的 PSD 纸张时，仅当 PSD 画布不同于 1753×2480 才缩放到程序纸张尺寸，避免大型 PSD 被裁切；标准尺寸文件保持原有导入结果。</li><li>ver533：可从 CLIP STUDIO .clip 文件的内部数据库读取 CanvasPreview PNG，并作为外部纸张导入。</li><li>ver532：保留 ver530 标准 Auto Align 结果作为默认，仅当 JDG 类虚线 9 列恢复能把左右 Camera 框扩展到完整强竖线时才采用该结果。</li><li>ver530：为 Dialog 两侧 CELL 数不同的 CSM/MAD 类纸张加入限定 Camera 修正，可把 7 列后续 CELL 之后的粗分隔线作为 Camera 起点。</li><li>ver529：加入自动对齐性能保护、候选配对缓存和后续 CELL 网格搜索范围限制，避免复杂纸张在线条匹配时卡住。</li>' +
           '<li>ver528：提高粗分隔线优先级，过滤页面边缘噪声，恢复东映式 9 列，允许 7 列后续 CELL 网格，并加强在重复 CELL 网格末端锁定 Camera 起点。</li>' +
           '<li>ver527：通过 Dialog 横线空白、缺失 Cell 线重建、特殊 H 栏左对齐，以及重复 CELL 网格后的 Camera 起点保护，强化外部纸张自动对齐。</li>' +
           '<li>ver526：改进 7-9 列外部纸张自动对齐，减少将东映式 A-H＋空白格误判为 Dialog 的情况。</li>' +
@@ -2502,7 +2325,6 @@
           '<li>Header 文字为空时，也可以点击对应位置直接输入。</li>' +
           '<li>对白栏开始框中的 <code>×</code> / <code>x</code> 会在 Sheet 预览中作为空白处理。</li>' +
           '<li>顶部导入按钮可选择文件夹，只列出并应用程序整体设置 JSON。</li>' +
-          '<li>同一文件夹内的外部纸张布局预设 JSON 会自动加入预设选择列表。</li>' +
           '<li>Cell 名称标签会跟随“外部纸张导入 → 位置编辑”中调整后的 Cell 标签/Cell 区域位置。</li>' +
           '<li>名称标签删除 <code>×</code> 平时隐藏，仅在文本编辑框打开时显示。</li>' +
           '<li>点击 <code>CREATED BY もああん</code> 会在新标签页打开作者链接。</li>' +
@@ -2518,7 +2340,6 @@
           '<li>原画编号悬停时统一为手形光标，而不是文字输入光标。</li>' +
           '<li>黑色保持线/动画点恢复为点击切换动画点 ON/OFF，Shift 点击输入文字。红色保持线保持点击输入文字。</li><li>对白栏中类似 <code>0+20 | 5+10 | × |</code> 的行会完全不显示，包括标签、红色范围线和竖线。</li><li>修正含有 <code>A_ls</code>、<code>B_ls</code>、<code>C_ls</code> 等后缀图层名的 CLIP STUDIO CSV 导入停止问题；这些名称不会再被误判为远处的字母列。</li><li>恢复 Text Commands 与 CSV 编辑栏中的自由空格输入，实时预览更新时也保留正在输入的空白。</li><li>输入模式按钮改为一行横向排列。</li><li>内置模板的 Dialog 正文列不再输出横线，只保留 Dialog 标题下方的分隔线。</li><li>重新编辑文字备注时，透明编辑器打开期间隐藏 SVG 预览文字，避免双重显示。</li>' +
           '</ul>' +
-          '<h4>最近详细记录</h4><details open><summary>ver530 · CSM/MAD Camera 粗线修正</summary><div><ul><li>当前方为较窄 8 列、Dialog 后方重复网格为较宽 7 列时，自动对齐会在强分隔线处结束后续 CELL，并从该线开始 Camera。</li><li>该修正只在短 Dialog 宽度和较宽后续 CELL 比例同时满足时启用，以尽量不影响 8bit、KINEMA、TOEI、bones、TOHO 的既有匹配。</li></ul></div></details><details open><summary>ver529 · 自动对齐防卡顿</summary><div><ul><li>将左右列候选配对限制在较强候选内，并在解析前跳过明显偏离页面中心的组合。</li><li>配对匹配中缓存已解析的侧边结构，避免同一右侧组被反复计算。</li><li>按合理宽度限制后续 CELL 网格搜索范围，防止复杂线条数组导致长时间卡住。</li></ul></div></details><details open><summary>ver528 · 外部纸张自动对齐粗线分隔稳定化</summary><div><ul><li>将粗竖向分隔线强度直接加入 Cell/Dialog 候选评分，减少浅色东映式 9 列或 KINEMA 式 8 列被压成 7 列的情况。</li><li>Dialog 后方的后续 CELL 网格允许与前方 CELL 相差一列，以适应 CSM/MAD 中后方只有 7 列的结构。</li><li>Camera 起点更强地锁定在重复 CELL 网格末端，并在列匹配前过滤页面边缘阴影噪声。</li></ul></div></details><details open><summary>ver527 · 外部纸张自动对齐反馈修正</summary><div><ul><li>Dialog 候选会直接评分正文横线缺失程度，更可靠地区分 8bit/MAD 类 Dialog 栏和相邻 CELL 栏。</li><li>特殊 H 栏/空白间距会保持 CELL 框左对齐并在 Dialog 前留出空隙，浅色纸张也会尝试重建缺失竖线。</li><li>Camera 检测从重复 CELL 网格之后开始，并排除整页边框线，改善 bones/TOHO 类 Camera 框。</li></ul></div></details><details open><summary>ver526 · 外部纸张自动对齐列判断调整</summary><div><ul><li>选择 7/8/9 列候选前，会同时验证 Dialog 后方的重复 CELL 网格，减少将东映式 H/空白格误判为 Dialog 的情况。</li><li>Camera 起点会优先使用更强的分隔线，减少吸入最后一个 CELL 网格列。</li><li>状态面板和预览叠层会显示推断时使用的重复 CELL 网格。</li></ul></div></details><details open><summary>ver525 · 外部纸张自动对齐</summary><div><ul><li>为外部纸张新增自动对齐按钮，根据检测到的横线、竖线推断 72 帧正文行以及 Header/Cell/Dialog/Camera 位置框。</li><li>载入纸张图像后会自动执行一次同样的推断，并保持位置编辑开启，便于手动修正。</li><li>自动对齐状态面板和预览叠层会显示检测线数、正文行序列、列模式、置信度和已应用框。</li></ul></div></details><details open><summary>ver524 · Camera 栏帮助文字整理</summary><div><ul><li>删除 Camera 栏帮助文字中残留的 24fps 固定句，并同步到所有支持语言。</li></ul></div></details><details open><summary>ver523 · 更新记录、说明文字整理、CSV 状态显示语言支持</summary><div><ul><li>将本次版本加入更新记录，并在所有支持语言中记录同一内容。</li><li>删除快捷键设置的灰色说明、对白栏的 24fps 固定句，以及 Sheet 预览下方的灰色信息文字。</li><li>CSV 读取完成提示在读取 CSV 后切换语言时，也会跟随当前 UI 语言。</li></ul></div></details><details open><summary>ver522 · 预设布局、预览信息多语言、Duration 同步、磁吸标签</summary><div><ul><li>外部纸张预设控制中，第一行放置保存/读取预设，第二行放置预设选择/应用。</li><li>Sheet 预览下方的说明文字和页码显示支持多语言。</li><li>根据实际内容显示 Duration 结束线时，如果 Duration 秒/帧为空或为 0，会把该结束帧同步回 Duration 输入框。</li><li>纸张线条磁吸按钮由上/中/下改为强/中/弱。</li></ul></div></details><details open><summary>ver521 · 输入模式日文标签宽度调整</summary><div><ul><li>将 CSV 输入模式的日文标签改为半角括号。</li><li>调整横向按钮的字体宽度、字距和内边距，避免文字溢出。</li></ul></div></details><details open><summary>ver520 · Dialog 横线排除与文字备注双重显示修正</summary><div><ul><li>内置 Sheet 模板中，Dialog 正文列不再绘制帧横线。</li><li>Dialog 列只保留标题下方的分隔线。</li><li>文字备注 textarea 打开时隐藏 SVG 预览中的同一文字，避免重新编辑时双重显示。</li></ul></div></details><details open><summary>ver519 · 输入模式按钮横向排列</summary><div><ul><li>将输入模式按钮改为紧凑的三列横向排列。</li><li>按钮文字居中并允许换行，使较长的 CSV 标签保持在按钮内。</li></ul></div></details><details open><summary>ver518 · 透明文字备注编辑、输入模式按钮、磁吸灵敏度</summary><div><ul><li>移除文字备注编辑 UI 的白色背景，使编辑时更接近预览外观。</li><li>输入模式由下拉菜单改为直接按钮，当前按钮使用项目的蓝色＋红色发光 UI。</li><li>在位置编辑旁新增纸张线条磁吸灵敏度上/中/下按钮，默认值为中。</li><li>改进外部纸张图像线条检测，可识别相近颜色横向/纵向连续形成的线。</li><li>整理日文/韩文标签和 Sheet 预览下方显示文本。</li></ul></div></details>' +
           '<details open><summary>ver517 · 恢复 Text Commands 空格输入</summary><div><ul><li>Text Commands 与 CSV 编辑栏在实时预览更新时保留用户输入的空白。</li><li>开头 X 空白修正处理不再重建整行命令，因此按下 Space 后空白不会立刻消失。</li></ul></div></details><details><summary>ver516 · 修正 CLIP CSV 后缀图层名停止问题</summary><div><ul><li>绝对 Cell 列定位只使用支持范围内的纯 A-Z 标签。</li><li><code>A_ls</code>、<code>B_ls</code>、<code>C_ls</code> 等图层名会作为普通图层导入，不再生成数千个填充列。</li></ul></div></details>' +
           '<details open><summary>ver515 · 对白栏 × 块完全隐藏</summary><div><ul><li>对白栏中开始框为 <code>×</code>/<code>x</code> 且正文为空的行，不在 Sheet 上绘制任何内容。</li><li>红色范围线、竖向引导线、标签和正文全部隐藏。</li></ul></div></details>' +
           '<details><summary>ver514 · 分离动画点切换与文字输入</summary><div><ul><li>黑色保持线/动画点恢复为点击切换动画点 ON/OFF，Shift 点击输入文字。</li><li>红色保持线不切换动画点，继续使用点击输入文字。</li></ul></div></details>' +
@@ -2528,7 +2349,6 @@
           '<details><summary>ver510 · 设置缓存、位置编辑限制、Cell 编辑命中</summary><div><ul><li>刷新后恢复设置 JSON 列表，并在权限仍可用时复用已保存文件夹。</li><li>位置编辑会联动左右 Cell/Dialog/Camera 间距，并限制重叠和移出页面。</li><li>扩展红色 X、动画点、已有原画编号格子的点击编辑范围。</li><li>标题缩短为 Auto Sheet，并将设置操作整理为 JSON 组。</li><li>外部纸张图像中可检测到直线时，位置编辑会进行简易磁吸。</li></ul></div></details>' +
           '<details><summary>ver509 · 更新记录与顶部栏调整</summary><div><ul><li>新增点击标题打开的多语言更新记录窗口。</li><li>加入内部维护指令，要求未来 ChatGPT 更新 HTML 时同步更新此记录。</li><li>调整顶部按钮宽度和间距，避免标题被省略。</li></ul></div></details>' +
           '<details><summary>ver508 · 设置选择 UI 与名称标签删除按钮</summary><div><ul><li>顶部导入按钮旁常显已读取设置 JSON 的选择 UI。</li><li>名称标签删除 <code>×</code> 改为仅在文本编辑中显示。</li></ul></div></details>' +
-          '<details><summary>ver507 · 文件夹 JSON 导入、布局预设、作者链接</summary><div><ul><li>新增从文件夹扫描程序整体设置 JSON 的功能。</li><li>自动把外部纸张布局预设 JSON 加入预设列表。</li><li>对白栏 <code>×</code> 改为空白显示。</li><li>修正 Cell 名称标签，使其跟随位置编辑的布局框。</li><li>为 <code>CREATED BY もああん</code> 添加作者链接。</li></ul></div></details>' +
           '<details><summary>ver506 · 空 Header 直接编辑</summary><div><ul><li>Header 为空时也可点击 Sheet 上对应位置编辑。</li></ul></div></details>' +
           '<details><summary>ver505 · CSV 示例行清理</summary><div><ul><li>CSV 导入/重新生成时自动删除 Dialog/Camera 默认示例行。</li></ul></div></details>' +
           '<details><summary>ver504 · Duration 保持线延长与输出文件夹</summary><div><ul><li>将 Cell 保持线延长到 Duration 结束位置。</li><li>支持浏览器中可选择输出保存文件夹。</li></ul></div></details>'
@@ -2862,6 +2682,33 @@
     Object.keys(visibleUpdateLogDocs).forEach(function(lang){
       visibleUpdateLogDocs[lang] = (updateLogVer605VisibleDocs[lang] || updateLogVer605VisibleDocs.en) + visibleUpdateLogDocs[lang];
     });
+    const updateLogVer606VisibleDocs = {
+      en: '<h4><span class="update-log-badge">ver606</span>Header Auto Align</h4><ul><li>Updated only the external-paper Header recognition area from the standalone Auto Align test version.</li></ul>',
+      ja: '<h4><span class="update-log-badge">ver606</span>Header自動整列</h4><ul><li>スタンドアロン版Auto Alignテストから、外部用紙のHeader認識領域だけを反映した。</li></ul>',
+      ko: '<h4><span class="update-log-badge">ver606</span>헤더 자동정렬</h4><ul><li>standalone Auto Align 테스트판에서 외부용지 Header 인식영역만 반영했다.</li></ul>',
+      zh: '<h4><span class="update-log-badge">ver606</span>Header 自动对齐</h4><ul><li>仅从独立 Auto Align 测试版同步了外部纸张的 Header 识别区域。</li></ul>'
+    };
+    Object.keys(visibleUpdateLogDocs).forEach(function(lang){
+      visibleUpdateLogDocs[lang] = (updateLogVer606VisibleDocs[lang] || updateLogVer606VisibleDocs.en) + visibleUpdateLogDocs[lang];
+    });
+    const updateLogVer609VisibleDocs = {
+      en: '<h4><span class="update-log-badge">ver609</span>External Paper Auto Align</h4><ul><li>Fixed 8bit, MAD, and MAPPA sheet recognition without changing the other checked TS reference sheets.</li></ul>',
+      ja: '<h4><span class="update-log-badge">ver609</span>外部用紙の自動整列</h4><ul><li>8bit、MAD、MAPPA系シートの認識を修正し、確認した他のTS参照シートには影響しないようにした。</li></ul>',
+      ko: '<h4><span class="update-log-badge">ver609</span>외부용지 자동정렬</h4><ul><li>8bit, MAD, MAPPA 계열 시트 인식을 수정하고, 확인한 다른 TS 참조 시트 결과는 바뀌지 않게 했다.</li></ul>',
+      zh: '<h4><span class="update-log-badge">ver609</span>外部纸张自动对齐</h4><ul><li>修正 8bit、MAD、MAPPA 系表格识别，并保持已检查的其他 TS 参考表格结果不变。</li></ul>'
+    };
+    Object.keys(visibleUpdateLogDocs).forEach(function(lang){
+      visibleUpdateLogDocs[lang] = (updateLogVer609VisibleDocs[lang] || updateLogVer609VisibleDocs.en) + visibleUpdateLogDocs[lang];
+    });
+    const updateLogVer611VisibleDocs = {
+      en: '<h4><span class="update-log-badge">ver611</span>Settings JSON cleanup</h4><ul><li>Removed external-paper layout preset JSON handling. Folder loading now only lists whole-program settings JSON files.</li></ul>',
+      ja: '<h4><span class="update-log-badge">ver611</span>設定JSON整理</h4><ul><li>外部用紙レイアウトプリセットJSONの処理を削除。フォルダ読込ではプログラム全体設定JSONだけを一覧に出すようにした。</li></ul>',
+      ko: '<h4><span class="update-log-badge">ver611</span>설정 JSON 정리</h4><ul><li>외부용지 레이아웃 프리셋 JSON 처리를 삭제했다. 폴더 불러오기는 자동시트 프로그램의 전체 설정 JSON만 목록에 표시한다.</li></ul>',
+      zh: '<h4><span class="update-log-badge">ver611</span>设置 JSON 整理</h4><ul><li>删除外部纸张布局预设 JSON 处理。文件夹读取现在只列出程序整体设置 JSON。</li></ul>'
+    };
+    Object.keys(visibleUpdateLogDocs).forEach(function(lang){
+      visibleUpdateLogDocs[lang] = (updateLogVer611VisibleDocs[lang] || updateLogVer611VisibleDocs.en) + visibleUpdateLogDocs[lang];
+    });
 
     function getUpdateLogDoc() {
       return UPDATE_LOG_DOCS[state.lang] || UPDATE_LOG_DOCS.en;
@@ -3011,7 +2858,7 @@
       en: {
         title:'External Paper Load',
         hint:'',
-        upload:'External Paper Image (JPG / PNG / PSD / CLIP)',
+        upload:'External Paper Image (JPG / PNG / PSD)',
         noPaper:'No paper image loaded.',
         loading:'Loading paper image...',
         loaded:function(name, meta){ return 'Loaded: ' + name + (meta ? ' · ' + meta : ''); },
@@ -3019,16 +2866,6 @@
         clear:'Clear Paper', undo:'Undo', redo:'Redo', reset:'Position Reset', position:'Position Edit', autoAlign:'Auto Align',
         pixelEmpty:'Source pixels: -',
         pixelInfo:function(w, h){ return 'Source pixels: ' + w + ' × ' + h; },
-        companyPresetTitle:'Preset',
-        companyPresetApply:'Apply',
-        companyPresetHint:'',
-        presetTitle:'Preset',
-        savePreset:'Save Preset',
-        loadPreset:'Load Preset',
-        presetReady:'Preset stores only position boxes and visibility options, not the paper image itself.',
-        presetSaved:function(name){ return 'Preset saved: ' + name; },
-        presetLoaded:function(name){ return 'Preset loaded: ' + name; },
-        presetFailed:function(msg){ return 'Preset load failed: ' + msg; },
         autoAlignStatus:{
           ready:'Auto Align compares the detected paper grid with the sheet UI.',
           working:'Analyzing paper lines and matching the sheet boxes...',
@@ -3055,7 +2892,7 @@
       ja: {
         title:'会社指定用紙を敷く',
         hint:'',
-        upload:'会社指定用紙画像（JPG / PNG / PSD / CLIP）',
+        upload:'会社指定用紙画像（JPG / PNG / PSD）',
         noPaper:'用紙画像は未読込。',
         loading:'用紙画像を読み込み中...',
         loaded:function(name, meta){ return '読込完了: ' + name + (meta ? ' · ' + meta : ''); },
@@ -3063,16 +2900,6 @@
         clear:'用紙をクリア', undo:'取り消し', redo:'やり直し', reset:'位置初期化', position:'位置編集', autoAlign:'自動整列',
         pixelEmpty:'元画像ピクセル: -',
         pixelInfo:function(w, h){ return '元画像ピクセル: ' + w + ' × ' + h; },
-        companyPresetTitle:'プリセット',
-        companyPresetApply:'適用',
-        companyPresetHint:'',
-        presetTitle:'プリセット',
-        savePreset:'プリセット保存',
-        loadPreset:'プリセット読込',
-        presetReady:'プリセットには位置ボックスと表示オプションだけを保存する。用紙画像本体は含めない。',
-        presetSaved:function(name){ return 'プリセット保存完了: ' + name; },
-        presetLoaded:function(name){ return 'プリセット読込完了: ' + name; },
-        presetFailed:function(msg){ return 'プリセット読込失敗: ' + msg; },
         autoAlignStatus:{
           ready:'自動整列は、検出した用紙グリッドとシートUIを照合する。',
           working:'用紙の線を解析し、シートの位置ボックスと照合中...',
@@ -3099,7 +2926,7 @@
       ko: {
         title:'외부용지 불러오기',
         hint:'',
-        upload:'외부용지 이미지 (JPG / PNG / PSD / CLIP)',
+        upload:'외부용지 이미지 (JPG / PNG / PSD)',
         noPaper:'용지 이미지가 로드되지 않았다.',
         loading:'용지 이미지를 로드 중...',
         loaded:function(name, meta){ return '로드 완료: ' + name + (meta ? ' · ' + meta : ''); },
@@ -3107,16 +2934,6 @@
         clear:'용지 삭제', undo:'되돌리기', redo:'다시 실행', reset:'위치 초기화', position:'위치 편집', autoAlign:'자동 정렬',
         pixelEmpty:'원본 픽셀: -',
         pixelInfo:function(w, h){ return '원본 픽셀: ' + w + ' × ' + h; },
-        companyPresetTitle:'프리셋',
-        companyPresetApply:'적용',
-        companyPresetHint:'',
-        presetTitle:'프리셋',
-        savePreset:'프리셋 저장',
-        loadPreset:'프리셋 불러오기',
-        presetReady:'프리셋에는 위치 박스와 표시 옵션만 저장한다. 용지 이미지 본체는 포함하지 않는다.',
-        presetSaved:function(name){ return '프리셋 저장 완료: ' + name; },
-        presetLoaded:function(name){ return '프리셋 불러오기 완료: ' + name; },
-        presetFailed:function(msg){ return '프리셋 불러오기 실패: ' + msg; },
         autoAlignStatus:{
           ready:'자동 정렬은 감지한 용지 격자와 시트 UI를 대조한다.',
           working:'용지 선을 분석하고 시트 위치 박스와 대조 중...',
@@ -3143,7 +2960,7 @@
       zh: {
         title:'导入外部纸张',
         hint:'',
-        upload:'外部纸张图像（JPG / PNG / PSD / CLIP）',
+        upload:'外部纸张图像（JPG / PNG / PSD）',
         noPaper:'尚未载入纸张图像。',
         loading:'正在载入纸张图像...',
         loaded:function(name, meta){ return '载入完成: ' + name + (meta ? ' · ' + meta : ''); },
@@ -3151,16 +2968,6 @@
         clear:'清除纸张', undo:'撤销', redo:'重做', reset:'位置重置', position:'位置编辑', autoAlign:'自动对齐',
         pixelEmpty:'原始像素: -',
         pixelInfo:function(w, h){ return '原始像素: ' + w + ' × ' + h; },
-        companyPresetTitle:'预设',
-        companyPresetApply:'应用',
-        companyPresetHint:'',
-        presetTitle:'预设',
-        savePreset:'保存预设',
-        loadPreset:'载入预设',
-        presetReady:'预设只保存位置框和显示选项，不包含纸张图像本体。',
-        presetSaved:function(name){ return '预设已保存: ' + name; },
-        presetLoaded:function(name){ return '预设已载入: ' + name; },
-        presetFailed:function(msg){ return '预设载入失败: ' + msg; },
         autoAlignStatus:{
           ready:'自动对齐会比较检测到的纸张网格和 Sheet UI。',
           working:'正在分析纸张线条并匹配 Sheet 位置框...',
@@ -3325,13 +3132,6 @@
       if (resetLayoutAdjustBtn) resetLayoutAdjustBtn.textContent = doc.reset;
       if (headerPositionModeBtn) headerPositionModeBtn.textContent = doc.position;
       if (autoAlignPaperBtn) autoAlignPaperBtn.textContent = doc.autoAlign || 'Auto Align';
-      if (layoutPresetTitleEl) layoutPresetTitleEl.textContent = doc.presetTitle;
-      if (saveLayoutPresetBtn) saveLayoutPresetBtn.textContent = doc.savePreset;
-      if (loadLayoutPresetBtn) loadLayoutPresetBtn.textContent = doc.loadPreset;
-      if (companyPresetTitleEl) companyPresetTitleEl.textContent = doc.companyPresetTitle;
-      if (applyCompanyPresetBtn) applyCompanyPresetBtn.textContent = doc.companyPresetApply;
-      if (companyPresetHintEl) companyPresetHintEl.textContent = doc.companyPresetHint;
-      if (layoutPresetStatusEl && !layoutPresetStatusEl.dataset.locked) layoutPresetStatusEl.textContent = doc.presetReady;
       if (showTemplateTextEl) showTemplateTextEl.textContent = doc.showTemplate;
       if (showHeaderOutputTextEl) showHeaderOutputTextEl.textContent = doc.showHeader;
       if (showCellLabelOutputTextEl) showCellLabelOutputTextEl.textContent = doc.showCellLabel;
@@ -3382,13 +3182,6 @@
       if (paperUndoBtn) paperUndoBtn.disabled = !state.paperUndoStack.length;
       if (paperRedoBtn) paperRedoBtn.disabled = !state.paperRedoStack.length;
       updatePaperMagnetSensitivityUI();
-    }
-
-    function setLayoutPresetStatus(message) {
-      if (!layoutPresetStatusEl) return;
-      layoutPresetStatusEl.textContent = message || getPaperLayoutTexts().presetReady;
-      if (message) layoutPresetStatusEl.dataset.locked = '1';
-      else delete layoutPresetStatusEl.dataset.locked;
     }
 
     function escapeStatusHtml(value) {
@@ -4261,7 +4054,6 @@
       renderUiTexts();
       renderManual();
       renderShortcutTexts();
-      refreshCompanyPresetOptions();
       renderPaperLayoutTexts();
       refreshShortcutInputs();
       document.getElementById('textHelp').textContent = t('textHelp');
@@ -5552,24 +5344,41 @@
         const bottom = Math.min(PAGE_H - 1, Number(rect && rect.bottom) || PAGE_H);
         const w = right - left;
         const h = bottom - top;
-        const empty = { score:0, rawScore:0, cornerScore:0, centerScore:0, edgeTouchScore:0, hitRatio:0, offRatio:0, mode:'' };
+        const empty = { score:0, rawScore:0, cornerScore:0, centerScore:0, edgeTouchScore:0, hitRatio:0, offRatio:0, runRatio:0, continuityRatio:0, runCount:0, fragmentPenalty:0, mode:'', line:null };
         if (w < 34 || h < 26) return empty;
         function sampleLine(x1, y1, x2, y2, radius) {
           const samples = Math.max(24, Math.round(Math.hypot(x2 - x1, y2 - y1) / 3.5));
           const offset = Math.max(7, Math.min(18, h * 0.14));
           let hit = 0;
           let offHit = 0;
+          let run = 0;
+          let maxRun = 0;
+          let runCount = 0;
+          let previousHit = false;
           for (let i = 0; i <= samples; i++) {
             const t = i / samples;
             const x = x1 + (x2 - x1) * t;
             const y = y1 + (y2 - y1) * t;
-            if (isDarkNear(x, y, radius)) hit += 1;
+            const lineHit = isDarkNear(x, y, radius);
+            if (lineHit) {
+              hit += 1;
+              run += 1;
+              if (!previousHit) runCount += 1;
+              if (run > maxRun) maxRun = run;
+            } else {
+              run = 0;
+            }
+            previousHit = lineHit;
             if (isDarkNear(x, y - offset, 1)) offHit += 1;
             if (isDarkNear(x, y + offset, 1)) offHit += 1;
           }
+          const total = Math.max(1, samples + 1);
           return {
-            hitRatio:hit / Math.max(1, samples + 1),
-            offRatio:offHit / Math.max(1, (samples + 1) * 2),
+            hitRatio:hit / total,
+            offRatio:offHit / Math.max(1, total * 2),
+            runRatio:maxRun / total,
+            continuityRatio:hit ? maxRun / hit : 0,
+            runCount:runCount,
             startTouch:isDarkNear(x1, y1, 4),
             endTouch:isDarkNear(x2, y2, 4)
           };
@@ -5587,14 +5396,30 @@
         candidates.forEach(function(candidate){
           const sampled = sampleLine(candidate.x1, candidate.y1, candidate.x2, candidate.y2, candidate.radius);
           const touchCount = (sampled.startTouch ? 1 : 0) + (sampled.endTouch ? 1 : 0);
-          const touchBonus = sampled.hitRatio > 0.16 ? touchCount * candidate.edge : 0;
-          const connectedBonus = candidate.mode === 'corner' && touchCount === 2 && sampled.hitRatio > 0.22 ? 58 : 0;
-          const rawScore = sampled.hitRatio * candidate.weight - sampled.offRatio * candidate.off;
+          const continuousEnough = sampled.runRatio >= 0.18 || (sampled.runRatio >= 0.13 && sampled.continuityRatio >= 0.42);
+          const pageLikeWidth = w <= 292;
+          const touchBonus = pageLikeWidth && sampled.hitRatio > 0.16 && continuousEnough ? touchCount * candidate.edge : 0;
+          const connectedBonus = pageLikeWidth && candidate.mode === 'corner' && touchCount === 2 && sampled.hitRatio > 0.22 && sampled.runRatio >= 0.20 ? 58 : 0;
+          const fragmentPenalty = continuousEnough ? 0 : Math.min(112, Math.max(0, 0.18 - sampled.runRatio) * 330 + Math.max(0, sampled.runCount - 4) * 8);
+          const wideTextPenalty = Math.max(0, w - 260) * 1.85 + Math.max(0, w - 292) * 3.60;
+          const rawScore = sampled.hitRatio * candidate.weight - sampled.offRatio * candidate.off - fragmentPenalty - wideTextPenalty;
           const score = rawScore + touchBonus + connectedBonus;
-          const item = Object.assign({}, sampled, { mode:candidate.mode, rawScore:rawScore, score:score, touchCount:touchCount });
+          const item = Object.assign({}, sampled, {
+            mode:candidate.mode,
+            rawScore:rawScore,
+            score:score,
+            touchCount:touchCount,
+            fragmentPenalty:fragmentPenalty,
+            line:{
+              x1:candidate.x1,
+              y1:candidate.y1,
+              x2:candidate.x2,
+              y2:candidate.y2
+            }
+          });
           if (candidate.mode === 'corner') {
             cornerScore = Math.max(cornerScore, score);
-            edgeTouchScore = Math.max(edgeTouchScore, touchCount * 50 + connectedBonus);
+            edgeTouchScore = Math.max(edgeTouchScore, pageLikeWidth ? touchCount * 50 + connectedBonus : 0);
           } else {
             centerScore = Math.max(centerScore, score);
           }
@@ -5609,7 +5434,12 @@
           edgeTouchScore:edgeTouchScore,
           hitRatio:best.hitRatio,
           offRatio:best.offRatio,
-          mode:best.mode
+          runRatio:best.runRatio,
+          continuityRatio:best.continuityRatio,
+          runCount:best.runCount,
+          fragmentPenalty:best.fragmentPenalty,
+          mode:best.mode,
+          line:best.line
         };
       };
       const scoreDiagonalSlash = function(rect) {
@@ -5879,12 +5709,43 @@
           const prevTailCellMetric = analysis && typeof analysis.sampleHorizontalBand === 'function' && rightIndex > startIndex + 2
             ? analysis.sampleHorizontalBand(lines[rightIndex - 2], lines[rightIndex - 1], bodyLines)
             : null;
-          let score = 180 - gapDeviation * 4 - Math.abs(displayColumns - 8) * 4;
+          const tailGap = rightIndex > startIndex ? lines[rightIndex] - lines[rightIndex - 1] : 0;
+          if (options.sparseGrid && displayColumns >= 8 && tailCellMetric && prevTailCellMetric && tailGap > cellW * 1.55) {
+            const tailHitForReject = Number(tailCellMetric.hitRatio || 0);
+            const prevTailHitForReject = Number(prevTailCellMetric.hitRatio || 0);
+            const tailAvgForReject = Number(tailCellMetric.avgDarkRatio || 0);
+            const prevTailAvgForReject = Number(prevTailCellMetric.avgDarkRatio || 0);
+            const tailLooksLikeBlankDialog = tailHitForReject < Math.max(0.16, prevTailHitForReject * 0.58) &&
+              tailAvgForReject < Math.max(0.18, prevTailAvgForReject * 0.72);
+            if (tailLooksLikeBlankDialog) continue;
+          }
+          let score = 180 - gapDeviation * 4;
           if (displayColumns === 7 && gapDeviation <= Math.max(2.5, cellW * 0.10)) score += 20;
-          if (displayColumns === 8) score += 6;
           if (displayColumns === 9) score += 18;
           if (displayColumns === 10) score += 20;
           const dialogRatio = dialogW / Math.max(1, cellW);
+          // Prefer a uniform cell block whose next band is clearly the blank dialog area.
+          const clearDialogAfterUniformColumns = gapDeviation <= Math.max(2.5, cellW * 0.10) && dialogAvg < 0.18 && dialogHit < 0.46;
+          if (clearDialogAfterUniformColumns) {
+            scoreReasons.push('clear-dialog-after-uniform-columns');
+            score += 64;
+          }
+          const oneColumnShiftedSameDialog = displayColumns === 7 && startIndex > 0 && (function(){
+            const expandedColumns = displayColumns + 1;
+            const expandedCellW = (lines[rightIndex] - lines[startIndex - 1]) / expandedColumns;
+            if (!Number.isFinite(expandedCellW) || expandedCellW < 18 || expandedCellW > 82) return false;
+            const widthRatio = Math.abs(expandedCellW - cellW) / Math.max(1, expandedCellW, cellW);
+            if (widthRatio > 0.12) return false;
+            const expandedGaps = [];
+            for (let gi = startIndex; gi <= rightIndex; gi++) expandedGaps.push(lines[gi] - lines[gi - 1]);
+            const expandedDeviation = averageAbsDeviation(expandedGaps, expandedCellW);
+            return gapDeviation <= Math.max(2.5, cellW * 0.10) &&
+              expandedDeviation <= Math.max(2.5, expandedCellW * 0.10);
+          })();
+          if (oneColumnShiftedSameDialog) {
+            scoreReasons.push('shifted-same-dialog-penalty');
+            score -= 96;
+          }
           if (displayColumns === 10 && !options.sparseGrid && dialogRatio >= 2.55 && dialogRatio <= 3.45) score += 42;
           if (displayColumns === 9 && options.sparseGrid && leftSimilarGapCount > 0 && dialogRatio >= 2.55 && dialogRatio <= 3.45) score -= 24;
           score += Math.max(0, 32 - Math.abs(dialogRatio - 2.45) * 9);
@@ -5964,7 +5825,15 @@
         for (let rightIndex = i + 5; rightIndex < Math.min(lines.length - 1, i + 14); rightIndex++) {
           const width = lines[rightIndex] - lines[i];
           if (width < 120 || width > 520) continue;
+          const observedGapCount = rightIndex - i;
+          const observedGaps = [];
+          for (let g = 0; g < observedGapCount; g++) observedGaps.push(lines[i + g + 1] - lines[i + g]);
+          const observedCellW = width / Math.max(1, observedGapCount);
+          const observedGapDeviation = averageAbsDeviation(observedGaps, observedCellW);
+          const observedGridAlreadyUniform = observedGapCount >= PAPER_AUTO_ALIGN_MIN_COLUMNS &&
+            observedGapDeviation <= Math.max(1.8, observedCellW * 0.07);
           for (let displayColumns = PAPER_AUTO_ALIGN_MIN_COLUMNS; displayColumns <= PAPER_AUTO_ALIGN_MAX_COLUMNS; displayColumns++) {
+            if (displayColumns > observedGapCount && observedGridAlreadyUniform) continue;
             const cellW = width / displayColumns;
             if (cellW < 18 || cellW > 82) continue;
             const tolerance = Math.max(6, cellW * 0.30);
@@ -6188,7 +6057,6 @@
             if (leftFollowDiff === 0 && rightFollowDiff === 0) score += 34;
             else if (leftFollowDiff <= 1 && rightFollowDiff <= 1) score += 22;
           }
-          if (left.columns === 8 && right.columns === 8) score += 10;
           if (left.columns === 9 && right.columns === 9) score += 16;
           if (left.columns === 10 && right.columns === 10) score += 18;
           score += Math.min(leftSide.camera.w, rightSide.camera.w) * 0.04;
@@ -6221,8 +6089,9 @@
           const widthFromFollower = lines[i] - lines[cameraStartMinIndex];
           const cameraWidthRatio = widthFromFollower / Math.max(1, group.actionW);
           const plausibleCameraW = widthFromFollower >= group.cellW * 1.55 && widthFromFollower <= Math.max(group.actionW * 1.55, group.cellW * 6.2);
+          if (!plausibleCameraW) continue;
           const dividerStrength = getPaperAutoAlignLineStrength(xDetailed, lines[i]);
-          const score = dividerStrength + (plausibleCameraW ? 120 : -80) + Math.min(90, Math.max(0, cameraWidthRatio) * 42) + i * 0.45;
+          const score = dividerStrength + 120 + Math.min(90, Math.max(0, cameraWidthRatio) * 42) + i * 0.45;
           if (!bestBlockEnd || score > bestBlockEnd.score) bestBlockEnd = { index:i, score:score };
           blockEndIndex = i;
         }
@@ -6477,6 +6346,10 @@
       const inputH = Math.max(24, Math.round(headerBottom - inputY - 2));
       const y = Math.round(headerTop + 2);
       const h = Math.max(24, Math.round(headerBottom - y - 2));
+      const fullHeaderBoxY = y;
+      const fullHeaderBoxH = h;
+      let headerBoxY = y;
+      let headerBoxH = h;
       let headerLines = [];
       if (analysis && typeof analysis.findVerticalSegments === 'function') {
         const strictHeaderLines = analysis.findVerticalSegments({
@@ -6592,13 +6465,18 @@
           return !best || dist < best.dist ? { interval:interval, dist:dist } : best;
         }, null);
       }
-      function boxFromBounds(left, right, pad) {
+      function boxFromBounds(left, right, pad, inputBandOnly) {
         const p = Number(pad) === 0 ? 0 : Math.max(2, Number(pad) || 0);
-        return { x:left + p, y:y, w:Math.max(18, right - left - p * 2), h:h };
+        return {
+          x:left + p,
+          y:inputBandOnly ? headerBoxY : fullHeaderBoxY,
+          w:Math.max(18, right - left - p * 2),
+          h:inputBandOnly ? headerBoxH : fullHeaderBoxH
+        };
       }
-      function boxFromInterval(interval, pad) {
+      function boxFromInterval(interval, pad, inputBandOnly) {
         if (!interval) return null;
-        return boxFromBounds(interval.left, interval.right, pad);
+        return boxFromBounds(interval.left, interval.right, pad, inputBandOnly);
       }
       const headerWidth = Math.max(1, headerRight - headerLeft);
       let durationPlus = null;
@@ -6609,14 +6487,15 @@
         const plusSearch = {
           left:headerLeft,
           right:headerRight,
-          top:Math.max(headerTop, inputY - Math.max(8, inputH * 0.16)),
+          top:Math.max(headerTop, headerTop + 2),
           bottom:Math.min(headerBottom, inputY + inputH + 8)
         };
-        const expectedPlusY = inputY + inputH / 2;
+        const expectedPlusY = headerTop + headerH * 0.56;
         const plusMarks = analysis.findPlusMarks(plusSearch);
         let plus = null;
         plusMarks.forEach(function(candidate){
-          if (candidate.y < inputY - Math.max(2, inputH * 0.04)) return;
+          if (candidate.y < headerTop + Math.max(8, headerH * 0.14)) return;
+          if (candidate.y > headerBottom - Math.max(4, headerH * 0.05)) return;
           const xRatio = (candidate.x - headerLeft) / headerWidth;
           if (xRatio < 0.34) return;
           if (xRatio > 0.74) return;
@@ -6629,7 +6508,8 @@
             if (candidateInterval.w >= 64 && candidateInterval.w <= 310) centerBias += 34;
             if (candidateInterval.w > 360) centerBias -= 110;
           }
-          const distancePenalty = Math.abs(candidate.y - expectedPlusY) * 0.38;
+          const lowerDriftPenalty = Math.max(0, candidate.y - (inputY + inputH * 0.58)) * 0.42;
+          const distancePenalty = Math.abs(candidate.y - expectedPlusY) * 0.34 + lowerDriftPenalty;
           const score = Number(candidate.score || 0) + centerBias - distancePenalty;
           if (!plus || score > plus.finalScore) plus = Object.assign({}, candidate, { finalScore:score });
         });
@@ -6667,20 +6547,21 @@
       }
       if (!durationPlus && durationInterval && analysis && typeof analysis.findPlusMarks === 'function') {
         const expectedPlusX = (durationInterval.left + durationInterval.right) / 2;
-        const expectedPlusY = inputY + inputH / 2;
+        const expectedPlusY = headerTop + headerH * 0.56;
         const centeredPlusSearch = {
           left:durationInterval.left,
           right:durationInterval.right,
-          top:Math.max(headerTop, inputY - Math.max(8, inputH * 0.18)),
+          top:Math.max(headerTop, headerTop + 2),
           bottom:Math.min(headerBottom, inputY + inputH + 8),
           centeredPlusHint:true
         };
         let centeredPlus = null;
         (analysis.findPlusMarks(centeredPlusSearch) || []).forEach(function(candidate){
           const xOffset = Math.abs(candidate.x - expectedPlusX) / Math.max(1, durationInterval.w * 0.5);
-          const yOffset = Math.abs(candidate.y - expectedPlusY) / Math.max(1, inputH * 0.5);
-          if (xOffset > 0.48 || yOffset > 0.88) return;
-          const score = Number(candidate.score || 0) - xOffset * 64 - yOffset * 38 + (candidate.centered ? 54 : 0);
+          const yOffset = Math.abs(candidate.y - expectedPlusY) / Math.max(1, headerH * 0.5);
+          if (xOffset > 0.48 || yOffset > 0.72) return;
+          const lowerDriftPenalty = Math.max(0, candidate.y - (inputY + inputH * 0.58)) * 0.42;
+          const score = Number(candidate.score || 0) - xOffset * 64 - yOffset * 52 - lowerDriftPenalty + (candidate.centered ? 54 : 0);
           if (!centeredPlus || score > centeredPlus.finalScore) centeredPlus = Object.assign({}, candidate, { finalScore:score, interval:durationInterval });
         });
         if (centeredPlus) {
@@ -6691,7 +6572,7 @@
       if (!durationPlus && durationIntervalInferredFromOrderedHeader && durationInterval) {
         durationPlus = {
           x:(durationInterval.left + durationInterval.right) / 2,
-          y:inputY + inputH / 2,
+          y:headerTop + headerH * 0.56,
           h:0,
           v:0,
           score:0,
@@ -6701,20 +6582,109 @@
           centered:true
         };
       }
+      const headerInputBaselineY = Math.max(headerTop + 4, Math.min(headerBottom - 4, Number(durationPlus && durationPlus.y) || (inputY + inputH / 2)));
+      headerBoxH = Math.max(24, Math.min(h, Math.round(inputH)));
+      headerBoxY = Math.round(headerInputBaselineY - headerBoxH / 2);
+      headerBoxY = Math.max(headerTop + 2, Math.min(headerBottom - headerBoxH - 2, headerBoxY));
       const durationLeft = durationInterval ? durationInterval.left : headerLeft + (headerRight - headerLeft) * 0.50;
       const durationRight = durationInterval ? durationInterval.right : headerLeft + (headerRight - headerLeft) * 0.64;
       const plusX = durationPlus ? durationPlus.x : (durationLeft + durationRight) / 2;
       const gap = Math.max(5, Math.min(16, (durationRight - durationLeft) * 0.07));
-      let secondsBox = { x:durationLeft + 4, y:y, w:Math.max(26, plusX - gap - durationLeft - 4), h:h };
-      let framesBox = { x:plusX + gap, y:y, w:Math.max(26, durationRight - plusX - gap - 4), h:h };
+      let secondsBox = { x:durationLeft + 4, y:fullHeaderBoxY, w:Math.max(26, plusX - gap - durationLeft - 4), h:fullHeaderBoxH };
+      let framesBox = { x:plusX + gap, y:fullHeaderBoxY, w:Math.max(26, durationRight - plusX - gap - 4), h:fullHeaderBoxH };
       let pageInterval = null;
       let pageBox = null;
       let bestSlash = null;
       let selectedSlash = null;
+      let forcedPageSlash = false;
+      const headerDiagonalDetections = [];
+      function roundPaperAutoAlignDebugValue(value, precision) {
+        const scale = Math.pow(10, precision == null ? 1 : precision);
+        return Math.round((Number(value) || 0) * scale) / scale;
+      }
+      function normalizePaperAutoAlignDebugLine(line) {
+        if (!line) return null;
+        const x1 = Number(line.x1);
+        const y1 = Number(line.y1);
+        const x2 = Number(line.x2);
+        const y2 = Number(line.y2);
+        if (![x1, y1, x2, y2].every(Number.isFinite)) return null;
+        return {
+          x1:roundPaperAutoAlignDebugValue(x1, 1),
+          y1:roundPaperAutoAlignDebugValue(y1, 1),
+          x2:roundPaperAutoAlignDebugValue(x2, 1),
+          y2:roundPaperAutoAlignDebugValue(y2, 1)
+        };
+      }
+      function addHeaderDiagonalDetection(interval, slashInfo, source) {
+        if (!interval || !slashInfo) return null;
+        const left = Number(interval.left);
+        const right = Number(interval.right);
+        if (!Number.isFinite(left) || !Number.isFinite(right) || right <= left) return null;
+        const score = Number(slashInfo.score || 0);
+        const cornerScore = Number(slashInfo.cornerScore || 0);
+        const centerScore = Number(slashInfo.centerScore || 0);
+        const edgeTouchScore = Number(slashInfo.edgeTouchScore || 0);
+        const hitRatio = Number(slashInfo.hitRatio || 0);
+        const runRatio = Number(slashInfo.runRatio || 0);
+        const continuityRatio = Number(slashInfo.continuityRatio || 0);
+        const runCount = Number(slashInfo.runCount || 0);
+        const fragmentPenalty = Number(slashInfo.fragmentPenalty || 0);
+        const line = normalizePaperAutoAlignDebugLine(slashInfo.line);
+        if (!line) return null;
+        if (score < 8 && cornerScore < 18 && centerScore < 14 && hitRatio < 0.035) return null;
+        const continuousEnough = runRatio >= 0.18 || (runRatio >= 0.13 && continuityRatio >= 0.42);
+        const inferredCornerConnected = cornerScore > 118 && edgeTouchScore >= 96 && continuousEnough;
+        const inferredCenterSlash = centerScore > 70 && hitRatio > 0.14 && continuousEnough;
+        const item = {
+          source:source || 'header-cell',
+          index:Number.isFinite(Number(interval.index)) ? Number(interval.index) : -1,
+          x:roundPaperAutoAlignDebugValue(left, 1),
+          y:roundPaperAutoAlignDebugValue(inputY, 1),
+          w:roundPaperAutoAlignDebugValue(Math.max(18, right - left), 1),
+          h:roundPaperAutoAlignDebugValue(inputH, 1),
+          left:roundPaperAutoAlignDebugValue(left, 1),
+          right:roundPaperAutoAlignDebugValue(right, 1),
+          score:roundPaperAutoAlignDebugValue(score, 1),
+          rawScore:roundPaperAutoAlignDebugValue(slashInfo.rawScore || score, 1),
+          cornerScore:roundPaperAutoAlignDebugValue(cornerScore, 1),
+          centerScore:roundPaperAutoAlignDebugValue(centerScore, 1),
+          edgeTouchScore:roundPaperAutoAlignDebugValue(edgeTouchScore, 1),
+          hitRatio:roundPaperAutoAlignDebugValue(hitRatio, 3),
+          offRatio:roundPaperAutoAlignDebugValue(slashInfo.offRatio || 0, 3),
+          runRatio:roundPaperAutoAlignDebugValue(runRatio, 3),
+          continuityRatio:roundPaperAutoAlignDebugValue(continuityRatio, 3),
+          runCount:roundPaperAutoAlignDebugValue(runCount, 0),
+          fragmentPenalty:roundPaperAutoAlignDebugValue(fragmentPenalty, 1),
+          mode:slashInfo.mode || '',
+          line:line,
+          cornerConnected:!!slashInfo.cornerConnected || inferredCornerConnected,
+          centerSlash:!!slashInfo.centerSlash || inferredCenterSlash,
+          selected:false
+        };
+        headerDiagonalDetections.push(item);
+        return item;
+      }
       if (analysis && (typeof analysis.analyzeDiagonalSlash === 'function' || typeof analysis.scoreDiagonalSlash === 'function')) {
         const analyzeSlash = typeof analysis.analyzeDiagonalSlash === 'function'
           ? analysis.analyzeDiagonalSlash
           : function(rect){ const score = analysis.scoreDiagonalSlash(rect); return { score:score, rawScore:score, cornerScore:score, centerScore:0, edgeTouchScore:0, hitRatio:0, offRatio:0, mode:'' }; };
+        const slashInfoByInterval = new Map();
+        function intervalSlashKey(interval) {
+          return [Number(interval && interval.index), Math.round(Number(interval && interval.left) || 0), Math.round(Number(interval && interval.right) || 0)].join(':');
+        }
+        function getIntervalSlashInfo(interval) {
+          const key = intervalSlashKey(interval);
+          if (!slashInfoByInterval.has(key)) {
+            slashInfoByInterval.set(key, analyzeSlash({ left:interval.left, right:interval.right, top:inputY, bottom:headerBottom }));
+          }
+          return slashInfoByInterval.get(key);
+        }
+        intervals.forEach(function(interval){
+          const w = Number(interval && interval.w || 0);
+          if (w < 34 || w > Math.max(420, headerWidth * 0.34)) return;
+          addHeaderDiagonalDetection(interval, getIntervalSlashInfo(interval), 'header-cell');
+        });
         const rightBiasStart = headerLeft + headerWidth * 0.44;
         const slashCandidates = [];
         intervals.forEach(function(interval){
@@ -6723,11 +6693,12 @@
           const w = right - left;
           if (right < rightBiasStart || w < 34 || w > 292) return;
           if (durationPlus && left <= durationPlus.x + Math.max(24, headerWidth * 0.025)) return;
-          const slashInfo = analyzeSlash({ left:left, right:right, top:inputY, bottom:headerBottom });
+          const slashInfo = getIntervalSlashInfo(interval);
           const rightBias = (left - headerLeft) / headerWidth;
           const rightEdgeBias = (right - headerLeft) / headerWidth;
-          const cornerConnected = Number(slashInfo.cornerScore || 0) > 118 && Number(slashInfo.edgeTouchScore || 0) >= 96;
-          const centerSlash = Number(slashInfo.centerScore || 0) > 46 && Number(slashInfo.hitRatio || 0) > 0.12;
+          const continuousEnough = Number(slashInfo.runRatio || 0) >= 0.18 || (Number(slashInfo.runRatio || 0) >= 0.13 && Number(slashInfo.continuityRatio || 0) >= 0.42);
+          const cornerConnected = Number(slashInfo.cornerScore || 0) > 118 && Number(slashInfo.edgeTouchScore || 0) >= 96 && continuousEnough;
+          const centerSlash = Number(slashInfo.centerScore || 0) > 58 && Number(slashInfo.hitRatio || 0) > 0.12 && continuousEnough;
           let score = Number(slashInfo.score || 0) + rightBias * 38 + rightEdgeBias * 34 + rightEdgeBias * rightEdgeBias * 92 - Math.max(0, w - 230) * 0.10 - Math.max(0, 46 - w) * 0.70;
           if (right < headerRight - headerWidth * 0.30) score -= 170;
           if (right < headerRight - headerWidth * 0.18) score -= 62;
@@ -6736,7 +6707,7 @@
           if (cornerConnected && right > headerRight - headerWidth * 0.20) score += 82;
           if (centerSlash) score += 36;
           if (Number(slashInfo.score || 0) > 42 || cornerConnected || centerSlash) {
-            slashCandidates.push({ left:left, right:right, interval:interval, score:score, slashScore:Number(slashInfo.score || 0), cornerScore:Number(slashInfo.cornerScore || 0), centerScore:Number(slashInfo.centerScore || 0), edgeTouchScore:Number(slashInfo.edgeTouchScore || 0), cornerConnected:cornerConnected, centerSlash:centerSlash, mode:slashInfo.mode || '' });
+            slashCandidates.push({ left:left, right:right, interval:interval, score:score, slashScore:Number(slashInfo.score || 0), rawScore:Number(slashInfo.rawScore || 0), cornerScore:Number(slashInfo.cornerScore || 0), centerScore:Number(slashInfo.centerScore || 0), edgeTouchScore:Number(slashInfo.edgeTouchScore || 0), hitRatio:Number(slashInfo.hitRatio || 0), offRatio:Number(slashInfo.offRatio || 0), runRatio:Number(slashInfo.runRatio || 0), continuityRatio:Number(slashInfo.continuityRatio || 0), runCount:Number(slashInfo.runCount || 0), fragmentPenalty:Number(slashInfo.fragmentPenalty || 0), cornerConnected:cornerConnected, centerSlash:centerSlash, mode:slashInfo.mode || '', line:slashInfo.line || null });
             if (!bestSlash || score > bestSlash.score) bestSlash = slashCandidates[slashCandidates.length - 1];
           }
         });
@@ -6772,20 +6743,23 @@
               const cornerScore = Number(slashInfo.cornerScore || 0);
               const centerScore = Number(slashInfo.centerScore || 0);
               const edgeScore = Number(slashInfo.edgeTouchScore || 0);
+              const runRatio = Number(slashInfo.runRatio || 0);
+              const continuityRatio = Number(slashInfo.continuityRatio || 0);
+              const continuousEnough = runRatio >= 0.18 || (runRatio >= 0.13 && continuityRatio >= 0.42);
               if (durationPlus && left <= durationPlus.x + Math.max(24, headerWidth * 0.025)) continue;
               if (headerRight - right < 30 && width <= 90) continue;
               if (overlapRatio < 0.16 && cornerScore < 240 && centerScore < 120) continue;
               if (rawScore < 88 && cornerScore < 118 && centerScore < 72) continue;
               const rightEdgeBias = (right - headerLeft) / headerWidth;
-              const cornerConnected = cornerScore > 118 && edgeScore >= 96;
-              const centerSlash = centerScore > 70 && Number(slashInfo.hitRatio || 0) > 0.14;
+              const cornerConnected = cornerScore > 118 && edgeScore >= 96 && continuousEnough;
+              const centerSlash = centerScore > 70 && Number(slashInfo.hitRatio || 0) > 0.14 && continuousEnough;
               let score = rawScore + rightEdgeBias * 44 + rightEdgeBias * rightEdgeBias * 86 + overlapRatio * 82;
               if (right < headerRight - headerWidth * 0.30) score -= 160;
               if (right < headerRight - headerWidth * 0.18) score -= 56;
               if (cornerConnected) score += 54;
               if (centerSlash) score += 28;
               if (right > headerRight - headerWidth * 0.20 && cornerConnected) score += 26;
-              const candidate = { left:left, right:right, score:score, slashScore:rawScore, cornerScore:cornerScore, centerScore:centerScore, edgeTouchScore:edgeScore, cornerConnected:cornerConnected, centerSlash:centerSlash, mode:slashInfo.mode || 'sliding' };
+              const candidate = { left:left, right:right, score:score, slashScore:rawScore, rawScore:Number(slashInfo.rawScore || rawScore), cornerScore:cornerScore, centerScore:centerScore, edgeTouchScore:edgeScore, hitRatio:Number(slashInfo.hitRatio || 0), offRatio:Number(slashInfo.offRatio || 0), runRatio:runRatio, continuityRatio:continuityRatio, runCount:Number(slashInfo.runCount || 0), fragmentPenalty:Number(slashInfo.fragmentPenalty || 0), cornerConnected:cornerConnected, centerSlash:centerSlash, mode:slashInfo.mode || 'sliding', line:slashInfo.line || null };
               if (!bestSlidingSlash || candidate.score > bestSlidingSlash.score) bestSlidingSlash = candidate;
             }
           });
@@ -6794,10 +6768,60 @@
             pageInterval = containing || { left:bestSlidingSlash.left, right:bestSlidingSlash.right, w:bestSlidingSlash.right - bestSlidingSlash.left };
             pageBox = boxFromInterval(pageInterval, 2);
             selectedSlash = bestSlidingSlash;
+            if (containing) {
+              const fullIntervalSlashInfo = getIntervalSlashInfo(containing);
+              selectedSlash = Object.assign({}, bestSlidingSlash, {
+                left:containing.left,
+                right:containing.right,
+                interval:containing,
+                mode:(bestSlidingSlash.mode || 'sliding') + ':full-interval',
+                line:fullIntervalSlashInfo && fullIntervalSlashInfo.line ? fullIntervalSlashInfo.line : bestSlidingSlash.line,
+                fullIntervalScore:Number(fullIntervalSlashInfo && fullIntervalSlashInfo.score || 0),
+                fullIntervalHitRatio:Number(fullIntervalSlashInfo && fullIntervalSlashInfo.hitRatio || 0),
+                fullIntervalRunRatio:Number(fullIntervalSlashInfo && fullIntervalSlashInfo.runRatio || 0)
+              });
+            }
           }
         }
+        const rightGreenDiagonals = headerDiagonalDetections.filter(function(item){
+          const center = (Number(item.left || 0) + Number(item.right || 0)) / 2;
+          const strong = !!item.cornerConnected || Number(item.score || 0) >= 90 || Number(item.centerScore || 0) >= 70;
+          return center >= PAGE_W / 2 && strong;
+        });
+        if (rightGreenDiagonals.length === 1) {
+          const confirmed = rightGreenDiagonals[0];
+          pageInterval = intervalContaining((Number(confirmed.left || 0) + Number(confirmed.right || 0)) / 2) || {
+            left:Number(confirmed.left || 0),
+            right:Number(confirmed.right || 0),
+            w:Number(confirmed.w || 0),
+            index:Number(confirmed.index || -1)
+          };
+          pageBox = boxFromInterval(pageInterval, 2);
+          selectedSlash = {
+            left:Number(confirmed.left || 0),
+            right:Number(confirmed.right || 0),
+            score:Number(confirmed.score || 0),
+            slashScore:Number(confirmed.score || 0),
+            rawScore:Number(confirmed.rawScore || confirmed.score || 0),
+            cornerScore:Number(confirmed.cornerScore || 0),
+            centerScore:Number(confirmed.centerScore || 0),
+            edgeTouchScore:Number(confirmed.edgeTouchScore || 0),
+            hitRatio:Number(confirmed.hitRatio || 0),
+            offRatio:Number(confirmed.offRatio || 0),
+            runRatio:Number(confirmed.runRatio || 0),
+            continuityRatio:Number(confirmed.continuityRatio || 0),
+            runCount:Number(confirmed.runCount || 0),
+            fragmentPenalty:Number(confirmed.fragmentPenalty || 0),
+            cornerConnected:!!confirmed.cornerConnected,
+            centerSlash:!!confirmed.centerSlash,
+            mode:(confirmed.mode || 'interval') + ':right-single',
+            line:confirmed.line || null,
+            interval:pageInterval
+          };
+          forcedPageSlash = true;
+        }
       }
-      if (pageBox && selectedSlash) {
+      if (pageBox && selectedSlash && !forcedPageSlash) {
         const rightmostPageInterval = intervals.filter(function(interval){
           return interval.left > durationRight - 4 &&
             interval.right >= headerRight - headerWidth * 0.18 &&
@@ -6812,7 +6836,7 @@
           selectedSlash = null;
         }
       }
-      if (pageInterval && pageInterval.w < Math.max(52, headerWidth * 0.042)) {
+      if (pageInterval && !forcedPageSlash && pageInterval.w < Math.max(52, headerWidth * 0.042)) {
         const centerX = (pageInterval.left + pageInterval.right) / 2;
         const expandedPage = intervalAroundPoint(centerX, Math.max(34, headerH * 0.34), Math.max(86, headerWidth * 0.058));
         if (expandedPage && expandedPage.w <= Math.max(310, headerWidth * 0.24) && expandedPage.left > durationRight - 4) {
@@ -6939,7 +6963,7 @@
         const authorOverlapPage = Math.max(0, Math.min(authorInterval.right, pageInterval.right) - Math.max(authorInterval.left, pageInterval.left));
         if (authorInterval === pageInterval || authorOverlapPage / Math.max(1, authorInterval.w) > 0.45) authorInterval = null;
       }
-      if (authorInterval && pageInterval && pageInterval.left < authorInterval.right - 4) {
+      if (authorInterval && pageInterval && !forcedPageSlash && pageInterval.left < authorInterval.right - 4) {
         const repairedPage = intervals.filter(function(interval){
           return interval.left >= authorInterval.right - 4 &&
             interval.right >= headerLeft + headerWidth * 0.66 &&
@@ -6954,7 +6978,7 @@
           selectedSlash = null;
         }
       }
-      if (pageInterval && pageInterval.right < headerLeft + headerWidth * 0.62) {
+      if (pageInterval && !forcedPageSlash && pageInterval.right < headerLeft + headerWidth * 0.62) {
         const latePage = intervals.filter(function(interval){
           return interval.left > durationRight &&
             interval.right >= headerLeft + headerWidth * 0.68 &&
@@ -7002,6 +7026,55 @@
           }
         }
       }
+      if (selectedSlash) {
+        let matchedSelectedDiagonal = false;
+        headerDiagonalDetections.forEach(function(item){
+          const overlap = Math.max(0, Math.min(Number(item.right || 0), selectedSlash.right) - Math.max(Number(item.left || 0), selectedSlash.left));
+          const selectedW = Math.max(1, selectedSlash.right - selectedSlash.left);
+          const itemW = Math.max(1, Number(item.w || 0));
+          if (overlap / Math.min(selectedW, itemW) >= 0.55) {
+            item.selected = true;
+            item.selectedScore = roundPaperAutoAlignDebugValue(selectedSlash.score || selectedSlash.slashScore || item.score || 0, 1);
+            item.selectedMode = selectedSlash.mode || item.mode || '';
+            item.cornerConnected = item.cornerConnected || !!selectedSlash.cornerConnected;
+            item.centerSlash = item.centerSlash || !!selectedSlash.centerSlash;
+            matchedSelectedDiagonal = true;
+          }
+        });
+        if (!matchedSelectedDiagonal) {
+          const selectedItem = addHeaderDiagonalDetection({
+            left:selectedSlash.left,
+            right:selectedSlash.right,
+            w:selectedSlash.right - selectedSlash.left,
+            index:-1
+          }, {
+            score:Number(selectedSlash.slashScore || selectedSlash.score || 0),
+            rawScore:Number(selectedSlash.rawScore || selectedSlash.slashScore || selectedSlash.score || 0),
+            cornerScore:Number(selectedSlash.cornerScore || 0),
+            centerScore:Number(selectedSlash.centerScore || 0),
+          edgeTouchScore:Number(selectedSlash.edgeTouchScore || 0),
+          hitRatio:Number(selectedSlash.hitRatio || 0),
+          offRatio:Number(selectedSlash.offRatio || 0),
+          runRatio:Number(selectedSlash.runRatio || 0),
+          continuityRatio:Number(selectedSlash.continuityRatio || 0),
+          runCount:Number(selectedSlash.runCount || 0),
+          fragmentPenalty:Number(selectedSlash.fragmentPenalty || 0),
+          mode:selectedSlash.mode || 'selected',
+            line:selectedSlash.line || null,
+            cornerConnected:!!selectedSlash.cornerConnected,
+            centerSlash:!!selectedSlash.centerSlash
+          }, 'selected-scan');
+          if (selectedItem) {
+            selectedItem.selected = true;
+            selectedItem.selectedScore = roundPaperAutoAlignDebugValue(selectedSlash.score || selectedSlash.slashScore || selectedItem.score || 0, 1);
+            selectedItem.selectedMode = selectedSlash.mode || selectedItem.mode || '';
+          }
+        }
+      }
+      headerDiagonalDetections.sort(function(a,b){
+        if (!!a.selected !== !!b.selected) return a.selected ? -1 : 1;
+        return Number(a.left || 0) - Number(b.left || 0);
+      });
       const base = {
         episode:boxFromInterval(episodeInterval, 0),
         title:boxFromInterval(titleInterval, 10),
@@ -7021,9 +7094,19 @@
         w:headerRight - headerLeft,
         h:headerBottom - headerTop,
         inputTop:inputY,
+        inputBaselineY:headerInputBaselineY,
+        inputBoxY:headerBoxY,
+        inputBoxH:headerBoxH,
         lines:headerLines.filter(function(x){ return x >= headerLeft - 3 && x <= headerRight + 3; }).slice(0, 80),
-        durationPlus:durationPlus ? { x:durationPlus.x, y:durationPlus.y } : null,
-        pageSlashBox:selectedSlash ? { x:selectedSlash.left, y:inputY, w:Math.max(18, selectedSlash.right - selectedSlash.left), h:inputH, score:selectedSlash.score, mode:selectedSlash.mode } : null,
+        durationPlus:durationPlus ? {
+          x:durationPlus.x,
+          y:durationPlus.y,
+          h:Number(durationPlus.h || 0),
+          v:Number(durationPlus.v || 0),
+          inferred:!!durationPlus.inferred
+        } : null,
+        pageSlashBox:selectedSlash ? { x:selectedSlash.left, y:inputY, w:Math.max(18, selectedSlash.right - selectedSlash.left), h:inputH, score:selectedSlash.score, mode:selectedSlash.mode, forced:forcedPageSlash, line:normalizePaperAutoAlignDebugLine(selectedSlash.line) } : null,
+        diagonalDetections:headerDiagonalDetections.slice(0, 96),
         headerScore:headerRect.score || 0,
         mechanisms:{
           leadingDecorativeCollapsed:leadingDecorativeCollapsed,
@@ -7031,7 +7114,7 @@
           centeredPlus:centeredDurationPlusUsed,
           inferredPlus:!!(durationPlus && durationPlus.inferred),
           titleMerged:titleIntervalMerged,
-          pageSlashMode:selectedSlash ? (selectedSlash.mode || 'interval') : ''
+          pageSlashMode:selectedSlash ? ((selectedSlash.mode || 'interval') + (forcedPageSlash ? ':forced' : '')) : ''
         }
       };
       return out;
@@ -7373,6 +7456,17 @@
       const rightCameraW = Number(dotted.rightCameraW || 0);
       const leftFollow = Number(dotted.leftFollowColumns || 0);
       const rightFollow = Number(dotted.rightFollowColumns || 0);
+      const baseLeftColumns = Number(base.leftColumns || 0);
+      const baseRightColumns = Number(base.rightColumns || 0);
+      const baseLeftFollow = Number(base.leftFollowColumns || 0);
+      const baseRightFollow = Number(base.rightFollowColumns || 0);
+      const stableBaseEightColumnGrid = baseColumns === 8 &&
+        baseLeftColumns === 8 &&
+        baseRightColumns === 8 &&
+        baseLeftFollow === 8 &&
+        baseRightFollow === 8 &&
+        Number(baseResult.confidence || 0) >= 90;
+      if (stableBaseEightColumnGrid) return false;
       if (Number(dotted.dottedVerticalLineCount || 0) < 2) return false;
       if (dottedColumns < 9 || dottedColumns <= baseColumns) return false;
       if (leftCameraW < cellW * 3.00 || rightCameraW < cellW * 3.00) return false;
@@ -14687,7 +14781,6 @@
           cellColumnCount:getCellColumnCount(),
           cellDisplayOrder:JSON.parse(JSON.stringify(state.cellDisplayOrder || [])),
           layoutBoxes:JSON.parse(JSON.stringify(state.layoutBoxes || {})),
-          selectedCompanyPresetId:companyPresetSelectEl ? companyPresetSelectEl.value : '',
           paperMagnetSensitivity:getPaperMagnetSensitivity()
         }
       };
@@ -14705,7 +14798,6 @@
           if (lightPayload.paper) lightPayload.paper.imageDataUrl = '';
           if (lightPayload.paper) lightPayload.paper.memoDataUrl = '';
           localStorage.setItem(PAPER_MEMORY_STORAGE_KEY, JSON.stringify(lightPayload));
-          setLayoutPresetStatus('Paper settings saved. Large paper image data was moved to browser image memory.');
         } catch (err2) {}
       }
     }
@@ -14740,7 +14832,6 @@
       state.layoutBoxes = paper.layoutBoxes && typeof paper.layoutBoxes === 'object' ? paper.layoutBoxes : {};
       state.paperMagnetSensitivity = PAPER_MAGNET_SENSITIVITY_PRESETS[paper.paperMagnetSensitivity] ? paper.paperMagnetSensitivity : PAPER_MAGNET_DEFAULT_SENSITIVITY;
       state.layoutBoxBaseRects = {};
-      if (companyPresetSelectEl && paper.selectedCompanyPresetId) companyPresetSelectEl.value = paper.selectedCompanyPresetId;
       syncPaperLayoutControls();
       updatePaperImageStatus();
       if (shouldRestoreImageFromDb || shouldRestoreMemoFromDb) restorePaperImageMemoryFromDb({ renderAfter:true });
@@ -14867,119 +14958,6 @@
       pushPaperHistory(beforeSnapshot, getPaperStateSnapshot());
       queueSavePaperMemory();
       render();
-    }
-
-    function makeLayoutPresetPayload() {
-      return {
-        schema:'auto-sheet-layout-preset',
-        version:1,
-        app:'Auto Sheet Prototype',
-        createdAt:new Date().toISOString(),
-        page:{ width:PAGE_W, height:PAGE_H },
-        paper:{
-          name:state.paperImageName || '',
-          sourceWidth:state.paperImageSourceWidth || 0,
-          sourceHeight:state.paperImageSourceHeight || 0,
-          meta:state.paperImageMeta || ''
-        },
-        options:{
-          showTemplate:!!state.showTemplate,
-          showHeaderOutput:!!state.showHeaderOutput,
-          showCellLabelOutput:!!state.showCellLabelOutput,
-          cellColumnCount:getCellColumnCount(),
-          paperMagnetSensitivity:getPaperMagnetSensitivity()
-        },
-        layoutBoxes:JSON.parse(JSON.stringify(state.layoutBoxes || {}))
-      };
-    }
-
-    function saveLayoutPreset() {
-      const payload = makeLayoutPresetPayload();
-      const json = JSON.stringify(payload, null, 2);
-      const blob = new Blob([json], { type:'application/json' });
-      const stamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
-      const filename = 'auto-sheet-layout-' + stamp + '.autosheet-layout.json';
-      downloadBlob(blob, filename);
-      setLayoutPresetStatus(getPaperLayoutTexts().presetSaved(filename));
-    }
-
-    function applyLayoutPresetPayload(payload, filename) {
-      if (!payload || payload.schema !== 'auto-sheet-layout-preset') throw new Error('Unsupported preset format');
-      const boxes = payload.layoutBoxes || {};
-      const nextBoxes = {};
-      Object.keys(boxes).forEach(function(key){
-        const box = boxes[key];
-        if (!box || typeof box !== 'object') return;
-        nextBoxes[key] = normalizeRect({ x:box.x, y:box.y, w:box.w, h:box.h }, isCellLabelBoxKey(key) ? 18 : 18, isCellLabelBoxKey(key) ? 12 : 18);
-      });
-      state.layoutBoxes = nextBoxes;
-      state.layoutBoxBaseRects = {};
-      state.paperAutoAlignOverlay = null;
-      setPaperAutoAlignResult(null);
-      const options = payload.options || {};
-      if (typeof options.showTemplate === 'boolean') state.showTemplate = options.showTemplate;
-      if (typeof options.showHeaderOutput === 'boolean') state.showHeaderOutput = options.showHeaderOutput;
-      if (typeof options.showCellLabelOutput === 'boolean') state.showCellLabelOutput = options.showCellLabelOutput;
-      if (options.cellColumnCount !== undefined) state.cellColumnCount = clampCellColumnCount(options.cellColumnCount);
-      if (PAPER_MAGNET_SENSITIVITY_PRESETS[options.paperMagnetSensitivity]) state.paperMagnetSensitivity = options.paperMagnetSensitivity;
-      syncPaperLayoutControls();
-      setLayoutPresetStatus(getPaperLayoutTexts().presetLoaded(filename || 'layout preset'));
-      queueSavePaperMemory();
-      render();
-    }
-
-    function loadLayoutPresetFile(file) {
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(){
-        try {
-          const payload = JSON.parse(String(reader.result || ''));
-          applyLayoutPresetPayload(payload, file.name || 'layout preset');
-        } catch (err) {
-          setLayoutPresetStatus(getPaperLayoutTexts().presetFailed(err && err.message ? err.message : err));
-        }
-        if (layoutPresetInputEl) layoutPresetInputEl.value = '';
-      };
-      reader.onerror = function(){
-        setLayoutPresetStatus(getPaperLayoutTexts().presetFailed('File read failed'));
-        if (layoutPresetInputEl) layoutPresetInputEl.value = '';
-      };
-      reader.readAsText(file);
-    }
-
-    function getCompanyPresetList() {
-      const loaded = Array.isArray(state.loadedLayoutPresets) ? state.loadedLayoutPresets : [];
-      return BUILTIN_COMPANY_PRESETS.concat(loaded);
-    }
-
-    function refreshCompanyPresetOptions() {
-      if (!companyPresetSelectEl) return;
-      const currentValue = companyPresetSelectEl.value;
-      const presets = getCompanyPresetList();
-      companyPresetSelectEl.innerHTML = '';
-      presets.forEach(function(preset){
-        const option = document.createElement('option');
-        option.value = preset.id;
-        option.textContent = preset.label;
-        companyPresetSelectEl.appendChild(option);
-      });
-      if (currentValue && presets.some(function(preset){ return preset.id === currentValue; })) {
-        companyPresetSelectEl.value = currentValue;
-      } else if (presets[0]) {
-        companyPresetSelectEl.value = presets[0].id;
-      }
-    }
-
-    function applySelectedCompanyPreset() {
-      const id = companyPresetSelectEl ? companyPresetSelectEl.value : '';
-      const presets = getCompanyPresetList();
-      const preset = presets.find(function(item){ return item.id === id; }) || presets[0];
-      if (!preset) return;
-      try {
-        applyLayoutPresetPayload(JSON.parse(JSON.stringify(preset.payload)), preset.label);
-      } catch (err) {
-        setLayoutPresetStatus(getPaperLayoutTexts().presetFailed(err && err.message ? err.message : err));
-      }
     }
 
     function clearSheetData() {
@@ -15287,10 +15265,6 @@
       return !!(payload && payload.schema === 'auto-sheet-current-settings');
     }
 
-    function isLayoutPresetPayload(payload) {
-      return !!(payload && payload.schema === 'auto-sheet-layout-preset' && payload.layoutBoxes && typeof payload.layoutBoxes === 'object');
-    }
-
     function safeSettingsCacheItem(item) {
       return item && item.payload ? { id:item.id, filename:item.filename, label:item.label, payload:item.payload } : null;
     }
@@ -15301,8 +15275,7 @@
           version:1,
           directoryName:state.loadedSettingsDirectoryName || '',
           scanned:!!state.loadedSettingsDirectoryScanned,
-          settings:(state.loadedSettingsFiles || []).map(safeSettingsCacheItem).filter(Boolean),
-          presets:(state.loadedLayoutPresets || []).map(safeSettingsCacheItem).filter(Boolean)
+          settings:(state.loadedSettingsFiles || []).map(safeSettingsCacheItem).filter(Boolean)
         };
         localStorage.setItem(SETTINGS_JSON_CACHE_STORAGE_KEY, JSON.stringify(payload));
       } catch (err) {}
@@ -15316,9 +15289,7 @@
         state.loadedSettingsDirectoryName = payload.directoryName || '';
         state.loadedSettingsDirectoryScanned = !!payload.scanned;
         state.loadedSettingsFiles = Array.isArray(payload.settings) ? payload.settings : [];
-        state.loadedLayoutPresets = Array.isArray(payload.presets) ? payload.presets : [];
         refreshLoadedSettingsSelect();
-        refreshCompanyPresetOptions();
         return true;
       } catch (err) { return false; }
     }
@@ -15458,7 +15429,6 @@
     async function loadJsonFilesFromSettingsDirectory(handle, options) {
       options = options || {};
       const settingsItems = [];
-      const presetItems = [];
       let jsonCount = 0;
       let index = 0;
       const entries = [];
@@ -15473,22 +15443,18 @@
           const payload = JSON.parse(textValue);
           if (isCurrentSettingsPayload(payload)) {
             settingsItems.push({ id:makeLoadedFolderJsonId('settings', path, index++), filename:path, label:path, payload:payload });
-          } else if (isLayoutPresetPayload(payload)) {
-            presetItems.push({ id:makeLoadedFolderJsonId('preset', path, index++), filename:path, label:path, payload:payload });
           }
         } catch (err) {
           console.warn('Skipped JSON file:', path, err);
         }
       }
       state.loadedSettingsFiles = settingsItems;
-      state.loadedLayoutPresets = presetItems;
       state.loadedSettingsDirectoryScanned = true;
       state.loadedSettingsDirectoryHandle = handle || null;
       state.loadedSettingsDirectoryName = handle && handle.name ? handle.name : state.loadedSettingsDirectoryName;
       refreshLoadedSettingsSelect();
-      refreshCompanyPresetOptions();
       saveSettingsJsonFolderCache();
-      if (!options.silent) setExportStatus('JSON folder loaded: ' + (handle.name || 'folder') + ' / settings ' + settingsItems.length + ', presets ' + presetItems.length + ', json ' + jsonCount);
+      if (!options.silent) setExportStatus('JSON folder loaded: ' + (handle.name || 'folder') + ' / settings ' + settingsItems.length + ', json ' + jsonCount);
     }
 
     function chooseCurrentSettingsFile() {
@@ -16353,10 +16319,6 @@
     if (paperRedoBtn) paperRedoBtn.addEventListener('click', redoPaperChange);
     if (resetLayoutAdjustBtn) resetLayoutAdjustBtn.addEventListener('click', resetLayoutAdjustments);
     if (autoAlignPaperBtn) autoAlignPaperBtn.addEventListener('click', function(){ runPaperAutoAlign({ silent:false }); });
-    if (saveLayoutPresetBtn) saveLayoutPresetBtn.addEventListener('click', saveLayoutPreset);
-    if (loadLayoutPresetBtn) loadLayoutPresetBtn.addEventListener('click', function(){ if (layoutPresetInputEl) layoutPresetInputEl.click(); });
-    if (layoutPresetInputEl) layoutPresetInputEl.addEventListener('change', function(event){ loadLayoutPresetFile(event.target.files && event.target.files[0]); });
-    if (applyCompanyPresetBtn) applyCompanyPresetBtn.addEventListener('click', applySelectedCompanyPreset);
     if (headerPositionModeBtn) headerPositionModeBtn.addEventListener('click', toggleHeaderPositionMode);
     if (cellColumnCountInputEl) cellColumnCountInputEl.addEventListener('input', function(){ state.cellColumnCount = clampCellColumnCount(cellColumnCountInputEl.value); queueSavePaperMemory(); render(); });
     if (sidebarToggleBtn) sidebarToggleBtn.addEventListener('click', function(){ setSidebarCollapsed(!state.sidebarCollapsed); });
