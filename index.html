@@ -172,39 +172,49 @@
     }
     .settings-io-wrap {
       display: inline-flex;
-      align-items: flex-end;
+      align-items: center;
+      justify-content: flex-end;
       gap: 3px;
-      flex: 0 0 auto;
+      flex: 1 1 auto;
       white-space: nowrap;
       min-width: 0;
       margin-left: auto;
+      position: relative;
+      max-width: 326px;
+      padding: 3px 4px 3px 31px;
+      border: 1px solid var(--soft);
+      border-radius: 11px;
+      background: rgba(250,250,250,.72);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.62);
     }
     .settings-mini-btn {
-      height: 30px;
+      height: 26px;
       border: 1px solid var(--soft);
-      border-radius: 8px;
+      border-radius: 7px;
       background: white;
       color: var(--text);
-      padding: 0 5px;
+      padding: 0 4px;
       font: inherit;
       font-size: 10px;
       font-weight: 800;
       cursor: pointer;
-      max-width: 48px;
+      max-width: 54px;
+      flex: 0 0 auto;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
     .settings-folder-select {
-      height: 30px;
-      width: 96px;
-      min-width: 80px;
-      max-width: 108px;
+      height: 26px;
+      width: 80px;
+      min-width: 66px;
+      max-width: 86px;
+      flex: 1 1 76px;
       border: 1px solid var(--soft);
-      border-radius: 8px;
+      border-radius: 7px;
       background: white;
       color: var(--text);
-      padding: 0 4px;
+      padding: 0 3px;
       font: inherit;
       font-size: 10px;
       font-weight: 800;
@@ -449,7 +459,7 @@
     }
     .input-mode-button-row {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 6px;
       margin-top: 6px;
       align-items: stretch;
@@ -564,22 +574,6 @@
       outline: 1px solid rgba(207,42,42,.75);
       outline-offset: 2px;
     }
-    .paper-control-row {
-      display: grid;
-      grid-template-columns: 1fr 92px;
-      gap: 8px;
-      align-items: center;
-      margin-top: 10px;
-      padding: 8px 10px;
-      border: 1px solid var(--soft);
-      border-radius: 10px;
-      background: white;
-      font-size: 12px;
-      font-weight: 700;
-    }
-    .paper-control-row label { margin: 0; color: var(--text); font-weight: 800; }
-    .paper-control-row input { height: 34px; padding: 6px 8px; text-align: center; font-weight: 800; }
-    .paper-control-desc { grid-column: 1 / -1; color: var(--muted); font-size: 11px; font-weight: 500; line-height: 1.4; }
     .paper-mini-btn {
       height: 34px; border: 1px solid var(--soft); border-radius: 9px; background: white; color: var(--text);
       font: inherit; font-size: 12px; font-weight: 800; padding: 0 10px; cursor: pointer;
@@ -606,15 +600,6 @@
     .paper-check-left { display: inline-flex; align-items: center; gap: 8px; min-width: 0; }
     .paper-inline-control { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; white-space: nowrap; color: var(--text); font-size: 12px; font-weight: 800; }
     .paper-inline-control input { width: 64px; height: 30px; padding: 4px 6px; text-align: center; font-weight: 800; }
-    .paper-subsection-title {
-      margin-top: 14px;
-      padding-top: 10px;
-      border-top: 1px solid var(--soft);
-      color: var(--text);
-      font-size: 12px;
-      font-weight: 900;
-      letter-spacing: .02em;
-    }
     .paper-pixel-info {
       margin-top: 6px;
       padding: 8px 10px;
@@ -626,7 +611,6 @@
       line-height: 1.45;
       min-height: 32px;
     }
-    .paper-file-input-hidden { display: none; }
     .paper-auto-align-status {
       display: none;
       margin-top: 8px;
@@ -780,12 +764,14 @@
       user-select: none;
     }
     .preview-wrap {
+      position: relative;
       background: white;
       border: 1px solid var(--soft);
       border-radius: 20px;
       padding: 14px;
       overflow: auto;
       box-shadow: 0 10px 24px rgba(0,0,0,.06);
+      scrollbar-gutter: stable both-edges;
     }
     .preview-toolbar {
       display: flex;
@@ -796,8 +782,7 @@
       margin-bottom: 12px;
     }
     .preview-title { font-size: 18px; font-weight: 800; }
-    .preview-meta { display: none; }
-    .preview-meta { color: var(--muted); font-size: 12px; }
+    .preview-meta { display: none; color: var(--muted); font-size: 12px; }
     .toolbar-actions {
       display: flex;
       align-items: center;
@@ -867,10 +852,6 @@
       font-size: 13px;
       font-weight: 700;
       color: var(--text);
-    }
-    .preview-wrap {
-      position: relative;
-      scrollbar-gutter: stable both-edges;
     }
     .preview-wrap.file-drop-active {
       outline: 2px solid rgba(31, 111, 235, .72);
@@ -1393,16 +1374,6 @@
       animation: guideFlashBorderFade 6000ms ease-out forwards;
       z-index: 5;
     }
-    .guide-flash-note {
-      margin-top: 6px;
-      color: #cf2a2a;
-      font-size: 14px;
-      font-weight: 900;
-      line-height: 1.5;
-      letter-spacing: 0.01em;
-      animation: guideFlashNoteFade 6000ms ease-out forwards;
-      pointer-events: none;
-    }
     @keyframes guideFlashBorderFade {
       0% {
         border-color: rgba(210, 42, 42, 0.96);
@@ -1417,34 +1388,14 @@
         box-shadow: 0 0 0 1px rgba(255,255,255,0) inset, 0 0 10px rgba(210,42,42,0), 0 0 22px rgba(210,42,42,0);
       }
     }
-    @keyframes guideFlashNoteFade {
-      0% { opacity: 1; }
-      67.5% { opacity: 1; }
-      100% { opacity: 0; }
-    }
-
-
     .duration-boundary-hit { cursor: ns-resize; pointer-events: all; touch-action: none; -webkit-user-select: none; user-select: none; }
-    .text-memo-action-btn, .layer-tag-action-btn, .pasted-image-action-btn { cursor: pointer; pointer-events: all; -webkit-user-select: none; user-select: none; }
+    .layer-tag-action-btn, .pasted-image-action-btn { cursor: pointer; pointer-events: all; -webkit-user-select: none; user-select: none; }
     .text-memo-selection-toolbar { position: fixed; z-index: 10003; display: none; gap: 4px; padding: 4px; border: 1px solid var(--soft); border-radius: 8px; background: rgba(255,255,255,.98); box-shadow: 0 6px 16px rgba(0,0,0,.18); pointer-events: auto; }
     .text-memo-selection-toolbar button { height: 24px; min-width: 42px; border: 1px solid var(--soft); border-radius: 6px; background: white; color: var(--text); font: inherit; font-size: 11px; font-weight: 900; cursor: pointer; }
     .pasted-image-transform-outline { pointer-events: all; cursor: move; touch-action: none; }
     .pasted-image-transform-grip { pointer-events: all; cursor: nwse-resize; touch-action: none; }
     html.pasted-image-dragging, html.pasted-image-dragging body, html.layer-tag-dragging, html.layer-tag-dragging body { overscroll-behavior: none; -webkit-user-select: none; user-select: none; }
     /* ver511 top JSON controls: text label + grey outline group, not a button-like prefix */
-    .settings-io-wrap {
-      flex: 1 1 auto;
-      justify-content: flex-end;
-      align-items: center;
-      gap: 3px;
-      position: relative;
-      max-width: 326px;
-      padding: 3px 4px 3px 31px;
-      border: 1px solid var(--soft);
-      border-radius: 11px;
-      background: rgba(250,250,250,.72);
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,.62);
-    }
     .settings-json-prefix {
       position: absolute;
       left: 7px;
@@ -1464,11 +1415,9 @@
       flex: 0 0 auto;
       pointer-events: none;
     }
-    .settings-mini-btn { height: 26px; max-width: 54px; flex: 0 0 auto; padding: 0 4px; border-radius: 7px; font-size: 10px; }
     .settings-file-btn { max-width: 54px; }
     .settings-path-btn { max-width: 54px; font-size: 9px; }
     .settings-refresh-btn { max-width: 28px; font-size: 14px; line-height: 1; }
-    .settings-folder-select { height: 26px; width: 80px; min-width: 66px; max-width: 86px; flex: 1 1 76px; padding: 0 3px; border-radius: 7px; font-size: 10px; }
 
   </style>
 </head>
@@ -1805,13 +1754,11 @@
   <script>
     const PAGE_W = 1753;
     const PAGE_H = 2480;
-    const PAGE_GAP = 40;
     const FIXED_FPS = 24;
     const RED = '#cf2a2a';
     const SHEET_ZOOM_MIN = 0.25;
     const SHEET_ZOOM_MAX = 4;
     const SHEET_ZOOM_BUTTON_FACTOR = 1.12;
-    const CELL_LONG_PRESS_MS = 0;
     const CELL_LONG_PRESS_MOVE_TOLERANCE = 4;
     const SHAKU_BLUE = '#1f6feb';
     const SHAKU_FLASH_DURATION_MS = 6000;
@@ -1820,8 +1767,6 @@
     const TEXT_MEMO_MIN_H = 26;
     const TEXT_MEMO_DEFAULT_W = 280;
     const TEXT_MEMO_DEFAULT_H = 88;
-    const CSV_AUTO_START = '# CSV AUTO GENERATED START';
-    const CSV_AUTO_END = '# CSV AUTO GENERATED END';
     const DEFAULT_DIALOG_SAMPLE_LINE = '0+01 | 1+00 | SPEAKER | SAMPLE';
     const DEFAULT_CAMERA_SAMPLE_LINE = '0+01 | 1+00 | A | SAMPLE | B';
     const MAX_CELL_COLUMN_PLACEMENT_COUNT = 32;
@@ -1896,7 +1841,6 @@
     const headerPositionModeBtn = document.getElementById('headerPositionModeBtn');
     const cellColumnCountInputEl = document.getElementById('cellColumnCountInput');
     const cellColumnCountLabelEl = document.getElementById('cellColumnCountLabel');
-    const cellColumnCountHintEl = document.getElementById('cellColumnCountHint');
     const paperLayoutDetailsEl = document.getElementById('paperLayoutDetails');
     const paperLayoutSummaryTitleEl = document.getElementById('paperLayoutSummaryTitle');
     const paperLayoutSummaryHintEl = document.getElementById('paperLayoutSummaryHint');
@@ -1945,6 +1889,7 @@
     const PAPER_AUTO_ALIGN_TARGET_BODY_LINES = 73;
     const PAPER_AUTO_ALIGN_PAIR_CANDIDATE_LIMIT = 72;
     const PAPER_AUTO_ALIGN_PAIR_CENTER_TOLERANCE = PAGE_W * 0.20;
+    const MEMO_MIN_POINT_DISTANCE = 1.5;
     const SHORTCUT_ACTIONS = ['brushCycle', 'eraserToggle', 'sizeDown', 'sizeUp', 'memoOff'];
     const SHORTCUT_DEFAULTS = { brushCycle:'b', eraserToggle:'e', sizeDown:'[', sizeUp:']', memoOff:'backspace' };
     let paperMemorySaveTimer = null;
@@ -2049,7 +1994,7 @@
       shakuDrag: null,
       shakuSelection: null,
       shakuFlash: null,
-      shakuFlashAnimationFrame: null,
+      shakuFlashTimer: null,
       shakuUndoStack: [],
       shakuRedoStack: [],
       textMemoPages: {},
@@ -2770,7 +2715,32 @@
       ko: '<h4><span class="update-log-badge">ver636</span>폴더 선택 기억</h4><ul><li>설정 폴더 불러오기, 이미지 출력 저장先, 설정 JSON 저장 다이얼로그에 용도별 picker ID를 주고, 브라우저의 용도별 히스토리를 쓰게 했다.</li><li>이미지 출력 저장先 핸들도 설정 폴더처럼 저장/복원한다. 출력 폴더가 복원되지 않았을 때는 설정 폴더를 시작 위치 힌트로 쓴다. 단일 JSON과 CSV의 일반 파일 선택은 기존 네이티브 기억 동작 그대로 둔다.</li></ul>',
       zh: '<h4><span class="update-log-badge">ver636</span>选择器文件夹记忆</h4><ul><li>设置文件夹导入、图像输出保存处、设置 JSON 保存对话框现在使用各自的 picker ID，让浏览器复用各自的选择历史。</li><li>图像输出保存处句柄也会像设置文件夹一样保存和恢复；如果未恢复输出文件夹，会把设置文件夹作为起始位置提示。单个 JSON 和 CSV 的普通文件选择保持现有原生记忆行为。</li></ul>'
     };
+    const updateLogVer637VisibleDocs = {
+      en: '<h4><span class="update-log-badge">ver637</span>State cleanup</h4><ul><li>Full sheet reset now clears memo pages, text memos, pasted images, active drag/editor state, and Shaku undo history so old sheet data cannot reappear.</li><li>Shortcut settings are restored on reload, CSV load-error cleanup now uses one shared reset path, pasted-image dragging is render-throttled, and the text command column picker only rebuilds when its inputs change.</li><li>Shaku flash now uses SVG fade plus one clear timer instead of full-page rendering every frame. Memo drawing now appends only the new stroke segment while drawing.</li><li>Unused guide-note, paper-control, and auto-align cleanup helpers were removed; render-model sync and global pointer handling are now explicit.</li></ul>',
+      ja: '<h4><span class="update-log-badge">ver637</span>状態整理</h4><ul><li>全体リセットでメモ、テキストメモ、貼り付け画像、操作中のドラッグ/編集状態、ShakuのUndo履歴まで消し、古いシート状態が戻らないようにした。</li><li>ショートカット設定をリロード時に復元し、CSV読込エラー時の初期化を共通化。貼り付け画像ドラッグは描画を間引き、テキストコマンド列UIは入力が変わった時だけ再構築する。</li><li>Shakuフラッシュは毎フレーム全体描画せず、SVGフェードと終了タイマーで処理する。メモ描画は描いている最中に新しい線分だけ追加する。</li><li>未使用のguide-note、paper-control、Auto Align補助関数を削除し、render modelの同期とグローバルpointer処理を明示化した。</li></ul>',
+      ko: '<h4><span class="update-log-badge">ver637</span>상태 정리</h4><ul><li>전체 초기화에서 메모, 텍스트 메모, 붙여넣은 이미지, 진행 중인 드래그/편집 상태, Shaku Undo 기록까지 지워 예전 시트 상태가 되살아나지 않게 했다.</li><li>단축키 설정을 새로고침 후 복원하고, CSV 읽기 실패 초기화를 공통화했다. 붙여넣기 이미지 드래그는 렌더를 rAF로 묶고, 텍스트 커맨드 컬럼 UI는 입력이 바뀔 때만 다시 만든다.</li><li>Shaku 플래시는 매 프레임 전체 렌더 대신 SVG fade와 종료 타이머를 쓰고, 메모 드로잉은 그리는 중 새 선분만 추가한다.</li><li>미사용 guide-note, paper-control, Auto Align 보조 함수를 제거하고 render model 동기화와 전역 pointer 처리를 명시화했다.</li></ul>',
+      zh: '<h4><span class="update-log-badge">ver637</span>状态清理</h4><ul><li>整体重置现在会清除备注、文本备注、粘贴图像、正在进行的拖动/编辑状态以及 Shaku 撤销历史，避免旧表格状态重新出现。</li><li>快捷键设置会在刷新后恢复；CSV 读取错误清理改为共用重置路径；粘贴图像拖动改为节流渲染，文本命令列 UI 只在输入变化时重建。</li><li>Shaku 闪烁改用 SVG 淡出和一次清理计时器，不再每帧重绘整页。备注绘制时只追加新的线段。</li><li>删除未使用的 guide-note、paper-control 和 Auto Align 辅助函数，并显式化 render model 同步与全局 pointer 处理。</li></ul>'
+    };
+    const updateLogVer638VisibleDocs = {
+      en: '<h4><span class="update-log-badge">ver638</span>Residual cleanup pass</h4><ul><li>Continued the cleanup pass by removing the last unreferenced command-mode helper and obsolete constants left from older CSV, page-gap, and long-press paths.</li></ul>',
+      ja: '<h4><span class="update-log-badge">ver638</span>残留整理の続き</h4><ul><li>未参照になっていたコマンドモード補助関数と、古いCSV/Page gap/長押し処理由来の未使用定数を削除した。</li></ul>',
+      ko: '<h4><span class="update-log-badge">ver638</span>잔류 정리 계속</h4><ul><li>마지막 미참조 커맨드 모드 helper와 오래된 CSV/Page gap/롱프레스 경로에서 남은 미사용 상수를 제거했다.</li></ul>',
+      zh: '<h4><span class="update-log-badge">ver638</span>继续清理残留</h4><ul><li>移除了最后一个未引用的命令模式辅助函数，以及旧 CSV、页面间距和长按路径留下的未使用常量。</li></ul>'
+    };
+    const updateLogVer639VisibleDocs = {
+      en: '<h4><span class="update-log-badge">ver639</span>Settings-load render cleanup</h4><ul><li>Settings JSON load now suppresses intermediate mode/language renders and keeps one final render, with an extra render only when IndexedDB paper image restore actually changes the sheet.</li><li>Transient reset now also clears Position Edit, layout drag, preview pan, active memo stroke, Shaku classes, and layer-tag target state.</li><li>CSV error reset clears derived Cell order and Douga sheet state. The two input-mode buttons now use a two-column grid, and pasted images remain an explicit transient overlay policy.</li></ul>',
+      ja: '<h4><span class="update-log-badge">ver639</span>設定読込の描画整理</h4><ul><li>設定JSON読込時の入力モード/言語切替による途中renderを抑え、最後のrender 1回に整理した。IndexedDBの用紙画像復元で実際に変化した時だけ追加renderする。</li><li>一時状態リセットでPosition Edit、レイアウトドラッグ、プレビュー移動、描画中メモ、Shaku class、レイヤー名タグ対象も消すようにした。</li><li>CSVエラー初期化でCell表示順と動画シート状態も消す。入力モードボタンは2列gridにし、貼り付け画像は明示的に一時オーバーレイ扱いにした。</li></ul>',
+      ko: '<h4><span class="update-log-badge">ver639</span>설정 로드 렌더 정리</h4><ul><li>설정 JSON 로드 중 입력 모드/언어 갱신에서 발생하던 중간 render를 막고 마지막 render 1회로 정리했다. IndexedDB 용지 이미지 복원이 실제로 바뀐 경우에만 추가 render한다.</li><li>일시 상태 초기화에서 Position Edit, 레이아웃 드래그, 프리뷰 pan, 그리는 중인 메모, Shaku class, 레이어명 태그 대상까지 지우게 했다.</li><li>CSV 에러 초기화에서 Cell 표시 순서와 동화시트 상태도 지운다. 입력 모드 버튼은 2열 grid로 맞추고, 붙여넣기 이미지는 명시적으로 임시 오버레이 정책을 유지한다.</li></ul>',
+      zh: '<h4><span class="update-log-badge">ver639</span>设置载入渲染清理</h4><ul><li>设置 JSON 载入时会抑制输入模式/语言更新产生的中间 render，整理为最后一次 render；只有 IndexedDB 纸张图像恢复确实改变画面时才追加 render。</li><li>临时状态重置现在也会清除 Position Edit、布局拖动、预览平移、正在绘制的备注、Shaku class 和图层名标签目标状态。</li><li>CSV 错误重置会清除 Cell 显示顺序和动画栏状态。输入模式按钮改为两列 grid，粘贴图像明确保持为临时 overlay 策略。</li></ul>'
+    };
+    const updateLogVer640VisibleDocs = {
+      en: '<h4><span class="update-log-badge">ver640</span>Auto Align cancellation guard</h4><ul><li>Added a shared External Paper Auto Align cancellation path so pending line analysis cannot apply stale layout results after settings load, sheet reset, layout reset, paper clear, or paper undo/redo.</li><li>Sheet reset now reuses the CSV load reset path for CSV rows, columns, roles, derived Cell order, and Douga sheet state instead of clearing those fields in a second copy of the same logic.</li></ul>'
+    };
     const orderedRecentUpdateLogDocs = [
+      updateLogVer640VisibleDocs,
+      updateLogVer639VisibleDocs,
+      updateLogVer638VisibleDocs,
+      updateLogVer637VisibleDocs,
       updateLogVer636VisibleDocs,
       updateLogVer635VisibleDocs,
       updateLogVer634VisibleDocs,
@@ -3152,33 +3122,6 @@
       if (shortcutClearAllBtn) shortcutClearAllBtn.textContent = doc.clearAll;
     }
 
-    const transientGuideTexts = {
-      en: {
-        csvEncoding: 'If text looks garbled, check the CSV encoding here.',
-        csvColumns: 'Set whether each column is shown as Cell or sent to Dialog / Camera.',
-        paperFile: 'Choose the paper image file here.'
-      },
-      ja: {
-        csvEncoding: '文字化けしたら、ここでCSVのエンコーディングを確認する。',
-        csvColumns: '各列をセル表示にするか、セリフ欄・カメラ欄へ出すかをここで設定する。',
-        paperFile: 'ここで会社指定用紙画像を選択する。'
-      },
-      ko: {
-        csvEncoding: '문자 깨짐이 있으면 여기서 CSV 인코딩을 확인한다.',
-        csvColumns: '각 열을 셀로 표시할지, 대사란·카메라란으로 보낼지 여기서 설정한다.',
-        paperFile: '여기서 외부용지 파일을 선택한다.'
-      },
-      zh: {
-        csvEncoding: '如果出现乱码，在这里检查 CSV 编码。',
-        csvColumns: '在这里设置每一列是作为赛璐珞显示，还是输出到对白栏 / 摄影栏。',
-        paperFile: '在这里选择外部纸张文件。'
-      }
-    };
-
-    function getTransientGuideTexts() {
-      return transientGuideTexts[state.lang] || transientGuideTexts.en;
-    }
-
     function getPaperLayoutTexts() {
       return paperLayoutTexts[state.lang] || paperLayoutTexts.en;
     }
@@ -3200,7 +3143,6 @@
       if (showCellLabelOutputTextEl) showCellLabelOutputTextEl.textContent = doc.showCellLabel;
       if (showPsdMemoTextEl) showPsdMemoTextEl.textContent = doc.showPsdMemo;
       if (cellColumnCountLabelEl) cellColumnCountLabelEl.textContent = doc.cellColumns;
-      if (cellColumnCountHintEl) cellColumnCountHintEl.textContent = doc.cellColumnsHint;
       if (paperLayoutHintEl) paperLayoutHintEl.textContent = doc.body;
       renderPaperAutoAlignStatus();
       updatePaperImageStatus();
@@ -3943,21 +3885,6 @@
       }).join('\n');
     }
 
-    function normalizeCommandTextareaLeadingCrossGaps(textarea) {
-      if (!textarea) return false;
-      const before = String(textarea.value || '');
-      const after = normalizeLeadingCrossGapCommandTextValue(before);
-      if (after === before) return false;
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
-      textarea.value = after;
-      try {
-        const pos = Math.min(after.length, Math.max(0, start || 0));
-        textarea.setSelectionRange(pos, Math.min(after.length, Math.max(pos, end || pos)));
-      } catch (err) {}
-      return true;
-    }
-
     function setCommandLabelAtFrame(tokens, idx, nextLabel) {
       const token = sanitizeCommandToken(nextLabel);
       if (!token) {
@@ -4200,7 +4127,8 @@
       if (selector) selector.value = lang;
     }
 
-    function updateLanguage() {
+    function updateLanguage(options) {
+      const shouldRender = !(options && options.render === false);
       const selector = document.getElementById('languageSelect');
       state.lang = normalizeLanguageCode(selector ? selector.value : state.lang);
       if (selector && selector.value !== state.lang) selector.value = state.lang;
@@ -4218,7 +4146,7 @@
       updatePreviewMetaText(state.totalPages || 1);
       if (!state.csvRawRows.length) updateCsvEncodingVisibility(false);
       updateCsvStatusText();
-      render();
+      if (shouldRender) render();
     }
 
     function setSvgTarget(target) {
@@ -7495,16 +7423,6 @@
       };
     }
 
-    function isStableEightColumnPaperAutoAlignResult(result) {
-      const diagnostics = result && result.diagnostics ? result.diagnostics : {};
-      return Number(diagnostics.columns || 0) === 8 &&
-        Number(diagnostics.leftColumns || 0) === 8 &&
-        Number(diagnostics.rightColumns || 0) === 8 &&
-        Number(diagnostics.leftFollowColumns || 0) === 8 &&
-        Number(diagnostics.rightFollowColumns || 0) === 8 &&
-        Number(result && result.confidence || 0) >= 90;
-    }
-
     function isStableStandardPaperAutoAlignResult(result) {
       const diagnostics = result && result.diagnostics ? result.diagnostics : {};
       const columns = Number(diagnostics.columns || 0);
@@ -7589,6 +7507,12 @@
         syncPaperLayoutControls();
         if (!options.silent) render();
       }
+    }
+
+    function cancelPendingPaperAutoAlign(options) {
+      state.paperAutoAlignToken += 1;
+      state.paperAutoAlignOverlay = null;
+      if (!(options && options.keepStatus)) setPaperAutoAlignResult(null);
     }
 
     function clampNumber(value, min, max) {
@@ -8047,10 +7971,6 @@
 
     // Command text is the single source of truth. Role suffixes stay in the
     // editable command text so text, CSV, and preview use the same language.
-    function getCommandModeKey(modeValue) {
-      return isCsvMode(modeValue || getCurrentInputMode()) ? 'csv' : 'text';
-    }
-
     function getCommandTextareaForModeKey(modeKey) {
       return modeKey === 'csv' ? csvCommandEditEl : document.getElementById('timelineCommandInput');
     }
@@ -9259,14 +9179,20 @@
 
     function getBaseInputLayers() {
       const mode = getCurrentInputMode();
-      syncTextCommandBookNameTags();
       if (isCsvMode(mode)) {
-        syncCsvColumnRolesFromCommandEdit();
-        syncCsvBookNameTags();
         const edited = getCommandTextValue('csv').trim();
         return edited ? stabilizeCsvEditedLayerUids(parseCsvCommandEditText(edited)) : layersFromCsvSelection();
       }
       return parseCommandText(getCommandTextValue('text'), 'text');
+    }
+
+    function syncInputDerivedStateBeforeRender() {
+      const mode = getCurrentInputMode();
+      syncTextCommandBookNameTags();
+      if (isCsvMode(mode)) {
+        syncCsvColumnRolesFromCommandEdit();
+        syncCsvBookNameTags();
+      }
     }
 
     function applyDotOverrides(baseLayers) {
@@ -9337,6 +9263,7 @@
 
     function syncCommandTextFromCurrentState() {
       const hadDotOverrides = !!(state.dotOverrides && Object.keys(state.dotOverrides).length);
+      syncInputDerivedStateBeforeRender();
       const commandText = layersToCommandText(orderLayersByCellDisplayOrder(applyDotOverrides(getBaseInputLayers())));
       if (isCsvMode(getCurrentInputMode())) setCommandTextValue('csv', commandText);
       else setCommandTextValue('text', mergeTextCommandSyncWithRoleLines(commandText));
@@ -9514,7 +9441,7 @@
     }
 
     function findTimelineDragPreviewBlock(frame, blockType) {
-      const model = getRenderModel();
+      const model = getSyncedRenderModel();
       const blocks = getBlocksForPage(model.layout, state.currentPreviewPage || 0);
       let found = null;
       blocks.forEach(function(block){
@@ -9607,7 +9534,7 @@
         startFrame:Math.max(1, Math.round(Number(frame || 1))),
         currentFrame:Math.max(1, Math.round(Number(frame || 1))),
         minFrame:range && range.minFrame ? range.minFrame : 1,
-        maxFrame:range && range.maxFrame ? range.maxFrame : Math.max(1, getRenderModel().maxFrame || 1),
+        maxFrame:range && range.maxFrame ? range.maxFrame : Math.max(1, getSyncedRenderModel().maxFrame || 1),
         startClientX:event.clientX,
         startClientY:event.clientY,
         active:false,
@@ -10330,7 +10257,7 @@
     }
 
     function getShakuBoundaryFromPointerEvent(event) {
-      const model = getRenderModel();
+      const model = getSyncedRenderModel();
       const p = getSvgPointFromPointerEvent(event);
       const blocks = getBlocksForPage(model.layout, state.currentPreviewPage || 0);
       let best = null;
@@ -10424,31 +10351,30 @@
       });
     }
 
-    function stopShakuFlashAnimation() {
-      if (state.shakuFlashAnimationFrame) {
-        try { window.cancelAnimationFrame(state.shakuFlashAnimationFrame); } catch (err) {}
-        state.shakuFlashAnimationFrame = null;
+    function stopShakuFlashTimer() {
+      if (state.shakuFlashTimer) {
+        try { window.clearTimeout(state.shakuFlashTimer); } catch (err) {}
+        state.shakuFlashTimer = null;
       }
     }
 
-    function startShakuFlashAnimation() {
-      stopShakuFlashAnimation();
-      const tick = function(){
+    function scheduleShakuFlashClear() {
+      stopShakuFlashTimer();
+      const flash = state.shakuFlash;
+      if (!flash) return;
+      const delay = Math.max(0, Number(flash.expireAt || 0) - Date.now());
+      state.shakuFlashTimer = window.setTimeout(function(){
         const flash = state.shakuFlash;
         if (!flash) {
-          state.shakuFlashAnimationFrame = null;
+          state.shakuFlashTimer = null;
           return;
         }
         if (Date.now() >= Number(flash.expireAt || 0)) {
           state.shakuFlash = null;
-          state.shakuFlashAnimationFrame = null;
+          state.shakuFlashTimer = null;
           render();
-          return;
         }
-        render();
-        state.shakuFlashAnimationFrame = window.requestAnimationFrame(tick);
-      };
-      state.shakuFlashAnimationFrame = window.requestAnimationFrame(tick);
+      }, delay);
     }
 
     function renderShakuFlashOverlay(block) {
@@ -10467,15 +10393,28 @@
       const remaining = Math.max(0, expireAt - now);
       const fadeMs = Math.max(1, Number(flash.fadeMs || SHAKU_FLASH_FADE_MS));
       const opacity = remaining < fadeMs ? Math.max(0, Math.min(1, remaining / fadeMs)) : 1;
+      const fadeBegin = Math.max(0, remaining - fadeMs) / 1000;
+      const fadeDuration = Math.max(0.001, Math.min(fadeMs, remaining) / 1000);
+      function attachFade(node) {
+        node.appendChild(el('animate', {
+          attributeName:'opacity',
+          from:opacity.toFixed(3),
+          to:'0',
+          begin:fadeBegin.toFixed(3) + 's',
+          dur:fadeDuration.toFixed(3) + 's',
+          fill:'freeze'
+        }));
+        return node;
+      }
       const box = getShakuRangeRect(block, from, to);
       const flashColor = flash.mode === 'cut' ? '#cf2a2a' : '#2f9d50';
       const flashFill = flash.mode === 'cut' ? 'rgba(207,42,42,.12)' : 'rgba(47,157,80,.12)';
       const label = (flash.mode === 'cut' ? getShakuUiText('shakuFlashCut') : getShakuUiText('shakuFlashStretch')) + ' ' + framesToDurationText(flash.frameCount || (to - from + 1));
       withDrawLayer('output', function(){
-        appendSvgNode(el('rect', { x:box.x, y:box.y, width:box.w, height:box.h, fill:flashFill, stroke:flashColor, 'stroke-width':6, opacity:opacity.toFixed(3), rx:4, ry:4, 'pointer-events':'none' }));
+        appendSvgNode(attachFade(el('rect', { x:box.x, y:box.y, width:box.w, height:box.h, fill:flashFill, stroke:flashColor, 'stroke-width':6, opacity:opacity.toFixed(3), rx:4, ry:4, 'pointer-events':'none' })));
         const tx = Math.min(box.x + box.w - 8, Math.max(box.x + 8, box.x + 14));
         const ty = Math.max(box.y + 18, Math.min(box.y + box.h - 8, box.y + 22));
-        appendSvgNode(el('text', { x:tx, y:ty, fill:flashColor, opacity:opacity.toFixed(3), 'font-size':16, 'font-family':'Arial, Helvetica, sans-serif', 'font-weight':'900', 'dominant-baseline':'middle', 'pointer-events':'none' }, label));
+        appendSvgNode(attachFade(el('text', { x:tx, y:ty, fill:flashColor, opacity:opacity.toFixed(3), 'font-size':16, 'font-family':'Arial, Helvetica, sans-serif', 'font-weight':'900', 'dominant-baseline':'middle', 'pointer-events':'none' }, label)));
       });
     }
 
@@ -10538,7 +10477,7 @@
 
     function updateDurationByFrameDelta(delta) {
       normalizeDurationInputs();
-      const current = getDurationFrameCount() || getRenderModel().maxFrame || 1;
+      const current = getDurationFrameCount() || getSyncedRenderModel().maxFrame || 1;
       setDurationFrameCount(Math.max(0, current + Math.round(Number(delta) || 0)));
     }
 
@@ -10558,7 +10497,7 @@
       state.dotOverrides = {};
       const textarea = getCommandTextarea();
       if (!textarea) return;
-      const model = getRenderModel();
+      const model = getSyncedRenderModel();
       const maxFrame = Math.max(model.maxFrame || 1, fromFrame + frameCount + 1);
       const fromIdx = Math.max(0, fromFrame - 1);
       const lines = String(textarea.value || '').replace(/\r/g, '').split('\n');
@@ -10726,7 +10665,7 @@
       };
       state.shakuSelection = null;
       render();
-      startShakuFlashAnimation();
+      scheduleShakuFlashClear();
     }
 
     function getCellLabelDragTargetIndex(event, labelArea, count) {
@@ -11070,7 +11009,7 @@
       event.preventDefault();
       const tag = getLayerNameTagList().find(function(t){ return t && t.id === drag.id; });
       if (!tag) return;
-      const model = getRenderModel();
+      const model = getSyncedRenderModel();
       const blocks = getBlocksForPage(model.layout, state.currentPreviewPage || 0);
       const block = blocks[0];
       const box = getLayerNameTagBox(tag, model.layout, block);
@@ -12271,7 +12210,7 @@
         next.y += dy;
       }
       Object.assign(img, clampPastedImageBox(next));
-      render();
+      requestRender();
     }
 
     function endPastedImageDrag(event) {
@@ -12878,7 +12817,7 @@
     }
 
     function getDurationFrameFromPointerEvent(event) {
-      const model = getRenderModel();
+      const model = getSyncedRenderModel();
       const p = getSvgPointFromPointerEvent(event);
       const blocks = getBlocksForPage(model.layout, state.currentPreviewPage || 0);
       let candidate = null;
@@ -13123,6 +13062,11 @@
       };
     }
 
+    function getSyncedRenderModel() {
+      syncInputDerivedStateBeforeRender();
+      return getRenderModel();
+    }
+
     function getSvgPointFromPointerEvent(event) {
       const rectBox = svg.getBoundingClientRect();
       if (!rectBox.width || !rectBox.height) return { x:0, y:0 };
@@ -13133,7 +13077,7 @@
     }
 
     function getFrameFromPointerEvent(event) {
-      const model = getRenderModel();
+      const model = getSyncedRenderModel();
       const p = getSvgPointFromPointerEvent(event);
       const blocks = getBlocksForPage(model.layout, state.currentPreviewPage || 0);
       const dragType = state.activeTimelineDrag && state.activeTimelineDrag.blockType ? state.activeTimelineDrag.blockType : 'cell';
@@ -13343,6 +13287,7 @@
 
     let queuedRenderFrame = null;
     let queuedRenderNeedsCommandSync = false;
+    let lastTextCommandColumnPickerSignature = '';
 
     function requestRender(options) {
       const opts = options || {};
@@ -13368,17 +13313,29 @@
       }
     }
 
+    function refreshTextCommandColumnPickerIfNeeded() {
+      const signature = [
+        state.lang || '',
+        getCurrentInputMode(),
+        isCommandCellViewEnabled('text') ? 'cell-view' : 'source-view',
+        getCommandTextValue('text')
+      ].join('\u0001');
+      if (signature === lastTextCommandColumnPickerSignature) return;
+      lastTextCommandColumnPickerSignature = signature;
+      refreshTextCommandColumnPicker();
+    }
+
     function render() {
       if (cellColumnCountInputEl) {
         state.cellColumnCount = clampCellColumnCount(cellColumnCountInputEl.value);
         if (String(cellColumnCountInputEl.value) !== String(state.cellColumnCount)) cellColumnCountInputEl.value = String(state.cellColumnCount);
       }
-      const model = getRenderModel();
+      const model = getSyncedRenderModel();
       state.activeTimelineSides = model.layout && model.layout.singleMode ? ['main'] : ['left', 'right'];
       syncDurationInputsToRenderedBoundary(model);
       state.currentPreviewPage = Math.min(model.totalPages - 1, Math.max(0, state.currentPreviewPage || 0));
       updatePreviewControls(model.totalPages);
-      refreshTextCommandColumnPicker();
+      refreshTextCommandColumnPickerIfNeeded();
       state.showTemplate = showTemplateToggleEl ? !!showTemplateToggleEl.checked : true;
       state.showHeaderOutput = showHeaderOutputToggleEl ? !!showHeaderOutputToggleEl.checked : true;
       state.showDurationPlusOutput = showDurationPlusOutputToggleEl ? !!showDurationPlusOutputToggleEl.checked : true;
@@ -13409,8 +13366,16 @@
 
     function updateMemoCanvasSize() {
       if (!memoCanvas) return;
-      if (memoCanvas.width !== PAGE_W) memoCanvas.width = PAGE_W;
-      if (memoCanvas.height !== PAGE_H) memoCanvas.height = PAGE_H;
+      let resized = false;
+      if (memoCanvas.width !== PAGE_W) {
+        memoCanvas.width = PAGE_W;
+        resized = true;
+      }
+      if (memoCanvas.height !== PAGE_H) {
+        memoCanvas.height = PAGE_H;
+        resized = true;
+      }
+      return resized;
     }
 
     function populateMemoSizeSelect(selectEl, options, value) {
@@ -13689,9 +13654,7 @@
       return false;
     }
 
-    function drawStrokeToContext(ctx, stroke) {
-      if (!stroke || !stroke.points || !stroke.points.length) return;
-      ctx.save();
+    function applyMemoStrokeStyle(ctx, stroke) {
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
       ctx.lineWidth = stroke.size || 2;
@@ -13704,6 +13667,12 @@
         ctx.strokeStyle = stroke.color || '#111111';
         ctx.fillStyle = stroke.color || '#111111';
       }
+    }
+
+    function drawStrokeToContext(ctx, stroke) {
+      if (!stroke || !stroke.points || !stroke.points.length) return;
+      ctx.save();
+      applyMemoStrokeStyle(ctx, stroke);
       if (stroke.points.length === 1) {
         const p = stroke.points[0];
         ctx.beginPath();
@@ -13715,6 +13684,35 @@
         for (let i = 1; i < stroke.points.length; i++) {
           ctx.lineTo(stroke.points[i].x, stroke.points[i].y);
         }
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    function shouldAppendMemoPoint(last, next) {
+      if (!last || !next) return true;
+      const dx = next.x - last.x;
+      const dy = next.y - last.y;
+      return dx * dx + dy * dy >= MEMO_MIN_POINT_DISTANCE * MEMO_MIN_POINT_DISTANCE;
+    }
+
+    function drawMemoStrokeSegment(ctx, stroke, fromIndex, toIndex) {
+      if (!stroke || !stroke.points || !stroke.points.length) return;
+      const from = Math.max(0, Math.min(stroke.points.length - 1, Number(fromIndex) || 0));
+      const to = Math.max(0, Math.min(stroke.points.length - 1, Number(toIndex) || 0));
+      const start = stroke.points[from];
+      const end = stroke.points[to];
+      if (!start || !end) return;
+      ctx.save();
+      applyMemoStrokeStyle(ctx, stroke);
+      if (from === to) {
+        ctx.beginPath();
+        ctx.arc(end.x, end.y, Math.max(0.5, (stroke.size || 2) / 2), 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        ctx.beginPath();
+        ctx.moveTo(start.x, start.y);
+        ctx.lineTo(end.x, end.y);
         ctx.stroke();
       }
       ctx.restore();
@@ -13819,7 +13817,7 @@
       }
       if (event.button !== undefined && event.button !== 0) return;
       event.preventDefault();
-      updateMemoCanvasSize();
+      const resized = updateMemoCanvasSize();
       state.memoPenSize = Number(memoPenSizeSelectEl.value || state.memoPenSize || 2);
       state.memoEraserSize = Number(memoEraserSizeSelectEl.value || state.memoEraserSize || 100);
       const activeMemoSize = state.memoTool === 'eraser' ? state.memoEraserSize : state.memoPenSize;
@@ -13835,18 +13833,24 @@
       state.memoPointerId = event.pointerId;
       state.memoCurrentStroke = stroke;
       if (memoCanvas.setPointerCapture) memoCanvas.setPointerCapture(event.pointerId);
-      redrawMemoCanvas();
+      if (resized) redrawMemoCanvas();
+      else drawMemoStrokeSegment(memoCtx, stroke, 0, 0);
       updateMemoUI();
     }
 
     function continueMemoStroke(event) {
       if (state.memoPointerId !== event.pointerId || !state.memoCurrentStroke) return;
       event.preventDefault();
+      if (updateMemoCanvasSize()) {
+        redrawMemoCanvas();
+        return;
+      }
       const point = getMemoPointFromEvent(event);
       const pts = state.memoCurrentStroke.points;
       const last = pts[pts.length - 1];
-      if (!last || last.x !== point.x || last.y !== point.y) pts.push(point);
-      redrawMemoCanvas();
+      if (!shouldAppendMemoPoint(last, point)) return;
+      pts.push(point);
+      drawMemoStrokeSegment(memoCtx, state.memoCurrentStroke, pts.length - 2, pts.length - 1);
     }
 
     function endMemoStroke(event) {
@@ -13856,7 +13860,6 @@
       }
       state.memoPointerId = null;
       state.memoCurrentStroke = null;
-      redrawMemoCanvas();
       updateMemoUI();
     }
 
@@ -14786,6 +14789,7 @@
 
     function restorePaperStateSnapshot(snapshot) {
       if (!snapshot) return;
+      cancelPendingPaperAutoAlign();
       state.paperImageDataUrl = snapshot.imageDataUrl || '';
       state.paperImageMemoDataUrl = snapshot.memoDataUrl || '';
       state.paperImageMemoLayerCount = Number(snapshot.memoLayerCount) || 0;
@@ -14804,7 +14808,7 @@
       state.layoutBoxes = clonePaperData(snapshot.layoutBoxes || {});
       state.layoutBoxBaseRects = clonePaperData(snapshot.layoutBoxBaseRects || {});
       state.positionMode = !!snapshot.positionMode;
-      state.paperAutoAlignResult = snapshot.autoAlignResult ? clonePaperData(snapshot.autoAlignResult) : null;
+      setPaperAutoAlignResult(snapshot.autoAlignResult ? clonePaperData(snapshot.autoAlignResult) : null);
       state.paperAutoAlignOverlay = snapshot.autoAlignOverlay ? clonePaperData(snapshot.autoAlignOverlay) : null;
       state.layoutDrag = null;
       document.documentElement.classList.remove('position-edit-dragging');
@@ -15022,6 +15026,7 @@
 
     function clearPaperImage() {
       const beforeSnapshot = getPaperStateSnapshot();
+      cancelPendingPaperAutoAlign();
       state.paperImageDataUrl = '';
       state.paperImageMemoDataUrl = '';
       state.paperImageMemoLayerCount = 0;
@@ -15030,9 +15035,6 @@
       state.paperImagePixelInfo = '';
       state.paperImageSourceWidth = 0;
       state.paperImageSourceHeight = 0;
-      state.paperAutoAlignToken += 1;
-      state.paperAutoAlignOverlay = null;
-      setPaperAutoAlignResult(null);
       state.showTemplate = true;
       state.showHeaderOutput = true;
       state.showDurationPlusOutput = true;
@@ -15051,6 +15053,10 @@
     }
 
     function clearSheetData() {
+      cancelPendingPaperAutoAlign();
+      resetSheetTransientState({ clearMemoContent:true, clearPastedImages:true });
+      state.memoMode = false;
+      state.positionMode = false;
       ['cutNo', 'seconds', 'frames'].forEach(function(id){
         const input = document.getElementById(id);
         if (input) input.value = '';
@@ -15058,53 +15064,25 @@
       const pageInput = document.getElementById('page');
       if (pageInput) pageInput.value = '1/1';
       setCommandTextValue('text', 'A:');
-      setCommandTextValue('csv', 'A:');
       const dialogEl = document.getElementById('dialogManual');
       if (dialogEl) dialogEl.value = '0+00 | 0+00 |  | ';
       const cameraEl = document.getElementById('cameraManual');
       if (cameraEl) cameraEl.value = '0+00 | 0+00 |  |  | ';
-      state.csvRawRows = [];
-      state.csvColumns = [];
-      state.csvColumnOrder = [];
-      state.csvColumnRoles = {};
-      state.csvDurationAutofillPending = false;
-      state.lastCsvGeneratedDialogLines = [];
-      state.lastCsvGeneratedCameraLines = [];
-      state.csvFrameIndex = 0;
-      state.csvDataStartRow = 1;
-      clearTimelineInteractionOverrides();
-      state.csvFileBuffer = null;
-      state.csvOriginalRows = [];
-      state.csvOriginalText = '';
-      state.csvOriginalEncoding = 'utf-8';
-      state.csvLoadedMode = '';
-      state.tvpaintCellSourceColumns = [];
-      state.csvLoadError = '';
-      state.cellDisplayOrder = [];
-      state.dougaSheetEnabled = false;
-      state.dougaSheetData = null;
+      resetCsvStateForSheetClear();
       state.layerNameTags = [];
       state.activeLayerNameTagTarget = null;
       state.activeLayerNameTag = null;
       state.currentPreviewPage = 0;
       state.totalPages = 1;
-      if (csvColumnPickerEl) csvColumnPickerEl.innerHTML = '';
-      const csvFileInput = document.getElementById('csvFileInput');
-      if (csvFileInput) csvFileInput.value = '';
-      updateCsvEncodingVisibility(false);
-    if (csvInfoEl) csvInfoEl.textContent = t('noCsv');
-      updateCsvSourceInfo();
-      updateCsvSettingsActionVisibility();
       render();
     }
 
     function resetLayoutAdjustments() {
       const beforeSnapshot = getPaperStateSnapshot();
+      cancelPendingPaperAutoAlign();
       state.layoutBoxes = {};
       state.layoutBoxBaseRects = {};
       state.layoutDrag = null;
-      state.paperAutoAlignOverlay = null;
-      setPaperAutoAlignResult(null);
       document.documentElement.classList.remove('position-edit-dragging');
       pushPaperHistory(beforeSnapshot, getPaperStateSnapshot());
       queueSavePaperMemory();
@@ -15146,11 +15124,7 @@
           sheetZoom:state.sheetZoom || 1,
           cellReadabilityLarge:!!state.cellReadabilityLarge,
           dougaSheetEnabled:!!state.dougaSheetEnabled,
-          dougaSheetData:JSON.parse(JSON.stringify(state.dougaSheetData || null)),
-          shakuMode:!!state.shakuMode,
-          shakuSelection:JSON.parse(JSON.stringify(state.shakuSelection || null)),
-          shakuUndoStack:JSON.parse(JSON.stringify(state.shakuUndoStack || [])),
-          shakuRedoStack:JSON.parse(JSON.stringify(state.shakuRedoStack || []))
+          dougaSheetData:JSON.parse(JSON.stringify(state.dougaSheetData || null))
         },
         input:{
           timelineCommand:getCommandTextValue('text'),
@@ -15283,6 +15257,8 @@
 
     function applyCurrentSettingsPayload(payload) {
       if (!payload || payload.schema !== 'auto-sheet-current-settings') throw new Error('Unsupported settings file');
+      cancelPendingPaperAutoAlign();
+      resetSheetTransientState({ clearPastedImages:true });
       const header = payload.header || {};
       ['episode','title','cutNo','seconds','frames','author','page'].forEach(function(id){
         const elNode = document.getElementById(id);
@@ -15297,10 +15273,10 @@
       state.dougaSheetEnabled = !!ui.dougaSheetEnabled;
       state.dougaSheetData = ui.dougaSheetData && typeof ui.dougaSheetData === 'object' ? ui.dougaSheetData : null;
       normalizeDurationInputs();
-      state.shakuMode = !!ui.shakuMode;
-      state.shakuSelection = ui.shakuSelection && typeof ui.shakuSelection === 'object' ? ui.shakuSelection : null;
-      state.shakuUndoStack = Array.isArray(ui.shakuUndoStack) ? ui.shakuUndoStack : [];
-      state.shakuRedoStack = Array.isArray(ui.shakuRedoStack) ? ui.shakuRedoStack : [];
+      state.shakuMode = false;
+      state.shakuSelection = null;
+      state.shakuUndoStack = [];
+      state.shakuRedoStack = [];
       state.shakuFlash = null;
       updateShakuEditUI();
       state.currentPreviewPage = Math.max(0, Number(ui.currentPreviewPage) || 0);
@@ -15350,6 +15326,7 @@
       state.dotOverrides = overrides.dotOverrides && typeof overrides.dotOverrides === 'object' ? overrides.dotOverrides : {};
       materializeDotOverridesIntoCommandText();
       const memo = payload.memo || {};
+      // Pasted images are transient overlays; settings load/reset clears them instead of storing large data URLs.
       state.memoMode = !!memo.mode;
       state.previewSpacePanKey = false;
       state.memoTool = memo.tool || 'pen';
@@ -15363,13 +15340,17 @@
       syncPaperLayoutControls();
       updatePaperImageStatus();
       refreshCsvColumnPicker();
-      updateModeUI();
+      updateModeUI({ render:false });
       syncMemoSizeSelects();
       refreshShortcutInputs();
       saveHeaderMemoryNow();
       queueSavePaperMemory();
-      if (settingsShouldRestoreImageFromDb || settingsShouldRestoreMemoFromDb) restorePaperImageMemoryFromDb({ renderAfter:true });
-      updateLanguage();
+      if (settingsShouldRestoreImageFromDb || settingsShouldRestoreMemoFromDb) {
+        restorePaperImageMemoryFromDb({ renderAfter:false }).then(function(changed){
+          if (changed) render();
+        }).catch(function(){});
+      }
+      updateLanguage({ render:false });
       applySheetZoom();
       render();
       setExportStatus('Settings loaded.');
@@ -15483,21 +15464,44 @@
       return '';
     }
 
-    function clearCsvLoadStateForDropError(message) {
+    function resetCsvLoadState(message, options) {
+      const opts = options || {};
       clearTimelineInteractionOverrides();
       state.csvRawRows = [];
       state.csvOriginalRows = [];
       state.csvOriginalText = '';
+      state.csvOriginalEncoding = 'utf-8';
       state.csvLoadedMode = '';
       state.tvpaintCellSourceColumns = [];
       state.csvColumns = [];
       state.csvColumnOrder = [];
       state.csvColumnRoles = {};
+      state.csvDurationAutofillPending = false;
+      state.lastCsvGeneratedDialogLines = [];
+      state.lastCsvGeneratedCameraLines = [];
+      state.csvFrameIndex = 0;
+      state.csvDataStartRow = 1;
+      state.cellDisplayOrder = [];
+      state.dougaSheetEnabled = false;
+      state.dougaSheetData = null;
+      if (!opts.keepBuffer) state.csvFileBuffer = null;
       if (csvColumnPickerEl) csvColumnPickerEl.innerHTML = '';
       setCommandTextValue('csv', '');
       state.csvLoadError = message || '';
-      if (csvInfoEl) csvInfoEl.textContent = state.csvLoadError;
+      if (csvInfoEl) csvInfoEl.textContent = state.csvLoadError || t('noCsv');
       updateCsvEncodingVisibility(!!message);
+      updateCsvSourceInfo();
+      updateCsvSettingsActionVisibility();
+    }
+
+    function resetCsvStateForSheetClear() {
+      resetCsvLoadState('', { keepBuffer:false });
+      setCommandTextValue('csv', 'A:');
+      state.csvLoadError = '';
+      const csvFileInput = document.getElementById('csvFileInput');
+      if (csvFileInput) csvFileInput.value = '';
+      updateCsvEncodingVisibility(false);
+      if (csvInfoEl) csvInfoEl.textContent = t('noCsv');
       updateCsvSourceInfo();
       updateCsvSettingsActionVisibility();
     }
@@ -15524,7 +15528,7 @@
         setExportStatus('CSV loaded: ' + (file.name || 'dropped.csv'));
         return true;
       } catch (err) {
-        clearCsvLoadStateForDropError(t('csvError', err && err.message ? err.message : err));
+        resetCsvLoadState(t('csvError', err && err.message ? err.message : err));
         render();
         return false;
       }
@@ -15566,6 +15570,57 @@
 
     function safeSettingsCacheItem(item) {
       return item && item.payload ? { id:item.id, filename:item.filename, label:item.label, payload:item.payload } : null;
+    }
+
+    function resetSheetTransientState(options) {
+      const opts = options || {};
+      if (state.manualSourceSyncTimer) {
+        clearTimeout(state.manualSourceSyncTimer);
+        state.manualSourceSyncTimer = null;
+      }
+      stopShakuFlashTimer();
+      if (state.inlineTextEditor) closeInlineTextEditor({ cancel:true, render:false });
+      if (state.textMemoEditor) closeTextMemoEditor({ render:false });
+      hideTextMemoControls({ render:false });
+      cancelCellLongPressDrag();
+      cancelCellLabelDrag();
+      clearDragPreviewBox();
+      cancelPreviewPan();
+      clearMemoPointerState();
+      state.positionMode = false;
+      state.layoutDrag = null;
+      state.activeTimelineDrag = null;
+      state.cellLabelDrag = null;
+      state.cellLongPressDrag = null;
+      state.shakuMode = false;
+      state.shakuDrag = null;
+      state.shakuSelection = null;
+      state.shakuFlash = null;
+      state.shakuUndoStack = [];
+      state.shakuRedoStack = [];
+      state.activeTextMemo = null;
+      state.textMemoResize = null;
+      state.activePastedImage = null;
+      state.pastedImageDrag = null;
+      state.layerNameTagDrag = null;
+      state.activeLayerNameTag = null;
+      state.activeLayerNameTagTarget = null;
+      state.previewSpacePanKey = false;
+      if (opts.clearMemoContent) {
+        state.memoPages = {};
+        state.textMemoPages = {};
+      }
+      if (opts.clearPastedImages) state.pastedImages = {};
+      document.documentElement.classList.remove(
+        'cell-dragging',
+        'cell-label-dragging',
+        'layer-tag-dragging',
+        'pasted-image-dragging',
+        'text-memo-dragging',
+        'timeline-edge-dragging',
+        'position-edit-dragging',
+        'shaku-editing'
+      );
     }
 
     function saveSettingsJsonFolderCache() {
@@ -16177,7 +16232,7 @@
       state.isExporting = true;
       updatePreviewControls(state.totalPages);
       const format = exportFormatSelectEl.value || 'png';
-      const model = getRenderModel();
+      const model = getSyncedRenderModel();
       const exportSize = getExportPixelSize();
       updatePreviewControls(model.totalPages);
       setExportStatus('Preparing ' + model.totalPages + ' page(s)' + (exportSize.usesSourcePixels ? (' at source pixels ' + exportSize.width + '×' + exportSize.height) : '') + '...');
@@ -16212,15 +16267,13 @@
     function removeGuideFlash(target) {
       if (!target) return;
       target.classList.remove('guide-flash-target');
-      const note = Array.from(target.children || []).find(function(node){ return node && node.classList && node.classList.contains('guide-flash-note'); });
-      if (note && note.parentNode) note.parentNode.removeChild(note);
       if (target._guideFlashTimer) {
         clearTimeout(target._guideFlashTimer);
         target._guideFlashTimer = null;
       }
     }
 
-    function triggerGuideFlash(target, message) {
+    function triggerGuideFlash(target) {
       if (!target) return;
       removeGuideFlash(target);
       target.classList.add('guide-flash-target');
@@ -16230,11 +16283,11 @@
     }
 
     function runPaperFileGuideHighlight() {
-      const guide = getTransientGuideTexts();
-      triggerGuideFlash(paperFileSelectSectionEl, guide.paperFile);
+      triggerGuideFlash(paperFileSelectSectionEl);
     }
 
-    function updateModeUI() {
+    function updateModeUI(options) {
+      const shouldRender = !(options && options.render === false);
       const mode = getCurrentInputMode();
       updateInputModeButtons();
       document.getElementById('textModeBox').classList.toggle('hidden', mode !== 'text');
@@ -16244,30 +16297,16 @@
       updateCsvHelpText();
       if (isCsvMode(mode) && state.csvFileBuffer) {
         try {
-          loadCsvFromCurrentBuffer();
+          loadCsvFromCurrentBuffer({ render:shouldRender });
         } catch (err) {
-          clearTimelineInteractionOverrides();
-          state.csvRawRows = [];
-          state.csvOriginalRows = [];
-          state.csvOriginalText = '';
-          state.csvLoadedMode = '';
-          state.tvpaintCellSourceColumns = [];
-          state.csvColumns = [];
-          state.csvColumnOrder = [];
-          state.csvColumnRoles = {};
-          csvColumnPickerEl.innerHTML = '';
-          setCommandTextValue('csv', '');
-          state.csvLoadError = t('csvError', err.message);
-          updateCsvEncodingVisibility(true);
-          csvInfoEl.textContent = state.csvLoadError;
-          updateCsvSourceInfo();
-          updateCsvSettingsActionVisibility();
-          render();
+          resetCsvLoadState(t('csvError', err && err.message ? err.message : err), { keepBuffer:true });
+          if (shouldRender) render();
         }
-      } else render();
+      } else if (shouldRender) render();
     }
 
-    function loadCsvFromCurrentBuffer() {
+    function loadCsvFromCurrentBuffer(options) {
+      const shouldRender = !(options && options.render === false);
       if (!state.csvFileBuffer) return;
       if (csvInfoEl) csvInfoEl.textContent = 'CSV loading...';
       const encodingMode = document.getElementById('csvEncodingSelect').value;
@@ -16291,7 +16330,7 @@
       updateCsvEncodingVisibility(!!decoded.needsEncodingReview);
       updateCsvStatusText();
       updateCsvSettingsActionVisibility();
-      render();
+      if (shouldRender) render();
     }
 
     document.getElementById('languageSelect').addEventListener('change', updateLanguage);
@@ -16404,30 +16443,43 @@
     memoCanvas.addEventListener('pointerup', endMemoStroke);
     memoCanvas.addEventListener('pointercancel', endMemoStroke);
     document.addEventListener('pointerdown', handleTextMemoOutsidePointerDown, true);
-    document.addEventListener('pointermove', continueTimelineEdgeDrag, { passive:false });
-    document.addEventListener('pointerup', endTimelineEdgeDrag, { passive:false });
-    document.addEventListener('pointercancel', endTimelineEdgeDrag, { passive:false });
-    document.addEventListener('pointermove', continueCellLongPressDrag, { passive:false });
-    document.addEventListener('pointerup', endCellLongPressDrag, { passive:false });
-    document.addEventListener('pointermove', continueCellLabelDrag, { passive:false });
-    document.addEventListener('pointerup', endCellLabelDrag, { passive:false });
-    document.addEventListener('pointercancel', endCellLabelDrag, { passive:false });
-    document.addEventListener('pointermove', continueShakuSelection, { passive:false });
-    document.addEventListener('pointerup', endShakuSelection, { passive:false });
-    document.addEventListener('pointercancel', endShakuSelection, { passive:false });
-    document.addEventListener('pointercancel', endCellLongPressDrag, { passive:false });
+
+    function handleGlobalPointerMove(event) {
+      if (state.activeTimelineDrag) { continueTimelineEdgeDrag(event); return; }
+      if (state.cellLongPressDrag) { continueCellLongPressDrag(event); return; }
+      if (state.cellLabelDrag) { continueCellLabelDrag(event); return; }
+      if (state.shakuDrag) { continueShakuSelection(event); return; }
+      if (state.textMemoResize) { continueTextMemoResize(event); return; }
+      if (state.pastedImageDrag) { continuePastedImageDrag(event); return; }
+      if (state.layerNameTagDrag) continueLayerNameTagDrag(event);
+    }
+
+    function handleGlobalPointerUp(event) {
+      if (state.activeTimelineDrag) { endTimelineEdgeDrag(event); return; }
+      if (state.cellLongPressDrag) { endCellLongPressDrag(event); return; }
+      if (state.cellLabelDrag) { endCellLabelDrag(event); return; }
+      if (state.shakuDrag) { endShakuSelection(event); return; }
+      if (state.textMemoResize) { endTextMemoResize(event); return; }
+      if (state.pastedImageDrag) { endPastedImageDrag(event); return; }
+      if (state.layerNameTagDrag) endLayerNameTagDrag(event);
+    }
+
+    function handleGlobalPointerCancel(event) {
+      if (state.activeTimelineDrag) { endTimelineEdgeDrag(event); return; }
+      if (state.cellLongPressDrag) { endCellLongPressDrag(event); return; }
+      if (state.cellLabelDrag) { endCellLabelDrag(event); return; }
+      if (state.shakuDrag) { endShakuSelection(event); return; }
+      if (state.textMemoResize) { endTextMemoResize(event); return; }
+      if (state.pastedImageDrag) { endPastedImageDrag(event); return; }
+      if (state.layerNameTagDrag) endLayerNameTagDrag(event);
+    }
+
+    document.addEventListener('pointermove', handleGlobalPointerMove, { passive:false });
+    document.addEventListener('pointerup', handleGlobalPointerUp, { passive:false });
+    document.addEventListener('pointercancel', handleGlobalPointerCancel, { passive:false });
     window.addEventListener('blur', cancelCellLongPressDrag);
     window.addEventListener('blur', cancelCellLabelDrag);
     window.addEventListener('blur', function(){ setPreviewSpacePanKey(false); });
-    document.addEventListener('pointermove', continueTextMemoResize, { passive:false });
-    document.addEventListener('pointerup', endTextMemoResize, { passive:false });
-    document.addEventListener('pointercancel', endTextMemoResize, { passive:false });
-    document.addEventListener('pointermove', continuePastedImageDrag, { passive:false });
-    document.addEventListener('pointerup', endPastedImageDrag, { passive:false });
-    document.addEventListener('pointercancel', endPastedImageDrag, { passive:false });
-    document.addEventListener('pointermove', continueLayerNameTagDrag, { passive:false });
-    document.addEventListener('pointerup', endLayerNameTagDrag, { passive:false });
-    document.addEventListener('pointercancel', endLayerNameTagDrag, { passive:false });
     document.addEventListener('paste', handleClipboardPaste);
     document.addEventListener('keyup', handlePreviewSpacePanKeyup);
     document.addEventListener('touchmove', function(event){
@@ -16505,22 +16557,7 @@
         state.csvDurationAutofillPending = true;
         loadCsvFromCurrentBuffer();
       } catch (err) {
-        clearTimelineInteractionOverrides();
-        state.csvRawRows = [];
-        state.csvOriginalRows = [];
-        state.csvOriginalText = '';
-        state.csvLoadedMode = '';
-        state.tvpaintCellSourceColumns = [];
-        state.csvColumns = [];
-        state.csvColumnOrder = [];
-        state.csvColumnRoles = {};
-        csvColumnPickerEl.innerHTML = '';
-        setCommandTextValue('csv', '');
-        state.csvLoadError = t('csvError', err.message);
-        updateCsvEncodingVisibility(true);
-        csvInfoEl.textContent = state.csvLoadError;
-        updateCsvSourceInfo();
-        updateCsvSettingsActionVisibility();
+        resetCsvLoadState(t('csvError', err && err.message ? err.message : err), { keepBuffer:true });
         render();
       }
     });
@@ -16531,22 +16568,7 @@
       try {
         loadCsvFromCurrentBuffer();
       } catch (err) {
-        clearTimelineInteractionOverrides();
-        state.csvRawRows = [];
-        state.csvOriginalRows = [];
-        state.csvOriginalText = '';
-        state.csvLoadedMode = '';
-        state.tvpaintCellSourceColumns = [];
-        state.csvColumns = [];
-        state.csvColumnOrder = [];
-        state.csvColumnRoles = {};
-        csvColumnPickerEl.innerHTML = '';
-        setCommandTextValue('csv', '');
-        state.csvLoadError = t('csvError', err.message);
-        updateCsvEncodingVisibility(true);
-        csvInfoEl.textContent = state.csvLoadError;
-        updateCsvSourceInfo();
-        updateCsvSettingsActionVisibility();
+        resetCsvLoadState(t('csvError', err && err.message ? err.message : err), { keepBuffer:true });
         render();
       }
     });
@@ -16614,6 +16636,7 @@
     restoreHeaderMemory();
     loadPaperMemory();
     restoreLanguagePreference();
+    loadShortcutSettings();
     restoreSettingsJsonFolderCache();
     applySheetZoom();
     updateLanguage();
