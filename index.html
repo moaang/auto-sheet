@@ -2734,9 +2734,19 @@
       zh: '<h4><span class="update-log-badge">ver639</span>设置载入渲染清理</h4><ul><li>设置 JSON 载入时会抑制输入模式/语言更新产生的中间 render，整理为最后一次 render；只有 IndexedDB 纸张图像恢复确实改变画面时才追加 render。</li><li>临时状态重置现在也会清除 Position Edit、布局拖动、预览平移、正在绘制的备注、Shaku class 和图层名标签目标状态。</li><li>CSV 错误重置会清除 Cell 显示顺序和动画栏状态。输入模式按钮改为两列 grid，粘贴图像明确保持为临时 overlay 策略。</li></ul>'
     };
     const updateLogVer640VisibleDocs = {
-      en: '<h4><span class="update-log-badge">ver640</span>Auto Align cancellation guard</h4><ul><li>Added a shared External Paper Auto Align cancellation path so pending line analysis cannot apply stale layout results after settings load, sheet reset, layout reset, paper clear, or paper undo/redo.</li><li>Sheet reset now reuses the CSV load reset path for CSV rows, columns, roles, derived Cell order, and Douga sheet state instead of clearing those fields in a second copy of the same logic.</li></ul>'
+      en: '<h4><span class="update-log-badge">ver640</span>Auto Align cancellation guard</h4><ul><li>Added a shared External Paper Auto Align cancellation path so pending line analysis cannot apply stale layout results after settings load, sheet reset, layout reset, paper clear, or paper undo/redo.</li><li>Sheet reset now reuses the CSV load reset path for CSV rows, columns, roles, derived Cell order, and Douga sheet state instead of clearing those fields in a second copy of the same logic.</li></ul>',
+      ja: '<h4><span class="update-log-badge">ver640</span>Auto Alignの取消ガード</h4><ul><li>外部用紙Auto Alignの共通キャンセル処理を追加し、設定読込、シート初期化、レイアウト初期化、用紙クリア、用紙Undo/Redo後に古い解析結果が反映されないようにした。</li><li>シート初期化ではCSV行、列、役割、派生Cell順、動画シート状態のクリアをCSV読込リセット処理へ統一した。</li></ul>',
+      ko: '<h4><span class="update-log-badge">ver640</span>Auto Align 취소 가드</h4><ul><li>외부용지 Auto Align 공통 취소 처리를 추가해 설정 로드, 시트 초기화, 레이아웃 초기화, 용지 삭제, 용지 Undo/Redo 뒤에 오래된 분석 결과가 반영되지 않게 했다.</li><li>시트 초기화에서 CSV 행, 열, 역할, 파생 Cell 순서, 동화시트 상태를 별도 중복 코드가 아니라 CSV 로드 리셋 경로로 정리하도록 했다.</li></ul>',
+      zh: '<h4><span class="update-log-badge">ver640</span>Auto Align 取消保护</h4><ul><li>新增外部纸张 Auto Align 的共用取消路径，避免设置载入、表格重置、布局重置、清除纸张或纸张 Undo/Redo 后，旧的线条分析结果再次套用。</li><li>表格重置现在复用 CSV 载入重置路径来清除 CSV 行、列、角色、派生 Cell 顺序和动画栏状态，避免重复清理逻辑。</li></ul>'
+    };
+    const updateLogVer641VisibleDocs = {
+      en: '<h4><span class="update-log-badge">ver641</span>Paper upload race cleanup</h4><ul><li>Paper image upload now cancels pending Auto Align analysis immediately, and failed uploads restore the previous paper snapshot instead of clearing the current paper.</li><li>Auto Align undo history now captures the pre-working state, Reset Sheet Data saves the cleared Cell order to paper memory, and unreachable update-log code was removed.</li></ul>',
+      ja: '<h4><span class="update-log-badge">ver641</span>用紙アップロードの競合対策</h4><ul><li>用紙画像アップロード開始時に保留中のAuto Align解析を即座にキャンセルし、読込失敗時は現在の用紙を消さずに以前の用紙スナップショットへ戻すようにした。</li><li>Auto AlignのUndo履歴はworking表示前の状態を保存するようにし、シート初期化後のCell順を用紙メモリへ保存し、更新履歴の到達不能コードを削除した。</li></ul>',
+      ko: '<h4><span class="update-log-badge">ver641</span>용지 업로드 경합 정리</h4><ul><li>용지 이미지 업로드 시작 시 진행 중인 Auto Align 분석을 즉시 취소하고, 업로드 실패 시 현재 용지를 비우지 않고 이전 용지 스냅샷으로 복구하도록 했다.</li><li>Auto Align Undo 기록은 working 표시 전 상태를 저장하게 했고, 시트 초기화 뒤 정리된 Cell 순서를 용지 메모리에 저장하며, 업데이트 로그의 도달 불가능 코드를 제거했다.</li></ul>',
+      zh: '<h4><span class="update-log-badge">ver641</span>纸张上传竞态清理</h4><ul><li>纸张图片开始上传时会立即取消尚未完成的 Auto Align 分析；上传失败时会恢复之前的纸张快照，而不是清空当前纸张。</li><li>Auto Align 的 Undo 历史现在保存 working 状态之前的快照；重置表格后会把已清除的 Cell 顺序写入纸张记忆，并移除了更新记录中的不可达代码。</li></ul>'
     };
     const orderedRecentUpdateLogDocs = [
+      updateLogVer641VisibleDocs,
       updateLogVer640VisibleDocs,
       updateLogVer639VisibleDocs,
       updateLogVer638VisibleDocs,
@@ -2771,9 +2781,10 @@
         appTitleEl.setAttribute('title', doc.title || 'Update History');
         appTitleEl.setAttribute('aria-label', doc.title || 'Update History');
       }
-      if (updateLogCloseBtn) updateLogCloseBtn.setAttribute('aria-label', state.lang === 'ja' ? '閉じる' : state.lang === 'ko' ? '닫기' : state.lang === 'zh' ? '关闭' : 'Close');
-      return;
-      if (updateLogCloseBtn) updateLogCloseBtn.setAttribute('aria-label', state.lang === 'ja' ? '閉じる' : state.lang === 'ko' ? '닫기' : state.lang === 'zh' ? '关闭' : 'Close');
+      if (updateLogCloseBtn) {
+        const closeLabel = state.lang === 'ja' ? '\u9589\u3058\u308b' : state.lang === 'ko' ? '\ub2eb\uae30' : state.lang === 'zh' ? '\u5173\u95ed' : 'Close';
+        updateLogCloseBtn.setAttribute('aria-label', closeLabel);
+      }
     }
 
     function openUpdateLog() {
@@ -7480,11 +7491,11 @@
         setPaperAutoAlignResult({ status:'error', message:doc.noPaper || 'No paper image loaded', steps:[doc.noPaper || 'No paper image loaded'] });
         return;
       }
+      const beforeSnapshot = options.skipHistory ? null : getPaperStateSnapshot();
       const token = ++state.paperAutoAlignToken;
       state.paperAutoAlignOverlay = null;
       setPaperAutoAlignResult({ status:'working', steps:[doc.working || 'Analyzing paper lines and matching the sheet boxes...'] });
       syncPaperLayoutControls();
-      const beforeSnapshot = options.skipHistory ? null : getPaperStateSnapshot();
       try {
         const analysis = await analyzePaperAutoAlignLines(state.paperImageDataUrl);
         if (token !== state.paperAutoAlignToken) return;
@@ -14963,9 +14974,10 @@
 
     async function handlePaperImageUpload(file) {
       if (!file) return;
+      const beforeSnapshot = getPaperStateSnapshot();
+      cancelPendingPaperAutoAlign();
       if (paperImageStatusEl) paperImageStatusEl.textContent = getPaperLayoutTexts().loading;
       const lower = String(file.name || '').toLowerCase();
-      const beforeSnapshot = getPaperStateSnapshot();
       try {
         let result;
         if (lower.endsWith('.psd') || file.type === 'image/vnd.adobe.photoshop') {
@@ -15008,18 +15020,8 @@
         render();
         runPaperAutoAlign({ silent:true });
       } catch (err) {
-        state.paperImageDataUrl = '';
-        state.paperImageMemoDataUrl = '';
-        state.paperImageMemoLayerCount = 0;
-        state.paperImageName = '';
-        state.paperImageMeta = '';
-        state.paperImagePixelInfo = '';
-        state.paperImageSourceWidth = 0;
-        state.paperImageSourceHeight = 0;
-        state.paperAutoAlignOverlay = null;
-        setPaperAutoAlignResult(null);
+        restorePaperStateSnapshot(beforeSnapshot);
         if (paperImageStatusEl) paperImageStatusEl.textContent = getPaperLayoutTexts().failed(err && err.message ? err.message : err);
-        if (paperImagePixelInfoEl) paperImagePixelInfoEl.textContent = getPaperLayoutTexts().pixelEmpty;
         render();
       }
     }
@@ -15074,6 +15076,7 @@
       state.activeLayerNameTag = null;
       state.currentPreviewPage = 0;
       state.totalPages = 1;
+      queueSavePaperMemory();
       render();
     }
 
