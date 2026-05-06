@@ -2019,8 +2019,8 @@
     const i18n = {
       en: {
         textHelp: 'One line per cel row. Format: A: 1 n n dot n n 2\nTokens\n- number/text: cel label\n- n: keep vertical hold\n- dot: douga/inbetween point\n- x: X mark start\n- _: empty frame\n- rep: repeat note',
-        csvHelp: 'CSV uses the Frame column as the frame index. Column role can be set to Cell, Hide, Dialog, or Camera. CSV Dialog/Camera columns are converted into the normal Dialog/Camera command format. Column names can be edited before conversion. The original area keeps at least 8 columns, expands up to 10, and switches to a 3-second single-block sheet when actual cel rows exceed 10.',
-        csvEditHelp: 'Selected Cell columns are converted to editable Text Commands. Correct the generated command text here when needed.',
+        csvHelp: 'CSV uses the Frame column as the frame index. Column role can be set to Cell, Hide, Book, Dialog, or Camera. All roles use the same Text Command token rules; the role is kept as a suffix such as (hide), (dialog), (camera), or (book). Column names can be edited before conversion. The original area keeps at least 8 columns, expands up to 10, and switches to a 3-second single-block sheet when actual cel rows exceed 10.',
+        csvEditHelp: 'CSV columns are converted to editable Text Commands. Correct tokens or role suffixes here when needed.',
         dialogHelp: 'Minimum: start | end |. Extra: start | end | Speaker | Dialogue example.',
         cameraHelp: 'Format: 0+01 | 1+00 | Mark | Camera direction | Mark. Minimum: start | end |. Extended: start | end | Mark | Camera direction | Mark.',
         previewMeta: 'Auto-switches 6-second left/right two-panel and 3-second single-panel.',
@@ -2032,8 +2032,8 @@
       },
       ja: {
         textHelp: '1行につき1つのセル行を入力する。形式: A: 1 n n dot n n 2\nトークン\n- 数字/文字: セル番号\n- n: 継続線\n- dot: 動画点/中割点\n- x: X印開始\n- _: 空欄フレーム\n- rep: リピート',
-        csvHelp: 'CSVはFrame列を基準フレームとして使う。列の役割は Cell / Hide / Dialog / Camera から選ぶ。Dialog / Camera にした列は通常のDialog / Cameraコマンド形式に変換される。列名は変換前に編集できる。原画欄は最低8列、必要なら10列まで拡張し、実セル行が10列を超えると3秒単面シートに切り替える。',
-        csvEditHelp: 'Cellに設定した列をText Commands形式に変換する。必要な場合はここで生成済みコマンドを修正する。',
+        csvHelp: 'CSVはFrame列を基準フレームとして使う。列の役割は Cell / Hide / Book / Dialog / Camera から選ぶ。すべての役割で同じText Commandトークン規則を使い、役割は (hide)、(dialog)、(camera)、(book) のような行末suffixで保持する。列名は変換前に編集できる。原画欄は最低8列、必要なら10列まで拡張し、実セル行が10列を超えると3秒単面シートに切り替える。',
+        csvEditHelp: 'CSV列を編集可能なText Commands形式に変換する。必要な場合はここでトークンや役割suffixを修正する。',
         dialogHelp: '最小形式: start | end |。追加形式: start | end | 話者 | セリフ例。',
         cameraHelp: '形式: 0+01 | 1+00 | 記号 | カメラ指示 | 記号。最小形式: start | end |。拡張形式: start | end | 記号 | カメラ指示 | 記号。',
         previewMeta: '6秒左右2面と3秒単面を自動切替。',
@@ -2045,8 +2045,8 @@
       },
       ko: {
         textHelp: '한 줄에 셀 행 하나씩 입력한다. 형식: A: 1 n n dot n n 2\n토큰\n- 숫자/문자: 셀 번호\n- n: 계속선\n- dot: 동화점/중간점\n- x: X표 시작\n- _: 빈 프레임\n- rep: 리피트 표기',
-        csvHelp: 'CSV는 Frame 열을 기준 프레임으로 사용한다. 각 열의 역할은 Cell / Hide / Dialog / Camera 중에서 선택한다. Dialog / Camera로 지정한 열은 일반 Dialog / Camera 커맨드 형식으로 변환된다. 열 이름은 변환 전에 수정할 수 있다. 원화란은 최소 8칸을 유지하고 필요하면 10칸까지 확장하며, 실제 셀 행이 10개를 넘으면 3초 단면 시트로 전환한다.',
-        csvEditHelp: 'Cell로 지정한 열을 Text Commands 형식으로 변환한다. 필요하면 생성된 커맨드를 여기서 수정한다.',
+        csvHelp: 'CSV는 Frame 열을 기준 프레임으로 사용한다. 각 열의 역할은 Cell / Hide / Book / Dialog / Camera 중에서 선택한다. 모든 역할은 같은 Text Command 토큰 규칙을 쓰고, 역할은 (hide), (dialog), (camera), (book) 같은 행 끝 suffix로 유지한다. 열 이름은 변환 전에 수정할 수 있다. 원화란은 최소 8칸을 유지하고 필요하면 10칸까지 확장하며, 실제 셀 행이 10개를 넘으면 3초 단면 시트로 전환한다.',
+        csvEditHelp: 'CSV 열을 편집 가능한 Text Commands 형식으로 변환한다. 필요하면 여기서 토큰이나 역할 suffix를 수정한다.',
         dialogHelp: '최소 형식: start | end |. 추가 형식: start | end | 화자 | 대사 예시.',
         cameraHelp: '형식: 0+01 | 1+00 | 기호 | 카메라 지시 | 기호. 최소 형식: start | end |. 확장 형식: start | end | 기호 | 카메라 지시 | 기호.',
         previewMeta: '6초 좌우 2면과 3초 단면을 자동 전환.',
@@ -2058,8 +2058,8 @@
       },
       zh: {
         textHelp: '每行输入一个 Cell 行。格式: A: 1 n n dot n n 2\nToken\n- 数字/文字: Cell 编号\n- n: 保持继续线\n- dot: 动画点/中割点\n- x: X 标记开始\n- _: 空白帧\n- rep: Repeat 标记',
-        csvHelp: 'CSV 使用 Frame 列作为帧编号。每列可选择 Cell / Hide / Dialog / Camera。指定为 Dialog / Camera 的列会转换为普通 Dialog / Camera 命令格式。列名可在转换前编辑。原画栏至少保持 8 列，必要时扩展到 10 列；实际 Cell 行超过 10 时切换为 3 秒单面 Sheet。',
-        csvEditHelp: '指定为 Cell 的列会转换为 Text Commands 格式。需要时可在这里修正生成的命令。',
+        csvHelp: 'CSV 使用 Frame 列作为帧编号。每列可选择 Cell / Hide / Book / Dialog / Camera。所有角色使用相同的 Text Command token 规则，角色保留为行尾 suffix，例如 (hide)、(dialog)、(camera)、(book)。列名可在转换前编辑。原画栏至少保持 8 列，必要时扩展到 10 列；实际 Cell 行超过 10 时切换为 3 秒单面 Sheet。',
+        csvEditHelp: 'CSV 列会转换为可编辑的 Text Commands 格式。需要时可在这里修正 token 或角色 suffix。',
         dialogHelp: '最小格式: start | end |。追加格式: start | end | 说话人 | 台词示例。',
         cameraHelp: '格式: 0+01 | 1+00 | 记号 | 摄影指示 | 记号。最小格式: start | end |。扩展格式: start | end | 记号 | 摄影指示 | 记号。',
         previewMeta: '自动切换 6 秒左右双面与 3 秒单面。',
@@ -2739,6 +2739,18 @@
       ko: '<h4><span class="update-log-badge">ver640</span>Auto Align 취소 가드</h4><ul><li>외부용지 Auto Align 공통 취소 처리를 추가해 설정 로드, 시트 초기화, 레이아웃 초기화, 용지 삭제, 용지 Undo/Redo 뒤에 오래된 분석 결과가 반영되지 않게 했다.</li><li>시트 초기화에서 CSV 행, 열, 역할, 파생 Cell 순서, 동화시트 상태를 별도 중복 코드가 아니라 CSV 로드 리셋 경로로 정리하도록 했다.</li></ul>',
       zh: '<h4><span class="update-log-badge">ver640</span>Auto Align 取消保护</h4><ul><li>新增外部纸张 Auto Align 的共用取消路径，避免设置载入、表格重置、布局重置、清除纸张或纸张 Undo/Redo 后，旧的线条分析结果再次套用。</li><li>表格重置现在复用 CSV 载入重置路径来清除 CSV 行、列、角色、派生 Cell 顺序和动画栏状态，避免重复清理逻辑。</li></ul>'
     };
+    const updateLogVer643VisibleDocs = {
+      en: '<h4><span class="update-log-badge">ver643</span>Unified CSV role token import</h4><ul><li>CSV values now use the same <code>dot</code>/<code>x</code>/hold token rules for Cell, Hide, Book, Dialog, and Camera command rows, with the role kept only in the row suffix.</li><li>CSV-generated Dialog/Camera rows are cleaned by source marker when CSV data or roles change, preventing stale generated rows from remaining in the manual areas.</li></ul>',
+      ja: '<h4><span class="update-log-badge">ver643</span>CSV役割行のトークン読込統一</h4><ul><li>CSVの値は Cell / Hide / Book / Dialog / Camera の全コマンド行で同じ <code>dot</code>/<code>x</code>/継続トークン規則を使い、役割は行末のsuffixだけで保持するようにした。</li><li>CSV由来のDialog/Camera行はCSVデータや役割変更時にsource印で整理し、古い自動生成行が手入力欄に残らないようにした。</li></ul>',
+      ko: '<h4><span class="update-log-badge">ver643</span>CSV 역할행 토큰 읽기 통일</h4><ul><li>CSV 값은 Cell / Hide / Book / Dialog / Camera 모든 커맨드 행에서 같은 <code>dot</code>/<code>x</code>/지속 토큰 규칙을 쓰고, 역할은 행 끝 suffix로만 유지하게 했다.</li><li>CSV에서 자동 생성된 Dialog/Camera 행은 CSV 데이터나 역할이 바뀔 때 source 표시 기준으로 정리해, 오래된 자동 생성 행이 수동 입력란에 남지 않게 했다.</li></ul>',
+      zh: '<h4><span class="update-log-badge">ver643</span>统一 CSV 角色行 token 导入</h4><ul><li>CSV 值现在在 Cell / Hide / Book / Dialog / Camera 命令行中使用相同的 <code>dot</code>/<code>x</code>/保持 token 规则，角色只保留在行尾 suffix 中。</li><li>CSV 自动生成的 Dialog/Camera 行会在 CSV 数据或角色变化时按 source 标记清理，避免旧的自动生成行残留在手动输入区。</li></ul>'
+    };
+    const updateLogVer642VisibleDocs = {
+      en: '<h4><span class="update-log-badge">ver642</span>CSV BG layer detection</h4><ul><li>CSV column names such as <code>B_GESK_R</code> are no longer mistaken for BG/background layers, so <code>○</code>, <code>〇</code>, and <code>◯</code> in those Cell columns import as douga dots.</li></ul>',
+      ja: '<h4><span class="update-log-badge">ver642</span>CSVのBGレイヤー判定</h4><ul><li><code>B_GESK_R</code> のようなCSV列名をBG/背景レイヤーと誤判定しないようにし、そのCell列内の <code>○</code>、<code>〇</code>、<code>◯</code> を動画点として読み込むようにした。</li></ul>',
+      ko: '<h4><span class="update-log-badge">ver642</span>CSV BG 레이어 판정</h4><ul><li><code>B_GESK_R</code> 같은 CSV 열 이름을 BG/배경 레이어로 오인하지 않게 해, 해당 Cell 열의 <code>○</code>, <code>〇</code>, <code>◯</code>를 동화점으로 읽도록 수정했다.</li></ul>',
+      zh: '<h4><span class="update-log-badge">ver642</span>CSV BG 图层判定</h4><ul><li>CSV 列名如 <code>B_GESK_R</code> 不再被误判为 BG/背景图层，因此这些 Cell 列中的 <code>○</code>、<code>〇</code>、<code>◯</code> 会作为动画点导入。</li></ul>'
+    };
     const updateLogVer641VisibleDocs = {
       en: '<h4><span class="update-log-badge">ver641</span>Paper upload race cleanup</h4><ul><li>Paper image upload now cancels pending Auto Align analysis immediately, and failed uploads restore the previous paper snapshot instead of clearing the current paper.</li><li>Auto Align undo history now captures the pre-working state, Reset Sheet Data saves the cleared Cell order to paper memory, and unreachable update-log code was removed.</li></ul>',
       ja: '<h4><span class="update-log-badge">ver641</span>用紙アップロードの競合対策</h4><ul><li>用紙画像アップロード開始時に保留中のAuto Align解析を即座にキャンセルし、読込失敗時は現在の用紙を消さずに以前の用紙スナップショットへ戻すようにした。</li><li>Auto AlignのUndo履歴はworking表示前の状態を保存するようにし、シート初期化後のCell順を用紙メモリへ保存し、更新履歴の到達不能コードを削除した。</li></ul>',
@@ -2746,6 +2758,8 @@
       zh: '<h4><span class="update-log-badge">ver641</span>纸张上传竞态清理</h4><ul><li>纸张图片开始上传时会立即取消尚未完成的 Auto Align 分析；上传失败时会恢复之前的纸张快照，而不是清空当前纸张。</li><li>Auto Align 的 Undo 历史现在保存 working 状态之前的快照；重置表格后会把已清除的 Cell 顺序写入纸张记忆，并移除了更新记录中的不可达代码。</li></ul>'
     };
     const orderedRecentUpdateLogDocs = [
+      updateLogVer643VisibleDocs,
+      updateLogVer642VisibleDocs,
       updateLogVer641VisibleDocs,
       updateLogVer640VisibleDocs,
       updateLogVer639VisibleDocs,
@@ -3521,12 +3535,15 @@
     }
 
     function isHiddenCsvLayerName(name) {
-      const key = normalizeCsvLayerNameKey(name);
+      const raw = String(name || '').normalize('NFKC').trim();
+      const key = normalizeCsvLayerNameKey(raw);
       if (!key) return false;
-      return key.indexOf('bg') !== -1
-        || key.indexOf('background') !== -1
+      if (key.indexOf('background') !== -1
         || key.indexOf('背景') !== -1
-        || key.indexOf('배경') !== -1;
+        || key.indexOf('배경') !== -1) return true;
+      return raw.toLowerCase().split(/[\s_\-./\\,，、]+/).filter(Boolean).some(function(token){
+        return /^bg\d*$/.test(token);
+      });
     }
 
     function isCameraDirectiveLayerName(name) {
@@ -3585,12 +3602,12 @@
     function mergeCsvGeneratedLines(raw, previousGeneratedLines, nextGeneratedLines) {
       const sourceLines = stripDefaultCsvSampleLines(raw).split('\n');
       const previous = new Set((previousGeneratedLines || []).filter(Boolean));
-      const previousSources = collectManualSourceTokens((previousGeneratedLines || []).join('\n'));
       const nextSources = collectManualSourceTokens((nextGeneratedLines || []).join('\n'));
       const out = sourceLines.filter(function(lineText){
         if (previous.has(lineText)) return false;
         const sourceToken = splitManualSourceSuffix(lineText).sourceToken;
-        return !(sourceToken && previousSources.has(sourceToken) && !nextSources.has(sourceToken));
+        if (sourceToken && !nextSources.has(sourceToken)) return false;
+        return true;
       });
       while (out.length && !out[out.length - 1].trim()) out.pop();
       const generated = (nextGeneratedLines || []).filter(Boolean);
@@ -3604,6 +3621,15 @@
         fresh.forEach(function(lineText){ out.push(lineText); });
       }
       return out.join('\n');
+    }
+
+    function clearCsvGeneratedTimelineBlocks() {
+      const dialogEl = document.getElementById('dialogManual');
+      const cameraEl = document.getElementById('cameraManual');
+      if (dialogEl) dialogEl.value = mergeCsvGeneratedLines(dialogEl.value, state.lastCsvGeneratedDialogLines, []);
+      if (cameraEl) cameraEl.value = mergeCsvGeneratedLines(cameraEl.value, state.lastCsvGeneratedCameraLines, []);
+      state.lastCsvGeneratedDialogLines = [];
+      state.lastCsvGeneratedCameraLines = [];
     }
 
     const MANUAL_SOURCE_SUFFIX_RE = /\s+\(cell:([^)]+)\)\s*$/i;
@@ -4039,7 +4065,10 @@
     }
 
     function updateCsvTimelineBlocksFromRoles() {
-      if (!state.csvRawRows.length) return;
+      if (!state.csvRawRows.length) {
+        clearCsvGeneratedTimelineBlocks();
+        return;
+      }
       const dialogLines = csvRoleBlocksToManualLines('dialog');
       const cameraLines = csvRoleBlocksToManualLines('camera');
       const dialogEl = document.getElementById('dialogManual');
@@ -8636,20 +8665,17 @@
       if (!col || !layerName || !dataRows.length) {
         return { uid:'csv-' + (col && col.index != null ? col.index : 'unknown'), name:layerName, sourceColumnIndex:col && col.index, segments:[], marks:[] };
       }
-      const role = getCsvColumnRole(col);
       const lastFrame = dataRows[dataRows.length - 1].frame;
       const breakSymbols = new Set(['_']);
       const values = dataRows.map(function(v){
         return { frame:v.frame, value:normalizeCsvCellValue(v.row[col.index] || '') };
       }).filter(function(v){ return v.value !== ''; });
       const timelineEvents = values.filter(function(v){ return !isCsvDotValue(v.value); });
-      const marks = role === 'original'
-        ? values.filter(function(v){ return isCsvDotValue(v.value); }).map(function(v){ return { frame:v.frame, type:'dot' }; })
-        : [];
+      const marks = values.filter(function(v){ return isCsvDotValue(v.value); }).map(function(v){ return { frame:v.frame, type:'dot' }; });
       const segments = timelineEvents.map(function(eventValue, idx){
         if (breakSymbols.has(eventValue.value)) return null;
         const nextEvent = timelineEvents[idx + 1];
-        const isCross = role === 'original' && isCsvCrossValue(eventValue.value);
+        const isCross = isCsvCrossValue(eventValue.value);
         const toFrame = isCross ? (nextEvent ? Math.max(eventValue.frame, nextEvent.frame - 1) : eventValue.frame) : (nextEvent ? nextEvent.frame - 1 : lastFrame);
         return {
           from:eventValue.frame,
@@ -9243,11 +9269,11 @@
 
     function getInputLayers() { return applyLeadingCrossSegments(applyDotOverrides(getBaseInputLayers())); }
 
-    function mergeTextCommandSyncWithRoleLines(commandText) {
-      const textarea = document.getElementById('timelineCommandInput');
+    function mergeCommandSyncWithRoleLines(modeKey, commandText) {
+      const textarea = getCommandTextareaForModeKey(modeKey);
       if (!textarea) return commandText;
       const generated = String(commandText || '').replace(/\r/g, '').split('\n').filter(function(lineText){ return String(lineText || '').trim(); });
-      const existing = String(getCommandTextValue('text') || '').replace(/\r/g, '').split('\n');
+      const existing = String(getCommandTextValue(modeKey) || '').replace(/\r/g, '').split('\n');
       const out = [];
       let generatedIndex = 0;
       existing.forEach(function(lineText){
@@ -9272,11 +9298,15 @@
       return out.join('\n');
     }
 
+    function mergeTextCommandSyncWithRoleLines(commandText) {
+      return mergeCommandSyncWithRoleLines('text', commandText);
+    }
+
     function syncCommandTextFromCurrentState() {
       const hadDotOverrides = !!(state.dotOverrides && Object.keys(state.dotOverrides).length);
       syncInputDerivedStateBeforeRender();
       const commandText = layersToCommandText(orderLayersByCellDisplayOrder(applyDotOverrides(getBaseInputLayers())));
-      if (isCsvMode(getCurrentInputMode())) setCommandTextValue('csv', commandText);
+      if (isCsvMode(getCurrentInputMode())) setCommandTextValue('csv', mergeCommandSyncWithRoleLines('csv', commandText));
       else setCommandTextValue('text', mergeTextCommandSyncWithRoleLines(commandText));
       if (hadDotOverrides) state.dotOverrides = {};
     }
@@ -15470,6 +15500,7 @@
     function resetCsvLoadState(message, options) {
       const opts = options || {};
       clearTimelineInteractionOverrides();
+      clearCsvGeneratedTimelineBlocks();
       state.csvRawRows = [];
       state.csvOriginalRows = [];
       state.csvOriginalText = '';
@@ -15480,8 +15511,6 @@
       state.csvColumnOrder = [];
       state.csvColumnRoles = {};
       state.csvDurationAutofillPending = false;
-      state.lastCsvGeneratedDialogLines = [];
-      state.lastCsvGeneratedCameraLines = [];
       state.csvFrameIndex = 0;
       state.csvDataStartRow = 1;
       state.cellDisplayOrder = [];
