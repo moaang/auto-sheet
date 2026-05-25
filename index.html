@@ -2739,6 +2739,15 @@
       ko: '<h4><span class="update-log-badge">ver640</span>Auto Align 취소 가드</h4><ul><li>외부용지 Auto Align 공통 취소 처리를 추가해 설정 로드, 시트 초기화, 레이아웃 초기화, 용지 삭제, 용지 Undo/Redo 뒤에 오래된 분석 결과가 반영되지 않게 했다.</li><li>시트 초기화에서 CSV 행, 열, 역할, 파생 Cell 순서, 동화시트 상태를 별도 중복 코드가 아니라 CSV 로드 리셋 경로로 정리하도록 했다.</li></ul>',
       zh: '<h4><span class="update-log-badge">ver640</span>Auto Align 取消保护</h4><ul><li>新增外部纸张 Auto Align 的共用取消路径，避免设置载入、表格重置、布局重置、清除纸张或纸张 Undo/Redo 后，旧的线条分析结果再次套用。</li><li>表格重置现在复用 CSV 载入重置路径来清除 CSV 行、列、角色、派生 Cell 顺序和动画栏状态，避免重复清理逻辑。</li></ul>'
     };
+    const updateLogVer644VisibleDocs = {
+      en: '<h4><span class="update-log-badge">ver644</span>JDG header Auto Align</h4><ul><li>External Paper Auto Align now avoids treating the inner header input row as the whole header when a same-width outer header line sits directly above it.</li></ul>'
+    };
+    const updateLogVer645VisibleDocs = {
+      en: '<h4><span class="update-log-badge">ver645</span>CSV Dialog x boundaries</h4><ul><li>CSV Dialog role conversion now uses <code>x</code> as the ending boundary for the preceding dialogue, so single dialogue entries ending at x and repeated dialogue cues are generated into the Dialog manual area.</li></ul>'
+    };
+    const updateLogVer646VisibleDocs = {
+      en: '<h4><span class="update-log-badge">ver646</span>Continuation range end caps</h4><ul><li>Dialog and Camera ranges that continue across left/right blocks or pages now draw red start/end cap lines only at the actual range boundaries, not at every clipped block edge.</li></ul>'
+    };
     const updateLogVer643VisibleDocs = {
       en: '<h4><span class="update-log-badge">ver643</span>Unified CSV role token import</h4><ul><li>CSV values now use the same <code>dot</code>/<code>x</code>/hold token rules for Cell, Hide, Book, Dialog, and Camera command rows, with the role kept only in the row suffix.</li><li>CSV-generated Dialog/Camera rows are cleaned by source marker when CSV data or roles change, preventing stale generated rows from remaining in the manual areas.</li></ul>',
       ja: '<h4><span class="update-log-badge">ver643</span>CSV役割行のトークン読込統一</h4><ul><li>CSVの値は Cell / Hide / Book / Dialog / Camera の全コマンド行で同じ <code>dot</code>/<code>x</code>/継続トークン規則を使い、役割は行末のsuffixだけで保持するようにした。</li><li>CSV由来のDialog/Camera行はCSVデータや役割変更時にsource印で整理し、古い自動生成行が手入力欄に残らないようにした。</li></ul>',
@@ -2758,6 +2767,9 @@
       zh: '<h4><span class="update-log-badge">ver641</span>纸张上传竞态清理</h4><ul><li>纸张图片开始上传时会立即取消尚未完成的 Auto Align 分析；上传失败时会恢复之前的纸张快照，而不是清空当前纸张。</li><li>Auto Align 的 Undo 历史现在保存 working 状态之前的快照；重置表格后会把已清除的 Cell 顺序写入纸张记忆，并移除了更新记录中的不可达代码。</li></ul>'
     };
     const orderedRecentUpdateLogDocs = [
+      updateLogVer646VisibleDocs,
+      updateLogVer645VisibleDocs,
+      updateLogVer644VisibleDocs,
       updateLogVer643VisibleDocs,
       updateLogVer642VisibleDocs,
       updateLogVer641VisibleDocs,
@@ -6434,14 +6446,22 @@
             const middleBonus = segments.some(function(seg){
               return seg.pos > topSeg.pos + 14 && seg.pos < bottomSeg.pos - 12 && Math.min(seg.end, right) - Math.max(seg.start, left) > width * 0.45;
             }) ? 80 : 0;
+            let sameSpanOuterLineAbove = false;
             const outerLineAbove = segments.some(function(seg){
               const gapY = topSeg.pos - seg.pos;
               if (gapY < 12 || gapY > Math.max(56, height * 0.90)) return false;
-              return Math.min(seg.end, right) - Math.max(seg.start, left) > width * 0.45;
+              const overlapAbove = Math.min(seg.end, right) - Math.max(seg.start, left);
+              if (overlapAbove <= width * 0.45) return false;
+              const nearlySameSpan = overlapAbove >= width * 0.86 &&
+                Math.abs(seg.start - left) <= Math.max(8, width * 0.018) &&
+                Math.abs(seg.end - right) <= Math.max(8, width * 0.018);
+              if (nearlySameSpan && gapY <= Math.max(34, height * 0.32)) sameSpanOuterLineAbove = true;
+              return true;
             });
             const complexity = scorePaperAutoAlignHeaderComplexity(analysis, left, right, topSeg.pos, bottomSeg.pos);
             let score = overlap * 1.6 + width * 0.35 + middleBonus + complexity.bonus - complexity.penalty - topSeg.pos * 0.30 - Math.abs(height - 90) * 1.4;
             if (outerLineAbove) score -= 700;
+            if (sameSpanOuterLineAbove) score -= 620;
             if (topSeg.pos > 90 && complexity.dividerCount > 11) score -= Math.min(230, (topSeg.pos - 90) * 0.95 + (complexity.dividerCount - 11) * 26);
             if (left > 8 && left < PAGE_W * 0.22) score += 45;
             if (right > PAGE_W * 0.55 && right < PAGE_W - 8) score += 45;
@@ -8629,18 +8649,24 @@
       const cleanLine = splitTextCommandRoleSuffix(lineText).cleanLine;
       const layer = parseCommandText(cleanLine, 'text-role')[0];
       if (!layer) return [];
-      const segments = (layer.segments || []).filter(function(seg){ return seg && seg.kind !== 'cross'; }).slice().sort(function(a, b){
+      const allSegments = (layer.segments || []).filter(Boolean).slice().sort(function(a, b){
         return (a.from || 0) - (b.from || 0);
       });
-      if (segments.length < 2) return [];
+      const nonCrossSegments = allSegments.filter(function(seg){ return seg && seg.kind !== 'cross'; });
+      const segments = nonCrossSegments;
+      if (!segments.length || (normalizedRole !== 'dialog' && segments.length < 2)) return [];
       const lines = [];
       segments.forEach(function(seg, index){
-        const next = segments[index + 1];
+        const next = normalizedRole === 'dialog'
+          ? allSegments.find(function(candidate){
+              return candidate !== seg && Math.round(Number(candidate.from) || 0) > Math.round(Number(seg.from) || 0);
+            })
+          : segments[index + 1];
         if (!next) return;
         const from = Math.max(1, Math.round(Number(seg.from) || 1));
         const to = Math.max(from, Math.round(Number(next.from) || from));
         const startLabel = String(seg.label || '').trim();
-        const endLabel = String(next.label || '').trim();
+        const endLabel = next.kind === 'cross' ? '' : String(next.label || '').trim();
         if (normalizedRole === 'camera') {
           lines.push(makeTimelineBlockLine(from, to, startLabel, layer.name || '', endLabel, sourceToken));
         } else {
@@ -10193,21 +10219,23 @@
         if (to < from) return;
         const rowTop = getOutputRowTop(block, from, 'dialog');
         const height = (to - from + 1) * getOutputRowH(block, 'dialog');
+        const showsSegmentStart = seg.from >= block.start && seg.from <= block.end;
+        const showsSegmentEnd = seg.to >= block.start && seg.to <= block.end;
         const dialogArea = getDialogArea(block);
         const x = dialogArea.x;
         const w = dialogArea.w;
         const guideX = getDistributedLaneX(x, w, seg.lane || 0, dialogLaneCount, 12);
-        line(x, rowTop, x + w, rowTop, RED, 2.6);
-        line(x, rowTop + height, x + w, rowTop + height, RED, 2.6);
+        if (showsSegmentStart) line(x, rowTop, x + w, rowTop, RED, 2.6);
+        if (showsSegmentEnd) line(x, rowTop + height, x + w, rowTop + height, RED, 2.6);
         line(guideX, rowTop, guideX, rowTop + height, RED, 1.1);
-        if (seg.from >= block.start && seg.from <= block.end) {
+        if (showsSegmentStart) {
           const visibleDialogLabel = isBlankDialogFirstFrameLabel(seg.label) ? '' : seg.label;
           if (visibleDialogLabel) drawTimelineFirstFrameLabel(x, w, rowTop, getOutputRowH(block, 'dialog'), seg.lane || 0, dialogLaneCount, visibleDialogLabel, { get:function(){ return seg.label || ''; }, set:function(v){ updateManualBlockField('dialog', seg.id, 'label', v); } });
         }
         const chars = getTimelineCharSlice(seg.text, seg.from, seg.to, from, to, getOutputRowH(block, 'dialog'));
         drawDialogTextSlice(x, w, rowTop, seg.lane || 0, dialogLaneCount, chars, { get:function(){ return seg.text || ''; }, set:function(v){ updateManualBlockField('dialog', seg.id, 'text', v); } });
-        if (seg.from >= block.start && seg.from <= block.end) addTimelineEdgeHandle(block, rowTop, 'dialog', seg, 'from', x, w);
-        if (seg.to >= block.start && seg.to <= block.end) addTimelineEdgeHandle(block, rowTop + height, 'dialog', seg, 'to', x, w);
+        if (showsSegmentStart) addTimelineEdgeHandle(block, rowTop, 'dialog', seg, 'from', x, w);
+        if (showsSegmentEnd) addTimelineEdgeHandle(block, rowTop + height, 'dialog', seg, 'to', x, w);
       });
 
       cameraSegs.forEach(function(seg){
@@ -10217,30 +10245,32 @@
         const rowTop = getOutputRowTop(block, from, 'camera');
         const height = (to - from + 1) * getOutputRowH(block, 'camera');
         const rowH = getOutputRowH(block, 'camera');
+        const showsSegmentStart = seg.from >= block.start && seg.from <= block.end;
+        const showsSegmentEnd = seg.to >= block.start && seg.to <= block.end;
         const cameraArea = getCameraArea(block);
         const x = cameraArea.x;
         const w = cameraArea.w;
         const guideX = getDistributedLaneX(x, w, seg.lane || 0, cameraLaneCount, 12);
         const cameraShape = getCameraSpecialShape(seg);
         const cameraConnection = getCameraConnectionState(seg, cameraSegs);
-        if (!cameraConnection.start) line(x, rowTop, x + w, rowTop, RED, 2.6);
-        if (!cameraConnection.end) line(x, rowTop + height, x + w, rowTop + height, RED, 2.6);
+        if (!cameraConnection.start && showsSegmentStart) line(x, rowTop, x + w, rowTop, RED, 2.6);
+        if (!cameraConnection.end && showsSegmentEnd) line(x, rowTop + height, x + w, rowTop + height, RED, 2.6);
         if (cameraShape) renderCameraSpecialShape(cameraShape, x, w, rowTop, height, seg.lane || 0, cameraLaneCount);
         else {
           const guideTop = rowTop + (cameraConnection.start ? rowH : 0);
           const guideBottom = rowTop + height - (cameraConnection.end && seg.endLabel ? rowH : 0);
           if (guideBottom > guideTop) line(guideX, guideTop, guideX, guideBottom, RED, 1.1);
         }
-        if (!cameraConnection.start && seg.from >= block.start && seg.from <= block.end) {
+        if (!cameraConnection.start && showsSegmentStart) {
           drawTimelineFirstFrameLabel(x, w, rowTop, rowH, seg.lane || 0, cameraLaneCount, seg.label, { get:function(){ return seg.label || ''; }, set:function(v){ updateManualBlockField('camera', seg.id, 'label', v); } });
         }
         if (!cameraShape) drawCameraSecondFrameText(block, x, w, seg.lane || 0, cameraLaneCount, seg, { get:function(){ return seg.text || ''; }, set:function(v){ updateManualBlockField('camera', seg.id, 'text', v); } });
-        if (seg.endLabel && seg.to >= block.start && seg.to <= block.end) {
+        if (seg.endLabel && showsSegmentEnd) {
           const endRowTop = getOutputRowTop(block, seg.to, 'camera');
           drawTimelineBoxLabel(x, w, endRowTop, rowH, seg.lane || 0, cameraLaneCount, seg.endLabel, { get:function(){ return seg.endLabel || ''; }, set:function(v){ updateManualBlockField('camera', seg.id, 'endLabel', v); } });
         }
-        if (seg.from >= block.start && seg.from <= block.end) addTimelineEdgeHandle(block, rowTop, 'camera', seg, 'from', x, w);
-        if (seg.to >= block.start && seg.to <= block.end) addTimelineEdgeHandle(block, rowTop + height, 'camera', seg, 'to', x, w);
+        if (showsSegmentStart) addTimelineEdgeHandle(block, rowTop, 'camera', seg, 'from', x, w);
+        if (showsSegmentEnd) addTimelineEdgeHandle(block, rowTop + height, 'camera', seg, 'to', x, w);
       });
       });
     }
