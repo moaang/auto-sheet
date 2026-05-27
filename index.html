@@ -1531,17 +1531,6 @@
           <div class="csv-settings-actions">
             <button id="csvSettingsExportBtn" class="csv-settings-btn" type="button" data-ui-text="csvSettingsExportBtn">JSON設定出力</button>
           </div>
-          <div id="csvEncodingSection" class="guide-target-section hidden">
-          <label for="csvEncodingSelect" style="margin-top:10px;" data-ui-text="csvEncodingLabel">CSV Encoding</label>
-          <select id="csvEncodingSelect">
-            <option value="auto" selected>Auto</option>
-            <option value="utf-8">UTF-8</option>
-            <option value="shift_jis">Shift_JIS / CP932</option>
-            <option value="cp949">CP949 / EUC-KR (Clip Studio KR)</option>
-            <option value="euc-kr">EUC-KR</option>
-            <option value="euc-jp">EUC-JP</option>
-          </select>
-          </div>
           <div id="csvInfo" class="status"></div>
           <div id="csvColumnRoleSection" class="guide-target-section">
           <div id="csvColumnPicker" class="checkbox-list"></div>
@@ -1854,7 +1843,6 @@
     const paperLayoutHintEl = document.getElementById('paperLayoutHint');
     const paperAutoAlignStatusEl = document.getElementById('paperAutoAlignStatus');
     const cellInputModeButtons = Array.from(document.querySelectorAll('[data-input-mode]'));
-    const csvEncodingSectionEl = document.getElementById('csvEncodingSection');
     const csvColumnRoleSectionEl = document.getElementById('csvColumnRoleSection');
     const paperFileSelectSectionEl = document.getElementById('paperFileSelectSection');
     const memoColorButtons = Array.from(document.querySelectorAll('.memo-color-btn'));
@@ -1984,6 +1972,7 @@
       inlineTextEditor: null,
       durationStepperOverlay: null,
       layoutDrag: null,
+      layoutDragPreviewGroup: null,
       layoutBoxes: {},
       layoutBoxBaseRects: {},
       previewPan: null,
@@ -2269,7 +2258,7 @@
       en: {
         languageLabel:'Language', headerCardTitle:'Header', episodeLabel:'Ep.no', titleLabel:'Title', cutNoLabel:'Cut.no', secondsLabel:'Duration sec', framesLabel:'Duration frame', authorLabel:'name', pageLabel:'Page',
         originalCellTitle:'Sheet Input', inputModeLabel:'Input Mode', inputModeTextCommands:'Text Commands', inputModeCsv:'CSV Upload', csvSettingsExportBtn:'Export Settings JSON', shakuEditBtn:'Length Edit', shakuEditHint:'Drag a blue frame line to select a range.', shakuCutBtn:'Cut', shakuStretchBtn:'Extend', shakuSelectedLabel:'Selected', shakuUndoBtn:'Undo', shakuRedoBtn:'Redo', shakuFlashCut:'Cut applied', shakuFlashStretch:'Extend applied', dougaSheetCreate:'Make Douga', dougaSheetRefresh:'Refresh Douga', dougaSheetTitle:'Generate a read-only douga sheet from Cell numbers and dot marks', cellReadabilityTitle:'Large Cell text',
-        textCommandsLabel:'Text Commands', csvFileLabel:'CSV File', csvEncodingLabel:'CSV Encoding', csvCommandEditLabel:'Editable Commands from CSV',
+        textCommandsLabel:'Text Commands', csvFileLabel:'CSV File', csvCommandEditLabel:'Editable Commands from CSV',
         dialogBlocksTitle:'Dialog Area', dialogFormatLabel:'Format: 0+01 | 1+00 | SPEAKER | SAMPLE', cameraBlocksTitle:'Camera Area', cameraFormatLabel:'Format: 0+01 | 1+00 | TERM | SAMPLE',
         sheetPreviewTitle:'Sheet Preview', chooseExportDirBtn:'Folder', downloadAllBtn:'Output', memoModeBtn:'Memo Mode', memoUndoBtn:'Undo', memoRedoBtn:'Redo', memoPenLabel:'Pen', memoEraserLabel:'Eraser', memoEraserButton:'Eraser',
         createdByLabel:'Created by', settingsExportBtn:'Export', settingsFileBtn:'Load', settingsImportBtn:'Path', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'Settings JSON', settingsSelectEmpty:'Select settings', settingsSelectNoSettings:'No settings JSON', textMemoApplyBtn:'Apply', clearSheetDataBtn:'Reset All', hideSidebarBtn:'Hide UI', showSidebarBtn:'Show UI', shortcutSummaryTopHint:''
@@ -2277,7 +2266,7 @@
       ja: {
         languageLabel:'言語', headerCardTitle:'ヘッダー', episodeLabel:'話数', titleLabel:'タイトル', cutNoLabel:'カット番号', secondsLabel:'尺 秒', framesLabel:'尺 コマ', authorLabel:'名前', pageLabel:'ページ',
         originalCellTitle:'シート入力', inputModeLabel:'入力モード', inputModeTextCommands:'テキストコマンド', inputModeCsv:'CSV読込', csvSettingsExportBtn:'JSON設定出力', shakuEditBtn:'尺編集(演出向け)', shakuEditHint:'青いフレーム線をドラッグして尺を選択', shakuCutBtn:'切る', shakuStretchBtn:'伸ばす', shakuSelectedLabel:'選択', shakuUndoBtn:'取り消し', shakuRedoBtn:'やり直し', shakuFlashCut:'切る 反映', shakuFlashStretch:'伸ばす 反映', dougaSheetCreate:'動画作成', dougaSheetRefresh:'動画更新', dougaSheetTitle:'Cell番号と動画点から編集不可の動画欄を生成', cellReadabilityTitle:'Cell文字を大きく表示',
-        textCommandsLabel:'テキストコマンド', csvFileLabel:'CSVファイル', csvEncodingLabel:'CSV文字コード', csvCommandEditLabel:'CSVから生成された編集可能コマンド',
+        textCommandsLabel:'テキストコマンド', csvFileLabel:'CSVファイル', csvCommandEditLabel:'CSVから生成された編集可能コマンド',
         dialogBlocksTitle:'セリフ欄', dialogFormatLabel:'形式: 0+01 | 1+00 | 話者 | セリフ例', cameraBlocksTitle:'カメラ欄', cameraFormatLabel:'形式: 0+01 | 1+00 | 記号 | 指示例',
         sheetPreviewTitle:'シートプレビュー', chooseExportDirBtn:'保存先', downloadAllBtn:'出力', memoModeBtn:'メモモード', memoUndoBtn:'取り消し', memoRedoBtn:'やり直し', memoPenLabel:'ペン', memoEraserLabel:'消しゴム', memoEraserButton:'消しゴム',
         createdByLabel:'作成', settingsExportBtn:'出力', settingsFileBtn:'読込', settingsImportBtn:'読込先', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'設定JSON', settingsSelectEmpty:'設定選択', settingsSelectNoSettings:'設定JSONなし', textMemoApplyBtn:'適用', clearSheetDataBtn:'全体初期化', hideSidebarBtn:'UIを隠す', showSidebarBtn:'UIを表示', shortcutSummaryTopHint:''
@@ -2285,7 +2274,7 @@
       ko: {
         languageLabel:'언어', headerCardTitle:'헤더', episodeLabel:'화수', titleLabel:'제목', cutNoLabel:'컷 번호', secondsLabel:'길이 초', framesLabel:'길이 프레임', authorLabel:'이름', pageLabel:'페이지',
         originalCellTitle:'시트 입력', inputModeLabel:'입력 방식', inputModeTextCommands:'텍스트 커맨드', inputModeCsv:'CSV 읽기', csvSettingsExportBtn:'설정 JSON 내보내기', shakuEditBtn:'연출용 편집툴', shakuEditHint:'파란 프레임선을 드래그해 길이를 선택', shakuCutBtn:'자르기', shakuStretchBtn:'늘리기', shakuSelectedLabel:'선택', shakuUndoBtn:'되돌리기', shakuRedoBtn:'다시 실행', shakuFlashCut:'자르기 반영', shakuFlashStretch:'늘리기 반영', dougaSheetCreate:'동화시트 작성', dougaSheetRefresh:'동화시트 갱신', dougaSheetTitle:'셀 번호와 동화점으로 수정 불가능한 동화칸 생성', cellReadabilityTitle:'셀 글자 크게 보기',
-        textCommandsLabel:'텍스트 커맨드', csvFileLabel:'CSV 파일', csvEncodingLabel:'CSV 인코딩', csvCommandEditLabel:'CSV에서 생성된 편집 가능 커맨드',
+        textCommandsLabel:'텍스트 커맨드', csvFileLabel:'CSV 파일', csvCommandEditLabel:'CSV에서 생성된 편집 가능 커맨드',
         dialogBlocksTitle:'대사란', dialogFormatLabel:'형식: 0+01 | 1+00 | 화자 | 예시', cameraBlocksTitle:'카메라란', cameraFormatLabel:'형식: 0+01 | 1+00 | 기호 | 지시 예시',
         sheetPreviewTitle:'시트 프리뷰', chooseExportDirBtn:'경로지정', downloadAllBtn:'출력', memoModeBtn:'메모 모드', memoUndoBtn:'되돌리기', memoRedoBtn:'다시 실행', memoPenLabel:'펜', memoEraserLabel:'지우개', memoEraserButton:'지우개',
         createdByLabel:'제작', settingsExportBtn:'내보내기', settingsFileBtn:'불러오기', settingsImportBtn:'경로지정', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'설정 JSON', settingsSelectEmpty:'설정 선택', settingsSelectNoSettings:'설정 JSON 없음', textMemoApplyBtn:'적용', clearSheetDataBtn:'전체 초기화', hideSidebarBtn:'UI 숨기기', showSidebarBtn:'UI 펼치기', shortcutSummaryTopHint:''
@@ -2293,7 +2282,7 @@
       zh: {
         languageLabel:'语言', headerCardTitle:'页眉', episodeLabel:'集数', titleLabel:'标题', cutNoLabel:'镜头编号', secondsLabel:'时长 秒', framesLabel:'时长 帧', authorLabel:'姓名', pageLabel:'页码',
         originalCellTitle:'表格输入', inputModeLabel:'输入模式', inputModeTextCommands:'文本命令', inputModeCsv:'CSV 导入', csvSettingsExportBtn:'导出设置 JSON', shakuEditBtn:'时长编辑', shakuEditHint:'拖动蓝色帧线选择范围', shakuCutBtn:'切除', shakuStretchBtn:'延长', shakuSelectedLabel:'选择', shakuUndoBtn:'撤销', shakuRedoBtn:'重做', shakuFlashCut:'切除已应用', shakuFlashStretch:'延长已应用', dougaSheetCreate:'生成动画栏', dougaSheetRefresh:'刷新动画栏', dougaSheetTitle:'由 Cell 编号和动画点生成只读动画栏', cellReadabilityTitle:'放大 Cell 文字',
-        textCommandsLabel:'文本命令', csvFileLabel:'CSV 文件', csvEncodingLabel:'CSV 编码', csvCommandEditLabel:'从 CSV 生成的可编辑命令',
+        textCommandsLabel:'文本命令', csvFileLabel:'CSV 文件', csvCommandEditLabel:'从 CSV 生成的可编辑命令',
         dialogBlocksTitle:'对白栏', dialogFormatLabel:'格式: 0+01 | 1+00 | 说话人 | 示例', cameraBlocksTitle:'摄影机栏', cameraFormatLabel:'格式: 0+01 | 1+00 | 标记 | 指示示例',
         sheetPreviewTitle:'Sheet 预览', chooseExportDirBtn:'保存处', downloadAllBtn:'输出', memoModeBtn:'备注模式', memoUndoBtn:'撤销', memoRedoBtn:'重做', memoPenLabel:'笔', memoEraserLabel:'橡皮', memoEraserButton:'橡皮',
         createdByLabel:'制作', settingsExportBtn:'导出', settingsFileBtn:'导入', settingsImportBtn:'路径', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'设置 JSON', settingsSelectEmpty:'选择设置', settingsSelectNoSettings:'无设置 JSON', textMemoApplyBtn:'应用', clearSheetDataBtn:'全部重置', hideSidebarBtn:'隐藏 UI', showSidebarBtn:'显示 UI', shortcutSummaryTopHint:''
@@ -2748,6 +2737,15 @@
     const updateLogVer646VisibleDocs = {
       en: '<h4><span class="update-log-badge">ver646</span>Continuation range end caps</h4><ul><li>Dialog and Camera ranges that continue across left/right blocks or pages now draw red start/end cap lines only at the actual range boundaries, not at every clipped block edge.</li></ul>'
     };
+    const updateLogVer647VisibleDocs = {
+      en: '<h4><span class="update-log-badge">ver647</span>Preview END markers</h4><ul><li>Original Cell columns now show a preview-only <code>END</code> marker in the frame directly below the final non-X input when that hold continues across a 72-frame block/page, and the END cell suppresses the vertical hold line so the marker stays readable.</li></ul>'
+    };
+    const updateLogVer648VisibleDocs = {
+      en: '<h4><span class="update-log-badge">ver648</span>CSV Korean CLIP auto decoding</h4><ul><li>CSV import now auto-detects Korean CLIP STUDIO split marks that were previously misread as <code>｡ｿ</code>, decodes them as <code>×</code>, and removes the hidden manual encoding selector path.</li></ul>'
+    };
+    const updateLogVer649VisibleDocs = {
+      en: '<h4><span class="update-log-badge">ver649</span>Position Edit drag performance</h4><ul><li>Position Edit now updates only a lightweight red preview overlay while dragging and redraws the full sheet once on release, reducing lag on large sheets and external-paper previews.</li></ul>'
+    };
     const updateLogVer643VisibleDocs = {
       en: '<h4><span class="update-log-badge">ver643</span>Unified CSV role token import</h4><ul><li>CSV values now use the same <code>dot</code>/<code>x</code>/hold token rules for Cell, Hide, Book, Dialog, and Camera command rows, with the role kept only in the row suffix.</li><li>CSV-generated Dialog/Camera rows are cleaned by source marker when CSV data or roles change, preventing stale generated rows from remaining in the manual areas.</li></ul>',
       ja: '<h4><span class="update-log-badge">ver643</span>CSV役割行のトークン読込統一</h4><ul><li>CSVの値は Cell / Hide / Book / Dialog / Camera の全コマンド行で同じ <code>dot</code>/<code>x</code>/継続トークン規則を使い、役割は行末のsuffixだけで保持するようにした。</li><li>CSV由来のDialog/Camera行はCSVデータや役割変更時にsource印で整理し、古い自動生成行が手入力欄に残らないようにした。</li></ul>',
@@ -2767,6 +2765,9 @@
       zh: '<h4><span class="update-log-badge">ver641</span>纸张上传竞态清理</h4><ul><li>纸张图片开始上传时会立即取消尚未完成的 Auto Align 分析；上传失败时会恢复之前的纸张快照，而不是清空当前纸张。</li><li>Auto Align 的 Undo 历史现在保存 working 状态之前的快照；重置表格后会把已清除的 Cell 顺序写入纸张记忆，并移除了更新记录中的不可达代码。</li></ul>'
     };
     const orderedRecentUpdateLogDocs = [
+      updateLogVer649VisibleDocs,
+      updateLogVer648VisibleDocs,
+      updateLogVer647VisibleDocs,
       updateLogVer646VisibleDocs,
       updateLogVer645VisibleDocs,
       updateLogVer644VisibleDocs,
@@ -4196,7 +4197,6 @@
       document.getElementById('dialogHelp').textContent = t('dialogHelp');
       document.getElementById('cameraHelp').textContent = t('cameraHelp');
       updatePreviewMetaText(state.totalPages || 1);
-      if (!state.csvRawRows.length) updateCsvEncodingVisibility(false);
       updateCsvStatusText();
       if (shouldRender) render();
     }
@@ -4568,6 +4568,48 @@
       appendSvgNode(group);
     }
 
+    function setPositionEditHandleDragMuted(muted) {
+      if (!svg || !svg.querySelectorAll) return;
+      Array.prototype.forEach.call(svg.querySelectorAll('.position-edit-handle'), function(node){
+        if (!node || node.classList.contains('position-edit-drag-preview')) return;
+        if (muted) node.style.opacity = '0.22';
+        else node.style.opacity = '';
+      });
+    }
+
+    function clearLayoutDragPreview() {
+      const group = state.layoutDragPreviewGroup;
+      if (group && group.parentNode) group.parentNode.removeChild(group);
+      state.layoutDragPreviewGroup = null;
+      setPositionEditHandleDragMuted(false);
+    }
+
+    function renderLayoutDragPreview(drag) {
+      if (!svg || !drag || !state.positionMode || !state.layoutBoxBaseRects) return;
+      const previous = state.layoutDragPreviewGroup;
+      if (previous && previous.parentNode) previous.parentNode.removeChild(previous);
+      setPositionEditHandleDragMuted(true);
+      const group = el('g', { class:'position-edit-handle position-edit-drag-preview', 'pointer-events':'none' });
+      const keys = Object.keys(state.layoutBoxBaseRects).sort();
+      keys.forEach(function(previewKey){
+        const base = state.layoutBoxBaseRects[previewKey];
+        if (!base) return;
+        const box = getLayoutBoxRect(previewKey, base);
+        group.appendChild(el('rect', {
+          x:box.x, y:box.y, width:box.w, height:box.h, rx:6, ry:6,
+          fill:'rgba(255,255,255,0.34)', stroke:RED, 'stroke-width':2.6,
+          'stroke-dasharray':'8 5', 'pointer-events':'none'
+        }));
+        group.appendChild(el('text', {
+          x:box.x + 8, y:box.y - 9, fill:RED, 'font-size':14,
+          'font-family':'Arial, Helvetica, sans-serif', 'font-weight':'900',
+          'dominant-baseline':'middle', 'pointer-events':'none'
+        }, previewKey));
+      });
+      svg.appendChild(group);
+      state.layoutDragPreviewGroup = group;
+    }
+
     function beginLayoutBoxDrag(event, key, mode, baseRect) {
       if (!state.positionMode) return;
       event.preventDefault();
@@ -4589,6 +4631,7 @@
         groupOrigins:groupMoveKeys.length ? createLayoutGroupOrigins(groupMoveKeys) : null
       };
       document.documentElement.classList.add('position-edit-dragging');
+      renderLayoutDragPreview(state.layoutDrag);
       if (event.currentTarget && event.currentTarget.setPointerCapture) {
         try { event.currentTarget.setPointerCapture(event.pointerId); } catch (err) {}
       }
@@ -4607,7 +4650,7 @@
       if (mode === 'move' && drag.groupOrigins && drag.groupMoveKeys && drag.groupMoveKeys.length) {
         applyRightTimelineGroupMove(drag, dx);
         syncTimelineHorizontalGaps(drag.key);
-        requestRender();
+        renderLayoutDragPreview(drag);
         return;
       }
       if (mode === 'move') {
@@ -4630,7 +4673,7 @@
       }
       syncLinkedTimelineBox(drag.key);
       syncTimelineHorizontalGaps(drag.key);
-      requestRender();
+      renderLayoutDragPreview(drag);
     }
 
     function endLayoutBoxDrag(event) {
@@ -4641,9 +4684,12 @@
         try { event.currentTarget.releasePointerCapture(event.pointerId); } catch (err) {}
       }
       state.layoutDrag = null;
+      clearLayoutDragPreview();
       document.documentElement.classList.remove('position-edit-dragging');
       queueSavePaperMemory();
+      const hadQueuedRender = queuedRenderFrame !== null;
       flushQueuedRender();
+      if (!hadQueuedRender) render();
     }
 
     function continueHeaderPositionDrag(event) { continueLayoutBoxDrag(event); }
@@ -8174,6 +8220,69 @@
       if (!state.commandCellViewSyncing) refreshCommandCellView(getCommandModeKeyForTextarea(textarea));
     }
 
+    function getLastCommandTimelineEvent(tokens) {
+      for (let i = (tokens || []).length - 1; i >= 0; i--) {
+        const raw = String(tokens[i] == null ? '' : tokens[i]).trim();
+        if (!raw) continue;
+        if (raw.toLowerCase() === 'n') continue;
+        return { token:raw, frame:i + 1 };
+      }
+      return null;
+    }
+
+    function getLastCommandTimelineEventToken(tokens) {
+      const event = getLastCommandTimelineEvent(tokens);
+      return event ? event.token : '';
+    }
+
+    function timelineSegmentCrossesBlockBoundary(fromFrame, toFrame) {
+      const blockFrames = 72;
+      const from = Math.max(1, Math.round(Number(fromFrame) || 1));
+      const to = Math.max(from, Math.round(Number(toFrame) || from));
+      if (to <= from) return false;
+      const nextBlockStart = Math.floor((from - 1) / blockFrames) * blockFrames + blockFrames + 1;
+      return nextBlockStart <= to;
+    }
+
+    function getLastNonAutoExposureSegment(segments) {
+      let last = null;
+      (segments || []).forEach(function(seg){
+        if (!seg || seg.autoLeadingCross) return;
+        const from = Math.max(1, Math.round(Number(seg.from) || 0));
+        const to = Math.max(from, Math.round(Number(seg.to) || from));
+        if (!last || to > last.to || (to === last.to && from > last.from)) {
+          last = Object.assign({}, seg, { from:from, to:to });
+        }
+      });
+      return last;
+    }
+
+    function getCommandLayerPreviewEndMeta(tokens, segments) {
+      const tokenCount = (tokens || []).length;
+      if (!tokenCount) return null;
+      const lastEvent = getLastCommandTimelineEvent(tokens);
+      const lastEventToken = lastEvent ? lastEvent.token : '';
+      if (!lastEvent || !lastEventToken) return null;
+      const lastEventLower = String(lastEventToken).toLowerCase();
+      if (lastEventLower === 'x' || lastEventLower === '_' || isLegacyNeutralEmptyToken(lastEventToken)) return null;
+      const lastSeg = getLastNonAutoExposureSegment(segments);
+      if (!lastSeg || lastSeg.kind === 'cross') return null;
+      if (Math.round(Number(lastSeg.to) || 0) !== tokenCount) return null;
+      return {
+        previewEndCandidateFrame:Math.max(1, Math.round(Number(lastEvent.frame) || 1)) + 1,
+        previewEndHoldFromFrame:Math.max(1, Math.round(Number(lastSeg.from) || 1)),
+        previewEndHoldToFrame:Math.max(1, Math.round(Number(lastSeg.to) || lastSeg.from || 1))
+      };
+    }
+
+    function copyLayerPreviewEndMeta(target, layer) {
+      ['previewEndCandidateFrame', 'previewEndHoldFromFrame', 'previewEndHoldToFrame', 'previewEndFrame'].forEach(function(key){
+        const value = Math.max(0, Math.round(Number(layer && layer[key]) || 0));
+        if (value) target[key] = value;
+      });
+      return target;
+    }
+
     function parseCommandText(raw, uidPrefix) {
       const prefix = uidPrefix || 'line';
       const lines = String(raw || '').split(String.fromCharCode(10)).map(function(v){ return v.trim(); }).filter(Boolean);
@@ -8225,7 +8334,10 @@
         });
         closeActive(tokens.length);
         const suppressAutoLeadingCross = tokens.length > 0 && String(tokens[0] || '').trim() === '_';
-        layers.push({ uid: prefix + '-' + lineIndex, name:name, segments:annotateCrossSegmentMarkers(segments), marks:marks, suppressAutoLeadingCross:suppressAutoLeadingCross });
+        const annotatedSegments = annotateCrossSegmentMarkers(segments);
+        const layer = { uid: prefix + '-' + lineIndex, name:name, segments:annotatedSegments, marks:marks, suppressAutoLeadingCross:suppressAutoLeadingCross };
+        copyLayerPreviewEndMeta(layer, getCommandLayerPreviewEndMeta(tokens, annotatedSegments));
+        layers.push(layer);
       });
       return layers;
     }
@@ -8258,16 +8370,15 @@
       const text = String(textValue || '');
       const replacement = (text.match(/�/g) || []).length;
       const suspicious = (text.match(/[ÃÂ¤«»縺繧譁荳蜷鬆]/g) || []).length;
-      return replacement > 0 || suspicious >= 2;
-    }
-
-    function updateCsvEncodingVisibility(shouldShow) {
-      if (!csvEncodingSectionEl) return;
-      csvEncodingSectionEl.classList.toggle('hidden', !shouldShow);
+      const koreanSplitAsSjis = (text.match(/｡ｿ/g) || []).length;
+      const koreanSplitAsSjisAuto = (text.match(/\uff61\uff7f/g) || []).length;
+      return replacement > 0 || suspicious >= 2 || koreanSplitAsSjis > 0 || koreanSplitAsSjisAuto > 0;
     }
 
     function scoreDecodedCsvText(textValue) {
       const total = Math.max(1, textValue.length);
+      const koreanSplitAsSjis = (textValue.match(/\uff61\uff7f/g) || []).length;
+      const splitMarks = (textValue.match(/\u00d7/g) || []).length;
       const jp = (textValue.match(/[\u3040-\u30ff\u3400-\u9fff]/g) || []).length;
       const kr = (textValue.match(/[\uac00-\ud7af]/g) || []).length;
       const ascii = (textValue.match(/[A-Za-z0-9 _\-\/,:.#\[\]"]/g) || []).length;
@@ -8286,16 +8397,26 @@
       });
       score -= suspicious * 6;
       score -= replacement * 20;
+      score -= koreanSplitAsSjis * 35;
+      if (/\bFrame\b/i.test(textValue) && splitMarks) score += Math.min(80, splitMarks * 6);
       return score;
+    }
+
+    function getCsvDecoderEncodingLabel(encoding) {
+      const label = String(encoding || '').trim().toLowerCase();
+      if (label === 'cp949' || label === 'windows-949' || label === 'ks_c_5601-1987' || label === 'ksc5601') return 'euc-kr';
+      if (label === 'cp932' || label === 'windows-31j' || label === 'ms932') return 'shift_jis';
+      return label || 'utf-8';
     }
 
     function decodeCsvBuffer(arrayBuffer, encodingMode) {
       const explicitMode = encodingMode && encodingMode !== 'auto';
-      const preferred = explicitMode ? [encodingMode] : ['utf-8', 'shift_jis', 'cp932', 'cp949', 'euc-kr', 'euc-jp'];
+      const preferred = explicitMode ? [encodingMode] : ['utf-8', 'euc-kr', 'windows-949', 'shift_jis', 'cp932', 'euc-jp'];
       const candidates = [];
       const tryDecode = function(encoding, fatal) {
         try {
-          const textValue = new TextDecoder(encoding, fatal ? { fatal:true } : undefined).decode(arrayBuffer);
+          const decoderLabel = getCsvDecoderEncodingLabel(encoding);
+          const textValue = new TextDecoder(decoderLabel, fatal ? { fatal:true } : undefined).decode(arrayBuffer);
           const score = scoreDecodedCsvText(textValue) + (fatal ? 20 : 0);
           const mojibake = hasLikelyCsvMojibake(textValue);
           candidates.push({ textValue:textValue, encoding:encoding, score:score, mojibake:mojibake });
@@ -8306,9 +8427,7 @@
       };
       if (!explicitMode) {
         const utf8 = tryDecode('utf-8', true);
-        if (utf8 && utf8.score >= 35) return { textValue:utf8.textValue, encoding:utf8.encoding, needsEncodingReview:utf8.mojibake };
-        const sjis = tryDecode('shift_jis', true) || tryDecode('cp932', true);
-        if (sjis && sjis.score >= 35) return { textValue:sjis.textValue, encoding:sjis.encoding, needsEncodingReview:sjis.mojibake };
+        if (utf8 && utf8.score >= 35 && !utf8.mojibake) return { textValue:utf8.textValue, encoding:utf8.encoding, needsEncodingReview:false };
       }
       preferred.forEach(function(encoding) { tryDecode(encoding, true); });
       if (!candidates.length) preferred.forEach(function(encoding) { tryDecode(encoding, false); });
@@ -8486,7 +8605,6 @@
       setCommandTextValue('csv', '');
       if (!rows.length) {
         state.csvLoadedMode = '';
-        updateCsvEncodingVisibility(false);
         csvInfoEl.textContent = t('noCsv');
         setCommandTextValue('csv', '');
         syncCsvBookNameTags();
@@ -8712,7 +8830,17 @@
           explicitCross:isCross
         };
       }).filter(function(seg){ return seg && seg.to >= seg.from; });
-      return { uid:'csv-' + col.index, name:layerName, sourceColumnIndex:col.index, segments:annotateCrossSegmentMarkers(segments), marks:marks };
+      const annotatedSegments = annotateCrossSegmentMarkers(segments);
+      const lastSeg = getLastNonAutoExposureSegment(annotatedSegments);
+      const layer = { uid:'csv-' + col.index, name:layerName, sourceColumnIndex:col.index, segments:annotatedSegments, marks:marks };
+      const lastValue = values.length ? values[values.length - 1] : null;
+      const lastValueText = lastValue ? String(lastValue.value || '').trim() : '';
+      if (lastSeg && lastSeg.kind !== 'cross' && Math.round(Number(lastSeg.to) || 0) === lastFrame && lastValue && !isCsvCrossValue(lastValueText) && lastValueText !== '_' && !isLegacyNeutralEmptyToken(lastValueText)) {
+        layer.previewEndCandidateFrame = Math.max(1, Math.round(Number(lastValue.frame) || 1)) + 1;
+        layer.previewEndHoldFromFrame = Math.max(1, Math.round(Number(lastSeg.from) || 1));
+        layer.previewEndHoldToFrame = Math.max(1, Math.round(Number(lastSeg.to) || lastSeg.from || 1));
+      }
+      return layer;
     }
 
     function removeTextCommandGeneratedManualLines(lineIndex, cleanLine, role, sourceToken) {
@@ -9275,7 +9403,7 @@
         });
         repeatFrames.forEach(function(frame){ dotSet.delete(frame); });
         const dotMarks = Array.from(dotSet).sort(function(a,b){ return a - b; }).map(function(frame){ return { frame:frame, type:'dot' }; });
-        return { uid:layer.uid, name:layer.name, segments:segments, marks:nonDotMarks.concat(dotMarks), suppressAutoLeadingCross:!!layer.suppressAutoLeadingCross };
+        return copyLayerPreviewEndMeta({ uid:layer.uid, name:layer.name, segments:segments, marks:nonDotMarks.concat(dotMarks), suppressAutoLeadingCross:!!layer.suppressAutoLeadingCross }, layer);
       });
     }
 
@@ -9289,7 +9417,7 @@
             segments.unshift({ from:1, to:Math.max(1, Math.round(firstDrawing.from) - 1), label:'', kind:'cross', autoLeadingCross:true, showCrossMarker:true });
           }
         }
-        return { uid:layer.uid, name:layer.name, segments:segments, marks:(layer.marks || []).map(function(mark){ return Object.assign({}, mark); }), suppressAutoLeadingCross:!!layer.suppressAutoLeadingCross };
+        return copyLayerPreviewEndMeta({ uid:layer.uid, name:layer.name, segments:segments, marks:(layer.marks || []).map(function(mark){ return Object.assign({}, mark); }), suppressAutoLeadingCross:!!layer.suppressAutoLeadingCross }, layer);
       });
     }
 
@@ -11691,13 +11819,14 @@
           const crossMark = layer ? (layer.marks || []).find(function(m){ return m.type === 'cross' && m.frame === absFrame; }) : null;
           const isAutoLeadingCrossSeg = !!(seg && seg.kind === 'cross' && seg.autoLeadingCross);
           const isExplicitCrossSeg = !!(seg && seg.kind === 'cross' && !seg.autoLeadingCross);
+          const isPreviewEndFrame = !!(layer && Math.max(0, Math.round(Number(layer.previewEndFrame) || 0)) === absFrame);
           if (params.interactive && (!seg || isAutoLeadingCrossSeg) && !dotMark && !repeatMark && !crossMark) {
             addEmptyCellInlineEditHit(entry, absFrame, { x1:x1, y1:y1, x2:x2, y2:y2 });
           }
           if (!layer && !seg && !dotMark && !repeatMark && !crossMark) continue;
           if (seg) {
             if (absFrame > seg.from) {
-              if (!dotMark && !crossMark) line((x1 + x2) / 2, y1 + 1.5, (x1 + x2) / 2, y2 - 1.5, seg.kind === 'cross' ? (isExplicitCrossSeg ? '#111' : RED) : '#111', seg.kind === 'cross' ? 1.4 : 1);
+              if (!dotMark && !crossMark && !isPreviewEndFrame) line((x1 + x2) / 2, y1 + 1.5, (x1 + x2) / 2, y2 - 1.5, seg.kind === 'cross' ? (isExplicitCrossSeg ? '#111' : RED) : '#111', seg.kind === 'cross' ? 1.4 : 1);
               if (params.interactive && seg.kind !== 'cross') {
                 const hit = el('rect', { x:x1, y:y1, width:x2 - x1, height:y2 - y1, fill:'transparent', stroke:'transparent' });
                 hit.style.cursor = 'pointer';
@@ -11822,6 +11951,7 @@
       const returnedBlock = { blockX:params.blockX, blockW:params.blockW, originalColW:originalColW, originalAreaW:params.originalAreaW, originalEntriesCount:params.originalEntries.length, top:top, rowH:rowH, frameCount:params.frameCount, nameStripH:nameStripH, xOriginalRight:xOriginalRight, xDialogRight:xDialogRight, xInbetweenRight:xInbetweenRight, dialogW:params.dialogW, cameraW:params.cameraW, start:params.startFrame, end:params.startFrame + params.frameCount - 1, durationFrame:params.durationFrame || 0 };
       renderDougaSheet(returnedBlock, params.originalEntries, state.dougaSheetData);
       renderDurationHoldExtensions(returnedBlock, params.originalEntries, params.layersById, params.durationFrame || 0);
+      renderPreviewEndMarkers(returnedBlock, params.originalEntries, params.layersById);
       withDrawLayer('output', function(){
         const labelTempBlock = { blockX:params.blockX, blockW:params.blockW, originalColW:originalColW, originalAreaW:params.originalAreaW, originalEntriesCount:params.originalEntries.length, top:top, nameStripH:nameStripH, rowH:rowH, frameCount:frameCountForBox, start:params.startFrame };
         const labelArea = getCellLabelArea(labelTempBlock);
@@ -12986,6 +13116,23 @@
       });
     }
 
+    function renderPreviewEndMarkers(block, originalEntries, layersById) {
+      if (!block || !layersById) return;
+      withDrawLayer('output', function(){
+        (originalEntries || []).forEach(function(entry, columnIndex){
+          if (!entry || !entry.isActual || !layersById.has(entry.uid)) return;
+          const layer = layersById.get(entry.uid);
+          const endFrame = Math.max(0, Math.round(Number(layer && layer.previewEndFrame) || 0));
+          if (!endFrame || endFrame < block.start || endFrame > block.end) return;
+          const bounds = getOutputCellBounds(block, columnIndex);
+          const rowTop = getOutputRowTop(block, endFrame, 'cell');
+          const rowH = getOutputRowH(block, 'cell');
+          const node = text(getCellTextX(bounds.x1, bounds.x2), rowTop + rowH / 2, 'END', cellOutputSize(8), getCellTextAnchor(), '800', '#111');
+          node.setAttribute('pointer-events', 'none');
+        });
+      });
+    }
+
 
     function getLayerLastExposureSegment(layer) {
       let last = null;
@@ -13033,11 +13180,13 @@
           const fromFrame = Math.max(block.start, lastSeg.to + (lastIsExplicitCross ? 1 : 0));
           const toFrame = Math.min(block.end, targetLimit);
           if (toFrame < fromFrame) return;
+          const previewEndFrame = Math.max(0, Math.round(Number(layer.previewEndFrame) || 0));
           const bounds = getOutputCellBounds(block, columnIndex);
           const xCenter = (bounds.x1 + bounds.x2) / 2;
           const strokeColor = lastSeg.kind === 'cross' ? RED : '#111';
           const strokeWidth = lastSeg.kind === 'cross' ? 1.4 : 1;
           for (let frame = fromFrame; frame <= toFrame; frame++) {
+            if (previewEndFrame && frame === previewEndFrame) continue;
             const rowTop = getOutputRowTop(block, frame, 'cell');
             const rowH = getOutputRowH(block, 'cell');
             let y1 = rowTop + 1.5;
@@ -13108,14 +13257,38 @@
       return Math.max(1, maxFrame);
     }
 
+    function getPreviewOnlyMaxFrame(layers) {
+      let maxFrame = 0;
+      (layers || []).forEach(function(layer){
+        maxFrame = Math.max(maxFrame, Math.round(Number(layer.previewEndFrame) || 0));
+      });
+      return maxFrame;
+    }
+
+    function resolvePreviewEndFrames(layers, durationFrame) {
+      const targetDuration = Math.max(0, Math.round(Number(durationFrame) || 0));
+      return (layers || []).map(function(layer){
+        const out = Object.assign({}, layer);
+        delete out.previewEndFrame;
+        const candidateFrame = Math.max(0, Math.round(Number(layer && layer.previewEndCandidateFrame) || 0));
+        if (!candidateFrame) return out;
+        const holdFrom = Math.max(1, Math.round(Number(layer.previewEndHoldFromFrame) || candidateFrame - 1 || 1));
+        const holdTo = Math.max(holdFrom, Math.round(Number(layer.previewEndHoldToFrame) || holdFrom), targetDuration);
+        if (!timelineSegmentCrossesBlockBoundary(holdFrom, holdTo)) return out;
+        out.previewEndFrame = candidateFrame;
+        return out;
+      });
+    }
+
     function getRenderModel() {
+      const durationInputFrame = getDurationFrameCount();
       const baseLayers = getBaseInputLayers();
-      const layers = applyLeadingCrossSegments(applyDotOverrides(baseLayers));
+      const layers = resolvePreviewEndFrames(applyLeadingCrossSegments(applyDotOverrides(baseLayers)), durationInputFrame);
       const dialogBlocks = assignLanes(getRenderableDialogBlocks(parseManualBlocks(document.getElementById('dialogManual').value)));
       const cameraBlocks = assignCameraLanes(parseManualBlocks(document.getElementById('cameraManual').value));
       const contentMaxFrame = getContentMaxFrame(layers, dialogBlocks, cameraBlocks);
       const hasContent = hasRenderableTimelineContent(layers, dialogBlocks, cameraBlocks);
-      const maxFrame = Math.max(contentMaxFrame, getDurationFrameCount() || 1);
+      const maxFrame = Math.max(contentMaxFrame, getPreviewOnlyMaxFrame(layers), durationInputFrame || 1);
       const layout = computeLayout(layers, baseLayers, maxFrame);
       const totalPages = Math.max(1, Math.ceil(layout.maxFrame / layout.pageFrames));
       return {
@@ -14882,6 +15055,7 @@
       setPaperAutoAlignResult(snapshot.autoAlignResult ? clonePaperData(snapshot.autoAlignResult) : null);
       state.paperAutoAlignOverlay = snapshot.autoAlignOverlay ? clonePaperData(snapshot.autoAlignOverlay) : null;
       state.layoutDrag = null;
+      clearLayoutDragPreview();
       document.documentElement.classList.remove('position-edit-dragging');
       updatePaperImageStatus();
       syncPaperLayoutControls();
@@ -15105,6 +15279,7 @@
       state.layoutBoxes = {};
       state.layoutBoxBaseRects = {};
       state.layoutDrag = null;
+      clearLayoutDragPreview();
       document.documentElement.classList.remove('position-edit-dragging');
       if (paperImageInputEl) paperImageInputEl.value = '';
       syncPaperLayoutControls();
@@ -15146,6 +15321,7 @@
       state.layoutBoxes = {};
       state.layoutBoxBaseRects = {};
       state.layoutDrag = null;
+      clearLayoutDragPreview();
       document.documentElement.classList.remove('position-edit-dragging');
       pushPaperHistory(beforeSnapshot, getPaperStateSnapshot());
       queueSavePaperMemory();
@@ -15551,7 +15727,6 @@
       setCommandTextValue('csv', '');
       state.csvLoadError = message || '';
       if (csvInfoEl) csvInfoEl.textContent = state.csvLoadError || t('noCsv');
-      updateCsvEncodingVisibility(!!message);
       updateCsvSourceInfo();
       updateCsvSettingsActionVisibility();
     }
@@ -15562,7 +15737,6 @@
       state.csvLoadError = '';
       const csvFileInput = document.getElementById('csvFileInput');
       if (csvFileInput) csvFileInput.value = '';
-      updateCsvEncodingVisibility(false);
       if (csvInfoEl) csvInfoEl.textContent = t('noCsv');
       updateCsvSourceInfo();
       updateCsvSettingsActionVisibility();
@@ -15572,8 +15746,7 @@
       if (!file) return false;
       try {
         const buffer = await file.arrayBuffer();
-        const encodingMode = document.getElementById('csvEncodingSelect').value;
-        const decoded = decodeCsvBuffer(buffer, encodingMode);
+        const decoded = decodeCsvBuffer(buffer, 'auto');
         const parsedRows = parseCSV(decoded.textValue);
         const sourceMode = detectCsvSourceMode(parsedRows);
         if (!sourceMode) {
@@ -15651,6 +15824,7 @@
       clearMemoPointerState();
       state.positionMode = false;
       state.layoutDrag = null;
+      clearLayoutDragPreview();
       state.activeTimelineDrag = null;
       state.cellLabelDrag = null;
       state.cellLongPressDrag = null;
@@ -16371,8 +16545,7 @@
       const shouldRender = !(options && options.render === false);
       if (!state.csvFileBuffer) return;
       if (csvInfoEl) csvInfoEl.textContent = 'CSV loading...';
-      const encodingMode = document.getElementById('csvEncodingSelect').value;
-      const decoded = decodeCsvBuffer(state.csvFileBuffer, encodingMode);
+      const decoded = decodeCsvBuffer(state.csvFileBuffer, 'auto');
       const parsedRows = parseCSV(decoded.textValue);
       const sourceMode = detectCsvSourceMode(parsedRows);
       if (!sourceMode) throw new Error(t('csvUnsupported'));
@@ -16389,7 +16562,6 @@
       state.csvLoadError = '';
       setupCsvState(normalizedRows);
       applyDurationFromCsvRows(normalizedRows);
-      updateCsvEncodingVisibility(!!decoded.needsEncodingReview);
       updateCsvStatusText();
       updateCsvSettingsActionVisibility();
       if (shouldRender) render();
@@ -16625,15 +16797,6 @@
     });
     const csvSettingsExportBtn = document.getElementById('csvSettingsExportBtn');
     if (csvSettingsExportBtn) csvSettingsExportBtn.addEventListener('click', saveCurrentSettings);
-    document.getElementById('csvEncodingSelect').addEventListener('change', function(){
-      if (!state.csvFileBuffer) return;
-      try {
-        loadCsvFromCurrentBuffer();
-      } catch (err) {
-        resetCsvLoadState(t('csvError', err && err.message ? err.message : err), { keepBuffer:true });
-        render();
-      }
-    });
 
     bindInput('episode', handleRememberedHeaderInput);
     bindInput('title', handleRememberedHeaderInput);
