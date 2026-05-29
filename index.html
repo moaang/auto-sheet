@@ -1872,7 +1872,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '659';
+    const APP_VERSION = '660';
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
     const PAPER_TEMPLATE_MATCH_MIN_SCORE = 0.75;
@@ -2344,22 +2344,50 @@
             ip:data.ip || '',
             country:data.country_name || data.country || '',
             region:data.region || '',
-            city:data.city || ''
+            city:data.city || '',
+            geoTimezone:data.timezone || ''
           };
         })
         .catch(function(){ return {}; });
       return usageGeoPromise;
     }
 
+    function getBrowserUsageTimezone() {
+      try {
+        return Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+      } catch (err) {
+        return '';
+      }
+    }
+
+    function normalizeUsageTimezone(clientTimezone, geoTimezone, country) {
+      const client = String(clientTimezone || '').trim();
+      const geo = String(geoTimezone || '').trim();
+      if (client && !/^Etc\/GMT[+-]\d{1,2}$/i.test(client)) return client;
+      if (geo && !/^Etc\/GMT[+-]\d{1,2}$/i.test(geo)) return geo;
+      const match = client.match(/^Etc\/GMT([+-])(\d{1,2})$/i);
+      if (!match) return client || geo || '';
+      const offsetHours = (match[1] === '-' ? 1 : -1) * Number(match[2]);
+      if (offsetHours === 9) {
+        const countryText = String(country || '').toLowerCase();
+        if (countryText.indexOf('korea') >= 0 || countryText === 'kr') return 'Asia/Seoul';
+        if (countryText.indexOf('japan') >= 0 || countryText === 'jp') return 'Asia/Tokyo';
+      }
+      const sign = offsetHours >= 0 ? '+' : '-';
+      const abs = Math.abs(offsetHours);
+      return 'UTC' + sign + String(abs).padStart(2, '0') + ':00';
+    }
+
     async function sendUsageEvent(eventName, extra) {
       if (!USAGE_ENDPOINT) return;
       try {
         const geo = await getUsageGeo();
+        const timezone = normalizeUsageTimezone(getBrowserUsageTimezone(), geo.geoTimezone, geo.country);
         const payload = Object.assign({
           event:eventName || '',
           version:APP_VERSION,
           locale:navigator.language || '',
-          timezone:(Intl.DateTimeFormat().resolvedOptions().timeZone || ''),
+          timezone:timezone,
           userAgent:navigator.userAgent || ''
         }, geo, extra || {});
         const body = JSON.stringify(payload);
@@ -2593,6 +2621,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver660', 'Usage timezone display', ['Usage logging now normalizes browser fixed-offset timezone names such as <code>Etc/GMT-9</code> into readable timezone values before sending.']],
         ['ver659', 'Paper template analytics', ['External Paper Auto Align now matches loaded paper against built-in numeric template fingerprints and sends only the matched company, score, and line metrics to usage logging.', 'Client error logging now reports sanitized error hashes without file names, local paths, CSV contents, or paper images.']],
         ['ver658', 'Usage endpoint update', ['Usage logging now points to the newly deployed public Apps Script web app URL.', 'The logging request uses fetch directly so export completion is not blocked by the analytics request.']],
         ['ver657', 'Export usage logging', ['Successful Output actions now send an anonymous usage event to the connected Google Apps Script endpoint.', 'The event includes version, format, page count, locale/timezone, and approximate region data for aggregate usage checks.']],
@@ -2614,6 +2643,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver660', 'Usage timezone display', ['Usage logging now normalizes browser fixed-offset timezone names such as <code>Etc/GMT-9</code> into readable timezone values before sending.']],
         ['ver659', 'Paper template analytics', ['External Paper Auto Align now matches loaded paper against built-in numeric template fingerprints and sends only the matched company, score, and line metrics to usage logging.', 'Client error logging now reports sanitized error hashes without file names, local paths, CSV contents, or paper images.']],
         ['ver658', '集計URL更新', ['利用集計の送信先を、新しく公開された Apps Script Web App URL に差し替えました。', '集計送信は fetch で直接行い、出力完了を妨げないようにしました。']],
         ['ver657', '出力回数集計', ['出力が成功した時だけ、接続した Google Apps Script へ匿名の利用イベントを送信するようにしました。', 'バージョン、形式、ページ数、言語/タイムゾーン、おおよその地域情報を集計用に送ります。']],
@@ -2635,6 +2665,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver660', 'Usage timezone display', ['Usage logging now normalizes browser fixed-offset timezone names such as <code>Etc/GMT-9</code> into readable timezone values before sending.']],
         ['ver659', 'Paper template analytics', ['External Paper Auto Align now matches loaded paper against built-in numeric template fingerprints and sends only the matched company, score, and line metrics to usage logging.', 'Client error logging now reports sanitized error hashes without file names, local paths, CSV contents, or paper images.']],
         ['ver658', '집계 URL 갱신', ['사용 집계 전송 대상을 새로 공개된 Apps Script Web App URL로 교체했습니다.', '집계 전송은 fetch로 직접 실행하며, 출력 완료 흐름을 막지 않도록 했습니다.']],
         ['ver657', '출력 횟수 집계', ['출력이 성공했을 때만 연결된 Google Apps Script로 익명 사용 이벤트를 보내도록 했습니다.', '버전, 출력 형식, 페이지 수, 언어/타임존, 대략적인 지역 정보를 집계용으로 보냅니다.']],
@@ -2656,6 +2687,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver660', 'Usage timezone display', ['Usage logging now normalizes browser fixed-offset timezone names such as <code>Etc/GMT-9</code> into readable timezone values before sending.']],
         ['ver659', 'Paper template analytics', ['External Paper Auto Align now matches loaded paper against built-in numeric template fingerprints and sends only the matched company, score, and line metrics to usage logging.', 'Client error logging now reports sanitized error hashes without file names, local paths, CSV contents, or paper images.']],
         ['ver658', '统计 URL 更新', ['使用统计发送目标已替换为新公开部署的 Apps Script Web App URL。', '统计请求改为直接使用 fetch，避免阻塞输出完成流程。']],
         ['ver657', '输出次数统计', ['仅在输出成功后，向已连接的 Google Apps Script 发送匿名使用事件。', '事件包含版本、格式、页数、语言/时区和大致地区信息，用于汇总统计。']],
