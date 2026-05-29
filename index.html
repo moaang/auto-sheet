@@ -1912,7 +1912,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '662';
+    const APP_VERSION = '663';
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const PAPER_TEMPLATE_MATCH_MIN_SCORE = 0.75;
     const PAPER_TEMPLATE_FINGERPRINTS = [
@@ -2666,12 +2666,11 @@
 
     const updateLogRecentDocs = {
       en: [
-        ['ver662', 'Usage privacy cleanup', ['Usage logging no longer calls the IP geolocation API or sends IP, masked IP, IP hash, region, or city data.', 'Country aggregation now uses only a coarse locale/timezone guess when possible.']],
         ['ver661', 'Speaker suffix tags', ['Dialog speaker labels can now keep <code>(SE)</code>, <code>(M)</code>, or <code>(OFF)</code> suffixes in the speaker field.', 'Click a speaker label in the preview to choose a suffix; when one is already set, <code>x</code> clears it.']],
         ['ver660', 'Usage timezone display', ['Usage logging now normalizes browser fixed-offset timezone names such as <code>Etc/GMT-9</code> into readable timezone values before sending.']],
         ['ver659', 'Paper template analytics', ['External Paper Auto Align now matches loaded paper against built-in numeric template fingerprints and sends only the matched company, score, and line metrics to usage logging.', 'Client error logging now reports sanitized error hashes without file names, local paths, CSV contents, or paper images.']],
         ['ver658', 'Usage endpoint update', ['Usage logging now points to the newly deployed public Apps Script web app URL.', 'The logging request uses fetch directly so export completion is not blocked by the analytics request.']],
-        ['ver657', 'Export usage logging', ['Successful Output actions now send an anonymous usage event to the connected Google Apps Script endpoint.', 'The event includes version, format, page count, locale/timezone, and approximate region data for aggregate usage checks.']],
+        ['ver657', 'Export usage logging', ['Successful Output actions now send an anonymous usage event to the connected Google Apps Script endpoint.']],
         ['ver656', 'Paper settings group polish', ['The preview toolbar Paper settings shortcuts now sit inside a grey outline group.', 'Button widths were adjusted so the shortcut labels stay visible without truncation.']],
         ['ver655', 'Paper settings shortcut', ['When an external paper is loaded, Duration + mark and Cell label output now start OFF by default.', 'A compact Paper settings group appears in the preview toolbar while paper is loaded, with Position, Reset, and Clear actions.']],
         ['ver654', 'Feedback report guidance', ['The in-app feedback box now shows a short checklist of useful report details.']],
@@ -2690,12 +2689,11 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
-        ['ver662', '利用集計のプライバシー整理', ['利用集計で IP 位置情報 API を呼ばず、IP、マスク IP、IP ハッシュ、地域、市区町村を送信しないようにしました。', '国別集計は可能な場合のみ locale/timezone からの大まかな推定にしました。']],
         ['ver661', '話者サフィックス', ['台詞の話者欄に <code>(SE)</code>、<code>(M)</code>、<code>(OFF)</code> のサフィックスを保持できるようにしました。', 'プレビュー上の話者ラベルをクリックすると選択肢が開き、設定済みの場合は <code>x</code> で削除できます。']],
         ['ver660', 'Usage timezone display', ['Usage logging now normalizes browser fixed-offset timezone names such as <code>Etc/GMT-9</code> into readable timezone values before sending.']],
         ['ver659', 'Paper template analytics', ['External Paper Auto Align now matches loaded paper against built-in numeric template fingerprints and sends only the matched company, score, and line metrics to usage logging.', 'Client error logging now reports sanitized error hashes without file names, local paths, CSV contents, or paper images.']],
         ['ver658', '集計URL更新', ['利用集計の送信先を、新しく公開された Apps Script Web App URL に差し替えました。', '集計送信は fetch で直接行い、出力完了を妨げないようにしました。']],
-        ['ver657', '出力回数集計', ['出力が成功した時だけ、接続した Google Apps Script へ匿名の利用イベントを送信するようにしました。', 'バージョン、形式、ページ数、言語/タイムゾーン、おおよその地域情報を集計用に送ります。']],
+        ['ver657', '出力回数集計', ['出力が成功した時だけ、接続した Google Apps Script へ匿名の利用イベントを送信するようにしました。']],
         ['ver656', '用紙設定グループの調整', ['プレビューツールバーの用紙設定ショートカットを、灰色の枠でまとまって見えるようにしました。', 'ボタン幅を調整し、文字が省略されないようにしました。']],
         ['ver655', '用紙設定ショートカット', ['用紙読込時は「秒数 +マーク表示」と「Cellラベル出力」を初期OFFにしました。', '用紙読込中だけ、プレビューツールバーにコンパクトな「用紙設定」グループを表示し、位置編集・位置初期化・クリアを操作できます。']],
         ['ver654', '報告内容の案内', ['アプリ内報告欄に、報告時にあると助かる情報の短い案内を表示するようにしました。']],
@@ -2714,12 +2712,11 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
-        ['ver662', '사용 통계 개인정보 정리', ['사용 통계에서 IP 위치 API 호출을 중단하고 IP, masked IP, IP hash, 지역, 도시를 보내지 않게 했습니다.', '나라별 집계는 가능한 경우에만 locale/timezone 기반의 대략적인 추정값을 사용합니다.']],
         ['ver661', '화자 서픽스', ['대사 화자칸에 <code>(SE)</code>, <code>(M)</code>, <code>(OFF)</code> 서픽스를 유지할 수 있게 했습니다.', '프리뷰의 화자 라벨을 클릭하면 선택지가 열리고, 이미 지정된 경우 <code>x</code>로 삭제할 수 있습니다.']],
         ['ver660', 'Usage timezone display', ['Usage logging now normalizes browser fixed-offset timezone names such as <code>Etc/GMT-9</code> into readable timezone values before sending.']],
         ['ver659', 'Paper template analytics', ['External Paper Auto Align now matches loaded paper against built-in numeric template fingerprints and sends only the matched company, score, and line metrics to usage logging.', 'Client error logging now reports sanitized error hashes without file names, local paths, CSV contents, or paper images.']],
         ['ver658', '집계 URL 갱신', ['사용 집계 전송 대상을 새로 공개된 Apps Script Web App URL로 교체했습니다.', '집계 전송은 fetch로 직접 실행하며, 출력 완료 흐름을 막지 않도록 했습니다.']],
-        ['ver657', '출력 횟수 집계', ['출력이 성공했을 때만 연결된 Google Apps Script로 익명 사용 이벤트를 보내도록 했습니다.', '버전, 출력 형식, 페이지 수, 언어/타임존, 대략적인 지역 정보를 집계용으로 보냅니다.']],
+        ['ver657', '출력 횟수 집계', ['출력이 성공했을 때만 연결된 Google Apps Script로 익명 사용 이벤트를 보내도록 했습니다.']],
         ['ver656', '용지설정 묶음 표시 조정', ['프리뷰 툴바의 용지설정 단축 버튼을 회색 외곽선 그룹으로 묶어 보이게 했습니다.', '버튼 폭을 조정해 문자가 생략되지 않도록 했습니다.']],
         ['ver655', '용지 설정 단축 버튼', ['외부용지를 불러오면 초수 +마크 표시와 Cell 라벨 출력이 기본 OFF로 시작합니다.', '용지가 로드된 동안만 프리뷰 툴바에 작은 용지설정 그룹을 표시해 위치 편집, 위치 초기화, 용지 삭제를 바로 실행할 수 있습니다.']],
         ['ver654', '문의 작성 안내', ['앱 내 문의 입력창에 문의에 있으면 좋은 정보를 짧게 표시하도록 했습니다.']],
@@ -2738,12 +2735,11 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
-        ['ver662', '使用统计隐私整理', ['使用统计不再调用 IP 地理位置 API，也不发送 IP、masked IP、IP hash、地区或城市数据。', '国家统计仅在可判断时使用 locale/timezone 的粗略推测值。']],
         ['ver661', '说话人后缀', ['对白说话人栏现在可以保留 <code>(SE)</code>、<code>(M)</code>、<code>(OFF)</code> 后缀。', '在预览中点击说话人标签即可选择后缀；已设置时可用 <code>x</code> 清除。']],
         ['ver660', 'Usage timezone display', ['Usage logging now normalizes browser fixed-offset timezone names such as <code>Etc/GMT-9</code> into readable timezone values before sending.']],
         ['ver659', 'Paper template analytics', ['External Paper Auto Align now matches loaded paper against built-in numeric template fingerprints and sends only the matched company, score, and line metrics to usage logging.', 'Client error logging now reports sanitized error hashes without file names, local paths, CSV contents, or paper images.']],
         ['ver658', '统计 URL 更新', ['使用统计发送目标已替换为新公开部署的 Apps Script Web App URL。', '统计请求改为直接使用 fetch，避免阻塞输出完成流程。']],
-        ['ver657', '输出次数统计', ['仅在输出成功后，向已连接的 Google Apps Script 发送匿名使用事件。', '事件包含版本、格式、页数、语言/时区和大致地区信息，用于汇总统计。']],
+        ['ver657', '输出次数统计', ['仅在输出成功后，向已连接的 Google Apps Script 发送匿名使用事件。']],
         ['ver656', '纸张设置组样式调整', ['预览工具栏的纸张设置快捷按钮现在用灰色边框归为一组。', '已调整按钮宽度，避免快捷按钮文字被截断。']],
         ['ver655', '纸张设置快捷按钮', ['载入外部纸张时，秒数 + 标记和 Cell 标签输出默认关闭。', '纸张载入期间，预览工具栏会显示紧凑的纸张设置组，可直接执行位置编辑、重置和清除。']],
         ['ver654', '反馈填写提示', ['应用内反馈框会显示一条简短的填写提示。']],
