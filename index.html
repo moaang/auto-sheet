@@ -1912,9 +1912,8 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '661';
+    const APP_VERSION = '662';
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
-    const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
     const PAPER_TEMPLATE_MATCH_MIN_SCORE = 0.75;
     const PAPER_TEMPLATE_FINGERPRINTS = [
       { company:'8bit', aspect:0.7076, bodyTop:0.2540, bodyBottom:0.9343, rowH:0.0093, xCount:48, yCount:81, x:[0.0342,0.0496,0.0645,0.0799,0.0947,0.1101,0.1249,0.1403,0.1666,0.1957,0.2185,0.2419,0.2653,0.2886,0.3115,0.3349,0.3582,0.3816,0.3913,0.4073,0.4335,0.4518,0.4598,0.4860,0.5128,0.5282,0.5431,0.5585,0.5733,0.5881,0.6035,0.6189,0.6452,0.6748,0.6971,0.7205,0.7433,0.7564,0.7673,0.7906,0.8140,0.8369,0.8602,0.8865,0.9127,0.9310,0.9390,0.9658] },
@@ -2378,18 +2377,7 @@
 
     function getUsageGeo() {
       if (usageGeoPromise) return usageGeoPromise;
-      usageGeoPromise = fetch(USAGE_GEO_ENDPOINT, { cache:'no-store' })
-        .then(function(response){ return response && response.ok ? response.json() : {}; })
-        .then(function(data){
-          return {
-            ip:data.ip || '',
-            country:data.country_name || data.country || '',
-            region:data.region || '',
-            city:data.city || '',
-            geoTimezone:data.timezone || ''
-          };
-        })
-        .catch(function(){ return {}; });
+      usageGeoPromise = Promise.resolve({});
       return usageGeoPromise;
     }
 
@@ -2419,16 +2407,32 @@
       return 'UTC' + sign + String(abs).padStart(2, '0') + ':00';
     }
 
+    function inferUsageCountry(locale, timezone) {
+      const localeText = String(locale || '').toLowerCase();
+      const timezoneText = String(timezone || '').toLowerCase();
+      if (localeText.indexOf('-jp') >= 0 || localeText.indexOf('_jp') >= 0 || timezoneText === 'asia/tokyo') return 'Japan';
+      if (localeText.indexOf('-kr') >= 0 || localeText.indexOf('_kr') >= 0 || timezoneText === 'asia/seoul') return 'Korea';
+      if (localeText.indexOf('-cn') >= 0 || localeText.indexOf('_cn') >= 0 || timezoneText === 'asia/shanghai') return 'China';
+      if (localeText.indexOf('-tw') >= 0 || localeText.indexOf('_tw') >= 0 || timezoneText === 'asia/taipei') return 'Taiwan';
+      if (localeText.indexOf('-hk') >= 0 || localeText.indexOf('_hk') >= 0 || timezoneText === 'asia/hong_kong') return 'Hong Kong';
+      if (localeText.indexOf('-us') >= 0 || localeText.indexOf('_us') >= 0) return 'United States';
+      return '';
+    }
+
     async function sendUsageEvent(eventName, extra) {
       if (!USAGE_ENDPOINT) return;
       try {
         const geo = await getUsageGeo();
-        const timezone = normalizeUsageTimezone(getBrowserUsageTimezone(), geo.geoTimezone, geo.country);
+        const locale = navigator.language || '';
+        const timezone = normalizeUsageTimezone(getBrowserUsageTimezone(), '', '');
         const payload = Object.assign({
           event:eventName || '',
           version:APP_VERSION,
-          locale:navigator.language || '',
+          locale:locale,
           timezone:timezone,
+          country:inferUsageCountry(locale, timezone),
+          region:'',
+          city:'',
           userAgent:navigator.userAgent || ''
         }, geo, extra || {});
         const body = JSON.stringify(payload);
@@ -2662,6 +2666,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver662', 'Usage privacy cleanup', ['Usage logging no longer calls the IP geolocation API or sends IP, masked IP, IP hash, region, or city data.', 'Country aggregation now uses only a coarse locale/timezone guess when possible.']],
         ['ver661', 'Speaker suffix tags', ['Dialog speaker labels can now keep <code>(SE)</code>, <code>(M)</code>, or <code>(OFF)</code> suffixes in the speaker field.', 'Click a speaker label in the preview to choose a suffix; when one is already set, <code>x</code> clears it.']],
         ['ver660', 'Usage timezone display', ['Usage logging now normalizes browser fixed-offset timezone names such as <code>Etc/GMT-9</code> into readable timezone values before sending.']],
         ['ver659', 'Paper template analytics', ['External Paper Auto Align now matches loaded paper against built-in numeric template fingerprints and sends only the matched company, score, and line metrics to usage logging.', 'Client error logging now reports sanitized error hashes without file names, local paths, CSV contents, or paper images.']],
@@ -2685,6 +2690,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver662', '利用集計のプライバシー整理', ['利用集計で IP 位置情報 API を呼ばず、IP、マスク IP、IP ハッシュ、地域、市区町村を送信しないようにしました。', '国別集計は可能な場合のみ locale/timezone からの大まかな推定にしました。']],
         ['ver661', '話者サフィックス', ['台詞の話者欄に <code>(SE)</code>、<code>(M)</code>、<code>(OFF)</code> のサフィックスを保持できるようにしました。', 'プレビュー上の話者ラベルをクリックすると選択肢が開き、設定済みの場合は <code>x</code> で削除できます。']],
         ['ver660', 'Usage timezone display', ['Usage logging now normalizes browser fixed-offset timezone names such as <code>Etc/GMT-9</code> into readable timezone values before sending.']],
         ['ver659', 'Paper template analytics', ['External Paper Auto Align now matches loaded paper against built-in numeric template fingerprints and sends only the matched company, score, and line metrics to usage logging.', 'Client error logging now reports sanitized error hashes without file names, local paths, CSV contents, or paper images.']],
@@ -2708,6 +2714,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver662', '사용 통계 개인정보 정리', ['사용 통계에서 IP 위치 API 호출을 중단하고 IP, masked IP, IP hash, 지역, 도시를 보내지 않게 했습니다.', '나라별 집계는 가능한 경우에만 locale/timezone 기반의 대략적인 추정값을 사용합니다.']],
         ['ver661', '화자 서픽스', ['대사 화자칸에 <code>(SE)</code>, <code>(M)</code>, <code>(OFF)</code> 서픽스를 유지할 수 있게 했습니다.', '프리뷰의 화자 라벨을 클릭하면 선택지가 열리고, 이미 지정된 경우 <code>x</code>로 삭제할 수 있습니다.']],
         ['ver660', 'Usage timezone display', ['Usage logging now normalizes browser fixed-offset timezone names such as <code>Etc/GMT-9</code> into readable timezone values before sending.']],
         ['ver659', 'Paper template analytics', ['External Paper Auto Align now matches loaded paper against built-in numeric template fingerprints and sends only the matched company, score, and line metrics to usage logging.', 'Client error logging now reports sanitized error hashes without file names, local paths, CSV contents, or paper images.']],
@@ -2731,6 +2738,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver662', '使用统计隐私整理', ['使用统计不再调用 IP 地理位置 API，也不发送 IP、masked IP、IP hash、地区或城市数据。', '国家统计仅在可判断时使用 locale/timezone 的粗略推测值。']],
         ['ver661', '说话人后缀', ['对白说话人栏现在可以保留 <code>(SE)</code>、<code>(M)</code>、<code>(OFF)</code> 后缀。', '在预览中点击说话人标签即可选择后缀；已设置时可用 <code>x</code> 清除。']],
         ['ver660', 'Usage timezone display', ['Usage logging now normalizes browser fixed-offset timezone names such as <code>Etc/GMT-9</code> into readable timezone values before sending.']],
         ['ver659', 'Paper template analytics', ['External Paper Auto Align now matches loaded paper against built-in numeric template fingerprints and sends only the matched company, score, and line metrics to usage logging.', 'Client error logging now reports sanitized error hashes without file names, local paths, CSV contents, or paper images.']],
