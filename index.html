@@ -1091,6 +1091,46 @@
       box-shadow: 0 0 0 3px rgba(207,42,42,.18), 0 8px 22px rgba(0,0,0,.22);
     }
 
+    .speaker-suffix-menu {
+      position: fixed;
+      z-index: 10002;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px;
+      border: 1px solid var(--soft);
+      border-radius: 8px;
+      background: rgba(255,255,255,.98);
+      box-shadow: 0 8px 22px rgba(0,0,0,.18);
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .speaker-suffix-menu button {
+      min-width: 34px;
+      height: 24px;
+      padding: 0 8px;
+      border: 1px solid var(--soft);
+      border-radius: 6px;
+      background: #fff;
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .speaker-suffix-menu button.active {
+      border-color: var(--red);
+      color: var(--red);
+    }
+
+    .speaker-suffix-menu button.clear {
+      min-width: 26px;
+      padding: 0 7px;
+    }
+
     .duration-stepper-overlay {
       position: fixed;
       z-index: 10001;
@@ -1872,7 +1912,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '660';
+    const APP_VERSION = '661';
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
     const PAPER_TEMPLATE_MATCH_MIN_SCORE = 0.75;
@@ -2115,6 +2155,7 @@
       cellLabelDrag: null,
       positionMode: false,
       inlineTextEditor: null,
+      speakerSuffixMenu: null,
       durationStepperOverlay: null,
       layoutDrag: null,
       layoutDragPreviewGroup: null,
@@ -2621,6 +2662,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver661', 'Speaker suffix tags', ['Dialog speaker labels can now keep <code>(SE)</code>, <code>(M)</code>, or <code>(OFF)</code> suffixes in the speaker field.', 'Click a speaker label in the preview to choose a suffix; when one is already set, <code>x</code> clears it.']],
         ['ver660', 'Usage timezone display', ['Usage logging now normalizes browser fixed-offset timezone names such as <code>Etc/GMT-9</code> into readable timezone values before sending.']],
         ['ver659', 'Paper template analytics', ['External Paper Auto Align now matches loaded paper against built-in numeric template fingerprints and sends only the matched company, score, and line metrics to usage logging.', 'Client error logging now reports sanitized error hashes without file names, local paths, CSV contents, or paper images.']],
         ['ver658', 'Usage endpoint update', ['Usage logging now points to the newly deployed public Apps Script web app URL.', 'The logging request uses fetch directly so export completion is not blocked by the analytics request.']],
@@ -2643,6 +2685,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver661', '話者サフィックス', ['台詞の話者欄に <code>(SE)</code>、<code>(M)</code>、<code>(OFF)</code> のサフィックスを保持できるようにしました。', 'プレビュー上の話者ラベルをクリックすると選択肢が開き、設定済みの場合は <code>x</code> で削除できます。']],
         ['ver660', 'Usage timezone display', ['Usage logging now normalizes browser fixed-offset timezone names such as <code>Etc/GMT-9</code> into readable timezone values before sending.']],
         ['ver659', 'Paper template analytics', ['External Paper Auto Align now matches loaded paper against built-in numeric template fingerprints and sends only the matched company, score, and line metrics to usage logging.', 'Client error logging now reports sanitized error hashes without file names, local paths, CSV contents, or paper images.']],
         ['ver658', '集計URL更新', ['利用集計の送信先を、新しく公開された Apps Script Web App URL に差し替えました。', '集計送信は fetch で直接行い、出力完了を妨げないようにしました。']],
@@ -2665,6 +2708,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver661', '화자 서픽스', ['대사 화자칸에 <code>(SE)</code>, <code>(M)</code>, <code>(OFF)</code> 서픽스를 유지할 수 있게 했습니다.', '프리뷰의 화자 라벨을 클릭하면 선택지가 열리고, 이미 지정된 경우 <code>x</code>로 삭제할 수 있습니다.']],
         ['ver660', 'Usage timezone display', ['Usage logging now normalizes browser fixed-offset timezone names such as <code>Etc/GMT-9</code> into readable timezone values before sending.']],
         ['ver659', 'Paper template analytics', ['External Paper Auto Align now matches loaded paper against built-in numeric template fingerprints and sends only the matched company, score, and line metrics to usage logging.', 'Client error logging now reports sanitized error hashes without file names, local paths, CSV contents, or paper images.']],
         ['ver658', '집계 URL 갱신', ['사용 집계 전송 대상을 새로 공개된 Apps Script Web App URL로 교체했습니다.', '집계 전송은 fetch로 직접 실행하며, 출력 완료 흐름을 막지 않도록 했습니다.']],
@@ -2687,6 +2731,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver661', '说话人后缀', ['对白说话人栏现在可以保留 <code>(SE)</code>、<code>(M)</code>、<code>(OFF)</code> 后缀。', '在预览中点击说话人标签即可选择后缀；已设置时可用 <code>x</code> 清除。']],
         ['ver660', 'Usage timezone display', ['Usage logging now normalizes browser fixed-offset timezone names such as <code>Etc/GMT-9</code> into readable timezone values before sending.']],
         ['ver659', 'Paper template analytics', ['External Paper Auto Align now matches loaded paper against built-in numeric template fingerprints and sends only the matched company, score, and line metrics to usage logging.', 'Client error logging now reports sanitized error hashes without file names, local paths, CSV contents, or paper images.']],
         ['ver658', '统计 URL 更新', ['使用统计发送目标已替换为新公开部署的 Apps Script Web App URL。', '统计请求改为直接使用 fetch，避免阻塞输出完成流程。']],
@@ -3681,6 +3726,62 @@
       else if (cleanLabel) lineText = frameToTimecode(fromFrame) + ' | ' + frameToTimecode(toFrame) + ' | ' + cleanLabel + ' | ' + cleanText;
       else lineText = frameToTimecode(fromFrame) + ' | ' + frameToTimecode(toFrame) + ' | ' + cleanText;
       return appendManualSourceSuffix(lineText, sourceToken);
+    }
+
+    const DIALOG_SPEAKER_SUFFIX_VALUES = ['SE', 'M', 'OFF'];
+    const DIALOG_SPEAKER_SUFFIX_RE = /\s*\((SE|M|OFF)\)\s*$/i;
+
+    function normalizeDialogSpeakerSuffix(value) {
+      const token = String(value || '').replace(/[()]/g, '').trim().toUpperCase();
+      return DIALOG_SPEAKER_SUFFIX_VALUES.indexOf(token) !== -1 ? token : '';
+    }
+
+    function splitDialogSpeakerSuffix(labelValue) {
+      const raw = String(labelValue || '').trim();
+      const match = raw.match(DIALOG_SPEAKER_SUFFIX_RE);
+      if (!match) return { base:raw, suffix:'' };
+      return {
+        base:raw.slice(0, match.index).trim(),
+        suffix:normalizeDialogSpeakerSuffix(match[1])
+      };
+    }
+
+    function joinDialogSpeakerSuffix(baseLabel, suffixValue) {
+      const base = String(baseLabel || '').trim();
+      const suffix = normalizeDialogSpeakerSuffix(suffixValue);
+      return suffix ? (base ? base + ' (' + suffix + ')' : '(' + suffix + ')') : base;
+    }
+
+    function getManualBlockParsedLine(blockType, lineIndex) {
+      const textarea = document.getElementById(blockType === 'camera' ? 'cameraManual' : 'dialogManual');
+      if (!textarea) return null;
+      const lines = String(textarea.value || '').replace(/\r/g, '').split('\n');
+      if (lineIndex < 0 || lineIndex >= lines.length) return null;
+      return parseManualBlockLine(lines[lineIndex], lineIndex);
+    }
+
+    function getDialogSpeakerBaseLabel(lineIndex, fallbackLabel) {
+      const parsed = getManualBlockParsedLine('dialog', lineIndex);
+      return splitDialogSpeakerSuffix(parsed ? parsed.label : fallbackLabel).base;
+    }
+
+    function getDialogSpeakerSuffix(lineIndex, fallbackLabel) {
+      const parsed = getManualBlockParsedLine('dialog', lineIndex);
+      return splitDialogSpeakerSuffix(parsed ? parsed.label : fallbackLabel).suffix;
+    }
+
+    function updateDialogSpeakerBaseLabel(lineIndex, nextBaseLabel) {
+      const parsed = getManualBlockParsedLine('dialog', lineIndex);
+      if (!parsed) return;
+      const current = splitDialogSpeakerSuffix(parsed.label);
+      updateManualBlockField('dialog', lineIndex, 'label', joinDialogSpeakerSuffix(nextBaseLabel, current.suffix));
+    }
+
+    function updateDialogSpeakerSuffix(lineIndex, nextSuffix) {
+      const parsed = getManualBlockParsedLine('dialog', lineIndex);
+      if (!parsed) return;
+      const current = splitDialogSpeakerSuffix(parsed.label);
+      updateManualBlockField('dialog', lineIndex, 'label', joinDialogSpeakerSuffix(current.base, nextSuffix));
     }
 
     function updateManualBlockLine(blockType, lineIndex, nextFrom, nextTo, options) {
@@ -7760,6 +7861,109 @@
       };
     }
 
+    function positionSpeakerSuffixMenu(anchorNode, menu) {
+      if (!anchorNode || !menu) return;
+      let anchorRect = null;
+      try { anchorRect = anchorNode.getBoundingClientRect(); } catch (err) { anchorRect = null; }
+      anchorRect = anchorRect || { left:0, top:0, right:120, bottom:32, width:120, height:32 };
+      const width = menu.offsetWidth || 150;
+      const height = menu.offsetHeight || 32;
+      let left = anchorRect.left + anchorRect.width / 2 - width / 2;
+      let top = anchorRect.top - height - 6;
+      left = clampNumber(left, 6, Math.max(6, window.innerWidth - width - 6));
+      if (top < 6) top = Math.min(window.innerHeight - height - 6, anchorRect.bottom + 6);
+      top = clampNumber(top, 6, Math.max(6, window.innerHeight - height - 6));
+      menu.style.left = Math.round(left) + 'px';
+      menu.style.top = Math.round(top) + 'px';
+    }
+
+    function closeSpeakerSuffixMenu() {
+      const active = state.speakerSuffixMenu;
+      if (!active) return;
+      state.speakerSuffixMenu = null;
+      if (active.menu && active.menu.parentNode) active.menu.parentNode.removeChild(active.menu);
+      document.removeEventListener('pointerdown', handleSpeakerSuffixMenuOutsidePointerDown, true);
+      document.removeEventListener('keydown', handleSpeakerSuffixMenuKeydown, true);
+      window.removeEventListener('resize', handleSpeakerSuffixMenuViewportChange, true);
+      window.removeEventListener('scroll', handleSpeakerSuffixMenuViewportChange, true);
+    }
+
+    function handleSpeakerSuffixMenuOutsidePointerDown(event) {
+      const active = state.speakerSuffixMenu;
+      if (!active) return;
+      if (active.menu && active.menu.contains(event.target)) return;
+      closeSpeakerSuffixMenu();
+    }
+
+    function handleSpeakerSuffixMenuKeydown(event) {
+      if (event.key === 'Escape') closeSpeakerSuffixMenu();
+    }
+
+    function handleSpeakerSuffixMenuViewportChange() {
+      closeSpeakerSuffixMenu();
+    }
+
+    function openSpeakerSuffixMenu(anchorNode, suffixConfig, event) {
+      if (!anchorNode || !suffixConfig || state.memoMode || state.positionMode) return;
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+      }
+      if (state.inlineTextEditor) closeInlineTextEditor({ render:false });
+      closeSpeakerSuffixMenu();
+      const currentSuffix = normalizeDialogSpeakerSuffix(typeof suffixConfig.get === 'function' ? suffixConfig.get() : '');
+      const menu = document.createElement('div');
+      menu.className = 'speaker-suffix-menu';
+      menu.setAttribute('role', 'menu');
+      menu.setAttribute('aria-label', 'Speaker suffix');
+      const values = DIALOG_SPEAKER_SUFFIX_VALUES.slice();
+      if (currentSuffix) values.push('');
+      values.forEach(function(value){
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = value ? '(' + value + ')' : 'x';
+        button.className = value ? '' : 'clear';
+        button.setAttribute('role', 'menuitem');
+        if (value && value === currentSuffix) button.classList.add('active');
+        button.addEventListener('pointerdown', function(btnEvent){
+          btnEvent.preventDefault();
+          btnEvent.stopPropagation();
+        });
+        button.addEventListener('click', function(btnEvent){
+          btnEvent.preventDefault();
+          btnEvent.stopPropagation();
+          if (typeof suffixConfig.set === 'function') suffixConfig.set(value);
+          closeSpeakerSuffixMenu();
+          render();
+        });
+        menu.appendChild(button);
+      });
+      menu.addEventListener('pointerdown', function(menuEvent){ menuEvent.stopPropagation(); });
+      menu.addEventListener('click', function(menuEvent){ menuEvent.stopPropagation(); });
+      document.body.appendChild(menu);
+      state.speakerSuffixMenu = { menu:menu, anchorNode:anchorNode };
+      positionSpeakerSuffixMenu(anchorNode, menu);
+      setTimeout(function(){
+        document.addEventListener('pointerdown', handleSpeakerSuffixMenuOutsidePointerDown, true);
+        document.addEventListener('keydown', handleSpeakerSuffixMenuKeydown, true);
+        window.addEventListener('resize', handleSpeakerSuffixMenuViewportChange, true);
+        window.addEventListener('scroll', handleSpeakerSuffixMenuViewportChange, true);
+      }, 0);
+    }
+
+    function attachSpeakerSuffixMenuTarget(node, editConfig) {
+      if (!node || !editConfig || !editConfig.speakerSuffix) return node;
+      node.style.cursor = 'pointer';
+      node.setAttribute('data-inline-editable', 'true');
+      node.setAttribute('title', 'Click to set speaker suffix');
+      node.addEventListener('click', function(event){
+        if (state.suppressNextClick || event.shiftKey) return;
+        openSpeakerSuffixMenu(node, editConfig.speakerSuffix, event);
+      });
+      return node;
+    }
+
     function openInlineTextEditor(node, editConfig, event) {
       if (!node || !editConfig || state.memoMode || state.positionMode) return;
       if (event) {
@@ -7819,12 +8023,17 @@
 
     function attachEditableText(node, editConfig) {
       if (!node || !editConfig) return node;
-      node.style.cursor = 'text';
+      const hasSpeakerSuffixMenu = !!editConfig.speakerSuffix;
+      node.style.cursor = hasSpeakerSuffixMenu ? 'pointer' : 'text';
       node.setAttribute('data-inline-editable', 'true');
-      node.setAttribute('title', 'Click to edit');
+      node.setAttribute('title', hasSpeakerSuffixMenu ? 'Click to set speaker suffix / Shift-click to edit' : 'Click to edit');
       node.addEventListener('click', function(event){
         if (state.suppressNextClick) return;
-        if (event.shiftKey) return;
+        if (hasSpeakerSuffixMenu && !event.shiftKey) {
+          openSpeakerSuffixMenu(node, editConfig.speakerSuffix, event);
+          return;
+        }
+        if (event.shiftKey && !hasSpeakerSuffixMenu) return;
         openInlineTextEditor(node, editConfig, event);
       });
       return node;
@@ -10208,19 +10417,42 @@
 
     function drawTimelineBoxLabel(areaX, areaW, rowTop, rowH, lane, laneCount, labelValue, editConfig) {
       const label = String(labelValue || '').trim();
-      if (!label) return;
+      if (!label) return null;
       const guideX = getDistributedLaneX(areaX, areaW, lane || 0, laneCount, 12);
       const boxH = Math.max(16, Math.min(24, rowH - 4));
       const compactTextW = label.length * 7;
       const boxW = Math.max(22, Math.min(areaW - 8, 16 + compactTextW));
       const x = Math.max(areaX + 3, Math.min(areaX + areaW - boxW - 3, guideX - boxW / 2));
       const y = rowTop + Math.max(2, (rowH - boxH) / 2);
-      rect(x, y, boxW, boxH, 1.4, 'white', RED);
+      const boxNode = el('rect', { x:x, y:y, width:boxW, height:boxH, fill:'white', stroke:RED, 'stroke-width':1.4 });
+      attachSpeakerSuffixMenuTarget(boxNode, editConfig);
+      appendSvgNode(boxNode);
       drawCompactText(x + boxW / 2, y + boxH / 2 + 0.5, label, Math.min(14, boxH - 5), 'middle', '800', RED, editConfig);
+      return { x:x, y:y, w:boxW, h:boxH };
     }
 
     function drawTimelineFirstFrameLabel(areaX, areaW, rowTop, rowH, lane, laneCount, labelValue, editConfig) {
-      drawTimelineBoxLabel(areaX, areaW, rowTop, rowH, lane, laneCount, labelValue, editConfig);
+      const layout = drawTimelineBoxLabel(areaX, areaW, rowTop, rowH, lane, laneCount, labelValue, editConfig);
+      if (!layout || !editConfig || !editConfig.speakerSuffix) return;
+      const suffix = normalizeDialogSpeakerSuffix(typeof editConfig.speakerSuffix.get === 'function' ? editConfig.speakerSuffix.get() : '');
+      if (!suffix) return;
+      const suffixText = '(' + suffix + ')';
+      const suffixW = Math.max(26, Math.min(areaW - 8, suffixText.length * 6 + 10));
+      const suffixH = 13;
+      const x = Math.max(areaX + 3, Math.min(areaX + areaW - suffixW - 3, layout.x + layout.w / 2 - suffixW / 2));
+      const y = Math.max(rowTop - suffixH + 1, layout.y - suffixH - 1);
+      const suffixNode = el('text', {
+        x:x + suffixW / 2,
+        y:y + suffixH / 2 + 0.5,
+        fill:RED,
+        'font-size':11,
+        'font-family':'Arial, Helvetica, sans-serif',
+        'text-anchor':'middle',
+        'font-weight':'900',
+        'dominant-baseline':'middle'
+      }, suffixText);
+      attachEditableText(suffixNode, editConfig);
+      appendSvgNode(suffixNode);
     }
 
     function drawCameraSecondFrameText(block, areaX, areaW, lane, laneCount, seg, editConfig) {
@@ -10348,14 +10580,22 @@
         if (showsSegmentStart) line(x, rowTop, x + w, rowTop, RED, 2.6);
         if (showsSegmentEnd) line(x, rowTop + height, x + w, rowTop + height, RED, 2.6);
         line(guideX, rowTop, guideX, rowTop + height, RED, 1.1);
-        if (showsSegmentStart) {
-          const visibleDialogLabel = isBlankDialogFirstFrameLabel(seg.label) ? '' : seg.label;
-          if (visibleDialogLabel) drawTimelineFirstFrameLabel(x, w, rowTop, getOutputRowH(block, 'dialog'), seg.lane || 0, dialogLaneCount, visibleDialogLabel, { get:function(){ return seg.label || ''; }, set:function(v){ updateManualBlockField('dialog', seg.id, 'label', v); } });
-        }
         const chars = getTimelineCharSlice(seg.text, seg.from, seg.to, from, to, getOutputRowH(block, 'dialog'));
         drawDialogTextSlice(x, w, rowTop, seg.lane || 0, dialogLaneCount, chars, { get:function(){ return seg.text || ''; }, set:function(v){ updateManualBlockField('dialog', seg.id, 'text', v); } });
         if (showsSegmentStart) addTimelineEdgeHandle(block, rowTop, 'dialog', seg, 'from', x, w);
         if (showsSegmentEnd) addTimelineEdgeHandle(block, rowTop + height, 'dialog', seg, 'to', x, w);
+        if (showsSegmentStart) {
+          const speakerInfo = splitDialogSpeakerSuffix(seg.label);
+          const visibleDialogLabel = isBlankDialogFirstFrameLabel(speakerInfo.base) ? '' : speakerInfo.base;
+          if (visibleDialogLabel) drawTimelineFirstFrameLabel(x, w, rowTop, getOutputRowH(block, 'dialog'), seg.lane || 0, dialogLaneCount, visibleDialogLabel, {
+            get:function(){ return getDialogSpeakerBaseLabel(seg.id, seg.label); },
+            set:function(v){ updateDialogSpeakerBaseLabel(seg.id, v); },
+            speakerSuffix:{
+              get:function(){ return getDialogSpeakerSuffix(seg.id, seg.label); },
+              set:function(v){ updateDialogSpeakerSuffix(seg.id, v); }
+            }
+          });
+        }
       });
 
       cameraSegs.forEach(function(seg){
@@ -13987,7 +14227,7 @@
       const tag = node.tagName ? node.tagName.toLowerCase() : '';
       if (tag === 'input' || tag === 'textarea' || tag === 'select' || tag === 'option') return true;
       if (node.isContentEditable) return true;
-      return !!(node.closest && node.closest('input, textarea, select, option, [contenteditable="true"], .inline-text-editor'));
+      return !!(node.closest && node.closest('input, textarea, select, option, [contenteditable="true"], .inline-text-editor, .speaker-suffix-menu'));
     }
 
     function clearMemoPointerState() {
@@ -14136,7 +14376,7 @@
       if (!node) return false;
       if (node.closest && node.closest('button, input, textarea, select, option, a')) return true;
       if (node.getAttribute && node.getAttribute('data-inline-editable') === 'true') return true;
-      if (node.closest && node.closest('.inline-text-editor')) return true;
+      if (node.closest && node.closest('.inline-text-editor, .speaker-suffix-menu')) return true;
       if (node.classList && node.classList.contains('timeline-edge-handle')) return true;
       if (node.classList && node.classList.contains('position-edit-handle')) return true;
       if (node.classList && node.classList.contains('position-edit-box')) return true;
