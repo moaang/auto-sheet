@@ -258,6 +258,42 @@
       border-color: var(--text);
       color: #fff;
     }
+    .feedback-card textarea {
+      min-height: 76px;
+      font-family: inherit;
+      line-height: 1.45;
+    }
+    .feedback-hint {
+      margin-top: 6px;
+      font-size: 11px;
+      line-height: 1.45;
+    }
+    .feedback-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .feedback-actions .status {
+      flex: 1 1 auto;
+      min-width: 0;
+      line-height: 1.35;
+    }
+    .feedback-form-link {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      text-decoration: none;
+    }
+    .feedback-form-link:hover { text-decoration: underline; }
+    .feedback-submit-frame {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      border: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
     .subtitle, .hint, .status {
       color: var(--muted);
       font-size: 12px;
@@ -806,6 +842,47 @@
       max-width: 216px;
       min-width: 0;
     }
+    .paper-toolbar-group {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      width: 276px;
+      min-width: 276px;
+      max-width: 276px;
+      height: 36px;
+      padding: 2px 5px;
+      border: 1px solid var(--soft);
+      border-radius: 10px;
+      background: rgba(255,255,255,.82);
+      box-sizing: border-box;
+      flex: 0 1 auto;
+    }
+    .paper-toolbar-group.hidden { display: none; }
+    .paper-toolbar-title {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 900;
+      line-height: 1;
+      white-space: nowrap;
+      flex: 0 0 auto;
+    }
+    .paper-toolbar-btn {
+      height: 30px;
+      min-width: 0;
+      padding: 0 7px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 900;
+      flex: 0 0 auto;
+    }
+    .paper-toolbar-btn.active {
+      background: #1f6feb;
+      border-color: #1f6feb;
+      color: white;
+      box-shadow: 0 0 0 2px rgba(207,42,42,.95), 0 0 16px rgba(207,42,42,.45);
+      outline: 1px solid rgba(207,42,42,.75);
+      outline-offset: 2px;
+    }
     .toolbar-btn, .export-select {
       height: 36px;
       border: 1px solid var(--soft);
@@ -824,6 +901,19 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
+    .toolbar-btn.paper-toolbar-btn {
+      height: 28px;
+      padding: 0 6px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 900;
+      flex: 0 0 auto;
+      overflow: visible;
+      text-overflow: clip;
+    }
+    #paperToolbarPositionBtn { width: 62px; }
+    #paperToolbarResetBtn { width: 72px; }
+    #paperToolbarClearBtn { width: 46px; }
     .export-select {
       width: 100%;
       min-width: 0;
@@ -1460,6 +1550,20 @@
         </details>
       </div>
 
+      <div class="card feedback-card">
+        <div class="section-title-row">
+          <h3 data-ui-text="feedbackHeading">Feedback</h3>
+          <a id="feedbackFormLink" class="feedback-form-link" href="https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header" target="_blank" rel="noopener noreferrer" data-ui-text="feedbackFormLink">Form</a>
+        </div>
+        <textarea id="feedbackMessage" class="feedback-message" rows="3"></textarea>
+        <div id="feedbackHint" class="feedback-hint hint"></div>
+        <div class="feedback-actions">
+          <button id="feedbackSendBtn" class="section-mini-btn" type="button" data-ui-text="feedbackSendBtn">Send</button>
+          <span id="feedbackStatus" class="status" aria-live="polite"></span>
+        </div>
+        <iframe id="feedbackSubmitFrame" name="feedbackSubmitFrame" class="feedback-submit-frame" title="Feedback submit target"></iframe>
+      </div>
+
 
 
       <div class="card header-input-card" aria-hidden="true">
@@ -1670,6 +1774,12 @@
           <div id="previewMeta" class="preview-meta"></div>
         </div>
         <div class="toolbar-actions">
+          <div id="paperToolbarGroup" class="paper-toolbar-group hidden" aria-label="Paper settings">
+            <span id="paperToolbarTitle" class="paper-toolbar-title">用紙設定</span>
+            <button id="paperToolbarPositionBtn" class="toolbar-btn paper-toolbar-btn" type="button">位置編集</button>
+            <button id="paperToolbarResetBtn" class="toolbar-btn paper-toolbar-btn" type="button">位置初期化</button>
+            <button id="paperToolbarClearBtn" class="toolbar-btn paper-toolbar-btn" type="button">クリア</button>
+          </div>
           <div class="page-nav">
             <button id="prevPageBtn" class="toolbar-btn" type="button" aria-label="Previous page">←</button>
             <div id="pageIndicator" class="page-indicator">1 / 1</div>
@@ -1759,6 +1869,9 @@
     const DEFAULT_DIALOG_SAMPLE_LINE = '0+01 | 1+00 | SPEAKER | SAMPLE';
     const DEFAULT_CAMERA_SAMPLE_LINE = '0+01 | 1+00 | A | SAMPLE | B';
     const MAX_CELL_COLUMN_PLACEMENT_COUNT = 32;
+    const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
+    const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
+    const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
 
     const svg = document.getElementById('sheetSvg');
     const appTitleEl = document.getElementById('appTitle');
@@ -1813,11 +1926,21 @@
     const currentSettingsRefreshBtn = document.getElementById('currentSettingsRefreshBtn');
     const currentSettingsFolderSelectEl = document.getElementById('currentSettingsFolderSelect');
     const currentSettingsInputEl = document.getElementById('currentSettingsInput');
+    const feedbackMessageEl = document.getElementById('feedbackMessage');
+    const feedbackHintEl = document.getElementById('feedbackHint');
+    const feedbackSendBtn = document.getElementById('feedbackSendBtn');
+    const feedbackStatusEl = document.getElementById('feedbackStatus');
+    const feedbackFormLinkEl = document.getElementById('feedbackFormLink');
     const previewWrapEl = document.querySelector('.preview-wrap');
     const paperImageInputEl = document.getElementById('paperImageInput');
     const paperImageStatusEl = document.getElementById('paperImageStatus');
     const paperImagePixelInfoEl = document.getElementById('paperImagePixelInfo');
     const clearPaperImageBtn = document.getElementById('clearPaperImageBtn');
+    const paperToolbarGroupEl = document.getElementById('paperToolbarGroup');
+    const paperToolbarTitleEl = document.getElementById('paperToolbarTitle');
+    const paperToolbarPositionBtn = document.getElementById('paperToolbarPositionBtn');
+    const paperToolbarResetBtn = document.getElementById('paperToolbarResetBtn');
+    const paperToolbarClearBtn = document.getElementById('paperToolbarClearBtn');
     const paperUndoBtn = document.getElementById('paperUndoBtn');
     const paperRedoBtn = document.getElementById('paperRedoBtn');
     const autoAlignPaperBtn = document.getElementById('autoAlignPaperBtn');
@@ -2085,7 +2208,7 @@
         textCommandsLabel:'Text Commands', csvFileLabel:'CSV File', csvCommandEditLabel:'Editable Commands from CSV',
         dialogBlocksTitle:'Dialog Area', dialogFormatLabel:'Format: 0+01 | 1+00 | SPEAKER | SAMPLE', cameraBlocksTitle:'Camera Area', cameraFormatLabel:'Format: 0+01 | 1+00 | TERM | SAMPLE',
         sheetPreviewTitle:'Sheet Preview', chooseExportDirBtn:'Folder', downloadAllBtn:'Output', memoModeBtn:'Memo Mode', memoUndoBtn:'Undo', memoRedoBtn:'Redo', memoPenLabel:'Pen', memoEraserLabel:'Eraser', memoEraserButton:'Eraser',
-        createdByLabel:'Created by', settingsExportBtn:'Export', settingsFileBtn:'Load', settingsImportBtn:'Path', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'Settings JSON', settingsSelectEmpty:'Select settings', settingsSelectNoSettings:'No settings JSON', textMemoApplyBtn:'Apply', clearSheetDataBtn:'Reset All', hideSidebarBtn:'Hide UI', showSidebarBtn:'Show UI', shortcutSummaryTopHint:''
+        createdByLabel:'Created by', settingsExportBtn:'Export', settingsFileBtn:'Load', settingsImportBtn:'Path', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'Settings JSON', settingsSelectEmpty:'Select settings', settingsSelectNoSettings:'No settings JSON', textMemoApplyBtn:'Apply', clearSheetDataBtn:'Reset All', hideSidebarBtn:'Hide UI', showSidebarBtn:'Show UI', feedbackHeading:'Feedback', feedbackFormLink:'Form', feedbackPlaceholder:'Bug report or request', feedbackHint:'Write anything you know: symptom, reproduction steps, CSV/PSD/image format, expected result, actual result, browser/OS.', feedbackSendBtn:'Send', feedbackEmpty:'Write a message first.', feedbackSending:'Sending...', feedbackSent:'Sent.', feedbackFailed:'Could not send. Open the form link.', shortcutSummaryTopHint:''
       },
       ja: {
         languageLabel:'言語', headerCardTitle:'ヘッダー', episodeLabel:'話数', titleLabel:'タイトル', cutNoLabel:'カット番号', secondsLabel:'尺 秒', framesLabel:'尺 コマ', authorLabel:'名前', pageLabel:'ページ',
@@ -2093,7 +2216,7 @@
         textCommandsLabel:'テキストコマンド', csvFileLabel:'CSVファイル', csvCommandEditLabel:'CSVから生成された編集可能コマンド',
         dialogBlocksTitle:'セリフ欄', dialogFormatLabel:'形式: 0+01 | 1+00 | 話者 | セリフ例', cameraBlocksTitle:'カメラ欄', cameraFormatLabel:'形式: 0+01 | 1+00 | 記号 | 指示例',
         sheetPreviewTitle:'シートプレビュー', chooseExportDirBtn:'保存先', downloadAllBtn:'出力', memoModeBtn:'メモモード', memoUndoBtn:'取り消し', memoRedoBtn:'やり直し', memoPenLabel:'ペン', memoEraserLabel:'消しゴム', memoEraserButton:'消しゴム',
-        createdByLabel:'作成', settingsExportBtn:'出力', settingsFileBtn:'読込', settingsImportBtn:'読込先', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'設定JSON', settingsSelectEmpty:'設定選択', settingsSelectNoSettings:'設定JSONなし', textMemoApplyBtn:'適用', clearSheetDataBtn:'全体初期化', hideSidebarBtn:'UIを隠す', showSidebarBtn:'UIを表示', shortcutSummaryTopHint:''
+        createdByLabel:'作成', settingsExportBtn:'出力', settingsFileBtn:'読込', settingsImportBtn:'読込先', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'設定JSON', settingsSelectEmpty:'設定選択', settingsSelectNoSettings:'設定JSONなし', textMemoApplyBtn:'適用', clearSheetDataBtn:'全体初期化', hideSidebarBtn:'UIを隠す', showSidebarBtn:'UIを表示', feedbackHeading:'報告', feedbackFormLink:'Form', feedbackPlaceholder:'不具合や要望を書く', feedbackHint:'わかる範囲で記入してください: 症状、再現手順、使用したCSV/PSD/画像形式、期待した結果、実際の結果、ブラウザ/OS。', feedbackSendBtn:'送信', feedbackEmpty:'内容を書いてください。', feedbackSending:'送信中...', feedbackSent:'送信しました。', feedbackFailed:'送信できません。Formリンクから送ってください。', shortcutSummaryTopHint:''
       },
       ko: {
         languageLabel:'언어', headerCardTitle:'헤더', episodeLabel:'화수', titleLabel:'제목', cutNoLabel:'컷 번호', secondsLabel:'길이 초', framesLabel:'길이 프레임', authorLabel:'이름', pageLabel:'페이지',
@@ -2101,7 +2224,7 @@
         textCommandsLabel:'텍스트 커맨드', csvFileLabel:'CSV 파일', csvCommandEditLabel:'CSV에서 생성된 편집 가능 커맨드',
         dialogBlocksTitle:'대사란', dialogFormatLabel:'형식: 0+01 | 1+00 | 화자 | 예시', cameraBlocksTitle:'카메라란', cameraFormatLabel:'형식: 0+01 | 1+00 | 기호 | 지시 예시',
         sheetPreviewTitle:'시트 프리뷰', chooseExportDirBtn:'경로지정', downloadAllBtn:'출력', memoModeBtn:'메모 모드', memoUndoBtn:'되돌리기', memoRedoBtn:'다시 실행', memoPenLabel:'펜', memoEraserLabel:'지우개', memoEraserButton:'지우개',
-        createdByLabel:'제작', settingsExportBtn:'내보내기', settingsFileBtn:'불러오기', settingsImportBtn:'경로지정', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'설정 JSON', settingsSelectEmpty:'설정 선택', settingsSelectNoSettings:'설정 JSON 없음', textMemoApplyBtn:'적용', clearSheetDataBtn:'전체 초기화', hideSidebarBtn:'UI 숨기기', showSidebarBtn:'UI 펼치기', shortcutSummaryTopHint:''
+        createdByLabel:'제작', settingsExportBtn:'내보내기', settingsFileBtn:'불러오기', settingsImportBtn:'경로지정', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'설정 JSON', settingsSelectEmpty:'설정 선택', settingsSelectNoSettings:'설정 JSON 없음', textMemoApplyBtn:'적용', clearSheetDataBtn:'전체 초기화', hideSidebarBtn:'UI 숨기기', showSidebarBtn:'UI 펼치기', feedbackHeading:'문의', feedbackFormLink:'Form', feedbackPlaceholder:'버그 내용이나 개선 요청', feedbackHint:'가능하면 아는 것만 적어주세요: 증상, 재현 순서, 사용한 CSV/PSD/이미지 형식, 기대한 결과, 실제 결과, 브라우저/OS.', feedbackSendBtn:'보내기', feedbackEmpty:'내용을 먼저 입력하세요.', feedbackSending:'전송 중...', feedbackSent:'전송했습니다.', feedbackFailed:'전송하지 못했습니다. Form 링크로 보내주세요.', shortcutSummaryTopHint:''
       },
       zh: {
         languageLabel:'语言', headerCardTitle:'页眉', episodeLabel:'集数', titleLabel:'标题', cutNoLabel:'镜头编号', secondsLabel:'时长 秒', framesLabel:'时长 帧', authorLabel:'姓名', pageLabel:'页码',
@@ -2109,7 +2232,7 @@
         textCommandsLabel:'文本命令', csvFileLabel:'CSV 文件', csvCommandEditLabel:'从 CSV 生成的可编辑命令',
         dialogBlocksTitle:'对白栏', dialogFormatLabel:'格式: 0+01 | 1+00 | 说话人 | 示例', cameraBlocksTitle:'摄影机栏', cameraFormatLabel:'格式: 0+01 | 1+00 | 标记 | 指示示例',
         sheetPreviewTitle:'Sheet 预览', chooseExportDirBtn:'保存处', downloadAllBtn:'输出', memoModeBtn:'备注模式', memoUndoBtn:'撤销', memoRedoBtn:'重做', memoPenLabel:'笔', memoEraserLabel:'橡皮', memoEraserButton:'橡皮',
-        createdByLabel:'制作', settingsExportBtn:'导出', settingsFileBtn:'导入', settingsImportBtn:'路径', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'设置 JSON', settingsSelectEmpty:'选择设置', settingsSelectNoSettings:'无设置 JSON', textMemoApplyBtn:'应用', clearSheetDataBtn:'全部重置', hideSidebarBtn:'隐藏 UI', showSidebarBtn:'显示 UI', shortcutSummaryTopHint:''
+        createdByLabel:'制作', settingsExportBtn:'导出', settingsFileBtn:'导入', settingsImportBtn:'路径', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'设置 JSON', settingsSelectEmpty:'选择设置', settingsSelectNoSettings:'无设置 JSON', textMemoApplyBtn:'应用', clearSheetDataBtn:'全部重置', hideSidebarBtn:'隐藏 UI', showSidebarBtn:'显示 UI', feedbackHeading:'反馈', feedbackFormLink:'Form', feedbackPlaceholder:'错误报告或改进建议', feedbackHint:'请尽量填写已知信息: 症状、复现步骤、使用的 CSV/PSD/图片格式、期望结果、实际结果、浏览器/OS。', feedbackSendBtn:'发送', feedbackEmpty:'请先输入内容。', feedbackSending:'发送中...', feedbackSent:'已发送。', feedbackFailed:'发送失败。请使用 Form 链接。', shortcutSummaryTopHint:''
       }
     };
 
@@ -2127,8 +2250,67 @@
       updateInputModeButtons();
       updateDougaSheetButton();
       updateCellReadabilityButton();
+      updateFeedbackWidget();
       refreshLoadedSettingsSelect();
       renderUpdateLog();
+    }
+
+    function updateFeedbackWidget() {
+      const doc = uiTexts[state.lang] || uiTexts.en;
+      if (feedbackMessageEl) feedbackMessageEl.setAttribute('placeholder', doc.feedbackPlaceholder || 'Bug report or request');
+      if (feedbackHintEl) feedbackHintEl.textContent = doc.feedbackHint || '';
+      if (feedbackSendBtn) {
+        const sendLabel = doc.feedbackSendBtn || 'Send';
+        feedbackSendBtn.setAttribute('title', sendLabel);
+        feedbackSendBtn.setAttribute('aria-label', sendLabel);
+      }
+      if (feedbackFormLinkEl) {
+        feedbackFormLinkEl.setAttribute('href', FEEDBACK_FORM_URL);
+        feedbackFormLinkEl.setAttribute('title', doc.feedbackFormLink || 'Form');
+        feedbackFormLinkEl.setAttribute('aria-label', doc.feedbackFormLink || 'Form');
+      }
+    }
+
+    function setFeedbackStatus(key) {
+      if (!feedbackStatusEl) return;
+      const doc = uiTexts[state.lang] || uiTexts.en;
+      feedbackStatusEl.textContent = doc[key] || '';
+    }
+
+    function submitFeedbackMessage() {
+      if (!feedbackMessageEl) return;
+      const message = String(feedbackMessageEl.value || '').trim();
+      if (!message) {
+        setFeedbackStatus('feedbackEmpty');
+        return;
+      }
+      setFeedbackStatus('feedbackSending');
+      try {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = FEEDBACK_FORM_RESPONSE_URL;
+        form.target = 'feedbackSubmitFrame';
+        form.style.display = 'none';
+        [
+          [FEEDBACK_FORM_MESSAGE_ENTRY, message],
+          ['fvv', '1'],
+          ['pageHistory', '0'],
+          ['submissionTimestamp', '-1']
+        ].forEach(function(pair){
+          const input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = pair[0];
+          input.value = pair[1];
+          form.appendChild(input);
+        });
+        document.body.appendChild(form);
+        form.submit();
+        form.remove();
+        feedbackMessageEl.value = '';
+        window.setTimeout(function(){ setFeedbackStatus('feedbackSent'); }, 700);
+      } catch (err) {
+        setFeedbackStatus('feedbackFailed');
+      }
     }
 
     function updateDougaSheetButton() {
@@ -2185,6 +2367,10 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver656', 'Paper settings group polish', ['The preview toolbar Paper settings shortcuts now sit inside a grey outline group.', 'Button widths were adjusted so the shortcut labels stay visible without truncation.']],
+        ['ver655', 'Paper settings shortcut', ['When an external paper is loaded, Duration + mark and Cell label output now start OFF by default.', 'A compact Paper settings group appears in the preview toolbar while paper is loaded, with Position, Reset, and Clear actions.']],
+        ['ver654', 'Feedback report guidance', ['The in-app feedback box now shows a short checklist of useful report details.']],
+        ['ver653', 'In-app feedback box', ['Added a small feedback box in the sidebar that sends bug reports and requests to the connected Google Form.', 'The box shows a short checklist of useful report details.']],
         ['ver652', 'CSV encoding auto-detect stability', ['CSV auto decoding now penalizes C1 control-character mojibake and rewards valid CLIP dot marks, preventing Shift_JIS dot markers from being misread as Korean encodings.']],
         ['ver651', 'Korean CLIP dot marker import', ['CSV Cell values written as Korean <code>컷</code> are now treated as douga dot markers instead of ordinary cel labels.']],
         ['ver650', 'Update history cleanup', ['Old detailed update logs were collapsed into a compact summary.', 'Recent update entries now have language-specific text instead of falling back to broken legacy strings.']],
@@ -2199,6 +2385,10 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver656', '用紙設定グループの調整', ['プレビューツールバーの用紙設定ショートカットを、灰色の枠でまとまって見えるようにしました。', 'ボタン幅を調整し、文字が省略されないようにしました。']],
+        ['ver655', '用紙設定ショートカット', ['用紙読込時は「秒数 +マーク表示」と「Cellラベル出力」を初期OFFにしました。', '用紙読込中だけ、プレビューツールバーにコンパクトな「用紙設定」グループを表示し、位置編集・位置初期化・クリアを操作できます。']],
+        ['ver654', '報告内容の案内', ['アプリ内報告欄に、報告時にあると助かる情報の短い案内を表示するようにしました。']],
+        ['ver653', 'アプリ内報告欄', ['サイドバーに、不具合報告や要望を接続済みの Google Form へ送る小さな入力欄を追加しました。', '報告にあると助かる情報の短いチェックリストも表示します。']],
         ['ver652', 'CSV 自動エンコード判定の安定化', ['C1 制御文字の文字化けを強く減点し、正しい CLIP 動画点を加点することで、Shift_JIS の動画点が韓国語エンコードとして誤読されにくくなりました。']],
         ['ver651', '韓国語 CLIP の動画点読み込み', ['CSV の Cell 値が韓国語の <code>컷</code> として出る場合、通常のセル名ではなく動画点として扱うようにしました。']],
         ['ver650', '更新履歴の整理', ['古い詳細ログを短い要約にまとめました。', '最近の更新は言語別の文章に差し替え、壊れた旧文字列へ戻らないようにしました。']],
@@ -2213,6 +2403,10 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver656', '용지설정 묶음 표시 조정', ['프리뷰 툴바의 용지설정 단축 버튼을 회색 외곽선 그룹으로 묶어 보이게 했습니다.', '버튼 폭을 조정해 문자가 생략되지 않도록 했습니다.']],
+        ['ver655', '용지 설정 단축 버튼', ['외부용지를 불러오면 초수 +마크 표시와 Cell 라벨 출력이 기본 OFF로 시작합니다.', '용지가 로드된 동안만 프리뷰 툴바에 작은 용지설정 그룹을 표시해 위치 편집, 위치 초기화, 용지 삭제를 바로 실행할 수 있습니다.']],
+        ['ver654', '문의 작성 안내', ['앱 내 문의 입력창에 문의에 있으면 좋은 정보를 짧게 표시하도록 했습니다.']],
+        ['ver653', '앱 내 문의 입력창', ['사이드바에 버그 신고와 개선 요청을 연결된 Google Form으로 보내는 간단한 입력창을 추가했습니다.', '문의에 있으면 좋은 정보도 짧게 안내합니다.']],
         ['ver652', 'CSV 자동 인코딩 판별 안정화', ['C1 제어문자 깨짐은 강하게 감점하고 정상 CLIP 동화점 표시는 가점해, Shift_JIS 동화점이 한국어 인코딩으로 오판되는 문제를 줄였습니다.']],
         ['ver651', '한국어 CLIP 동화점 표시 읽기', ['CSV Cell 값이 한글 <code>컷</code>으로 들어오는 경우 일반 셀 라벨로 그리지 않고 동화점으로 처리합니다.']],
         ['ver650', '업데이트 로그 정리', ['오래된 상세 업데이트 로그를 짧은 요약으로 압축했습니다.', '최근 업데이트 항목은 깨진 과거 문자열 대신 언어별 문장으로 표시합니다.']],
@@ -2227,6 +2421,10 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver656', '纸张设置组样式调整', ['预览工具栏的纸张设置快捷按钮现在用灰色边框归为一组。', '已调整按钮宽度，避免快捷按钮文字被截断。']],
+        ['ver655', '纸张设置快捷按钮', ['载入外部纸张时，秒数 + 标记和 Cell 标签输出默认关闭。', '纸张载入期间，预览工具栏会显示紧凑的纸张设置组，可直接执行位置编辑、重置和清除。']],
+        ['ver654', '反馈填写提示', ['应用内反馈框会显示一条简短的填写提示。']],
+        ['ver653', '应用内反馈框', ['在侧边栏添加一个小反馈框，可将错误报告和改进建议发送到已连接的 Google Form。', '反馈框会显示一条简短的填写提示。']],
         ['ver652', 'CSV 自动编码判断稳定化', ['现在会强力扣分 C1 控制字符乱码，并提高正确 CLIP 动画点标记的分数，减少 Shift_JIS 动画点被误判为韩文编码的情况。']],
         ['ver651', '韩国版 CLIP 动画点导入', ['当 CSV Cell 值以韩文 <code>컷</code> 出现时，会作为动画点处理，而不是普通 Cell 标签。']],
         ['ver650', '整理更新记录', ['旧的详细更新记录已压缩为简短摘要。', '近期项目改为按语言显示，避免回退到损坏的旧文本。']],
@@ -2448,6 +2646,7 @@
         loaded:function(name, meta){ return 'Loaded: ' + name + (meta ? ' · ' + meta : ''); },
         failed:function(msg){ return 'Paper image load failed: ' + msg; },
         clear:'Clear Paper', undo:'Undo', redo:'Redo', reset:'Position Reset', position:'Position Edit', autoAlign:'Auto Align',
+        toolbarTitle:'Paper', toolbarPosition:'Position', toolbarReset:'Reset', toolbarClear:'Clear',
         pixelEmpty:'Source pixels: -',
         pixelInfo:function(w, h){ return 'Source pixels: ' + w + ' × ' + h; },
         autoAlignStatus:{
@@ -2478,6 +2677,7 @@
         loaded:function(name, meta){ return '読込完了: ' + name + (meta ? ' · ' + meta : ''); },
         failed:function(msg){ return '用紙画像の読込失敗: ' + msg; },
         clear:'用紙をクリア', undo:'取り消し', redo:'やり直し', reset:'位置初期化', position:'位置編集', autoAlign:'自動整列',
+        toolbarTitle:'用紙設定', toolbarPosition:'位置編集', toolbarReset:'位置初期化', toolbarClear:'クリア',
         pixelEmpty:'元画像ピクセル: -',
         pixelInfo:function(w, h){ return '元画像ピクセル: ' + w + ' × ' + h; },
         autoAlignStatus:{
@@ -2508,6 +2708,7 @@
         loaded:function(name, meta){ return '로드 완료: ' + name + (meta ? ' · ' + meta : ''); },
         failed:function(msg){ return '용지 이미지 로드 실패: ' + msg; },
         clear:'용지 삭제', undo:'되돌리기', redo:'다시 실행', reset:'위치 초기화', position:'위치 편집', autoAlign:'자동 정렬',
+        toolbarTitle:'용지설정', toolbarPosition:'위치편집', toolbarReset:'초기화', toolbarClear:'삭제',
         pixelEmpty:'원본 픽셀: -',
         pixelInfo:function(w, h){ return '원본 픽셀: ' + w + ' × ' + h; },
         autoAlignStatus:{
@@ -2538,6 +2739,7 @@
         loaded:function(name, meta){ return '载入完成: ' + name + (meta ? ' · ' + meta : ''); },
         failed:function(msg){ return '纸张图像载入失败: ' + msg; },
         clear:'清除纸张', undo:'撤销', redo:'重做', reset:'位置重置', position:'位置编辑', autoAlign:'自动对齐',
+        toolbarTitle:'纸张', toolbarPosition:'位置', toolbarReset:'重置', toolbarClear:'清除',
         pixelEmpty:'原始像素: -',
         pixelInfo:function(w, h){ return '原始像素: ' + w + ' × ' + h; },
         autoAlignStatus:{
@@ -2668,6 +2870,10 @@
       if (paperLayoutSummaryHintEl) paperLayoutSummaryHintEl.textContent = doc.hint;
       if (paperImageInputLabelEl) paperImageInputLabelEl.textContent = doc.upload;
       if (clearPaperImageBtn) clearPaperImageBtn.textContent = doc.clear;
+      if (paperToolbarTitleEl) paperToolbarTitleEl.textContent = doc.toolbarTitle || doc.title || 'Paper';
+      if (paperToolbarPositionBtn) paperToolbarPositionBtn.textContent = doc.toolbarPosition || doc.position;
+      if (paperToolbarResetBtn) paperToolbarResetBtn.textContent = doc.toolbarReset || doc.reset;
+      if (paperToolbarClearBtn) paperToolbarClearBtn.textContent = doc.toolbarClear || doc.clear;
       if (paperUndoBtn) paperUndoBtn.textContent = doc.undo || 'Undo';
       if (paperRedoBtn) paperRedoBtn.textContent = doc.redo || 'Redo';
       if (resetLayoutAdjustBtn) resetLayoutAdjustBtn.textContent = doc.reset;
@@ -2707,6 +2913,7 @@
       if (showHeaderOutputToggleEl) showHeaderOutputToggleEl.checked = !!state.showHeaderOutput;
       if (showDurationPlusOutputToggleEl) showDurationPlusOutputToggleEl.checked = state.showDurationPlusOutput !== false;
       if (showCellLabelOutputToggleEl) showCellLabelOutputToggleEl.checked = !!state.showCellLabelOutput;
+      const hasPaper = !!state.paperImageDataUrl;
       const hasSeparatedPsdMemo = !!state.paperImageMemoDataUrl;
       if (showPsdMemoToggleEl) {
         showPsdMemoToggleEl.checked = hasSeparatedPsdMemo && !!state.showPsdMemo;
@@ -2715,7 +2922,14 @@
       if (showPsdMemoRowEl) showPsdMemoRowEl.setAttribute('aria-disabled', hasSeparatedPsdMemo ? 'false' : 'true');
       if (cellColumnCountInputEl) cellColumnCountInputEl.value = String(getCellColumnCount());
       if (headerPositionModeBtn) headerPositionModeBtn.classList.toggle('active', !!state.positionMode);
-      if (autoAlignPaperBtn) autoAlignPaperBtn.disabled = !state.paperImageDataUrl || (state.paperAutoAlignResult && state.paperAutoAlignResult.status === 'working');
+      if (paperToolbarGroupEl) paperToolbarGroupEl.classList.toggle('hidden', !hasPaper);
+      if (paperToolbarPositionBtn) {
+        paperToolbarPositionBtn.classList.toggle('active', !!state.positionMode);
+        paperToolbarPositionBtn.disabled = !hasPaper;
+      }
+      if (paperToolbarResetBtn) paperToolbarResetBtn.disabled = !hasPaper;
+      if (paperToolbarClearBtn) paperToolbarClearBtn.disabled = !hasPaper;
+      if (autoAlignPaperBtn) autoAlignPaperBtn.disabled = !hasPaper || (state.paperAutoAlignResult && state.paperAutoAlignResult.status === 'working');
       if (paperUndoBtn) paperUndoBtn.disabled = !state.paperUndoStack.length;
       if (paperRedoBtn) paperRedoBtn.disabled = !state.paperRedoStack.length;
     }
@@ -13096,6 +13310,8 @@
       updateDougaSheetButton();
       updateCellReadabilityButton();
       if (headerPositionModeBtn) headerPositionModeBtn.classList.toggle('active', !!state.positionMode);
+      if (paperToolbarGroupEl) paperToolbarGroupEl.classList.toggle('hidden', !state.paperImageDataUrl);
+      if (paperToolbarPositionBtn) paperToolbarPositionBtn.classList.toggle('active', !!state.positionMode);
       updateTextMemoEditorPosition();
       updatePreviewMetaText(model.totalPages);
       if (!state.csvRawRows.length) csvInfoEl.textContent = state.csvLoadError || t('noCsv');
@@ -14748,6 +14964,8 @@
         state.paperAutoAlignOverlay = null;
         setPaperAutoAlignResult(null);
         state.showTemplate = false;
+        state.showDurationPlusOutput = false;
+        state.showCellLabelOutput = false;
         state.positionMode = true;
         syncPaperLayoutControls();
         updatePaperImageStatus();
@@ -14837,6 +15055,7 @@
       state.positionMode = nextPositionMode;
       if (state.positionMode) ensurePositionModeTextMemo(state.currentPreviewPage || 0);
       if (headerPositionModeBtn) headerPositionModeBtn.classList.toggle('active', !!state.positionMode);
+      if (paperToolbarPositionBtn) paperToolbarPositionBtn.classList.toggle('active', !!state.positionMode);
       render();
     }
 
@@ -16136,6 +16355,7 @@
     if (shakuEditBtn) shakuEditBtn.addEventListener('click', toggleShakuEditMode);
     if (shakuUndoBtn) shakuUndoBtn.addEventListener('click', shakuUndo);
     if (shakuRedoBtn) shakuRedoBtn.addEventListener('click', shakuRedo);
+    if (feedbackSendBtn) feedbackSendBtn.addEventListener('click', submitFeedbackMessage);
     if (appTitleEl) {
       appTitleEl.addEventListener('click', openUpdateLog);
       appTitleEl.addEventListener('keydown', function(event){
@@ -16269,11 +16489,14 @@
       paperImageInputEl.addEventListener('change', function(event){ handlePaperImageUpload(event.target.files && event.target.files[0]); });
     }
     if (clearPaperImageBtn) clearPaperImageBtn.addEventListener('click', clearPaperImage);
+    if (paperToolbarClearBtn) paperToolbarClearBtn.addEventListener('click', clearPaperImage);
     if (paperUndoBtn) paperUndoBtn.addEventListener('click', undoPaperChange);
     if (paperRedoBtn) paperRedoBtn.addEventListener('click', redoPaperChange);
     if (resetLayoutAdjustBtn) resetLayoutAdjustBtn.addEventListener('click', resetLayoutAdjustments);
+    if (paperToolbarResetBtn) paperToolbarResetBtn.addEventListener('click', resetLayoutAdjustments);
     if (autoAlignPaperBtn) autoAlignPaperBtn.addEventListener('click', function(){ runPaperAutoAlign({ silent:false }); });
     if (headerPositionModeBtn) headerPositionModeBtn.addEventListener('click', toggleHeaderPositionMode);
+    if (paperToolbarPositionBtn) paperToolbarPositionBtn.addEventListener('click', toggleHeaderPositionMode);
     if (cellColumnCountInputEl) cellColumnCountInputEl.addEventListener('input', function(){ state.cellColumnCount = clampCellColumnCount(cellColumnCountInputEl.value); queueSavePaperMemory(); render(); });
     if (sidebarToggleBtn) sidebarToggleBtn.addEventListener('click', function(){ setSidebarCollapsed(!state.sidebarCollapsed); });
     if (clearSheetDataBtn) clearSheetDataBtn.addEventListener('click', clearSheetData);
