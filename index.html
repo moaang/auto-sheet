@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
@@ -1912,7 +1912,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '666';
+    const APP_VERSION = '669';
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
     const PAPER_TEMPLATE_MATCH_MIN_SCORE = 0.75;
@@ -2687,6 +2687,8 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver669', 'Touch cell editing', ['Original cell labels, dots, and hold-hit areas now support touch dragging on iPhone-style browsers.', 'Touch long-press and desktop right-click now use the same alternate cell action as the existing mark/text shortcut where applicable.']],
+        ['ver668', 'Cell/Douga hold notation', ['Original and Douga Cell hold lines now appear only when there are 3 or more blank frames before the next input mark.', '<code>END</code> preview markers were changed to <code>止メ</code> on Original cells only, and final empty <code>x</code> holds use a wavy line.']],
         ['ver661', 'Speaker suffix tags', ['Dialog speaker labels can now keep <code>(SE)</code>, <code>(M)</code>, or <code>(OFF)</code> suffixes in the speaker field.', 'Click a speaker label in the preview to choose a suffix; when one is already set, <code>x</code> clears it.']],
         ['ver660', 'Usage timezone display', ['Usage logging now normalizes browser fixed-offset timezone names such as <code>Etc/GMT-9</code> into readable timezone values before sending.']],
         ['ver659', 'Paper template analytics', ['External Paper Auto Align now matches loaded paper against built-in numeric template fingerprints and sends only the matched company, score, and line metrics to usage logging.', 'Client error logging now reports sanitized error hashes without file names, local paths, CSV contents, or paper images.']],
@@ -2710,6 +2712,8 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver669', 'Touch cell editing', ['Original cell labels, dots, and hold-hit areas now support touch dragging on iPhone-style browsers.', 'Touch long-press and desktop right-click now use the same alternate cell action as the existing mark/text shortcut where applicable.']],
+        ['ver668', 'Cell/Douga hold notation', ['Original and Douga Cell hold lines now appear only when there are 3 or more blank frames before the next input mark.', '<code>END</code> preview markers were changed to <code>止メ</code> on Original cells only, and final empty <code>x</code> holds use a wavy line.']],
         ['ver661', '話者サフィックス', ['台詞の話者欄に <code>(SE)</code>、<code>(M)</code>、<code>(OFF)</code> のサフィックスを保持できるようにしました。', 'プレビュー上の話者ラベルをクリックすると選択肢が開き、設定済みの場合は <code>x</code> で削除できます。']],
         ['ver660', 'Usage timezone display', ['Usage logging now normalizes browser fixed-offset timezone names such as <code>Etc/GMT-9</code> into readable timezone values before sending.']],
         ['ver659', 'Paper template analytics', ['External Paper Auto Align now matches loaded paper against built-in numeric template fingerprints and sends only the matched company, score, and line metrics to usage logging.', 'Client error logging now reports sanitized error hashes without file names, local paths, CSV contents, or paper images.']],
@@ -2733,6 +2737,8 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver669', 'Touch cell editing', ['Original cell labels, dots, and hold-hit areas now support touch dragging on iPhone-style browsers.', 'Touch long-press and desktop right-click now use the same alternate cell action as the existing mark/text shortcut where applicable.']],
+        ['ver668', 'Cell/Douga hold notation', ['Original and Douga Cell hold lines now appear only when there are 3 or more blank frames before the next input mark.', '<code>END</code> preview markers were changed to <code>止メ</code> on Original cells only, and final empty <code>x</code> holds use a wavy line.']],
         ['ver661', '화자 서픽스', ['대사 화자칸에 <code>(SE)</code>, <code>(M)</code>, <code>(OFF)</code> 서픽스를 유지할 수 있게 했습니다.', '프리뷰의 화자 라벨을 클릭하면 선택지가 열리고, 이미 지정된 경우 <code>x</code>로 삭제할 수 있습니다.']],
         ['ver660', 'Usage timezone display', ['Usage logging now normalizes browser fixed-offset timezone names such as <code>Etc/GMT-9</code> into readable timezone values before sending.']],
         ['ver659', 'Paper template analytics', ['External Paper Auto Align now matches loaded paper against built-in numeric template fingerprints and sends only the matched company, score, and line metrics to usage logging.', 'Client error logging now reports sanitized error hashes without file names, local paths, CSV contents, or paper images.']],
@@ -2756,6 +2762,8 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver669', 'Touch cell editing', ['Original cell labels, dots, and hold-hit areas now support touch dragging on iPhone-style browsers.', 'Touch long-press and desktop right-click now use the same alternate cell action as the existing mark/text shortcut where applicable.']],
+        ['ver668', 'Cell/Douga hold notation', ['Original and Douga Cell hold lines now appear only when there are 3 or more blank frames before the next input mark.', '<code>END</code> preview markers were changed to <code>止メ</code> on Original cells only, and final empty <code>x</code> holds use a wavy line.']],
         ['ver661', '说话人后缀', ['对白说话人栏现在可以保留 <code>(SE)</code>、<code>(M)</code>、<code>(OFF)</code> 后缀。', '在预览中点击说话人标签即可选择后缀；已设置时可用 <code>x</code> 清除。']],
         ['ver660', 'Usage timezone display', ['Usage logging now normalizes browser fixed-offset timezone names such as <code>Etc/GMT-9</code> into readable timezone values before sending.']],
         ['ver659', 'Paper template analytics', ['External Paper Auto Align now matches loaded paper against built-in numeric template fingerprints and sends only the matched company, score, and line metrics to usage logging.', 'Client error logging now reports sanitized error hashes without file names, local paths, CSV contents, or paper images.']],
@@ -4324,6 +4332,71 @@
     }
     function line(x1, y1, x2, y2, stroke, width) {
       appendSvgNode(el('line', { x1:x1, y1:y1, x2:x2, y2:y2, stroke:stroke || '#111', 'stroke-width': width || 1 }));
+    }
+    function wavyVerticalLine(x, y1, y2, stroke, width) {
+      if (y2 <= y1) return;
+      const amp = 4;
+      const step = 8;
+      let y = y1;
+      let dir = 1;
+      let d = 'M ' + x + ' ' + y1;
+      while (y < y2) {
+        const nextY = Math.min(y + step, y2);
+        const midY = (y + nextY) / 2;
+        d += ' Q ' + (x + amp * dir) + ' ' + midY + ' ' + x + ' ' + nextY;
+        y = nextY;
+        dir *= -1;
+      }
+      appendSvgNode(el('path', { d:d, fill:'none', stroke:stroke || '#111', 'stroke-width': width || 1, 'stroke-linecap':'round', 'stroke-linejoin':'round' }));
+    }
+    function getCellHoldBoundaryFrames(layer) {
+      const frames = [];
+      (layer && layer.segments || []).forEach(function(seg){
+        const frame = Math.max(1, Math.round(Number(seg && seg.from) || 0));
+        if (frame) frames.push(frame);
+      });
+      (layer && layer.marks || []).forEach(function(mark){
+        if (!mark || (mark.type !== 'dot' && mark.type !== 'cross' && mark.type !== 'repeat')) return;
+        const frame = Math.max(1, Math.round(Number(mark.frame) || 0));
+        if (frame) frames.push(frame);
+      });
+      return Array.from(new Set(frames)).sort(function(a, b){ return a - b; });
+    }
+    function getCellHoldLineInfoAtFrame(boundaryFrames, seg, frame, targetEnd) {
+      if (!seg) return null;
+      const currentFrame = Math.max(1, Math.round(Number(frame) || 0));
+      const segFrom = Math.max(1, Math.round(Number(seg.from) || 1));
+      const segTo = Math.max(segFrom, Math.round(Number(seg.to) || segFrom));
+      if (currentFrame <= segFrom) return null;
+      let previous = segFrom;
+      (boundaryFrames || []).forEach(function(value){
+        const boundary = Math.max(1, Math.round(Number(value) || 0));
+        if (boundary >= segFrom && boundary < currentFrame && boundary > previous) previous = boundary;
+      });
+      let next = 0;
+      (boundaryFrames || []).forEach(function(value){
+        const boundary = Math.max(1, Math.round(Number(value) || 0));
+        if (boundary > previous && (!next || boundary < next)) next = boundary;
+      });
+      const fallbackEnd = Math.max(segTo, Math.round(Number(targetEnd) || 0));
+      const holdEnd = next ? Math.max(previous, next - 1) : fallbackEnd;
+      if (currentFrame > holdEnd) return null;
+      return { previous:previous, end:holdEnd, blankCount:Math.max(0, holdEnd - previous) };
+    }
+    function shouldRenderCellHoldLineAtFrame(boundaryFrames, seg, frame, targetEnd) {
+      const info = getCellHoldLineInfoAtFrame(boundaryFrames, seg, frame, targetEnd);
+      return !!(info && info.blankCount >= 3);
+    }
+    function shouldRenderCellEndHoldLine(boundaryFrames, seg, targetEnd) {
+      if (!seg) return false;
+      const segTo = Math.max(1, Math.round(Number(seg.to) || 1));
+      const target = Math.max(segTo, Math.round(Number(targetEnd) || segTo));
+      const info = getCellHoldLineInfoAtFrame(boundaryFrames, seg, segTo + 1, target);
+      return !!(info && info.blankCount >= 3);
+    }
+    function renderCellContinuationLine(x, y1, y2, stroke, width, wavy) {
+      if (wavy) wavyVerticalLine(x, y1, y2, stroke, width);
+      else line(x, y1, x, y2, stroke, width);
     }
     function rect(x, y, w, h, width, fill, stroke) {
       appendSvgNode(el('rect', { x:x, y:y, width:w, height:h, fill:fill || 'none', stroke:stroke || '#111', 'stroke-width': width || 1 }));
@@ -8078,6 +8151,7 @@
         'text-anchor':getCellTextAnchor()
       });
       hit.style.cursor = 'pointer';
+      prepareTouchDragHit(hit);
       hit.setAttribute('data-inline-editable', 'shift-only');
       hit.setAttribute('title', 'Click to edit cel label');
       hit.addEventListener('click', function(event){
@@ -8117,8 +8191,22 @@
         'pointer-events':'all'
       });
       hit.style.cursor = options.cursor || 'pointer';
+      prepareTouchDragHit(hit);
       hit.setAttribute('data-inline-editable', 'shift-only');
       hit.setAttribute('title', options.title || 'Click to edit / Shift-click for mark operation');
+      const contextAction = typeof options.onShiftClick === 'function' ? options.onShiftClick : options.onClick;
+      attachTouchContextAction(hit, contextAction);
+      hit.addEventListener('contextmenu', function(event){
+        if (state.suppressNextClick) return;
+        const action = contextAction;
+        if (typeof action === 'function') {
+          event.preventDefault();
+          event.stopPropagation();
+          if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+          action(event);
+          suppressNextClickBriefly(350);
+        }
+      });
       if (options.dragRange) attachCellLongPressDrag(hit, entry, absFrame, options.dragRange, options.dragOptions || {});
       hit.addEventListener('click', function(event){
         if (state.suppressNextClick) return;
@@ -9827,6 +9915,62 @@
       clearSuppressedClickSoon(delay);
     }
 
+    function prepareTouchDragHit(node) {
+      if (!node) return node;
+      node.style.touchAction = 'none';
+      node.style.webkitUserSelect = 'none';
+      node.style.userSelect = 'none';
+      return node;
+    }
+
+    function makeSyntheticContextEvent(sourceEvent) {
+      return {
+        shiftKey:true,
+        pointerType:sourceEvent && sourceEvent.pointerType,
+        clientX:sourceEvent && sourceEvent.clientX,
+        clientY:sourceEvent && sourceEvent.clientY,
+        preventDefault:function(){ if (sourceEvent && sourceEvent.preventDefault) sourceEvent.preventDefault(); },
+        stopPropagation:function(){ if (sourceEvent && sourceEvent.stopPropagation) sourceEvent.stopPropagation(); },
+        stopImmediatePropagation:function(){ if (sourceEvent && sourceEvent.stopImmediatePropagation) sourceEvent.stopImmediatePropagation(); }
+      };
+    }
+
+    function attachTouchContextAction(node, action) {
+      if (!node || typeof action !== 'function') return node;
+      let touchContext = null;
+      function clearTouchContext() {
+        if (touchContext && touchContext.timer) clearTimeout(touchContext.timer);
+        touchContext = null;
+      }
+      node.addEventListener('pointerdown', function(event){
+        if (event.pointerType !== 'touch' && event.pointerType !== 'pen') return;
+        clearTouchContext();
+        touchContext = {
+          pointerId:event.pointerId,
+          startClientX:event.clientX,
+          startClientY:event.clientY,
+          fired:false,
+          timer:window.setTimeout(function(){
+            if (!touchContext || touchContext.pointerId !== event.pointerId) return;
+            touchContext.fired = true;
+            cancelCellLongPressDrag();
+            action(makeSyntheticContextEvent(event));
+            suppressNextClickBriefly(450);
+          }, 560)
+        };
+      }, { passive:false });
+      node.addEventListener('pointermove', function(event){
+        if (!touchContext || touchContext.pointerId !== event.pointerId) return;
+        const dx = event.clientX - touchContext.startClientX;
+        const dy = event.clientY - touchContext.startClientY;
+        if (Math.sqrt(dx * dx + dy * dy) > CELL_LONG_PRESS_MOVE_TOLERANCE) clearTouchContext();
+      }, { passive:false });
+      ['pointerup', 'pointercancel', 'pointerleave'].forEach(function(type){
+        node.addEventListener(type, clearTouchContext, { passive:false });
+      });
+      return node;
+    }
+
     function clearDragPreviewBox() {
       const box = state.dragPreviewBox;
       if (box && box.parentNode) box.parentNode.removeChild(box);
@@ -9948,6 +10092,10 @@
       if (event.shiftKey) return;
       if (event.button !== undefined && event.button !== 0) return;
       cancelCellLongPressDrag();
+      if (event.pointerType === 'touch' || event.pointerType === 'pen') {
+        event.preventDefault();
+        event.stopPropagation();
+      }
       const dragOptions = options || {};
       const drag = {
         pointerId:event.pointerId,
@@ -10019,6 +10167,7 @@
     function attachCellLongPressDrag(node, entry, frame, range, options) {
       if (!node || !entry) return node;
       node.classList.add('cell-drag-hit');
+      prepareTouchDragHit(node);
       if (options && options.tokenDragCursor) node.classList.add('cell-token-drag-hit');
       node.addEventListener('pointerdown', function(event){ beginCellLongPressDrag(event, entry, frame, range, options || {}); }, { passive:false });
       return node;
@@ -11820,25 +11969,16 @@
       return Math.max(frame, Math.round(Number(entry && entry.to) || frame));
     }
 
-    function renderDougaHoldLine(x, fromFrame, toFrame, block, area, rowH) {
+    function renderDougaHoldLine(x, fromFrame, toFrame, block, area, rowH, wavy) {
       const start = Math.max(block.start, Math.round(Number(fromFrame) || 0));
       const end = Math.min(block.end, Math.round(Number(toFrame) || 0));
       if (end < start) return;
       const y1 = area.y + (start - block.start) * rowH + 1.5;
       const y2 = area.y + (end - block.start + 1) * rowH - 1.5;
-      if (y2 > y1) line(x, y1, x, y2, '#111', cellOutputStroke(1));
+      if (y2 > y1) renderCellContinuationLine(x, y1, y2, '#111', cellOutputStroke(1), wavy);
     }
 
-    function renderDougaEndHoldLine(x, fromFrame, toFrame, block, area, rowH) {
-      const start = Math.max(block.start, Math.round(Number(fromFrame) || 0));
-      const end = Math.min(block.end, Math.round(Number(toFrame) || 0));
-      if (end < start) return;
-      const y1 = area.y + (start - block.start) * rowH + 1.5;
-      const y2 = area.y + (end - block.start + 1) * rowH - 1.5;
-      if (y2 > y1) line(x, y1, x, y2, '#111', cellOutputStroke(1));
-    }
-
-    function renderDougaHoldLineSkippingFrames(x, fromFrame, toFrame, block, area, rowH, skipFrames, endHold) {
+    function renderDougaHoldLineSkippingFrames(x, fromFrame, toFrame, block, area, rowH, skipFrames, wavy) {
       const start = Math.max(block.start, Math.round(Number(fromFrame) || 0));
       const end = Math.min(block.end, Math.round(Number(toFrame) || 0));
       if (end < start) return;
@@ -11848,8 +11988,7 @@
         if (!shouldBreak) continue;
         const segmentEnd = frame - 1;
         if (segmentEnd >= segmentStart) {
-          if (endHold) renderDougaEndHoldLine(x, segmentStart, segmentEnd, block, area, rowH);
-          else renderDougaHoldLine(x, segmentStart, segmentEnd, block, area, rowH);
+          renderDougaHoldLine(x, segmentStart, segmentEnd, block, area, rowH, wavy);
         }
         segmentStart = frame + 1;
       }
@@ -11873,14 +12012,16 @@
             return Math.max(1, Math.round(Number(eventValue.frame) || 1));
           }));
           events.forEach(function(eventValue, index){
+            const eventFrame = Math.round(Number(eventValue.frame) || 0);
             const holdEnd = getDougaHoldEnd(eventValue, getNextDougaHoldEntry(events, index), targetEnd);
-            renderDougaHoldLineSkippingFrames(x, Math.round(Number(eventValue.frame) || 0) + 1, holdEnd, block, area, rowH, crossFrames, false);
+            if (holdEnd - eventFrame >= 3) renderDougaHoldLineSkippingFrames(x, eventFrame + 1, holdEnd, block, area, rowH, crossFrames, isDougaCrossEntry(eventValue));
           });
           const lastEvent = events.length ? events[events.length - 1] : null;
           if (lastEvent) {
             const lastEventIndex = events.indexOf(lastEvent);
             const lastHoldEnd = getDougaHoldEnd(lastEvent, getNextDougaHoldEntry(events, lastEventIndex), targetEnd);
-            renderDougaHoldLineSkippingFrames(x, lastHoldEnd + 1, targetEnd, block, area, rowH, crossFrames, true);
+            const lastEventFrame = Math.round(Number(lastEvent.frame) || 0);
+            if (lastHoldEnd < targetEnd && targetEnd - lastEventFrame >= 3) renderDougaHoldLineSkippingFrames(x, lastHoldEnd + 1, targetEnd, block, area, rowH, crossFrames, isDougaCrossEntry(lastEvent));
           }
           events.forEach(function(eventValue){
             const frame = Math.round(Number(eventValue.frame) || 0);
@@ -12061,6 +12202,8 @@
       params.originalEntries.forEach(function(entry, colIndex){
         const layer = params.layersById.get(entry.uid);
         const baseLayer = params.baseLayersById.get(entry.uid);
+        const holdBoundaryFrames = getCellHoldBoundaryFrames(layer);
+        const holdTargetEnd = Math.max(0, Math.round(Number(params.durationFrame) || 0));
         for (let i = 0; i < params.frameCount; i++) {
           const absFrame = params.startFrame + i;
           const tempBlock = { blockX:params.blockX, blockW:params.blockW, originalColW:originalColW, originalAreaW:params.originalAreaW, originalEntriesCount:params.originalEntries.length, top:top, nameStripH:nameStripH, rowH:rowH, frameCount:frameCountForBox, start:params.startFrame };
@@ -12082,13 +12225,23 @@
           }
           if (!layer && !seg && !dotMark && !repeatMark && !crossMark) continue;
           if (seg) {
+            const shouldDrawSegmentHoldLine = shouldRenderCellHoldLineAtFrame(holdBoundaryFrames, seg, absFrame, holdTargetEnd);
             if (absFrame > seg.from) {
-              if (!dotMark && !crossMark && !isPreviewEndFrame) line((x1 + x2) / 2, y1 + 1.5, (x1 + x2) / 2, y2 - 1.5, seg.kind === 'cross' ? (isExplicitCrossSeg ? '#111' : RED) : '#111', seg.kind === 'cross' ? 1.4 : 1);
+              if (shouldDrawSegmentHoldLine && !dotMark && !crossMark && !isPreviewEndFrame) renderCellContinuationLine((x1 + x2) / 2, y1 + 1.5, y2 - 1.5, seg.kind === 'cross' ? (isExplicitCrossSeg ? '#111' : RED) : '#111', seg.kind === 'cross' ? 1.4 : 1, seg.kind === 'cross');
               if (params.interactive && seg.kind !== 'cross') {
                 const hit = el('rect', { x:x1, y:y1, width:x2 - x1, height:y2 - y1, fill:'transparent', stroke:'transparent' });
                 hit.style.cursor = 'pointer';
+                prepareTouchDragHit(hit);
                 hit.setAttribute('title', 'Click: dot on/off / Shift-click: text');
                 attachCellLongPressDrag(hit, entry, absFrame, { minFrame:params.startFrame, maxFrame:params.startFrame + params.frameCount - 1 }, { block:tempBlock, colIndex:colIndex });
+                attachTouchContextAction(hit, function(contextEvent){ openCellFrameTextEditor(hit, entry, absFrame, '', contextEvent, false); });
+                hit.addEventListener('contextmenu', function(contextEvent){
+                  contextEvent.preventDefault();
+                  contextEvent.stopPropagation();
+                  if (contextEvent.stopImmediatePropagation) contextEvent.stopImmediatePropagation();
+                  openCellFrameTextEditor(hit, entry, absFrame, '', contextEvent, false);
+                  suppressNextClickBriefly(350);
+                });
                 hit.addEventListener('click', function(event){
                   if (event.shiftKey) {
                     event.preventDefault();
@@ -12103,8 +12256,17 @@
               } else if (params.interactive && isExplicitCrossSeg && !dotMark && !crossMark) {
                 const explicitCrossHoldHit = el('rect', { x:x1, y:y1, width:x2 - x1, height:y2 - y1, fill:'transparent', stroke:'transparent', 'pointer-events':'all' });
                 explicitCrossHoldHit.style.cursor = 'pointer';
+                prepareTouchDragHit(explicitCrossHoldHit);
                 explicitCrossHoldHit.setAttribute('title', 'Click: dot on/off / Shift-click: text');
                 attachCellLongPressDrag(explicitCrossHoldHit, entry, absFrame, { minFrame:params.startFrame, maxFrame:params.startFrame + params.frameCount - 1 }, { block:tempBlock, colIndex:colIndex });
+                attachTouchContextAction(explicitCrossHoldHit, function(contextEvent){ openCellFrameTextEditor(explicitCrossHoldHit, entry, absFrame, '', contextEvent, false); });
+                explicitCrossHoldHit.addEventListener('contextmenu', function(contextEvent){
+                  contextEvent.preventDefault();
+                  contextEvent.stopPropagation();
+                  if (contextEvent.stopImmediatePropagation) contextEvent.stopImmediatePropagation();
+                  openCellFrameTextEditor(explicitCrossHoldHit, entry, absFrame, '', contextEvent, false);
+                  suppressNextClickBriefly(350);
+                });
                 explicitCrossHoldHit.addEventListener('click', function(event){
                   if (event.shiftKey) {
                     event.preventDefault();
@@ -12131,17 +12293,20 @@
                 });
               }
               drawMarker(markerKind, x1, y1, x2, y2);
-              if (seg.kind === 'cross' && !isExplicitCrossSeg && !dotMark && Math.round(Number(seg.to) || 0) > Math.round(Number(seg.from) || 0)) {
+              if (shouldRenderCellHoldLineAtFrame(holdBoundaryFrames, seg, absFrame + 1, holdTargetEnd) && seg.kind === 'cross' && !isExplicitCrossSeg && !dotMark && Math.round(Number(seg.to) || 0) > Math.round(Number(seg.from) || 0)) {
                 const redLineStart = seg.showCrossMarker === false ? (y1 + 1.5) : ((y1 + y2) / 2 + 7);
-                line((x1 + x2) / 2, redLineStart, (x1 + x2) / 2, y2 - 1.5, isExplicitCrossSeg ? '#111' : RED, 1.4);
+                renderCellContinuationLine((x1 + x2) / 2, redLineStart, y2 - 1.5, isExplicitCrossSeg ? '#111' : RED, 1.4, true);
               }
               if (seg.label) {
                 const labelEditConfig = { get:function(){ return seg.label || ''; }, set:function(v){ updateCommandSegmentLabelByUid(entry.uid, seg.from, v); } };
                 const labelNode = text(getCellTextX(x1, x2), (y1 + y2) / 2, seg.label, cellOutputSize(11), getCellTextAnchor(), '700', '#111');
                 labelNode.style.cursor = 'pointer';
+                prepareTouchDragHit(labelNode);
                 labelNode.setAttribute('data-inline-editable', 'shift-only');
                 labelNode.setAttribute('title', 'Click to edit / Shift-click to change mark / drag to move');
                 attachCellLongPressDrag(labelNode, entry, absFrame, { minFrame:params.startFrame, maxFrame:params.startFrame + params.frameCount - 1 }, { tokenDragCursor:false, block:tempBlock, colIndex:colIndex });
+                attachTouchContextAction(labelNode, function(contextEvent){ return handleCellMarkerClick(contextEvent, entry, absFrame, seg, key); });
+                labelNode.addEventListener('contextmenu', function(contextEvent){ handleCellMarkerClick(contextEvent, entry, absFrame, seg, key); suppressNextClickBriefly(350); });
                 labelNode.addEventListener('click', function(event){
                   if (state.suppressNextClick) return;
                   if (event.shiftKey) {
@@ -12173,8 +12338,17 @@
             if (params.interactive) {
               const dotHit = el('rect', { x:x1, y:y1, width:x2 - x1, height:y2 - y1, fill:'transparent', stroke:'transparent', 'pointer-events':'all' });
               dotHit.style.cursor = 'pointer';
+              prepareTouchDragHit(dotHit);
               dotHit.setAttribute('title', 'Click: dot on/off / Shift-click: text');
               attachCellLongPressDrag(dotHit, entry, absFrame, { minFrame:params.startFrame, maxFrame:params.startFrame + params.frameCount - 1 }, { tokenDragCursor:true, block:tempBlock, colIndex:colIndex });
+              attachTouchContextAction(dotHit, function(contextEvent){ openCellFrameTextEditor(dotHit, entry, absFrame, '', contextEvent, false); });
+              dotHit.addEventListener('contextmenu', function(contextEvent){
+                contextEvent.preventDefault();
+                contextEvent.stopPropagation();
+                if (contextEvent.stopImmediatePropagation) contextEvent.stopImmediatePropagation();
+                openCellFrameTextEditor(dotHit, entry, absFrame, '', contextEvent, false);
+                suppressNextClickBriefly(350);
+              });
               dotHit.addEventListener('click', function(event){
                 if (event.shiftKey) {
                   event.preventDefault();
@@ -13327,6 +13501,14 @@
       hit.style.cursor = 'pointer';
       hit.setAttribute('title', 'Click: dot on/off / Shift-click: text');
       attachCellLongPressDrag(hit, entry, frame, { minFrame:block.start, maxFrame:block.end }, { block:block, colIndex:columnIndex });
+      attachTouchContextAction(hit, function(contextEvent){ openCellFrameTextEditor(hit, entry, frame, '', contextEvent, false); });
+      hit.addEventListener('contextmenu', function(contextEvent){
+        contextEvent.preventDefault();
+        contextEvent.stopPropagation();
+        if (contextEvent.stopImmediatePropagation) contextEvent.stopImmediatePropagation();
+        openCellFrameTextEditor(hit, entry, frame, '', contextEvent, false);
+        suppressNextClickBriefly(350);
+      });
       hit.addEventListener('click', function(event){
         if (event.shiftKey) {
           event.preventDefault();
@@ -13384,7 +13566,7 @@
           const bounds = getOutputCellBounds(block, columnIndex);
           const rowTop = getOutputRowTop(block, endFrame, 'cell');
           const rowH = getOutputRowH(block, 'cell');
-          const node = text(getCellTextX(bounds.x1, bounds.x2), rowTop + rowH / 2, 'END', cellOutputSize(8), getCellTextAnchor(), '800', '#111');
+          const node = text(getCellTextX(bounds.x1, bounds.x2), rowTop + rowH / 2, '止メ', cellOutputSize(8), getCellTextAnchor(), '800', '#111');
           node.setAttribute('pointer-events', 'none');
         });
       });
@@ -13433,6 +13615,8 @@
           if (!lastSeg || targetDuration <= lastSeg.to) return;
           const nextRepeatFrame = getNextRepeatFrameAfter(layer, lastSeg.to);
           const targetLimit = nextRepeatFrame ? Math.min(targetDuration, nextRepeatFrame - 1) : targetDuration;
+          const holdBoundaryFrames = getCellHoldBoundaryFrames(layer);
+          if (!shouldRenderCellEndHoldLine(holdBoundaryFrames, lastSeg, targetLimit)) return;
           const lastIsExplicitCross = lastSeg.kind === 'cross' && !lastSeg.autoLeadingCross;
           const fromFrame = Math.max(block.start, lastSeg.to + (lastIsExplicitCross ? 1 : 0));
           const toFrame = Math.min(block.end, targetLimit);
@@ -13449,7 +13633,7 @@
             let y1 = rowTop + 1.5;
             const y2 = rowTop + rowH - 1.5;
             if (frame === lastSeg.to) y1 = Math.min(y2, rowTop + rowH / 2 + 7);
-            if (y2 > y1) line(xCenter, y1, xCenter, y2, strokeColor, strokeWidth);
+            if (y2 > y1) renderCellContinuationLine(xCenter, y1, y2, strokeColor, strokeWidth, lastSeg.kind === 'cross');
           }
         });
       });
