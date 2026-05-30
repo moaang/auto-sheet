@@ -1912,7 +1912,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '665';
+    const APP_VERSION = '666';
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
     const PAPER_TEMPLATE_MATCH_MIN_SCORE = 0.75;
@@ -2478,6 +2478,13 @@
         .slice(0, Math.max(12, Number(maxLength) || 160));
     }
 
+    function sanitizeUsageFileName(value, maxLength) {
+      const raw = String(value || '').split(/[\\/]/).pop();
+      return sanitizeUsageText(raw, maxLength || 140)
+        .replace(/[<>:"|?*\x00-\x1F]/g, '')
+        .trim();
+    }
+
     function hashUsageText(value) {
       const text = String(value || '');
       let hash = 2166136261;
@@ -2595,11 +2602,14 @@
       try {
         const diagnostics = result && result.diagnostics ? result.diagnostics : {};
         const fingerprint = match && match.fingerprint ? match.fingerprint : makePaperTemplateFingerprint(result, analysis);
+        const templateConfidence = match && match.confidence ? match.confidence : 'unknown';
+        const unmatchedTemplateFileName = templateConfidence === 'unknown' ? sanitizeUsageFileName(state.paperImageName, 140) : '';
         sendUsageEvent('paper_align', {
           autoAlignConfidence:Math.round(Number(result && result.confidence || 0)),
           templateCompany:match && match.company ? match.company : 'unknown',
           templateScore:match ? match.score : 0,
-          templateConfidence:match && match.confidence ? match.confidence : 'unknown',
+          templateConfidence:templateConfidence,
+          unmatchedTemplateFileName:unmatchedTemplateFileName,
           paperColumns:fingerprint.columns || diagnostics.columns || '',
           paperXCount:fingerprint.xCount || '',
           paperYCount:fingerprint.yCount || '',
