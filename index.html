@@ -683,7 +683,12 @@
     .position-edit-grip.ne, .position-edit-grip.sw { cursor: nesw-resize; }
     .position-edit-grip.nw, .position-edit-grip.se { cursor: nwse-resize; }
     html.position-edit-dragging, html.position-edit-dragging body { overscroll-behavior: none; -webkit-user-select: none; user-select: none; }
-    html.position-edit-dragging * { user-select: none !important; }
+    html.position-edit-dragging #sheetSvg,
+    html.position-edit-dragging .preview-wrap,
+    html.position-edit-dragging .position-edit-handle {
+      -webkit-user-select: none;
+      user-select: none;
+    }
 
     .timeline-edge-handle {
       cursor: ns-resize;
@@ -1210,6 +1215,49 @@
       position: relative;
       width: 100%;
       transform-origin: top left;
+    }
+    .position-drag-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 6;
+      width: 100%;
+      height: 100%;
+      display: none;
+      pointer-events: none;
+      overflow: visible;
+      background: transparent;
+      contain: paint;
+      will-change: contents;
+    }
+    .position-drag-overlay.active {
+      display: block;
+    }
+    .position-drag-html-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 8;
+      display: none;
+      pointer-events: none;
+      overflow: hidden;
+      contain: layout paint style;
+    }
+    .position-drag-html-overlay.active { display: block; }
+    .position-drag-html-box {
+      position: absolute;
+      left: 0;
+      top: 0;
+      box-sizing: border-box;
+      border: 2px solid #cf2a2a;
+      border-radius: 5px;
+      background: rgba(255,255,255,.12);
+      box-shadow: 0 0 0 1px rgba(255,255,255,.5);
+      transform: translate3d(0,0,0);
+      transform-origin: 0 0;
+      will-change: transform, width, height;
+    }
+    .position-drag-html-box.active {
+      border-width: 3px;
+      background: rgba(207,42,42,.10);
     }
     .memo-controls-wrap {
       margin-bottom: 10px;
@@ -1871,6 +1919,8 @@
       <div class="preview-wrap">
         <div id="sheetStage" class="sheet-stage">
           <svg id="sheetSvg" viewBox="0 0 1753 2480" xmlns="http://www.w3.org/2000/svg" aria-label="timesheet preview"></svg>
+          <svg id="positionDragOverlaySvg" class="position-drag-overlay" viewBox="0 0 1753 2480" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"></svg>
+          <div id="positionDragOverlayLayer" class="position-drag-html-overlay" aria-hidden="true"></div>
           <canvas id="memoCanvas" class="memo-overlay-canvas" aria-label="memo drawing overlay"></canvas>
         </div>
       </div>
@@ -1912,7 +1962,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '669';
+    const APP_VERSION = '673';
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
     const PAPER_TEMPLATE_MATCH_MIN_SCORE = 0.75;
@@ -1934,6 +1984,8 @@
     ];
 
     const svg = document.getElementById('sheetSvg');
+    const positionDragOverlaySvg = document.getElementById('positionDragOverlaySvg');
+    const positionDragOverlayLayer = document.getElementById('positionDragOverlayLayer');
     const appTitleEl = document.getElementById('appTitle');
     const updateLogModalEl = document.getElementById('updateLogModal');
     const updateLogTitleEl = document.getElementById('updateLogTitle');
@@ -2159,8 +2211,19 @@
       durationStepperOverlay: null,
       layoutDrag: null,
       layoutDragPreviewGroup: null,
+      layoutDragPreviewNodes: null,
+      layoutDragHtmlNodes: null,
+      layoutDragPreviewFrame: null,
+      layoutDragPreviewPendingDrag: null,
+      layoutDragMoveFrame: null,
+      layoutDragPreviewMuted: false,
       layoutBoxes: {},
       layoutBoxBaseRects: {},
+      commandInputRenderTimer: null,
+      commandInputRenderNeedsCommandSync: false,
+      pendingCsvCommandInputSync: false,
+      pendingTextCommandNormalize: false,
+      pendingCsvCommandNormalize: false,
       previewPan: null,
       suppressNextClick: false,
       cellLongPressDrag: null,
@@ -2687,6 +2750,10 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver673', 'Low-cost drag preview UI', ['Position Edit drag preview now uses a plain HTML/CSS overlay instead of animated SVG boxes, reducing paint cost on external paper previews.', 'Command text normalization now runs inside the debounced refresh path instead of scanning the full text on every keystroke.']],
+        ['ver672', 'Drag and command input performance', ['Position Edit now keeps box movement in a temporary drag draft and commits the actual sheet layout only once on release.', 'Text Command, CSV Command, Dialog, and Camera typing now batches preview refreshes briefly instead of recalculating the sheet on every keystroke.']],
+        ['ver671', 'Position Edit overlay isolation', ['Position Edit drag preview now draws on a separate overlay above the sheet instead of mutating the main sheet SVG.', 'The drag preview is updated in the same animation frame as the position state, improving cursor follow on external paper alignment.']],
+        ['ver670', 'Position Edit drag responsiveness', ['Position Edit now reuses the drag preview overlay instead of rebuilding it on every pointer move.', 'Drag preview updates are limited to animation frames, reducing cursor lag on heavier paper templates.']],
         ['ver669', 'Touch cell editing', ['Original cell labels, dots, and hold-hit areas now support touch dragging on iPhone-style browsers.', 'Touch long-press and desktop right-click now use the same alternate cell action as the existing mark/text shortcut where applicable.']],
         ['ver668', 'Cell/Douga hold notation', ['Original and Douga Cell hold lines now appear only when there are 3 or more blank frames before the next input mark.', '<code>END</code> preview markers were changed to <code>止メ</code> on Original cells only, and final empty <code>x</code> holds use a wavy line.']],
         ['ver661', 'Speaker suffix tags', ['Dialog speaker labels can now keep <code>(SE)</code>, <code>(M)</code>, or <code>(OFF)</code> suffixes in the speaker field.', 'Click a speaker label in the preview to choose a suffix; when one is already set, <code>x</code> clears it.']],
@@ -2712,6 +2779,10 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver673', '低コストなドラッグ表示', ['Position Edit のドラッグプレビューを動く SVG ボックスではなく通常の HTML/CSS オーバーレイに変更し、外部用紙プレビュー上の描画負荷を減らしました。', 'コマンドテキストの正規化はキー入力ごとではなく、遅延更新の中でまとめて行うようにしました。']],
+        ['ver672', 'ドラッグとコマンド入力の軽量化', ['Position Edit はドラッグ中の移動を一時 draft として扱い、実際のシート配置は離した時に一度だけ反映します。', 'Text Command、CSV Command、Dialog、Camera の入力中は、キー入力ごとの全体再計算を避け、短くまとめてプレビュー更新します。']],
+        ['ver671', 'Position Edit オーバーレイ分離', ['Position Edit のドラッグプレビューを、シート本体 SVG ではなく別の上乗せオーバーレイに描くようにしました。', '位置状態の更新と同じアニメーションフレームでプレビューを反映し、外部用紙合わせ時の追従遅れを減らしました。']],
+        ['ver670', 'Position Edit ドラッグ応答改善', ['ドラッグ中のプレビューを毎回作り直さず、既存の赤いプレビューを再利用するようにしました。', 'プレビュー更新をアニメーションフレーム単位に制限し、重い用紙テンプレートでのカーソル遅延を減らしました。']],
         ['ver669', 'Touch cell editing', ['Original cell labels, dots, and hold-hit areas now support touch dragging on iPhone-style browsers.', 'Touch long-press and desktop right-click now use the same alternate cell action as the existing mark/text shortcut where applicable.']],
         ['ver668', 'Cell/Douga hold notation', ['Original and Douga Cell hold lines now appear only when there are 3 or more blank frames before the next input mark.', '<code>END</code> preview markers were changed to <code>止メ</code> on Original cells only, and final empty <code>x</code> holds use a wavy line.']],
         ['ver661', '話者サフィックス', ['台詞の話者欄に <code>(SE)</code>、<code>(M)</code>、<code>(OFF)</code> のサフィックスを保持できるようにしました。', 'プレビュー上の話者ラベルをクリックすると選択肢が開き、設定済みの場合は <code>x</code> で削除できます。']],
@@ -2737,6 +2808,10 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver673', '저비용 드래그 프리뷰 UI', ['Position Edit 드래그 프리뷰를 움직이는 SVG 박스 대신 일반 HTML/CSS 오버레이로 바꿔 외부용지 프리뷰의 페인트 비용을 줄였습니다.', '커맨드 텍스트 정규화도 키 입력마다 전체 문장을 훑지 않고 지연 갱신 흐름에서 처리합니다.']],
+        ['ver672', '드래그와 커맨드 입력 경량화', ['Position Edit는 드래그 중 이동을 임시 draft로만 처리하고, 실제 시트 위치는 마우스를 놓을 때 한 번만 반영합니다.', 'Text Command, CSV Command, Dialog, Camera 입력 중에는 키 입력마다 전체 시트를 재계산하지 않고 짧게 모아서 프리뷰를 갱신합니다.']],
+        ['ver671', 'Position Edit 오버레이 분리', ['Position Edit 드래그 프리뷰를 시트 본체 SVG가 아니라 별도 오버레이 위에 그리도록 바꿨습니다.', '위치 상태 갱신과 같은 애니메이션 프레임에서 프리뷰를 반영해 외부용지 맞춤 중 커서 추종 지연을 줄였습니다.']],
+        ['ver670', 'Position Edit 드래그 반응 개선', ['드래그 중 프리뷰 오버레이를 매번 새로 만들지 않고 기존 빨간 프리뷰를 재사용합니다.', '프리뷰 갱신을 애니메이션 프레임 단위로 제한해 무거운 용지 템플릿에서 마우스 지연을 줄였습니다.']],
         ['ver669', 'Touch cell editing', ['Original cell labels, dots, and hold-hit areas now support touch dragging on iPhone-style browsers.', 'Touch long-press and desktop right-click now use the same alternate cell action as the existing mark/text shortcut where applicable.']],
         ['ver668', 'Cell/Douga hold notation', ['Original and Douga Cell hold lines now appear only when there are 3 or more blank frames before the next input mark.', '<code>END</code> preview markers were changed to <code>止メ</code> on Original cells only, and final empty <code>x</code> holds use a wavy line.']],
         ['ver661', '화자 서픽스', ['대사 화자칸에 <code>(SE)</code>, <code>(M)</code>, <code>(OFF)</code> 서픽스를 유지할 수 있게 했습니다.', '프리뷰의 화자 라벨을 클릭하면 선택지가 열리고, 이미 지정된 경우 <code>x</code>로 삭제할 수 있습니다.']],
@@ -2762,6 +2837,10 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver673', '低成本拖动预览 UI', ['Position Edit 的拖动预览改为普通 HTML/CSS 覆盖层，不再移动 SVG 方框，从而降低外部纸张预览上的绘制成本。', '命令文本规范化也改为在延迟刷新流程中处理，不再每次按键都扫描全文。']],
+        ['ver672', '拖动与命令输入轻量化', ['Position Edit 拖动时只在临时 draft 中移动，真正的表格位置会在松开鼠标时一次性写入。', 'Text Command、CSV Command、Dialog、Camera 输入时会短暂合并预览刷新，避免每次按键都重新计算整张表。']],
+        ['ver671', 'Position Edit 预览层分离', ['Position Edit 拖动预览现在绘制在独立覆盖层上，不再改动主表格 SVG。', '预览会和位置状态在同一个动画帧中更新，减少外部纸张对齐时的鼠标跟随延迟。']],
+        ['ver670', 'Position Edit 拖动响应优化', ['拖动时会复用已有的红色预览层，不再每次指针移动都重新创建。', '预览更新限制为动画帧节奏，减少较重纸张模板中的鼠标延迟。']],
         ['ver669', 'Touch cell editing', ['Original cell labels, dots, and hold-hit areas now support touch dragging on iPhone-style browsers.', 'Touch long-press and desktop right-click now use the same alternate cell action as the existing mark/text shortcut where applicable.']],
         ['ver668', 'Cell/Douga hold notation', ['Original and Douga Cell hold lines now appear only when there are 3 or more blank frames before the next input mark.', '<code>END</code> preview markers were changed to <code>止メ</code> on Original cells only, and final empty <code>x</code> holds use a wavy line.']],
         ['ver661', '说话人后缀', ['对白说话人栏现在可以保留 <code>(SE)</code>、<code>(M)</code>、<code>(OFF)</code> 后缀。', '在预览中点击说话人标签即可选择后缀；已设置时可用 <code>x</code> 清除。']],
@@ -4448,7 +4527,17 @@
 
     function setLayoutBoxRect(key, rect) {
       if (!state.layoutBoxes) state.layoutBoxes = {};
-      state.layoutBoxes[key] = normalizeRect(rect, 18, 18);
+      const next = normalizeRect(rect, 18, 18);
+      const current = state.layoutBoxes[key];
+      if (
+        current &&
+        Math.round(Number(current.x) || 0) === next.x &&
+        Math.round(Number(current.y) || 0) === next.y &&
+        Math.round(Number(current.w) || 0) === next.w &&
+        Math.round(Number(current.h) || 0) === next.h
+      ) return false;
+      state.layoutBoxes[key] = next;
+      return true;
     }
 
     function clampLayoutRectToPage(rect) {
@@ -4750,6 +4839,8 @@
     }
 
     function setPositionEditHandleDragMuted(muted) {
+      if (state.layoutDragPreviewMuted === !!muted) return;
+      state.layoutDragPreviewMuted = !!muted;
       if (!svg || !svg.querySelectorAll) return;
       Array.prototype.forEach.call(svg.querySelectorAll('.position-edit-handle'), function(node){
         if (!node || node.classList.contains('position-edit-drag-preview')) return;
@@ -4759,79 +4850,141 @@
     }
 
     function clearLayoutDragPreview() {
+      if (state.layoutDragMoveFrame !== null) {
+        window.cancelAnimationFrame(state.layoutDragMoveFrame);
+        state.layoutDragMoveFrame = null;
+      }
+      if (state.layoutDragPreviewFrame !== null) {
+        window.cancelAnimationFrame(state.layoutDragPreviewFrame);
+        state.layoutDragPreviewFrame = null;
+      }
+      state.layoutDragPreviewPendingDrag = null;
       const group = state.layoutDragPreviewGroup;
       if (group && group.parentNode) group.parentNode.removeChild(group);
       state.layoutDragPreviewGroup = null;
+      state.layoutDragPreviewNodes = null;
+      if (positionDragOverlaySvg) {
+        positionDragOverlaySvg.classList.remove('active');
+        while (positionDragOverlaySvg.firstChild) positionDragOverlaySvg.removeChild(positionDragOverlaySvg.firstChild);
+      }
+      if (positionDragOverlayLayer) {
+        positionDragOverlayLayer.classList.remove('active');
+        positionDragOverlayLayer.textContent = '';
+      }
+      state.layoutDragHtmlNodes = null;
       setPositionEditHandleDragMuted(false);
     }
 
-    function renderLayoutDragPreview(drag) {
-      if (!svg || !drag || !state.positionMode || !state.layoutBoxBaseRects) return;
-      const previous = state.layoutDragPreviewGroup;
-      if (previous && previous.parentNode) previous.parentNode.removeChild(previous);
-      setPositionEditHandleDragMuted(true);
-      const group = el('g', { class:'position-edit-handle position-edit-drag-preview', 'pointer-events':'none' });
-      const keys = Object.keys(state.layoutBoxBaseRects).sort();
-      keys.forEach(function(previewKey){
-        const base = state.layoutBoxBaseRects[previewKey];
-        if (!base) return;
-        const box = getLayoutBoxRect(previewKey, base);
-        group.appendChild(el('rect', {
-          x:box.x, y:box.y, width:box.w, height:box.h, rx:6, ry:6,
-          fill:'rgba(255,255,255,0.34)', stroke:RED, 'stroke-width':2.6,
-          'stroke-dasharray':'8 5', 'pointer-events':'none'
-        }));
-        group.appendChild(el('text', {
-          x:box.x + 8, y:box.y - 9, fill:RED, 'font-size':14,
-          'font-family':'Arial, Helvetica, sans-serif', 'font-weight':'900',
-          'dominant-baseline':'middle', 'pointer-events':'none'
-        }, previewKey));
+    function cloneLayoutBoxesForDrag(source) {
+      const out = {};
+      Object.keys(source || {}).forEach(function(key){
+        const rect = source[key];
+        if (rect) out[key] = cloneRect(rect);
       });
-      svg.appendChild(group);
-      state.layoutDragPreviewGroup = group;
+      return out;
     }
 
-    function beginLayoutBoxDrag(event, key, mode, baseRect) {
-      if (!state.positionMode) return;
-      event.preventDefault();
-      event.stopPropagation();
-      if (event.stopImmediatePropagation) event.stopImmediatePropagation();
-      const point = getSvgPointFromPointerEvent(event);
-      const current = getLayoutBoxRect(key, baseRect);
-      const dragMode = mode || 'move';
-      const linkedInfo = getLinkedTimelineBoxInfo(key);
-      const groupMoveKeys = (dragMode === 'move' && linkedInfo && linkedInfo.side === 'right') ? getRightTimelineGroupMoveKeys() : [];
-      state.layoutDrag = {
-        pointerId:event.pointerId,
-        key:key,
-        mode:dragMode,
-        startX:point.x,
-        startY:point.y,
-        origin:cloneRect(current),
-        groupMoveKeys:groupMoveKeys,
-        groupOrigins:groupMoveKeys.length ? createLayoutGroupOrigins(groupMoveKeys) : null
-      };
-      document.documentElement.classList.add('position-edit-dragging');
-      renderLayoutDragPreview(state.layoutDrag);
-      if (event.currentTarget && event.currentTarget.setPointerCapture) {
-        try { event.currentTarget.setPointerCapture(event.pointerId); } catch (err) {}
+    function withLayoutBoxesDraft(draft, callback) {
+      const previous = state.layoutBoxes;
+      state.layoutBoxes = draft || {};
+      try {
+        return callback();
+      } finally {
+        state.layoutBoxes = previous;
       }
     }
 
-    function continueLayoutBoxDrag(event) {
-      const drag = state.layoutDrag;
-      if (!drag || drag.pointerId !== event.pointerId) return;
-      event.preventDefault();
-      event.stopPropagation();
-      const point = getSvgPointFromPointerEvent(event);
-      const dx = Math.round(point.x - drag.startX);
-      const dy = Math.round(point.y - drag.startY);
+    function getLayoutDragPreviewKeys(drag) {
+      const keys = [];
+      const add = function(key){
+        if (!key || keys.indexOf(key) !== -1) return;
+        if (state.layoutBoxBaseRects && state.layoutBoxBaseRects[key]) keys.push(key);
+      };
+      const key = drag && drag.key ? drag.key : '';
+      if (drag && Array.isArray(drag.groupMoveKeys) && drag.groupMoveKeys.length) {
+        ['cell', 'dialog', 'camera'].forEach(function(kind){
+          ['left', 'right', 'main'].forEach(function(side){ add(kind + '-' + side); });
+        });
+        add('cell-label-left');
+        add('cell-label-right');
+        add('cell-label-main');
+        return keys;
+      }
+      if (isHeaderBoxKey(key)) {
+        Object.keys(state.layoutBoxBaseRects || {}).forEach(function(candidate){
+          if (isHeaderBoxKey(candidate)) add(candidate);
+        });
+        return keys;
+      }
+      if (isCellLabelBoxKey(key)) {
+        add(key);
+        if (String(key).endsWith('-left')) add('cell-label-right');
+        else if (String(key).endsWith('-right')) add('cell-label-left');
+        else add('cell-label-main');
+        return keys;
+      }
+      if (isTimelineBodyBoxKey(key)) {
+        ['cell', 'dialog', 'camera'].forEach(function(kind){
+          ['left', 'right', 'main'].forEach(function(side){ add(kind + '-' + side); });
+        });
+        return keys;
+      }
+      add(key);
+      return keys;
+    }
+
+    function collectLayoutDragPreviewBoxes(keys) {
+      const boxes = {};
+      (keys || []).forEach(function(key){
+        const base = state.layoutBoxBaseRects && state.layoutBoxBaseRects[key];
+        if (!base) return;
+        boxes[key] = getLayoutBoxRect(key, base);
+      });
+      return boxes;
+    }
+
+    function renderLayoutDragHtmlPreview(drag) {
+      if (!positionDragOverlayLayer || !drag) return false;
+      if (positionDragOverlaySvg) positionDragOverlaySvg.classList.remove('active');
+      setPositionEditHandleDragMuted(true);
+      positionDragOverlayLayer.classList.add('active');
+      const scaleX = Number(drag.cssScaleX) || (positionDragOverlayLayer.clientWidth ? positionDragOverlayLayer.clientWidth / PAGE_W : 1);
+      const scaleY = Number(drag.cssScaleY) || (positionDragOverlayLayer.clientHeight ? positionDragOverlayLayer.clientHeight / PAGE_H : scaleX);
+      const boxes = drag.previewBoxes || collectLayoutDragPreviewBoxes(drag.previewKeys || getLayoutDragPreviewKeys(drag));
+      const keys = Object.keys(boxes).sort();
+      const nodes = state.layoutDragHtmlNodes || (state.layoutDragHtmlNodes = {});
+      Object.keys(nodes).forEach(function(existingKey){
+        if (keys.indexOf(existingKey) !== -1) return;
+        const existing = nodes[existingKey];
+        if (existing && existing.parentNode) existing.parentNode.removeChild(existing);
+        delete nodes[existingKey];
+      });
+      keys.forEach(function(previewKey){
+        const box = boxes[previewKey];
+        if (!box) return;
+        let node = nodes[previewKey];
+        if (!node) {
+          node = document.createElement('div');
+          node.className = 'position-drag-html-box';
+          node.setAttribute('data-position-preview-key', previewKey);
+          positionDragOverlayLayer.appendChild(node);
+          nodes[previewKey] = node;
+        }
+        node.classList.toggle('active', previewKey === drag.key);
+        node.style.width = Math.max(1, box.w * scaleX) + 'px';
+        node.style.height = Math.max(1, box.h * scaleY) + 'px';
+        node.style.transform = 'translate3d(' + Math.round(box.x * scaleX) + 'px,' + Math.round(box.y * scaleY) + 'px,0)';
+      });
+      return true;
+    }
+
+    function applyLayoutDragDeltaToDraft(drag, dx, dy) {
+      if (!drag) return;
       const next = cloneRect(drag.origin);
       const mode = drag.mode || 'move';
       if (mode === 'move' && drag.groupOrigins && drag.groupMoveKeys && drag.groupMoveKeys.length) {
         applyRightTimelineGroupMove(drag, dx);
         syncTimelineHorizontalGaps(drag.key);
-        renderLayoutDragPreview(drag);
         return;
       }
       if (mode === 'move') {
@@ -4854,23 +5007,184 @@
       }
       syncLinkedTimelineBox(drag.key);
       syncTimelineHorizontalGaps(drag.key);
-      renderLayoutDragPreview(drag);
+    }
+
+    function buildLayoutDragDraft(drag, clientX, clientY) {
+      if (!drag) return null;
+      const point = getSvgPointFromPointerEvent({ clientX:clientX, clientY:clientY }, drag.svgRect);
+      const dx = Math.round(point.x - drag.startX);
+      const dy = Math.round(point.y - drag.startY);
+      if (drag.lastDx === dx && drag.lastDy === dy) return null;
+      if (!drag.hasMoved && dx === 0 && dy === 0) {
+        drag.lastDx = dx;
+        drag.lastDy = dy;
+        return null;
+      }
+      drag.hasMoved = true;
+      drag.lastDx = dx;
+      drag.lastDy = dy;
+      const draft = cloneLayoutBoxesForDrag(drag.baseLayoutBoxes || state.layoutBoxes || {});
+      const previewKeys = drag.previewKeys || getLayoutDragPreviewKeys(drag);
+      const boxes = withLayoutBoxesDraft(draft, function(){
+        applyLayoutDragDeltaToDraft(drag, dx, dy);
+        return collectLayoutDragPreviewBoxes(previewKeys);
+      });
+      return { draft:draft, boxes:boxes, dx:dx, dy:dy };
+    }
+
+    function renderLayoutDragPreviewNow(drag) {
+      if (!drag || !state.positionMode || !state.layoutBoxBaseRects) return;
+      if (renderLayoutDragHtmlPreview(drag)) return;
+      const previewSvg = positionDragOverlaySvg || svg;
+      if (!previewSvg) return;
+      if (positionDragOverlaySvg) positionDragOverlaySvg.classList.add('active');
+      let group = state.layoutDragPreviewGroup;
+      if (!group || !group.parentNode) {
+        group = el('g', { class:'position-edit-handle position-edit-drag-preview', 'pointer-events':'none' });
+        previewSvg.appendChild(group);
+        state.layoutDragPreviewGroup = group;
+        state.layoutDragPreviewNodes = {};
+      }
+      setPositionEditHandleDragMuted(true);
+      const nodes = state.layoutDragPreviewNodes || (state.layoutDragPreviewNodes = {});
+      const boxes = drag.previewBoxes || collectLayoutDragPreviewBoxes(drag.previewKeys || getLayoutDragPreviewKeys(drag));
+      const keys = Object.keys(boxes).sort();
+      Object.keys(nodes).forEach(function(existingKey){
+        if (keys.indexOf(existingKey) !== -1) return;
+        const existing = nodes[existingKey];
+        if (existing && existing.group && existing.group.parentNode) existing.group.parentNode.removeChild(existing.group);
+        delete nodes[existingKey];
+      });
+      keys.forEach(function(previewKey){
+        const box = boxes[previewKey];
+        if (!box) return;
+        let nodeSet = nodes[previewKey];
+        if (!nodeSet) {
+          const item = el('g', { 'data-position-preview-key':previewKey, 'pointer-events':'none' });
+          const rectNode = el('rect', {
+            rx:6, ry:6,
+            fill:'rgba(255,255,255,0.34)', stroke:RED, 'stroke-width':2.6,
+            'stroke-dasharray':'8 5', 'pointer-events':'none'
+          });
+          const textNode = el('text', {
+            fill:RED, 'font-size':14,
+            'font-family':'Arial, Helvetica, sans-serif', 'font-weight':'900',
+            'dominant-baseline':'middle', 'pointer-events':'none'
+          }, previewKey);
+          item.appendChild(rectNode);
+          item.appendChild(textNode);
+          group.appendChild(item);
+          nodeSet = nodes[previewKey] = { group:item, rect:rectNode, text:textNode };
+        }
+        nodeSet.rect.setAttribute('x', box.x);
+        nodeSet.rect.setAttribute('y', box.y);
+        nodeSet.rect.setAttribute('width', Math.max(1, box.w));
+        nodeSet.rect.setAttribute('height', Math.max(1, box.h));
+        nodeSet.text.setAttribute('x', box.x + 8);
+        nodeSet.text.setAttribute('y', box.y - 9);
+      });
+    }
+
+    function requestLayoutDragPreview(drag) {
+      state.layoutDragPreviewPendingDrag = drag;
+      if (state.layoutDragPreviewFrame !== null) return;
+      state.layoutDragPreviewFrame = window.requestAnimationFrame(function(){
+        state.layoutDragPreviewFrame = null;
+        const pending = state.layoutDragPreviewPendingDrag;
+        state.layoutDragPreviewPendingDrag = null;
+        if (pending && state.layoutDrag === pending) renderLayoutDragPreviewNow(pending);
+      });
+    }
+
+    function beginLayoutBoxDrag(event, key, mode, baseRect) {
+      if (!state.positionMode) return;
+      event.preventDefault();
+      event.stopPropagation();
+      if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+      const rectBox = svg.getBoundingClientRect();
+      const stageBox = sheetStageEl ? sheetStageEl.getBoundingClientRect() : rectBox;
+      const point = getSvgPointFromPointerEvent(event, rectBox);
+      const current = getLayoutBoxRect(key, baseRect);
+      const dragMode = mode || 'move';
+      const linkedInfo = getLinkedTimelineBoxInfo(key);
+      const groupMoveKeys = (dragMode === 'move' && linkedInfo && linkedInfo.side === 'right') ? getRightTimelineGroupMoveKeys() : [];
+      state.layoutDrag = {
+        pointerId:event.pointerId,
+        key:key,
+        mode:dragMode,
+        startX:point.x,
+        startY:point.y,
+        pendingClientX:event.clientX,
+        pendingClientY:event.clientY,
+        origin:cloneRect(current),
+        svgRect:{ left:rectBox.left, top:rectBox.top, width:rectBox.width, height:rectBox.height },
+        cssScaleX:stageBox && stageBox.width ? stageBox.width / PAGE_W : (rectBox.width ? rectBox.width / PAGE_W : 1),
+        cssScaleY:stageBox && stageBox.height ? stageBox.height / PAGE_H : (rectBox.height ? rectBox.height / PAGE_H : 1),
+        sourceTarget:event.currentTarget || null,
+        baseLayoutBoxes:cloneLayoutBoxesForDrag(state.layoutBoxes || {}),
+        groupMoveKeys:groupMoveKeys,
+        groupOrigins:groupMoveKeys.length ? createLayoutGroupOrigins(groupMoveKeys) : null
+      };
+      state.layoutDrag.previewKeys = getLayoutDragPreviewKeys(state.layoutDrag);
+      state.layoutDrag.previewBoxes = collectLayoutDragPreviewBoxes(state.layoutDrag.previewKeys);
+      document.documentElement.classList.add('position-edit-dragging');
+      renderLayoutDragPreviewNow(state.layoutDrag);
+      if (event.currentTarget && event.currentTarget.setPointerCapture) {
+        try { event.currentTarget.setPointerCapture(event.pointerId); } catch (err) {}
+      }
+    }
+
+    function applyLayoutBoxDragMove(drag, clientX, clientY) {
+      if (!drag) return;
+      const draft = buildLayoutDragDraft(drag, clientX, clientY);
+      if (!draft) return;
+      drag.pendingLayoutBoxes = draft.draft;
+      drag.previewBoxes = draft.boxes;
+      renderLayoutDragPreviewNow(drag);
+    }
+
+    function continueLayoutBoxDrag(event) {
+      const drag = state.layoutDrag;
+      if (!drag || drag.pointerId !== event.pointerId) return;
+      event.preventDefault();
+      event.stopPropagation();
+      drag.pendingClientX = event.clientX;
+      drag.pendingClientY = event.clientY;
+      if (state.layoutDragMoveFrame !== null) return;
+      state.layoutDragMoveFrame = window.requestAnimationFrame(function(){
+        state.layoutDragMoveFrame = null;
+        if (!state.layoutDrag || state.layoutDrag !== drag) return;
+        applyLayoutBoxDragMove(drag, drag.pendingClientX, drag.pendingClientY);
+      });
     }
 
     function endLayoutBoxDrag(event) {
       const drag = state.layoutDrag;
       if (!drag || drag.pointerId !== event.pointerId) return;
       event.preventDefault();
-      if (event.currentTarget && event.currentTarget.releasePointerCapture) {
-        try { event.currentTarget.releasePointerCapture(event.pointerId); } catch (err) {}
+      event.stopPropagation();
+      if (state.layoutDragMoveFrame !== null) {
+        window.cancelAnimationFrame(state.layoutDragMoveFrame);
+        state.layoutDragMoveFrame = null;
+        applyLayoutBoxDragMove(drag, drag.pendingClientX, drag.pendingClientY);
       }
+      const captureTarget = drag.sourceTarget || event.currentTarget;
+      if (captureTarget && captureTarget.releasePointerCapture) {
+        try { captureTarget.releasePointerCapture(event.pointerId); } catch (err) {}
+      }
+      const changed = !!drag.pendingLayoutBoxes;
+      if (changed) state.layoutBoxes = drag.pendingLayoutBoxes;
       state.layoutDrag = null;
       clearLayoutDragPreview();
       document.documentElement.classList.remove('position-edit-dragging');
-      queueSavePaperMemory();
-      const hadQueuedRender = queuedRenderFrame !== null;
-      flushQueuedRender();
-      if (!hadQueuedRender) render();
+      const hadQueuedRender = queuedRenderFrame !== null || queuedRenderDeferred;
+      if (changed) {
+        queueSavePaperMemory();
+        flushQueuedRender();
+        if (!hadQueuedRender) render();
+      } else if (hadQueuedRender) {
+        flushQueuedRender();
+      }
     }
 
     function continueHeaderPositionDrag(event) { continueLayoutBoxDrag(event); }
@@ -13752,8 +14066,8 @@
       return getRenderModel();
     }
 
-    function getSvgPointFromPointerEvent(event) {
-      const rectBox = svg.getBoundingClientRect();
+    function getSvgPointFromPointerEvent(event, cachedRectBox) {
+      const rectBox = cachedRectBox || svg.getBoundingClientRect();
       if (!rectBox.width || !rectBox.height) return { x:0, y:0 };
       return {
         x:(event.clientX - rectBox.left) * (PAGE_W / rectBox.width),
@@ -13971,17 +14285,27 @@
     }
 
     let queuedRenderFrame = null;
+    let queuedRenderDeferred = false;
     let queuedRenderNeedsCommandSync = false;
     let lastTextCommandColumnPickerSignature = '';
 
     function requestRender(options) {
       const opts = options || {};
       if (opts.syncCommandText) queuedRenderNeedsCommandSync = true;
+      if (state.layoutDrag) {
+        queuedRenderDeferred = true;
+        return;
+      }
       if (queuedRenderFrame !== null) return;
       queuedRenderFrame = window.requestAnimationFrame(function(){
         queuedRenderFrame = null;
+        if (state.layoutDrag) {
+          queuedRenderDeferred = true;
+          return;
+        }
         const shouldSync = queuedRenderNeedsCommandSync;
         queuedRenderNeedsCommandSync = false;
+        queuedRenderDeferred = false;
         if (shouldSync) syncCommandTextFromCurrentState();
         render();
       });
@@ -13993,9 +14317,60 @@
         queuedRenderFrame = null;
         const shouldSync = queuedRenderNeedsCommandSync;
         queuedRenderNeedsCommandSync = false;
+        queuedRenderDeferred = false;
+        if (shouldSync) syncCommandTextFromCurrentState();
+        render();
+      } else if (queuedRenderDeferred) {
+        const shouldSync = queuedRenderNeedsCommandSync;
+        queuedRenderNeedsCommandSync = false;
+        queuedRenderDeferred = false;
         if (shouldSync) syncCommandTextFromCurrentState();
         render();
       }
+    }
+
+    function flushPendingCommandInputRender() {
+      const hadTimer = !!state.commandInputRenderTimer;
+      const hadPending = hadTimer || !!state.commandInputRenderNeedsCommandSync || !!state.pendingCsvCommandInputSync || !!state.pendingTextCommandNormalize || !!state.pendingCsvCommandNormalize;
+      if (state.commandInputRenderTimer) {
+        clearTimeout(state.commandInputRenderTimer);
+        state.commandInputRenderTimer = null;
+      }
+      const shouldSyncCommandText = !!state.commandInputRenderNeedsCommandSync;
+      state.commandInputRenderNeedsCommandSync = false;
+      if (state.pendingTextCommandNormalize) {
+        state.pendingTextCommandNormalize = false;
+        const current = getCommandTextValue('text');
+        const normalized = normalizeLeadingCrossGapCommandTextValue(current);
+        if (normalized !== current) setCommandTextValue('text', normalized);
+      }
+      if (state.pendingCsvCommandNormalize) {
+        state.pendingCsvCommandNormalize = false;
+        const current = getCommandTextValue('csv');
+        const normalized = normalizeLeadingCrossGapCommandTextValue(current);
+        if (normalized !== current) setCommandTextValue('csv', normalized);
+      }
+      if (state.pendingCsvCommandInputSync) {
+        state.pendingCsvCommandInputSync = false;
+        if (syncCsvColumnRolesFromCommandEdit()) refreshCsvColumnPicker();
+        syncCsvBookNameTags();
+        updateCsvTimelineBlocksFromRoles();
+      }
+      if (!hadPending) return false;
+      requestRender(shouldSyncCommandText ? { syncCommandText:true } : undefined);
+      return true;
+    }
+
+    function requestCommandInputRender(options) {
+      const opts = options || {};
+      if (opts.syncCommandText) state.commandInputRenderNeedsCommandSync = true;
+      if (opts.csvCommandSync) state.pendingCsvCommandInputSync = true;
+      if (opts.normalizeTextCommand) state.pendingTextCommandNormalize = true;
+      if (opts.normalizeCsvCommand) state.pendingCsvCommandNormalize = true;
+      if (state.commandInputRenderTimer) clearTimeout(state.commandInputRenderTimer);
+      state.commandInputRenderTimer = setTimeout(function(){
+        flushPendingCommandInputRender();
+      }, opts.delay == null ? 120 : Math.max(0, Number(opts.delay) || 0));
     }
 
     function refreshTextCommandColumnPickerIfNeeded() {
@@ -16911,6 +17286,7 @@
 
     async function downloadAllPages() {
       if (state.isExporting) return;
+      if (flushPendingCommandInputRender()) flushQueuedRender();
       state.isExporting = true;
       updatePreviewControls(state.totalPages);
       const format = exportFormatSelectEl.value || 'png';
@@ -17260,26 +17636,24 @@
     bindInput('author', handleRememberedHeaderInput);
     bindInput('page', render);
     function handleTimelineCommandInputChange() {
-      const current = getCommandTextValue('text');
-      const normalized = normalizeLeadingCrossGapCommandTextValue(current);
-      if (normalized !== current) setCommandTextValue('text', normalized);
-      requestRender();
+      requestCommandInputRender({ normalizeTextCommand:true });
     }
 
     function handleCsvCommandInputChange() {
-      const current = getCommandTextValue('csv');
-      const normalized = normalizeLeadingCrossGapCommandTextValue(current);
-      if (normalized !== current) setCommandTextValue('csv', normalized);
-      if (syncCsvColumnRolesFromCommandEdit()) refreshCsvColumnPicker();
-      syncCsvBookNameTags();
-      updateCsvTimelineBlocksFromRoles();
-      requestRender();
+      requestCommandInputRender({ normalizeCsvCommand:true, csvCommandSync:true });
     }
 
     bindInput('timelineCommandInput', handleTimelineCommandInputChange);
-    bindInput('dialogManual', function(){ scheduleManualSourceRoleSync(); requestRender(); });
-    bindInput('cameraManual', function(){ scheduleManualSourceRoleSync(); requestRender(); });
+    bindInput('dialogManual', function(){ scheduleManualSourceRoleSync(); requestCommandInputRender(); });
+    bindInput('cameraManual', function(){ scheduleManualSourceRoleSync(); requestCommandInputRender(); });
     bindInput('csvCommandEdit', handleCsvCommandInputChange);
+    ['timelineCommandInput', 'csvCommandEdit', 'dialogManual', 'cameraManual'].forEach(function(id){
+      const node = document.getElementById(id);
+      if (!node) return;
+      node.addEventListener('blur', function(){
+        if (flushPendingCommandInputRender()) flushQueuedRender();
+      });
+    });
 
     if (textCommandCellViewToggleEl) textCommandCellViewToggleEl.addEventListener('change', function(){
       if (!textCommandCellViewToggleEl.checked) mergeCommandCellViewToSource('text', true);
