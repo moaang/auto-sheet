@@ -1019,11 +1019,53 @@
     .text-memo-grip.e, .text-memo-grip.w { cursor: ew-resize; }
     .text-memo-grip.ne, .text-memo-grip.sw { cursor: nesw-resize; }
     .text-memo-grip.nw, .text-memo-grip.se { cursor: nwse-resize; }
+    .text-memo-delete {
+      cursor: pointer;
+      pointer-events: all;
+      touch-action: none;
+    }
     html.text-memo-dragging,
     html.text-memo-dragging body {
       overscroll-behavior: none;
       -webkit-user-select: none;
       user-select: none;
+    }
+
+    .text-memo-context-menu {
+      position: fixed;
+      z-index: 10005;
+      min-width: 156px;
+      padding: 5px;
+      border: 1px solid rgba(30, 41, 59, .18);
+      border-radius: 8px;
+      background: rgba(255,255,255,.98);
+      box-shadow: 0 10px 26px rgba(15, 23, 42, .22);
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      pointer-events: auto;
+    }
+    .text-memo-context-menu button {
+      width: 100%;
+      min-height: 28px;
+      padding: 4px 8px;
+      border: 0;
+      border-radius: 5px;
+      background: transparent;
+      color: var(--text);
+      font: inherit;
+      font-size: 12px;
+      font-weight: 800;
+      text-align: left;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .text-memo-context-menu button:hover {
+      background: rgba(207,42,42,.10);
+      color: var(--red);
+    }
+    .text-memo-context-menu button.danger {
+      color: var(--red);
     }
 
     .text-memo-apply-fixed {
@@ -1052,12 +1094,13 @@
     .text-memo-editor {
       position: fixed;
       z-index: 10001;
-      min-width: 90px;
-      min-height: 30px;
-      max-width: min(720px, calc(100vw - 16px));
+      box-sizing: border-box;
+      min-width: 0;
+      min-height: 0;
+      max-width: calc(100vw - 16px);
       max-height: min(360px, calc(100vh - 16px));
-      padding: 5px 7px;
-      border: 1.6px dashed rgba(207,42,42,.82);
+      padding: 5px 5px;
+      border: 1px dashed rgba(207,42,42,.82);
       border-radius: 6px;
       background: transparent;
       color: var(--text);
@@ -1070,6 +1113,8 @@
       font-weight: 600;
       line-height: 1.25;
       white-space: pre-wrap;
+      overflow-wrap: normal;
+      word-break: normal;
     }
 
     .inline-text-editor {
@@ -1952,6 +1997,9 @@
     const SHAKU_BLUE = '#1f6feb';
     const SHAKU_FLASH_DURATION_MS = 6000;
     const SHAKU_FLASH_FADE_MS = 650;
+    const TEXT_MEMO_DRAG_MOVE_TOLERANCE = 4;
+    const TEXT_MEMO_INITIAL_HINT_MS = 4000;
+    const TEXT_MEMO_INITIAL_HINT_FADE_MS = 1000;
     const TEXT_MEMO_MIN_W = 48;
     const TEXT_MEMO_MIN_H = 26;
     const TEXT_MEMO_DEFAULT_W = 280;
@@ -1962,10 +2010,11 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '673';
+    const APP_VERSION = '680';
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
     const PAPER_TEMPLATE_MATCH_MIN_SCORE = 0.75;
+    let textMemoMeasureCanvas = null;
     const PAPER_TEMPLATE_FINGERPRINTS = [
       { company:'8bit', aspect:0.7076, bodyTop:0.2540, bodyBottom:0.9343, rowH:0.0093, xCount:48, yCount:81, x:[0.0342,0.0496,0.0645,0.0799,0.0947,0.1101,0.1249,0.1403,0.1666,0.1957,0.2185,0.2419,0.2653,0.2886,0.3115,0.3349,0.3582,0.3816,0.3913,0.4073,0.4335,0.4518,0.4598,0.4860,0.5128,0.5282,0.5431,0.5585,0.5733,0.5881,0.6035,0.6189,0.6452,0.6748,0.6971,0.7205,0.7433,0.7564,0.7673,0.7906,0.8140,0.8369,0.8602,0.8865,0.9127,0.9310,0.9390,0.9658] },
       { company:'a1', aspect:0.7073, bodyTop:0.3198, bodyBottom:0.9774, rowH:0.0093, xCount:52, yCount:93, x:[0.0211,0.0376,0.0542,0.0707,0.0867,0.1027,0.1187,0.1352,0.1517,0.1677,0.1837,0.2162,0.2487,0.2647,0.2807,0.2972,0.3137,0.3297,0.3457,0.3622,0.3788,0.3948,0.4119,0.4273,0.4598,0.4917,0.5088,0.5260,0.5419,0.5579,0.5739,0.5904,0.6064,0.6229,0.6389,0.6549,0.6714,0.7039,0.7370,0.7524,0.7690,0.7849,0.8015,0.8175,0.8334,0.8500,0.8659,0.8825,0.9150,0.9304,0.9469,0.9789] },
@@ -2238,7 +2287,14 @@
       textMemoPages: {},
       activeTextMemo: null,
       textMemoResize: null,
+      textMemoPointerIntent: null,
+      textMemoEditMode: false,
+      textMemoContextMenu: null,
       textMemoEditor: null,
+      textMemoHint: null,
+      textMemoHintTimer: null,
+      textMemoHintFadeTimer: null,
+      textMemoHintFrame: null,
       textMemoSelectionToolbar: null,
       textMemoLastSelection: null,
       gestureStartTextMemoFontSize: 18,
@@ -2334,7 +2390,7 @@
         textCommandsLabel:'Text Commands', csvFileLabel:'CSV File', csvCommandEditLabel:'Editable Commands from CSV',
         dialogBlocksTitle:'Dialog Area', dialogFormatLabel:'Format: 0+01 | 1+00 | SPEAKER | SAMPLE', cameraBlocksTitle:'Camera Area', cameraFormatLabel:'Format: 0+01 | 1+00 | TERM | SAMPLE',
         sheetPreviewTitle:'Sheet Preview', chooseExportDirBtn:'Folder', downloadAllBtn:'Output', memoModeBtn:'Memo Mode', memoUndoBtn:'Undo', memoRedoBtn:'Redo', memoPenLabel:'Pen', memoEraserLabel:'Eraser', memoEraserButton:'Eraser',
-        createdByLabel:'Created by', settingsExportBtn:'Export', settingsFileBtn:'Load', settingsImportBtn:'Path', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'Settings JSON', settingsSelectEmpty:'Select settings', settingsSelectNoSettings:'No settings JSON', textMemoApplyBtn:'Apply', clearSheetDataBtn:'Reset All', hideSidebarBtn:'Hide UI', showSidebarBtn:'Show UI', feedbackHeading:'Feedback', feedbackFormLink:'Form', feedbackPlaceholder:'Bug report or request', feedbackHint:'Write anything you know: symptom, reproduction steps, CSV/PSD/image format, expected result, actual result, browser/OS.', feedbackSendBtn:'Send', feedbackEmpty:'Write a message first.', feedbackSending:'Sending...', feedbackSent:'Sent.', feedbackFailed:'Could not send. Open the form link.', shortcutSummaryTopHint:''
+        createdByLabel:'Created by', settingsExportBtn:'Export', settingsFileBtn:'Load', settingsImportBtn:'Path', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'Settings JSON', settingsSelectEmpty:'Select settings', settingsSelectNoSettings:'No settings JSON', textMemoApplyBtn:'Apply', textMemoMenuAdd:'Add text box', textMemoMenuDelete:'Delete text box', textMemoMenuEditMode:'Text box position edit', textMemoMenuEditDone:'Finish text box edit', textMemoMenuAutoArrange:'Auto arrange text boxes', textMemoInitialHint:'Right-click to add or edit text boxes.', clearSheetDataBtn:'Reset All', hideSidebarBtn:'Hide UI', showSidebarBtn:'Show UI', feedbackHeading:'Feedback', feedbackFormLink:'Form', feedbackPlaceholder:'Bug report or request', feedbackHint:'Write anything you know: symptom, reproduction steps, CSV/PSD/image format, expected result, actual result, browser/OS.', feedbackSendBtn:'Send', feedbackEmpty:'Write a message first.', feedbackSending:'Sending...', feedbackSent:'Sent.', feedbackFailed:'Could not send. Open the form link.', shortcutSummaryTopHint:''
       },
       ja: {
         languageLabel:'言語', headerCardTitle:'ヘッダー', episodeLabel:'話数', titleLabel:'タイトル', cutNoLabel:'カット番号', secondsLabel:'尺 秒', framesLabel:'尺 コマ', authorLabel:'名前', pageLabel:'ページ',
@@ -2342,7 +2398,7 @@
         textCommandsLabel:'テキストコマンド', csvFileLabel:'CSVファイル', csvCommandEditLabel:'CSVから生成された編集可能コマンド',
         dialogBlocksTitle:'セリフ欄', dialogFormatLabel:'形式: 0+01 | 1+00 | 話者 | セリフ例', cameraBlocksTitle:'カメラ欄', cameraFormatLabel:'形式: 0+01 | 1+00 | 記号 | 指示例',
         sheetPreviewTitle:'シートプレビュー', chooseExportDirBtn:'保存先', downloadAllBtn:'出力', memoModeBtn:'メモモード', memoUndoBtn:'取り消し', memoRedoBtn:'やり直し', memoPenLabel:'ペン', memoEraserLabel:'消しゴム', memoEraserButton:'消しゴム',
-        createdByLabel:'作成', settingsExportBtn:'出力', settingsFileBtn:'読込', settingsImportBtn:'読込先', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'設定JSON', settingsSelectEmpty:'設定選択', settingsSelectNoSettings:'設定JSONなし', textMemoApplyBtn:'適用', clearSheetDataBtn:'全体初期化', hideSidebarBtn:'UIを隠す', showSidebarBtn:'UIを表示', feedbackHeading:'報告', feedbackFormLink:'Form', feedbackPlaceholder:'不具合や要望を書く', feedbackHint:'わかる範囲で記入してください: 症状、再現手順、使用したCSV/PSD/画像形式、期待した結果、実際の結果、ブラウザ/OS。', feedbackSendBtn:'送信', feedbackEmpty:'内容を書いてください。', feedbackSending:'送信中...', feedbackSent:'送信しました。', feedbackFailed:'送信できません。Formリンクから送ってください。', shortcutSummaryTopHint:''
+        createdByLabel:'作成', settingsExportBtn:'出力', settingsFileBtn:'読込', settingsImportBtn:'読込先', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'設定JSON', settingsSelectEmpty:'設定選択', settingsSelectNoSettings:'設定JSONなし', textMemoApplyBtn:'適用', textMemoMenuAdd:'テキスト枠を追加', textMemoMenuDelete:'テキスト枠を削除', textMemoMenuEditMode:'テキスト枠位置編集', textMemoMenuEditDone:'テキスト枠編集終了', textMemoMenuAutoArrange:'テキスト枠を自動整列', textMemoInitialHint:'右クリックでテキスト枠を追加・編集できます。', clearSheetDataBtn:'全体初期化', hideSidebarBtn:'UIを隠す', showSidebarBtn:'UIを表示', feedbackHeading:'報告', feedbackFormLink:'Form', feedbackPlaceholder:'不具合や要望を書く', feedbackHint:'わかる範囲で記入してください: 症状、再現手順、使用したCSV/PSD/画像形式、期待した結果、実際の結果、ブラウザ/OS。', feedbackSendBtn:'送信', feedbackEmpty:'内容を書いてください。', feedbackSending:'送信中...', feedbackSent:'送信しました。', feedbackFailed:'送信できません。Formリンクから送ってください。', shortcutSummaryTopHint:''
       },
       ko: {
         languageLabel:'언어', headerCardTitle:'헤더', episodeLabel:'화수', titleLabel:'제목', cutNoLabel:'컷 번호', secondsLabel:'길이 초', framesLabel:'길이 프레임', authorLabel:'이름', pageLabel:'페이지',
@@ -2350,7 +2406,7 @@
         textCommandsLabel:'텍스트 커맨드', csvFileLabel:'CSV 파일', csvCommandEditLabel:'CSV에서 생성된 편집 가능 커맨드',
         dialogBlocksTitle:'대사란', dialogFormatLabel:'형식: 0+01 | 1+00 | 화자 | 예시', cameraBlocksTitle:'카메라란', cameraFormatLabel:'형식: 0+01 | 1+00 | 기호 | 지시 예시',
         sheetPreviewTitle:'시트 프리뷰', chooseExportDirBtn:'경로지정', downloadAllBtn:'출력', memoModeBtn:'메모 모드', memoUndoBtn:'되돌리기', memoRedoBtn:'다시 실행', memoPenLabel:'펜', memoEraserLabel:'지우개', memoEraserButton:'지우개',
-        createdByLabel:'제작', settingsExportBtn:'내보내기', settingsFileBtn:'불러오기', settingsImportBtn:'경로지정', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'설정 JSON', settingsSelectEmpty:'설정 선택', settingsSelectNoSettings:'설정 JSON 없음', textMemoApplyBtn:'적용', clearSheetDataBtn:'전체 초기화', hideSidebarBtn:'UI 숨기기', showSidebarBtn:'UI 펼치기', feedbackHeading:'문의', feedbackFormLink:'Form', feedbackPlaceholder:'버그 내용이나 개선 요청', feedbackHint:'가능하면 아는 것만 적어주세요: 증상, 재현 순서, 사용한 CSV/PSD/이미지 형식, 기대한 결과, 실제 결과, 브라우저/OS.', feedbackSendBtn:'보내기', feedbackEmpty:'내용을 먼저 입력하세요.', feedbackSending:'전송 중...', feedbackSent:'전송했습니다.', feedbackFailed:'전송하지 못했습니다. Form 링크로 보내주세요.', shortcutSummaryTopHint:''
+        createdByLabel:'제작', settingsExportBtn:'내보내기', settingsFileBtn:'불러오기', settingsImportBtn:'경로지정', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'설정 JSON', settingsSelectEmpty:'설정 선택', settingsSelectNoSettings:'설정 JSON 없음', textMemoApplyBtn:'적용', textMemoMenuAdd:'텍스트 박스 추가', textMemoMenuDelete:'텍스트 박스 삭제', textMemoMenuEditMode:'텍스트 박스 위치 편집', textMemoMenuEditDone:'텍스트 박스 편집 종료', textMemoMenuAutoArrange:'텍스트 박스 자동 정렬', textMemoInitialHint:'우클릭으로 텍스트 박스를 추가하거나 편집할 수 있습니다.', clearSheetDataBtn:'전체 초기화', hideSidebarBtn:'UI 숨기기', showSidebarBtn:'UI 펼치기', feedbackHeading:'문의', feedbackFormLink:'Form', feedbackPlaceholder:'버그 내용이나 개선 요청', feedbackHint:'가능하면 아는 것만 적어주세요: 증상, 재현 순서, 사용한 CSV/PSD/이미지 형식, 기대한 결과, 실제 결과, 브라우저/OS.', feedbackSendBtn:'보내기', feedbackEmpty:'내용을 먼저 입력하세요.', feedbackSending:'전송 중...', feedbackSent:'전송했습니다.', feedbackFailed:'전송하지 못했습니다. Form 링크로 보내주세요.', shortcutSummaryTopHint:''
       },
       zh: {
         languageLabel:'语言', headerCardTitle:'页眉', episodeLabel:'集数', titleLabel:'标题', cutNoLabel:'镜头编号', secondsLabel:'时长 秒', framesLabel:'时长 帧', authorLabel:'姓名', pageLabel:'页码',
@@ -2358,7 +2414,7 @@
         textCommandsLabel:'文本命令', csvFileLabel:'CSV 文件', csvCommandEditLabel:'从 CSV 生成的可编辑命令',
         dialogBlocksTitle:'对白栏', dialogFormatLabel:'格式: 0+01 | 1+00 | 说话人 | 示例', cameraBlocksTitle:'摄影机栏', cameraFormatLabel:'格式: 0+01 | 1+00 | 标记 | 指示示例',
         sheetPreviewTitle:'Sheet 预览', chooseExportDirBtn:'保存处', downloadAllBtn:'输出', memoModeBtn:'备注模式', memoUndoBtn:'撤销', memoRedoBtn:'重做', memoPenLabel:'笔', memoEraserLabel:'橡皮', memoEraserButton:'橡皮',
-        createdByLabel:'制作', settingsExportBtn:'导出', settingsFileBtn:'导入', settingsImportBtn:'路径', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'设置 JSON', settingsSelectEmpty:'选择设置', settingsSelectNoSettings:'无设置 JSON', textMemoApplyBtn:'应用', clearSheetDataBtn:'全部重置', hideSidebarBtn:'隐藏 UI', showSidebarBtn:'显示 UI', feedbackHeading:'反馈', feedbackFormLink:'Form', feedbackPlaceholder:'错误报告或改进建议', feedbackHint:'请尽量填写已知信息: 症状、复现步骤、使用的 CSV/PSD/图片格式、期望结果、实际结果、浏览器/OS。', feedbackSendBtn:'发送', feedbackEmpty:'请先输入内容。', feedbackSending:'发送中...', feedbackSent:'已发送。', feedbackFailed:'发送失败。请使用 Form 链接。', shortcutSummaryTopHint:''
+        createdByLabel:'制作', settingsExportBtn:'导出', settingsFileBtn:'导入', settingsImportBtn:'路径', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'设置 JSON', settingsSelectEmpty:'选择设置', settingsSelectNoSettings:'无设置 JSON', textMemoApplyBtn:'应用', textMemoMenuAdd:'添加文字框', textMemoMenuDelete:'删除文字框', textMemoMenuEditMode:'文字框位置编辑', textMemoMenuEditDone:'结束文字框编辑', textMemoMenuAutoArrange:'自动排列文字框', textMemoInitialHint:'可通过右键添加或编辑文字框。', clearSheetDataBtn:'全部重置', hideSidebarBtn:'隐藏 UI', showSidebarBtn:'显示 UI', feedbackHeading:'反馈', feedbackFormLink:'Form', feedbackPlaceholder:'错误报告或改进建议', feedbackHint:'请尽量填写已知信息: 症状、复现步骤、使用的 CSV/PSD/图片格式、期望结果、实际结果、浏览器/OS。', feedbackSendBtn:'发送', feedbackEmpty:'请先输入内容。', feedbackSending:'发送中...', feedbackSent:'已发送。', feedbackFailed:'发送失败。请使用 Form 链接。', shortcutSummaryTopHint:''
       }
     };
 
@@ -2750,6 +2806,13 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver680', 'Text box bullet prefix removal', ['Text memo editing no longer automatically inserts the <code>・</code> prefix on first input or line breaks.']],
+        ['ver679', 'Text box edit width margin', ['Text box editing now uses the same horizontal inner width as the preview text box and keeps extra auto-fit width to prevent the last character from wrapping on reopen.']],
+        ['ver678', 'Text box hint fade and editor match', ['The first text-box hint now stays for 4 seconds, with the final 1 second fading out.', 'Text-box auto-fit now uses browser text measurement so confirmed text and reopened editing wrap more consistently.']],
+        ['ver677', 'Text box quick start and auto-fit', ['When no text box exists, left-clicking the top text area creates the first default text box at the top-left and opens editing.', 'After text editing is confirmed, every text box auto-fits to the actual typed line width and line count.', 'A short blue hint appears below the first text box for about 3 seconds.']],
+        ['ver676', 'Text box position edit', ['Text-box-only position edit now exits when clicking an empty top-gap area or other sheet controls.', 'Clicking text still opens text editing, while dragging the text moves the text box.']],
+        ['ver675', 'Text box context menu', ['The top gap text box starts empty by default and is managed from a right-click menu.', 'Right-click the top gap to add a text box, auto-arrange boxes, or enter text-box-only position edit.', 'Right-click on an existing text box to delete it; old one-box data is kept as one text box.']],
+        ['ver674', 'Repeated cell marker sync', ['Changing an Original Cell mark between circle, triangle, and none now applies the same mark to every matching label in the same Cell layer.']],
         ['ver673', 'Low-cost drag preview UI', ['Position Edit drag preview now uses a plain HTML/CSS overlay instead of animated SVG boxes, reducing paint cost on external paper previews.', 'Command text normalization now runs inside the debounced refresh path instead of scanning the full text on every keystroke.']],
         ['ver672', 'Drag and command input performance', ['Position Edit now keeps box movement in a temporary drag draft and commits the actual sheet layout only once on release.', 'Text Command, CSV Command, Dialog, and Camera typing now batches preview refreshes briefly instead of recalculating the sheet on every keystroke.']],
         ['ver671', 'Position Edit overlay isolation', ['Position Edit drag preview now draws on a separate overlay above the sheet instead of mutating the main sheet SVG.', 'The drag preview is updated in the same animation frame as the position state, improving cursor follow on external paper alignment.']],
@@ -2779,6 +2842,13 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver680', 'テキスト枠の自動中黒を削除', ['テキスト枠の入力時、先頭や改行時に <code>・</code> を自動挿入しないようにしました。']],
+        ['ver679', 'テキスト枠編集幅の余裕', ['テキスト枠の編集欄の内側幅をプレビュー表示と揃え、再編集時に末尾1文字だけ折り返されにくいよう自動サイズに余裕を持たせました。']],
+        ['ver678', 'テキスト枠案内のFOと編集表示', ['初回テキスト枠の案内は4秒表示し、最後の1秒でフェードアウトするようにしました。', 'テキスト枠の自動サイズ計算にブラウザの実測文字幅を使い、確定表示と再編集時の折り返しを揃えやすくしました。']],
+        ['ver677', 'テキスト枠の初回作成と自動サイズ', ['テキスト枠がない状態で上部テキスト領域を左クリックすると、左上に初期サイズのテキスト枠を作成して編集を開きます。', 'テキスト編集を確定すると、すべてのテキスト枠が入力された行の幅と行数に合わせて自動調整されます。', '初回作成時、テキスト枠の下に青い案内文を約3秒表示します。']],
+        ['ver676', 'テキスト枠の位置編集', ['テキスト枠だけの位置編集中に、上部余白の空き部分や他のシート操作部をクリックすると位置編集を終了します。', 'テキストをクリックすると従来通り編集し、ドラッグするとテキスト枠を移動できるようにしました。']],
+        ['ver675', 'テキスト枠の右クリック操作', ['上部余白のテキスト枠は初期状態では作成せず、右クリックメニューから管理するようにしました。', '上部余白を右クリックすると、テキスト枠の追加・自動整列・テキスト枠だけの位置編集に入れます。', '既存のテキスト枠上で右クリックすると削除も選べます。旧データの1つだけの枠は、そのまま1つのテキスト枠として扱います。']],
+        ['ver674', '同じセル番号のマーク同期', ['原画 Cell の ○ / △ / なし を切り替えると、同じ Cell レイヤー内の同じ番号すべてに同じマークが反映されるようにしました。']],
         ['ver673', '低コストなドラッグ表示', ['Position Edit のドラッグプレビューを動く SVG ボックスではなく通常の HTML/CSS オーバーレイに変更し、外部用紙プレビュー上の描画負荷を減らしました。', 'コマンドテキストの正規化はキー入力ごとではなく、遅延更新の中でまとめて行うようにしました。']],
         ['ver672', 'ドラッグとコマンド入力の軽量化', ['Position Edit はドラッグ中の移動を一時 draft として扱い、実際のシート配置は離した時に一度だけ反映します。', 'Text Command、CSV Command、Dialog、Camera の入力中は、キー入力ごとの全体再計算を避け、短くまとめてプレビュー更新します。']],
         ['ver671', 'Position Edit オーバーレイ分離', ['Position Edit のドラッグプレビューを、シート本体 SVG ではなく別の上乗せオーバーレイに描くようにしました。', '位置状態の更新と同じアニメーションフレームでプレビューを反映し、外部用紙合わせ時の追従遅れを減らしました。']],
@@ -2808,6 +2878,13 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver680', '텍스트 박스 자동 점 제거', ['텍스트 박스 입력 시 첫 글자나 줄바꿈 앞에 <code>・</code>를 자동 삽입하지 않도록 했습니다.']],
+        ['ver679', '텍스트 박스 편집 폭 여유', ['텍스트 박스 편집칸의 내부 가로폭을 프리뷰 표시 기준과 맞추고, 재편집 시 마지막 글자만 다음 줄로 밀리지 않도록 자동 크기에 여유를 더했습니다.']],
+        ['ver678', '텍스트 박스 안내문 FO와 편집 표시', ['첫 텍스트 박스 안내문은 4초 동안 표시하고 마지막 1초는 페이드아웃되게 했습니다.', '텍스트 박스 자동 크기 계산에 브라우저의 실제 글자 폭 측정을 사용해 확정 표시와 재편집 시 줄바꿈이 더 일치하도록 했습니다.']],
+        ['ver677', '텍스트 박스 첫 생성과 자동 크기 맞춤', ['텍스트 박스가 없는 상태에서 상단 텍스트 영역을 좌클릭하면 왼쪽 위에 기본 크기 텍스트 박스를 만들고 바로 편집을 엽니다.', '텍스트 편집을 확정하면 모든 텍스트 박스가 실제 입력한 줄 폭과 줄 수에 맞게 자동 조정됩니다.', '처음 생성된 텍스트 박스 아래에 파란 안내문을 약 3초 표시합니다.']],
+        ['ver676', '텍스트 박스 위치편집', ['텍스트 박스 전용 위치편집 중 상단 여백의 빈 곳이나 다른 시트 조작부를 클릭하면 위치편집을 종료합니다.', '텍스트를 클릭하면 기존처럼 편집하고, 텍스트를 드래그하면 텍스트 박스를 이동할 수 있게 했습니다.']],
+        ['ver675', '텍스트 박스 우클릭 조작', ['상단 여백 텍스트 박스는 기본으로 만들지 않고 우클릭 메뉴에서 관리하도록 바꿨습니다.', '상단 여백을 우클릭하면 텍스트 박스 추가, 자동 정렬, 텍스트 박스 전용 위치편집을 선택할 수 있습니다.', '기존 텍스트 박스 위에서 우클릭하면 삭제도 선택할 수 있습니다. 예전 한 개짜리 데이터는 그대로 텍스트 박스 하나로 취급합니다.']],
+        ['ver674', '같은 셀 번호 표시 동기화', ['원화 Cell의 원 / 세모 / 표시 없음 변경을 같은 Cell 레이어 안의 같은 번호 전체에 함께 적용하도록 했습니다.']],
         ['ver673', '저비용 드래그 프리뷰 UI', ['Position Edit 드래그 프리뷰를 움직이는 SVG 박스 대신 일반 HTML/CSS 오버레이로 바꿔 외부용지 프리뷰의 페인트 비용을 줄였습니다.', '커맨드 텍스트 정규화도 키 입력마다 전체 문장을 훑지 않고 지연 갱신 흐름에서 처리합니다.']],
         ['ver672', '드래그와 커맨드 입력 경량화', ['Position Edit는 드래그 중 이동을 임시 draft로만 처리하고, 실제 시트 위치는 마우스를 놓을 때 한 번만 반영합니다.', 'Text Command, CSV Command, Dialog, Camera 입력 중에는 키 입력마다 전체 시트를 재계산하지 않고 짧게 모아서 프리뷰를 갱신합니다.']],
         ['ver671', 'Position Edit 오버레이 분리', ['Position Edit 드래그 프리뷰를 시트 본체 SVG가 아니라 별도 오버레이 위에 그리도록 바꿨습니다.', '위치 상태 갱신과 같은 애니메이션 프레임에서 프리뷰를 반영해 외부용지 맞춤 중 커서 추종 지연을 줄였습니다.']],
@@ -2837,6 +2914,13 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver680', '移除文字框自动点号', ['文字框输入时，不再在开头或换行后自动插入 <code>・</code>。']],
+        ['ver679', '文字框编辑宽度余量', ['文字框编辑区的内部宽度现在与预览显示基准一致，并增加自动尺寸余量，减少再次编辑时最后一个字符换行的问题。']],
+        ['ver678', '文字框提示淡出与编辑显示', ['首次文字框提示会显示4秒，最后1秒淡出。', '文字框自动尺寸改用浏览器实际文字宽度测量，使确认后的显示与再次编辑时的换行更一致。']],
+        ['ver677', '文字框首次创建与自动尺寸', ['没有文字框时，左键点击顶部文字区域会在左上角创建默认大小文字框并立即打开编辑。', '确认文字编辑后，所有文字框都会按实际输入的行宽和行数自动调整尺寸。', '首次创建时，文字框下方会显示约3秒的蓝色提示。']],
+        ['ver676', '文字框位置编辑', ['仅文字框位置编辑期间，点击顶部空白区域或其他表格控件会退出位置编辑。', '点击文字仍会进入文字编辑；拖动文字则会移动文字框。']],
+        ['ver675', '文字框右键操作', ['顶部空白区域的文字框默认不再自动创建，改为通过右键菜单管理。', '右键顶部空白区域可添加文字框、自动排列，或进入仅文字框的位置编辑。', '在现有文字框上右键时也可选择删除；旧版单个文字框数据会作为一个文字框保留。']],
+        ['ver674', '相同 Cell 编号标记同步', ['切换原画 Cell 的圆圈、三角或无标记时，会同步应用到同一 Cell 图层内所有相同编号。']],
         ['ver673', '低成本拖动预览 UI', ['Position Edit 的拖动预览改为普通 HTML/CSS 覆盖层，不再移动 SVG 方框，从而降低外部纸张预览上的绘制成本。', '命令文本规范化也改为在延迟刷新流程中处理，不再每次按键都扫描全文。']],
         ['ver672', '拖动与命令输入轻量化', ['Position Edit 拖动时只在临时 draft 中移动，真正的表格位置会在松开鼠标时一次性写入。', 'Text Command、CSV Command、Dialog、Camera 输入时会短暂合并预览刷新，避免每次按键都重新计算整张表。']],
         ['ver671', 'Position Edit 预览层分离', ['Position Edit 拖动预览现在绘制在独立覆盖层上，不再改动主表格 SVG。', '预览会和位置状态在同一个动画帧中更新，减少外部纸张对齐时的鼠标跟随延迟。']],
@@ -4749,7 +4833,7 @@
 
     function addHeaderInlineEditHit(field, box, editConfig, size, anchor, weight) {
       if (!field || !box || !editConfig || currentSvgTarget !== svg || !shouldDrawCurrentLayer()) return null;
-      if (state.positionMode || state.memoMode) return null;
+      if (state.positionMode || state.memoMode || state.textMemoEditMode) return null;
       const hit = el('rect', {
         x:box.x,
         y:box.y,
@@ -8097,6 +8181,7 @@
         state.paperAutoAlignOverlay = result.overlay;
         state.paperTemplateMatch = templateMatch;
         state.showTemplate = false;
+        state.textMemoEditMode = false;
         state.positionMode = true;
         setPaperAutoAlignResult({ status:'done', confidence:result.confidence, diagnostics:result.diagnostics });
         syncPaperLayoutControls();
@@ -8316,7 +8401,7 @@
     }
 
     function openSpeakerSuffixMenu(anchorNode, suffixConfig, event) {
-      if (!anchorNode || !suffixConfig || state.memoMode || state.positionMode) return;
+      if (!anchorNode || !suffixConfig || state.memoMode || state.positionMode || state.textMemoEditMode) return;
       if (event) {
         event.preventDefault();
         event.stopPropagation();
@@ -8377,7 +8462,7 @@
     }
 
     function openInlineTextEditor(node, editConfig, event) {
-      if (!node || !editConfig || state.memoMode || state.positionMode) return;
+      if (!node || !editConfig || state.memoMode || state.positionMode || state.textMemoEditMode) return;
       if (event) {
         event.preventDefault();
         event.stopPropagation();
@@ -10402,7 +10487,7 @@
     }
 
     function beginCellLongPressDrag(event, entry, frame, range, options) {
-      if (!entry || state.memoMode || state.positionMode || state.textMemoEditor || state.shakuMode) return;
+      if (!entry || state.memoMode || state.positionMode || state.textMemoEditMode || state.textMemoEditor || state.shakuMode) return;
       if (event.shiftKey) return;
       if (event.button !== undefined && event.button !== 0) return;
       cancelCellLongPressDrag();
@@ -10487,9 +10572,60 @@
       return node;
     }
 
-    function cycleCellMarkerOverride(key) {
-      const current = state.markerOverrides[key] || 'circle';
-      state.markerOverrides[key] = current === 'circle' ? 'triangle' : current === 'triangle' ? 'none' : 'circle';
+    function getNextCellMarkerKind(current) {
+      return current === 'circle' ? 'triangle' : current === 'triangle' ? 'none' : 'circle';
+    }
+
+    function getCellMarkerOverridePageIndex(layout, frame) {
+      const safeFrame = Math.max(1, Math.round(Number(frame) || 1));
+      const pageFrames = Math.max(1, Math.round(Number(layout && layout.pageFrames) || (layout && layout.singleMode ? 72 : 144)));
+      return Math.max(0, Math.floor((safeFrame - 1) / pageFrames));
+    }
+
+    function getCellMarkerOverrideKey(layout, uid, frame) {
+      return getCellMarkerOverridePageIndex(layout, frame) + '-' + Math.max(1, Math.round(Number(frame) || 1)) + '-' + uid;
+    }
+
+    function setCellMarkerOverrideValue(key, nextKind) {
+      if (!key) return;
+      if (!state.markerOverrides) state.markerOverrides = {};
+      if (nextKind === 'circle') delete state.markerOverrides[key];
+      else state.markerOverrides[key] = nextKind;
+    }
+
+    function applyCellMarkerToMatchingLabels(entry, seg, fallbackKey, nextKind) {
+      const uid = entry && entry.uid;
+      const label = String(seg && seg.label || '').trim();
+      if (!uid || !label) {
+        setCellMarkerOverrideValue(fallbackKey, nextKind);
+        return 1;
+      }
+      const model = getSyncedRenderModel();
+      const layout = model && model.layout;
+      const layer = layout && (layout.layers || []).find(function(candidate){ return candidate && candidate.uid === uid; });
+      if (!layer || !Array.isArray(layer.segments)) {
+        setCellMarkerOverrideValue(fallbackKey, nextKind);
+        return 1;
+      }
+      let count = 0;
+      layer.segments.forEach(function(candidate){
+        if (!candidate || candidate.kind === 'cross') return;
+        if (String(candidate.label || '').trim() !== label) return;
+        const key = getCellMarkerOverrideKey(layout, uid, candidate.from);
+        setCellMarkerOverrideValue(key, nextKind);
+        count += 1;
+      });
+      if (!count) {
+        setCellMarkerOverrideValue(fallbackKey, nextKind);
+        count = 1;
+      }
+      return count;
+    }
+
+    function cycleCellMarkerOverride(entry, absFrame, seg, key) {
+      const current = state.markerOverrides[key] || (seg && seg.kind) || 'circle';
+      const nextKind = getNextCellMarkerKind(current);
+      applyCellMarkerToMatchingLabels(entry, seg, key, nextKind);
     }
 
     function handleCellMarkerClick(event, entry, absFrame, seg, key) {
@@ -10501,7 +10637,7 @@
         delete state.markerOverrides[key];
         state.dotOverrides = {};
       } else {
-        cycleCellMarkerOverride(key);
+        cycleCellMarkerOverride(entry, absFrame, seg, key);
       }
       render();
       return true;
@@ -11151,7 +11287,10 @@
       cancelCellLongPressDrag();
       endTimelineEdgeDrag({ preventDefault:function(){}, stopPropagation:function(){} });
       const nextShakuMode = !state.shakuMode;
-      if (nextShakuMode) setMemoModeEnabled(false);
+      if (nextShakuMode) {
+        setMemoModeEnabled(false);
+        setTextMemoEditMode(false);
+      }
       state.shakuMode = nextShakuMode;
       state.shakuDrag = null;
       state.shakuSelection = null;
@@ -11207,7 +11346,7 @@
     }
 
     function beginShakuSelection(event, block, boundaryFrame) {
-      if (!state.shakuMode || state.memoMode || state.positionMode || state.textMemoEditor) return;
+      if (!state.shakuMode || state.memoMode || state.positionMode || state.textMemoEditMode || state.textMemoEditor) return;
       if (event.button !== undefined && event.button !== 0) return;
       event.preventDefault();
       event.stopPropagation();
@@ -11642,7 +11781,7 @@
 
     function beginCellLabelDrag(event, index, entries, labelArea) {
       removeCellLabelDragPreview();
-      if (state.memoMode || state.positionMode || state.textMemoEditor || state.shakuMode) return;
+      if (state.memoMode || state.positionMode || state.textMemoEditMode || state.textMemoEditor || state.shakuMode) return;
       if (event.button !== undefined && event.button !== 0) return;
       state.cellLabelDrag = {
         pointerId:event.pointerId,
@@ -11909,7 +12048,7 @@
     }
 
     function beginLayerNameTagDrag(event, id) {
-      if (state.memoMode || state.positionMode) return;
+      if (state.memoMode || state.positionMode || state.textMemoEditMode) return;
       event.preventDefault();
       event.stopPropagation();
       state.activeLayerNameTag = id;
@@ -12719,7 +12858,7 @@
     }
 
     function shouldShowTextMemoControls() {
-      return !!state.positionMode;
+      return !!state.textMemoEditMode;
     }
 
     function getTextMemoConstraintLayoutRect(key) {
@@ -12800,6 +12939,54 @@
       return memo;
     }
 
+    function getTextMemoOtherBoxes(pageIndex, excludeId) {
+      return getTextMemoPageData(pageIndex).filter(function(item){
+        return item && item.id !== excludeId;
+      }).map(function(item){
+        return clampTextMemoBox(Object.assign({}, item));
+      });
+    }
+
+    function textMemoRectsOverlap(a, b) {
+      if (!a || !b) return false;
+      const ax1 = Number(a.x) || 0, ay1 = Number(a.y) || 0;
+      const ax2 = ax1 + Math.max(0, Number(a.w) || 0), ay2 = ay1 + Math.max(0, Number(a.h) || 0);
+      const bx1 = Number(b.x) || 0, by1 = Number(b.y) || 0;
+      const bx2 = bx1 + Math.max(0, Number(b.w) || 0), by2 = by1 + Math.max(0, Number(b.h) || 0);
+      return ax1 < bx2 && ax2 > bx1 && ay1 < by2 && ay2 > by1;
+    }
+
+    function textMemoIntersectsAny(rect, boxes) {
+      return (boxes || []).some(function(box){ return textMemoRectsOverlap(rect, box); });
+    }
+
+    function resolveTextMemoRectForPlacement(rect, pageIndex, excludeId) {
+      const candidate = clampTextMemoBox(Object.assign({}, rect));
+      const boxes = getTextMemoOtherBoxes(pageIndex, excludeId);
+      if (!textMemoIntersectsAny(candidate, boxes)) return candidate;
+      const gap = getTextMemoGapRect();
+      const step = 12;
+      const maxX = Math.max(gap.x, gap.x + gap.w - candidate.w);
+      const maxY = Math.max(gap.y, gap.y + gap.h - candidate.h);
+      const targetCx = Number(candidate.x) + Number(candidate.w) / 2;
+      const targetCy = Number(candidate.y) + Number(candidate.h) / 2;
+      const probes = [];
+      for (let y = gap.y; y <= maxY; y += step) {
+        for (let x = gap.x; x <= maxX; x += step) {
+          const cx = x + Number(candidate.w) / 2;
+          const cy = y + Number(candidate.h) / 2;
+          probes.push({ x:x, y:y, d:(cx - targetCx) * (cx - targetCx) + (cy - targetCy) * (cy - targetCy) });
+        }
+      }
+      probes.push({ x:maxX, y:maxY, d:(maxX + candidate.w / 2 - targetCx) * (maxX + candidate.w / 2 - targetCx) + (maxY + candidate.h / 2 - targetCy) * (maxY + candidate.h / 2 - targetCy) });
+      probes.sort(function(a, b){ return a.d - b.d; });
+      for (let i = 0; i < probes.length; i++) {
+        const probe = clampTextMemoBox(Object.assign({}, candidate, { x:probes[i].x, y:probes[i].y }));
+        if (!textMemoIntersectsAny(probe, boxes)) return probe;
+      }
+      return null;
+    }
+
     function clampTextMemoResizeBox(rect, origin, mode) {
       const gap = getTextMemoGapRect();
       const out = Object.assign({}, rect);
@@ -12874,20 +13061,30 @@
 
     function createDefaultTextMemo(pageIndex, x, y, options) {
       const list = getTextMemoPageData(pageIndex);
-      if (list.length >= 1) return null;
       const gap = getTextMemoGapRect();
       const opt = options || {};
-      const memo = clampTextMemoBox({
+      const desired = {
         id:makeTextMemoId(),
-        x:opt.x != null ? opt.x : gap.x,
-        y:opt.y != null ? opt.y : gap.y,
-        w:opt.w != null ? opt.w : getTextMemoDurationDefaultWidth(gap),
-        h:opt.h != null ? opt.h : Math.max(1, gap.h),
+        x:opt.x != null ? opt.x : (x != null ? x : gap.x + Math.min(gap.w, TEXT_MEMO_DEFAULT_W) / 2),
+        y:opt.y != null ? opt.y : (y != null ? y : gap.y + Math.min(gap.h, TEXT_MEMO_DEFAULT_H) / 2),
+        w:opt.w != null ? opt.w : Math.min(TEXT_MEMO_DEFAULT_W, Math.max(TEXT_MEMO_MIN_W, gap.w)),
+        h:opt.h != null ? opt.h : Math.min(TEXT_MEMO_DEFAULT_H, Math.max(TEXT_MEMO_MIN_H, gap.h)),
         text:opt.text || '',
         fontSize:opt.fontSize || 18,
         color:opt.color || (state.memoTool === 'pen' ? state.memoColor : '#111111'),
         rich:Array.isArray(opt.rich) ? opt.rich.slice() : []
-      });
+      };
+      if (!opt.topLeft) {
+        desired.x = Number(desired.x) - Number(desired.w || 0) / 2;
+        desired.y = Number(desired.y) - Number(desired.h || 0) / 2;
+      }
+      const memo = resolveTextMemoRectForPlacement(desired, pageIndex, desired.id);
+      if (!memo) return null;
+      memo.id = desired.id;
+      memo.text = desired.text;
+      memo.fontSize = desired.fontSize;
+      memo.color = desired.color;
+      memo.rich = desired.rich;
       list.push(memo);
       return memo;
     }
@@ -12899,10 +13096,9 @@
     }
 
     function ensurePositionModeTextMemo(pageIndex) {
-      if (!state.positionMode) return null;
+      if (!state.textMemoEditMode) return null;
       const targetPage = Math.max(0, Number(pageIndex || 0));
       let memo = getTextMemoPageData(targetPage)[0] || null;
-      if (!memo) memo = createDefaultTextMemo(targetPage, null, null, {});
       if (memo) {
         clampTextMemoBox(memo);
         state.activeTextMemo = { pageIndex:targetPage, id:memo.id };
@@ -12911,12 +13107,268 @@
     }
 
     function createTextMemoAt(pageIndex, x, y) {
-      const list = getTextMemoPageData(pageIndex);
-      const memo = list[0] || getOrCreateTextMemo(pageIndex, x, y);
+      const memo = createDefaultTextMemo(pageIndex, x, y, {});
       if (!memo) return;
       state.activeTextMemo = { pageIndex:pageIndex, id:memo.id };
       render();
+      if (!state.textMemoEditMode) setTimeout(openActiveTextMemoEditor, 0);
+      return memo;
+    }
+
+    function clearTextMemoInitialHint(options) {
+      if (state.textMemoHintTimer) {
+        clearTimeout(state.textMemoHintTimer);
+        state.textMemoHintTimer = null;
+      }
+      if (state.textMemoHintFadeTimer) {
+        clearTimeout(state.textMemoHintFadeTimer);
+        state.textMemoHintFadeTimer = null;
+      }
+      if (state.textMemoHintFrame && typeof cancelAnimationFrame === 'function') {
+        cancelAnimationFrame(state.textMemoHintFrame);
+        state.textMemoHintFrame = null;
+      }
+      if (!state.textMemoHint) return;
+      state.textMemoHint = null;
+      if (!options || options.render !== false) render();
+    }
+
+    function getTextMemoInitialHintOpacity(hint) {
+      if (!hint || !hint.startedAt) return 1;
+      const elapsed = Date.now() - Number(hint.startedAt || 0);
+      const fadeStart = Math.max(0, TEXT_MEMO_INITIAL_HINT_MS - TEXT_MEMO_INITIAL_HINT_FADE_MS);
+      if (elapsed < fadeStart) return 1;
+      if (elapsed >= TEXT_MEMO_INITIAL_HINT_MS) return 0;
+      return clampNumber(1 - (elapsed - fadeStart) / Math.max(1, TEXT_MEMO_INITIAL_HINT_FADE_MS), 0, 1);
+    }
+
+    function scheduleTextMemoInitialHintFadeFrame() {
+      if (!state.textMemoHint || state.textMemoHintFrame || typeof requestAnimationFrame !== 'function') return;
+      state.textMemoHintFrame = requestAnimationFrame(function(){
+        state.textMemoHintFrame = null;
+        if (!state.textMemoHint) return;
+        if (getTextMemoInitialHintOpacity(state.textMemoHint) <= 0) {
+          clearTextMemoInitialHint();
+          return;
+        }
+        requestRender();
+        scheduleTextMemoInitialHintFadeFrame();
+      });
+    }
+
+    function showTextMemoInitialHint(pageIndex, id) {
+      if (state.textMemoHintTimer) clearTimeout(state.textMemoHintTimer);
+      if (state.textMemoHintFadeTimer) clearTimeout(state.textMemoHintFadeTimer);
+      if (state.textMemoHintFrame && typeof cancelAnimationFrame === 'function') cancelAnimationFrame(state.textMemoHintFrame);
+      state.textMemoHintFrame = null;
+      state.textMemoHint = { pageIndex:Math.max(0, Number(pageIndex || 0)), id:id, startedAt:Date.now() };
+      state.textMemoHintFadeTimer = setTimeout(function(){
+        state.textMemoHintFadeTimer = null;
+        scheduleTextMemoInitialHintFadeFrame();
+      }, Math.max(0, TEXT_MEMO_INITIAL_HINT_MS - TEXT_MEMO_INITIAL_HINT_FADE_MS));
+      state.textMemoHintTimer = setTimeout(function(){
+        state.textMemoHintTimer = null;
+        clearTextMemoInitialHint();
+      }, TEXT_MEMO_INITIAL_HINT_MS);
+    }
+
+    function createInitialTextMemoAtTopLeft(pageIndex) {
+      const targetPage = Math.max(0, Number(pageIndex || 0));
+      const list = getTextMemoPageData(targetPage);
+      if (list.length) return null;
+      const gap = getTextMemoGapRect();
+      const memo = createDefaultTextMemo(targetPage, gap.x, gap.y, { topLeft:true });
+      if (!memo) return null;
+      state.activeTextMemo = { pageIndex:targetPage, id:memo.id };
+      showTextMemoInitialHint(targetPage, memo.id);
+      render();
       setTimeout(openActiveTextMemoEditor, 0);
+      return memo;
+    }
+
+    function isPointInTextMemoGap(point) {
+      if (!point) return false;
+      const gap = getTextMemoGapRect();
+      return Number(point.x) >= gap.x && Number(point.x) <= gap.x + gap.w &&
+        Number(point.y) >= gap.y && Number(point.y) <= gap.y + gap.h;
+    }
+
+    function getTextMemoAtPoint(pageIndex, point) {
+      if (!point) return null;
+      const list = getTextMemoPageData(pageIndex);
+      for (let i = list.length - 1; i >= 0; i--) {
+        const memo = clampTextMemoBox(list[i]);
+        if (Number(point.x) >= memo.x && Number(point.x) <= memo.x + memo.w &&
+            Number(point.y) >= memo.y && Number(point.y) <= memo.y + memo.h) {
+          return memo;
+        }
+      }
+      return null;
+    }
+
+    function deleteTextMemoById(pageIndex, id) {
+      const list = getTextMemoPageData(pageIndex);
+      const index = list.findIndex(function(item){ return item && item.id === id; });
+      if (index === -1) return false;
+      list.splice(index, 1);
+      if (state.textMemoHint && state.textMemoHint.id === id && Number(state.textMemoHint.pageIndex || 0) === Number(pageIndex || 0)) clearTextMemoInitialHint({ render:false });
+      if (state.activeTextMemo && state.activeTextMemo.id === id && Number(state.activeTextMemo.pageIndex || 0) === Number(pageIndex || 0)) state.activeTextMemo = null;
+      if (state.textMemoEditor && state.textMemoEditor.id === id && Number(state.textMemoEditor.pageIndex || 0) === Number(pageIndex || 0)) closeTextMemoEditor({ render:false });
+      return true;
+    }
+
+    function clusterTextMemoColumnsForArrange(items) {
+      const sorted = (items || []).slice().sort(function(a, b){
+        const ac = Number(a.x) + Number(a.w) / 2;
+        const bc = Number(b.x) + Number(b.w) / 2;
+        return ac === bc ? Number(a.y) - Number(b.y) : ac - bc;
+      });
+      const widths = sorted.map(function(item){ return Math.max(TEXT_MEMO_MIN_W, Number(item.w) || TEXT_MEMO_DEFAULT_W); });
+      const avgW = widths.length ? widths.reduce(function(a, b){ return a + b; }, 0) / widths.length : TEXT_MEMO_DEFAULT_W;
+      const tolerance = Math.max(48, Math.min(180, avgW * 0.55));
+      const clusters = [];
+      sorted.forEach(function(item){
+        const center = Number(item.x) + Number(item.w) / 2;
+        let cluster = null;
+        for (let i = 0; i < clusters.length; i++) {
+          if (Math.abs(center - clusters[i].center) <= tolerance) {
+            cluster = clusters[i];
+            break;
+          }
+        }
+        if (!cluster) {
+          cluster = { center:center, items:[] };
+          clusters.push(cluster);
+        }
+        cluster.items.push(item);
+        cluster.center = cluster.items.reduce(function(sum, memo){ return sum + Number(memo.x) + Number(memo.w) / 2; }, 0) / cluster.items.length;
+      });
+      clusters.sort(function(a, b){ return a.center - b.center; });
+      clusters.forEach(function(cluster){
+        cluster.items.sort(function(a, b){ return Number(a.y) === Number(b.y) ? Number(a.x) - Number(b.x) : Number(a.y) - Number(b.y); });
+      });
+      return clusters;
+    }
+
+    function autoArrangeTextMemos(pageIndex) {
+      const list = getTextMemoPageData(pageIndex);
+      if (!list.length) return false;
+      const gap = getTextMemoGapRect();
+      const rowGap = 10;
+      const colGap = 16;
+      const clusters = clusterTextMemoColumnsForArrange(list.map(function(memo){ return clampTextMemoBox(memo); }));
+      let x = gap.x;
+      clusters.forEach(function(cluster){
+        let y = gap.y;
+        let colW = Math.max(TEXT_MEMO_MIN_W, Math.max.apply(null, cluster.items.map(function(memo){ return Number(memo.w) || TEXT_MEMO_DEFAULT_W; })));
+        cluster.items.forEach(function(memo){
+          const w = Math.min(Math.max(TEXT_MEMO_MIN_W, Number(memo.w) || TEXT_MEMO_DEFAULT_W), Math.max(TEXT_MEMO_MIN_W, gap.w));
+          const h = Math.min(Math.max(TEXT_MEMO_MIN_H, Number(memo.h) || TEXT_MEMO_DEFAULT_H), Math.max(TEXT_MEMO_MIN_H, gap.h));
+          if (y > gap.y && y + h > gap.y + gap.h) {
+            x += colW + colGap;
+            y = gap.y;
+            colW = w;
+          }
+          memo.w = w;
+          memo.h = h;
+          memo.x = clampNumber(x, gap.x, Math.max(gap.x, gap.x + gap.w - w));
+          memo.y = clampNumber(y, gap.y, Math.max(gap.y, gap.y + gap.h - h));
+          memo.fontSize = clampNumber(Number(memo.fontSize) || 18, 8, 96);
+          memo.color = String(memo.color || '#111111');
+          memo.text = String(memo.text == null ? '' : memo.text);
+          y += h + rowGap;
+          colW = Math.max(colW, w);
+        });
+        x += colW + colGap;
+      });
+      render();
+      return true;
+    }
+
+    function closeTextMemoContextMenu() {
+      const active = state.textMemoContextMenu;
+      if (active && active.el && active.el.parentNode) active.el.parentNode.removeChild(active.el);
+      state.textMemoContextMenu = null;
+    }
+
+    function setTextMemoEditMode(enabled) {
+      const next = !!enabled;
+      if (state.textMemoEditor) closeTextMemoEditor({ render:false });
+      closeTextMemoContextMenu();
+      state.textMemoPointerIntent = null;
+      state.textMemoEditMode = next;
+      if (next) {
+        setMemoModeEnabled(false);
+        state.positionMode = false;
+        if (headerPositionModeBtn) headerPositionModeBtn.classList.toggle('active', false);
+        if (paperToolbarPositionBtn) paperToolbarPositionBtn.classList.toggle('active', false);
+        const list = getTextMemoPageData(state.currentPreviewPage || 0);
+        if (list[0]) state.activeTextMemo = { pageIndex:state.currentPreviewPage || 0, id:list[0].id };
+      } else {
+        state.activeTextMemo = null;
+        state.textMemoResize = null;
+        state.textMemoPointerIntent = null;
+        document.documentElement.classList.remove('text-memo-dragging');
+      }
+      render();
+    }
+
+    function toggleTextMemoEditMode() {
+      setTextMemoEditMode(!state.textMemoEditMode);
+    }
+
+    function addTextMemoContextMenuButton(menu, label, className, handler) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = label;
+      if (className) btn.className = className;
+      btn.addEventListener('pointerdown', function(event){
+        event.preventDefault();
+        event.stopPropagation();
+      });
+      btn.addEventListener('click', function(event){
+        event.preventDefault();
+        event.stopPropagation();
+        closeTextMemoContextMenu();
+        handler();
+      });
+      menu.appendChild(btn);
+      return btn;
+    }
+
+    function openTextMemoContextMenu(event, pageIndex, memoId) {
+      if (!event) return;
+      event.preventDefault();
+      event.stopPropagation();
+      if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+      const point = getSvgPointFromPointerEvent(event);
+      if (!memoId && !isPointInTextMemoGap(point)) return;
+      closeTextMemoContextMenu();
+      const menu = document.createElement('div');
+      menu.className = 'text-memo-context-menu';
+      const list = getTextMemoPageData(pageIndex);
+      addTextMemoContextMenuButton(menu, getTextMemoUiText('textMemoMenuAdd'), '', function(){
+        createTextMemoAt(pageIndex, point.x, point.y);
+      });
+      if (memoId) {
+        addTextMemoContextMenuButton(menu, getTextMemoUiText('textMemoMenuDelete'), 'danger', function(){
+          if (deleteTextMemoById(pageIndex, memoId)) render();
+        });
+      }
+      if (list.length) {
+        addTextMemoContextMenuButton(menu, getTextMemoUiText('textMemoMenuAutoArrange'), '', function(){
+          autoArrangeTextMemos(pageIndex);
+        });
+      }
+      addTextMemoContextMenuButton(menu, getTextMemoUiText(state.textMemoEditMode ? 'textMemoMenuEditDone' : 'textMemoMenuEditMode'), '', function(){
+        toggleTextMemoEditMode();
+      });
+      document.body.appendChild(menu);
+      const menuW = menu.offsetWidth || 180;
+      const menuH = menu.offsetHeight || 120;
+      menu.style.left = clampNumber(Number(event.clientX || 0) + 4, 4, Math.max(4, window.innerWidth - menuW - 4)) + 'px';
+      menu.style.top = clampNumber(Number(event.clientY || 0) + 4, 4, Math.max(4, window.innerHeight - menuH - 4)) + 'px';
+      state.textMemoContextMenu = { el:menu, pageIndex:pageIndex, memoId:memoId || '', point:point };
     }
 
     function normalizeTextMemoRichRuns(memo) {
@@ -13121,7 +13573,7 @@
     }
 
     function beginPastedImageDrag(event, id, mode) {
-      if (state.memoMode || state.positionMode) return;
+      if (state.memoMode || state.positionMode || state.textMemoEditMode) return;
       event.preventDefault();
       event.stopPropagation();
       state.activePastedImage = { pageIndex:state.currentPreviewPage || 0, id:id };
@@ -13224,16 +13676,31 @@
     }
 
     function renderTextMemoHitArea(pageIndex, interactive) {
-      if (!interactive || state.memoMode || state.positionMode || currentSvgTarget !== svg) return;
+      if (!interactive || state.memoMode || state.shakuMode || currentSvgTarget !== svg) return;
       const gap = getTextMemoGapRect();
       const hit = el('rect', { x:gap.x, y:gap.y, width:gap.w, height:gap.h, fill:'transparent', stroke:'transparent', 'pointer-events':'all', class:'text-memo-hit-area' });
-      hit.style.cursor = 'text';
-      hit.addEventListener('click', function(event){
-        if (state.suppressNextClick) return;
+      hit.style.cursor = 'default';
+      hit.addEventListener('pointerdown', function(event){
+        if (event.button !== undefined && event.button !== 0) return;
+        const point = getSvgPointFromPointerEvent(event);
+        if (getTextMemoAtPoint(pageIndex, point)) return;
+        if (state.textMemoEditMode) {
+          event.preventDefault();
+          event.stopPropagation();
+          if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+          setTextMemoEditMode(false);
+          return;
+        }
+        if (state.positionMode || getTextMemoPageData(pageIndex).length) return;
         event.preventDefault();
         event.stopPropagation();
+        if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+        createInitialTextMemoAtTopLeft(pageIndex);
+      }, { passive:false });
+      hit.addEventListener('contextmenu', function(event){
         const point = getSvgPointFromPointerEvent(event);
-        createTextMemoAt(pageIndex, point.x, point.y);
+        const memo = getTextMemoAtPoint(pageIndex, point);
+        openTextMemoContextMenu(event, pageIndex, memo && memo.id);
       });
       appendSvgNode(hit);
     }
@@ -13241,6 +13708,17 @@
     function estimateTextMemoTextWidth(value, fontSize) {
       const source = String(value || '');
       const size = Math.max(1, Number(fontSize || 18));
+      try {
+        if (typeof document !== 'undefined') {
+          if (!textMemoMeasureCanvas) textMemoMeasureCanvas = document.createElement('canvas');
+          const ctx = textMemoMeasureCanvas && textMemoMeasureCanvas.getContext ? textMemoMeasureCanvas.getContext('2d') : null;
+          if (ctx) {
+            ctx.font = '600 ' + size + 'px Arial, Helvetica, sans-serif';
+            const measured = ctx.measureText(source).width;
+            if (Number.isFinite(measured)) return Math.max(size * 0.34, measured);
+          }
+        }
+      } catch (err) {}
       let width = 0;
       for (let i = 0; i < source.length; i++) {
         const code = source.charCodeAt(i);
@@ -13251,6 +13729,63 @@
         else width += size * 0.78;
       }
       return Math.max(size * 0.34, width);
+    }
+
+    function estimateTextMemoLineRichWidth(lineText, startOffset, memo) {
+      const fontSize = Number(memo && memo.fontSize || 18);
+      const charW = Math.max(5, fontSize * 0.58);
+      return getTextMemoRichSegments(String(lineText || ''), Number(startOffset || 0), memo).reduce(function(sum, seg){
+        const segmentW = estimateTextMemoTextWidth(seg.text || '', fontSize);
+        return sum + Math.max(charW, seg.bold ? segmentW * 1.04 : segmentW);
+      }, 0);
+    }
+
+    function getTextMemoRawLinesForFit(textValue) {
+      const source = String(textValue == null ? '' : textValue);
+      if (!source) return [];
+      const rawLines = source.split('\n');
+      let offset = 0;
+      return rawLines.map(function(line, index){
+        const out = { text:line, start:offset, end:offset + line.length };
+        offset += line.length + (index < rawLines.length - 1 ? 1 : 0);
+        return out;
+      });
+    }
+
+    function fitTextMemoBoxToContent(memo) {
+      if (!memo) return false;
+      const textValue = String(memo.text == null ? '' : memo.text);
+      if (!textValue.length) return false;
+      const gap = getTextMemoGapRect();
+      const fontSize = clampNumber(Number(memo.fontSize) || 18, 8, 96);
+      const lineH = fontSize * 1.25;
+      const lines = getTextMemoRawLinesForFit(textValue);
+      const minW = Math.min(TEXT_MEMO_MIN_W, Math.max(1, Number(gap.w) || 1));
+      const maxW = Math.max(1, Number(gap.w) || 1);
+      const maxLineW = Math.max.apply(null, lines.map(function(line){
+        return estimateTextMemoLineRichWidth(line.text, line.start, memo);
+      }).concat([0]));
+      const targetW = clampNumber(Math.ceil(maxLineW + 30), minW, maxW);
+      const wrapChars = Math.max(1, Math.floor((targetW - 30) / Math.max(5, fontSize * 0.58)));
+      const visualLineCount = lines.reduce(function(sum, line){
+        return sum + Math.max(1, Math.ceil(String(line.text || '').length / wrapChars));
+      }, 0);
+      const next = Object.assign({}, memo, {
+        w:targetW,
+        h:Math.ceil(visualLineCount * lineH + 14),
+        fontSize:fontSize
+      });
+      const before = { x:memo.x, y:memo.y, w:memo.w, h:memo.h };
+      Object.assign(memo, clampTextMemoBox(next));
+      return Math.round(before.x) !== Math.round(memo.x) ||
+        Math.round(before.y) !== Math.round(memo.y) ||
+        Math.round(before.w) !== Math.round(memo.w) ||
+        Math.round(before.h) !== Math.round(memo.h);
+    }
+
+    function fitTextMemoByIdToContent(pageIndex, id) {
+      const memo = getTextMemoPageData(pageIndex).find(function(item){ return item && item.id === id; });
+      return fitTextMemoBoxToContent(memo);
     }
 
     function renderTextMemoLineRich(memo, lineInfo, lineIndex) {
@@ -13267,7 +13802,8 @@
         group.appendChild(el('text', { x:x, y:y, fill:memo.color || '#111111', 'font-size':fontSize, 'font-family':'Arial, Helvetica, sans-serif', 'font-weight':seg.bold ? '900' : '600', 'dominant-baseline':'middle', 'pointer-events':'none' }, display));
         x += w;
       });
-      group.addEventListener('click', function(event){ selectTextMemo(memo.id, event); });
+      group.addEventListener('pointerdown', function(event){ beginTextMemoPointerIntent(event, memo.id, state.currentPreviewPage || 0); }, { passive:false });
+      group.addEventListener('contextmenu', function(event){ openTextMemoContextMenu(event, state.currentPreviewPage || 0, memo.id); });
       group.addEventListener('wheel', handleTextMemoWheel, { passive:false });
       appendSvgNode(group);
     }
@@ -13281,22 +13817,18 @@
       if (!interactive || isActive || currentSvgTarget !== svg) return;
       const hit = el('rect', {
         x:memo.x, y:memo.y, width:memo.w, height:memo.h,
-        fill:'transparent', stroke:'transparent', 'pointer-events':'all', class:'text-memo-select-hit'
+        fill:'transparent', stroke:'transparent', 'pointer-events':'all', class:'text-memo-select-hit',
+        'data-text-memo-id':memo.id
       });
       hit.style.cursor = 'text';
-      hit.addEventListener('click', function(event){
-        if (state.suppressNextClick) return;
-        event.preventDefault();
-        event.stopPropagation();
-        state.activeTextMemo = { pageIndex:pageIndex, id:memo.id };
-        render();
-        setTimeout(openActiveTextMemoEditor, 0);
-      });
+      hit.addEventListener('contextmenu', function(event){ openTextMemoContextMenu(event, pageIndex, memo.id); });
+      hit.addEventListener('pointerdown', function(event){ beginTextMemoPointerIntent(event, memo.id, pageIndex); }, { passive:false });
       appendSvgNode(hit);
     }
 
     function renderTextMemoControls(memo) {
       const group = el('g', { class:'text-memo-controls', 'data-text-memo-id':memo.id });
+      group.addEventListener('contextmenu', function(event){ openTextMemoContextMenu(event, state.currentPreviewPage || 0, memo.id); });
       const outline = el('rect', {
         x:memo.x, y:memo.y, width:memo.w, height:memo.h, rx:6, ry:6,
         fill:'rgba(255,255,255,0.2)', stroke:RED, 'stroke-width':2, 'stroke-dasharray':'8 5',
@@ -13318,7 +13850,40 @@
         grip.addEventListener('pointerdown', function(event){ beginTextMemoResize(event, memo.id, mode); }, { passive:false });
         group.appendChild(grip);
       });
+      const deleteGroup = el('g', { class:'text-memo-delete', 'pointer-events':'all' });
+      deleteGroup.appendChild(el('rect', { x:memo.x + memo.w - 24, y:memo.y - 28, width:22, height:22, rx:6, ry:6, fill:'white', stroke:RED, 'stroke-width':1.4 }));
+      deleteGroup.appendChild(el('text', { x:memo.x + memo.w - 13, y:memo.y - 16.5, fill:RED, 'font-size':13, 'font-family':'Arial, Helvetica, sans-serif', 'font-weight':'900', 'text-anchor':'middle', 'dominant-baseline':'middle', 'pointer-events':'none' }, '×'));
+      deleteGroup.addEventListener('click', function(event){
+        event.preventDefault();
+        event.stopPropagation();
+        if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+        if (deleteTextMemoById(state.currentPreviewPage || 0, memo.id)) render();
+      });
+      group.appendChild(deleteGroup);
       appendSvgNode(group);
+    }
+
+    function renderTextMemoInitialHint(memo, pageIndex) {
+      const hint = state.textMemoHint;
+      if (!hint || !memo || currentSvgTarget !== svg) return;
+      if (Number(hint.pageIndex || 0) !== Number(pageIndex || 0) || hint.id !== memo.id) return;
+      const opacity = getTextMemoInitialHintOpacity(hint);
+      if (opacity <= 0) return;
+      const gap = getTextMemoGapRect();
+      const label = getTextMemoUiText('textMemoInitialHint');
+      const y = clampNumber(Number(memo.y || 0) + Number(memo.h || 0) + 24, gap.y + 14, gap.y + gap.h - 6);
+      const node = el('text', {
+        x:Number(memo.x || 0),
+        y:y,
+        fill:SHAKU_BLUE,
+        'font-size':17,
+        'font-family':'Arial, Helvetica, sans-serif',
+        'font-weight':'700',
+        'dominant-baseline':'middle',
+        opacity:opacity.toFixed(3),
+        'pointer-events':'none'
+      }, label);
+      appendSvgNode(node);
     }
 
     function renderTextMemos(pageIndex, interactive) {
@@ -13331,6 +13896,7 @@
           renderTextMemoSelectionHit(memo, pageIndex, interactive, isActive);
           if ((memo.text || isActive) && !isEditingThisMemo) renderTextMemoText(memo);
           if (interactive && isActive && currentSvgTarget === svg && shouldShowTextMemoControls()) renderTextMemoControls(memo);
+          renderTextMemoInitialHint(memo, pageIndex);
         });
       });
     }
@@ -13342,7 +13908,7 @@
       }
       state.activeTextMemo = { pageIndex:state.currentPreviewPage || 0, id:id };
       render();
-      if (!state.positionMode) setTimeout(openActiveTextMemoEditor, 0);
+      if (!state.textMemoEditMode) setTimeout(openActiveTextMemoEditor, 0);
     }
 
     function svgRectToClientBox(memo) {
@@ -13367,23 +13933,6 @@
       }
     }
 
-    function bulletizeTextMemoLines(value) {
-      return String(value || '').split('\n').map(function(line){
-        if (!line) return line;
-        if (/^\s*・/.test(line)) return line;
-        return '・' + line;
-      }).join('\n');
-    }
-
-    function setTextMemoEditorValuePreserveCaret(editor, value, caretOffset) {
-      const start = Number(editor.selectionStart || 0);
-      const end = Number(editor.selectionEnd || start);
-      editor.value = value;
-      const nextStart = clampNumber(start + (caretOffset || 0), 0, editor.value.length);
-      const nextEnd = clampNumber(end + (caretOffset || 0), 0, editor.value.length);
-      try { editor.setSelectionRange(nextStart, nextEnd); } catch (err) {}
-    }
-
     function handleTextMemoEditorInput(event) {
       const active = state.textMemoEditor;
       if (!active || !active.editor) return;
@@ -13393,26 +13942,14 @@
         syncTextMemoEditorValue(active);
         return;
       }
-      const beforeValue = editor._textMemoBeforeValue == null ? '' : String(editor._textMemoBeforeValue);
-      const beforeStart = Number(editor._textMemoBeforeStart || 0);
-      const beforeEnd = Number(editor._textMemoBeforeEnd || beforeStart);
-      const replacedAll = beforeValue && beforeStart === 0 && beforeEnd >= beforeValue.length;
-      const shouldBulletize = !!(event && event.forceBulletize) || (editor.value && (!beforeValue || replacedAll));
-      if (shouldBulletize) {
-        const bulletized = bulletizeTextMemoLines(editor.value);
-        if (bulletized !== editor.value) {
-          const diff = bulletized.length - editor.value.length;
-          setTextMemoEditorValuePreserveCaret(editor, bulletized, diff);
-        }
-      }
       syncTextMemoEditorValue(active);
     }
 
-    function insertTextMemoBulletLine(editor) {
+    function insertTextMemoLineBreak(editor) {
       const start = Number(editor.selectionStart || 0);
       const end = Number(editor.selectionEnd || start);
       const value = String(editor.value || '');
-      const insertion = value ? '\n・' : '・';
+      const insertion = '\n';
       editor.value = value.slice(0, start) + insertion + value.slice(end);
       const caret = start + insertion.length;
       try { editor.setSelectionRange(caret, caret); } catch (err) {}
@@ -13423,6 +13960,7 @@
       const active = state.textMemoEditor;
       if (!active) return;
       syncTextMemoEditorValue(active);
+      if (!options || options.autoFit !== false) fitTextMemoByIdToContent(Number(active.pageIndex || 0), active.id);
       state.textMemoEditor = null;
       hideTextMemoSelectionToolbar();
       if (active.editor && active.editor.parentNode) active.editor.parentNode.removeChild(active.editor);
@@ -13436,6 +13974,7 @@
       closeTextMemoEditor({ render:false });
       state.activeTextMemo = null;
       state.textMemoResize = null;
+      state.textMemoPointerIntent = null;
       document.documentElement.classList.remove('text-memo-dragging');
       if (!options || options.render !== false) render();
     }
@@ -13447,8 +13986,8 @@
       const box = svgRectToClientBox(memo);
       const left = clampNumber(box.left, 6, Math.max(6, window.innerWidth - box.width - 6));
       const top = clampNumber(box.top, 6, Math.max(6, window.innerHeight - box.height - 6));
-      const width = Math.max(90, box.width);
-      const height = Math.max(30, box.height);
+      const width = Math.max(1, box.width);
+      const height = Math.max(1, box.height);
       active.editor.style.left = left + 'px';
       active.editor.style.top = top + 'px';
       active.editor.style.width = width + 'px';
@@ -13578,7 +14117,7 @@
 
     function openActiveTextMemoEditor() {
       const memo = getActiveTextMemo();
-      if (!memo || state.memoMode || state.positionMode) return;
+      if (!memo || state.memoMode || state.textMemoEditMode) return;
       if (state.textMemoEditor) closeTextMemoEditor({ render:false });
       const editor = document.createElement('textarea');
       const applyButton = document.createElement('button');
@@ -13610,7 +14149,7 @@
       editor.addEventListener('compositionend', function(){
         editor._textMemoComposing = false;
         setTimeout(function(){
-          handleTextMemoEditorInput({ forceBulletize:true });
+          handleTextMemoEditorInput({});
           editor._textMemoBeforeValue = editor.value;
           editor._textMemoBeforeStart = editor.selectionStart || 0;
           editor._textMemoBeforeEnd = editor.selectionEnd || editor._textMemoBeforeStart;
@@ -13624,7 +14163,7 @@
         if (event.key === 'Escape') { event.preventDefault(); hideTextMemoControls(); return; }
         if (event.key === 'Enter' && !event.isComposing) {
           event.preventDefault();
-          insertTextMemoBulletLine(editor);
+          insertTextMemoLineBreak(editor);
         }
       });
       editor.addEventListener('wheel', handleTextMemoWheel, { passive:false });
@@ -13645,6 +14184,89 @@
       window.addEventListener('resize', updateTextMemoEditorPosition, true);
       window.addEventListener('scroll', updateTextMemoEditorPosition, true);
       setTimeout(function(){ editor.focus(); }, 0);
+    }
+
+    function releaseTextMemoPointerIntentCapture(intent, pointerId) {
+      const target = intent && intent.sourceTarget;
+      if (target && target.releasePointerCapture) {
+        try { target.releasePointerCapture(pointerId); } catch (err) {}
+      }
+    }
+
+    function beginTextMemoPointerIntent(event, id, pageIndex) {
+      if (!event || state.memoMode || state.shakuMode || state.positionMode || state.textMemoResize) return;
+      if (event.button !== undefined && event.button !== 0) return;
+      if (event.ctrlKey || event.metaKey || event.altKey) return;
+      event.preventDefault();
+      event.stopPropagation();
+      if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+      closeTextMemoContextMenu();
+      const point = getSvgPointFromPointerEvent(event);
+      const targetPage = Math.max(0, Number(pageIndex || 0));
+      state.activeTextMemo = { pageIndex:targetPage, id:id };
+      state.textMemoPointerIntent = {
+        pointerId:event.pointerId,
+        pageIndex:targetPage,
+        id:id,
+        startX:point.x,
+        startY:point.y,
+        startClientX:Number(event.clientX || 0),
+        startClientY:Number(event.clientY || 0),
+        sourceTarget:event.currentTarget || null
+      };
+      if (event.currentTarget && event.currentTarget.setPointerCapture) {
+        try { event.currentTarget.setPointerCapture(event.pointerId); } catch (err) {}
+      }
+    }
+
+    function continueTextMemoPointerIntent(event) {
+      const intent = state.textMemoPointerIntent;
+      if (!intent || intent.pointerId !== event.pointerId) return;
+      const dx = Number(event.clientX || 0) - Number(intent.startClientX || 0);
+      const dy = Number(event.clientY || 0) - Number(intent.startClientY || 0);
+      if (Math.sqrt(dx * dx + dy * dy) < TEXT_MEMO_DRAG_MOVE_TOLERANCE) return;
+      event.preventDefault();
+      event.stopPropagation();
+      state.activeTextMemo = { pageIndex:Number(intent.pageIndex || 0), id:intent.id };
+      const memo = getActiveTextMemo();
+      if (!memo) {
+        releaseTextMemoPointerIntentCapture(intent, event.pointerId);
+        state.textMemoPointerIntent = null;
+        return;
+      }
+      state.textMemoPointerIntent = null;
+      state.textMemoResize = {
+        pointerId:event.pointerId,
+        id:intent.id,
+        mode:'move',
+        startX:intent.startX,
+        startY:intent.startY,
+        origin:Object.assign({}, memo),
+        sourceTarget:intent.sourceTarget || event.currentTarget || null,
+        openEditorOnEnd:false
+      };
+      document.documentElement.classList.add('text-memo-dragging');
+      if (state.textMemoEditor) closeTextMemoEditor({ render:false });
+      continueTextMemoResize(event);
+    }
+
+    function endTextMemoPointerIntent(event) {
+      const intent = state.textMemoPointerIntent;
+      if (!intent || intent.pointerId !== event.pointerId) return;
+      event.preventDefault();
+      event.stopPropagation();
+      releaseTextMemoPointerIntentCapture(intent, event.pointerId);
+      state.textMemoPointerIntent = null;
+      state.activeTextMemo = { pageIndex:Number(intent.pageIndex || 0), id:intent.id };
+      render();
+      if (!state.textMemoEditMode) setTimeout(openActiveTextMemoEditor, 0);
+    }
+
+    function cancelTextMemoPointerIntent(event) {
+      const intent = state.textMemoPointerIntent;
+      if (!intent || intent.pointerId !== event.pointerId) return;
+      releaseTextMemoPointerIntentCapture(intent, event.pointerId);
+      state.textMemoPointerIntent = null;
     }
 
     function beginTextMemoResize(event, id, mode) {
@@ -13698,7 +14320,7 @@
       state.textMemoResize = null;
       document.documentElement.classList.remove('text-memo-dragging');
       render();
-      if (!state.positionMode) setTimeout(openActiveTextMemoEditor, 0);
+      if (!state.textMemoEditMode && drag.openEditorOnEnd !== false) setTimeout(openActiveTextMemoEditor, 0);
     }
 
     function handleTextMemoWheel(event) {
@@ -13724,16 +14346,21 @@
     }
 
     function isTextMemoUiTarget(target) {
-      if (!target || !state.activeTextMemo) return false;
+      if (!target) return false;
       if (target.closest) {
-        return !!target.closest('.text-memo-editor, .text-memo-apply-fixed, .text-memo-selection-toolbar, .text-memo-controls, .text-memo-box, .text-memo-hit-area, .memo-color-btn');
+        return !!target.closest('.text-memo-editor, .text-memo-apply-fixed, .text-memo-selection-toolbar, .text-memo-context-menu, .text-memo-controls, .text-memo-box, .text-memo-select-hit, .memo-color-btn');
       }
       return false;
     }
 
     function handleTextMemoOutsidePointerDown(event) {
-      if (!state.activeTextMemo || state.textMemoResize) return;
+      if (state.textMemoResize || state.textMemoPointerIntent) return;
       if (isTextMemoUiTarget(event.target)) return;
+      if (state.textMemoEditMode) {
+        setTextMemoEditMode(false);
+        return;
+      }
+      if (!state.activeTextMemo) return;
       syncTextMemoEditorValue();
       hideTextMemoControls();
     }
@@ -13754,7 +14381,7 @@
         const y = getOutputRowTop(block, durationFrame + 1, 'cell');
         const boundaryArea = getDurationBoundaryArea(block);
         line(boundaryArea.x, y, boundaryArea.x + boundaryArea.w, y, RED, 3.2);
-        if (interactive && currentSvgTarget === svg && !state.memoMode && !state.positionMode && !state.shakuMode) {
+        if (interactive && currentSvgTarget === svg && !state.memoMode && !state.positionMode && !state.textMemoEditMode && !state.shakuMode) {
           const hit = el('rect', { x:boundaryArea.x, y:y - 9, width:boundaryArea.w, height:18, fill:'transparent', stroke:'transparent', class:'duration-boundary-hit', 'pointer-events':'all' });
           hit.addEventListener('pointerdown', function(event){ beginTimelineEdgeDrag(event, 'duration', 0, 'to'); }, { passive:false });
           appendSvgNode(hit);
@@ -13808,7 +14435,7 @@
     }
 
     function addRepeatContinuationDotHit(entry, baseLayer, frame, bounds, block, columnIndex) {
-      if (!entry || !baseLayer || currentSvgTarget !== svg || state.memoMode || state.positionMode || state.shakuMode) return;
+      if (!entry || !baseLayer || currentSvgTarget !== svg || state.memoMode || state.positionMode || state.textMemoEditMode || state.shakuMode) return;
       const rowTop = getOutputRowTop(block, frame, 'cell');
       const rowH = getOutputRowH(block, 'cell');
       const hit = el('rect', { x:bounds.x1, y:rowTop, width:bounds.x2 - bounds.x1, height:rowH, fill:'transparent', stroke:'transparent', 'pointer-events':'all' });
@@ -14401,7 +15028,6 @@
       state.showDurationPlusOutput = showDurationPlusOutputToggleEl ? !!showDurationPlusOutputToggleEl.checked : true;
       state.showCellLabelOutput = showCellLabelOutputToggleEl ? !!showCellLabelOutputToggleEl.checked : true;
       getLayoutAdjust();
-      if (state.positionMode) ensurePositionModeTextMemo(state.currentPreviewPage || 0);
       renderPage(svg, state.currentPreviewPage, model, true);
       updateMemoCanvasSize();
       redrawMemoCanvas();
@@ -14621,7 +15247,7 @@
     function activateBrushShortcut() {
       const colors = getPenColorValues();
       if (!colors.length) return;
-      const disabledEditMode = !!(state.positionMode || state.shakuMode);
+      const disabledEditMode = !!(state.positionMode || state.shakuMode || state.textMemoEditMode);
       if (state.memoMode && state.memoTool === 'pen') {
         let index = colors.indexOf(state.memoColor);
         if (index === -1) index = 0;
@@ -14630,6 +15256,7 @@
       } else {
         state.memoMode = true;
         state.positionMode = false;
+        state.textMemoEditMode = false;
         state.shakuMode = false;
         if (headerPositionModeBtn) headerPositionModeBtn.classList.toggle('active', false);
         updateShakuEditUI();
@@ -14643,9 +15270,10 @@
     }
 
     function activateEraserShortcut() {
-      const disabledEditMode = !!(state.positionMode || state.shakuMode);
+      const disabledEditMode = !!(state.positionMode || state.shakuMode || state.textMemoEditMode);
       state.memoMode = true;
       state.positionMode = false;
+      state.textMemoEditMode = false;
       state.shakuMode = false;
       if (headerPositionModeBtn) headerPositionModeBtn.classList.toggle('active', false);
       updateShakuEditUI();
@@ -14841,6 +15469,12 @@
 
     function setMemoModeEnabled(enabled) {
       state.memoMode = !!enabled;
+      if (state.memoMode) {
+        state.textMemoEditMode = false;
+        closeTextMemoContextMenu();
+        state.textMemoResize = null;
+        document.documentElement.classList.remove('text-memo-dragging');
+      }
       clearMemoPointerState();
       if (!state.memoMode) setPreviewSpacePanKey(false);
       updateMemoUI();
@@ -14946,6 +15580,8 @@
       const nextMemoMode = !state.memoMode;
       if (nextMemoMode) {
         state.positionMode = false;
+        state.textMemoEditMode = false;
+        closeTextMemoContextMenu();
         state.shakuMode = false;
         if (headerPositionModeBtn) headerPositionModeBtn.classList.toggle('active', false);
         updateShakuEditUI();
@@ -14960,7 +15596,7 @@
       if (!node) return false;
       if (node.closest && node.closest('button, input, textarea, select, option, a')) return true;
       if (node.getAttribute && node.getAttribute('data-inline-editable') === 'true') return true;
-      if (node.closest && node.closest('.inline-text-editor, .speaker-suffix-menu')) return true;
+      if (node.closest && node.closest('.inline-text-editor, .speaker-suffix-menu, .text-memo-context-menu, .text-memo-controls, .text-memo-box')) return true;
       if (node.classList && node.classList.contains('timeline-edge-handle')) return true;
       if (node.classList && node.classList.contains('position-edit-handle')) return true;
       if (node.classList && node.classList.contains('position-edit-box')) return true;
@@ -15870,6 +16506,7 @@
       state.layoutBoxes = clonePaperData(snapshot.layoutBoxes || {});
       state.layoutBoxBaseRects = clonePaperData(snapshot.layoutBoxBaseRects || {});
       state.positionMode = !!snapshot.positionMode;
+      state.textMemoEditMode = false;
       setPaperAutoAlignResult(snapshot.autoAlignResult ? clonePaperData(snapshot.autoAlignResult) : null);
       state.paperAutoAlignOverlay = snapshot.autoAlignOverlay ? clonePaperData(snapshot.autoAlignOverlay) : null;
       state.layoutDrag = null;
@@ -16066,6 +16703,7 @@
         state.showTemplate = false;
         state.showDurationPlusOutput = false;
         state.showCellLabelOutput = false;
+        state.textMemoEditMode = false;
         state.positionMode = true;
         syncPaperLayoutControls();
         updatePaperImageStatus();
@@ -16151,9 +16789,11 @@
     function toggleHeaderPositionMode() {
       if (state.textMemoEditor) closeTextMemoEditor({ render:false });
       const nextPositionMode = !state.positionMode;
-      if (nextPositionMode) setMemoModeEnabled(false);
+      if (nextPositionMode) {
+        setMemoModeEnabled(false);
+        setTextMemoEditMode(false);
+      }
       state.positionMode = nextPositionMode;
-      if (state.positionMode) ensurePositionModeTextMemo(state.currentPreviewPage || 0);
       if (headerPositionModeBtn) headerPositionModeBtn.classList.toggle('active', !!state.positionMode);
       if (paperToolbarPositionBtn) paperToolbarPositionBtn.classList.toggle('active', !!state.positionMode);
       render();
@@ -16388,6 +17028,7 @@
       const memo = payload.memo || {};
       // Pasted images are transient overlays; settings load/reset clears them instead of storing large data URLs.
       state.memoMode = !!memo.mode;
+      state.textMemoEditMode = false;
       state.previewSpacePanKey = false;
       state.memoTool = memo.tool || 'pen';
       state.memoColor = memo.color || '#111111';
@@ -16395,7 +17036,7 @@
       state.memoEraserSize = Number(memo.eraserSize) || 100;
       state.memoPages = memo.pages && typeof memo.pages === 'object' ? memo.pages : {};
       state.textMemoPages = memo.textPages && typeof memo.textPages === 'object' ? memo.textPages : {};
-      if (state.shakuMode || state.positionMode) state.memoMode = false;
+      if (state.shakuMode || state.positionMode || state.textMemoEditMode) state.memoMode = false;
       state.shortcuts = Object.assign({}, SHORTCUT_DEFAULTS, payload.shortcuts || {});
       syncPaperLayoutControls();
       updatePaperImageStatus();
@@ -16638,12 +17279,15 @@
       if (state.inlineTextEditor) closeInlineTextEditor({ cancel:true, render:false });
       if (state.textMemoEditor) closeTextMemoEditor({ render:false });
       hideTextMemoControls({ render:false });
+      closeTextMemoContextMenu();
+      clearTextMemoInitialHint({ render:false });
       cancelCellLongPressDrag();
       cancelCellLabelDrag();
       clearDragPreviewBox();
       cancelPreviewPan();
       clearMemoPointerState();
       state.positionMode = false;
+      state.textMemoEditMode = false;
       state.layoutDrag = null;
       clearLayoutDragPreview();
       state.activeTimelineDrag = null;
@@ -16657,6 +17301,7 @@
       state.shakuRedoStack = [];
       state.activeTextMemo = null;
       state.textMemoResize = null;
+      state.textMemoPointerIntent = null;
       state.activePastedImage = null;
       state.pastedImageDrag = null;
       state.layerNameTagDrag = null;
@@ -17478,6 +18123,10 @@
     }
     document.addEventListener('keydown', function(event){
       if (event.key === 'Escape' && updateLogModalEl && updateLogModalEl.classList.contains('open')) closeUpdateLog();
+      if (event.key === 'Escape') {
+        closeTextMemoContextMenu();
+        if (state.textMemoEditMode && !state.textMemoResize && !state.textMemoPointerIntent) setTextMemoEditMode(false);
+      }
     });
 
     if (currentSettingsExportBtn) currentSettingsExportBtn.addEventListener('click', saveCurrentSettings);
@@ -17504,12 +18153,21 @@
     memoCanvas.addEventListener('pointerup', endMemoStroke);
     memoCanvas.addEventListener('pointercancel', endMemoStroke);
     document.addEventListener('pointerdown', handleTextMemoOutsidePointerDown, true);
+    document.addEventListener('pointerdown', function(event){
+      const active = state.textMemoContextMenu;
+      if (!active || !active.el) return;
+      if (active.el.contains(event.target)) return;
+      closeTextMemoContextMenu();
+    }, true);
+    window.addEventListener('resize', closeTextMemoContextMenu, true);
+    window.addEventListener('scroll', closeTextMemoContextMenu, true);
 
     function handleGlobalPointerMove(event) {
       if (state.activeTimelineDrag) { continueTimelineEdgeDrag(event); return; }
       if (state.cellLongPressDrag) { continueCellLongPressDrag(event); return; }
       if (state.cellLabelDrag) { continueCellLabelDrag(event); return; }
       if (state.shakuDrag) { continueShakuSelection(event); return; }
+      if (state.textMemoPointerIntent) { continueTextMemoPointerIntent(event); return; }
       if (state.textMemoResize) { continueTextMemoResize(event); return; }
       if (state.pastedImageDrag) { continuePastedImageDrag(event); return; }
       if (state.layerNameTagDrag) continueLayerNameTagDrag(event);
@@ -17520,6 +18178,7 @@
       if (state.cellLongPressDrag) { endCellLongPressDrag(event); return; }
       if (state.cellLabelDrag) { endCellLabelDrag(event); return; }
       if (state.shakuDrag) { endShakuSelection(event); return; }
+      if (state.textMemoPointerIntent) { endTextMemoPointerIntent(event); return; }
       if (state.textMemoResize) { endTextMemoResize(event); return; }
       if (state.pastedImageDrag) { endPastedImageDrag(event); return; }
       if (state.layerNameTagDrag) endLayerNameTagDrag(event);
@@ -17530,6 +18189,7 @@
       if (state.cellLongPressDrag) { endCellLongPressDrag(event); return; }
       if (state.cellLabelDrag) { endCellLabelDrag(event); return; }
       if (state.shakuDrag) { endShakuSelection(event); return; }
+      if (state.textMemoPointerIntent) { cancelTextMemoPointerIntent(event); return; }
       if (state.textMemoResize) { endTextMemoResize(event); return; }
       if (state.pastedImageDrag) { endPastedImageDrag(event); return; }
       if (state.layerNameTagDrag) endLayerNameTagDrag(event);
