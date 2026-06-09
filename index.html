@@ -2199,7 +2199,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '723';
+    const APP_VERSION = '730';
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
     const PAPER_TEMPLATE_MATCH_MIN_SCORE = 0.75;
@@ -3001,6 +3001,11 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver730', 'Left endpoint closure', ['Paper Auto Align now also closes a missing left-side header divider when the top, split, and bottom header rules start at the same x-position.']],
+        ['ver729', 'Author field anchor', ['Paper Auto Align now anchors the Author field to the cell immediately right of Duration, instead of preferring the last cell before Page.']],
+        ['ver728', 'Author field ordering', ['When two or more header cells exist from the right side of Duration through the Page field, Paper Auto Align now assigns the cell immediately to the right of Duration as the Author field.']],
+        ['ver727', 'Aligned endpoint closure', ['Paper Auto Align now closes a missing right-side header divider when the top, split, and bottom header rules end at the same x-position after a real Duration plus field.']],
+        ['ver724', 'Serifu Sheet wording', ['The Serifu Sheet mouth type label now uses かぶせパク.']],
         ['ver723', 'Header endpoint and camera split repair', ['Paper Auto Align again trims separated MAD/mappa-style camera fields when the selected header rules have a real right-side blank break and the preceding page field contains a real diagonal slash.', 'Strong full-height header endpoints can now survive nearby logo or page-slash strokes, fixing missed right endpoints on TOHO-style Sheet fields without weakening ordinary logo-stroke filtering.']],
         ['ver722', 'Header value-cell confirmation', ['When a real header middle split rule is detected, final header field boxes now use only the lower value cell height, while the detection process still uses the full header structure.']],
         ['ver721', 'Actual middle-line label overlay', ['The light-green header label-band overlay now appears only when a real middle split rule is detected, so virtual input split lines are no longer shown as label-row recognition on templates without that row.']],
@@ -3076,6 +3081,11 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver730', '左端点で欄を閉じる補正', ['Paper Auto Align で、ヘッダー上罫線・分割線・下罫線の左端点が同じ x 位置で揃う場合も、欠けている左側の区切り線として閉じるようにしました。']],
+        ['ver729', '名前欄の基準変更', ['Paper Auto Align は、ページ欄の直前ではなく Duration のすぐ右の欄を基準に名前欄を決めるようにしました。']],
+        ['ver728', '名前欄の順序補正', ['Duration の右側からページ欄までに 2 つ以上のヘッダー欄がある場合、Paper Auto Align は Duration のすぐ右の欄を名前欄として確定するようにしました。']],
+        ['ver727', '揃った端点で欄を閉じる補正', ['Paper Auto Align で、実際の Duration プラス欄の右側にあるヘッダー上罫線・分割線・下罫線の端点が同じ x 位置で揃う場合、欠けている右側の区切り線として閉じるようにしました。']],
+        ['ver724', 'セリフシート表記変更', ['セリフシートのパク種別表記を「かぶせパク」に変更しました。']],
         ['ver723', 'ヘッダー端点と撮影欄分離を修復', ['選択されたヘッダー罫線の右側に実際の空白切れ目があり、その直前のシート欄に実線の斜線がある場合、MAD/mappa形式の分離した撮影欄を再びヘッダー範囲から切り離すようにしました。', '上下までつながる強いヘッダー端点は、近くのロゴやシート欄斜線の影響で除外されないようにし、TOHO形式のシート欄右端点の取りこぼしを修正しました。']],
         ['ver722', 'ヘッダー値欄で確定', ['実際のヘッダー中間分割罫線を検出した場合、最終的なヘッダー項目ボックスは下側の値欄の高さだけを使うようにし、検出処理自体は従来どおりヘッダー全体の構造を使います。']],
         ['ver721', '実線の中間罫線だけをラベル帯表示', ['薄い黄緑のヘッダーラベル帯は、実際の中間分割罫線を検出した場合だけ表示するようにし、その行がないテンプレートで仮想の入力分割線をラベル行認識として見せないようにしました。']],
@@ -3113,7 +3123,7 @@
         ['ver685', 'セリフシートのランダム3コマ打ち', ['セリフシートのランダム配置は、口パク入力を3コマ打ちで置き、間のコマは保持用の入力にしました。', '選択範囲の直後に閉じ口が入るため、範囲内の最後に効く口は閉じ口にならないようにしました。']],
         ['ver684', 'セリフシートの実入力仮置き', ['セリフシート設定から未使用のセリフ入力欄を削除しました。', '仮置きは表示専用ではなく、先頭口・波線・最後口を実際のCell入力として書き込み、選択範囲直後に閉じ口を入れます。', '口・波線・口の3コマはドラッグ時にセットで動き、波線だけが分離しないようにしました。']],
         ['ver683', 'セリフシート仮置き', ['セル編集でクリック先が再描画される前に範囲Shift選択を確定するようにし、既存の番号・点・保持線上でも開始位置から終点を選べるようにしました。', 'セリフシートに口パク枚数ごとのセル値/役割行を追加し、仮置きでは範囲内を表示専用の口パク記号として描き、範囲直後の閉じ口だけを実入力します。']],
-        ['ver682', 'セリフシート範囲入力', ['原画Cellの空欄をドラッグして範囲選択し、青い範囲を右クリックするとセリフシート入力を開けるようにしました。', '合成パク/カブセパクの番号セット、基本配置、ランダム配置、役割ラベル、範囲直後の閉じ口入力をプレビュー確認してから反映できます。']],
+        ['ver682', 'セリフシート範囲入力', ['原画Cellの空欄をドラッグして範囲選択し、青い範囲を右クリックするとセリフシート入力を開けるようにしました。', '合成パク/かぶせパクの番号セット、基本配置、ランダム配置、役割ラベル、範囲直後の閉じ口入力をプレビュー確認してから反映できます。']],
         ['ver681', '用紙Auto Alignのヘッダーとラベル検出', ['外部用紙Auto Alignで、分割されたヘッダー横線を最長の連続部分だけでなく暗線全体のspanとして測るようにしました。', '72コマ本文グリッド自体は変えず、その直上の1〜2段ラベル帯を検出してCellラベル位置に反映します。']],
         ['ver680', 'テキスト枠の自動中黒を削除', ['テキスト枠の入力時、先頭や改行時に <code>・</code> を自動挿入しないようにしました。']],
         ['ver679', 'テキスト枠編集幅の余裕', ['テキスト枠の編集欄の内側幅をプレビュー表示と揃え、再編集時に末尾1文字だけ折り返されにくいよう自動サイズに余裕を持たせました。']],
@@ -3151,6 +3161,11 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver730', '왼쪽 엔드포인트로 칸 닫기', ['Paper Auto Align에서 헤더 상단선, 분할선, 하단선의 왼쪽 끝점 x값이 같으면 누락된 왼쪽 구분선으로 닫게 했습니다.']],
+        ['ver729', '이름칸 기준 변경', ['Paper Auto Align에서 이름칸을 page 앞칸 기준이 아니라 Duration 바로 오른쪽칸 기준으로 정하게 했습니다.']],
+        ['ver728', '이름칸 순서 보정', ['Duration 오른쪽부터 매수칸까지 헤더 칸이 2개 이상 있으면, Paper Auto Align이 Duration 바로 오른쪽 칸을 이름칸으로 확정하게 했습니다.']],
+        ['ver727', '정렬된 엔드포인트로 칸 닫기', ['Paper Auto Align에서 실제 Duration +칸 오른쪽의 헤더 상단선, 분할선, 하단선 끝점 x값이 같으면 누락된 오른쪽 구분선으로 닫게 했습니다.']],
+        ['ver724', '세리후 시트 표기 변경', ['세리후 시트의 파구 종류 표기를 「かぶせパク」로 변경했습니다.']],
         ['ver723', '헤더 엔드포인트와 촬영칸 분리 복구', ['선택된 헤더 가로선 오른쪽에 실제 빈 끊김이 있고 그 직전 시트칸에 실선 대각선이 있으면, MAD/mappa식 독립 촬영칸을 다시 헤더 범위에서 분리합니다.', '상하로 완전히 이어진 강한 헤더 엔드포인트는 근처 로고나 시트칸 대각선 획 때문에 제외되지 않게 해, TOHO식 シート 오른쪽 엔드포인트 누락을 수정했습니다.']],
         ['ver722', '헤더 값칸 높이로 확정', ['실제 헤더 중간 분할선이 검출된 경우, 최종 헤더 필드 박스는 아래쪽 값칸 높이만 쓰게 하고 검출 과정은 기존처럼 전체 헤더 구조를 사용합니다.']],
         ['ver721', '실제 중간선만 라벨칸 표시', ['연두색 헤더 라벨칸 오버레이는 실제 중간 분할 가로선이 검출된 경우에만 표시하게 해, 해당 행이 없는 템플릿에서 가상 입력 분할선을 라벨칸 인식처럼 보이지 않게 했습니다.']],
@@ -3226,6 +3241,11 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver730', '用左侧对齐端点闭合字段', ['Paper Auto Align 现在也会在页眉上线、分割线和下线左端点 x 位置一致时，将其作为缺失的左侧分隔线闭合。']],
+        ['ver729', '作者字段锚点调整', ['Paper Auto Align 现在以 Duration 正右侧的格作为作者字段依据，而不是优先使用 Page 前的最后一个格。']],
+        ['ver728', '作者字段顺序修正', ['当 Duration 右侧到页数字段之间存在 2 个以上页眉格时，Paper Auto Align 会将 Duration 正右侧的格确认为作者字段。']],
+        ['ver727', '用对齐端点闭合字段', ['Paper Auto Align 现在会在真实 Duration 加号字段右侧的页眉上线、分割线和下线端点 x 位置一致时，将其作为缺失的右侧分隔线闭合。']],
+        ['ver724', 'Serifu Sheet 文案调整', ['Serifu Sheet 的口型类型标签改为「かぶせパク」。']],
         ['ver723', '修复页眉端点与摄影栏分离', ['当选中的页眉横线右侧存在真实空白断点，并且断点前的页数字段包含真实斜线时，MAD/mappa 类独立摄影栏会再次从页眉范围中分离。', '上下完整连接的强页眉端点不会再因为附近标志或页数字段斜线笔画而被排除，修复 TOHO 类 Sheet 字段右端点漏检。']],
         ['ver722', '按页眉数值格确认', ['检测到真实的页眉中间分割线时，最终页眉字段框只使用下方数值格的高度，而检测流程仍继续使用完整页眉结构。']],
         ['ver721', '仅在实际中线时显示标签带', ['浅黄绿色页眉标签带现在只会在检测到真实中间分割线时显示，避免在没有该行的模板上把虚拟输入分割线显示成标签行识别结果。']],
@@ -8790,12 +8810,12 @@
           edge:edge
         });
       }).filter(Boolean).sort(function(a,b){ return Number(a.x || 0) - Number(b.x || 0); }).slice(0, 140);
-      const intervals = makePaperAutoAlignHeaderIntervals(headerLines);
+      let intervals = makePaperAutoAlignHeaderIntervals(headerLines);
       const endpointPad = Math.max(5, Math.min(14, headerH * 0.12));
-      const slashLeftLimit = Number.isFinite(Number(confirmedHeaderEndpointLeft))
+      let slashLeftLimit = Number.isFinite(Number(confirmedHeaderEndpointLeft))
         ? Math.max(headerLeft, Number(confirmedHeaderEndpointLeft) - endpointPad)
         : headerLeft;
-      const slashRightLimit = Number.isFinite(Number(confirmedHeaderEndpointRight))
+      let slashRightLimit = Number.isFinite(Number(confirmedHeaderEndpointRight))
         ? Math.min(headerRight, Number(confirmedHeaderEndpointRight) + endpointPad)
         : headerRight;
       function isInsideConfirmedHeaderEndpointRange(left, right) {
@@ -8806,10 +8826,26 @@
         if (Number.isFinite(Number(confirmedHeaderEndpointRight)) && r > slashRightLimit + 1) return false;
         return true;
       }
-      const endpointBoundedIntervals = intervals.filter(function(interval){
+      let endpointBoundedIntervals = intervals.filter(function(interval){
         return isInsideConfirmedHeaderEndpointRange(interval.left, interval.right);
       });
-      const slashIntervals = endpointBoundedIntervals.length ? endpointBoundedIntervals : intervals;
+      let slashIntervals = endpointBoundedIntervals.length ? endpointBoundedIntervals : intervals;
+      function refreshHeaderIntervalsForVirtualLines() {
+        headerLines = mergePaperAutoAlignUniquePositions(headerLines, 5).filter(function(x){
+          return !isHeaderPaperEdgeNoiseX(x) && x >= headerLeft - 5 && x <= headerRight + 5;
+        });
+        intervals = makePaperAutoAlignHeaderIntervals(headerLines);
+        slashLeftLimit = Number.isFinite(Number(confirmedHeaderEndpointLeft))
+          ? Math.max(headerLeft, Number(confirmedHeaderEndpointLeft) - endpointPad)
+          : headerLeft;
+        slashRightLimit = Number.isFinite(Number(confirmedHeaderEndpointRight))
+          ? Math.min(headerRight, Number(confirmedHeaderEndpointRight) + endpointPad)
+          : headerRight;
+        endpointBoundedIntervals = intervals.filter(function(interval){
+          return isInsideConfirmedHeaderEndpointRange(interval.left, interval.right);
+        });
+        slashIntervals = endpointBoundedIntervals.length ? endpointBoundedIntervals : intervals;
+      }
       function intervalContaining(x) {
         return slashIntervals.reduce(function(best, interval){
           if (x >= interval.left - 4 && x <= interval.right + 4) {
@@ -8851,6 +8887,111 @@
         if (!interval) return null;
         return boxFromBounds(interval.left, interval.right, pad, inputBandOnly);
       }
+      function getHeaderSegmentEndpointNearY(y, side) {
+        const yy = Number(y);
+        if (!Number.isFinite(yy)) return null;
+        const currentHeaderWidth = Math.max(1, headerRight - headerLeft);
+        const yTol = Math.max(4, Math.min(8, headerH * 0.07));
+        const minOverlap = Math.max(80, currentHeaderWidth * 0.18);
+        const candidates = (segmentLines || []).map(function(segment){
+          const pos = Number(segment && segment.pos);
+          if (!Number.isFinite(pos) || Math.abs(pos - yy) > yTol) return null;
+          const start = Number(segment && segment.start);
+          const end = Number(segment && segment.end);
+          const runStart = getHeaderDebugSegmentRunStart(segment);
+          const runEnd = getHeaderDebugSegmentRunEnd(segment);
+          if (![start, end, runStart, runEnd].every(Number.isFinite)) return null;
+          const spanOverlap = Math.min(end, headerRight) - Math.max(start, headerLeft);
+          const runOverlap = Math.min(runEnd, headerRight) - Math.max(runStart, headerLeft);
+          const overlap = Math.max(spanOverlap, runOverlap);
+          if (overlap < minOverlap) return null;
+          const endpoint = side === 'left' ? runStart : runEnd;
+          return {
+            segment:segment,
+            endpoint:endpoint,
+            overlap:overlap,
+            runWidth:runEnd - runStart
+          };
+        }).filter(Boolean).sort(function(a,b){
+          if (Math.abs(b.overlap - a.overlap) > 1) return b.overlap - a.overlap;
+          return b.runWidth - a.runWidth;
+        });
+        return candidates.length ? candidates[0].endpoint : null;
+      }
+      function findAlignedHeaderHorizontalEndpointX(side) {
+        if (!splitYDetected) return null;
+        const splitPos = Number(splitY && splitY.pos);
+        if (!Number.isFinite(splitPos)) return null;
+        const endpoints = [headerTop, splitPos, headerBottom].map(function(y){
+          return getHeaderSegmentEndpointNearY(y, side);
+        }).filter(Number.isFinite);
+        if (endpoints.length !== 3) return null;
+        const minX = Math.min.apply(null, endpoints);
+        const maxX = Math.max.apply(null, endpoints);
+        const currentHeaderWidth = Math.max(1, headerRight - headerLeft);
+        const alignTol = Math.max(4, Math.min(10, currentHeaderWidth * 0.006));
+        if (maxX - minX > alignTol) return null;
+        const x = Math.round(endpoints.reduce(function(sum, value){ return sum + value; }, 0) / endpoints.length);
+        const endpoint = getHeaderEndpointHorizontalJoint(x, getHeaderJointMinArm());
+        const expectedSide = side === 'left' ? 'start' : 'end';
+        if (!endpoint || endpoint.side !== expectedSide) return null;
+        return x;
+      }
+      function pushAlignedHeaderEndpointDebugCandidate(virtualLine, alignedX, source) {
+        const normalized = normalizePaperAutoAlignDebugVerticalCandidate(virtualLine, headerTop, headerBottom, {
+          source:source,
+          accepted:true,
+          selected:true,
+          edge:Math.abs(alignedX - headerLeft) <= 5 || Math.abs(alignedX - headerRight) <= 5,
+          loose:true
+        });
+        if (normalized) {
+          headerDebugVerticalCandidates.push(normalized);
+          headerDebugVerticalCandidates.sort(function(a,b){ return Number(a.x || 0) - Number(b.x || 0); });
+          headerDebugVerticalCandidates = headerDebugVerticalCandidates.slice(0, 140);
+        }
+      }
+      function maybeAddAlignedLeftEndpointClosure() {
+        const alignedX = findAlignedHeaderHorizontalEndpointX('left');
+        if (!Number.isFinite(Number(alignedX))) return;
+        if (headerLines.some(function(line){ return Math.abs(Number(line || 0) - alignedX) <= 5; })) return;
+        const currentHeaderWidth = Math.max(1, headerRight - headerLeft);
+        const alignTol = Math.max(5, Math.min(14, currentHeaderWidth * 0.01));
+        const maxExpand = Math.max(96, currentHeaderWidth * 0.16);
+        if (alignedX > headerLeft + alignTol) return;
+        if (alignedX < headerLeft - maxExpand) return;
+        const lineGap = Math.max(8, currentHeaderWidth * 0.006);
+        const nextLine = headerLines.filter(function(line){
+          return line > alignedX + lineGap && line <= headerRight + 1;
+        }).sort(function(a,b){ return a-b; })[0];
+        if (!Number.isFinite(Number(nextLine)) || nextLine - alignedX < 28) return;
+        const virtualLine = {
+          pos:alignedX,
+          spanStart:headerTop,
+          spanEnd:headerBottom,
+          runStart:null,
+          runEnd:null,
+          maxRun:0,
+          ink:0,
+          thickness:1,
+          source:'aligned-horizontal-left-endpoint',
+          accepted:true,
+          loose:true,
+          endpointInferred:true
+        };
+        const key = Math.round(alignedX);
+        headerDebugCandidateMap.set(key, virtualLine);
+        headerLines = headerLines.concat([alignedX]);
+        if (alignedX < headerLeft) {
+          headerLeft = Math.max(headerPaperEdgeMargin + 1, Math.round(alignedX));
+          headerWForJoints = Math.max(1, headerRight - headerLeft);
+        }
+        const previousLeft = Number(confirmedHeaderEndpointLeft);
+        confirmedHeaderEndpointLeft = Number.isFinite(previousLeft) ? Math.min(previousLeft, alignedX) : alignedX;
+        refreshHeaderIntervalsForVirtualLines();
+        pushAlignedHeaderEndpointDebugCandidate(virtualLine, alignedX, 'aligned-horizontal-left-endpoint');
+      }
+      maybeAddAlignedLeftEndpointClosure();
       const headerWidth = Math.max(1, headerRight - headerLeft);
       const slashWidth = Math.max(1, slashRightLimit - slashLeftLimit);
       let durationIntervalInferredFromOrderedHeader = false;
@@ -8898,6 +9039,76 @@
       const gap = Math.max(5, Math.min(16, (durationRight - durationLeft) * 0.07));
       const secondsBox = { x:durationLeft + 4, y:fullHeaderBoxY, w:Math.max(26, plusX - gap - durationLeft - 4), h:fullHeaderBoxH };
       const framesBox = { x:plusX + gap, y:fullHeaderBoxY, w:Math.max(26, durationRight - plusX - gap - 4), h:fullHeaderBoxH };
+      function findAlignedHeaderRightEndpointXAfterDuration() {
+        if (!splitYDetected) return null;
+        const splitPos = Number(splitY && splitY.pos);
+        if (!Number.isFinite(splitPos)) return null;
+        const endpoints = [headerTop, splitPos, headerBottom].map(function(y){
+          return getHeaderSegmentEndpointNearY(y, 'right');
+        }).filter(Number.isFinite);
+        if (endpoints.length !== 3) return null;
+        const minX = Math.min.apply(null, endpoints);
+        const maxX = Math.max.apply(null, endpoints);
+        const alignTol = Math.max(4, Math.min(10, headerWidth * 0.006));
+        if (maxX - minX > alignTol) return null;
+        const x = Math.round(endpoints.reduce(function(sum, value){ return sum + value; }, 0) / endpoints.length);
+        if (x <= durationRight + Math.max(42, headerWidth * 0.028)) return null;
+        if (x < headerLeft + headerWidth * 0.62 || x > headerRight + alignTol) return null;
+        const endpoint = getHeaderEndpointHorizontalJoint(x, getHeaderJointMinArm());
+        if (!endpoint || endpoint.side !== 'end') return null;
+        return x;
+      }
+      function maybeAddAlignedRightEndpointClosureAfterDuration() {
+        if (!durationPlus || durationPlus.inferred || !durationInterval) return;
+        const alignedX = findAlignedHeaderRightEndpointXAfterDuration();
+        if (!Number.isFinite(Number(alignedX))) return;
+        if (headerLines.some(function(line){ return Math.abs(Number(line || 0) - alignedX) <= 5; })) return;
+        const lineGap = Math.max(8, headerWidth * 0.006);
+        const innerRightLines = headerLines.filter(function(line){
+          return line > durationRight + lineGap && line < alignedX - lineGap;
+        });
+        if (innerRightLines.length !== 1) return;
+        const rightIntervals = intervals.filter(function(interval){
+          return interval.left >= durationRight - 4 &&
+            interval.right <= alignedX + 5 &&
+            interval.right > durationRight + lineGap &&
+            interval.w >= 28;
+        });
+        if (rightIntervals.length !== 1) return;
+        const virtualLine = {
+          pos:alignedX,
+          spanStart:headerTop,
+          spanEnd:headerBottom,
+          runStart:null,
+          runEnd:null,
+          maxRun:0,
+          ink:0,
+          thickness:1,
+          source:'aligned-horizontal-endpoint',
+          accepted:true,
+          loose:true,
+          endpointInferred:true
+        };
+        const key = Math.round(alignedX);
+        headerDebugCandidateMap.set(key, virtualLine);
+        headerLines = headerLines.concat([alignedX]);
+        confirmedHeaderEndpointRight = Math.max(Number(confirmedHeaderEndpointRight) || -Infinity, alignedX);
+        if (!Number.isFinite(confirmedHeaderEndpointRight)) confirmedHeaderEndpointRight = alignedX;
+        refreshHeaderIntervalsForVirtualLines();
+        const normalized = normalizePaperAutoAlignDebugVerticalCandidate(virtualLine, headerTop, headerBottom, {
+          source:'aligned-horizontal-endpoint',
+          accepted:true,
+          selected:true,
+          edge:Math.abs(alignedX - headerRight) <= 5,
+          loose:true
+        });
+        if (normalized) {
+          headerDebugVerticalCandidates.push(normalized);
+          headerDebugVerticalCandidates.sort(function(a,b){ return Number(a.x || 0) - Number(b.x || 0); });
+          headerDebugVerticalCandidates = headerDebugVerticalCandidates.slice(0, 140);
+        }
+      }
+      maybeAddAlignedRightEndpointClosureAfterDuration();
       let pageInterval = null;
       let pageBox = null;
       let bestSlash = null;
@@ -9219,9 +9430,7 @@
         return interval.left >= durationRight - 4 && interval.right <= pageInterval.left + 4 && interval.w >= 34;
       });
       let authorInterval = null;
-      if (authorCandidates.length >= 3) authorInterval = authorCandidates[1];
-      else if (authorCandidates.length >= 2) authorInterval = authorCandidates[0];
-      else if (authorCandidates.length === 1) authorInterval = authorCandidates[0];
+      if (authorCandidates.length) authorInterval = authorCandidates[0];
       else {
         const nearestAuthor = nearestInterval(durationRight, pageInterval.left);
         authorInterval = nearestAuthor && nearestAuthor.interval;
@@ -9234,22 +9443,7 @@
         const refreshedAuthorCandidates = intervals.filter(function(interval){
           return interval.left >= durationRight - 4 && interval.right <= pageInterval.left + 4 && interval.w >= 34;
         });
-        if (refreshedAuthorCandidates.length) {
-          const authorSpan = {
-            left:refreshedAuthorCandidates[0].left,
-            right:refreshedAuthorCandidates[refreshedAuthorCandidates.length - 1].right
-          };
-          authorSpan.w = authorSpan.right - authorSpan.left;
-          const hasInternalShortField = refreshedAuthorCandidates.some(function(interval){ return interval.w < Math.max(70, headerWidth * 0.052); });
-          if (durationPlus && refreshedAuthorCandidates.length >= 2 && hasInternalShortField && authorSpan.w <= Math.max(220, headerWidth * 0.16)) {
-            authorInterval = authorSpan;
-          } else {
-          const expectedAuthor = refreshedAuthorCandidates[refreshedAuthorCandidates.length - 1];
-          if (!authorInterval || authorInterval.right > pageInterval.left + 4 || expectedAuthor.left > authorInterval.left + 6) {
-            authorInterval = expectedAuthor;
-          }
-          }
-        }
+        if (refreshedAuthorCandidates.length) authorInterval = refreshedAuthorCandidates[0];
       }
       markPaperAutoAlignSelectedHeaderDiagonal(headerDiagonalDetections, selectedSlash, addHeaderDiagonalDetection);
       sortPaperAutoAlignHeaderDiagonalDetectionsForDebug(headerDiagonalDetections);
@@ -12224,7 +12418,7 @@
           title:'セリフシート',
           mode:'パク種別',
           composite:'合成パク',
-          cover:'カブセパク',
+          cover:'かぶせパク',
           target:'入力先Cell',
           count:'口パク枚数',
           mouthValues:'セル値 / 役割',
