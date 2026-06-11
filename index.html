@@ -2199,13 +2199,13 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '732';
+    const APP_VERSION = '735';
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
     const PAPER_HEADER_TEMPLATE_KNOWN_MIN_SCORE = 0.84;
     const PAPER_HEADER_TEMPLATE_LIKELY_MIN_SCORE = 0.76;
-    const PAPER_HEADER_TEMPLATE_KNOWN_MIN_MARGIN = 0.08;
-    const PAPER_HEADER_TEMPLATE_LIKELY_MIN_MARGIN = 0.045;
+    const PAPER_HEADER_TEMPLATE_KNOWN_MIN_SEPARATION = 0.08;
+    const PAPER_HEADER_TEMPLATE_LIKELY_MIN_SEPARATION = 0.045;
     let textMemoMeasureCanvas = null;
     const PAPER_HEADER_TEMPLATE_FINGERPRINTS = [
       { company:'8bit', top:0.0363, h:0.0440, split:1, splitRatio:0.330, x:[0.001,0.103,0.365,0.436,0.513,0.603,0.698,0.775,0.890,0.921,0.943,0.963,0.975,0.999] },
@@ -2218,6 +2218,7 @@
       { company:'kinema', top:0.0274, h:0.0323, split:1, splitRatio:0.300, x:[0.001,0.079,0.351,0.569,0.660,0.753,0.896] },
       { company:'mad', top:0.0129, h:0.0383, split:0, splitRatio:0.000, x:[0.284,0.468,0.606,0.745,0.928] },
       { company:'mappa', top:0.0185, h:0.0375, split:1, splitRatio:0.248, x:[0.000,0.111,0.497,0.607,0.693,0.778,0.889,0.958,0.999] },
+      { company:'mappa', top:0.0185, h:0.0379, split:1, splitRatio:0.256, x:[0.001,0.110,0.214,0.245,0.264,0.285,0.302,0.318,0.367,0.407,0.497,0.608,0.694,0.778,0.889,0.958,1.000] },
       { company:'saru', top:0.0282, h:0.0379, split:1, splitRatio:0.193, x:[0.000,0.101,0.221,0.246,0.283,0.392,0.508,0.621,0.707,0.793,0.910,1.000] },
       { company:'studiobono', top:0.0214, h:0.0391, split:0, splitRatio:0.000, x:[0.001,0.351,0.489,0.659,0.828,1.000] },
       { company:'toei', top:0.0206, h:0.0435, split:1, splitRatio:0.202, x:[0.001,0.356,0.581,0.665,0.747,0.840,0.999] },
@@ -2830,13 +2831,6 @@
       } catch (err) {}
     }
 
-    function normalizedPaperLinePositions(lines) {
-      return (lines || [])
-        .map(function(value){ return Number(value) / PAGE_W; })
-        .filter(function(value){ return Number.isFinite(value) && value > 0 && value < 1; })
-        .sort(function(a,b){ return a - b; });
-    }
-
     function roundedPaperHeaderIdentityValue(value) {
       const n = Number(value);
       return Number.isFinite(n) ? Math.round(n * 1000) / 1000 : 0;
@@ -2976,67 +2970,43 @@
       );
     }
 
-    function makePaperTemplateFingerprint(result, analysis) {
-      const overlay = result && result.overlay ? result.overlay : {};
-      const diagnostics = result && result.diagnostics ? result.diagnostics : {};
-      const rawYLines = analysis && Array.isArray(analysis.yLines) ? analysis.yLines : [];
-      const rowH = overlay.yLines && overlay.yLines.length > 1
-        ? medianPaperAutoAlignNumber(overlay.yLines.slice(1).map(function(value, index){ return value - overlay.yLines[index]; })) / PAGE_H
-        : 0;
-      const sourceW = Math.max(0, Number(state.paperImageSourceWidth) || 0);
-      const sourceH = Math.max(0, Number(state.paperImageSourceHeight) || 0);
-      return {
-        x:normalizedPaperLinePositions(overlay.xLines || (analysis && analysis.xLines) || []),
-        xCount:(overlay.xLines || (analysis && analysis.xLines) || []).length,
-        yCount:rawYLines.length,
-        bodyTop:Number(overlay.bodyTop || 0) / PAGE_H,
-        bodyBottom:Number(overlay.bodyBottom || 0) / PAGE_H,
-        rowH:rowH,
-        aspect:sourceW && sourceH ? sourceW / sourceH : 0,
-        autoAlignConfidence:Number(result && result.confidence || 0),
-        columns:Number(diagnostics.columns || 0)
-      };
-    }
-
     function matchPaperTemplateFingerprint(result, analysis) {
-      const bodyFingerprint = makePaperTemplateFingerprint(result, analysis);
       const headerFingerprint = makePaperHeaderIdentityFingerprint(result);
       if (!headerFingerprint.x.length || !PAPER_HEADER_TEMPLATE_FINGERPRINTS.length) {
-        return { company:'unknown', score:0, confidence:'unknown', fingerprint:bodyFingerprint, headerFingerprint:headerFingerprint };
+        return { company:'unknown', score:0, confidence:'unknown', headerFingerprint:headerFingerprint };
       }
       let best = null;
-      let second = null;
+      let nearestAlternative = null;
       PAPER_HEADER_TEMPLATE_FINGERPRINTS.forEach(function(template){
         const score = scorePaperHeaderTemplateFingerprint(headerFingerprint, template);
         if (!best || score > best.score) best = { company:template.company, score:score, template:template };
       });
       PAPER_HEADER_TEMPLATE_FINGERPRINTS.forEach(function(template){
         const score = scorePaperHeaderTemplateFingerprint(headerFingerprint, template);
-        if (best && template.company === best.company && score === best.score) return;
-        if (!second || score > second.score) second = { company:template.company, score:score, template:template };
+        if (best && template.company === best.company) return;
+        if (!nearestAlternative || score > nearestAlternative.score) nearestAlternative = { company:template.company, score:score, template:template };
       });
-      const margin = best ? best.score - Number(second && second.score || 0) : 0;
-      const confidence = best && best.score >= PAPER_HEADER_TEMPLATE_KNOWN_MIN_SCORE && margin >= PAPER_HEADER_TEMPLATE_KNOWN_MIN_MARGIN
+      const separation = Math.max(0, best ? best.score - Number(nearestAlternative && nearestAlternative.score || 0) : 0);
+      const confidence = best && best.score >= PAPER_HEADER_TEMPLATE_KNOWN_MIN_SCORE && separation >= PAPER_HEADER_TEMPLATE_KNOWN_MIN_SEPARATION
         ? 'known'
-        : (best && best.score >= PAPER_HEADER_TEMPLATE_LIKELY_MIN_SCORE && margin >= PAPER_HEADER_TEMPLATE_LIKELY_MIN_MARGIN
+        : (best && best.score >= PAPER_HEADER_TEMPLATE_LIKELY_MIN_SCORE && separation >= PAPER_HEADER_TEMPLATE_LIKELY_MIN_SEPARATION
           ? 'likely'
           : (best && best.score >= PAPER_HEADER_TEMPLATE_LIKELY_MIN_SCORE ? 'ambiguous' : 'unknown'));
       return {
         company:(confidence === 'known' || confidence === 'likely') ? best.company : 'unknown',
-        score:best ? roundUsageNumber(best.score, 3) : 0,
+        score:roundUsageNumber(separation, 3),
         confidence:confidence,
-        fingerprint:bodyFingerprint,
-        headerFingerprint:headerFingerprint,
-        secondCompany:second && second.company ? second.company : '',
-        secondScore:second ? roundUsageNumber(second.score, 3) : 0,
-        scoreMargin:roundUsageNumber(margin, 3)
+        headerFingerprint:headerFingerprint
       };
     }
 
     function sendPaperAutoAlignUsage(result, analysis, match) {
       try {
         const diagnostics = result && result.diagnostics ? result.diagnostics : {};
-        const fingerprint = match && match.fingerprint ? match.fingerprint : makePaperTemplateFingerprint(result, analysis);
+        const headerFingerprint = match && match.headerFingerprint ? match.headerFingerprint : {};
+        const headerX = Array.isArray(headerFingerprint.x)
+          ? headerFingerprint.x.map(function(v){ return roundUsageNumber(v, 3); }).join(',')
+          : '';
         const templateConfidence = match && match.confidence ? match.confidence : 'unknown';
         const unmatchedTemplateFileName = (templateConfidence === 'unknown' || templateConfidence === 'ambiguous') ? sanitizeUsageFileName(state.paperImageName, 140) : '';
         sendUsageEvent('paper_align', {
@@ -3045,16 +3015,21 @@
           templateScore:match ? match.score : 0,
           templateConfidence:templateConfidence,
           unmatchedTemplateFileName:unmatchedTemplateFileName,
-          paperColumns:fingerprint.columns || diagnostics.columns || '',
-          paperXCount:fingerprint.xCount || '',
-          paperYCount:fingerprint.yCount || '',
-          paperBodyTop:roundUsageNumber(fingerprint.bodyTop, 4),
-          paperBodyBottom:roundUsageNumber(fingerprint.bodyBottom, 4),
-          paperRowH:roundUsageNumber(fingerprint.rowH, 4),
-          paperSourceAspect:roundUsageNumber(fingerprint.aspect, 4),
+          paperColumns:diagnostics.columns || '',
+          paperXCount:'',
+          paperYCount:'',
+          paperBodyTop:'',
+          paperBodyBottom:'',
+          paperRowH:'',
+          paperSourceAspect:'',
           paperVariant:diagnostics.variant || '',
           paperDialogPattern:diagnostics.dialogPattern || '',
-          paperCameraPattern:diagnostics.cameraPattern || ''
+          paperCameraPattern:diagnostics.cameraPattern || '',
+          paperHeaderTop:roundUsageNumber(headerFingerprint.top, 4),
+          paperHeaderHeight:roundUsageNumber(headerFingerprint.h, 4),
+          paperHeaderSplit:headerFingerprint.split ? 1 : 0,
+          paperHeaderSplitRatio:roundUsageNumber(headerFingerprint.splitRatio, 4),
+          paperHeaderX:headerX
         });
       } catch (err) {}
     }
