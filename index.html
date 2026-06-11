@@ -2199,26 +2199,29 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '730';
+    const APP_VERSION = '732';
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
-    const PAPER_TEMPLATE_MATCH_MIN_SCORE = 0.75;
+    const PAPER_HEADER_TEMPLATE_KNOWN_MIN_SCORE = 0.84;
+    const PAPER_HEADER_TEMPLATE_LIKELY_MIN_SCORE = 0.76;
+    const PAPER_HEADER_TEMPLATE_KNOWN_MIN_MARGIN = 0.08;
+    const PAPER_HEADER_TEMPLATE_LIKELY_MIN_MARGIN = 0.045;
     let textMemoMeasureCanvas = null;
-    const PAPER_TEMPLATE_FINGERPRINTS = [
-      { company:'8bit', aspect:0.7076, bodyTop:0.2540, bodyBottom:0.9343, rowH:0.0093, xCount:48, yCount:81, x:[0.0342,0.0496,0.0645,0.0799,0.0947,0.1101,0.1249,0.1403,0.1666,0.1957,0.2185,0.2419,0.2653,0.2886,0.3115,0.3349,0.3582,0.3816,0.3913,0.4073,0.4335,0.4518,0.4598,0.4860,0.5128,0.5282,0.5431,0.5585,0.5733,0.5881,0.6035,0.6189,0.6452,0.6748,0.6971,0.7205,0.7433,0.7564,0.7673,0.7906,0.8140,0.8369,0.8602,0.8865,0.9127,0.9310,0.9390,0.9658] },
-      { company:'a1', aspect:0.7073, bodyTop:0.3198, bodyBottom:0.9774, rowH:0.0093, xCount:52, yCount:93, x:[0.0211,0.0376,0.0542,0.0707,0.0867,0.1027,0.1187,0.1352,0.1517,0.1677,0.1837,0.2162,0.2487,0.2647,0.2807,0.2972,0.3137,0.3297,0.3457,0.3622,0.3788,0.3948,0.4119,0.4273,0.4598,0.4917,0.5088,0.5260,0.5419,0.5579,0.5739,0.5904,0.6064,0.6229,0.6389,0.6549,0.6714,0.7039,0.7370,0.7524,0.7690,0.7849,0.8015,0.8175,0.8334,0.8500,0.8659,0.8825,0.9150,0.9304,0.9469,0.9789] },
-      { company:'bones', aspect:0.7076, bodyTop:0.2085, bodyBottom:0.9702, rowH:0.0105, xCount:44, yCount:79, x:[0.0365,0.0508,0.0650,0.0793,0.0936,0.1078,0.1221,0.1363,0.1506,0.1979,0.2202,0.2424,0.2653,0.2881,0.3103,0.3331,0.3554,0.3776,0.4056,0.4330,0.4604,0.4872,0.5077,0.5220,0.5368,0.5511,0.5653,0.5796,0.5938,0.6081,0.6224,0.6697,0.6920,0.7148,0.7370,0.7598,0.7821,0.8049,0.8272,0.8500,0.8774,0.9047,0.9315,0.9589] },
-      { company:'cygamespictures', aspect:0.7076, bodyTop:0.2367, bodyBottom:0.9754, rowH:0.0101, xCount:45, yCount:85, x:[0.0411,0.0570,0.0730,0.0890,0.1044,0.1204,0.1363,0.1523,0.1683,0.1780,0.1968,0.2191,0.2419,0.2641,0.2864,0.3092,0.3309,0.3537,0.3759,0.3993,0.4233,0.4467,0.4712,0.5402,0.5562,0.5716,0.5881,0.6035,0.6195,0.6355,0.6515,0.6674,0.6965,0.7188,0.7410,0.7633,0.7861,0.8083,0.8300,0.8528,0.8751,0.8990,0.9224,0.9458,0.9703] },
-      { company:'doga', aspect:0.7073, bodyTop:0.1883, bodyBottom:0.9806, rowH:0.0109, xCount:50, yCount:84, x:[0.0074,0.0240,0.0405,0.0570,0.0736,0.0901,0.1067,0.1232,0.1398,0.1563,0.1728,0.2054,0.2390,0.2556,0.2721,0.2886,0.3052,0.3217,0.3383,0.3548,0.3714,0.3879,0.4210,0.4541,0.4872,0.5037,0.5203,0.5368,0.5533,0.5699,0.5864,0.6030,0.6195,0.6361,0.6526,0.6691,0.7017,0.7353,0.7519,0.7684,0.7849,0.8015,0.8180,0.8346,0.8511,0.8677,0.8842,0.9173,0.9504,0.9835] },
-      { company:'enishiya', aspect:0.7072, bodyTop:0.2161, bodyBottom:0.9952, rowH:0.0109, xCount:47, yCount:80, x:[0.0125,0.0291,0.0468,0.0650,0.0833,0.1021,0.1209,0.1392,0.1574,0.1763,0.1951,0.2470,0.2647,0.2818,0.3001,0.3189,0.3371,0.3560,0.3742,0.3925,0.4113,0.4301,0.4917,0.5134,0.5305,0.5476,0.5665,0.5847,0.6030,0.6218,0.6400,0.6589,0.6771,0.6959,0.7484,0.7598,0.7655,0.7827,0.8015,0.8197,0.8386,0.8568,0.8751,0.8939,0.9127,0.9310,0.9926] },
-      { company:'kinema', aspect:0.7071, bodyTop:0.2137, bodyBottom:0.9738, rowH:0.0105, xCount:46, yCount:78, x:[0.0291,0.0434,0.0582,0.0724,0.0867,0.1010,0.1152,0.1295,0.1438,0.1540,0.2014,0.2236,0.2459,0.2681,0.2909,0.3132,0.3354,0.3577,0.3799,0.4073,0.4341,0.4609,0.4883,0.5157,0.5299,0.5442,0.5590,0.5733,0.5876,0.6018,0.6161,0.6303,0.6406,0.6880,0.7102,0.7325,0.7547,0.7770,0.7992,0.8214,0.8443,0.8665,0.8933,0.9201,0.9469,0.9738] },
-      { company:'mad', aspect:0.7070, bodyTop:0.2149, bodyBottom:0.9899, rowH:0.0109, xCount:36, yCount:80, x:[0.0297,0.0456,0.0610,0.0759,0.0907,0.1067,0.1215,0.1363,0.1512,0.1780,0.2076,0.2362,0.2653,0.2938,0.3520,0.3811,0.4678,0.5311,0.5459,0.5613,0.5767,0.5916,0.6064,0.6218,0.6372,0.6520,0.6794,0.7079,0.7370,0.7661,0.7952,0.8243,0.8825,0.9116,0.9407,0.9698] },
-      { company:'mappa', aspect:0.7112, bodyTop:0.2198, bodyBottom:0.9815, rowH:0.0105, xCount:40, yCount:78, x:[0.0439,0.0582,0.0730,0.0884,0.1033,0.1175,0.1329,0.1472,0.1631,0.1894,0.2179,0.2459,0.2744,0.3023,0.3309,0.3594,0.3879,0.4164,0.4450,0.4729,0.5339,0.5488,0.5636,0.5784,0.5933,0.6081,0.6235,0.6378,0.6532,0.6800,0.7085,0.7365,0.7644,0.7929,0.8214,0.8500,0.8785,0.9070,0.9355,0.9635] },
-      { company:'mappa', aspect:0.7112, bodyTop:0.2198, bodyBottom:0.9815, rowH:0.0105, xCount:40, yCount:78, x:[0.0439,0.0588,0.0730,0.0884,0.1027,0.1181,0.1335,0.1477,0.1626,0.1894,0.2179,0.2464,0.2738,0.3023,0.3309,0.3594,0.3879,0.4164,0.4450,0.4729,0.5339,0.5488,0.5636,0.5784,0.5933,0.6081,0.6229,0.6378,0.6532,0.6794,0.7079,0.7359,0.7644,0.7929,0.8214,0.8500,0.8785,0.9070,0.9355,0.9635] },
-      { company:'saru', aspect:0.7072, bodyTop:0.2577, bodyBottom:0.9718, rowH:0.0101, xCount:41, yCount:88, x:[0.0194,0.0365,0.0531,0.0702,0.0867,0.1033,0.1204,0.1369,0.1540,0.2299,0.2550,0.2801,0.3052,0.3309,0.3560,0.3811,0.4067,0.4358,0.4655,0.4946,0.5037,0.5208,0.5374,0.5545,0.5716,0.5881,0.6047,0.6218,0.6383,0.7148,0.7399,0.7650,0.7901,0.8157,0.8408,0.8659,0.8910,0.9133,0.9207,0.9487,0.9795] },
-      { company:'studiobono', aspect:0.7073, bodyTop:0.2222, bodyBottom:0.9839, rowH:0.0105, xCount:43, yCount:76, x:[0.0428,0.0599,0.0770,0.0936,0.1107,0.1278,0.1449,0.1540,0.1626,0.2139,0.2350,0.2567,0.2778,0.2989,0.3206,0.3423,0.3634,0.3845,0.4062,0.4273,0.4358,0.5465,0.5727,0.5898,0.6070,0.6241,0.6412,0.6583,0.6754,0.6834,0.6925,0.7439,0.7655,0.7867,0.8078,0.8192,0.8294,0.8511,0.8722,0.8933,0.9150,0.9361,0.9578] },
-      { company:'toei', aspect:0.7072, bodyTop:0.2004, bodyBottom:0.9810, rowH:0.0109, xCount:50, yCount:80, x:[0.0171,0.0348,0.0525,0.0696,0.0878,0.1050,0.1232,0.1403,0.1586,0.1763,0.1940,0.2362,0.2544,0.2721,0.2898,0.3080,0.3155,0.3252,0.3428,0.3605,0.3788,0.3959,0.4894,0.5014,0.5100,0.5282,0.5454,0.5625,0.5807,0.5990,0.6161,0.6338,0.6378,0.6515,0.6697,0.6874,0.7148,0.7302,0.7473,0.7650,0.7832,0.8009,0.8186,0.8363,0.8448,0.8534,0.8716,0.8893,0.9720,0.9829] },
-      { company:'toho', aspect:0.7071, bodyTop:0.2202, bodyBottom:0.9911, rowH:0.0109, xCount:38, yCount:83, x:[0.0188,0.0354,0.0525,0.0707,0.0890,0.1072,0.1266,0.1449,0.1620,0.2516,0.2687,0.2858,0.3041,0.3229,0.3411,0.3594,0.3776,0.3959,0.4934,0.5145,0.5317,0.5488,0.5670,0.5853,0.6035,0.6218,0.6400,0.6589,0.7473,0.7650,0.7815,0.7998,0.8180,0.8363,0.8545,0.8728,0.8916,0.9892] }
+    const PAPER_HEADER_TEMPLATE_FINGERPRINTS = [
+      { company:'8bit', top:0.0363, h:0.0440, split:1, splitRatio:0.330, x:[0.001,0.103,0.365,0.436,0.513,0.603,0.698,0.775,0.890,0.921,0.943,0.963,0.975,0.999] },
+      { company:'a1', top:0.0266, h:0.0484, split:1, splitRatio:0.642, x:[0.016,0.026,0.036,0.057,0.087,0.138,0.192,0.242,0.294,0.346,0.398,0.449,0.501,0.552,0.603,0.615,0.622,0.655,0.724,0.843,0.886,0.896,0.948,0.999] },
+      { company:'bones', top:0.0387, h:0.0319, split:1, splitRatio:0.291, x:[0.001,0.066,0.281,0.409,0.581,0.653,0.726,0.843,0.999] },
+      { company:'clw', top:0.0298, h:0.0383, split:1, splitRatio:0.191, x:[0.106,0.410,0.531,0.648,0.738,0.828,0.949] },
+      { company:'cygamespictures', top:0.0157, h:0.0492, split:1, splitRatio:0.270, x:[0.000,0.129,0.425,0.558,0.698,0.808,0.920] },
+      { company:'doga', top:0.0121, h:0.0492, split:1, splitRatio:0.122, x:[0.026,0.079,0.111,0.118,0.144,0.226,0.270,0.286,0.301,0.316,0.380,0.404,0.437,0.525,0.620,0.757,0.886,1.000] },
+      { company:'enishiya', top:0.0056, h:0.0375, split:1, splitRatio:0.344, x:[0.001,0.233,0.244,0.316,0.439,0.548,0.631,0.754,0.876,0.930,0.940,0.948,0.998] },
+      { company:'kinema', top:0.0274, h:0.0323, split:1, splitRatio:0.300, x:[0.001,0.079,0.351,0.569,0.660,0.753,0.896] },
+      { company:'mad', top:0.0129, h:0.0383, split:0, splitRatio:0.000, x:[0.284,0.468,0.606,0.745,0.928] },
+      { company:'mappa', top:0.0185, h:0.0375, split:1, splitRatio:0.248, x:[0.000,0.111,0.497,0.607,0.693,0.778,0.889,0.958,0.999] },
+      { company:'saru', top:0.0282, h:0.0379, split:1, splitRatio:0.193, x:[0.000,0.101,0.221,0.246,0.283,0.392,0.508,0.621,0.707,0.793,0.910,1.000] },
+      { company:'studiobono', top:0.0214, h:0.0391, split:0, splitRatio:0.000, x:[0.001,0.351,0.489,0.659,0.828,1.000] },
+      { company:'toei', top:0.0206, h:0.0435, split:1, splitRatio:0.202, x:[0.001,0.356,0.581,0.665,0.747,0.840,0.999] },
+      { company:'toho', top:0.0121, h:0.0371, split:1, splitRatio:0.337, x:[0.001,0.207,0.281,0.391,0.487,0.561,0.671,0.781,0.890,0.938,0.999] }
     ];
 
     const svg = document.getElementById('sheetSvg');
@@ -2834,7 +2837,79 @@
         .sort(function(a,b){ return a - b; });
     }
 
-    function averageNearestPaperLineDistance(a, b) {
+    function roundedPaperHeaderIdentityValue(value) {
+      const n = Number(value);
+      return Number.isFinite(n) ? Math.round(n * 1000) / 1000 : 0;
+    }
+
+    function normalizedPaperHeaderIdentityLines(header) {
+      const left = Number(header && header.x);
+      const width = Number(header && header.w);
+      if (!Number.isFinite(left) || !Number.isFinite(width) || width <= 0) return [];
+      return mergePaperAutoAlignUniquePositions(header.lines || [], 5)
+        .map(function(value){ return (Number(value) - left) / width; })
+        .filter(function(value){ return Number.isFinite(value) && value >= -0.045 && value <= 1.045; })
+        .map(function(value){ return roundedPaperHeaderIdentityValue(Math.max(0, Math.min(1, value))); })
+        .filter(function(value, index, list){ return index === 0 || Math.abs(value - list[index - 1]) > 0.004; })
+        .sort(function(a,b){ return a - b; });
+    }
+
+    function paperHeaderIdentityIntervals(values) {
+      const x = (values || []).map(Number).filter(Number.isFinite).sort(function(a,b){ return a-b; });
+      const intervals = [];
+      for (let i = 1; i < x.length; i++) {
+        const w = x[i] - x[i - 1];
+        if (w > 0.004) intervals.push(roundedPaperHeaderIdentityValue(w));
+      }
+      return intervals;
+    }
+
+    function paperHeaderIdentityCellIndex(values, x) {
+      const n = Number(x);
+      const lines = (values || []).map(Number).filter(Number.isFinite).sort(function(a,b){ return a-b; });
+      if (!Number.isFinite(n) || lines.length < 2) return -1;
+      for (let i = 0; i + 1 < lines.length; i++) {
+        if (n >= lines[i] - 0.012 && n <= lines[i + 1] + 0.012) return i;
+      }
+      return -1;
+    }
+
+    function makePaperHeaderIdentityFingerprint(result) {
+      const overlay = result && result.overlay ? result.overlay : {};
+      const header = overlay.header || {};
+      const left = Number(header.x);
+      const width = Number(header.w);
+      const top = Number(header.y);
+      const height = Number(header.h);
+      const x = normalizedPaperHeaderIdentityLines(header);
+      const labelBand = header.labelBand || null;
+      const splitDetected = !!(labelBand && labelBand.detected);
+      const splitY = splitDetected ? Number(labelBand.splitY) : NaN;
+      const splitRatio = splitDetected && Number.isFinite(splitY) && Number.isFinite(top) && height > 0
+        ? roundedPaperHeaderIdentityValue((splitY - top) / height)
+        : 0;
+      const plus = header.durationPlus || null;
+      const slash = header.pageSlashBox || null;
+      const plusNorm = plus && Number.isFinite(Number(plus.x)) && Number.isFinite(left) && width > 0
+        ? roundedPaperHeaderIdentityValue((Number(plus.x) - left) / width)
+        : -1;
+      const slashNorm = slash && Number.isFinite(Number(slash.x)) && Number.isFinite(Number(slash.w)) && Number.isFinite(left) && width > 0
+        ? roundedPaperHeaderIdentityValue((Number(slash.x) + Number(slash.w) / 2 - left) / width)
+        : -1;
+      return {
+        x:x,
+        intervals:paperHeaderIdentityIntervals(x),
+        count:x.length,
+        top:Number.isFinite(top) ? top / PAGE_H : 0,
+        h:Number.isFinite(height) ? height / PAGE_H : 0,
+        split:splitDetected ? 1 : 0,
+        splitRatio:splitRatio,
+        plusIndex:paperHeaderIdentityCellIndex(x, plusNorm),
+        slashIndex:paperHeaderIdentityCellIndex(x, slashNorm)
+      };
+    }
+
+    function averageNearestPaperHeaderIdentityDistance(a, b) {
       if (!a.length || !b.length) return 1;
       let total = 0;
       a.forEach(function(value){
@@ -2848,27 +2923,57 @@
       return total / Math.max(1, a.length);
     }
 
-    function comparePaperTemplateLines(current, template) {
-      const forward = averageNearestPaperLineDistance(current, template);
-      const reverse = averageNearestPaperLineDistance(template, current);
+    function comparePaperHeaderIdentityLines(current, template) {
+      if (!current.length || !template.length) return 0;
+      const forward = averageNearestPaperHeaderIdentityDistance(current, template);
+      const reverse = averageNearestPaperHeaderIdentityDistance(template, current);
       const countPenalty = Math.abs(current.length - template.length) / Math.max(1, Math.max(current.length, template.length));
-      const lineDistance = (forward + reverse) / 2 + countPenalty * 0.010;
-      return clampUsageRatio(1 - lineDistance / 0.030);
+      const distance = (forward + reverse) / 2 + countPenalty * 0.012;
+      return clampUsageRatio(1 - distance / 0.040);
     }
 
-    function scorePaperTemplateFingerprint(current, template) {
-      const lineScore = comparePaperTemplateLines(current.x, template.x || []);
-      const bodyScore = (
-        clampUsageRatio(1 - Math.abs(current.bodyTop - template.bodyTop) / 0.050) +
-        clampUsageRatio(1 - Math.abs(current.bodyBottom - template.bodyBottom) / 0.050) +
-        clampUsageRatio(1 - Math.abs(current.rowH - template.rowH) / 0.006)
-      ) / 3;
-      const countScore = (
-        clampUsageRatio(1 - Math.abs(current.xCount - template.xCount) / 24) +
-        clampUsageRatio(1 - Math.abs(current.yCount - template.yCount) / 40)
+    function comparePaperHeaderIdentityWidths(current, template) {
+      if (!current.length || !template.length) return 0;
+      const countPenalty = Math.abs(current.length - template.length) / Math.max(1, Math.max(current.length, template.length));
+      let directDistance = 1;
+      if (Math.abs(current.length - template.length) <= 2) {
+        const count = Math.min(current.length, template.length);
+        let total = 0;
+        for (let i = 0; i < count; i++) total += Math.abs(current[i] - template[i]);
+        directDistance = total / Math.max(1, count) + countPenalty * 0.024;
+      }
+      const nearestDistance = (
+        averageNearestPaperHeaderIdentityDistance(current, template) +
+        averageNearestPaperHeaderIdentityDistance(template, current)
+      ) / 2 + countPenalty * 0.018;
+      return clampUsageRatio(1 - Math.min(directDistance, nearestDistance) / 0.065);
+    }
+
+    function scorePaperHeaderTemplateFingerprint(current, template) {
+      const templateX = Array.isArray(template && template.x) ? template.x : [];
+      const currentX = Array.isArray(current && current.x) ? current.x : [];
+      if (!currentX.length || !templateX.length) return 0;
+      const lineScore = comparePaperHeaderIdentityLines(currentX, templateX);
+      const widthScore = comparePaperHeaderIdentityWidths(current.intervals || paperHeaderIdentityIntervals(currentX), paperHeaderIdentityIntervals(templateX));
+      const countScore = clampUsageRatio(1 - Math.abs(currentX.length - templateX.length) / 14);
+      const currentSplit = Number(current && current.split || 0) ? 1 : 0;
+      const templateSplit = Number(template && template.split || 0) ? 1 : 0;
+      const splitScore = currentSplit === templateSplit ? 1 : 0.35;
+      const splitRatioScore = currentSplit && templateSplit
+        ? clampUsageRatio(1 - Math.abs(Number(current.splitRatio || 0) - Number(template.splitRatio || 0)) / 0.18)
+        : (currentSplit === templateSplit ? 1 : 0.5);
+      const heightScore = (
+        clampUsageRatio(1 - Math.abs(Number(current.h || 0) - Number(template.h || 0)) / 0.030) +
+        clampUsageRatio(1 - Math.abs(Number(current.top || 0) - Number(template.top || 0)) / 0.055)
       ) / 2;
-      const aspectScore = current.aspect ? clampUsageRatio(1 - Math.abs(current.aspect - template.aspect) / 0.070) : 0.6;
-      return clampUsageRatio(lineScore * 0.52 + bodyScore * 0.31 + countScore * 0.12 + aspectScore * 0.05);
+      return clampUsageRatio(
+        lineScore * 0.46 +
+        widthScore * 0.29 +
+        countScore * 0.09 +
+        splitScore * 0.08 +
+        splitRatioScore * 0.03 +
+        heightScore * 0.05
+      );
     }
 
     function makePaperTemplateFingerprint(result, analysis) {
@@ -2894,21 +2999,37 @@
     }
 
     function matchPaperTemplateFingerprint(result, analysis) {
-      const current = makePaperTemplateFingerprint(result, analysis);
-      if (!current.x.length || !PAPER_TEMPLATE_FINGERPRINTS.length) {
-        return { company:'unknown', score:0, confidence:'unknown', fingerprint:current };
+      const bodyFingerprint = makePaperTemplateFingerprint(result, analysis);
+      const headerFingerprint = makePaperHeaderIdentityFingerprint(result);
+      if (!headerFingerprint.x.length || !PAPER_HEADER_TEMPLATE_FINGERPRINTS.length) {
+        return { company:'unknown', score:0, confidence:'unknown', fingerprint:bodyFingerprint, headerFingerprint:headerFingerprint };
       }
       let best = null;
-      PAPER_TEMPLATE_FINGERPRINTS.forEach(function(template){
-        const score = scorePaperTemplateFingerprint(current, template);
+      let second = null;
+      PAPER_HEADER_TEMPLATE_FINGERPRINTS.forEach(function(template){
+        const score = scorePaperHeaderTemplateFingerprint(headerFingerprint, template);
         if (!best || score > best.score) best = { company:template.company, score:score, template:template };
       });
-      const confidence = best && best.score >= 0.86 ? 'known' : (best && best.score >= PAPER_TEMPLATE_MATCH_MIN_SCORE ? 'likely' : 'unknown');
+      PAPER_HEADER_TEMPLATE_FINGERPRINTS.forEach(function(template){
+        const score = scorePaperHeaderTemplateFingerprint(headerFingerprint, template);
+        if (best && template.company === best.company && score === best.score) return;
+        if (!second || score > second.score) second = { company:template.company, score:score, template:template };
+      });
+      const margin = best ? best.score - Number(second && second.score || 0) : 0;
+      const confidence = best && best.score >= PAPER_HEADER_TEMPLATE_KNOWN_MIN_SCORE && margin >= PAPER_HEADER_TEMPLATE_KNOWN_MIN_MARGIN
+        ? 'known'
+        : (best && best.score >= PAPER_HEADER_TEMPLATE_LIKELY_MIN_SCORE && margin >= PAPER_HEADER_TEMPLATE_LIKELY_MIN_MARGIN
+          ? 'likely'
+          : (best && best.score >= PAPER_HEADER_TEMPLATE_LIKELY_MIN_SCORE ? 'ambiguous' : 'unknown'));
       return {
-        company:confidence === 'unknown' ? 'unknown' : best.company,
+        company:(confidence === 'known' || confidence === 'likely') ? best.company : 'unknown',
         score:best ? roundUsageNumber(best.score, 3) : 0,
         confidence:confidence,
-        fingerprint:current
+        fingerprint:bodyFingerprint,
+        headerFingerprint:headerFingerprint,
+        secondCompany:second && second.company ? second.company : '',
+        secondScore:second ? roundUsageNumber(second.score, 3) : 0,
+        scoreMargin:roundUsageNumber(margin, 3)
       };
     }
 
@@ -2917,7 +3038,7 @@
         const diagnostics = result && result.diagnostics ? result.diagnostics : {};
         const fingerprint = match && match.fingerprint ? match.fingerprint : makePaperTemplateFingerprint(result, analysis);
         const templateConfidence = match && match.confidence ? match.confidence : 'unknown';
-        const unmatchedTemplateFileName = templateConfidence === 'unknown' ? sanitizeUsageFileName(state.paperImageName, 140) : '';
+        const unmatchedTemplateFileName = (templateConfidence === 'unknown' || templateConfidence === 'ambiguous') ? sanitizeUsageFileName(state.paperImageName, 140) : '';
         sendUsageEvent('paper_align', {
           autoAlignConfidence:Math.round(Number(result && result.confidence || 0)),
           templateCompany:match && match.company ? match.company : 'unknown',
