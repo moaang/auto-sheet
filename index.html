@@ -2199,7 +2199,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '736';
+    const APP_VERSION = '737';
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
     const PAPER_HEADER_TEMPLATE_KNOWN_MIN_SCORE = 0.84;
@@ -3086,6 +3086,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver737', 'Japanese CLIP black-dot CSV import', ['CSV auto decoding now treats black-circle dot marks such as <code>●</code>, <code>⚫</code>, and <code>⬤</code> as valid CLIP douga dots, preventing CP932 Japanese CSV markers from being misread as Korean text.']],
         ['ver730', 'Left endpoint closure', ['Paper Auto Align now also closes a missing left-side header divider when the top, split, and bottom header rules start at the same x-position.']],
         ['ver729', 'Author field anchor', ['Paper Auto Align now anchors the Author field to the cell immediately right of Duration, instead of preferring the last cell before Page.']],
         ['ver728', 'Author field ordering', ['When two or more header cells exist from the right side of Duration through the Page field, Paper Auto Align now assigns the cell immediately to the right of Duration as the Author field.']],
@@ -3166,6 +3167,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver737', '日本語CLIPの黒丸CSV読込', ['CSV自動判定で <code>●</code>、<code>⚫</code>、<code>⬤</code> などの黒丸もCLIPの動画点として扱い、CP932の日本語CSVが韓国語文字として誤読されにくいようにしました。']],
         ['ver730', '左端点で欄を閉じる補正', ['Paper Auto Align で、ヘッダー上罫線・分割線・下罫線の左端点が同じ x 位置で揃う場合も、欠けている左側の区切り線として閉じるようにしました。']],
         ['ver729', '名前欄の基準変更', ['Paper Auto Align は、ページ欄の直前ではなく Duration のすぐ右の欄を基準に名前欄を決めるようにしました。']],
         ['ver728', '名前欄の順序補正', ['Duration の右側からページ欄までに 2 つ以上のヘッダー欄がある場合、Paper Auto Align は Duration のすぐ右の欄を名前欄として確定するようにしました。']],
@@ -3246,6 +3248,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver737', '일본어 CLIP 검은 점 CSV 읽기', ['CSV 자동 판정에서 <code>●</code>, <code>⚫</code>, <code>⬤</code> 같은 검은 원도 CLIP 동화점으로 처리해, CP932 일본어 CSV 표시가 한글 문자로 오판되는 경우를 줄였습니다.']],
         ['ver730', '왼쪽 엔드포인트로 칸 닫기', ['Paper Auto Align에서 헤더 상단선, 분할선, 하단선의 왼쪽 끝점 x값이 같으면 누락된 왼쪽 구분선으로 닫게 했습니다.']],
         ['ver729', '이름칸 기준 변경', ['Paper Auto Align에서 이름칸을 page 앞칸 기준이 아니라 Duration 바로 오른쪽칸 기준으로 정하게 했습니다.']],
         ['ver728', '이름칸 순서 보정', ['Duration 오른쪽부터 매수칸까지 헤더 칸이 2개 이상 있으면, Paper Auto Align이 Duration 바로 오른쪽 칸을 이름칸으로 확정하게 했습니다.']],
@@ -3326,6 +3329,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver737', '日文 CLIP 黑点 CSV 导入', ['CSV 自动判断现在会把 <code>●</code>、<code>⚫</code>、<code>⬤</code> 等黑圆也作为 CLIP 动画点处理，减少 CP932 日文 CSV 标记被误读为韩文字符的情况。']],
         ['ver730', '用左侧对齐端点闭合字段', ['Paper Auto Align 现在也会在页眉上线、分割线和下线左端点 x 位置一致时，将其作为缺失的左侧分隔线闭合。']],
         ['ver729', '作者字段锚点调整', ['Paper Auto Align 现在以 Duration 正右侧的格作为作者字段依据，而不是优先使用 Page 前的最后一个格。']],
         ['ver728', '作者字段顺序修正', ['当 Duration 右侧到页数字段之间存在 2 个以上页眉格时，Paper Auto Align 会将 Duration 正右侧的格确认为作者字段。']],
@@ -10904,6 +10908,10 @@
       return rows.map(function(r){ return r.map(function(v){ return String(v || '').trim(); }); });
     }
 
+    const CSV_BLACK_DOT_MARK_RE = /[\u25cf\u26ab\u2b24\u23fa\u2022]/g;
+    const CSV_DOT_MARK_RE = /[\u25cb\u3007\u25ef\u25cf\u26ab\u2b24\u23fa\u2022]/g;
+    const CSV_DOT_MARK_VALUE_RE = /^[\u25cb\u3007\u25ef\u25cf\u26ab\u2b24\u23fa\u2022]$/;
+
     function hasLikelyCsvMojibake(textValue) {
       const text = String(textValue || '');
       const replacement = (text.match(/�/g) || []).length;
@@ -10918,7 +10926,8 @@
       const total = Math.max(1, textValue.length);
       const koreanSplitAsSjis = (textValue.match(/\uff61\uff7f/g) || []).length;
       const splitMarks = (textValue.match(/\u00d7/g) || []).length;
-      const dotMarks = (textValue.match(/[\u25cb\u3007\u25ef]/g) || []).length;
+      const dotMarks = (textValue.match(CSV_DOT_MARK_RE) || []).length;
+      const blackDotMarks = (textValue.match(CSV_BLACK_DOT_MARK_RE) || []).length;
       const jp = (textValue.match(/[\u3040-\u30ff\u3400-\u9fff]/g) || []).length;
       const kr = (textValue.match(/[\uac00-\ud7af]/g) || []).length;
       const ascii = (textValue.match(/[A-Za-z0-9 _\-\/,:.#\[\]"]/g) || []).length;
@@ -10940,7 +10949,7 @@
       score -= replacement * 20;
       score -= koreanSplitAsSjis * 35;
       score -= c1Controls * 24;
-      if (/\bFrame\b/i.test(textValue) && (splitMarks || dotMarks)) score += Math.min(80, (splitMarks + dotMarks) * 6);
+      if (/\bFrame\b/i.test(textValue) && (splitMarks || dotMarks)) score += Math.min(80, ((splitMarks + dotMarks) * 6) + (blackDotMarks * 10));
       return score;
     }
 
@@ -10995,7 +11004,7 @@
 
     function isCsvDotValue(value) {
       const symbol = normalizeCsvSymbolValue(value);
-      return symbol === 'dot' || symbol === 'o' || symbol === '○' || symbol === '〇' || symbol === '◯' || symbol === '컷';
+      return symbol === 'dot' || symbol === 'o' || CSV_DOT_MARK_VALUE_RE.test(symbol) || symbol === '컷';
     }
 
     function isCsvCrossValue(value) {
