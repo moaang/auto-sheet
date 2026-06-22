@@ -2199,7 +2199,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '737';
+    const APP_VERSION = '738';
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
     const PAPER_HEADER_TEMPLATE_KNOWN_MIN_SCORE = 0.84;
@@ -2213,7 +2213,10 @@
       { company:'bones', top:0.0387, h:0.0319, split:1, splitRatio:0.291, x:[0.001,0.066,0.281,0.409,0.581,0.653,0.726,0.843,0.999] },
       { company:'clw', top:0.0298, h:0.0383, split:1, splitRatio:0.191, x:[0.106,0.410,0.531,0.648,0.738,0.828,0.949] },
       { company:'cygamespictures', top:0.0157, h:0.0492, split:1, splitRatio:0.270, x:[0.000,0.129,0.425,0.558,0.698,0.808,0.920] },
+      { company:'cygamespictures', top:0.0290, h:0.0355, split:0, splitRatio:0.000, x:[0.089,0.181,0.391,0.486,0.586,0.743,0.902,0.999] },
       { company:'doga', top:0.0121, h:0.0492, split:1, splitRatio:0.122, x:[0.026,0.079,0.111,0.118,0.144,0.226,0.270,0.286,0.301,0.316,0.380,0.404,0.437,0.525,0.620,0.757,0.886,1.000] },
+      { company:'e&h', top:0.0190, h:0.0367, split:1, splitRatio:0.297, x:[0.001,0.079,0.357,0.439,0.565,0.642,0.722,0.727,0.808] },
+      { company:'e&h', top:0.0190, h:0.0367, split:1, splitRatio:0.297, x:[0.002,0.098,0.442,0.543,0.698,0.793,0.892,0.898,0.998] },
       { company:'enishiya', top:0.0056, h:0.0375, split:1, splitRatio:0.344, x:[0.001,0.233,0.244,0.316,0.439,0.548,0.631,0.754,0.876,0.930,0.940,0.948,0.998] },
       { company:'kinema', top:0.0274, h:0.0323, split:1, splitRatio:0.300, x:[0.001,0.079,0.351,0.569,0.660,0.753,0.896] },
       { company:'mad', top:0.0129, h:0.0383, split:0, splitRatio:0.000, x:[0.284,0.468,0.606,0.745,0.928] },
@@ -2221,6 +2224,7 @@
       { company:'mappa', top:0.0185, h:0.0379, split:1, splitRatio:0.256, x:[0.001,0.110,0.214,0.245,0.264,0.285,0.302,0.318,0.367,0.407,0.497,0.608,0.694,0.778,0.889,0.958,1.000] },
       { company:'saru', top:0.0282, h:0.0379, split:1, splitRatio:0.193, x:[0.000,0.101,0.221,0.246,0.283,0.392,0.508,0.621,0.707,0.793,0.910,1.000] },
       { company:'studiobono', top:0.0214, h:0.0391, split:0, splitRatio:0.000, x:[0.001,0.351,0.489,0.659,0.828,1.000] },
+      { company:'toei', top:0.0206, h:0.0440, split:1, splitRatio:0.202, x:[0.001,0.305,0.498,0.640,0.720,0.856] },
       { company:'toei', top:0.0206, h:0.0435, split:1, splitRatio:0.202, x:[0.001,0.356,0.581,0.665,0.747,0.840,0.999] },
       { company:'toho', top:0.0121, h:0.0371, split:1, splitRatio:0.337, x:[0.001,0.207,0.281,0.391,0.487,0.561,0.671,0.781,0.890,0.938,0.999] }
     ];
@@ -3086,6 +3090,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver738', 'Paper template recognition additions', ['External Paper Auto Align now recognizes E&H sheets, CygamesPictures inner/count sheets, and a Toei-style 6-line header variant from their header fingerprints.']],
         ['ver737', 'Japanese CLIP black-dot CSV import', ['CSV auto decoding now treats black-circle dot marks such as <code>●</code>, <code>⚫</code>, and <code>⬤</code> as valid CLIP douga dots, preventing CP932 Japanese CSV markers from being misread as Korean text.']],
         ['ver730', 'Left endpoint closure', ['Paper Auto Align now also closes a missing left-side header divider when the top, split, and bottom header rules start at the same x-position.']],
         ['ver729', 'Author field anchor', ['Paper Auto Align now anchors the Author field to the cell immediately right of Duration, instead of preferring the last cell before Page.']],
@@ -3167,6 +3172,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver738', '用紙テンプレート認識の追加', ['外部用紙Auto Alignで、E&H、CygamesPicturesの内面・カウント用紙、Toei系の6本ヘッダーvariantをヘッダーfingerprintから認識できるようにしました。']],
         ['ver737', '日本語CLIPの黒丸CSV読込', ['CSV自動判定で <code>●</code>、<code>⚫</code>、<code>⬤</code> などの黒丸もCLIPの動画点として扱い、CP932の日本語CSVが韓国語文字として誤読されにくいようにしました。']],
         ['ver730', '左端点で欄を閉じる補正', ['Paper Auto Align で、ヘッダー上罫線・分割線・下罫線の左端点が同じ x 位置で揃う場合も、欠けている左側の区切り線として閉じるようにしました。']],
         ['ver729', '名前欄の基準変更', ['Paper Auto Align は、ページ欄の直前ではなく Duration のすぐ右の欄を基準に名前欄を決めるようにしました。']],
@@ -3248,6 +3254,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver738', '용지 템플릿 인식 추가', ['외부용지 Auto Align에서 E&H, CygamesPictures 내면/카운트 시트, Toei 계열 6줄 헤더 variant를 헤더 fingerprint로 인식할 수 있게 했습니다.']],
         ['ver737', '일본어 CLIP 검은 점 CSV 읽기', ['CSV 자동 판정에서 <code>●</code>, <code>⚫</code>, <code>⬤</code> 같은 검은 원도 CLIP 동화점으로 처리해, CP932 일본어 CSV 표시가 한글 문자로 오판되는 경우를 줄였습니다.']],
         ['ver730', '왼쪽 엔드포인트로 칸 닫기', ['Paper Auto Align에서 헤더 상단선, 분할선, 하단선의 왼쪽 끝점 x값이 같으면 누락된 왼쪽 구분선으로 닫게 했습니다.']],
         ['ver729', '이름칸 기준 변경', ['Paper Auto Align에서 이름칸을 page 앞칸 기준이 아니라 Duration 바로 오른쪽칸 기준으로 정하게 했습니다.']],
@@ -3329,6 +3336,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver738', '新增纸张模板识别', ['外部纸张 Auto Align 现在可通过页眉 fingerprint 识别 E&H、CygamesPictures 内面/计数表，以及 Toei 系 6 线页眉 variant。']],
         ['ver737', '日文 CLIP 黑点 CSV 导入', ['CSV 自动判断现在会把 <code>●</code>、<code>⚫</code>、<code>⬤</code> 等黑圆也作为 CLIP 动画点处理，减少 CP932 日文 CSV 标记被误读为韩文字符的情况。']],
         ['ver730', '用左侧对齐端点闭合字段', ['Paper Auto Align 现在也会在页眉上线、分割线和下线左端点 x 位置一致时，将其作为缺失的左侧分隔线闭合。']],
         ['ver729', '作者字段锚点调整', ['Paper Auto Align 现在以 Duration 正右侧的格作为作者字段依据，而不是优先使用 Page 前的最后一个格。']],
