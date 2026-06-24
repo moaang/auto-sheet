@@ -2199,7 +2199,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '739';
+    const APP_VERSION = '740';
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
     const PAPER_HEADER_TEMPLATE_KNOWN_MIN_SCORE = 0.84;
@@ -3091,6 +3091,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver740', 'Camera FI/FO/OL preview width', ['Camera FI, FO, and OL preview shapes now draw at about two-thirds of their previous width so they do not fill the whole camera lane.']],
         ['ver737', 'Japanese CLIP black-dot CSV import', ['CSV auto decoding now treats black-circle dot marks such as <code>●</code>, <code>⚫</code>, and <code>⬤</code> as valid CLIP douga dots, preventing CP932 Japanese CSV markers from being misread as Korean text.']],
         ['ver730', 'Left endpoint closure', ['Paper Auto Align now also closes a missing left-side header divider when the top, split, and bottom header rules start at the same x-position.']],
         ['ver729', 'Author field anchor', ['Paper Auto Align now anchors the Author field to the cell immediately right of Duration, instead of preferring the last cell before Page.']],
@@ -3172,6 +3173,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver740', 'Camera FI/FO/OL表示幅', ['カメラ欄のFI、FO、OL図形を従来の約2/3幅で表示し、撮影欄いっぱいに広がりすぎないようにしました。']],
         ['ver737', '日本語CLIPの黒丸CSV読込', ['CSV自動判定で <code>●</code>、<code>⚫</code>、<code>⬤</code> などの黒丸もCLIPの動画点として扱い、CP932の日本語CSVが韓国語文字として誤読されにくいようにしました。']],
         ['ver730', '左端点で欄を閉じる補正', ['Paper Auto Align で、ヘッダー上罫線・分割線・下罫線の左端点が同じ x 位置で揃う場合も、欠けている左側の区切り線として閉じるようにしました。']],
         ['ver729', '名前欄の基準変更', ['Paper Auto Align は、ページ欄の直前ではなく Duration のすぐ右の欄を基準に名前欄を決めるようにしました。']],
@@ -3253,6 +3255,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver740', '카메라 FI/FO/OL 표시 폭', ['카메라란의 FI, FO, OL 도형을 기존의 약 2/3 폭으로 표시해 촬영칸 전체를 너무 채우지 않게 했습니다.']],
         ['ver737', '일본어 CLIP 검은 점 CSV 읽기', ['CSV 자동 판정에서 <code>●</code>, <code>⚫</code>, <code>⬤</code> 같은 검은 원도 CLIP 동화점으로 처리해, CP932 일본어 CSV 표시가 한글 문자로 오판되는 경우를 줄였습니다.']],
         ['ver730', '왼쪽 엔드포인트로 칸 닫기', ['Paper Auto Align에서 헤더 상단선, 분할선, 하단선의 왼쪽 끝점 x값이 같으면 누락된 왼쪽 구분선으로 닫게 했습니다.']],
         ['ver729', '이름칸 기준 변경', ['Paper Auto Align에서 이름칸을 page 앞칸 기준이 아니라 Duration 바로 오른쪽칸 기준으로 정하게 했습니다.']],
@@ -3334,6 +3337,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver740', 'Camera FI/FO/OL 显示宽度', ['摄影栏的 FI、FO、OL 图形现在约为原宽度的三分之二，避免占满整个摄影栏。']],
         ['ver737', '日文 CLIP 黑点 CSV 导入', ['CSV 自动判断现在会把 <code>●</code>、<code>⚫</code>、<code>⬤</code> 等黑圆也作为 CLIP 动画点处理，减少 CP932 日文 CSV 标记被误读为韩文字符的情况。']],
         ['ver730', '用左侧对齐端点闭合字段', ['Paper Auto Align 现在也会在页眉上线、分割线和下线左端点 x 位置一致时，将其作为缺失的左侧分隔线闭合。']],
         ['ver729', '作者字段锚点调整', ['Paper Auto Align 现在以 Duration 正右侧的格作为作者字段依据，而不是优先使用 Page 前的最后一个格。']],
@@ -13841,10 +13845,14 @@
       }));
     }
 
+    const CAMERA_SPECIAL_SHAPE_WIDTH_SCALE = 2 / 3;
+
     function renderCameraSpecialShape(shape, areaX, areaW, rowTop, height, lane, laneCount) {
       if (!shape) return false;
       const laneX = getDistributedLaneX(areaX, areaW, lane || 0, laneCount, 12);
-      const usableW = Math.max(18, Math.min(areaW - 10, areaW / Math.max(1, laneCount) * 0.82));
+      const laneW = areaW / Math.max(1, laneCount);
+      const baseW = Math.max(18, Math.min(areaW - 10, laneW * 0.82));
+      const usableW = Math.max(18, baseW * CAMERA_SPECIAL_SHAPE_WIDTH_SCALE);
       const halfW = usableW / 2;
       const x1 = Math.max(areaX + 4, laneX - halfW);
       const x2 = Math.min(areaX + areaW - 4, laneX + halfW);
