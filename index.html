@@ -2228,7 +2228,7 @@
     const DEFAULT_DIALOG_SAMPLE_LINE = '0+01 | 1+00 | SPEAKER | SAMPLE';
     const DEFAULT_CAMERA_SAMPLE_LINE = [
       '0+01 | 1+00 | A | PAN | B',
-      '0+05 | 1+00 | A1 | AセルOL | A2'
+      '0+01 | 1+00 | BG1 | OL | BG2'
     ].join('\n');
     const CAMERA_DIRECTIVE_COMPLETION_OPTIONS = ['▲', '-', 'FI', 'FO', 'OL'];
     const CAMERA_TARGET_SHAPE_DIRECTIVE_SET = new Set(['FI', 'FO', 'OL']);
@@ -2236,7 +2236,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '767';
+    const APP_VERSION = '768';
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
     const PAPER_HEADER_TEMPLATE_KNOWN_MIN_SCORE = 0.84;
@@ -3131,6 +3131,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver768', 'Picker reflects mid-text O.L', ['The per-line camera picker now switches to OL when the line’s middle text is an O.L (e.g. <code>BG1 | OL | BG2</code>, <code>A1 | AセルOL | A2</code>), not only when OL is in the label position. The default Camera sample now uses <code>BG1 | OL | BG2</code>.']],
         ['ver767', 'O.L memo order', ['Camera→Memo now writes the within-cut O.L as states-then-cel: <code>・A1 ⋈ A2 AセルO.L</code>.']],
         ['ver766', 'Fix camera sample slash', ['Fixed the default Camera Area sample text that wrongly contained a slash-joined OL example; it now loads two clean lines (PAN and the within-cut O.L form).']],
         ['ver765', 'O.L by cel (中O.L)', ['Within-cut O.L now names the cel: write it in the standard form <code>0+05 | 1+00 | A1 | AセルOL | A2</code> (middle text ending in OL is read as O.L). The lane shows the bowtie with A1 / AセルO.L / A2, and Camera→Memo writes <code>・AセルO.L A1 ⋈ A2</code>. Removed the slash-joined examples from the format hint.']],
@@ -3236,6 +3237,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver768', '選択UIが中央O.Lを反映', ['行ごとのカメラ選択UIが、ラベル位置だけでなく中央テキストがO.L（例: <code>BG1 | OL | BG2</code>、<code>A1 | AセルOL | A2</code>）のときもOLに切り替わるようになりました。初期サンプルも <code>BG1 | OL | BG2</code> にしました。']],
         ['ver767', 'O.Lメモの順序', ['カメラ→メモのカット内O.Lを状態→セルの順に変更しました: <code>・A1 ⋈ A2 AセルO.L</code>。']],
         ['ver766', 'カメラ例のスラッシュ修正', ['カメラ欄の初期サンプルに誤って入っていたスラッシュ併記のOL例を修正し、2行のクリーンな例（PANとカット内O.L形式）を読み込むようにしました。']],
         ['ver765', 'セル名つきO.L（中O.L）', ['カット内O.Lでセル名を表せるようになりました。標準形式 <code>0+05 | 1+00 | A1 | AセルOL | A2</code>（中央がOLで終わるとO.Lと解釈）で書くと、レーンは砂時計＋A1／AセルO.L／A2、カメラ→メモは <code>・AセルO.L A1 ⋈ A2</code> を記入します。形式ヒントのスラッシュ併記例は削除しました。']],
@@ -3341,6 +3343,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver768', '선택탭이 가운데 O.L 반영', ['줄별 카메라 선택탭이 라벨 위치뿐 아니라 가운데 텍스트가 O.L(예: <code>BG1 | OL | BG2</code>, <code>A1 | AセルOL | A2</code>)이면 OL로 전환됩니다. 기본 샘플도 <code>BG1 | OL | BG2</code>로 바꿨습니다.']],
         ['ver767', 'O.L 메모 순서', ['카메라→메모의 컷 내 O.L을 상태→셀 순서로 바꿨습니다: <code>・A1 ⋈ A2 AセルO.L</code>.']],
         ['ver766', '카메라 예시 슬래시 수정', ['카메라란 기본 샘플에 잘못 들어간 슬래시 병기 OL 예시를 수정해, 깨끗한 2줄(PAN과 컷 내 O.L 형식)을 불러오도록 했습니다.']],
         ['ver765', '셀명 포함 O.L (中O.L)', ['컷 내 O.L에 셀명을 표현할 수 있습니다. 표준 형식 <code>0+05 | 1+00 | A1 | AセルOL | A2</code>(가운데가 OL로 끝나면 O.L로 인식)로 쓰면 레인은 모래시계+A1/AセルO.L/A2, 카메라→메모는 <code>・AセルO.L A1 ⋈ A2</code>를 기입합니다. 형식 힌트의 슬래시 병기 예시는 제거했습니다.']],
@@ -3446,6 +3449,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver768', '选择UI反映中间O.L', ['逐行摄影选择 UI 现在不仅在标签位置、也会在行的中间文本为 O.L（如 <code>BG1 | OL | BG2</code>、<code>A1 | AセルOL | A2</code>）时切换为 OL。默认示例也改为 <code>BG1 | OL | BG2</code>。']],
         ['ver767', 'O.L 备注顺序', ['摄影→备注的镜头内 O.L 改为状态在前、素材在后: <code>・A1 ⋈ A2 AセルO.L</code>。']],
         ['ver766', '修复摄影示例斜杠', ['修复了摄影栏默认示例中误含的斜杠并列 OL 示例，现在加载两行干净示例（PAN 与镜头内 O.L 形式）。']],
         ['ver765', '带素材名 O.L（中O.L）', ['镜头内 O.L 现在可表示素材名。用标准格式 <code>0+05 | 1+00 | A1 | AセルOL | A2</code>（中间以 OL 结尾即识别为 O.L）书写时，栏内显示沙漏＋A1／AセルO.L／A2，摄影→备注写入 <code>・AセルO.L A1 ⋈ A2</code>。已移除格式提示中的斜杠并列示例。']],
@@ -10781,15 +10785,24 @@
       const from = parseTimecode(parts[0]);
       const to = parseTimecode(parts[1]);
       if (!from || !to || to < from) return null;
-      const specialInfo = getCameraSpecialShapeTokenInfo(parts[2]);
+      const startLabel = parts[2] || '';
+      const cameraText = parts.length >= 5 ? (parts[3] || '') : parts.slice(3).join('|').trim();
+      const endLabel = parts.length >= 5 ? parts.slice(4).join('|').trim() : '';
+      // Directive in the label position (FI/FO target, legacy OL|A1|A2),
+      // or a within-cut O.L written in the middle text (A1|AセルOL|A2, BG1|OL|BG2).
+      let specialInfo = getCameraSpecialShapeTokenInfo(startLabel);
+      if (!specialInfo && !isCameraTargetShapeDirective(startLabel) && cameraText &&
+          /^(.*?)\s*O\.?\s*L$/i.test(cameraText.normalize('NFKC'))) {
+        specialInfo = { shape:'ol', label:'OL' };
+      }
       const currentDirective = getCameraPreviewStyleForLineIndex(info.lineIndex) || (specialInfo ? specialInfo.label : '');
       return Object.assign(info, {
         fromText:parts[0],
         toText:parts[1],
         currentDirective:currentDirective,
-        startLabel:parts[2] || '',
-        cameraText:parts.length >= 5 ? (parts[3] || '') : parts.slice(3).join('|').trim(),
-        endLabel:parts.length >= 5 ? parts.slice(4).join('|').trim() : '',
+        startLabel:startLabel,
+        cameraText:cameraText,
+        endLabel:endLabel,
         isSpecialFormat:!!specialInfo
       });
     }
