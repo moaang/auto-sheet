@@ -1370,6 +1370,39 @@
       padding: 0 7px;
     }
 
+    .camera-directive-completer {
+      position: static;
+      display: block;
+      width: 0;
+      height: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+      -webkit-user-select: none;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .camera-directive-select {
+      position: fixed;
+      z-index: 10002;
+      width: auto;
+      height: 20px;
+      min-width: 66px;
+      border: 1px solid var(--soft);
+      border-radius: 5px;
+      padding: 0 18px 0 6px;
+      background: var(--panel-2);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 11px;
+      font-weight: 900;
+      line-height: 1;
+      cursor: pointer;
+      pointer-events: auto;
+    }
+
     .duration-stepper-overlay {
       position: fixed;
       z-index: 10001;
@@ -1991,8 +2024,9 @@
 
       <div class="card">
         <h3 data-ui-text="cameraBlocksTitle">カメラ欄</h3>
-        <label for="cameraManual" data-ui-text="cameraFormatLabel">Format: 0+01 | 1+00 | TERM | SAMPLE</label>
+        <label for="cameraManual" data-ui-text="cameraFormatLabel">Format: 0+01 | 1+00 | A | PAN | B</label>
         <textarea id="cameraManual"></textarea>
+        <div id="cameraDirectiveCompleter" class="camera-directive-completer hidden"></div>
         <div id="cameraHelp" class="hint"></div>
       </div>
       <div class="card paper-layout-card" id="paperLayoutCard">
@@ -2194,12 +2228,17 @@
     const TEXT_MEMO_DEFAULT_W = 280;
     const TEXT_MEMO_DEFAULT_H = 88;
     const DEFAULT_DIALOG_SAMPLE_LINE = '0+01 | 1+00 | SPEAKER | SAMPLE';
-    const DEFAULT_CAMERA_SAMPLE_LINE = '0+01 | 1+00 | A | SAMPLE | B';
+    const DEFAULT_CAMERA_SAMPLE_LINE = [
+      '0+01 | 1+00 | A | PAN | B',
+      '0+01 | 1+00 | A | SL | B'
+    ].join('\n');
+    const CAMERA_DIRECTIVE_COMPLETION_OPTIONS = ['▲', '-', 'FI', 'FO', 'OL'];
+    const CAMERA_TARGET_SHAPE_DIRECTIVE_SET = new Set(['FI', 'FO', 'OL']);
     const MAX_CELL_COLUMN_PLACEMENT_COUNT = 32;
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '740';
+    const APP_VERSION = '757';
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
     const PAPER_HEADER_TEMPLATE_KNOWN_MIN_SCORE = 0.84;
@@ -2250,6 +2289,7 @@
     const dougaSheetBtn = document.getElementById('dougaSheetBtn');
     const previewMetaEl = document.getElementById('previewMeta');
     const csvCommandEditEl = document.getElementById('csvCommandEdit');
+    const cameraDirectiveCompleterEl = document.getElementById('cameraDirectiveCompleter');
     const prevPageBtn = document.getElementById('prevPageBtn');
     const nextPageBtn = document.getElementById('nextPageBtn');
     const pageIndicatorEl = document.getElementById('pageIndicator');
@@ -2399,6 +2439,7 @@
       csvFrameIndex: 0,
       csvDataStartRow: 1,
       markerOverrides: {},
+      cameraPreviewStyles: {},
       dotOverrides: {},
       csvFileBuffer: null,
       csvOriginalRows: [],
@@ -2520,7 +2561,7 @@
         csvHelp: 'CSV uses the Frame column as the frame index. Column role can be set to Cell, Hide, Book, Dialog, or Camera. All roles use the same Text Command token rules; the role is kept as a suffix such as (hide), (dialog), (camera), or (book). Column names can be edited before conversion. The original area keeps at least 8 columns, expands up to 10, and switches to a 3-second single-block sheet when actual cel rows exceed 10.',
         csvEditHelp: 'CSV columns are converted to editable Text Commands. Correct tokens or role suffixes here when needed.',
         dialogHelp: 'Minimum: start | end |. Extra: start | end | Speaker | Dialogue example.',
-        cameraHelp: 'Format: 0+01 | 1+00 | Mark | Camera direction | Mark. Minimum: start | end |. Extended: start | end | Mark | Camera direction | Mark.',
+        cameraHelp: 'Format: start | end | Start label | Camera text | End label. Example: 0+01 | 1+00 | A | PAN | B. The right-side selector only changes the preview marker style: ▲, -, FI, FO, or OL.',
         previewMeta: 'Auto-switches 6-second left/right two-panel and 3-second single-panel.',
         previewMetaPage: function(current, total){ return 'Page ' + current + '/' + total; },
         noCsv: 'No CSV loaded.',
@@ -2533,7 +2574,7 @@
         csvHelp: 'CSVはFrame列を基準フレームとして使う。列の役割は Cell / Hide / Book / Dialog / Camera から選ぶ。すべての役割で同じText Commandトークン規則を使い、役割は (hide)、(dialog)、(camera)、(book) のような行末suffixで保持する。列名は変換前に編集できる。原画欄は最低8列、必要なら10列まで拡張し、実セル行が10列を超えると3秒単面シートに切り替える。',
         csvEditHelp: 'CSV列を編集可能なText Commands形式に変換する。必要な場合はここでトークンや役割suffixを修正する。',
         dialogHelp: '最小形式: start | end |。追加形式: start | end | 話者 | セリフ例。',
-        cameraHelp: '形式: 0+01 | 1+00 | 記号 | カメラ指示 | 記号。最小形式: start | end |。拡張形式: start | end | 記号 | カメラ指示 | 記号。',
+        cameraHelp: '形式: start | end | 開始表記 | カメラ文字 | 終了表記。例: 0+01 | 1+00 | A | PAN | B。右側の選択UIはプレビュー表式だけを▲、-、FI、FO、OLに変更します。',
         previewMeta: '6秒左右2面と3秒単面を自動切替。',
         previewMetaPage: function(current, total){ return 'Page ' + current + '/' + total; },
         noCsv: 'CSV未読込。',
@@ -2546,7 +2587,7 @@
         csvHelp: 'CSV는 Frame 열을 기준 프레임으로 사용한다. 각 열의 역할은 Cell / Hide / Book / Dialog / Camera 중에서 선택한다. 모든 역할은 같은 Text Command 토큰 규칙을 쓰고, 역할은 (hide), (dialog), (camera), (book) 같은 행 끝 suffix로 유지한다. 열 이름은 변환 전에 수정할 수 있다. 원화란은 최소 8칸을 유지하고 필요하면 10칸까지 확장하며, 실제 셀 행이 10개를 넘으면 3초 단면 시트로 전환한다.',
         csvEditHelp: 'CSV 열을 편집 가능한 Text Commands 형식으로 변환한다. 필요하면 여기서 토큰이나 역할 suffix를 수정한다.',
         dialogHelp: '최소 형식: start | end |. 추가 형식: start | end | 화자 | 대사 예시.',
-        cameraHelp: '형식: 0+01 | 1+00 | 기호 | 카메라 지시 | 기호. 최소 형식: start | end |. 확장 형식: start | end | 기호 | 카메라 지시 | 기호.',
+        cameraHelp: '형식: start | end | 시작 표기 | 카메라 텍스트 | 끝 표기. 예: 0+01 | 1+00 | A | PAN | B. 오른쪽 선택 UI는 프리뷰 표식만 ▲, -, FI, FO, OL로 바꿉니다.',
         previewMeta: '6초 좌우 2면과 3초 단면을 자동 전환.',
         previewMetaPage: function(current, total){ return '페이지 ' + current + '/' + total; },
         noCsv: 'CSV가 아직 로드되지 않았다.',
@@ -2559,7 +2600,7 @@
         csvHelp: 'CSV 使用 Frame 列作为帧编号。每列可选择 Cell / Hide / Book / Dialog / Camera。所有角色使用相同的 Text Command token 规则，角色保留为行尾 suffix，例如 (hide)、(dialog)、(camera)、(book)。列名可在转换前编辑。原画栏至少保持 8 列，必要时扩展到 10 列；实际 Cell 行超过 10 时切换为 3 秒单面 Sheet。',
         csvEditHelp: 'CSV 列会转换为可编辑的 Text Commands 格式。需要时可在这里修正 token 或角色 suffix。',
         dialogHelp: '最小格式: start | end |。追加格式: start | end | 说话人 | 台词示例。',
-        cameraHelp: '格式: 0+01 | 1+00 | 记号 | 摄影指示 | 记号。最小格式: start | end |。扩展格式: start | end | 记号 | 摄影指示 | 记号。',
+        cameraHelp: '格式: start | end | 起始标记 | 摄影文字 | 结束标记。示例: 0+01 | 1+00 | A | PAN | B。右侧选择 UI 只改变预览标记样式: ▲、-、FI、FO、OL。',
         previewMeta: '自动切换 6 秒左右双面与 3 秒单面。',
         previewMetaPage: function(current, total){ return '页 ' + current + '/' + total; },
         noCsv: '尚未读取 CSV。',
@@ -2592,7 +2633,7 @@
         languageLabel:'Language', headerCardTitle:'Header', episodeLabel:'Ep.no', titleLabel:'Title', cutNoLabel:'Cut.no', secondsLabel:'Duration sec', framesLabel:'Duration frame', authorLabel:'name', pageLabel:'Page',
         originalCellTitle:'Sheet Input', inputModeLabel:'Input Mode', inputModeTextCommands:'Text Commands', inputModeCsv:'CSV Upload', csvSettingsExportBtn:'Export Settings JSON', shakuEditBtn:'Length Edit', shakuEditHint:'Drag a blue frame line to select a range.', shakuCutBtn:'Cut', shakuStretchBtn:'Extend', shakuSelectedLabel:'Selected', shakuUndoBtn:'Undo', shakuRedoBtn:'Redo', shakuFlashCut:'Cut applied', shakuFlashStretch:'Extend applied', dougaSheetCreate:'Make Douga', dougaSheetRefresh:'Refresh Douga', dougaSheetTitle:'Generate a read-only douga sheet from Cell numbers and dot marks', cellReadabilityTitle:'Large Cell text',
         textCommandsLabel:'Text Commands', csvFileLabel:'CSV File', csvCommandEditLabel:'Editable Commands from CSV',
-        dialogBlocksTitle:'Dialog Area', dialogFormatLabel:'Format: 0+01 | 1+00 | SPEAKER | SAMPLE', cameraBlocksTitle:'Camera Area', cameraFormatLabel:'Format: 0+01 | 1+00 | TERM | SAMPLE',
+        dialogBlocksTitle:'Dialog Area', dialogFormatLabel:'Format: 0+01 | 1+00 | SPEAKER | SAMPLE', cameraBlocksTitle:'Camera Area', cameraFormatLabel:'Format: 0+01 | 1+00 | A | PAN | B',
         sheetPreviewTitle:'Sheet Preview', chooseExportDirBtn:'Folder', downloadAllBtn:'Output', memoModeBtn:'Memo Mode', memoUndoBtn:'Undo', memoRedoBtn:'Redo', memoPenLabel:'Pen', memoEraserLabel:'Eraser', memoEraserButton:'Eraser',
         createdByLabel:'Created by', settingsExportBtn:'Export', settingsFileBtn:'Load', settingsImportBtn:'Path', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'Settings JSON', settingsSelectEmpty:'Select settings', settingsSelectNoSettings:'No settings JSON', textMemoApplyBtn:'Apply', textMemoMenuAdd:'Add text box', textMemoMenuDelete:'Delete text box', textMemoMenuEditMode:'Text box position edit', textMemoMenuEditDone:'Finish text box edit', textMemoMenuAutoArrange:'Auto arrange text boxes', textMemoInitialHint:'Right-click to add or edit text boxes.', clearSheetDataBtn:'Reset All', hideSidebarBtn:'Hide UI', showSidebarBtn:'Show UI', feedbackHeading:'Feedback', feedbackFormLink:'Form', feedbackPlaceholder:'Bug report or request', feedbackHint:'Write anything you know: symptom, reproduction steps, CSV/PSD/image format, expected result, actual result, browser/OS.', feedbackSendBtn:'Send', feedbackEmpty:'Write a message first.', feedbackSending:'Sending...', feedbackSent:'Sent.', feedbackFailed:'Could not send. Open the form link.', shortcutSummaryTopHint:''
       },
@@ -2600,7 +2641,7 @@
         languageLabel:'言語', headerCardTitle:'ヘッダー', episodeLabel:'話数', titleLabel:'タイトル', cutNoLabel:'カット番号', secondsLabel:'尺 秒', framesLabel:'尺 コマ', authorLabel:'名前', pageLabel:'ページ',
         originalCellTitle:'シート入力', inputModeLabel:'入力モード', inputModeTextCommands:'テキストコマンド', inputModeCsv:'CSV読込', csvSettingsExportBtn:'JSON設定出力', shakuEditBtn:'尺編集(演出向け)', shakuEditHint:'青いフレーム線をドラッグして尺を選択', shakuCutBtn:'切る', shakuStretchBtn:'伸ばす', shakuSelectedLabel:'選択', shakuUndoBtn:'取り消し', shakuRedoBtn:'やり直し', shakuFlashCut:'切る 反映', shakuFlashStretch:'伸ばす 反映', dougaSheetCreate:'動画作成', dougaSheetRefresh:'動画更新', dougaSheetTitle:'Cell番号と動画点から編集不可の動画欄を生成', cellReadabilityTitle:'Cell文字を大きく表示',
         textCommandsLabel:'テキストコマンド', csvFileLabel:'CSVファイル', csvCommandEditLabel:'CSVから生成された編集可能コマンド',
-        dialogBlocksTitle:'セリフ欄', dialogFormatLabel:'形式: 0+01 | 1+00 | 話者 | セリフ例', cameraBlocksTitle:'カメラ欄', cameraFormatLabel:'形式: 0+01 | 1+00 | 記号 | 指示例',
+        dialogBlocksTitle:'セリフ欄', dialogFormatLabel:'形式: 0+01 | 1+00 | 話者 | セリフ例', cameraBlocksTitle:'カメラ欄', cameraFormatLabel:'形式: 0+01 | 1+00 | A | PAN | B',
         sheetPreviewTitle:'シートプレビュー', chooseExportDirBtn:'保存先', downloadAllBtn:'出力', memoModeBtn:'メモモード', memoUndoBtn:'取り消し', memoRedoBtn:'やり直し', memoPenLabel:'ペン', memoEraserLabel:'消しゴム', memoEraserButton:'消しゴム',
         createdByLabel:'作成', settingsExportBtn:'出力', settingsFileBtn:'読込', settingsImportBtn:'読込先', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'設定JSON', settingsSelectEmpty:'設定選択', settingsSelectNoSettings:'設定JSONなし', textMemoApplyBtn:'適用', textMemoMenuAdd:'テキスト枠を追加', textMemoMenuDelete:'テキスト枠を削除', textMemoMenuEditMode:'テキスト枠位置編集', textMemoMenuEditDone:'テキスト枠編集終了', textMemoMenuAutoArrange:'テキスト枠を自動整列', textMemoInitialHint:'右クリックでテキスト枠を追加・編集できます。', clearSheetDataBtn:'全体初期化', hideSidebarBtn:'UIを隠す', showSidebarBtn:'UIを表示', feedbackHeading:'報告', feedbackFormLink:'Form', feedbackPlaceholder:'不具合や要望を書く', feedbackHint:'わかる範囲で記入してください: 症状、再現手順、使用したCSV/PSD/画像形式、期待した結果、実際の結果、ブラウザ/OS。', feedbackSendBtn:'送信', feedbackEmpty:'内容を書いてください。', feedbackSending:'送信中...', feedbackSent:'送信しました。', feedbackFailed:'送信できません。Formリンクから送ってください。', shortcutSummaryTopHint:''
       },
@@ -2608,7 +2649,7 @@
         languageLabel:'언어', headerCardTitle:'헤더', episodeLabel:'화수', titleLabel:'제목', cutNoLabel:'컷 번호', secondsLabel:'길이 초', framesLabel:'길이 프레임', authorLabel:'이름', pageLabel:'페이지',
         originalCellTitle:'시트 입력', inputModeLabel:'입력 방식', inputModeTextCommands:'텍스트 커맨드', inputModeCsv:'CSV 읽기', csvSettingsExportBtn:'설정 JSON 내보내기', shakuEditBtn:'연출용 편집툴', shakuEditHint:'파란 프레임선을 드래그해 길이를 선택', shakuCutBtn:'자르기', shakuStretchBtn:'늘리기', shakuSelectedLabel:'선택', shakuUndoBtn:'되돌리기', shakuRedoBtn:'다시 실행', shakuFlashCut:'자르기 반영', shakuFlashStretch:'늘리기 반영', dougaSheetCreate:'동화시트 작성', dougaSheetRefresh:'동화시트 갱신', dougaSheetTitle:'셀 번호와 동화점으로 수정 불가능한 동화칸 생성', cellReadabilityTitle:'셀 글자 크게 보기',
         textCommandsLabel:'텍스트 커맨드', csvFileLabel:'CSV 파일', csvCommandEditLabel:'CSV에서 생성된 편집 가능 커맨드',
-        dialogBlocksTitle:'대사란', dialogFormatLabel:'형식: 0+01 | 1+00 | 화자 | 예시', cameraBlocksTitle:'카메라란', cameraFormatLabel:'형식: 0+01 | 1+00 | 기호 | 지시 예시',
+        dialogBlocksTitle:'대사란', dialogFormatLabel:'형식: 0+01 | 1+00 | 화자 | 예시', cameraBlocksTitle:'카메라란', cameraFormatLabel:'형식: 0+01 | 1+00 | A | PAN | B',
         sheetPreviewTitle:'시트 프리뷰', chooseExportDirBtn:'경로지정', downloadAllBtn:'출력', memoModeBtn:'메모 모드', memoUndoBtn:'되돌리기', memoRedoBtn:'다시 실행', memoPenLabel:'펜', memoEraserLabel:'지우개', memoEraserButton:'지우개',
         createdByLabel:'제작', settingsExportBtn:'내보내기', settingsFileBtn:'불러오기', settingsImportBtn:'경로지정', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'설정 JSON', settingsSelectEmpty:'설정 선택', settingsSelectNoSettings:'설정 JSON 없음', textMemoApplyBtn:'적용', textMemoMenuAdd:'텍스트 박스 추가', textMemoMenuDelete:'텍스트 박스 삭제', textMemoMenuEditMode:'텍스트 박스 위치 편집', textMemoMenuEditDone:'텍스트 박스 편집 종료', textMemoMenuAutoArrange:'텍스트 박스 자동 정렬', textMemoInitialHint:'우클릭으로 텍스트 박스를 추가하거나 편집할 수 있습니다.', clearSheetDataBtn:'전체 초기화', hideSidebarBtn:'UI 숨기기', showSidebarBtn:'UI 펼치기', feedbackHeading:'문의', feedbackFormLink:'Form', feedbackPlaceholder:'버그 내용이나 개선 요청', feedbackHint:'가능하면 아는 것만 적어주세요: 증상, 재현 순서, 사용한 CSV/PSD/이미지 형식, 기대한 결과, 실제 결과, 브라우저/OS.', feedbackSendBtn:'보내기', feedbackEmpty:'내용을 먼저 입력하세요.', feedbackSending:'전송 중...', feedbackSent:'전송했습니다.', feedbackFailed:'전송하지 못했습니다. Form 링크로 보내주세요.', shortcutSummaryTopHint:''
       },
@@ -2616,7 +2657,7 @@
         languageLabel:'语言', headerCardTitle:'页眉', episodeLabel:'集数', titleLabel:'标题', cutNoLabel:'镜头编号', secondsLabel:'时长 秒', framesLabel:'时长 帧', authorLabel:'姓名', pageLabel:'页码',
         originalCellTitle:'表格输入', inputModeLabel:'输入模式', inputModeTextCommands:'文本命令', inputModeCsv:'CSV 导入', csvSettingsExportBtn:'导出设置 JSON', shakuEditBtn:'时长编辑', shakuEditHint:'拖动蓝色帧线选择范围', shakuCutBtn:'切除', shakuStretchBtn:'延长', shakuSelectedLabel:'选择', shakuUndoBtn:'撤销', shakuRedoBtn:'重做', shakuFlashCut:'切除已应用', shakuFlashStretch:'延长已应用', dougaSheetCreate:'生成动画栏', dougaSheetRefresh:'刷新动画栏', dougaSheetTitle:'由 Cell 编号和动画点生成只读动画栏', cellReadabilityTitle:'放大 Cell 文字',
         textCommandsLabel:'文本命令', csvFileLabel:'CSV 文件', csvCommandEditLabel:'从 CSV 生成的可编辑命令',
-        dialogBlocksTitle:'对白栏', dialogFormatLabel:'格式: 0+01 | 1+00 | 说话人 | 示例', cameraBlocksTitle:'摄影机栏', cameraFormatLabel:'格式: 0+01 | 1+00 | 标记 | 指示示例',
+        dialogBlocksTitle:'对白栏', dialogFormatLabel:'格式: 0+01 | 1+00 | 说话人 | 示例', cameraBlocksTitle:'摄影机栏', cameraFormatLabel:'格式: 0+01 | 1+00 | A | PAN | B',
         sheetPreviewTitle:'Sheet 预览', chooseExportDirBtn:'保存处', downloadAllBtn:'输出', memoModeBtn:'备注模式', memoUndoBtn:'撤销', memoRedoBtn:'重做', memoPenLabel:'笔', memoEraserLabel:'橡皮', memoEraserButton:'橡皮',
         createdByLabel:'制作', settingsExportBtn:'导出', settingsFileBtn:'导入', settingsImportBtn:'路径', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'设置 JSON', settingsSelectEmpty:'选择设置', settingsSelectNoSettings:'无设置 JSON', textMemoApplyBtn:'应用', textMemoMenuAdd:'添加文字框', textMemoMenuDelete:'删除文字框', textMemoMenuEditMode:'文字框位置编辑', textMemoMenuEditDone:'结束文字框编辑', textMemoMenuAutoArrange:'自动排列文字框', textMemoInitialHint:'可通过右键添加或编辑文字框。', clearSheetDataBtn:'全部重置', hideSidebarBtn:'隐藏 UI', showSidebarBtn:'显示 UI', feedbackHeading:'反馈', feedbackFormLink:'Form', feedbackPlaceholder:'错误报告或改进建议', feedbackHint:'请尽量填写已知信息: 症状、复现步骤、使用的 CSV/PSD/图片格式、期望结果、实际结果、浏览器/OS。', feedbackSendBtn:'发送', feedbackEmpty:'请先输入内容。', feedbackSending:'发送中...', feedbackSent:'已发送。', feedbackFailed:'发送失败。请使用 Form 链接。', shortcutSummaryTopHint:''
       }
@@ -3091,6 +3132,19 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver757', 'Memo Shift straight lines', ['Memo strokes now switch to a straight-line preview while Shift is held, using the stroke start point and current pointer position. Release the pointer while Shift is still held to keep the stroke as a straight line.']],
+        ['ver755', 'Camera triangle label placement', ['Triangle preview markers stay on the start top edge and end bottom edge, while their A/B labels now use the same centered frame-cell position as the dash marker.']],
+        ['ver754', 'Camera lane edge handles', ['Camera start/end red horizontal handles now use only that camera lane width instead of spanning the whole camera area.', 'Triangle preview markers are restored to the start top edge and end bottom edge positions.']],
+        ['ver752', 'Camera dash and triangle markers', ['The dash preview marker now draws a horizontal line at the middle of the start/end frame cell, with the A/B labels offset so the line does not touch the text.', 'Triangle preview markers now follow the reference direction: start points downward from the top edge and end points upward from the bottom edge.']],
+        ['ver750', 'Camera preview style selector', ['Camera input lines keep the normal <code>start | end | start label | camera text | end label</code> format, such as <code>0+01 | 1+00 | A | PAN | B</code>.', 'The per-line selector now changes preview style only, without rewriting the camera input text.']],
+        ['ver748', 'Per-line camera pickers', ['Camera direction pickers now appear for every camera line that has a valid <code>start | end |</code> prefix. Each picker is bound to its own line, so changing the first line no longer overwrites another line.']],
+        ['ver747', 'Camera picker polish', ['The camera direction picker now stays visible without clicking a line, uses the current line when possible and the first valid camera line otherwise.', 'The picker height matches the text line more closely, removes the floating shadow, and shows the current directive such as PAN instead of a placeholder.']],
+        ['ver746', 'Camera picker placement', ['The camera direction picker now appears at the right edge of the active line inside the camera input box and stays available on any line that already has a valid <code>start | end |</code> prefix, including existing FI/FO/OL and A/B camera commands.', 'Picker choices are limited to FI, FO, OL, PAN, TU, TB, and SL.']],
+        ['ver745', 'Camera label position', ['FI/FO/OL target text is shifted further left so adjacent camera-shape labels overlap less in narrow camera lanes.']],
+        ['ver744', 'Camera direction picker', ['When a camera line contains only <code>start | end |</code>, a direction picker appears beside the input. FI, FO, and OL complete to the target-label format, while PAN, TU, TB, SL, and related directions complete to the legacy A/B format.', 'FI/FO/OL target text is slightly smaller and shifted left to reduce overlap in the camera lane.']],
+        ['ver743', 'Camera FI/FO/OL target labels', ['FI, FO, and OL camera entries now use the simpler <code>start | end | FI | Aセル</code> format and show the target label beside the shape as two lines.', 'The FI/FO/OL shape width now uses the three-overlap camera lane width as its default, so a single entry does not stretch wider than the starter examples.']],
+        ['ver742', 'Camera FI/FO/OL equalized width', ['Camera FI, FO, and OL preview shapes now keep the same actual width even in the left and right lanes.']],
+        ['ver741', 'Camera FI/FO/OL starter examples', ['The camera area now starts with FI, FO, and OL sample lines so the special camera shapes are visible from the initial preview.']],
         ['ver740', 'Camera FI/FO/OL preview width', ['Camera FI, FO, and OL preview shapes now draw at about two-thirds of their previous width so they do not fill the whole camera lane.']],
         ['ver737', 'Japanese CLIP black-dot CSV import', ['CSV auto decoding now treats black-circle dot marks such as <code>●</code>, <code>⚫</code>, and <code>⬤</code> as valid CLIP douga dots, preventing CP932 Japanese CSV markers from being misread as Korean text.']],
         ['ver730', 'Left endpoint closure', ['Paper Auto Align now also closes a missing left-side header divider when the top, split, and bottom header rules start at the same x-position.']],
@@ -3173,6 +3227,19 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver757', 'メモShift直線描画', ['メモのストローク中にShiftを押している間、開始点から現在位置までの直線プレビューに切り替わります。Shiftを押したままポインタを離すと、そのストロークは直線として確定します。']],
+        ['ver755', 'カメラ三角表式のラベル位置', ['三角表式の図形は開始上端、終了下端のままにし、A/Bラベルだけをダッシュ表式と同じフレームセル中央位置へ合わせました。']],
+        ['ver754', 'カメラレーン端ハンドル', ['カメラ開始/終了の赤い横ハンドルは、カメラ欄全体ではなく該当カメラレーン幅だけを使うようにしました。', '三角表式は開始上端、終了下端の位置へ戻しました。']],
+        ['ver752', 'カメラダッシュ・三角表式', ['ダッシュ表式は開始/終了フレームのセル中央に横線を描き、A/B文字に触れないようにラベルを離して配置します。', '三角表式は参考図に合わせ、開始は上端から下向き、終了は下端から上向きにしました。']],
+        ['ver750', 'カメラプレビュー表式選択', ['カメラ入力行は <code>start | end | 開始表記 | カメラ文字 | 終了表記</code> の通常形式、例: <code>0+01 | 1+00 | A | PAN | B</code> を維持します。', '行ごとの選択UIはカメラ入力テキストを書き換えず、プレビュー表式だけを変更します。']],
+        ['ver748', 'カメラ行ごとの選択UI', ['有効な <code>start | end |</code> を持つカメラ行すべてに指示選択UIを表示するようにしました。各選択UIは自分の行に紐づくため、1行目の変更で別の行を上書きしません。']],
+        ['ver747', 'カメラ選択UIの調整', ['カメラ指示の選択UIを行クリックなしでも表示し、現在行が有効な場合はその行、そうでない場合は最初の有効なカメラ行に合わせるようにしました。', '選択UIの高さをテキスト行に近づけ、浮いた影を消し、PANなど現在の指示名をそのまま表示します。']],
+        ['ver746', 'カメラ選択UIの位置調整', ['カメラ指示の選択UIをカメラ入力欄内のアクティブ行の右端に表示し、既存のFI/FO/OL形式やA/B形式を含め、<code>start | end |</code> が有効な行では常に出るようにしました。', '選択肢はFI、FO、OL、PAN、TU、TB、SLに絞りました。']],
+        ['ver745', 'カメララベル位置調整', ['FI/FO/OLの対象テキストをさらに左へ寄せ、狭いカメラ欄で隣のラベルと重なりにくくしました。']],
+        ['ver744', 'Camera指示の選択UI', ['カメラ欄で <code>start | end |</code> だけの行にカーソルがある時、入力欄の横に指示選択UIを出すようにしました。FI、FO、OLは対象名形式に、PAN、TU、TB、SLなどは従来のA/B形式に自動補完します。', 'FI/FO/OLの対象テキストは少し小さく左寄せにし、カメラ欄内で重なりにくくしました。']],
+        ['ver743', 'Camera FI/FO/OL対象表示', ['FI、FO、OLのカメラ入力を <code>start | end | FI | Aセル</code> の簡単な形式で書けるようにし、対象名を図形の横に2行で表示します。', 'FI/FO/OL図形の基本幅は、初期例の3本が重なって横並びになる時の幅を基準にし、単独入力でも広がりすぎないようにしました。']],
+        ['ver742', 'Camera FI/FO/OL幅揃え', ['カメラ欄のFI、FO、OL図形が、左端・右端のレーンでも同じ実幅で表示されるようにしました。']],
+        ['ver741', 'Camera FI/FO/OL初期例', ['カメラ欄の初期例にFI、FO、OLの行を入れ、起動直後のプレビューで特殊なカメラ図形を確認できるようにしました。']],
         ['ver740', 'Camera FI/FO/OL表示幅', ['カメラ欄のFI、FO、OL図形を従来の約2/3幅で表示し、撮影欄いっぱいに広がりすぎないようにしました。']],
         ['ver737', '日本語CLIPの黒丸CSV読込', ['CSV自動判定で <code>●</code>、<code>⚫</code>、<code>⬤</code> などの黒丸もCLIPの動画点として扱い、CP932の日本語CSVが韓国語文字として誤読されにくいようにしました。']],
         ['ver730', '左端点で欄を閉じる補正', ['Paper Auto Align で、ヘッダー上罫線・分割線・下罫線の左端点が同じ x 位置で揃う場合も、欠けている左側の区切り線として閉じるようにしました。']],
@@ -3255,6 +3322,19 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver757', '메모 Shift 직선 그리기', ['메모 선을 그리는 중 Shift를 누르고 있으면 시작점부터 현재 포인터 위치까지 직선 미리보기로 바뀝니다. Shift를 누른 채 포인터를 놓으면 해당 선은 직선으로 확정됩니다.']],
+        ['ver755', '카메라 삼각형 라벨 위치', ['삼각형 프리뷰 도형은 시작 위쪽 끝, 종료 아래쪽 끝에 그대로 두고, A/B 글자만 대시 표식처럼 프레임 칸 중앙 위치에 맞췄습니다.']],
+        ['ver754', '카메라 lane 끝 핸들', ['카메라 시작/끝 빨간 가로 조작선은 카메라란 전체가 아니라 해당 카메라 lane 폭만 쓰도록 했습니다.', '삼각형 프리뷰 표식은 시작 위쪽 끝, 종료 아래쪽 끝 위치로 되돌렸습니다.']],
+        ['ver752', '카메라 대시/삼각형 표식', ['대시 프리뷰 표식은 시작/끝 프레임 칸의 중간에 가로선을 그리고, A/B 글자에 닿지 않도록 라벨을 오른쪽으로 띄웁니다.', '삼각형 프리뷰 표식은 참고 그림 기준으로 시작은 위쪽 끝에서 아래 방향, 끝은 아래쪽 끝에서 위 방향으로 표시합니다.']],
+        ['ver750', '카메라 프리뷰 표식 선택', ['카메라 입력 줄은 <code>start | end | 시작 표기 | 카메라 텍스트 | 끝 표기</code> 일반 형식, 예: <code>0+01 | 1+00 | A | PAN | B</code>를 유지합니다.', '줄별 선택 UI는 카메라 입력 텍스트를 다시 쓰지 않고 프리뷰 표식만 바꿉니다.']],
+        ['ver748', '카메라 줄별 선택 UI', ['유효한 <code>start | end |</code> 접두 형식을 가진 모든 카메라 줄에 지시 선택 UI를 표시합니다. 각 선택 UI는 자기 줄에 묶여 있어서 첫 줄을 바꿀 때 다른 줄을 덮어쓰지 않습니다.']],
+        ['ver747', '카메라 선택 UI 정리', ['카메라 지시 선택 UI가 줄을 클릭하지 않아도 항상 보이도록 하고, 현재 줄이 유효하면 현재 줄, 아니면 첫 번째 유효한 카메라 줄에 맞춰 표시합니다.', '선택 UI 높이를 텍스트 줄에 가깝게 맞추고 떠 보이는 그림자를 제거했으며, PAN 같은 현재 지시명이 그대로 보이게 했습니다.']],
+        ['ver746', '카메라 선택 UI 위치 조정', ['카메라 지시 선택 UI를 카메라 입력 박스 안쪽의 현재 줄 오른쪽 끝에 표시하고, 기존 FI/FO/OL 형식이나 A/B 형식까지 포함해 <code>start | end |</code> 접두 형식이 유효한 줄이면 항상 뜨게 했습니다.', '선택지는 FI, FO, OL, PAN, TU, TB, SL만 남겼습니다.']],
+        ['ver745', '카메라 라벨 위치 조정', ['FI/FO/OL 대상 텍스트를 더 왼쪽으로 당겨 좁은 카메라란에서 옆 라벨과 덜 겹치게 했습니다.']],
+        ['ver744', '카메라 지시 선택 UI', ['카메라란에서 <code>start | end |</code>까지만 있는 줄에 커서가 있으면 입력칸 옆에 지시 선택 UI가 뜹니다. FI, FO, OL은 대상명 형식으로, PAN, TU, TB, SL 등은 기존 A/B 형식으로 자동 완성됩니다.', 'FI/FO/OL 대상 텍스트는 조금 작게 하고 왼쪽으로 당겨 카메라란 안에서 덜 겹치게 했습니다.']],
+        ['ver743', '카메라 FI/FO/OL 대상 표시', ['FI, FO, OL 카메라 입력을 <code>start | end | FI | Aセル</code> 형식으로 쓸 수 있게 하고, 대상명을 도형 옆에 두 줄로 표시합니다.', 'FI/FO/OL 도형의 기본 폭은 초기 예시 3줄이 같은 구간에서 옆으로 겹칠 때의 폭을 기준으로 해, 단독 입력이어도 너무 넓어지지 않게 했습니다.']],
+        ['ver742', '카메라 FI/FO/OL 폭 맞춤', ['카메라란의 FI, FO, OL 도형이 왼쪽/오른쪽 lane에서도 같은 실제 폭으로 보이게 했습니다.']],
+        ['ver741', '카메라 FI/FO/OL 초기 예시', ['카메라란 초기 예시에 FI, FO, OL 행을 넣어 처음 열린 프리뷰에서 특수 카메라 도형을 바로 볼 수 있게 했습니다.']],
         ['ver740', '카메라 FI/FO/OL 표시 폭', ['카메라란의 FI, FO, OL 도형을 기존의 약 2/3 폭으로 표시해 촬영칸 전체를 너무 채우지 않게 했습니다.']],
         ['ver737', '일본어 CLIP 검은 점 CSV 읽기', ['CSV 자동 판정에서 <code>●</code>, <code>⚫</code>, <code>⬤</code> 같은 검은 원도 CLIP 동화점으로 처리해, CP932 일본어 CSV 표시가 한글 문자로 오판되는 경우를 줄였습니다.']],
         ['ver730', '왼쪽 엔드포인트로 칸 닫기', ['Paper Auto Align에서 헤더 상단선, 분할선, 하단선의 왼쪽 끝점 x값이 같으면 누락된 왼쪽 구분선으로 닫게 했습니다.']],
@@ -3337,6 +3417,19 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver757', '备注 Shift 直线绘制', ['绘制备注线条时按住 Shift，会切换为从起点到当前指针位置的直线预览。按住 Shift 松开指针时，该线条会确认为直线。']],
+        ['ver755', '摄影三角标记标签位置', ['三角预览图形仍保持在起始上边缘和结束下边缘，A/B 标签改为与短横标记相同的帧单元格居中位置。']],
+        ['ver754', '摄影 lane 端点手柄', ['摄影起始/结束红色横向手柄现在只使用对应摄影 lane 的宽度，不再横跨整个摄影区域。', '三角预览标记已恢复到起始上边缘和结束下边缘位置。']],
+        ['ver752', '摄影短横与三角标记', ['短横预览标记会在起始/结束帧单元格中间绘制水平线，并将 A/B 标签向右偏移，避免线条碰到文字。', '三角预览标记已按参考图方向显示: 起始从上边缘向下，结束从下边缘向上。']],
+        ['ver750', '摄影预览标记选择', ['摄影输入行保持普通格式 <code>start | end | 起始标记 | 摄影文字 | 结束标记</code>，例如 <code>0+01 | 1+00 | A | PAN | B</code>。', '逐行选择 UI 不再改写摄影输入文本，只改变预览标记样式。']],
+        ['ver748', '逐行摄影选择 UI', ['所有具有有效 <code>start | end |</code> 前缀的摄影行都会显示指示选择 UI。每个选择 UI 都绑定到自己的行，因此修改第一行不会覆盖其他行。']],
+        ['ver747', '摄影选择 UI 调整', ['摄影指示选择 UI 现在无需点击行也会保持显示；当前行有效时跟随当前行，否则对齐到第一条有效摄影行。', '选择 UI 高度更贴近文本行，移除了浮动阴影，并会直接显示 PAN 等当前指示名。']],
+        ['ver746', '摄影选择 UI 位置调整', ['摄影指示选择 UI 现在显示在摄影输入框内当前行的右端；只要当前行已有有效的 <code>start | end |</code> 前缀，包括现有 FI/FO/OL 和 A/B 摄影命令，都会显示。', '选择项已限定为 FI、FO、OL、PAN、TU、TB、SL。']],
+        ['ver745', '摄影标签位置调整', ['FI/FO/OL 的目标文字已进一步向左移动，减少窄摄影栏内相邻标签的重叠。']],
+        ['ver744', 'Camera 指示选择 UI', ['当摄影栏当前行只有 <code>start | end |</code> 时，输入框旁会出现指示选择 UI。FI、FO、OL 会补全为目标标签格式，PAN、TU、TB、SL 等会补全为旧的 A/B 格式。', 'FI/FO/OL 的目标文字已稍微缩小并向左移动，减少在摄影栏内的重叠。']],
+        ['ver743', 'Camera FI/FO/OL 目标标签', ['FI、FO、OL 摄影输入现在可使用 <code>start | end | FI | Aセル</code> 的简化格式，并在图形旁以两行显示目标标签。', 'FI/FO/OL 图形的默认宽度现在以初始示例三条重叠并排时的宽度为基准，单独输入时不会变得过宽。']],
+        ['ver742', 'Camera FI/FO/OL 宽度对齐', ['摄影栏的 FI、FO、OL 图形现在在左右两侧 lane 中也会保持相同的实际宽度。']],
+        ['ver741', 'Camera FI/FO/OL 初始示例', ['摄影栏初始示例现在包含 FI、FO、OL 行，打开后即可在预览中看到这些特殊摄影图形。']],
         ['ver740', 'Camera FI/FO/OL 显示宽度', ['摄影栏的 FI、FO、OL 图形现在约为原宽度的三分之二，避免占满整个摄影栏。']],
         ['ver737', '日文 CLIP 黑点 CSV 导入', ['CSV 自动判断现在会把 <code>●</code>、<code>⚫</code>、<code>⬤</code> 等黑圆也作为 CLIP 动画点处理，减少 CP932 日文 CSV 标记被误读为韩文字符的情况。']],
         ['ver730', '用左侧对齐端点闭合字段', ['Paper Auto Align 现在也会在页眉上线、分割线和下线左端点 x 位置一致时，将其作为缺失的左侧分隔线闭合。']],
@@ -3523,7 +3616,7 @@
           <ul>
             <li>Text Commands: <code>A: 1 n n dot n n 2</code>. <code>dot</code> is a douga/inbetween point.</li>
             <li>Dialog minimum: <code>0+01 | 1+00 |</code>. Extra: <code>0+01 | 1+00 | A | SAMPLE</code>.</li>
-            <li>Camera minimum: <code>0+01 | 1+00 |</code>. Extended: <code>0+01 | 1+00 | A | PAN | B</code>.</li>
+            <li>Camera FI/FO/OL: <code>0+01 | 1+00 | FI | Aセル</code>. Legacy extended lines such as <code>0+01 | 1+00 | A | PAN | B</code> still work.</li>
           </ul>
           <h5>Preview editing</h5>
           <ul>
@@ -3550,7 +3643,7 @@
           <ul>
             <li>Text Commands: <code>A: 1 n n dot n n 2</code>。<code>dot</code> は動画点/中割点。</li>
             <li>Dialog最小形式: <code>0+01 | 1+00 |</code>。追加形式: <code>0+01 | 1+00 | A | SAMPLE</code>。</li>
-            <li>Camera最小形式: <code>0+01 | 1+00 |</code>。拡張形式: <code>0+01 | 1+00 | A | PAN | B</code>。</li>
+            <li>Camera FI/FO/OL: <code>0+01 | 1+00 | FI | Aセル</code>。従来の拡張形式 <code>0+01 | 1+00 | A | PAN | B</code> も使えます。</li>
           </ul>
           <h5>プレビュー編集</h5>
           <ul>
@@ -3577,7 +3670,7 @@
           <ul>
             <li>Text Commands: <code>A: 1 n n dot n n 2</code>. <code>dot</code> 은 동화점이다.</li>
             <li>Dialog 최소 형식: <code>0+01 | 1+00 |</code>. 추가 형식: <code>0+01 | 1+00 | A | SAMPLE</code>.</li>
-            <li>Camera 최소 형식: <code>0+01 | 1+00 |</code>. 확장 형식: <code>0+01 | 1+00 | A | PAN | B</code>.</li>
+            <li>Camera FI/FO/OL: <code>0+01 | 1+00 | FI | Aセル</code>. 기존 확장 형식 <code>0+01 | 1+00 | A | PAN | B</code>도 동작합니다.</li>
           </ul>
           <h5>프리뷰 편집</h5>
           <ul>
@@ -3604,7 +3697,7 @@
           <ul>
             <li>Text Commands: <code>A: 1 n n dot n n 2</code>。<code>dot</code> 表示动画点/中割点。</li>
             <li>Dialog 最小格式: <code>0+01 | 1+00 |</code>。追加格式: <code>0+01 | 1+00 | A | SAMPLE</code>。</li>
-            <li>Camera 最小格式: <code>0+01 | 1+00 |</code>。扩展格式: <code>0+01 | 1+00 | A | PAN | B</code>。</li>
+            <li>Camera FI/FO/OL: <code>0+01 | 1+00 | FI | Aセル</code>。旧的扩展格式 <code>0+01 | 1+00 | A | PAN | B</code> 仍可使用。</li>
           </ul>
           <h5>预览编辑</h5>
           <ul>
@@ -4298,7 +4391,7 @@
     }
 
     function stripDefaultCsvSampleLines(raw) {
-      const defaultSamples = new Set([DEFAULT_DIALOG_SAMPLE_LINE, DEFAULT_CAMERA_SAMPLE_LINE]);
+      const defaultSamples = new Set([DEFAULT_DIALOG_SAMPLE_LINE, DEFAULT_CAMERA_SAMPLE_LINE].join('\n').split('\n').filter(Boolean));
       return String(raw || '').replace(/\r/g, '').split('\n').filter(function(lineText){
         return !defaultSamples.has(String(lineText || '').trim());
       }).join('\n');
@@ -4739,6 +4832,7 @@
 
     function clearTimelineInteractionOverrides() {
       state.markerOverrides = {};
+      state.cameraPreviewStyles = {};
       state.dotOverrides = {};
     }
 
@@ -10500,6 +10594,17 @@
       return areaX + pad + step * lane;
     }
 
+    function getDistributedLaneBounds(areaX, areaW, lane, laneCount, inset) {
+      const safeLaneCount = Math.max(1, Math.round(Number(laneCount) || 1));
+      const safeLane = Math.max(0, Math.min(safeLaneCount - 1, Math.round(Number(lane) || 0)));
+      if (safeLaneCount <= 1) return { x:areaX, w:areaW };
+      const centers = [];
+      for (let i = 0; i < safeLaneCount; i++) centers.push(getDistributedLaneX(areaX, areaW, i, safeLaneCount, inset));
+      const left = safeLane === 0 ? areaX : (centers[safeLane - 1] + centers[safeLane]) / 2;
+      const right = safeLane === safeLaneCount - 1 ? areaX + areaW : (centers[safeLane] + centers[safeLane + 1]) / 2;
+      return { x:left, w:Math.max(1, right - left) };
+    }
+
     function dialogCharsFromText(textValue) {
       return Array.from(String(textValue || '')).map(function(ch){ return ch === ' ' ? ' ' : ch; });
     }
@@ -10552,7 +10657,7 @@
       if (String(lineText || '').trim().charAt(0) === '#') return null;
       const sourceInfo = splitManualSourceSuffix(lineText);
       const parts = String(sourceInfo.cleanLine || '').replace(/\r/g, '').split('|').map(function(part){ return part.trim(); });
-      if (parts.length < 3) return null;
+      if (parts.length < 2) return null;
       const from = parseTimecode(parts[0]);
       const to = parseTimecode(parts[1]);
       let label = '';
@@ -10576,6 +10681,225 @@
       return String(raw || '').split(/\r?\n/).map(function(lineText, lineIndex){
         return parseManualBlockLine(lineText, lineIndex);
       }).filter(Boolean);
+    }
+
+    function normalizeCameraDirectiveCompletion(value) {
+      const marker = normalizeCameraMarkerToken(value);
+      if (marker) return marker;
+      const shapeInfo = getCameraSpecialShapeTokenInfo(value);
+      if (shapeInfo && shapeInfo.label) return shapeInfo.label;
+      return '';
+    }
+
+    function getCameraPreviewStyleForLineIndex(lineIndex) {
+      const key = String(Math.max(0, Math.round(Number(lineIndex) || 0)));
+      return normalizeCameraDirectiveCompletion(state.cameraPreviewStyles && state.cameraPreviewStyles[key]);
+    }
+
+    function setCameraPreviewStyleForLineIndex(lineIndex, value) {
+      const index = Math.max(0, Math.round(Number(lineIndex) || 0));
+      const key = String(index);
+      const normalized = normalizeCameraDirectiveCompletion(value);
+      if (!state.cameraPreviewStyles || typeof state.cameraPreviewStyles !== 'object') state.cameraPreviewStyles = {};
+      if (normalized) state.cameraPreviewStyles[key] = normalized;
+      else delete state.cameraPreviewStyles[key];
+    }
+
+    function applyCameraPreviewStyles(segments) {
+      return (segments || []).map(function(seg){
+        const copy = Object.assign({}, seg);
+        copy.previewStyle = getCameraPreviewStyleForLineIndex(copy.lineIndex);
+        return copy;
+      });
+    }
+
+    function isCameraTargetShapeDirective(value) {
+      return CAMERA_TARGET_SHAPE_DIRECTIVE_SET.has(normalizeCameraDirectiveCompletion(value));
+    }
+
+    function getTextareaActiveLineInfo(textarea) {
+      if (!textarea) return null;
+      const value = String(textarea.value || '').replace(/\r/g, '');
+      const cursor = typeof textarea.selectionStart === 'number' ? textarea.selectionStart : value.length;
+      const lineStart = value.lastIndexOf('\n', Math.max(0, cursor - 1)) + 1;
+      let lineEnd = value.indexOf('\n', cursor);
+      if (lineEnd < 0) lineEnd = value.length;
+      return {
+        value:value,
+        cursor:cursor,
+        lineStart:lineStart,
+        lineEnd:lineEnd,
+        lineText:value.slice(lineStart, lineEnd),
+        lineIndex:value.slice(0, lineStart).split('\n').length - 1
+      };
+    }
+
+    function getCameraDirectiveEditableLineFromInfo(info) {
+      if (!info) return null;
+      const cleanLine = splitManualSourceSuffix(info.lineText).cleanLine;
+      const parts = String(cleanLine || '').split('|').map(function(part){ return part.trim(); });
+      if (parts.length < 3) return null;
+      const from = parseTimecode(parts[0]);
+      const to = parseTimecode(parts[1]);
+      if (!from || !to || to < from) return null;
+      const specialInfo = getCameraSpecialShapeTokenInfo(parts[2]);
+      const currentDirective = getCameraPreviewStyleForLineIndex(info.lineIndex) || (specialInfo ? specialInfo.label : '');
+      return Object.assign(info, {
+        fromText:parts[0],
+        toText:parts[1],
+        currentDirective:currentDirective,
+        startLabel:parts[2] || '',
+        cameraText:parts.length >= 5 ? (parts[3] || '') : parts.slice(3).join('|').trim(),
+        endLabel:parts.length >= 5 ? parts.slice(4).join('|').trim() : '',
+        isSpecialFormat:!!specialInfo
+      });
+    }
+
+    function getTextareaLineInfoAtIndex(textarea, lineIndex) {
+      if (!textarea) return null;
+      const value = String(textarea.value || '').replace(/\r/g, '');
+      const lines = value.split('\n');
+      const safeIndex = Math.max(0, Math.min(lines.length - 1, lineIndex || 0));
+      let lineStart = 0;
+      for (let i = 0; i < safeIndex; i++) lineStart += lines[i].length + 1;
+      const lineText = lines[safeIndex] || '';
+      return {
+        value:value,
+        cursor:lineStart,
+        lineStart:lineStart,
+        lineEnd:lineStart + lineText.length,
+        lineText:lineText,
+        lineIndex:safeIndex
+      };
+    }
+
+    function getCameraDirectiveEditableLines(textarea) {
+      const out = [];
+      if (!textarea) return null;
+      const value = String(textarea.value || '').replace(/\r/g, '');
+      const lines = value.split('\n');
+      for (let i = 0; i < lines.length; i++) {
+        const info = getCameraDirectiveEditableLineFromInfo(getTextareaLineInfoAtIndex(textarea, i));
+        if (info) out.push(info);
+      }
+      return out;
+    }
+
+    function getCameraDirectiveEditableLineAtIndex(textarea, lineIndex) {
+      const index = Number(lineIndex);
+      if (!Number.isInteger(index) || index < 0) return null;
+      return getCameraDirectiveEditableLineFromInfo(getTextareaLineInfoAtIndex(textarea, index));
+    }
+
+    function hideCameraDirectiveCompleter() {
+      if (!cameraDirectiveCompleterEl) return;
+      cameraDirectiveCompleterEl.classList.add('hidden');
+      cameraDirectiveCompleterEl.replaceChildren();
+    }
+
+    function getDefaultCameraTargetLabel(info) {
+      if (!info) return 'Aセル';
+      if (info.isSpecialFormat && String(info.cameraText || '').trim()) return String(info.cameraText || '').trim();
+      const startLabel = String(info.startLabel || '').trim();
+      if (startLabel) return startLabel + 'セル';
+      return 'Aセル';
+    }
+
+    function formatCameraSpecialDirectiveLine(info, directive) {
+      const normalized = normalizeCameraDirectiveCompletion(directive);
+      if (!info || !isCameraTargetShapeDirective(normalized)) return '';
+      return info.fromText + ' | ' + info.toText + ' | ' + normalized + ' | ' + getDefaultCameraTargetLabel(info);
+    }
+
+    function createCameraDirectiveSelect(info) {
+      const select = document.createElement('select');
+      select.className = 'camera-directive-select';
+      select.setAttribute('aria-label', 'Camera direction line ' + (info.lineIndex + 1));
+      select.dataset.lineIndex = String(info.lineIndex);
+      const emptyOption = document.createElement('option');
+      emptyOption.value = '';
+      emptyOption.textContent = '';
+      select.appendChild(emptyOption);
+      CAMERA_DIRECTIVE_COMPLETION_OPTIONS.forEach(function(optionValue){
+        const option = document.createElement('option');
+        option.value = optionValue;
+        option.textContent = optionValue;
+        select.appendChild(option);
+      });
+      select.value = info.currentDirective || '';
+      select.addEventListener('change', function(){
+        applyCameraDirectiveCompletion(select.value, select.dataset.lineIndex);
+      });
+      return select;
+    }
+
+    function positionCameraDirectiveSelect(select, textarea, info) {
+      if (!select || !textarea || !info) return false;
+      const rect = textarea.getBoundingClientRect();
+      const style = window.getComputedStyle ? window.getComputedStyle(textarea) : null;
+      const fontSize = style ? (parseFloat(style.fontSize) || 13) : 13;
+      const lineHeightValue = style ? parseFloat(style.lineHeight) : NaN;
+      const lineHeight = Number.isFinite(lineHeightValue) ? lineHeightValue : fontSize * 1.35;
+      const paddingTop = style ? (parseFloat(style.paddingTop) || 0) : 0;
+      const paddingRight = style ? (parseFloat(style.paddingRight) || 0) : 0;
+      const y = rect.top + paddingTop + info.lineIndex * lineHeight - (textarea.scrollTop || 0);
+      const controlH = Math.max(18, Math.round(lineHeight));
+      const visibleTop = rect.top + paddingTop;
+      const visibleBottom = rect.bottom - 4;
+      if (y + controlH < visibleTop || y > visibleBottom) return false;
+      select.style.height = controlH + 'px';
+      select.style.lineHeight = controlH + 'px';
+      const menuW = select.offsetWidth || 66;
+      const menuH = select.offsetHeight || controlH;
+      const left = rect.right - paddingRight - menuW - 8;
+      const topMin = Math.max(4, rect.top + 4);
+      const topMax = Math.max(topMin, Math.min(rect.bottom - menuH - 4, window.innerHeight - menuH - 4));
+      select.style.left = Math.round(clampNumber(left, 4, Math.max(4, window.innerWidth - menuW - 4))) + 'px';
+      select.style.top = Math.round(clampNumber(y, topMin, topMax)) + 'px';
+      return true;
+    }
+
+    function updateCameraDirectiveCompleter() {
+      const textarea = document.getElementById('cameraManual');
+      if (!textarea || !cameraDirectiveCompleterEl) return;
+      const infos = getCameraDirectiveEditableLines(textarea);
+      cameraDirectiveCompleterEl.replaceChildren();
+      if (!infos || !infos.length) {
+        hideCameraDirectiveCompleter();
+        return;
+      }
+      cameraDirectiveCompleterEl.classList.remove('hidden');
+      infos.forEach(function(info){
+        const select = createCameraDirectiveSelect(info);
+        cameraDirectiveCompleterEl.appendChild(select);
+        if (!positionCameraDirectiveSelect(select, textarea, info)) select.remove();
+      });
+      if (!cameraDirectiveCompleterEl.children.length) cameraDirectiveCompleterEl.classList.add('hidden');
+    }
+
+    function applyCameraDirectiveCompletion(directive, lineIndex) {
+      const textarea = document.getElementById('cameraManual');
+      const info = getCameraDirectiveEditableLineAtIndex(textarea, lineIndex);
+      if (!textarea || !info) {
+        updateCameraDirectiveCompleter();
+        return;
+      }
+      const normalized = normalizeCameraDirectiveCompletion(directive);
+      if (isCameraTargetShapeDirective(normalized)) {
+        const lineText = formatCameraSpecialDirectiveLine(info, normalized);
+        if (lineText) {
+          textarea.value = info.value.slice(0, info.lineStart) + lineText + info.value.slice(info.lineEnd);
+          const caret = info.lineStart + lineText.length;
+          if (typeof textarea.setSelectionRange === 'function') textarea.setSelectionRange(caret, caret);
+          setCameraPreviewStyleForLineIndex(info.lineIndex, '');
+        }
+      } else {
+        setCameraPreviewStyleForLineIndex(info.lineIndex, normalized);
+      }
+      textarea.focus();
+      scheduleManualSourceRoleSync();
+      requestCommandInputRender({ delay:0 });
+      updateCameraDirectiveCompleter();
     }
 
     function annotateCrossSegmentMarkers(segments) {
@@ -13635,6 +13959,18 @@
       return String(value || '').normalize('NFKC').trim().toUpperCase();
     }
 
+    function normalizeCameraMarkerToken(value) {
+      const raw = String(value || '').normalize('NFKC').trim();
+      const upper = raw.toUpperCase();
+      if (raw === '▲' || raw === '▴' || raw === '▶' || raw === '■' || upper === 'TRI' || upper === 'TRIANGLE') return '▲';
+      if (raw === '-' || raw === '－' || raw === 'ー' || raw === '―' || upper === 'DASH' || upper === 'LINE') return '-';
+      return '';
+    }
+
+    function isCameraMarkerToken(value) {
+      return !!normalizeCameraMarkerToken(value);
+    }
+
     function cameraBoundaryLabelsMatch(a, b) {
       const aa = normalizeCameraBoundaryLabel(a);
       const bb = normalizeCameraBoundaryLabel(b);
@@ -13805,6 +14141,43 @@
       appendSvgNode(suffixNode);
     }
 
+    function getCameraMarkerStyle(seg) {
+      if (!seg || getCameraSpecialShapeInfo(seg)) return '';
+      return normalizeCameraMarkerToken(seg.previewStyle);
+    }
+
+    function drawCameraFilledTriangle(cx, cy, edge) {
+      const size = 15;
+      const half = size / 2;
+      const points = edge === 'end'
+        ? [[cx - half, cy], [cx + half, cy], [cx, cy - size]]
+        : [[cx - half, cy], [cx + half, cy], [cx, cy + size]];
+      appendSvgNode(el('polygon', {
+        points:points.map(function(point){ return point[0] + ',' + point[1]; }).join(' '),
+        fill:'#111',
+        stroke:'#111',
+        'stroke-width':1,
+        'pointer-events':'none'
+      }));
+    }
+
+    function drawCameraMarkerEndpoint(areaX, areaW, rowTop, rowH, lane, laneCount, markerStyle, edge, labelValue) {
+      const guideX = getDistributedLaneX(areaX, areaW, lane || 0, laneCount, 12);
+      const edgeY = edge === 'end' ? rowTop + rowH : rowTop;
+      const midY = rowTop + rowH / 2;
+      const labelY = midY;
+      const endpointLabel = String(labelValue || (edge === 'end' ? 'B' : 'A')).trim();
+      if (markerStyle === '▲') {
+        drawCameraFilledTriangle(guideX, edgeY, edge);
+        drawCompactText(guideX + 18, labelY + 0.5, endpointLabel, 18, 'start', '900', '#111');
+        return;
+      }
+      if (markerStyle === '-') {
+        line(guideX - 8, midY, guideX + 10, midY, '#111', 1.6);
+        drawCompactText(guideX + 18, labelY + 0.5, endpointLabel, 18, 'start', '900', '#111');
+      }
+    }
+
     function drawCameraSecondFrameText(block, areaX, areaW, lane, laneCount, seg, editConfig) {
       const displayText = getCameraSegmentDisplayText(seg);
       if (!seg || !String(displayText || '').trim()) return;
@@ -13823,16 +14196,38 @@
         .toUpperCase();
     }
 
-    function getCameraSpecialShape(seg) {
-      const candidates = [seg && seg.text, seg && seg.label, seg && seg.endLabel];
+    function getCameraSpecialShapeTokenInfo(value) {
+      const token = normalizeCameraShapeToken(value);
+      if (!token) return null;
+      if (/^(FI|FADEIN|FADEINN|フェードイン|フェイドイン)$/.test(token)) return { shape:'fi', label:'FI' };
+      if (/^(FO|FADEOUT|フェードアウト|フェイドアウト)$/.test(token)) return { shape:'fo', label:'FO' };
+      if (/^(OL|OVERLAP|OVERLAPPU|オーバーラップ)$/.test(token)) return { shape:'ol', label:'OL' };
+      return null;
+    }
+
+    function getCameraSpecialShapeInfo(seg) {
+      const previewShapeInfo = getCameraSpecialShapeTokenInfo(seg && seg.previewStyle);
+      if (previewShapeInfo) return Object.assign({ field:'preview' }, previewShapeInfo);
+      const candidates = [
+        { field:'label', value:seg && seg.label },
+        { field:'text', value:seg && seg.text },
+        { field:'endLabel', value:seg && seg.endLabel }
+      ];
       for (let i = 0; i < candidates.length; i++) {
-        const token = normalizeCameraShapeToken(candidates[i]);
-        if (!token) continue;
-        if (/^(FI|FADEIN|FADEINN|フェードイン|フェイドイン)$/.test(token)) return 'fi';
-        if (/^(FO|FADEOUT|フェードアウト|フェイドアウト)$/.test(token)) return 'fo';
-        if (/^(OL|OVERLAP|OVERLAPPU|オーバーラップ)$/.test(token)) return 'ol';
+        const info = getCameraSpecialShapeTokenInfo(candidates[i].value);
+        if (info) return Object.assign({ field:candidates[i].field }, info);
       }
-      return '';
+      return null;
+    }
+
+    function getCameraSpecialShape(seg) {
+      const info = getCameraSpecialShapeInfo(seg);
+      return info ? info.shape : '';
+    }
+
+    function isCameraTargetShapeSegment(seg, shapeInfo) {
+      const info = shapeInfo || getCameraSpecialShapeInfo(seg);
+      return !!(info && (info.field === 'label' || info.field === 'preview') && String(seg && seg.text || '').trim());
     }
 
     function appendCameraSpecialShapePolygon(points, fill, stroke) {
@@ -13850,12 +14245,21 @@
     function renderCameraSpecialShape(shape, areaX, areaW, rowTop, height, lane, laneCount) {
       if (!shape) return false;
       const laneX = getDistributedLaneX(areaX, areaW, lane || 0, laneCount, 12);
-      const laneW = areaW / Math.max(1, laneCount);
+      const laneW = areaW / Math.max(3, Math.max(1, laneCount));
       const baseW = Math.max(18, Math.min(areaW - 10, laneW * 0.82));
-      const usableW = Math.max(18, baseW * CAMERA_SPECIAL_SHAPE_WIDTH_SCALE);
-      const halfW = usableW / 2;
-      const x1 = Math.max(areaX + 4, laneX - halfW);
-      const x2 = Math.min(areaX + areaW - 4, laneX + halfW);
+      const usableW = Math.min(Math.max(8, areaW - 8), Math.max(18, baseW * CAMERA_SPECIAL_SHAPE_WIDTH_SCALE));
+      const minX = areaX + 4;
+      const maxX = areaX + areaW - 4;
+      let x1 = laneX - usableW / 2;
+      let x2 = laneX + usableW / 2;
+      if (x1 < minX) {
+        x1 = minX;
+        x2 = x1 + usableW;
+      }
+      if (x2 > maxX) {
+        x2 = maxX;
+        x1 = x2 - usableW;
+      }
       const cx = (x1 + x2) / 2;
       const y1 = rowTop + 2;
       const y2 = rowTop + Math.max(4, height - 2);
@@ -13863,18 +14267,36 @@
       if (y2 <= y1 + 2) return false;
       if (shape === 'fi') {
         appendCameraSpecialShapePolygon([[cx, y1], [x2, y2], [x1, y2]]);
-        return true;
+        return { x1:x1, x2:x2, cx:cx, y1:y1, y2:y2, midY:midY };
       }
       if (shape === 'fo') {
         appendCameraSpecialShapePolygon([[x1, y1], [x2, y1], [cx, y2]]);
-        return true;
+        return { x1:x1, x2:x2, cx:cx, y1:y1, y2:y2, midY:midY };
       }
       if (shape === 'ol') {
         appendCameraSpecialShapePolygon([[x1, y1], [x2, y1], [cx, midY]]);
         appendCameraSpecialShapePolygon([[cx, midY], [x2, y2], [x1, y2]]);
-        return true;
+        return { x1:x1, x2:x2, cx:cx, y1:y1, y2:y2, midY:midY };
       }
       return false;
+    }
+
+    function drawCameraTargetShapeText(areaX, areaW, shapeLayout, seg, shapeInfo) {
+      if (!shapeLayout || !isCameraTargetShapeSegment(seg, shapeInfo)) return;
+      const targetText = String(seg && seg.text || '').trim();
+      const shapeLabel = String(shapeInfo && shapeInfo.label || '').trim();
+      if (!targetText || !shapeLabel) return;
+      const lineGap = 15;
+      const textX = Math.min(areaX + areaW - 4, Math.max(areaX + 4, shapeLayout.x2 - 10));
+      const textY = shapeLayout.midY;
+      text(textX, textY - lineGap / 2, targetText, 15, 'start', '800', RED, {
+        get:function(){ return seg.text || ''; },
+        set:function(v){ updateManualBlockField('camera', seg.id, 'text', v); }
+      });
+      text(textX, textY + lineGap / 2, shapeLabel, 15, 'start', '800', RED, {
+        get:function(){ return seg.label || ''; },
+        set:function(v){ updateManualBlockField('camera', seg.id, 'label', v); }
+      });
     }
 
     function addTimelineEdgeHandle(block, rowTop, blockType, seg, edge, areaX, areaW) {
@@ -13964,27 +14386,42 @@
         const cameraArea = getCameraArea(block);
         const x = cameraArea.x;
         const w = cameraArea.w;
+        const cameraLaneBounds = getDistributedLaneBounds(x, w, seg.lane || 0, cameraLaneCount, 12);
         const guideX = getDistributedLaneX(x, w, seg.lane || 0, cameraLaneCount, 12);
-        const cameraShape = getCameraSpecialShape(seg);
+        const cameraShapeInfo = getCameraSpecialShapeInfo(seg);
+        const cameraShape = cameraShapeInfo ? cameraShapeInfo.shape : '';
+        const cameraTargetShape = isCameraTargetShapeSegment(seg, cameraShapeInfo);
+        const cameraMarkerStyle = getCameraMarkerStyle(seg);
         const cameraConnection = getCameraConnectionState(seg, cameraSegs);
-        if (!cameraConnection.start && showsSegmentStart) line(x, rowTop, x + w, rowTop, RED, 2.6);
-        if (!cameraConnection.end && showsSegmentEnd) line(x, rowTop + height, x + w, rowTop + height, RED, 2.6);
-        if (cameraShape) renderCameraSpecialShape(cameraShape, x, w, rowTop, height, seg.lane || 0, cameraLaneCount);
+        if (!cameraConnection.start && showsSegmentStart) line(cameraLaneBounds.x, rowTop, cameraLaneBounds.x + cameraLaneBounds.w, rowTop, RED, 2.6);
+        if (!cameraConnection.end && showsSegmentEnd) line(cameraLaneBounds.x, rowTop + height, cameraLaneBounds.x + cameraLaneBounds.w, rowTop + height, RED, 2.6);
+        if (cameraShape) {
+          const cameraShapeLayout = renderCameraSpecialShape(cameraShape, x, w, rowTop, height, seg.lane || 0, cameraLaneCount);
+          drawCameraTargetShapeText(x, w, cameraShapeLayout, seg, cameraShapeInfo);
+        }
         else {
           const guideTop = rowTop + (cameraConnection.start ? rowH : 0);
           const guideBottom = rowTop + height - (cameraConnection.end && seg.endLabel ? rowH : 0);
-          if (guideBottom > guideTop) line(guideX, guideTop, guideX, guideBottom, RED, 1.1);
+          if (guideBottom > guideTop) line(guideX, guideTop, guideX, guideBottom, cameraMarkerStyle ? '#111' : RED, 1.1);
         }
-        if (!cameraConnection.start && showsSegmentStart) {
-          drawTimelineFirstFrameLabel(x, w, rowTop, rowH, seg.lane || 0, cameraLaneCount, seg.label, { get:function(){ return seg.label || ''; }, set:function(v){ updateManualBlockField('camera', seg.id, 'label', v); } });
+        if (!cameraTargetShape && !cameraConnection.start && showsSegmentStart) {
+          if (cameraMarkerStyle) {
+            drawCameraMarkerEndpoint(x, w, rowTop, rowH, seg.lane || 0, cameraLaneCount, cameraMarkerStyle, 'start', seg.label);
+          } else {
+            drawTimelineFirstFrameLabel(x, w, rowTop, rowH, seg.lane || 0, cameraLaneCount, seg.label, { get:function(){ return seg.label || ''; }, set:function(v){ updateManualBlockField('camera', seg.id, 'label', v); } });
+          }
         }
         if (!cameraShape) drawCameraSecondFrameText(block, x, w, seg.lane || 0, cameraLaneCount, seg, { get:function(){ return seg.text || ''; }, set:function(v){ updateManualBlockField('camera', seg.id, 'text', v); } });
-        if (seg.endLabel && showsSegmentEnd) {
+        if (!cameraTargetShape && seg.endLabel && showsSegmentEnd) {
           const endRowTop = getOutputRowTop(block, seg.to, 'camera');
-          drawTimelineBoxLabel(x, w, endRowTop, rowH, seg.lane || 0, cameraLaneCount, seg.endLabel, { get:function(){ return seg.endLabel || ''; }, set:function(v){ updateManualBlockField('camera', seg.id, 'endLabel', v); } });
+          if (cameraMarkerStyle) {
+            drawCameraMarkerEndpoint(x, w, endRowTop, rowH, seg.lane || 0, cameraLaneCount, cameraMarkerStyle, 'end', seg.endLabel);
+          } else {
+            drawTimelineBoxLabel(x, w, endRowTop, rowH, seg.lane || 0, cameraLaneCount, seg.endLabel, { get:function(){ return seg.endLabel || ''; }, set:function(v){ updateManualBlockField('camera', seg.id, 'endLabel', v); } });
+          }
         }
-        if (showsSegmentStart) addTimelineEdgeHandle(block, rowTop, 'camera', seg, 'from', x, w);
-        if (showsSegmentEnd) addTimelineEdgeHandle(block, rowTop + height, 'camera', seg, 'to', x, w);
+        if (showsSegmentStart) addTimelineEdgeHandle(block, rowTop, 'camera', seg, 'from', cameraLaneBounds.x, cameraLaneBounds.w);
+        if (showsSegmentEnd) addTimelineEdgeHandle(block, rowTop + height, 'camera', seg, 'to', cameraLaneBounds.x, cameraLaneBounds.w);
       });
       });
     }
@@ -14430,6 +14867,7 @@
       applyShakuToManualBlocks('camera', fromFrame, frameCount, mode);
       updateDurationByFrameDelta(mode === 'cut' ? -frameCount : frameCount);
       state.markerOverrides = {};
+      state.cameraPreviewStyles = {};
       state.dotOverrides = {};
       const afterSnapshot = getShakuEditSnapshot();
       pushShakuHistory({
@@ -17426,7 +17864,7 @@
       const baseLayers = getBaseInputLayers();
       const layers = resolvePreviewEndFrames(applyLeadingCrossSegments(applyDotOverrides(baseLayers)), durationInputFrame);
       const dialogBlocks = assignLanes(getRenderableDialogBlocks(parseManualBlocks(document.getElementById('dialogManual').value)));
-      const cameraBlocks = assignCameraLanes(parseManualBlocks(document.getElementById('cameraManual').value));
+      const cameraBlocks = assignCameraLanes(applyCameraPreviewStyles(parseManualBlocks(document.getElementById('cameraManual').value)));
       const contentMaxFrame = getContentMaxFrame(layers, dialogBlocks, cameraBlocks);
       const hasContent = hasRenderableTimelineContent(layers, dialogBlocks, cameraBlocks);
       const maxFrame = Math.max(contentMaxFrame, getPreviewOnlyMaxFrame(layers), durationInputFrame || 1);
@@ -18118,11 +18556,37 @@
       }
     }
 
+    function isMemoLineStroke(stroke) {
+      return !!(stroke && stroke.shape === 'line');
+    }
+
+    function getMemoLineEndPoint(stroke) {
+      if (!stroke || !stroke.points || !stroke.points.length) return null;
+      if (stroke.lineEnd && Number.isFinite(stroke.lineEnd.x) && Number.isFinite(stroke.lineEnd.y)) return stroke.lineEnd;
+      return stroke.points[stroke.points.length - 1];
+    }
+
+    function appendMemoFreehandPoint(stroke, point) {
+      if (!stroke || !stroke.points || !point) return false;
+      const pts = stroke.points;
+      const last = pts[pts.length - 1];
+      if (!shouldAppendMemoPoint(last, point)) return false;
+      pts.push(point);
+      return true;
+    }
+
     function drawStrokeToContext(ctx, stroke) {
       if (!stroke || !stroke.points || !stroke.points.length) return;
       ctx.save();
       applyMemoStrokeStyle(ctx, stroke);
-      if (stroke.points.length === 1) {
+      const lineEndPoint = isMemoLineStroke(stroke) ? getMemoLineEndPoint(stroke) : null;
+      const hasLineEnd = !!(lineEndPoint && stroke.points[0] && (lineEndPoint.x !== stroke.points[0].x || lineEndPoint.y !== stroke.points[0].y));
+      if (hasLineEnd) {
+        ctx.beginPath();
+        ctx.moveTo(stroke.points[0].x, stroke.points[0].y);
+        ctx.lineTo(lineEndPoint.x, lineEndPoint.y);
+        ctx.stroke();
+      } else if (stroke.points.length === 1) {
         const p = stroke.points[0];
         ctx.beginPath();
         ctx.arc(p.x, p.y, Math.max(0.5, (stroke.size || 2) / 2), 0, Math.PI * 2);
@@ -18281,8 +18745,11 @@
         tool: state.memoTool,
         color: state.memoColor,
         size: activeMemoSize,
-        points: [getMemoPointFromEvent(event)]
+        shape: event.shiftKey ? 'line' : 'freehand',
+        points: [getMemoPointFromEvent(event)],
+        lineEnd: null
       };
+      if (stroke.shape === 'line') stroke.lineEnd = stroke.points[0];
       pageData.strokes.push(stroke);
       pageData.redo = [];
       state.memoPointerId = event.pointerId;
@@ -18301,17 +18768,41 @@
         return;
       }
       const point = getMemoPointFromEvent(event);
-      const pts = state.memoCurrentStroke.points;
-      const last = pts[pts.length - 1];
-      if (!shouldAppendMemoPoint(last, point)) return;
-      pts.push(point);
-      drawMemoStrokeSegment(memoCtx, state.memoCurrentStroke, pts.length - 2, pts.length - 1);
+      const stroke = state.memoCurrentStroke;
+      const wasLine = isMemoLineStroke(stroke);
+      const appended = appendMemoFreehandPoint(stroke, point);
+      if (event.shiftKey) {
+        stroke.shape = 'line';
+        stroke.lineEnd = point;
+        redrawMemoCanvas();
+        return;
+      }
+      stroke.shape = 'freehand';
+      stroke.lineEnd = null;
+      if (wasLine) {
+        redrawMemoCanvas();
+        return;
+      }
+      if (appended) drawMemoStrokeSegment(memoCtx, stroke, stroke.points.length - 2, stroke.points.length - 1);
     }
 
     function endMemoStroke(event) {
       if (state.memoPointerId !== event.pointerId) return;
       if (memoCanvas.releasePointerCapture) {
         try { memoCanvas.releasePointerCapture(event.pointerId); } catch (err) {}
+      }
+      if (state.memoCurrentStroke) {
+        const stroke = state.memoCurrentStroke;
+        const point = getMemoPointFromEvent(event);
+        appendMemoFreehandPoint(stroke, point);
+        if (event.shiftKey) {
+          stroke.shape = 'line';
+          stroke.lineEnd = point;
+        } else {
+          stroke.shape = 'freehand';
+          stroke.lineEnd = null;
+        }
+        redrawMemoCanvas();
       }
       state.memoPointerId = null;
       state.memoCurrentStroke = null;
@@ -19522,6 +20013,7 @@
       if (dialogEl) dialogEl.value = '0+00 | 0+00 |  | ';
       const cameraEl = document.getElementById('cameraManual');
       if (cameraEl) cameraEl.value = '0+00 | 0+00 |  |  | ';
+      state.cameraPreviewStyles = {};
       resetCsvStateForSheetClear();
       state.layerNameTags = [];
       state.activeLayerNameTagTarget = null;
@@ -19627,6 +20119,7 @@
         },
         overrides:{
           markerOverrides:JSON.parse(JSON.stringify(state.markerOverrides || {})),
+          cameraPreviewStyles:JSON.parse(JSON.stringify(state.cameraPreviewStyles || {})),
           dotOverrides:JSON.parse(JSON.stringify(state.dotOverrides || {}))
         },
         memo:{
@@ -19783,6 +20276,7 @@
       state.layoutBoxBaseRects = {};
       const overrides = payload.overrides || {};
       state.markerOverrides = overrides.markerOverrides && typeof overrides.markerOverrides === 'object' ? overrides.markerOverrides : {};
+      state.cameraPreviewStyles = overrides.cameraPreviewStyles && typeof overrides.cameraPreviewStyles === 'object' ? overrides.cameraPreviewStyles : {};
       state.dotOverrides = overrides.dotOverrides && typeof overrides.dotOverrides === 'object' ? overrides.dotOverrides : {};
       materializeDotOverridesIntoCommandText();
       const memo = payload.memo || {};
@@ -21088,8 +21582,17 @@
 
     bindInput('timelineCommandInput', handleTimelineCommandInputChange);
     bindInput('dialogManual', function(){ scheduleManualSourceRoleSync(); requestCommandInputRender(); });
-    bindInput('cameraManual', function(){ scheduleManualSourceRoleSync(); requestCommandInputRender(); });
+    bindInput('cameraManual', function(){ scheduleManualSourceRoleSync(); requestCommandInputRender(); updateCameraDirectiveCompleter(); });
     bindInput('csvCommandEdit', handleCsvCommandInputChange);
+    const cameraManualEl = document.getElementById('cameraManual');
+    if (cameraManualEl) {
+      ['focus', 'click', 'keyup', 'mouseup', 'scroll'].forEach(function(eventName){
+        cameraManualEl.addEventListener(eventName, updateCameraDirectiveCompleter);
+      });
+    }
+    window.addEventListener('resize', updateCameraDirectiveCompleter, true);
+    window.addEventListener('scroll', updateCameraDirectiveCompleter, true);
+    updateCameraDirectiveCompleter();
     ['timelineCommandInput', 'csvCommandEdit', 'dialogManual', 'cameraManual'].forEach(function(id){
       const node = document.getElementById(id);
       if (!node) return;
@@ -21129,6 +21632,7 @@
     setCommandTextValue('csv', '');
     document.getElementById('dialogManual').value = DEFAULT_DIALOG_SAMPLE_LINE;
     document.getElementById('cameraManual').value = DEFAULT_CAMERA_SAMPLE_LINE;
+    updateCameraDirectiveCompleter();
     restoreHeaderMemory();
     loadPaperMemory();
     restoreLanguagePreference();
