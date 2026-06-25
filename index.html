@@ -2024,9 +2024,10 @@
 
       <div class="card">
         <h3 data-ui-text="cameraBlocksTitle">カメラ欄</h3>
-        <label for="cameraManual" data-ui-text="cameraFormatLabel">Format: 0+01 | 1+00 | A | PAN | B</label>
+        <label for="cameraManual" data-ui-text="cameraFormatLabel">Format: 0+01 | 1+00 | A | PAN | B  /  0+01 | 1+00 | FI | Aセル</label>
         <textarea id="cameraManual"></textarea>
         <div id="cameraDirectiveCompleter" class="camera-directive-completer hidden"></div>
+        <button id="cameraToMemoBtn" type="button" class="memo-btn" data-ui-text="cameraToMemoBtn">カメラ→メモ</button>
         <div id="cameraHelp" class="hint"></div>
       </div>
       <div class="card paper-layout-card" id="paperLayoutCard">
@@ -2230,7 +2231,7 @@
     const DEFAULT_DIALOG_SAMPLE_LINE = '0+01 | 1+00 | SPEAKER | SAMPLE';
     const DEFAULT_CAMERA_SAMPLE_LINE = [
       '0+01 | 1+00 | A | PAN | B',
-      '0+01 | 1+00 | A | SL | B'
+      '0+01 | 1+00 | FI | Aセル'
     ].join('\n');
     const CAMERA_DIRECTIVE_COMPLETION_OPTIONS = ['▲', '-', 'FI', 'FO', 'OL'];
     const CAMERA_TARGET_SHAPE_DIRECTIVE_SET = new Set(['FI', 'FO', 'OL']);
@@ -2238,7 +2239,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '757';
+    const APP_VERSION = '761';
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
     const PAPER_HEADER_TEMPLATE_KNOWN_MIN_SCORE = 0.84;
@@ -2290,6 +2291,7 @@
     const previewMetaEl = document.getElementById('previewMeta');
     const csvCommandEditEl = document.getElementById('csvCommandEdit');
     const cameraDirectiveCompleterEl = document.getElementById('cameraDirectiveCompleter');
+    const cameraToMemoBtn = document.getElementById('cameraToMemoBtn');
     const prevPageBtn = document.getElementById('prevPageBtn');
     const nextPageBtn = document.getElementById('nextPageBtn');
     const pageIndicatorEl = document.getElementById('pageIndicator');
@@ -2633,32 +2635,32 @@
         languageLabel:'Language', headerCardTitle:'Header', episodeLabel:'Ep.no', titleLabel:'Title', cutNoLabel:'Cut.no', secondsLabel:'Duration sec', framesLabel:'Duration frame', authorLabel:'name', pageLabel:'Page',
         originalCellTitle:'Sheet Input', inputModeLabel:'Input Mode', inputModeTextCommands:'Text Commands', inputModeCsv:'CSV Upload', csvSettingsExportBtn:'Export Settings JSON', shakuEditBtn:'Length Edit', shakuEditHint:'Drag a blue frame line to select a range.', shakuCutBtn:'Cut', shakuStretchBtn:'Extend', shakuSelectedLabel:'Selected', shakuUndoBtn:'Undo', shakuRedoBtn:'Redo', shakuFlashCut:'Cut applied', shakuFlashStretch:'Extend applied', dougaSheetCreate:'Make Douga', dougaSheetRefresh:'Refresh Douga', dougaSheetTitle:'Generate a read-only douga sheet from Cell numbers and dot marks', cellReadabilityTitle:'Large Cell text',
         textCommandsLabel:'Text Commands', csvFileLabel:'CSV File', csvCommandEditLabel:'Editable Commands from CSV',
-        dialogBlocksTitle:'Dialog Area', dialogFormatLabel:'Format: 0+01 | 1+00 | SPEAKER | SAMPLE', cameraBlocksTitle:'Camera Area', cameraFormatLabel:'Format: 0+01 | 1+00 | A | PAN | B',
-        sheetPreviewTitle:'Sheet Preview', chooseExportDirBtn:'Folder', downloadAllBtn:'Output', memoModeBtn:'Memo Mode', memoUndoBtn:'Undo', memoRedoBtn:'Redo', memoPenLabel:'Pen', memoEraserLabel:'Eraser', memoEraserButton:'Eraser',
+        dialogBlocksTitle:'Dialog Area', dialogFormatLabel:'Format: 0+01 | 1+00 | SPEAKER | SAMPLE', cameraBlocksTitle:'Camera Area', cameraFormatLabel:'Format: 0+01 | 1+00 | A | PAN | B  /  0+01 | 1+00 | FI | Aセル',
+        sheetPreviewTitle:'Sheet Preview', chooseExportDirBtn:'Folder', downloadAllBtn:'Output', memoModeBtn:'Memo Mode', cameraToMemoBtn:'Camera→Memo', memoUndoBtn:'Undo', memoRedoBtn:'Redo', memoPenLabel:'Pen', memoEraserLabel:'Eraser', memoEraserButton:'Eraser',
         createdByLabel:'Created by', settingsExportBtn:'Export', settingsFileBtn:'Load', settingsImportBtn:'Path', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'Settings JSON', settingsSelectEmpty:'Select settings', settingsSelectNoSettings:'No settings JSON', textMemoApplyBtn:'Apply', textMemoMenuAdd:'Add text box', textMemoMenuDelete:'Delete text box', textMemoMenuEditMode:'Text box position edit', textMemoMenuEditDone:'Finish text box edit', textMemoMenuAutoArrange:'Auto arrange text boxes', textMemoInitialHint:'Right-click to add or edit text boxes.', clearSheetDataBtn:'Reset All', hideSidebarBtn:'Hide UI', showSidebarBtn:'Show UI', feedbackHeading:'Feedback', feedbackFormLink:'Form', feedbackPlaceholder:'Bug report or request', feedbackHint:'Write anything you know: symptom, reproduction steps, CSV/PSD/image format, expected result, actual result, browser/OS.', feedbackSendBtn:'Send', feedbackEmpty:'Write a message first.', feedbackSending:'Sending...', feedbackSent:'Sent.', feedbackFailed:'Could not send. Open the form link.', shortcutSummaryTopHint:''
       },
       ja: {
         languageLabel:'言語', headerCardTitle:'ヘッダー', episodeLabel:'話数', titleLabel:'タイトル', cutNoLabel:'カット番号', secondsLabel:'尺 秒', framesLabel:'尺 コマ', authorLabel:'名前', pageLabel:'ページ',
         originalCellTitle:'シート入力', inputModeLabel:'入力モード', inputModeTextCommands:'テキストコマンド', inputModeCsv:'CSV読込', csvSettingsExportBtn:'JSON設定出力', shakuEditBtn:'尺編集(演出向け)', shakuEditHint:'青いフレーム線をドラッグして尺を選択', shakuCutBtn:'切る', shakuStretchBtn:'伸ばす', shakuSelectedLabel:'選択', shakuUndoBtn:'取り消し', shakuRedoBtn:'やり直し', shakuFlashCut:'切る 反映', shakuFlashStretch:'伸ばす 反映', dougaSheetCreate:'動画作成', dougaSheetRefresh:'動画更新', dougaSheetTitle:'Cell番号と動画点から編集不可の動画欄を生成', cellReadabilityTitle:'Cell文字を大きく表示',
         textCommandsLabel:'テキストコマンド', csvFileLabel:'CSVファイル', csvCommandEditLabel:'CSVから生成された編集可能コマンド',
-        dialogBlocksTitle:'セリフ欄', dialogFormatLabel:'形式: 0+01 | 1+00 | 話者 | セリフ例', cameraBlocksTitle:'カメラ欄', cameraFormatLabel:'形式: 0+01 | 1+00 | A | PAN | B',
-        sheetPreviewTitle:'シートプレビュー', chooseExportDirBtn:'保存先', downloadAllBtn:'出力', memoModeBtn:'メモモード', memoUndoBtn:'取り消し', memoRedoBtn:'やり直し', memoPenLabel:'ペン', memoEraserLabel:'消しゴム', memoEraserButton:'消しゴム',
+        dialogBlocksTitle:'セリフ欄', dialogFormatLabel:'形式: 0+01 | 1+00 | 話者 | セリフ例', cameraBlocksTitle:'カメラ欄', cameraFormatLabel:'形式: 0+01 | 1+00 | A | PAN | B  /  0+01 | 1+00 | FI | Aセル',
+        sheetPreviewTitle:'シートプレビュー', chooseExportDirBtn:'保存先', downloadAllBtn:'出力', memoModeBtn:'メモモード', cameraToMemoBtn:'カメラ→メモ', memoUndoBtn:'取り消し', memoRedoBtn:'やり直し', memoPenLabel:'ペン', memoEraserLabel:'消しゴム', memoEraserButton:'消しゴム',
         createdByLabel:'作成', settingsExportBtn:'出力', settingsFileBtn:'読込', settingsImportBtn:'読込先', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'設定JSON', settingsSelectEmpty:'設定選択', settingsSelectNoSettings:'設定JSONなし', textMemoApplyBtn:'適用', textMemoMenuAdd:'テキスト枠を追加', textMemoMenuDelete:'テキスト枠を削除', textMemoMenuEditMode:'テキスト枠位置編集', textMemoMenuEditDone:'テキスト枠編集終了', textMemoMenuAutoArrange:'テキスト枠を自動整列', textMemoInitialHint:'右クリックでテキスト枠を追加・編集できます。', clearSheetDataBtn:'全体初期化', hideSidebarBtn:'UIを隠す', showSidebarBtn:'UIを表示', feedbackHeading:'報告', feedbackFormLink:'Form', feedbackPlaceholder:'不具合や要望を書く', feedbackHint:'わかる範囲で記入してください: 症状、再現手順、使用したCSV/PSD/画像形式、期待した結果、実際の結果、ブラウザ/OS。', feedbackSendBtn:'送信', feedbackEmpty:'内容を書いてください。', feedbackSending:'送信中...', feedbackSent:'送信しました。', feedbackFailed:'送信できません。Formリンクから送ってください。', shortcutSummaryTopHint:''
       },
       ko: {
         languageLabel:'언어', headerCardTitle:'헤더', episodeLabel:'화수', titleLabel:'제목', cutNoLabel:'컷 번호', secondsLabel:'길이 초', framesLabel:'길이 프레임', authorLabel:'이름', pageLabel:'페이지',
         originalCellTitle:'시트 입력', inputModeLabel:'입력 방식', inputModeTextCommands:'텍스트 커맨드', inputModeCsv:'CSV 읽기', csvSettingsExportBtn:'설정 JSON 내보내기', shakuEditBtn:'연출용 편집툴', shakuEditHint:'파란 프레임선을 드래그해 길이를 선택', shakuCutBtn:'자르기', shakuStretchBtn:'늘리기', shakuSelectedLabel:'선택', shakuUndoBtn:'되돌리기', shakuRedoBtn:'다시 실행', shakuFlashCut:'자르기 반영', shakuFlashStretch:'늘리기 반영', dougaSheetCreate:'동화시트 작성', dougaSheetRefresh:'동화시트 갱신', dougaSheetTitle:'셀 번호와 동화점으로 수정 불가능한 동화칸 생성', cellReadabilityTitle:'셀 글자 크게 보기',
         textCommandsLabel:'텍스트 커맨드', csvFileLabel:'CSV 파일', csvCommandEditLabel:'CSV에서 생성된 편집 가능 커맨드',
-        dialogBlocksTitle:'대사란', dialogFormatLabel:'형식: 0+01 | 1+00 | 화자 | 예시', cameraBlocksTitle:'카메라란', cameraFormatLabel:'형식: 0+01 | 1+00 | A | PAN | B',
-        sheetPreviewTitle:'시트 프리뷰', chooseExportDirBtn:'경로지정', downloadAllBtn:'출력', memoModeBtn:'메모 모드', memoUndoBtn:'되돌리기', memoRedoBtn:'다시 실행', memoPenLabel:'펜', memoEraserLabel:'지우개', memoEraserButton:'지우개',
+        dialogBlocksTitle:'대사란', dialogFormatLabel:'형식: 0+01 | 1+00 | 화자 | 예시', cameraBlocksTitle:'카메라란', cameraFormatLabel:'형식: 0+01 | 1+00 | A | PAN | B  /  0+01 | 1+00 | FI | Aセル',
+        sheetPreviewTitle:'시트 프리뷰', chooseExportDirBtn:'경로지정', downloadAllBtn:'출력', memoModeBtn:'메모 모드', cameraToMemoBtn:'카메라→메모', memoUndoBtn:'되돌리기', memoRedoBtn:'다시 실행', memoPenLabel:'펜', memoEraserLabel:'지우개', memoEraserButton:'지우개',
         createdByLabel:'제작', settingsExportBtn:'내보내기', settingsFileBtn:'불러오기', settingsImportBtn:'경로지정', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'설정 JSON', settingsSelectEmpty:'설정 선택', settingsSelectNoSettings:'설정 JSON 없음', textMemoApplyBtn:'적용', textMemoMenuAdd:'텍스트 박스 추가', textMemoMenuDelete:'텍스트 박스 삭제', textMemoMenuEditMode:'텍스트 박스 위치 편집', textMemoMenuEditDone:'텍스트 박스 편집 종료', textMemoMenuAutoArrange:'텍스트 박스 자동 정렬', textMemoInitialHint:'우클릭으로 텍스트 박스를 추가하거나 편집할 수 있습니다.', clearSheetDataBtn:'전체 초기화', hideSidebarBtn:'UI 숨기기', showSidebarBtn:'UI 펼치기', feedbackHeading:'문의', feedbackFormLink:'Form', feedbackPlaceholder:'버그 내용이나 개선 요청', feedbackHint:'가능하면 아는 것만 적어주세요: 증상, 재현 순서, 사용한 CSV/PSD/이미지 형식, 기대한 결과, 실제 결과, 브라우저/OS.', feedbackSendBtn:'보내기', feedbackEmpty:'내용을 먼저 입력하세요.', feedbackSending:'전송 중...', feedbackSent:'전송했습니다.', feedbackFailed:'전송하지 못했습니다. Form 링크로 보내주세요.', shortcutSummaryTopHint:''
       },
       zh: {
         languageLabel:'语言', headerCardTitle:'页眉', episodeLabel:'集数', titleLabel:'标题', cutNoLabel:'镜头编号', secondsLabel:'时长 秒', framesLabel:'时长 帧', authorLabel:'姓名', pageLabel:'页码',
         originalCellTitle:'表格输入', inputModeLabel:'输入模式', inputModeTextCommands:'文本命令', inputModeCsv:'CSV 导入', csvSettingsExportBtn:'导出设置 JSON', shakuEditBtn:'时长编辑', shakuEditHint:'拖动蓝色帧线选择范围', shakuCutBtn:'切除', shakuStretchBtn:'延长', shakuSelectedLabel:'选择', shakuUndoBtn:'撤销', shakuRedoBtn:'重做', shakuFlashCut:'切除已应用', shakuFlashStretch:'延长已应用', dougaSheetCreate:'生成动画栏', dougaSheetRefresh:'刷新动画栏', dougaSheetTitle:'由 Cell 编号和动画点生成只读动画栏', cellReadabilityTitle:'放大 Cell 文字',
         textCommandsLabel:'文本命令', csvFileLabel:'CSV 文件', csvCommandEditLabel:'从 CSV 生成的可编辑命令',
-        dialogBlocksTitle:'对白栏', dialogFormatLabel:'格式: 0+01 | 1+00 | 说话人 | 示例', cameraBlocksTitle:'摄影机栏', cameraFormatLabel:'格式: 0+01 | 1+00 | A | PAN | B',
-        sheetPreviewTitle:'Sheet 预览', chooseExportDirBtn:'保存处', downloadAllBtn:'输出', memoModeBtn:'备注模式', memoUndoBtn:'撤销', memoRedoBtn:'重做', memoPenLabel:'笔', memoEraserLabel:'橡皮', memoEraserButton:'橡皮',
+        dialogBlocksTitle:'对白栏', dialogFormatLabel:'格式: 0+01 | 1+00 | 说话人 | 示例', cameraBlocksTitle:'摄影机栏', cameraFormatLabel:'格式: 0+01 | 1+00 | A | PAN | B  /  0+01 | 1+00 | FI | Aセル',
+        sheetPreviewTitle:'Sheet 预览', chooseExportDirBtn:'保存处', downloadAllBtn:'输出', memoModeBtn:'备注模式', cameraToMemoBtn:'摄影→备注', memoUndoBtn:'撤销', memoRedoBtn:'重做', memoPenLabel:'笔', memoEraserLabel:'橡皮', memoEraserButton:'橡皮',
         createdByLabel:'制作', settingsExportBtn:'导出', settingsFileBtn:'导入', settingsImportBtn:'路径', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'设置 JSON', settingsSelectEmpty:'选择设置', settingsSelectNoSettings:'无设置 JSON', textMemoApplyBtn:'应用', textMemoMenuAdd:'添加文字框', textMemoMenuDelete:'删除文字框', textMemoMenuEditMode:'文字框位置编辑', textMemoMenuEditDone:'结束文字框编辑', textMemoMenuAutoArrange:'自动排列文字框', textMemoInitialHint:'可通过右键添加或编辑文字框。', clearSheetDataBtn:'全部重置', hideSidebarBtn:'隐藏 UI', showSidebarBtn:'显示 UI', feedbackHeading:'反馈', feedbackFormLink:'Form', feedbackPlaceholder:'错误报告或改进建议', feedbackHint:'请尽量填写已知信息: 症状、复现步骤、使用的 CSV/PSD/图片格式、期望结果、实际结果、浏览器/OS。', feedbackSendBtn:'发送', feedbackEmpty:'请先输入内容。', feedbackSending:'发送中...', feedbackSent:'已发送。', feedbackFailed:'发送失败。请使用 Form 链接。', shortcutSummaryTopHint:''
       }
     };
@@ -3132,6 +3134,10 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver761', 'Camera→Memo bullet prefix', ['Camera→Memo entries now start with a ・ bullet, e.g. <code>・Ⓐ→Ⓑ PAN</code> or <code>・Aセル F.I</code>.']],
+        ['ver760', 'Camera picker and example', ['The camera direction picker no longer shows a blank option and defaults to the triangle (▲). The Camera Area example now shows both the standard <code>0+01 | 1+00 | A | PAN | B</code> form and the FI/FO/OL target form <code>0+01 | 1+00 | FI | Aセル</code>.']],
+        ['ver759', 'Camera triangle default', ['Camera start/end labels now use the black triangle (▲) marker by default instead of the red box label, which has been removed. Choose the dash (-) style from the per-line picker if you prefer a short line. Dialog speaker labels still use the red box.']],
+        ['ver758', 'Camera→Memo auto-fill', ['A new Camera→Memo button under the Camera Area turns each camera line such as <code>0+01 | 1+00 | A | PAN | B</code> into a memo text box like <code>Ⓐ→Ⓑ PAN</code> (circled start/end labels followed by the directive). Re-running updates the auto-generated boxes in place and removes ones whose camera line was deleted, while hand-written memo boxes are left untouched.']],
         ['ver757', 'Memo Shift straight lines', ['Memo strokes now switch to a straight-line preview while Shift is held, using the stroke start point and current pointer position. Release the pointer while Shift is still held to keep the stroke as a straight line.']],
         ['ver755', 'Camera triangle label placement', ['Triangle preview markers stay on the start top edge and end bottom edge, while their A/B labels now use the same centered frame-cell position as the dash marker.']],
         ['ver754', 'Camera lane edge handles', ['Camera start/end red horizontal handles now use only that camera lane width instead of spanning the whole camera area.', 'Triangle preview markers are restored to the start top edge and end bottom edge positions.']],
@@ -3227,6 +3233,10 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver761', 'カメラ→メモの・付き', ['カメラ→メモの記入が先頭に ・ を付けるようになりました（例: <code>・Ⓐ→Ⓑ PAN</code> や <code>・Aセル F.I</code>）。']],
+        ['ver760', 'カメラ選択UIと例', ['カメラ指示の選択UIから空欄の選択肢をなくし、既定で三角（▲）になりました。カメラ欄の例に、標準の <code>0+01 | 1+00 | A | PAN | B</code> 形式と、FI/FO/OL対象形式 <code>0+01 | 1+00 | FI | Aセル</code> の両方を表示します。']],
+        ['ver759', 'カメラ▲を既定に', ['カメラの開始/終了ラベルは、赤いボックス表示を廃止し、既定で黒い三角（▲）マーカーを表示するようになりました。短い線が良ければ行ごとの選択UIでダッシュ「-」を選べます。セリフの話者ラベルは引き続き赤いボックスです。']],
+        ['ver758', 'カメラ→メモ自動記入', ['カメラ欄の新しい「カメラ→メモ」ボタンで、<code>0+01 | 1+00 | A | PAN | B</code> のような各カメラ行を <code>Ⓐ→Ⓑ PAN</code>（丸囲みの開始/終了表記＋指示）のメモ枠に変換します。再実行すると自動生成された枠はその場で更新され、行を削除した枠は除去されます。手書きのメモ枠はそのまま残ります。']],
         ['ver757', 'メモShift直線描画', ['メモのストローク中にShiftを押している間、開始点から現在位置までの直線プレビューに切り替わります。Shiftを押したままポインタを離すと、そのストロークは直線として確定します。']],
         ['ver755', 'カメラ三角表式のラベル位置', ['三角表式の図形は開始上端、終了下端のままにし、A/Bラベルだけをダッシュ表式と同じフレームセル中央位置へ合わせました。']],
         ['ver754', 'カメラレーン端ハンドル', ['カメラ開始/終了の赤い横ハンドルは、カメラ欄全体ではなく該当カメラレーン幅だけを使うようにしました。', '三角表式は開始上端、終了下端の位置へ戻しました。']],
@@ -3322,6 +3332,10 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver761', '카메라→메모 ・ 접두', ['카메라→메모 기입이 앞에 ・ 를 붙입니다 (예: <code>・Ⓐ→Ⓑ PAN</code>, <code>・Aセル F.I</code>).']],
+        ['ver760', '카메라 선택 UI·예시', ['카메라 지시 선택 UI에서 빈 옵션을 없애고 기본값을 삼각형(▲)으로 했습니다. 카메라란 예시에 표준 <code>0+01 | 1+00 | A | PAN | B</code> 형식과 FI/FO/OL 대상 형식 <code>0+01 | 1+00 | FI | Aセル</code>을 함께 표시합니다.']],
+        ['ver759', '카메라 ▲ 기본', ['카메라 시작/끝 라벨이 빨간 박스 표기를 없애고 기본으로 검은 삼각형(▲) 마커를 표시합니다. 짧은 선을 원하면 줄별 선택 UI에서 대시(-)를 고르면 됩니다. 대사 화자 라벨은 그대로 빨간 박스를 사용합니다.']],
+        ['ver758', '카메라→메모 자동 기입', ['카메라란의 새 「카메라→메모」 버튼으로 <code>0+01 | 1+00 | A | PAN | B</code> 같은 각 카메라 줄을 <code>Ⓐ→Ⓑ PAN</code>(동그라미 시작/끝 표기 + 지시) 메모 박스로 변환합니다. 다시 실행하면 자동 생성된 박스는 제자리에서 갱신되고 줄이 삭제된 박스는 제거되며, 손으로 쓴 메모 박스는 그대로 유지됩니다.']],
         ['ver757', '메모 Shift 직선 그리기', ['메모 선을 그리는 중 Shift를 누르고 있으면 시작점부터 현재 포인터 위치까지 직선 미리보기로 바뀝니다. Shift를 누른 채 포인터를 놓으면 해당 선은 직선으로 확정됩니다.']],
         ['ver755', '카메라 삼각형 라벨 위치', ['삼각형 프리뷰 도형은 시작 위쪽 끝, 종료 아래쪽 끝에 그대로 두고, A/B 글자만 대시 표식처럼 프레임 칸 중앙 위치에 맞췄습니다.']],
         ['ver754', '카메라 lane 끝 핸들', ['카메라 시작/끝 빨간 가로 조작선은 카메라란 전체가 아니라 해당 카메라 lane 폭만 쓰도록 했습니다.', '삼각형 프리뷰 표식은 시작 위쪽 끝, 종료 아래쪽 끝 위치로 되돌렸습니다.']],
@@ -3417,6 +3431,10 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver761', '摄影→备注前缀・', ['摄影→备注的填写现在以 ・ 开头（例: <code>・Ⓐ→Ⓑ PAN</code>、<code>・Aセル F.I</code>）。']],
+        ['ver760', '摄影选择UI与示例', ['摄影指示选择 UI 不再显示空白选项，默认改为三角（▲）。摄影栏示例现在同时展示标准 <code>0+01 | 1+00 | A | PAN | B</code> 形式与 FI/FO/OL 目标形式 <code>0+01 | 1+00 | FI | Aセル</code>。']],
+        ['ver759', '摄影默认▲', ['摄影起止标签现在默认显示黑色三角（▲）标记，已移除红框标签样式。如需短线，可在逐行选择 UI 中选择虚线（-）。对白说话人标签仍使用红框。']],
+        ['ver758', '摄影→备注自动填写', ['摄影栏新增「摄影→备注」按钮，可将 <code>0+01 | 1+00 | A | PAN | B</code> 等每条摄影行转换为 <code>Ⓐ→Ⓑ PAN</code>（带圈起止标记＋指示）备注框。再次运行会就地更新自动生成的框并移除已删除行对应的框，手写备注框保持不变。']],
         ['ver757', '备注 Shift 直线绘制', ['绘制备注线条时按住 Shift，会切换为从起点到当前指针位置的直线预览。按住 Shift 松开指针时，该线条会确认为直线。']],
         ['ver755', '摄影三角标记标签位置', ['三角预览图形仍保持在起始上边缘和结束下边缘，A/B 标签改为与短横标记相同的帧单元格居中位置。']],
         ['ver754', '摄影 lane 端点手柄', ['摄影起始/结束红色横向手柄现在只使用对应摄影 lane 的宽度，不再横跨整个摄影区域。', '三角预览标记已恢复到起始上边缘和结束下边缘位置。']],
@@ -4351,7 +4369,7 @@
       const compact = key.replace(/[0-9]+$/g, '');
       if (/(camera|cam|撮影|摄影|카메라)/i.test(raw)) return true;
       if (/(じわ|ジワ|目盛り|目盛|메모리|눈금)/.test(raw)) return true;
-      return /^(fix|pan|qpan|tu|tb|qtb|qtu|sl|follow|tiltup|tiltdown|trackup|trackdown|zoomin|zoomout|zi|zo|fi|fo|fio|ol|wipe|camfollow)$/.test(compact)
+      return /^(fix|pan|qpan|tu|tb|qtb|qtu|sl|follow|fi|fo|fio|ol|wipe)$/.test(compact)
         || /^(fix|pan|qpan|tu|tb|qtb|qtu|sl|follow)/.test(compact);
     }
 
@@ -4359,7 +4377,7 @@
       const normalized = normalizeCameraLayerName(name);
       if (!normalized) return false;
       if (/^(撮影|カメラ|CAMERA|CAM|CAMERAWORK|CAMWORK|CAME?RA)$/.test(normalized)) return true;
-      return /^(PAN|QPAN|TU|TB|QTU|QTB|SL|DTU|DTB|FI|FO|FIO|OL|WIPE|FOLLOW|BOOK|BGSL|BGSLL|BGSLR|TILTUP|TILTDOWN|TRACKUP|TRACKDOWN|ZOOMIN|ZOOMOUT|ZI|ZO|CAMFOLLOW)$/.test(normalized);
+      return /^(PAN|QPAN|TU|TB|QTU|QTB|SL|DTU|DTB|FI|FO|FIO|OL|WIPE|FOLLOW|BOOK|BGSL|BGSLL|BGSLR)$/.test(normalized);
     }
 
     function compareCsvSourceColumnOrder(a, b) {
@@ -10816,17 +10834,13 @@
       select.className = 'camera-directive-select';
       select.setAttribute('aria-label', 'Camera direction line ' + (info.lineIndex + 1));
       select.dataset.lineIndex = String(info.lineIndex);
-      const emptyOption = document.createElement('option');
-      emptyOption.value = '';
-      emptyOption.textContent = '';
-      select.appendChild(emptyOption);
       CAMERA_DIRECTIVE_COMPLETION_OPTIONS.forEach(function(optionValue){
         const option = document.createElement('option');
         option.value = optionValue;
         option.textContent = optionValue;
         select.appendChild(option);
       });
-      select.value = info.currentDirective || '';
+      select.value = info.currentDirective || '▲';
       select.addEventListener('change', function(){
         applyCameraDirectiveCompletion(select.value, select.dataset.lineIndex);
       });
@@ -14143,7 +14157,7 @@
 
     function getCameraMarkerStyle(seg) {
       if (!seg || getCameraSpecialShapeInfo(seg)) return '';
-      return normalizeCameraMarkerToken(seg.previewStyle);
+      return normalizeCameraMarkerToken(seg.previewStyle) || '▲';
     }
 
     function drawCameraFilledTriangle(cx, cy, edge) {
@@ -14402,23 +14416,15 @@
         else {
           const guideTop = rowTop + (cameraConnection.start ? rowH : 0);
           const guideBottom = rowTop + height - (cameraConnection.end && seg.endLabel ? rowH : 0);
-          if (guideBottom > guideTop) line(guideX, guideTop, guideX, guideBottom, cameraMarkerStyle ? '#111' : RED, 1.1);
+          if (guideBottom > guideTop) line(guideX, guideTop, guideX, guideBottom, '#111', 1.1);
         }
         if (!cameraTargetShape && !cameraConnection.start && showsSegmentStart) {
-          if (cameraMarkerStyle) {
-            drawCameraMarkerEndpoint(x, w, rowTop, rowH, seg.lane || 0, cameraLaneCount, cameraMarkerStyle, 'start', seg.label);
-          } else {
-            drawTimelineFirstFrameLabel(x, w, rowTop, rowH, seg.lane || 0, cameraLaneCount, seg.label, { get:function(){ return seg.label || ''; }, set:function(v){ updateManualBlockField('camera', seg.id, 'label', v); } });
-          }
+          drawCameraMarkerEndpoint(x, w, rowTop, rowH, seg.lane || 0, cameraLaneCount, cameraMarkerStyle, 'start', seg.label);
         }
         if (!cameraShape) drawCameraSecondFrameText(block, x, w, seg.lane || 0, cameraLaneCount, seg, { get:function(){ return seg.text || ''; }, set:function(v){ updateManualBlockField('camera', seg.id, 'text', v); } });
         if (!cameraTargetShape && seg.endLabel && showsSegmentEnd) {
           const endRowTop = getOutputRowTop(block, seg.to, 'camera');
-          if (cameraMarkerStyle) {
-            drawCameraMarkerEndpoint(x, w, endRowTop, rowH, seg.lane || 0, cameraLaneCount, cameraMarkerStyle, 'end', seg.endLabel);
-          } else {
-            drawTimelineBoxLabel(x, w, endRowTop, rowH, seg.lane || 0, cameraLaneCount, seg.endLabel, { get:function(){ return seg.endLabel || ''; }, set:function(v){ updateManualBlockField('camera', seg.id, 'endLabel', v); } });
-          }
+          drawCameraMarkerEndpoint(x, w, endRowTop, rowH, seg.lane || 0, cameraLaneCount, cameraMarkerStyle, 'end', seg.endLabel);
         }
         if (showsSegmentStart) addTimelineEdgeHandle(block, rowTop, 'camera', seg, 'from', cameraLaneBounds.x, cameraLaneBounds.w);
         if (showsSegmentEnd) addTimelineEdgeHandle(block, rowTop + height, 'camera', seg, 'to', cameraLaneBounds.x, cameraLaneBounds.w);
@@ -16477,6 +16483,63 @@
       });
       render();
       return true;
+    }
+
+    function circledCameraLabel(value) {
+      const str = String(value == null ? '' : value).trim();
+      if (str.length === 1) {
+        const c = str.charCodeAt(0);
+        if (c >= 65 && c <= 90) return String.fromCharCode(0x24B6 + (c - 65)); // A-Z -> circled
+        if (c >= 97 && c <= 122) return String.fromCharCode(0x24D0 + (c - 97)); // a-z -> circled
+        if (c >= 49 && c <= 57) return String.fromCharCode(0x2460 + (c - 49)); // 1-9 -> circled
+        if (c === 48) return '⓪'; // 0 -> circled
+      }
+      return str ? '(' + str + ')' : '';
+    }
+
+    function buildCameraMemoText(parsed) {
+      if (!parsed) return '';
+      const text = String(parsed.text || '').trim();
+      let core = '';
+      // FI/FO/OL target form: directive sits in label, target in text, no end label.
+      if (!parsed.endLabel && isCameraTargetShapeDirective(parsed.label)) {
+        const directive = normalizeCameraDirectiveCompletion(parsed.label) || String(parsed.label || '').trim().toUpperCase();
+        const dotted = ({ FI:'F.I', FO:'F.O', OL:'O.L' })[directive] || directive;
+        core = (text ? text + ' ' + dotted : dotted).trim();
+      } else {
+        const start = circledCameraLabel(parsed.label);
+        const end = circledCameraLabel(parsed.endLabel);
+        const arrow = (start || end) ? (start + '→' + end) : '';
+        core = (arrow ? (arrow + (text ? ' ' + text : '')) : text).trim();
+      }
+      return core ? '・' + core : '';
+    }
+
+    function writeCameraLinesToMemo() {
+      const cameraEl = document.getElementById('cameraManual');
+      if (!cameraEl) return;
+      const pageIndex = Math.max(0, Number(state.currentPreviewPage || 0));
+      const list = getTextMemoPageData(pageIndex);
+      const parsedLines = parseManualBlocks(cameraEl.value);
+      const wanted = new Set();
+      parsedLines.forEach(function(parsed){
+        const memoText = buildCameraMemoText(parsed);
+        if (!memoText) return;
+        const key = 'cam-' + parsed.lineIndex;
+        wanted.add(key);
+        const existing = list.find(function(item){ return item && item.auto && item.srcKey === key; });
+        if (existing) {
+          existing.text = memoText;
+          existing.rich = [];
+        } else {
+          const memo = createDefaultTextMemo(pageIndex, null, null, { text:memoText, color:'#111111' });
+          if (memo) { memo.auto = true; memo.srcKey = key; }
+        }
+      });
+      for (let i = list.length - 1; i >= 0; i--) {
+        if (list[i] && list[i].auto && !wanted.has(list[i].srcKey)) list.splice(i, 1);
+      }
+      render();
     }
 
     function closeTextMemoContextMenu() {
@@ -21309,6 +21372,7 @@
       });
     });
     memoModeBtn.addEventListener('click', toggleMemoMode);
+    if (cameraToMemoBtn) cameraToMemoBtn.addEventListener('click', writeCameraLinesToMemo);
     memoUndoBtn.addEventListener('click', memoUndo);
     memoRedoBtn.addEventListener('click', memoRedo);
     if (dougaSheetBtn) dougaSheetBtn.addEventListener('click', refreshDougaSheetFromCells);
