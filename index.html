@@ -2021,7 +2021,7 @@
 
       <div class="card">
         <h3 data-ui-text="cameraBlocksTitle">カメラ欄</h3>
-        <label for="cameraManual" data-ui-text="cameraFormatLabel">Format: 0+01 | 1+00 | A | PAN | B  /  0+01 | 1+00 | FI | Aセル  /  0+01 | 1+00 | OL | A1 | A2</label>
+        <label for="cameraManual" data-ui-text="cameraFormatLabel">Format: 0+01 | 1+00 | A | PAN | B</label>
         <textarea id="cameraManual"></textarea>
         <div id="cameraDirectiveCompleter" class="camera-directive-completer hidden"></div>
         <button id="cameraToMemoBtn" type="button" class="memo-btn" data-ui-text="cameraToMemoBtn">カメラ→メモ</button>
@@ -2236,7 +2236,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '764';
+    const APP_VERSION = '765';
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
     const PAPER_HEADER_TEMPLATE_KNOWN_MIN_SCORE = 0.84;
@@ -2632,7 +2632,7 @@
         languageLabel:'Language', headerCardTitle:'Header', episodeLabel:'Ep.no', titleLabel:'Title', cutNoLabel:'Cut.no', secondsLabel:'Duration sec', framesLabel:'Duration frame', authorLabel:'name', pageLabel:'Page',
         originalCellTitle:'Sheet Input', inputModeLabel:'Input Mode', inputModeTextCommands:'Text Commands', inputModeCsv:'CSV Upload', csvSettingsExportBtn:'Save Project', shakuEditBtn:'Length Edit', shakuEditHint:'Drag a blue frame line to select a range.', shakuCutBtn:'Cut', shakuStretchBtn:'Extend', shakuSelectedLabel:'Selected', shakuUndoBtn:'Undo', shakuRedoBtn:'Redo', shakuFlashCut:'Cut applied', shakuFlashStretch:'Extend applied', dougaSheetCreate:'Make Douga', dougaSheetRefresh:'Refresh Douga', dougaSheetTitle:'Generate a read-only douga sheet from Cell numbers and dot marks', cellReadabilityTitle:'Large Cell text',
         textCommandsLabel:'Text Commands', csvFileLabel:'CSV File', csvCommandEditLabel:'Editable Commands from CSV',
-        dialogBlocksTitle:'Dialog Area', dialogFormatLabel:'Format: 0+01 | 1+00 | SPEAKER | SAMPLE', cameraBlocksTitle:'Camera Area', cameraFormatLabel:'Format: 0+01 | 1+00 | A | PAN | B  /  0+01 | 1+00 | FI | Aセル  /  0+01 | 1+00 | OL | A1 | A2',
+        dialogBlocksTitle:'Dialog Area', dialogFormatLabel:'Format: 0+01 | 1+00 | SPEAKER | SAMPLE', cameraBlocksTitle:'Camera Area', cameraFormatLabel:'Format: 0+01 | 1+00 | A | PAN | B',
         sheetPreviewTitle:'Sheet Preview', chooseExportDirBtn:'Folder', downloadAllBtn:'Output', memoModeBtn:'Memo Mode', cameraToMemoBtn:'Camera→Memo', memoUndoBtn:'Undo', memoRedoBtn:'Redo', memoPenLabel:'Pen', memoEraserLabel:'Eraser', memoEraserButton:'Eraser',
         createdByLabel:'Created by', settingsProjectLabel:'Project', settingsExportBtn:'Save', settingsFileBtn:'Load', settingsImportBtn:'Path', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'Settings JSON', settingsSelectEmpty:'Select settings', settingsSelectNoSettings:'No settings JSON', textMemoApplyBtn:'Apply', textMemoMenuAdd:'Add text box', textMemoMenuDelete:'Delete text box', textMemoMenuEditMode:'Text box position edit', textMemoMenuEditDone:'Finish text box edit', textMemoMenuAutoArrange:'Auto arrange text boxes', textMemoInitialHint:'Right-click to add or edit text boxes.', clearSheetDataBtn:'Reset All', hideSidebarBtn:'Hide UI', showSidebarBtn:'Show UI', feedbackHeading:'Feedback', feedbackFormLink:'Form', feedbackPlaceholder:'Bug report or request', feedbackHint:'Write anything you know: symptom, reproduction steps, CSV/PSD/image format, expected result, actual result, browser/OS.', feedbackSendBtn:'Send', feedbackEmpty:'Write a message first.', feedbackSending:'Sending...', feedbackSent:'Sent.', feedbackFailed:'Could not send. Open the form link.', shortcutSummaryTopHint:''
       },
@@ -2640,7 +2640,7 @@
         languageLabel:'言語', headerCardTitle:'ヘッダー', episodeLabel:'話数', titleLabel:'タイトル', cutNoLabel:'カット番号', secondsLabel:'尺 秒', framesLabel:'尺 コマ', authorLabel:'名前', pageLabel:'ページ',
         originalCellTitle:'シート入力', inputModeLabel:'入力モード', inputModeTextCommands:'テキストコマンド', inputModeCsv:'CSV読込', csvSettingsExportBtn:'プロジェクト保存', shakuEditBtn:'尺編集(演出向け)', shakuEditHint:'青いフレーム線をドラッグして尺を選択', shakuCutBtn:'切る', shakuStretchBtn:'伸ばす', shakuSelectedLabel:'選択', shakuUndoBtn:'取り消し', shakuRedoBtn:'やり直し', shakuFlashCut:'切る 反映', shakuFlashStretch:'伸ばす 反映', dougaSheetCreate:'動画作成', dougaSheetRefresh:'動画更新', dougaSheetTitle:'Cell番号と動画点から編集不可の動画欄を生成', cellReadabilityTitle:'Cell文字を大きく表示',
         textCommandsLabel:'テキストコマンド', csvFileLabel:'CSVファイル', csvCommandEditLabel:'CSVから生成された編集可能コマンド',
-        dialogBlocksTitle:'セリフ欄', dialogFormatLabel:'形式: 0+01 | 1+00 | 話者 | セリフ例', cameraBlocksTitle:'カメラ欄', cameraFormatLabel:'形式: 0+01 | 1+00 | A | PAN | B  /  0+01 | 1+00 | FI | Aセル  /  0+01 | 1+00 | OL | A1 | A2',
+        dialogBlocksTitle:'セリフ欄', dialogFormatLabel:'形式: 0+01 | 1+00 | 話者 | セリフ例', cameraBlocksTitle:'カメラ欄', cameraFormatLabel:'形式: 0+01 | 1+00 | A | PAN | B',
         sheetPreviewTitle:'シートプレビュー', chooseExportDirBtn:'保存先', downloadAllBtn:'出力', memoModeBtn:'メモモード', cameraToMemoBtn:'カメラ→メモ', memoUndoBtn:'取り消し', memoRedoBtn:'やり直し', memoPenLabel:'ペン', memoEraserLabel:'消しゴム', memoEraserButton:'消しゴム',
         createdByLabel:'作成', settingsProjectLabel:'プロジェクト', settingsExportBtn:'保存', settingsFileBtn:'読込', settingsImportBtn:'読込先', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'設定JSON', settingsSelectEmpty:'設定選択', settingsSelectNoSettings:'設定JSONなし', textMemoApplyBtn:'適用', textMemoMenuAdd:'テキスト枠を追加', textMemoMenuDelete:'テキスト枠を削除', textMemoMenuEditMode:'テキスト枠位置編集', textMemoMenuEditDone:'テキスト枠編集終了', textMemoMenuAutoArrange:'テキスト枠を自動整列', textMemoInitialHint:'右クリックでテキスト枠を追加・編集できます。', clearSheetDataBtn:'全体初期化', hideSidebarBtn:'UIを隠す', showSidebarBtn:'UIを表示', feedbackHeading:'報告', feedbackFormLink:'Form', feedbackPlaceholder:'不具合や要望を書く', feedbackHint:'わかる範囲で記入してください: 症状、再現手順、使用したCSV/PSD/画像形式、期待した結果、実際の結果、ブラウザ/OS。', feedbackSendBtn:'送信', feedbackEmpty:'内容を書いてください。', feedbackSending:'送信中...', feedbackSent:'送信しました。', feedbackFailed:'送信できません。Formリンクから送ってください。', shortcutSummaryTopHint:''
       },
@@ -2648,7 +2648,7 @@
         languageLabel:'언어', headerCardTitle:'헤더', episodeLabel:'화수', titleLabel:'제목', cutNoLabel:'컷 번호', secondsLabel:'길이 초', framesLabel:'길이 프레임', authorLabel:'이름', pageLabel:'페이지',
         originalCellTitle:'시트 입력', inputModeLabel:'입력 방식', inputModeTextCommands:'텍스트 커맨드', inputModeCsv:'CSV 읽기', csvSettingsExportBtn:'프로젝트 저장', shakuEditBtn:'연출용 편집툴', shakuEditHint:'파란 프레임선을 드래그해 길이를 선택', shakuCutBtn:'자르기', shakuStretchBtn:'늘리기', shakuSelectedLabel:'선택', shakuUndoBtn:'되돌리기', shakuRedoBtn:'다시 실행', shakuFlashCut:'자르기 반영', shakuFlashStretch:'늘리기 반영', dougaSheetCreate:'동화시트 작성', dougaSheetRefresh:'동화시트 갱신', dougaSheetTitle:'셀 번호와 동화점으로 수정 불가능한 동화칸 생성', cellReadabilityTitle:'셀 글자 크게 보기',
         textCommandsLabel:'텍스트 커맨드', csvFileLabel:'CSV 파일', csvCommandEditLabel:'CSV에서 생성된 편집 가능 커맨드',
-        dialogBlocksTitle:'대사란', dialogFormatLabel:'형식: 0+01 | 1+00 | 화자 | 예시', cameraBlocksTitle:'카메라란', cameraFormatLabel:'형식: 0+01 | 1+00 | A | PAN | B  /  0+01 | 1+00 | FI | Aセル  /  0+01 | 1+00 | OL | A1 | A2',
+        dialogBlocksTitle:'대사란', dialogFormatLabel:'형식: 0+01 | 1+00 | 화자 | 예시', cameraBlocksTitle:'카메라란', cameraFormatLabel:'형식: 0+01 | 1+00 | A | PAN | B',
         sheetPreviewTitle:'시트 프리뷰', chooseExportDirBtn:'경로지정', downloadAllBtn:'출력', memoModeBtn:'메모 모드', cameraToMemoBtn:'카메라→메모', memoUndoBtn:'되돌리기', memoRedoBtn:'다시 실행', memoPenLabel:'펜', memoEraserLabel:'지우개', memoEraserButton:'지우개',
         createdByLabel:'제작', settingsProjectLabel:'프로젝트', settingsExportBtn:'저장', settingsFileBtn:'불러오기', settingsImportBtn:'경로지정', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'설정 JSON', settingsSelectEmpty:'설정 선택', settingsSelectNoSettings:'설정 JSON 없음', textMemoApplyBtn:'적용', textMemoMenuAdd:'텍스트 박스 추가', textMemoMenuDelete:'텍스트 박스 삭제', textMemoMenuEditMode:'텍스트 박스 위치 편집', textMemoMenuEditDone:'텍스트 박스 편집 종료', textMemoMenuAutoArrange:'텍스트 박스 자동 정렬', textMemoInitialHint:'우클릭으로 텍스트 박스를 추가하거나 편집할 수 있습니다.', clearSheetDataBtn:'전체 초기화', hideSidebarBtn:'UI 숨기기', showSidebarBtn:'UI 펼치기', feedbackHeading:'문의', feedbackFormLink:'Form', feedbackPlaceholder:'버그 내용이나 개선 요청', feedbackHint:'가능하면 아는 것만 적어주세요: 증상, 재현 순서, 사용한 CSV/PSD/이미지 형식, 기대한 결과, 실제 결과, 브라우저/OS.', feedbackSendBtn:'보내기', feedbackEmpty:'내용을 먼저 입력하세요.', feedbackSending:'전송 중...', feedbackSent:'전송했습니다.', feedbackFailed:'전송하지 못했습니다. Form 링크로 보내주세요.', shortcutSummaryTopHint:''
       },
@@ -2656,7 +2656,7 @@
         languageLabel:'语言', headerCardTitle:'页眉', episodeLabel:'集数', titleLabel:'标题', cutNoLabel:'镜头编号', secondsLabel:'时长 秒', framesLabel:'时长 帧', authorLabel:'姓名', pageLabel:'页码',
         originalCellTitle:'表格输入', inputModeLabel:'输入模式', inputModeTextCommands:'文本命令', inputModeCsv:'CSV 导入', csvSettingsExportBtn:'保存项目', shakuEditBtn:'时长编辑', shakuEditHint:'拖动蓝色帧线选择范围', shakuCutBtn:'切除', shakuStretchBtn:'延长', shakuSelectedLabel:'选择', shakuUndoBtn:'撤销', shakuRedoBtn:'重做', shakuFlashCut:'切除已应用', shakuFlashStretch:'延长已应用', dougaSheetCreate:'生成动画栏', dougaSheetRefresh:'刷新动画栏', dougaSheetTitle:'由 Cell 编号和动画点生成只读动画栏', cellReadabilityTitle:'放大 Cell 文字',
         textCommandsLabel:'文本命令', csvFileLabel:'CSV 文件', csvCommandEditLabel:'从 CSV 生成的可编辑命令',
-        dialogBlocksTitle:'对白栏', dialogFormatLabel:'格式: 0+01 | 1+00 | 说话人 | 示例', cameraBlocksTitle:'摄影机栏', cameraFormatLabel:'格式: 0+01 | 1+00 | A | PAN | B  /  0+01 | 1+00 | FI | Aセル  /  0+01 | 1+00 | OL | A1 | A2',
+        dialogBlocksTitle:'对白栏', dialogFormatLabel:'格式: 0+01 | 1+00 | 说话人 | 示例', cameraBlocksTitle:'摄影机栏', cameraFormatLabel:'格式: 0+01 | 1+00 | A | PAN | B',
         sheetPreviewTitle:'Sheet 预览', chooseExportDirBtn:'保存处', downloadAllBtn:'输出', memoModeBtn:'备注模式', cameraToMemoBtn:'摄影→备注', memoUndoBtn:'撤销', memoRedoBtn:'重做', memoPenLabel:'笔', memoEraserLabel:'橡皮', memoEraserButton:'橡皮',
         createdByLabel:'制作', settingsProjectLabel:'项目', settingsExportBtn:'保存', settingsFileBtn:'导入', settingsImportBtn:'路径', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'设置 JSON', settingsSelectEmpty:'选择设置', settingsSelectNoSettings:'无设置 JSON', textMemoApplyBtn:'应用', textMemoMenuAdd:'添加文字框', textMemoMenuDelete:'删除文字框', textMemoMenuEditMode:'文字框位置编辑', textMemoMenuEditDone:'结束文字框编辑', textMemoMenuAutoArrange:'自动排列文字框', textMemoInitialHint:'可通过右键添加或编辑文字框。', clearSheetDataBtn:'全部重置', hideSidebarBtn:'隐藏 UI', showSidebarBtn:'显示 UI', feedbackHeading:'反馈', feedbackFormLink:'Form', feedbackPlaceholder:'错误报告或改进建议', feedbackHint:'请尽量填写已知信息: 症状、复现步骤、使用的 CSV/PSD/图片格式、期望结果、实际结果、浏览器/OS。', feedbackSendBtn:'发送', feedbackEmpty:'请先输入内容。', feedbackSending:'发送中...', feedbackSent:'已发送。', feedbackFailed:'发送失败。请使用 Form 链接。', shortcutSummaryTopHint:''
       }
@@ -3131,6 +3131,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver765', 'O.L by cel (中O.L)', ['Within-cut O.L now names the cel: write it in the standard form <code>0+05 | 1+00 | A1 | AセルOL | A2</code> (middle text ending in OL is read as O.L). The lane shows the bowtie with A1 / AセルO.L / A2, and Camera→Memo writes <code>・AセルO.L A1 ⋈ A2</code>. Removed the slash-joined examples from the format hint.']],
         ['ver764', 'Within-cut O.L (中O.L)', ['Camera lines now support a within-cut O.L between two materials: <code>0+05 | 1+00 | OL | A1 | A2</code> draws the bowtie marker labeled A1/O.L/A2, and Camera→Memo writes <code>・A1 ⋈ A2</code>. Works for cut-to-cut O.L too (e.g. c121/c122).']],
         ['ver763', 'Save Project wording', ['The CSV-section button that saves the project (the same action as the top Save) is now labeled Save Project instead of Export Settings JSON, and the top Project label is larger and darker for readability.']],
         ['ver762', 'Project save label', ['The top settings controls are now labeled Project, and the export button reads Save instead of JSON/Export (the file holds the whole working sheet). Wording only — the save/load behavior is unchanged.']],
@@ -3233,6 +3234,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver765', 'セル名つきO.L（中O.L）', ['カット内O.Lでセル名を表せるようになりました。標準形式 <code>0+05 | 1+00 | A1 | AセルOL | A2</code>（中央がOLで終わるとO.Lと解釈）で書くと、レーンは砂時計＋A1／AセルO.L／A2、カメラ→メモは <code>・AセルO.L A1 ⋈ A2</code> を記入します。形式ヒントのスラッシュ併記例は削除しました。']],
         ['ver764', 'カット内O.L（中O.L）', ['カメラ行で2素材のカット内O.Lに対応しました。<code>0+05 | 1+00 | OL | A1 | A2</code> で砂時計マーカーをA1/O.L/A2付きで描画し、カメラ→メモが <code>・A1 ⋈ A2</code> を記入します。c121/c122 のようなカットつなぎO.Lにも対応します。']],
         ['ver763', 'プロジェクト保存の表記と視認性', ['プロジェクトを保存するCSV欄のボタン（上部の保存と同じ動作）を「JSON設定出力」から「プロジェクト保存」に変更し、上部の「プロジェクト」ラベルを大きく濃くして見やすくしました。']],
         ['ver762', 'プロジェクト保存の表記', ['上部の設定操作のラベルを「プロジェクト」に、出力ボタンを JSON/出力 から「保存」に変更しました（このファイルはシート全体を保持します）。表記のみで、保存/読込の動作は変わりません。']],
@@ -3335,6 +3337,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver765', '셀명 포함 O.L (中O.L)', ['컷 내 O.L에 셀명을 표현할 수 있습니다. 표준 형식 <code>0+05 | 1+00 | A1 | AセルOL | A2</code>(가운데가 OL로 끝나면 O.L로 인식)로 쓰면 레인은 모래시계+A1/AセルO.L/A2, 카메라→메모는 <code>・AセルO.L A1 ⋈ A2</code>를 기입합니다. 형식 힌트의 슬래시 병기 예시는 제거했습니다.']],
         ['ver764', '컷 내 O.L (中O.L)', ['카메라 줄에서 두 소재의 컷 내 O.L을 지원합니다. <code>0+05 | 1+00 | OL | A1 | A2</code>가 모래시계 마커를 A1/O.L/A2와 함께 그리고, 카메라→메모가 <code>・A1 ⋈ A2</code>를 기입합니다. c121/c122 같은 컷 전환 O.L에도 동작합니다.']],
         ['ver763', '프로젝트 저장 표기·가독성', ['프로젝트를 저장하는 CSV란 버튼(상단 저장과 동일 동작)을 「설정 JSON 내보내기」에서 「프로젝트 저장」으로 바꾸고, 상단 「프로젝트」 라벨을 더 크고 진하게 해 가독성을 높였습니다.']],
         ['ver762', '프로젝트 저장 표기', ['상단 설정 조작의 라벨을 「프로젝트」로, 내보내기 버튼을 JSON/내보내기 대신 「저장」으로 바꿨습니다(이 파일은 시트 전체를 담습니다). 표기만 바뀌며 저장/불러오기 동작은 그대로입니다.']],
@@ -3437,6 +3440,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver765', '带素材名 O.L（中O.L）', ['镜头内 O.L 现在可表示素材名。用标准格式 <code>0+05 | 1+00 | A1 | AセルOL | A2</code>（中间以 OL 结尾即识别为 O.L）书写时，栏内显示沙漏＋A1／AセルO.L／A2，摄影→备注写入 <code>・AセルO.L A1 ⋈ A2</code>。已移除格式提示中的斜杠并列示例。']],
         ['ver764', '镜头内 O.L（中O.L）', ['摄影行支持两素材的镜头内 O.L。<code>0+05 | 1+00 | OL | A1 | A2</code> 会绘制沙漏标记并带 A1/O.L/A2 标签，摄影→备注写入 <code>・A1 ⋈ A2</code>。同样适用于 c121/c122 等镜头衔接 O.L。']],
         ['ver763', '保存项目标签与可读性', ['保存项目的 CSV 区按钮（与顶部保存相同）由「导出设置 JSON」改为「保存项目」，并将顶部「项目」标签放大加深以便阅读。']],
         ['ver762', '项目保存标签', ['顶部设置操作的标签改为「项目」，导出按钮由 JSON/导出 改为「保存」（该文件保存整张表）。仅文字变更，保存/加载行为不变。']],
@@ -14336,6 +14340,37 @@
       });
     }
 
+    function getWithinCutOlInfo(seg) {
+      // New within-cut O.L form: "<cel>OL" in the middle text, A1/A2 states in start/end labels.
+      if (!seg || isCameraTargetShapeDirective(seg.label)) return null;
+      const text = String(seg.text || '').trim();
+      if (!text) return null;
+      const m = text.normalize('NFKC').match(/^(.*?)\s*O\.?\s*L$/i);
+      if (!m) return null;
+      return { cel:String(m[1] || '').trim(), from:String(seg.label || '').trim(), to:String(seg.endLabel || '').trim() };
+    }
+
+    function drawWithinCutOlLabels(areaX, areaW, layout, seg, info) {
+      if (!layout || !info) return;
+      const textX = Math.min(areaX + areaW - 4, Math.max(areaX + 4, layout.x2 - 10));
+      if (info.from) {
+        text(textX, layout.y1 + 11, info.from, 14, 'start', '800', '#111', {
+          get:function(){ return seg.label || ''; },
+          set:function(v){ updateManualBlockField('camera', seg.id, 'label', v); }
+        });
+      }
+      text(textX, layout.midY, (info.cel || '') + 'O.L', 13, 'start', '800', '#111', {
+        get:function(){ return seg.text || ''; },
+        set:function(v){ updateManualBlockField('camera', seg.id, 'text', v); }
+      });
+      if (info.to) {
+        text(textX, layout.y2 - 11, info.to, 14, 'start', '800', '#111', {
+          get:function(){ return seg.endLabel || ''; },
+          set:function(v){ updateManualBlockField('camera', seg.id, 'endLabel', v); }
+        });
+      }
+    }
+
     function addTimelineEdgeHandle(block, rowTop, blockType, seg, edge, areaX, areaW) {
       if (!seg || seg.id === undefined || seg.id === null) return;
       const hitX = Number.isFinite(areaX) ? areaX : block.blockX;
@@ -14429,10 +14464,15 @@
         const cameraShape = cameraShapeInfo ? cameraShapeInfo.shape : '';
         const cameraTargetShape = isCameraTargetShapeSegment(seg, cameraShapeInfo);
         const cameraMarkerStyle = getCameraMarkerStyle(seg);
+        const withinCutOl = getWithinCutOlInfo(seg);
         const cameraConnection = getCameraConnectionState(seg, cameraSegs);
         if (!cameraConnection.start && showsSegmentStart) line(cameraLaneBounds.x, rowTop, cameraLaneBounds.x + cameraLaneBounds.w, rowTop, RED, 2.6);
         if (!cameraConnection.end && showsSegmentEnd) line(cameraLaneBounds.x, rowTop + height, cameraLaneBounds.x + cameraLaneBounds.w, rowTop + height, RED, 2.6);
-        if (cameraShape) {
+        if (withinCutOl) {
+          const olLayout = renderCameraSpecialShape('ol', x, w, rowTop, height, seg.lane || 0, cameraLaneCount);
+          if (olLayout) drawWithinCutOlLabels(x, w, olLayout, seg, withinCutOl);
+        }
+        else if (cameraShape) {
           const cameraShapeLayout = renderCameraSpecialShape(cameraShape, x, w, rowTop, height, seg.lane || 0, cameraLaneCount);
           drawCameraTargetShapeText(x, w, cameraShapeLayout, seg, cameraShapeInfo);
         }
@@ -14441,11 +14481,11 @@
           const guideBottom = rowTop + height - (cameraConnection.end && seg.endLabel ? rowH : 0);
           if (guideBottom > guideTop) line(guideX, guideTop, guideX, guideBottom, '#111', 1.1);
         }
-        if (!cameraTargetShape && !cameraConnection.start && showsSegmentStart) {
+        if (!withinCutOl && !cameraTargetShape && !cameraConnection.start && showsSegmentStart) {
           drawCameraMarkerEndpoint(x, w, rowTop, rowH, seg.lane || 0, cameraLaneCount, cameraMarkerStyle, 'start', seg.label);
         }
-        if (!cameraShape) drawCameraSecondFrameText(block, x, w, seg.lane || 0, cameraLaneCount, seg, { get:function(){ return seg.text || ''; }, set:function(v){ updateManualBlockField('camera', seg.id, 'text', v); } });
-        if (!cameraTargetShape && seg.endLabel && showsSegmentEnd) {
+        if (!withinCutOl && !cameraShape) drawCameraSecondFrameText(block, x, w, seg.lane || 0, cameraLaneCount, seg, { get:function(){ return seg.text || ''; }, set:function(v){ updateManualBlockField('camera', seg.id, 'text', v); } });
+        if (!withinCutOl && !cameraTargetShape && seg.endLabel && showsSegmentEnd) {
           const endRowTop = getOutputRowTop(block, seg.to, 'camera');
           drawCameraMarkerEndpoint(x, w, endRowTop, rowH, seg.lane || 0, cameraLaneCount, cameraMarkerStyle, 'end', seg.endLabel);
         }
@@ -16523,21 +16563,26 @@
     function buildCameraMemoText(parsed) {
       if (!parsed) return '';
       const text = String(parsed.text || '').trim();
+      const label = String(parsed.label || '').trim();
       const endLabel = String(parsed.endLabel || '').trim();
       let core = '';
-      // FI/FO/OL target form: directive sits in the label position.
-      if (isCameraTargetShapeDirective(parsed.label)) {
-        const directive = normalizeCameraDirectiveCompletion(parsed.label) || String(parsed.label || '').trim().toUpperCase();
+      // Within-cut O.L: cel+OL in the middle (e.g. "AセルOL"), states in start/end labels → AセルO.L A1 ⋈ A2.
+      const midOl = !isCameraTargetShapeDirective(label) ? text.normalize('NFKC').match(/^(.*?)\s*O\.?\s*L$/i) : null;
+      if (midOl) {
+        const celOl = String(midOl[1] || '').trim() + 'O.L';
+        core = (label && endLabel) ? (celOl + ' ' + label + ' ⋈ ' + endLabel) : celOl;
+      } else if (isCameraTargetShapeDirective(label)) {
+        // Directive in the label position: FI/FO target form, or legacy OL | A1 | A2.
+        const directive = normalizeCameraDirectiveCompletion(label) || label.toUpperCase();
         if (directive === 'OL') {
-          // Within-cut O.L (中O.L): two materials A1 ⋈ A2 (cut-to-cut: c121 ⋈ c122).
-          core = endLabel ? (text + ' ⋈ ' + endLabel) : (text ? text + ' O.L' : 'O.L');
+          core = endLabel ? ('O.L ' + text + ' ⋈ ' + endLabel) : (text ? text + ' O.L' : 'O.L');
         } else {
           const dotted = ({ FI:'F.I', FO:'F.O' })[directive] || directive;
           core = (text ? text + ' ' + dotted : dotted).trim();
         }
       } else {
-        const start = circledCameraLabel(parsed.label);
-        const end = circledCameraLabel(parsed.endLabel);
+        const start = circledCameraLabel(label);
+        const end = circledCameraLabel(endLabel);
         const arrow = (start || end) ? (start + '→' + end) : '';
         core = (arrow ? (arrow + (text ? ' ' + text : '')) : text).trim();
       }
