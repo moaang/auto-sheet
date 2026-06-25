@@ -2228,7 +2228,7 @@
     const DEFAULT_DIALOG_SAMPLE_LINE = '0+01 | 1+00 | SPEAKER | SAMPLE';
     const DEFAULT_CAMERA_SAMPLE_LINE = [
       '0+01 | 1+00 | A | PAN | B',
-      '0+01 | 1+00 | FI | Aセル  /  0+01 | 1+00 | OL | A1 | A2'
+      '0+05 | 1+00 | A1 | AセルOL | A2'
     ].join('\n');
     const CAMERA_DIRECTIVE_COMPLETION_OPTIONS = ['▲', '-', 'FI', 'FO', 'OL'];
     const CAMERA_TARGET_SHAPE_DIRECTIVE_SET = new Set(['FI', 'FO', 'OL']);
@@ -2236,7 +2236,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '765';
+    const APP_VERSION = '766';
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
     const PAPER_HEADER_TEMPLATE_KNOWN_MIN_SCORE = 0.84;
@@ -3131,6 +3131,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver766', 'Fix camera sample slash', ['Fixed the default Camera Area sample text that wrongly contained a slash-joined OL example; it now loads two clean lines (PAN and the within-cut O.L form).']],
         ['ver765', 'O.L by cel (中O.L)', ['Within-cut O.L now names the cel: write it in the standard form <code>0+05 | 1+00 | A1 | AセルOL | A2</code> (middle text ending in OL is read as O.L). The lane shows the bowtie with A1 / AセルO.L / A2, and Camera→Memo writes <code>・AセルO.L A1 ⋈ A2</code>. Removed the slash-joined examples from the format hint.']],
         ['ver764', 'Within-cut O.L (中O.L)', ['Camera lines now support a within-cut O.L between two materials: <code>0+05 | 1+00 | OL | A1 | A2</code> draws the bowtie marker labeled A1/O.L/A2, and Camera→Memo writes <code>・A1 ⋈ A2</code>. Works for cut-to-cut O.L too (e.g. c121/c122).']],
         ['ver763', 'Save Project wording', ['The CSV-section button that saves the project (the same action as the top Save) is now labeled Save Project instead of Export Settings JSON, and the top Project label is larger and darker for readability.']],
@@ -3234,6 +3235,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver766', 'カメラ例のスラッシュ修正', ['カメラ欄の初期サンプルに誤って入っていたスラッシュ併記のOL例を修正し、2行のクリーンな例（PANとカット内O.L形式）を読み込むようにしました。']],
         ['ver765', 'セル名つきO.L（中O.L）', ['カット内O.Lでセル名を表せるようになりました。標準形式 <code>0+05 | 1+00 | A1 | AセルOL | A2</code>（中央がOLで終わるとO.Lと解釈）で書くと、レーンは砂時計＋A1／AセルO.L／A2、カメラ→メモは <code>・AセルO.L A1 ⋈ A2</code> を記入します。形式ヒントのスラッシュ併記例は削除しました。']],
         ['ver764', 'カット内O.L（中O.L）', ['カメラ行で2素材のカット内O.Lに対応しました。<code>0+05 | 1+00 | OL | A1 | A2</code> で砂時計マーカーをA1/O.L/A2付きで描画し、カメラ→メモが <code>・A1 ⋈ A2</code> を記入します。c121/c122 のようなカットつなぎO.Lにも対応します。']],
         ['ver763', 'プロジェクト保存の表記と視認性', ['プロジェクトを保存するCSV欄のボタン（上部の保存と同じ動作）を「JSON設定出力」から「プロジェクト保存」に変更し、上部の「プロジェクト」ラベルを大きく濃くして見やすくしました。']],
@@ -3337,6 +3339,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver766', '카메라 예시 슬래시 수정', ['카메라란 기본 샘플에 잘못 들어간 슬래시 병기 OL 예시를 수정해, 깨끗한 2줄(PAN과 컷 내 O.L 형식)을 불러오도록 했습니다.']],
         ['ver765', '셀명 포함 O.L (中O.L)', ['컷 내 O.L에 셀명을 표현할 수 있습니다. 표준 형식 <code>0+05 | 1+00 | A1 | AセルOL | A2</code>(가운데가 OL로 끝나면 O.L로 인식)로 쓰면 레인은 모래시계+A1/AセルO.L/A2, 카메라→메모는 <code>・AセルO.L A1 ⋈ A2</code>를 기입합니다. 형식 힌트의 슬래시 병기 예시는 제거했습니다.']],
         ['ver764', '컷 내 O.L (中O.L)', ['카메라 줄에서 두 소재의 컷 내 O.L을 지원합니다. <code>0+05 | 1+00 | OL | A1 | A2</code>가 모래시계 마커를 A1/O.L/A2와 함께 그리고, 카메라→메모가 <code>・A1 ⋈ A2</code>를 기입합니다. c121/c122 같은 컷 전환 O.L에도 동작합니다.']],
         ['ver763', '프로젝트 저장 표기·가독성', ['프로젝트를 저장하는 CSV란 버튼(상단 저장과 동일 동작)을 「설정 JSON 내보내기」에서 「프로젝트 저장」으로 바꾸고, 상단 「프로젝트」 라벨을 더 크고 진하게 해 가독성을 높였습니다.']],
@@ -3440,6 +3443,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver766', '修复摄影示例斜杠', ['修复了摄影栏默认示例中误含的斜杠并列 OL 示例，现在加载两行干净示例（PAN 与镜头内 O.L 形式）。']],
         ['ver765', '带素材名 O.L（中O.L）', ['镜头内 O.L 现在可表示素材名。用标准格式 <code>0+05 | 1+00 | A1 | AセルOL | A2</code>（中间以 OL 结尾即识别为 O.L）书写时，栏内显示沙漏＋A1／AセルO.L／A2，摄影→备注写入 <code>・AセルO.L A1 ⋈ A2</code>。已移除格式提示中的斜杠并列示例。']],
         ['ver764', '镜头内 O.L（中O.L）', ['摄影行支持两素材的镜头内 O.L。<code>0+05 | 1+00 | OL | A1 | A2</code> 会绘制沙漏标记并带 A1/O.L/A2 标签，摄影→备注写入 <code>・A1 ⋈ A2</code>。同样适用于 c121/c122 等镜头衔接 O.L。']],
         ['ver763', '保存项目标签与可读性', ['保存项目的 CSV 区按钮（与顶部保存相同）由「导出设置 JSON」改为「保存项目」，并将顶部「项目」标签放大加深以便阅读。']],
