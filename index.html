@@ -181,7 +181,7 @@
       margin-left: auto;
       position: relative;
       max-width: 326px;
-      padding: 3px 4px 3px 31px;
+      padding: 3px 4px;
       border: 1px solid var(--soft);
       border-radius: 11px;
       background: rgba(250,250,250,.72);
@@ -1842,15 +1842,12 @@
     html.pasted-image-dragging, html.pasted-image-dragging body, html.layer-tag-dragging, html.layer-tag-dragging body { overscroll-behavior: none; -webkit-user-select: none; user-select: none; }
     /* ver511 top JSON controls: text label + grey outline group, not a button-like prefix */
     .settings-json-prefix {
-      position: absolute;
-      left: 7px;
-      top: 50%;
-      transform: translateY(-50%);
+      display: inline-flex;
+      align-items: center;
       height: auto;
-      display: inline;
       padding: 0;
+      margin-right: 1px;
       border: 0;
-      border-radius: 0;
       background: transparent;
       color: var(--muted);
       font-size: 9px;
@@ -1882,7 +1879,7 @@
           </select>
         </div>
         <div class="settings-io-wrap" aria-label="Current settings import and export">
-          <span class="settings-json-prefix">JSON</span>
+          <span class="settings-json-prefix" data-ui-text="settingsProjectLabel">プロジェクト</span>
           <button id="currentSettingsExportBtn" class="settings-mini-btn" type="button" data-ui-text="settingsExportBtn">設定出力</button>
           <button id="currentSettingsFileBtn" class="settings-mini-btn settings-file-btn" type="button" data-ui-text="settingsFileBtn">読込</button>
           <button id="currentSettingsImportBtn" class="settings-mini-btn settings-path-btn" type="button" data-ui-text="settingsImportBtn">設定読込</button>
@@ -2239,7 +2236,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '761';
+    const APP_VERSION = '762';
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
     const PAPER_HEADER_TEMPLATE_KNOWN_MIN_SCORE = 0.84;
@@ -2637,7 +2634,7 @@
         textCommandsLabel:'Text Commands', csvFileLabel:'CSV File', csvCommandEditLabel:'Editable Commands from CSV',
         dialogBlocksTitle:'Dialog Area', dialogFormatLabel:'Format: 0+01 | 1+00 | SPEAKER | SAMPLE', cameraBlocksTitle:'Camera Area', cameraFormatLabel:'Format: 0+01 | 1+00 | A | PAN | B  /  0+01 | 1+00 | FI | Aセル',
         sheetPreviewTitle:'Sheet Preview', chooseExportDirBtn:'Folder', downloadAllBtn:'Output', memoModeBtn:'Memo Mode', cameraToMemoBtn:'Camera→Memo', memoUndoBtn:'Undo', memoRedoBtn:'Redo', memoPenLabel:'Pen', memoEraserLabel:'Eraser', memoEraserButton:'Eraser',
-        createdByLabel:'Created by', settingsExportBtn:'Export', settingsFileBtn:'Load', settingsImportBtn:'Path', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'Settings JSON', settingsSelectEmpty:'Select settings', settingsSelectNoSettings:'No settings JSON', textMemoApplyBtn:'Apply', textMemoMenuAdd:'Add text box', textMemoMenuDelete:'Delete text box', textMemoMenuEditMode:'Text box position edit', textMemoMenuEditDone:'Finish text box edit', textMemoMenuAutoArrange:'Auto arrange text boxes', textMemoInitialHint:'Right-click to add or edit text boxes.', clearSheetDataBtn:'Reset All', hideSidebarBtn:'Hide UI', showSidebarBtn:'Show UI', feedbackHeading:'Feedback', feedbackFormLink:'Form', feedbackPlaceholder:'Bug report or request', feedbackHint:'Write anything you know: symptom, reproduction steps, CSV/PSD/image format, expected result, actual result, browser/OS.', feedbackSendBtn:'Send', feedbackEmpty:'Write a message first.', feedbackSending:'Sending...', feedbackSent:'Sent.', feedbackFailed:'Could not send. Open the form link.', shortcutSummaryTopHint:''
+        createdByLabel:'Created by', settingsProjectLabel:'Project', settingsExportBtn:'Save', settingsFileBtn:'Load', settingsImportBtn:'Path', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'Settings JSON', settingsSelectEmpty:'Select settings', settingsSelectNoSettings:'No settings JSON', textMemoApplyBtn:'Apply', textMemoMenuAdd:'Add text box', textMemoMenuDelete:'Delete text box', textMemoMenuEditMode:'Text box position edit', textMemoMenuEditDone:'Finish text box edit', textMemoMenuAutoArrange:'Auto arrange text boxes', textMemoInitialHint:'Right-click to add or edit text boxes.', clearSheetDataBtn:'Reset All', hideSidebarBtn:'Hide UI', showSidebarBtn:'Show UI', feedbackHeading:'Feedback', feedbackFormLink:'Form', feedbackPlaceholder:'Bug report or request', feedbackHint:'Write anything you know: symptom, reproduction steps, CSV/PSD/image format, expected result, actual result, browser/OS.', feedbackSendBtn:'Send', feedbackEmpty:'Write a message first.', feedbackSending:'Sending...', feedbackSent:'Sent.', feedbackFailed:'Could not send. Open the form link.', shortcutSummaryTopHint:''
       },
       ja: {
         languageLabel:'言語', headerCardTitle:'ヘッダー', episodeLabel:'話数', titleLabel:'タイトル', cutNoLabel:'カット番号', secondsLabel:'尺 秒', framesLabel:'尺 コマ', authorLabel:'名前', pageLabel:'ページ',
@@ -2645,7 +2642,7 @@
         textCommandsLabel:'テキストコマンド', csvFileLabel:'CSVファイル', csvCommandEditLabel:'CSVから生成された編集可能コマンド',
         dialogBlocksTitle:'セリフ欄', dialogFormatLabel:'形式: 0+01 | 1+00 | 話者 | セリフ例', cameraBlocksTitle:'カメラ欄', cameraFormatLabel:'形式: 0+01 | 1+00 | A | PAN | B  /  0+01 | 1+00 | FI | Aセル',
         sheetPreviewTitle:'シートプレビュー', chooseExportDirBtn:'保存先', downloadAllBtn:'出力', memoModeBtn:'メモモード', cameraToMemoBtn:'カメラ→メモ', memoUndoBtn:'取り消し', memoRedoBtn:'やり直し', memoPenLabel:'ペン', memoEraserLabel:'消しゴム', memoEraserButton:'消しゴム',
-        createdByLabel:'作成', settingsExportBtn:'出力', settingsFileBtn:'読込', settingsImportBtn:'読込先', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'設定JSON', settingsSelectEmpty:'設定選択', settingsSelectNoSettings:'設定JSONなし', textMemoApplyBtn:'適用', textMemoMenuAdd:'テキスト枠を追加', textMemoMenuDelete:'テキスト枠を削除', textMemoMenuEditMode:'テキスト枠位置編集', textMemoMenuEditDone:'テキスト枠編集終了', textMemoMenuAutoArrange:'テキスト枠を自動整列', textMemoInitialHint:'右クリックでテキスト枠を追加・編集できます。', clearSheetDataBtn:'全体初期化', hideSidebarBtn:'UIを隠す', showSidebarBtn:'UIを表示', feedbackHeading:'報告', feedbackFormLink:'Form', feedbackPlaceholder:'不具合や要望を書く', feedbackHint:'わかる範囲で記入してください: 症状、再現手順、使用したCSV/PSD/画像形式、期待した結果、実際の結果、ブラウザ/OS。', feedbackSendBtn:'送信', feedbackEmpty:'内容を書いてください。', feedbackSending:'送信中...', feedbackSent:'送信しました。', feedbackFailed:'送信できません。Formリンクから送ってください。', shortcutSummaryTopHint:''
+        createdByLabel:'作成', settingsProjectLabel:'プロジェクト', settingsExportBtn:'保存', settingsFileBtn:'読込', settingsImportBtn:'読込先', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'設定JSON', settingsSelectEmpty:'設定選択', settingsSelectNoSettings:'設定JSONなし', textMemoApplyBtn:'適用', textMemoMenuAdd:'テキスト枠を追加', textMemoMenuDelete:'テキスト枠を削除', textMemoMenuEditMode:'テキスト枠位置編集', textMemoMenuEditDone:'テキスト枠編集終了', textMemoMenuAutoArrange:'テキスト枠を自動整列', textMemoInitialHint:'右クリックでテキスト枠を追加・編集できます。', clearSheetDataBtn:'全体初期化', hideSidebarBtn:'UIを隠す', showSidebarBtn:'UIを表示', feedbackHeading:'報告', feedbackFormLink:'Form', feedbackPlaceholder:'不具合や要望を書く', feedbackHint:'わかる範囲で記入してください: 症状、再現手順、使用したCSV/PSD/画像形式、期待した結果、実際の結果、ブラウザ/OS。', feedbackSendBtn:'送信', feedbackEmpty:'内容を書いてください。', feedbackSending:'送信中...', feedbackSent:'送信しました。', feedbackFailed:'送信できません。Formリンクから送ってください。', shortcutSummaryTopHint:''
       },
       ko: {
         languageLabel:'언어', headerCardTitle:'헤더', episodeLabel:'화수', titleLabel:'제목', cutNoLabel:'컷 번호', secondsLabel:'길이 초', framesLabel:'길이 프레임', authorLabel:'이름', pageLabel:'페이지',
@@ -2653,7 +2650,7 @@
         textCommandsLabel:'텍스트 커맨드', csvFileLabel:'CSV 파일', csvCommandEditLabel:'CSV에서 생성된 편집 가능 커맨드',
         dialogBlocksTitle:'대사란', dialogFormatLabel:'형식: 0+01 | 1+00 | 화자 | 예시', cameraBlocksTitle:'카메라란', cameraFormatLabel:'형식: 0+01 | 1+00 | A | PAN | B  /  0+01 | 1+00 | FI | Aセル',
         sheetPreviewTitle:'시트 프리뷰', chooseExportDirBtn:'경로지정', downloadAllBtn:'출력', memoModeBtn:'메모 모드', cameraToMemoBtn:'카메라→메모', memoUndoBtn:'되돌리기', memoRedoBtn:'다시 실행', memoPenLabel:'펜', memoEraserLabel:'지우개', memoEraserButton:'지우개',
-        createdByLabel:'제작', settingsExportBtn:'내보내기', settingsFileBtn:'불러오기', settingsImportBtn:'경로지정', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'설정 JSON', settingsSelectEmpty:'설정 선택', settingsSelectNoSettings:'설정 JSON 없음', textMemoApplyBtn:'적용', textMemoMenuAdd:'텍스트 박스 추가', textMemoMenuDelete:'텍스트 박스 삭제', textMemoMenuEditMode:'텍스트 박스 위치 편집', textMemoMenuEditDone:'텍스트 박스 편집 종료', textMemoMenuAutoArrange:'텍스트 박스 자동 정렬', textMemoInitialHint:'우클릭으로 텍스트 박스를 추가하거나 편집할 수 있습니다.', clearSheetDataBtn:'전체 초기화', hideSidebarBtn:'UI 숨기기', showSidebarBtn:'UI 펼치기', feedbackHeading:'문의', feedbackFormLink:'Form', feedbackPlaceholder:'버그 내용이나 개선 요청', feedbackHint:'가능하면 아는 것만 적어주세요: 증상, 재현 순서, 사용한 CSV/PSD/이미지 형식, 기대한 결과, 실제 결과, 브라우저/OS.', feedbackSendBtn:'보내기', feedbackEmpty:'내용을 먼저 입력하세요.', feedbackSending:'전송 중...', feedbackSent:'전송했습니다.', feedbackFailed:'전송하지 못했습니다. Form 링크로 보내주세요.', shortcutSummaryTopHint:''
+        createdByLabel:'제작', settingsProjectLabel:'프로젝트', settingsExportBtn:'저장', settingsFileBtn:'불러오기', settingsImportBtn:'경로지정', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'설정 JSON', settingsSelectEmpty:'설정 선택', settingsSelectNoSettings:'설정 JSON 없음', textMemoApplyBtn:'적용', textMemoMenuAdd:'텍스트 박스 추가', textMemoMenuDelete:'텍스트 박스 삭제', textMemoMenuEditMode:'텍스트 박스 위치 편집', textMemoMenuEditDone:'텍스트 박스 편집 종료', textMemoMenuAutoArrange:'텍스트 박스 자동 정렬', textMemoInitialHint:'우클릭으로 텍스트 박스를 추가하거나 편집할 수 있습니다.', clearSheetDataBtn:'전체 초기화', hideSidebarBtn:'UI 숨기기', showSidebarBtn:'UI 펼치기', feedbackHeading:'문의', feedbackFormLink:'Form', feedbackPlaceholder:'버그 내용이나 개선 요청', feedbackHint:'가능하면 아는 것만 적어주세요: 증상, 재현 순서, 사용한 CSV/PSD/이미지 형식, 기대한 결과, 실제 결과, 브라우저/OS.', feedbackSendBtn:'보내기', feedbackEmpty:'내용을 먼저 입력하세요.', feedbackSending:'전송 중...', feedbackSent:'전송했습니다.', feedbackFailed:'전송하지 못했습니다. Form 링크로 보내주세요.', shortcutSummaryTopHint:''
       },
       zh: {
         languageLabel:'语言', headerCardTitle:'页眉', episodeLabel:'集数', titleLabel:'标题', cutNoLabel:'镜头编号', secondsLabel:'时长 秒', framesLabel:'时长 帧', authorLabel:'姓名', pageLabel:'页码',
@@ -2661,7 +2658,7 @@
         textCommandsLabel:'文本命令', csvFileLabel:'CSV 文件', csvCommandEditLabel:'从 CSV 生成的可编辑命令',
         dialogBlocksTitle:'对白栏', dialogFormatLabel:'格式: 0+01 | 1+00 | 说话人 | 示例', cameraBlocksTitle:'摄影机栏', cameraFormatLabel:'格式: 0+01 | 1+00 | A | PAN | B  /  0+01 | 1+00 | FI | Aセル',
         sheetPreviewTitle:'Sheet 预览', chooseExportDirBtn:'保存处', downloadAllBtn:'输出', memoModeBtn:'备注模式', cameraToMemoBtn:'摄影→备注', memoUndoBtn:'撤销', memoRedoBtn:'重做', memoPenLabel:'笔', memoEraserLabel:'橡皮', memoEraserButton:'橡皮',
-        createdByLabel:'制作', settingsExportBtn:'导出', settingsFileBtn:'导入', settingsImportBtn:'路径', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'设置 JSON', settingsSelectEmpty:'选择设置', settingsSelectNoSettings:'无设置 JSON', textMemoApplyBtn:'应用', textMemoMenuAdd:'添加文字框', textMemoMenuDelete:'删除文字框', textMemoMenuEditMode:'文字框位置编辑', textMemoMenuEditDone:'结束文字框编辑', textMemoMenuAutoArrange:'自动排列文字框', textMemoInitialHint:'可通过右键添加或编辑文字框。', clearSheetDataBtn:'全部重置', hideSidebarBtn:'隐藏 UI', showSidebarBtn:'显示 UI', feedbackHeading:'反馈', feedbackFormLink:'Form', feedbackPlaceholder:'错误报告或改进建议', feedbackHint:'请尽量填写已知信息: 症状、复现步骤、使用的 CSV/PSD/图片格式、期望结果、实际结果、浏览器/OS。', feedbackSendBtn:'发送', feedbackEmpty:'请先输入内容。', feedbackSending:'发送中...', feedbackSent:'已发送。', feedbackFailed:'发送失败。请使用 Form 链接。', shortcutSummaryTopHint:''
+        createdByLabel:'制作', settingsProjectLabel:'项目', settingsExportBtn:'保存', settingsFileBtn:'导入', settingsImportBtn:'路径', settingsRefreshBtn:'↻', settingsSelectPlaceholder:'设置 JSON', settingsSelectEmpty:'选择设置', settingsSelectNoSettings:'无设置 JSON', textMemoApplyBtn:'应用', textMemoMenuAdd:'添加文字框', textMemoMenuDelete:'删除文字框', textMemoMenuEditMode:'文字框位置编辑', textMemoMenuEditDone:'结束文字框编辑', textMemoMenuAutoArrange:'自动排列文字框', textMemoInitialHint:'可通过右键添加或编辑文字框。', clearSheetDataBtn:'全部重置', hideSidebarBtn:'隐藏 UI', showSidebarBtn:'显示 UI', feedbackHeading:'反馈', feedbackFormLink:'Form', feedbackPlaceholder:'错误报告或改进建议', feedbackHint:'请尽量填写已知信息: 症状、复现步骤、使用的 CSV/PSD/图片格式、期望结果、实际结果、浏览器/OS。', feedbackSendBtn:'发送', feedbackEmpty:'请先输入内容。', feedbackSending:'发送中...', feedbackSent:'已发送。', feedbackFailed:'发送失败。请使用 Form 链接。', shortcutSummaryTopHint:''
       }
     };
 
@@ -3134,6 +3131,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver762', 'Project save label', ['The top settings controls are now labeled Project, and the export button reads Save instead of JSON/Export (the file holds the whole working sheet). Wording only — the save/load behavior is unchanged.']],
         ['ver761', 'Camera→Memo bullet prefix', ['Camera→Memo entries now start with a ・ bullet, e.g. <code>・Ⓐ→Ⓑ PAN</code> or <code>・Aセル F.I</code>.']],
         ['ver760', 'Camera picker and example', ['The camera direction picker no longer shows a blank option and defaults to the triangle (▲). The Camera Area example now shows both the standard <code>0+01 | 1+00 | A | PAN | B</code> form and the FI/FO/OL target form <code>0+01 | 1+00 | FI | Aセル</code>.']],
         ['ver759', 'Camera triangle default', ['Camera start/end labels now use the black triangle (▲) marker by default instead of the red box label, which has been removed. Choose the dash (-) style from the per-line picker if you prefer a short line. Dialog speaker labels still use the red box.']],
@@ -3233,6 +3231,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver762', 'プロジェクト保存の表記', ['上部の設定操作のラベルを「プロジェクト」に、出力ボタンを JSON/出力 から「保存」に変更しました（このファイルはシート全体を保持します）。表記のみで、保存/読込の動作は変わりません。']],
         ['ver761', 'カメラ→メモの・付き', ['カメラ→メモの記入が先頭に ・ を付けるようになりました（例: <code>・Ⓐ→Ⓑ PAN</code> や <code>・Aセル F.I</code>）。']],
         ['ver760', 'カメラ選択UIと例', ['カメラ指示の選択UIから空欄の選択肢をなくし、既定で三角（▲）になりました。カメラ欄の例に、標準の <code>0+01 | 1+00 | A | PAN | B</code> 形式と、FI/FO/OL対象形式 <code>0+01 | 1+00 | FI | Aセル</code> の両方を表示します。']],
         ['ver759', 'カメラ▲を既定に', ['カメラの開始/終了ラベルは、赤いボックス表示を廃止し、既定で黒い三角（▲）マーカーを表示するようになりました。短い線が良ければ行ごとの選択UIでダッシュ「-」を選べます。セリフの話者ラベルは引き続き赤いボックスです。']],
@@ -3332,6 +3331,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver762', '프로젝트 저장 표기', ['상단 설정 조작의 라벨을 「프로젝트」로, 내보내기 버튼을 JSON/내보내기 대신 「저장」으로 바꿨습니다(이 파일은 시트 전체를 담습니다). 표기만 바뀌며 저장/불러오기 동작은 그대로입니다.']],
         ['ver761', '카메라→메모 ・ 접두', ['카메라→메모 기입이 앞에 ・ 를 붙입니다 (예: <code>・Ⓐ→Ⓑ PAN</code>, <code>・Aセル F.I</code>).']],
         ['ver760', '카메라 선택 UI·예시', ['카메라 지시 선택 UI에서 빈 옵션을 없애고 기본값을 삼각형(▲)으로 했습니다. 카메라란 예시에 표준 <code>0+01 | 1+00 | A | PAN | B</code> 형식과 FI/FO/OL 대상 형식 <code>0+01 | 1+00 | FI | Aセル</code>을 함께 표시합니다.']],
         ['ver759', '카메라 ▲ 기본', ['카메라 시작/끝 라벨이 빨간 박스 표기를 없애고 기본으로 검은 삼각형(▲) 마커를 표시합니다. 짧은 선을 원하면 줄별 선택 UI에서 대시(-)를 고르면 됩니다. 대사 화자 라벨은 그대로 빨간 박스를 사용합니다.']],
@@ -3431,6 +3431,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver762', '项目保存标签', ['顶部设置操作的标签改为「项目」，导出按钮由 JSON/导出 改为「保存」（该文件保存整张表）。仅文字变更，保存/加载行为不变。']],
         ['ver761', '摄影→备注前缀・', ['摄影→备注的填写现在以 ・ 开头（例: <code>・Ⓐ→Ⓑ PAN</code>、<code>・Aセル F.I</code>）。']],
         ['ver760', '摄影选择UI与示例', ['摄影指示选择 UI 不再显示空白选项，默认改为三角（▲）。摄影栏示例现在同时展示标准 <code>0+01 | 1+00 | A | PAN | B</code> 形式与 FI/FO/OL 目标形式 <code>0+01 | 1+00 | FI | Aセル</code>。']],
         ['ver759', '摄影默认▲', ['摄影起止标签现在默认显示黑色三角（▲）标记，已移除红框标签样式。如需短线，可在逐行选择 UI 中选择虚线（-）。对白说话人标签仍使用红框。']],
