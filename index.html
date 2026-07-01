@@ -2162,6 +2162,7 @@
       <div class="memo-controls-wrap">
         <div id="memoControls" class="memo-controls">
           <button id="memoModeBtn" class="memo-btn" type="button" data-ui-text="memoModeBtn">Memo Mode</button>
+          <button id="serifuModeBtn" class="memo-btn" type="button" title="口パク範囲選択（ドラッグで範囲、離すとシート）">口パク</button>
           <button id="memoUndoBtn" class="memo-btn" type="button" aria-label="Undo memo" data-ui-text="memoUndoBtn">Undo</button>
           <button id="memoRedoBtn" class="memo-btn" type="button" aria-label="Redo memo" data-ui-text="memoRedoBtn">Redo</button>
           <span class="memo-size-label" data-ui-text="memoPenLabel">Pen</span>
@@ -2244,7 +2245,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '771';
+    const APP_VERSION = '772';
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
     const PAPER_HEADER_TEMPLATE_KNOWN_MIN_SCORE = 0.84;
@@ -2314,6 +2315,7 @@
     const memoCanvas = document.getElementById('memoCanvas');
     const memoCtx = memoCanvas.getContext('2d');
     const memoModeBtn = document.getElementById('memoModeBtn');
+    const serifuModeBtn = document.getElementById('serifuModeBtn');
     const memoUndoBtn = document.getElementById('memoUndoBtn');
     const memoRedoBtn = document.getElementById('memoRedoBtn');
     const memoPenSizeSelectEl = document.getElementById('memoPenSizeSelect');
@@ -2549,6 +2551,7 @@
       positionMode: false,
       inlineTextEditor: null,
       speakerSuffixMenu: null,
+      serifuMode: false,
       serifuRangeAnchor: null,
       serifuRangeDrag: null,
       serifuRangeSelection: null,
@@ -2881,6 +2884,22 @@
       try { sendUsageEvent(name, p); } catch (err) {}
     }
 
+    // Fires once per session when the user first edits real content (vs. bouncing).
+    let __activated = false;
+    function markActivation(source) {
+      if (__activated) return;
+      __activated = true;
+      trackEvent('activation', { source: source || '' });
+    }
+
+    // Fires once per session if any render is unexpectedly slow (real-world lag telemetry).
+    let __slowRenderReported = false;
+    function maybeReportSlowRender(ms) {
+      if (__slowRenderReported) return;
+      __slowRenderReported = true;
+      trackEvent('slow_render', { ms: Math.round(ms), cores: navigator.hardwareConcurrency || 0, dpr: window.devicePixelRatio || 1 });
+    }
+
     function clampUsageRatio(value) {
       const n = Number(value);
       if (!Number.isFinite(n)) return 0;
@@ -3192,6 +3211,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver772', 'Dedicated 口パク (lip-sync) mode', ['Added a 口パク button next to Memo Mode. In this mode, drag down a cel column to select a frame range, then release to open the lip-sync sheet — it no longer overlaps with dot / text / token edits. The old click-and-shift range selection outside the mode has been removed.']],
         ['ver770', 'Smoother camera input & duration drag', ['The camera direction picker no longer rebuilds on every keystroke/scroll (it is debounced), and dragging the duration boundary redraws less aggressively, so the Camera field and the duration handle stay responsive on slower machines. Also removed unused internal code.']],
         ['ver769', 'Faster typing (no lag)', ['Typing in the Text command, Camera, Dialog, and Memo fields no longer rebuilds the whole sheet on every keystroke. The fixed grid and cell layer are cached and only the changed content is redrawn, removing the freezing/lag some machines had while typing.']],
         ['ver768', 'Picker reflects mid-text O.L', ['The per-line camera picker now switches to OL when the line’s middle text is an O.L (e.g. <code>BG1 | OL | BG2</code>, <code>A1 | AセルOL | A2</code>), not only when OL is in the label position. The default Camera sample now uses <code>BG1 | OL | BG2</code>.']],
@@ -3300,6 +3320,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver772', '口パク専用モード', ['メモモードの隣に「口パク」ボタンを追加。このモード中はセル列を縦にドラッグして範囲を選び、離すと口パクシートが開きます。点・テキスト・トークン編集と操作が重ならなくなりました。モード外での旧クリック＆Shift範囲選択は廃止しました。']],
         ['ver770', 'カメラ入力とデュレーションドラッグを軽く', ['カメラの向きピッカーが入力・スクロールのたびに作り直されないようにし（デバウンス）、デュレーション境界のドラッグ中の再描画も抑えました。低スペック環境でもカメラ欄とデュレーションつまみの反応が軽くなります。未使用の内部コードも削除。']],
         ['ver769', '入力の高速化（カクつき解消）', ['テキストコマンド・カメラ・セリフ・メモ欄への入力で、毎回シート全体を描き直さないようにしました。固定のグリッドとセル層をキャッシュし、変更部分だけを再描画するため、一部の環境で発生していた入力時のカクつき・フリーズを解消します。']],
         ['ver768', '選択UIが中央O.Lを反映', ['行ごとのカメラ選択UIが、ラベル位置だけでなく中央テキストがO.L（例: <code>BG1 | OL | BG2</code>、<code>A1 | AセルOL | A2</code>）のときもOLに切り替わるようになりました。初期サンプルも <code>BG1 | OL | BG2</code> にしました。']],
@@ -3408,6 +3429,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver772', '口パク(입모양) 전용 모드', ['메모 모드 옆에 「口パク」 버튼 추가. 이 모드에서 셀 열을 세로로 드래그해 프레임 범위를 고르고, 손을 떼면 口パク 시트가 열립니다. 점·텍스트·토큰 편집과 조작이 겹치지 않습니다. 모드 밖의 기존 클릭＆Shift 범위 선택은 폐지했습니다.']],
         ['ver770', '카메라 입력·듀레이션 드래그 가볍게', ['카메라 방향 선택탭이 키 입력·스크롤마다 다시 만들어지지 않도록 했고(디바운스), 듀레이션 경계 드래그 중 재그리기도 줄였습니다. 저사양 환경에서도 카메라 입력란과 듀레이션 손잡이 반응이 가벼워집니다. 미사용 내부 코드도 정리했습니다.']],
         ['ver769', '입력 속도 개선(렉 해소)', ['텍스트 커맨드·카메라·대사·메모 입력란에 글자를 칠 때 매번 시트 전체를 다시 그리지 않도록 했습니다. 고정 그리드와 셀 레이어를 캐시하고 바뀐 부분만 다시 그려서, 일부 환경에서 입력 시 발생하던 렉/멈춤을 없앱니다.']],
         ['ver768', '선택탭이 가운데 O.L 반영', ['줄별 카메라 선택탭이 라벨 위치뿐 아니라 가운데 텍스트가 O.L(예: <code>BG1 | OL | BG2</code>, <code>A1 | AセルOL | A2</code>)이면 OL로 전환됩니다. 기본 샘플도 <code>BG1 | OL | BG2</code>로 바꿨습니다.']],
@@ -3516,6 +3538,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver772', '口型（口パク）专用模式', ['在备注模式旁新增「口パク」按钮。该模式下沿单元格列纵向拖动即可选择帧范围，松手即打开口型表——不再与点/文字/记号编辑冲突。模式外的旧「点击＋Shift」范围选择已移除。']],
         ['ver770', '摄影输入与时长拖动更流畅', ['摄影方向选择器不再在每次按键/滚动时重建（已加防抖），拖动时长边界时的重绘也有所减少，因此在低配设备上摄影栏和时长手柄都更跟手。同时删除了未使用的内部代码。']],
         ['ver769', '输入更流畅（消除卡顿）', ['在文本命令、摄影、对白、备注栏输入时，不再每次按键都重绘整张表。现在会缓存固定网格与单元格层，只重绘变化的内容，从而消除部分设备在输入时出现的卡顿/卡死。']],
         ['ver768', '选择UI反映中间O.L', ['逐行摄影选择 UI 现在不仅在标签位置、也会在行的中间文本为 O.L（如 <code>BG1 | OL | BG2</code>、<code>A1 | AセルOL | A2</code>）时切换为 OL。默认示例也改为 <code>BG1 | OL | BG2</code>。']],
@@ -13065,6 +13088,7 @@
     }
 
     function handleSerifuRangeShiftClick(event, entry, frame) {
+      if (!state.serifuMode) return false;
       if (!event || !event.shiftKey || !entry || !isSerifuRangeAnchorArmed()) return false;
       const selection = makeSerifuRangeSelection(state.serifuRangeAnchor, entry, frame);
       if (!selection) return false;
@@ -13077,8 +13101,43 @@
       return true;
     }
 
+    // Coordinate hit-test for the 口パク capture overlay: which cel column + frame is under the pointer.
+    function serifuHitFromEvent(event) {
+      const model = getSyncedRenderModel();
+      const entries = (model.layout && model.layout.originalEntries) || [];
+      if (!entries.length) return null;
+      const p = getSvgPointFromPointerEvent(event);
+      const blocks = getBlocksForPage(model.layout, state.currentPreviewPage || 0);
+      let result = null;
+      blocks.forEach(function(block){
+        if (result) return;
+        const top = 450, nameStripH = 44, bodyH = 1912;
+        const tempBlock = {
+          blockX:block.x, blockW:block.w,
+          originalColW:block.metrics.originalAreaW / Math.max(1, entries.length),
+          originalAreaW:block.metrics.originalAreaW,
+          originalEntriesCount:entries.length,
+          top:top, nameStripH:nameStripH, rowH:bodyH / block.count,
+          frameCount:block.count, start:block.start
+        };
+        const area = getCellArea(tempBlock);
+        if (p.x < area.x || p.x > area.x + area.w || p.y < area.y || p.y > area.y + area.h) return;
+        const areaRowH = getOutputRowH(tempBlock, 'cell');
+        const yClamped = Math.max(area.y, Math.min(area.y + area.h - 0.01, p.y));
+        const frame = Math.max(block.start, Math.min(block.start + block.count - 1, block.start + Math.floor((yClamped - area.y) / areaRowH)));
+        let colIndex = -1;
+        for (let ci = 0; ci < entries.length; ci++) {
+          const b = getOutputCellBounds(tempBlock, ci);
+          if (p.x >= b.x1 && p.x <= b.x2) { colIndex = ci; break; }
+        }
+        if (colIndex < 0 || !entries[colIndex]) return;
+        result = { entry:entries[colIndex], frame:frame, range:{ minFrame:block.start, maxFrame:block.start + block.count - 1 } };
+      });
+      return result;
+    }
+
     function beginSerifuRangeDrag(event, entry, frame, range) {
-      if (!entry || state.memoMode || state.positionMode || state.textMemoEditMode || state.textMemoEditor || state.shakuMode) return;
+      if (!entry || !state.serifuMode || state.memoMode || state.positionMode || state.textMemoEditMode || state.textMemoEditor || state.shakuMode) return;
       if (event.shiftKey || (event.button !== undefined && event.button !== 0)) return;
       const anchor = setSerifuRangeAnchor(entry, frame, { armed:false });
       if (!anchor) return;
@@ -13138,6 +13197,7 @@
         if (selection) state.serifuRangeSelection = selection;
         suppressNextClickBriefly(260);
         render();
+        if (state.serifuMode && state.serifuRangeSelection) setTimeout(openSerifuSheetModal, 0);
       }
       state.serifuRangeDrag = null;
       document.documentElement.classList.remove('serifu-range-dragging');
@@ -13717,6 +13777,7 @@
 
     function handleDotClick(event, entry, absFrame, baseLayer) {
       if (state.suppressNextClick) return false;
+      markActivation('cell');
       event.preventDefault();
       event.stopPropagation();
       if (event.stopImmediatePropagation) event.stopImmediatePropagation();
@@ -14510,6 +14571,7 @@
       endTimelineEdgeDrag({ preventDefault:function(){}, stopPropagation:function(){} });
       const nextShakuMode = !state.shakuMode;
       if (nextShakuMode) {
+        exitSerifuMode();
         setMemoModeEnabled(false);
         setTextMemoEditMode(false);
       }
@@ -16993,6 +17055,39 @@
       appendSvgNode(hit);
     }
 
+    // 口パク mode: a transparent capture layer over the cel columns that turns pointer
+    // drags into range selections, so normal cell ops (dot/text/token) never collide.
+    function renderSerifuCaptureArea(pageIndex, interactive) {
+      if (!interactive || !state.serifuMode || state.memoMode || state.positionMode || state.shakuMode || state.textMemoEditMode || currentSvgTarget !== svg) return;
+      const model = getSyncedRenderModel();
+      const entries = (model.layout && model.layout.originalEntries) || [];
+      if (!entries.length) return;
+      getBlocksForPage(model.layout, pageIndex).forEach(function(block){
+        const top = 450, nameStripH = 44, bodyH = 1912;
+        const tempBlock = {
+          blockX:block.x, blockW:block.w,
+          originalColW:block.metrics.originalAreaW / Math.max(1, entries.length),
+          originalAreaW:block.metrics.originalAreaW,
+          originalEntriesCount:entries.length,
+          top:top, nameStripH:nameStripH, rowH:bodyH / block.count,
+          frameCount:block.count, start:block.start
+        };
+        const area = getCellArea(tempBlock);
+        const hit = el('rect', { x:area.x, y:area.y, width:area.w, height:area.h, fill:'transparent', stroke:'transparent', 'pointer-events':'all', class:'serifu-capture-area' });
+        hit.style.cursor = 'crosshair';
+        hit.addEventListener('pointerdown', function(event){
+          if (event.button !== undefined && event.button !== 0) return;
+          const info = serifuHitFromEvent(event);
+          if (!info) return;
+          event.preventDefault();
+          event.stopPropagation();
+          if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+          beginSerifuRangeDrag(event, info.entry, info.frame, info.range);
+        }, { passive:false });
+        appendSvgNode(hit);
+      });
+    }
+
     function estimateTextMemoTextWidth(value, fontSize) {
       const source = String(value || '');
       const size = Math.max(1, Number(fontSize || 18));
@@ -18213,6 +18308,7 @@
       renderTextMemos(pageIndex, isInteractive);
       renderPastedImages(pageIndex, isInteractive);
       renderLayerNameTags(pageIndex, model.layout, isInteractive);
+      renderSerifuCaptureArea(pageIndex, isInteractive);
       renderPaperAutoAlignOverlay();
       if (targetSvg !== svg) setSvgTarget(svg);
       currentRenderLayerFilter = previousRenderLayerFilter;
@@ -18297,6 +18393,7 @@
     }
 
     function requestCommandInputRender(options) {
+      markActivation('input');
       const opts = options || {};
       if (opts.syncCommandText) state.commandInputRenderNeedsCommandSync = true;
       if (opts.csvCommandSync) state.pendingCsvCommandInputSync = true;
@@ -18321,6 +18418,7 @@
     }
 
     function render() {
+      const __renderT0 = performance.now();
       if (cellColumnCountInputEl) {
         state.cellColumnCount = clampCellColumnCount(cellColumnCountInputEl.value);
         if (String(cellColumnCountInputEl.value) !== String(state.cellColumnCount)) cellColumnCountInputEl.value = String(state.cellColumnCount);
@@ -18351,6 +18449,8 @@
       if (!state.csvRawRows.length) csvInfoEl.textContent = state.csvLoadError || t('noCsv');
       updateCsvSourceInfo();
       updateCsvSettingsActionVisibility();
+      const __renderMs = performance.now() - __renderT0;
+      if (__renderMs > 80) maybeReportSlowRender(__renderMs);
     }
 
 
@@ -18936,10 +19036,39 @@
       updateMemoUI();
     }
 
+    function exitSerifuMode() {
+      if (!state.serifuMode) return;
+      state.serifuMode = false;
+      clearSerifuRangeSelection({ render:false });
+      if (serifuModeBtn) serifuModeBtn.classList.toggle('active', false);
+      document.documentElement.classList.remove('serifu-mode');
+    }
+
+    function toggleSerifuMode() {
+      const next = !state.serifuMode;
+      if (next) {
+        if (state.textMemoEditor) closeTextMemoEditor({ render:false });
+        setMemoModeEnabled(false);
+        setTextMemoEditMode(false);
+        state.positionMode = false;
+        state.shakuMode = false;
+        if (headerPositionModeBtn) headerPositionModeBtn.classList.toggle('active', false);
+        if (paperToolbarPositionBtn) paperToolbarPositionBtn.classList.toggle('active', false);
+        updateShakuEditUI();
+      } else {
+        clearSerifuRangeSelection({ render:false });
+      }
+      state.serifuMode = next;
+      if (serifuModeBtn) serifuModeBtn.classList.toggle('active', next);
+      document.documentElement.classList.toggle('serifu-mode', next);
+      render();
+    }
+
     function toggleMemoMode() {
       if (state.textMemoEditor) closeTextMemoEditor({ render:false });
       const nextMemoMode = !state.memoMode;
       if (nextMemoMode) {
+        exitSerifuMode();
         trackEvent('memo_used');
         state.positionMode = false;
         state.textMemoEditMode = false;
@@ -20154,6 +20283,7 @@
       if (state.textMemoEditor) closeTextMemoEditor({ render:false });
       const nextPositionMode = !state.positionMode;
       if (nextPositionMode) {
+        exitSerifuMode();
         setMemoModeEnabled(false);
         setTextMemoEditMode(false);
       }
@@ -21423,6 +21553,7 @@
       });
     });
     memoModeBtn.addEventListener('click', toggleMemoMode);
+    if (serifuModeBtn) serifuModeBtn.addEventListener('click', toggleSerifuMode);
     if (cameraToMemoBtn) cameraToMemoBtn.addEventListener('click', writeCameraLinesToMemo);
     memoUndoBtn.addEventListener('click', memoUndo);
     memoRedoBtn.addEventListener('click', memoRedo);
@@ -21761,7 +21892,14 @@
     restoreExportDirectoryOnStartup();
     normalizeDurationInputs();
     updateShakuEditUI();
-    trackEvent('app_open', { version: APP_VERSION });
+    trackEvent('app_open', {
+      version: APP_VERSION,
+      cores: navigator.hardwareConcurrency || 0,
+      dpr: window.devicePixelRatio || 1,
+      mem: navigator.deviceMemory || 0,
+      vw: window.innerWidth || 0,
+      vh: window.innerHeight || 0
+    });
   </script>
 </body>
 </html>
