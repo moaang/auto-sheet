@@ -2244,7 +2244,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '770';
+    const APP_VERSION = '771';
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
     const PAPER_HEADER_TEMPLATE_KNOWN_MIN_SCORE = 0.84;
@@ -2874,6 +2874,13 @@
       } catch (err) {}
     }
 
+    // Unified analytics: one call fans out to GA4 (gtag) + the usage Google Sheet.
+    function trackEvent(name, params) {
+      const p = params || {};
+      try { if (typeof gtag === 'function') gtag('event', name, p); } catch (err) {}
+      try { sendUsageEvent(name, p); } catch (err) {}
+    }
+
     function clampUsageRatio(value) {
       const n = Number(value);
       if (!Number.isFinite(n)) return 0;
@@ -3107,7 +3114,7 @@
           : '';
         const templateConfidence = match && match.confidence ? match.confidence : 'unknown';
         const unmatchedTemplateFileName = (templateConfidence === 'unknown' || templateConfidence === 'ambiguous') ? sanitizeUsageFileName(state.paperImageName, 140) : '';
-        sendUsageEvent('paper_align', {
+        trackEvent('paper_align', {
           autoAlignConfidence:Math.round(Number(result && result.confidence || 0)),
           templateCompany:match && match.company ? match.company : 'unknown',
           templateScore:match ? match.score : 0,
@@ -13449,6 +13456,7 @@
       const selection = state.serifuRangeSelection;
       const texts = getSerifuSheetTexts();
       if (!selection) return;
+      trackEvent('serifu_sheet_open');
       closeSerifuSheetModal();
       const backdrop = document.createElement('div');
       backdrop.className = 'serifu-sheet-modal-backdrop';
@@ -18932,6 +18940,7 @@
       if (state.textMemoEditor) closeTextMemoEditor({ render:false });
       const nextMemoMode = !state.memoMode;
       if (nextMemoMode) {
+        trackEvent('memo_used');
         state.positionMode = false;
         state.textMemoEditMode = false;
         closeTextMemoContextMenu();
@@ -20044,6 +20053,7 @@
         }
         state.paperImageDataUrl = result.dataUrl;
         state.paperImageMemoDataUrl = result.memoDataUrl || '';
+        trackEvent('paper_image_load');
         state.paperImageMemoLayerCount = Number(result.memoLayerCount || 0);
         if (state.paperImageMemoDataUrl) state.showPsdMemo = true;
         state.paperImageName = file.name || 'paper image';
@@ -20289,6 +20299,7 @@
     }
 
     async function saveCurrentSettings() {
+      trackEvent('project_save');
       const payload = collectCurrentSettingsPayload();
       const json = JSON.stringify(payload, null, 2);
       const filename = makeFilenameBase('settei') + '.json';
@@ -21324,7 +21335,7 @@
           await wait(saveMode === 'folder' ? 40 : 120);
         }
         setExportStatus(state.exportDirectoryHandle ? 'Done. Saved to selected folder.' : 'Done. Browser permission may be needed for multiple downloads.');
-        sendUsageEvent('export', {
+        trackEvent('export', {
           format:format,
           pageCount:model.totalPages || 1
         });
@@ -21404,7 +21415,7 @@
       if (shouldRender) render();
     }
 
-    document.getElementById('languageSelect').addEventListener('change', updateLanguage);
+    document.getElementById('languageSelect').addEventListener('change', function(){ updateLanguage(); trackEvent('language_change', { lang: state.lang }); });
     document.getElementById('cellInputMode').addEventListener('change', updateModeUI);
     cellInputModeButtons.forEach(function(btn){
       btn.addEventListener('click', function(){
@@ -21498,7 +21509,7 @@
 
     if (currentSettingsExportBtn) currentSettingsExportBtn.addEventListener('click', saveCurrentSettings);
     if (currentSettingsFileBtn) currentSettingsFileBtn.addEventListener('click', chooseCurrentSettingsFile);
-    if (currentSettingsImportBtn) currentSettingsImportBtn.addEventListener('click', chooseCurrentSettingsDirectory);
+    if (currentSettingsImportBtn) currentSettingsImportBtn.addEventListener('click', function(){ trackEvent('project_load'); chooseCurrentSettingsDirectory(); });
     if (currentSettingsRefreshBtn) currentSettingsRefreshBtn.addEventListener('click', refreshCurrentSettingsDirectory);
     if (currentSettingsFolderSelectEl) currentSettingsFolderSelectEl.addEventListener('change', function(){ applyLoadedSettingsJsonById(currentSettingsFolderSelectEl.value); });
     if (currentSettingsInputEl) currentSettingsInputEl.addEventListener('change', function(){ loadCurrentSettingsFile(currentSettingsInputEl.files && currentSettingsInputEl.files[0]); });
@@ -21661,6 +21672,7 @@
         state.csvFileBuffer = await file.arrayBuffer();
         state.csvDurationAutofillPending = true;
         loadCsvFromCurrentBuffer();
+        trackEvent('csv_import', { bytes: state.csvFileBuffer ? state.csvFileBuffer.byteLength : 0 });
       } catch (err) {
         resetCsvLoadState(t('csvError', err && err.message ? err.message : err), { keepBuffer:true });
         render();
@@ -21749,6 +21761,7 @@
     restoreExportDirectoryOnStartup();
     normalizeDurationInputs();
     updateShakuEditUI();
+    trackEvent('app_open', { version: APP_VERSION });
   </script>
 </body>
 </html>
