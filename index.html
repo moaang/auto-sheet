@@ -1083,6 +1083,27 @@
       color: var(--red);
     }
 
+    .serifu-side-btn {
+      position: absolute;
+      left: 4px;
+      top: 300px;
+      z-index: 6;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      padding: 12px 7px;
+      border: 1.5px solid var(--red);
+      border-radius: 10px;
+      background: var(--panel);
+      color: var(--red);
+      font-weight: 800;
+      font-size: 14px;
+      letter-spacing: 3px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,.10);
+      user-select: none;
+    }
+    .serifu-side-btn:hover { background: #fff2f2; }
+    .serifu-side-btn.active { background: var(--red); color: #fff; }
     .serifu-sheet-context-menu {
       position: fixed;
       z-index: 10006;
@@ -2162,7 +2183,6 @@
       <div class="memo-controls-wrap">
         <div id="memoControls" class="memo-controls">
           <button id="memoModeBtn" class="memo-btn" type="button" data-ui-text="memoModeBtn">Memo Mode</button>
-          <button id="serifuModeBtn" class="memo-btn" type="button" title="口パク範囲選択（ドラッグで範囲、離すとシート）">口パク</button>
           <button id="memoUndoBtn" class="memo-btn" type="button" aria-label="Undo memo" data-ui-text="memoUndoBtn">Undo</button>
           <button id="memoRedoBtn" class="memo-btn" type="button" aria-label="Redo memo" data-ui-text="memoRedoBtn">Redo</button>
           <span class="memo-size-label" data-ui-text="memoPenLabel">Pen</span>
@@ -2192,6 +2212,7 @@
         </div>
       </div>
       <div class="preview-wrap">
+        <button id="serifuModeBtn" class="serifu-side-btn" type="button" title="セリフシート：ドラッグで範囲選択、離すとシート">セリフシート</button>
         <div id="sheetStage" class="sheet-stage">
           <svg id="sheetSvg" viewBox="0 0 1753 2480" xmlns="http://www.w3.org/2000/svg" aria-label="timesheet preview"></svg>
           <svg id="positionDragOverlaySvg" class="position-drag-overlay" viewBox="0 0 1753 2480" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"></svg>
@@ -2245,7 +2266,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '772';
+    const APP_VERSION = '773';
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
     const PAPER_HEADER_TEMPLATE_KNOWN_MIN_SCORE = 0.84;
@@ -3211,6 +3232,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver773', 'セリフシート button on the sheet', ['The lip-sync mode button became a vertical セリフシート button floating on the left of the cel columns (instead of the top toolbar). Also fixed the selection clear (×) button being unclickable inside the mode.']],
         ['ver772', 'Dedicated 口パク (lip-sync) mode', ['Added a 口パク button next to Memo Mode. In this mode, drag down a cel column to select a frame range, then release to open the lip-sync sheet — it no longer overlaps with dot / text / token edits. The old click-and-shift range selection outside the mode has been removed.']],
         ['ver770', 'Smoother camera input & duration drag', ['The camera direction picker no longer rebuilds on every keystroke/scroll (it is debounced), and dragging the duration boundary redraws less aggressively, so the Camera field and the duration handle stay responsive on slower machines. Also removed unused internal code.']],
         ['ver769', 'Faster typing (no lag)', ['Typing in the Text command, Camera, Dialog, and Memo fields no longer rebuilds the whole sheet on every keystroke. The fixed grid and cell layer are cached and only the changed content is redrawn, removing the freezing/lag some machines had while typing.']],
@@ -3320,6 +3342,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver773', 'セリフシートボタンをシート左へ', ['口パク（リップシンク）モードのボタンを、上のツールバーからセル列の左に縦置きの「セリフシート」ボタンとして移動しました。モード中に選択のクリア（×）ボタンが押せなかった不具合も修正。']],
         ['ver772', '口パク専用モード', ['メモモードの隣に「口パク」ボタンを追加。このモード中はセル列を縦にドラッグして範囲を選び、離すと口パクシートが開きます。点・テキスト・トークン編集と操作が重ならなくなりました。モード外での旧クリック＆Shift範囲選択は廃止しました。']],
         ['ver770', 'カメラ入力とデュレーションドラッグを軽く', ['カメラの向きピッカーが入力・スクロールのたびに作り直されないようにし（デバウンス）、デュレーション境界のドラッグ中の再描画も抑えました。低スペック環境でもカメラ欄とデュレーションつまみの反応が軽くなります。未使用の内部コードも削除。']],
         ['ver769', '入力の高速化（カクつき解消）', ['テキストコマンド・カメラ・セリフ・メモ欄への入力で、毎回シート全体を描き直さないようにしました。固定のグリッドとセル層をキャッシュし、変更部分だけを再描画するため、一部の環境で発生していた入力時のカクつき・フリーズを解消します。']],
@@ -3429,6 +3452,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver773', 'セリフシート 버튼 시트 좌측으로', ['口パク(입모양) 모드 버튼을 상단 툴바에서 셀 열 왼쪽의 세로 「セリフシート」 버튼으로 옮겼습니다. 모드에서 선택 지우기(×) 버튼이 안 눌리던 문제도 수정.']],
         ['ver772', '口パク(입모양) 전용 모드', ['메모 모드 옆에 「口パク」 버튼 추가. 이 모드에서 셀 열을 세로로 드래그해 프레임 범위를 고르고, 손을 떼면 口パク 시트가 열립니다. 점·텍스트·토큰 편집과 조작이 겹치지 않습니다. 모드 밖의 기존 클릭＆Shift 범위 선택은 폐지했습니다.']],
         ['ver770', '카메라 입력·듀레이션 드래그 가볍게', ['카메라 방향 선택탭이 키 입력·스크롤마다 다시 만들어지지 않도록 했고(디바운스), 듀레이션 경계 드래그 중 재그리기도 줄였습니다. 저사양 환경에서도 카메라 입력란과 듀레이션 손잡이 반응이 가벼워집니다. 미사용 내부 코드도 정리했습니다.']],
         ['ver769', '입력 속도 개선(렉 해소)', ['텍스트 커맨드·카메라·대사·메모 입력란에 글자를 칠 때 매번 시트 전체를 다시 그리지 않도록 했습니다. 고정 그리드와 셀 레이어를 캐시하고 바뀐 부분만 다시 그려서, 일부 환경에서 입력 시 발생하던 렉/멈춤을 없앱니다.']],
@@ -3538,6 +3562,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver773', 'セリフシート按钮移到表格左侧', ['将口型（口パク）模式按钮从顶部工具栏移到单元格列左侧的竖排「セリフシート」按钮。同时修复了该模式下选中清除（×）按钮无法点击的问题。']],
         ['ver772', '口型（口パク）专用模式', ['在备注模式旁新增「口パク」按钮。该模式下沿单元格列纵向拖动即可选择帧范围，松手即打开口型表——不再与点/文字/记号编辑冲突。模式外的旧「点击＋Shift」范围选择已移除。']],
         ['ver770', '摄影输入与时长拖动更流畅', ['摄影方向选择器不再在每次按键/滚动时重建（已加防抖），拖动时长边界时的重绘也有所减少，因此在低配设备上摄影栏和时长手柄都更跟手。同时删除了未使用的内部代码。']],
         ['ver769', '输入更流畅（消除卡顿）', ['在文本命令、摄影、对白、备注栏输入时，不再每次按键都重绘整张表。现在会缓存固定网格与单元格层，只重绘变化的内容，从而消除部分设备在输入时出现的卡顿/卡死。']],
@@ -17070,7 +17095,7 @@
           originalAreaW:block.metrics.originalAreaW,
           originalEntriesCount:entries.length,
           top:top, nameStripH:nameStripH, rowH:bodyH / block.count,
-          frameCount:block.count, start:block.start
+          frameCount:block.count, start:block.start, end:block.start + block.count - 1
         };
         const area = getCellArea(tempBlock);
         const hit = el('rect', { x:area.x, y:area.y, width:area.w, height:area.h, fill:'transparent', stroke:'transparent', 'pointer-events':'all', class:'serifu-capture-area' });
@@ -17082,6 +17107,19 @@
           event.preventDefault();
           event.stopPropagation();
           if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+          // The capture layer sits above the selection overlay, so its clear-X / box would be
+          // unclickable — hit-test them here first and act instead of starting a new drag.
+          const sel = state.serifuRangeSelection;
+          if (sel) {
+            const pt = getSvgPointFromPointerEvent(event);
+            const rect = getSerifuSelectionRect(tempBlock, entries, sel);
+            if (rect) {
+              const btnSize = 16, pad = 6;
+              const bx = rect.x + rect.w + 4, by = rect.y + rect.h - btnSize;
+              if (pt.x >= bx - pad && pt.x <= bx + btnSize + pad && pt.y >= by - pad && pt.y <= by + btnSize + pad) { clearSerifuRangeSelection(); return; }
+              if (pt.x >= rect.x && pt.x <= rect.x + rect.w && pt.y >= rect.y && pt.y <= rect.y + rect.h) { setTimeout(openSerifuSheetModal, 0); return; }
+            }
+          }
           beginSerifuRangeDrag(event, info.entry, info.frame, info.range);
         }, { passive:false });
         appendSvgNode(hit);
