@@ -2244,7 +2244,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '768';
+    const APP_VERSION = '769';
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
     const PAPER_HEADER_TEMPLATE_KNOWN_MIN_SCORE = 0.84;
@@ -2416,13 +2416,59 @@
     let currentDrawLayer = 'output';
     let usageGeoPromise = null;
 
+    // ---- static/dynamic layer caching (perf): grid + cells built once, reused across text-only edits ----
+    let __staticG = null, __dynamicG = null, __staticSig = null, __staticValid = false, __inStatic = false;
+    function ensureRenderLayers() {
+      if (!__staticG || __staticG.parentNode !== svg) {
+        __staticG = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        __staticG.setAttribute('data-layer', 'static');
+        svg.appendChild(__staticG);
+        __staticSig = null;
+      }
+      if (!__dynamicG || __dynamicG.parentNode !== svg) {
+        __dynamicG = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        __dynamicG.setAttribute('data-layer', 'dynamic');
+        svg.appendChild(__dynamicG);
+      }
+      if (__staticG.nextSibling !== __dynamicG) svg.appendChild(__dynamicG); // keep dynamic on top
+    }
+    function withStaticLayer(callback) {
+      if (currentSvgTarget !== svg) return callback(); // export path: draw normally into target
+      if (__staticValid) return; // cached static content still valid -> skip compute + DOM
+      const prev = __inStatic; __inStatic = true;
+      try { return callback(); } finally { __inStatic = prev; }
+    }
+    function computeStaticSig(pageIndex, model, interactive) {
+      const L = model.layout || {};
+      const entries = (L.originalEntries || []).map(function(e){ return (e && e.label || '') + '|' + (e && e.isActual ? 1 : 0); }).join(',');
+      const cells = (L.layers || []).map(function(ly){
+        const segs = (ly.segments || []).map(function(s){ return s.from + '-' + s.to + '-' + (s.kind || '') + '-' + (s.label || '') + '-' + (s.autoLeadingCross ? 1 : 0) + '-' + (s.showCrossMarker === false ? 0 : 1); }).join('|');
+        const marks = (ly.marks || []).map(function(m){ return (m.type || '') + m.frame + '-' + (m.text || ''); }).join('|');
+        return (ly.uid || '') + ':' + segs + ';' + marks + ';pe' + (ly.previewEndFrame || 0);
+      }).join('~');
+      return JSON.stringify({
+        p: pageIndex, tp: model.totalPages, single: !!L.singleMode, entries: entries,
+        dm: L.dualMetrics || null, sm: L.singleMetrics || null,
+        st: !!state.showTemplate, cl: !!state.showCellLabelOutput, cr: !!state.cellReadabilityLarge,
+        cc: (typeof getCellColumnCount === 'function' ? getCellColumnCount() : state.cellColumnCount),
+        lb: state.layoutBoxes || {}, it: !!interactive, lang: state.lang,
+        cells: cells, mo: state.markerOverrides || {},
+        df: (typeof getDurationFrameCount === 'function' ? getDurationFrameCount() : 0)
+      });
+    }
+
     function shouldDrawCurrentLayer() {
       if (currentDrawLayer === 'paper' && !state.showTemplate) return false;
       return currentRenderLayerFilter === 'all' || currentRenderLayerFilter === currentDrawLayer;
     }
 
     function appendSvgNode(node) {
-      if (shouldDrawCurrentLayer()) currentSvgTarget.appendChild(node);
+      if (!shouldDrawCurrentLayer()) return node;
+      if (currentSvgTarget === svg && __dynamicG) {
+        (__inStatic ? __staticG : __dynamicG).appendChild(node);
+      } else {
+        currentSvgTarget.appendChild(node);
+      }
       return node;
     }
 
@@ -3139,6 +3185,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver769', 'Faster typing (no lag)', ['Typing in the Text command, Camera, Dialog, and Memo fields no longer rebuilds the whole sheet on every keystroke. The fixed grid and cell layer are cached and only the changed content is redrawn, removing the freezing/lag some machines had while typing.']],
         ['ver768', 'Picker reflects mid-text O.L', ['The per-line camera picker now switches to OL when the line’s middle text is an O.L (e.g. <code>BG1 | OL | BG2</code>, <code>A1 | AセルOL | A2</code>), not only when OL is in the label position. The default Camera sample now uses <code>BG1 | OL | BG2</code>.']],
         ['ver767', 'O.L memo order', ['Camera→Memo now writes the within-cut O.L as states-then-cel: <code>・A1 ⋈ A2 AセルO.L</code>.']],
         ['ver766', 'Fix camera sample slash', ['Fixed the default Camera Area sample text that wrongly contained a slash-joined OL example; it now loads two clean lines (PAN and the within-cut O.L form).']],
@@ -3245,6 +3292,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver769', '入力の高速化（カクつき解消）', ['テキストコマンド・カメラ・セリフ・メモ欄への入力で、毎回シート全体を描き直さないようにしました。固定のグリッドとセル層をキャッシュし、変更部分だけを再描画するため、一部の環境で発生していた入力時のカクつき・フリーズを解消します。']],
         ['ver768', '選択UIが中央O.Lを反映', ['行ごとのカメラ選択UIが、ラベル位置だけでなく中央テキストがO.L（例: <code>BG1 | OL | BG2</code>、<code>A1 | AセルOL | A2</code>）のときもOLに切り替わるようになりました。初期サンプルも <code>BG1 | OL | BG2</code> にしました。']],
         ['ver767', 'O.Lメモの順序', ['カメラ→メモのカット内O.Lを状態→セルの順に変更しました: <code>・A1 ⋈ A2 AセルO.L</code>。']],
         ['ver766', 'カメラ例のスラッシュ修正', ['カメラ欄の初期サンプルに誤って入っていたスラッシュ併記のOL例を修正し、2行のクリーンな例（PANとカット内O.L形式）を読み込むようにしました。']],
@@ -3351,6 +3399,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver769', '입력 속도 개선(렉 해소)', ['텍스트 커맨드·카메라·대사·메모 입력란에 글자를 칠 때 매번 시트 전체를 다시 그리지 않도록 했습니다. 고정 그리드와 셀 레이어를 캐시하고 바뀐 부분만 다시 그려서, 일부 환경에서 입력 시 발생하던 렉/멈춤을 없앱니다.']],
         ['ver768', '선택탭이 가운데 O.L 반영', ['줄별 카메라 선택탭이 라벨 위치뿐 아니라 가운데 텍스트가 O.L(예: <code>BG1 | OL | BG2</code>, <code>A1 | AセルOL | A2</code>)이면 OL로 전환됩니다. 기본 샘플도 <code>BG1 | OL | BG2</code>로 바꿨습니다.']],
         ['ver767', 'O.L 메모 순서', ['카메라→메모의 컷 내 O.L을 상태→셀 순서로 바꿨습니다: <code>・A1 ⋈ A2 AセルO.L</code>.']],
         ['ver766', '카메라 예시 슬래시 수정', ['카메라란 기본 샘플에 잘못 들어간 슬래시 병기 OL 예시를 수정해, 깨끗한 2줄(PAN과 컷 내 O.L 형식)을 불러오도록 했습니다.']],
@@ -3457,6 +3506,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver769', '输入更流畅（消除卡顿）', ['在文本命令、摄影、对白、备注栏输入时，不再每次按键都重绘整张表。现在会缓存固定网格与单元格层，只重绘变化的内容，从而消除部分设备在输入时出现的卡顿/卡死。']],
         ['ver768', '选择UI反映中间O.L', ['逐行摄影选择 UI 现在不仅在标签位置、也会在行的中间文本为 O.L（如 <code>BG1 | OL | BG2</code>、<code>A1 | AセルOL | A2</code>）时切换为 OL。默认示例也改为 <code>BG1 | OL | BG2</code>。']],
         ['ver767', 'O.L 备注顺序', ['摄影→备注的镜头内 O.L 改为状态在前、素材在后: <code>・A1 ⋈ A2 AセルO.L</code>。']],
         ['ver766', '修复摄影示例斜杠', ['修复了摄影栏默认示例中误含的斜杠并列 OL 示例，现在加载两行干净示例（PAN 与镜头内 O.L 形式）。']],
@@ -15795,7 +15845,7 @@
         const templateBodyY = templateCellArea.y;
         const templateBodyH = templateCellArea.h;
 
-        withDrawLayer('paper', function(){
+        withStaticLayer(function(){
           rect(templateMinX, templateHeaderY, templateMaxX - templateMinX, templateHeaderH + templateBodyH, 1.2, 'none', '#111');
           rect(templateCellArea.x, templateHeaderY, templateCellArea.w, templateHeaderH, 1, 'none', '#111');
           rect(templateDialogArea.x, templateHeaderY, templateDialogArea.w, templateHeaderH, 1, 'none', '#111');
@@ -15861,7 +15911,7 @@
           }
         });
       } else {
-        withDrawLayer('paper', function(){
+        withStaticLayer(function(){
           rect(params.blockX, top, params.blockW, nameStripH + bodyH, 1.2, 'none', '#111');
           line(xOriginalRight, top, xOriginalRight, top + nameStripH + bodyH, '#111', 1);
           line(xDialogRight, top, xDialogRight, top + nameStripH + bodyH, '#111', 1);
@@ -15917,7 +15967,7 @@
         });
       }
 
-      withDrawLayer('output', function(){
+      withStaticLayer(function(){ withDrawLayer('output', function(){
       params.originalEntries.forEach(function(entry, colIndex){
         const layer = params.layersById.get(entry.uid);
         const baseLayer = params.baseLayersById.get(entry.uid);
@@ -16121,7 +16171,7 @@
           }
         }
       });
-      });
+      }); });
 
       const returnedBlock = { blockX:params.blockX, blockW:params.blockW, originalColW:originalColW, originalAreaW:params.originalAreaW, originalEntriesCount:params.originalEntries.length, top:top, rowH:rowH, frameCount:params.frameCount, nameStripH:nameStripH, xOriginalRight:xOriginalRight, xDialogRight:xDialogRight, xInbetweenRight:xInbetweenRight, dialogW:params.dialogW, cameraW:params.cameraW, start:params.startFrame, end:params.startFrame + params.frameCount - 1, durationFrame:params.durationFrame || 0 };
       renderDougaSheet(returnedBlock, params.originalEntries, state.dougaSheetData);
@@ -18228,12 +18278,21 @@
       currentRenderLayerFilter = renderOptions && renderOptions.layerFilter ? renderOptions.layerFilter : 'all';
       currentDrawLayer = 'output';
       setSvgTarget(targetSvg || svg);
-      clearSvg(targetSvg || svg);
+      if (currentSvgTarget === svg) {
+        ensureRenderLayers();
+        const sig = computeStaticSig(pageIndex, model, isInteractive);
+        __staticValid = (__staticG.childNodes.length > 0 && sig === __staticSig && !state.paperImageDataUrl);
+        if (!__staticValid) { clearSvg(__staticG); __staticSig = sig; }
+        clearSvg(__dynamicG);
+      } else {
+        __staticValid = false;
+        clearSvg(currentSvgTarget);
+      }
       currentSvgTarget.setAttribute('viewBox', '0 0 ' + PAGE_W + ' ' + PAGE_H);
       currentSvgTarget.setAttribute('width', PAGE_W);
       currentSvgTarget.setAttribute('height', PAGE_H);
-      withDrawLayer('background', function(){ rect(0, 0, PAGE_W, PAGE_H, 0, 'white', 'none'); });
-      addPaperImageLayer();
+      withStaticLayer(function(){ withDrawLayer('background', function(){ rect(0, 0, PAGE_W, PAGE_H, 0, 'white', 'none'); }); });
+      withStaticLayer(function(){ addPaperImageLayer(); });
       renderHeader(0, pageIndex, model.totalPages);
       renderTextMemoHitArea(pageIndex, isInteractive);
       const explicitDurationFrame = getDurationFrameCount();
