@@ -2244,7 +2244,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '769';
+    const APP_VERSION = '770';
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
     const PAPER_HEADER_TEMPLATE_KNOWN_MIN_SCORE = 0.84;
@@ -3185,6 +3185,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver770', 'Smoother camera input & duration drag', ['The camera direction picker no longer rebuilds on every keystroke/scroll (it is debounced), and dragging the duration boundary redraws less aggressively, so the Camera field and the duration handle stay responsive on slower machines. Also removed unused internal code.']],
         ['ver769', 'Faster typing (no lag)', ['Typing in the Text command, Camera, Dialog, and Memo fields no longer rebuilds the whole sheet on every keystroke. The fixed grid and cell layer are cached and only the changed content is redrawn, removing the freezing/lag some machines had while typing.']],
         ['ver768', 'Picker reflects mid-text O.L', ['The per-line camera picker now switches to OL when the line’s middle text is an O.L (e.g. <code>BG1 | OL | BG2</code>, <code>A1 | AセルOL | A2</code>), not only when OL is in the label position. The default Camera sample now uses <code>BG1 | OL | BG2</code>.']],
         ['ver767', 'O.L memo order', ['Camera→Memo now writes the within-cut O.L as states-then-cel: <code>・A1 ⋈ A2 AセルO.L</code>.']],
@@ -3292,6 +3293,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver770', 'カメラ入力とデュレーションドラッグを軽く', ['カメラの向きピッカーが入力・スクロールのたびに作り直されないようにし（デバウンス）、デュレーション境界のドラッグ中の再描画も抑えました。低スペック環境でもカメラ欄とデュレーションつまみの反応が軽くなります。未使用の内部コードも削除。']],
         ['ver769', '入力の高速化（カクつき解消）', ['テキストコマンド・カメラ・セリフ・メモ欄への入力で、毎回シート全体を描き直さないようにしました。固定のグリッドとセル層をキャッシュし、変更部分だけを再描画するため、一部の環境で発生していた入力時のカクつき・フリーズを解消します。']],
         ['ver768', '選択UIが中央O.Lを反映', ['行ごとのカメラ選択UIが、ラベル位置だけでなく中央テキストがO.L（例: <code>BG1 | OL | BG2</code>、<code>A1 | AセルOL | A2</code>）のときもOLに切り替わるようになりました。初期サンプルも <code>BG1 | OL | BG2</code> にしました。']],
         ['ver767', 'O.Lメモの順序', ['カメラ→メモのカット内O.Lを状態→セルの順に変更しました: <code>・A1 ⋈ A2 AセルO.L</code>。']],
@@ -3399,6 +3401,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver770', '카메라 입력·듀레이션 드래그 가볍게', ['카메라 방향 선택탭이 키 입력·스크롤마다 다시 만들어지지 않도록 했고(디바운스), 듀레이션 경계 드래그 중 재그리기도 줄였습니다. 저사양 환경에서도 카메라 입력란과 듀레이션 손잡이 반응이 가벼워집니다. 미사용 내부 코드도 정리했습니다.']],
         ['ver769', '입력 속도 개선(렉 해소)', ['텍스트 커맨드·카메라·대사·메모 입력란에 글자를 칠 때 매번 시트 전체를 다시 그리지 않도록 했습니다. 고정 그리드와 셀 레이어를 캐시하고 바뀐 부분만 다시 그려서, 일부 환경에서 입력 시 발생하던 렉/멈춤을 없앱니다.']],
         ['ver768', '선택탭이 가운데 O.L 반영', ['줄별 카메라 선택탭이 라벨 위치뿐 아니라 가운데 텍스트가 O.L(예: <code>BG1 | OL | BG2</code>, <code>A1 | AセルOL | A2</code>)이면 OL로 전환됩니다. 기본 샘플도 <code>BG1 | OL | BG2</code>로 바꿨습니다.']],
         ['ver767', 'O.L 메모 순서', ['카메라→메모의 컷 내 O.L을 상태→셀 순서로 바꿨습니다: <code>・A1 ⋈ A2 AセルO.L</code>.']],
@@ -3506,6 +3509,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver770', '摄影输入与时长拖动更流畅', ['摄影方向选择器不再在每次按键/滚动时重建（已加防抖），拖动时长边界时的重绘也有所减少，因此在低配设备上摄影栏和时长手柄都更跟手。同时删除了未使用的内部代码。']],
         ['ver769', '输入更流畅（消除卡顿）', ['在文本命令、摄影、对白、备注栏输入时，不再每次按键都重绘整张表。现在会缓存固定网格与单元格层，只重绘变化的内容，从而消除部分设备在输入时出现的卡顿/卡死。']],
         ['ver768', '选择UI反映中间O.L', ['逐行摄影选择 UI 现在不仅在标签位置、也会在行的中间文本为 O.L（如 <code>BG1 | OL | BG2</code>、<code>A1 | AセルOL | A2</code>）时切换为 OL。默认示例也改为 <code>BG1 | OL | BG2</code>。']],
         ['ver767', 'O.L 备注顺序', ['摄影→备注的镜头内 O.L 改为状态在前、素材在后: <code>・A1 ⋈ A2 AセルO.L</code>。']],
@@ -5835,17 +5839,6 @@
         nodeSet.rect.setAttribute('height', Math.max(1, box.h));
         nodeSet.text.setAttribute('x', box.x + 8);
         nodeSet.text.setAttribute('y', box.y - 9);
-      });
-    }
-
-    function requestLayoutDragPreview(drag) {
-      state.layoutDragPreviewPendingDrag = drag;
-      if (state.layoutDragPreviewFrame !== null) return;
-      state.layoutDragPreviewFrame = window.requestAnimationFrame(function(){
-        state.layoutDragPreviewFrame = null;
-        const pending = state.layoutDragPreviewPendingDrag;
-        state.layoutDragPreviewPendingDrag = null;
-        if (pending && state.layoutDrag === pending) renderLayoutDragPreviewNow(pending);
       });
     }
 
@@ -10818,23 +10811,6 @@
       return CAMERA_TARGET_SHAPE_DIRECTIVE_SET.has(normalizeCameraDirectiveCompletion(value));
     }
 
-    function getTextareaActiveLineInfo(textarea) {
-      if (!textarea) return null;
-      const value = String(textarea.value || '').replace(/\r/g, '');
-      const cursor = typeof textarea.selectionStart === 'number' ? textarea.selectionStart : value.length;
-      const lineStart = value.lastIndexOf('\n', Math.max(0, cursor - 1)) + 1;
-      let lineEnd = value.indexOf('\n', cursor);
-      if (lineEnd < 0) lineEnd = value.length;
-      return {
-        value:value,
-        cursor:cursor,
-        lineStart:lineStart,
-        lineEnd:lineEnd,
-        lineText:value.slice(lineStart, lineEnd),
-        lineIndex:value.slice(0, lineStart).split('\n').length - 1
-      };
-    }
-
     function getCameraDirectiveEditableLineFromInfo(info) {
       if (!info) return null;
       const cleanLine = splitManualSourceSuffix(info.lineText).cleanLine;
@@ -10981,6 +10957,15 @@
         if (!positionCameraDirectiveSelect(select, textarea, info)) select.remove();
       });
       if (!cameraDirectiveCompleterEl.children.length) cameraDirectiveCompleterEl.classList.add('hidden');
+    }
+
+    let __camCompleterTimer = null;
+    function scheduleCameraDirectiveCompleter() {
+      if (__camCompleterTimer) clearTimeout(__camCompleterTimer);
+      __camCompleterTimer = setTimeout(function(){
+        __camCompleterTimer = null;
+        updateCameraDirectiveCompleter();
+      }, 90);
     }
 
     function applyCameraDirectiveCompletion(directive, lineIndex) {
@@ -11208,11 +11193,6 @@
         return { token:raw, frame:i + 1 };
       }
       return null;
-    }
-
-    function getLastCommandTimelineEventToken(tokens) {
-      const event = getLastCommandTimelineEvent(tokens);
-      return event ? event.token : '';
     }
 
     function timelineSegmentCrossesBlockBoundary(fromFrame, toFrame) {
@@ -13077,15 +13057,6 @@
       return true;
     }
 
-    function clearSerifuSheetTransientState() {
-      closeSerifuRangeContextMenu();
-      closeSerifuSheetModal();
-      state.serifuRangeAnchor = null;
-      state.serifuRangeDrag = null;
-      state.serifuRangeSelection = null;
-      document.documentElement.classList.remove('serifu-range-dragging');
-    }
-
     function handleSerifuRangeShiftClick(event, entry, frame) {
       if (!event || !event.shiftKey || !entry || !isSerifuRangeAnchorArmed()) return false;
       const selection = makeSerifuRangeSelection(state.serifuRangeAnchor, entry, frame);
@@ -13317,11 +13288,6 @@
         row.appendChild(roleSelect);
         modal.mouthRows.appendChild(row);
       }
-    }
-
-    function getSerifuPhraseCharCount(text, mouthTokenCount) {
-      const chars = Array.from(String(text || '').replace(/\s+/g, ''));
-      return Math.max(1, Math.min(999, chars.length || mouthTokenCount || 1));
     }
 
     function pickRandomMouthToken(tokens, previous, generated) {
@@ -13557,64 +13523,6 @@
       const y = getOutputRowTop(block, from, 'cell');
       const h = getOutputRowTop(block, to, 'cell') + getOutputRowH(block, 'cell') - y;
       return { x:bounds.x1, y:y, w:bounds.x2 - bounds.x1, h:h, from:from, to:to };
-    }
-
-    function drawSerifuGuideToken(block, colIndex, frame, token) {
-      const bounds = getOutputCellBounds(block, colIndex);
-      const y1 = getOutputRowTop(block, frame, 'cell');
-      const y2 = y1 + getOutputRowH(block, 'cell');
-      drawMarker('circle', bounds.x1, y1, bounds.x2, y2);
-      appendSvgNode(el('text', {
-        x:getCellTextX(bounds.x1, bounds.x2),
-        y:(y1 + y2) / 2,
-        fill:'#111',
-        'font-size':cellOutputSize(11),
-        'font-family':'Arial, Helvetica, sans-serif',
-        'text-anchor':getCellTextAnchor(),
-        'font-weight':'800',
-        'dominant-baseline':'middle',
-        'pointer-events':'none'
-      }, token || ''));
-    }
-
-    function drawSerifuGuideLine(block, colIndex, frame, wavy) {
-      const bounds = getOutputCellBounds(block, colIndex);
-      const y1 = getOutputRowTop(block, frame, 'cell');
-      const y2 = y1 + getOutputRowH(block, 'cell');
-      renderCellContinuationLine((bounds.x1 + bounds.x2) / 2, y1 + 1.5, y2 - 1.5, '#111', cellOutputStroke(1), !!wavy);
-    }
-
-    function renderSerifuSheetGuides(block, entries) {
-      if (currentRenderLayerFilter !== 'all') return;
-      const guides = Array.isArray(state.serifuSheetGuides) ? state.serifuSheetGuides : [];
-      if (!guides.length || !block || !entries) return;
-      withDrawLayer('output', function(){
-        guides.forEach(function(guide){
-          if (!guide || !guide.uid) return;
-          const colIndex = entries.findIndex(function(entry){ return String(entry.uid || '') === String(guide.uid || ''); });
-          if (colIndex === -1) return;
-          const from = normalizeSerifuFrame(guide.fromFrame);
-          const to = normalizeSerifuFrame(guide.toFrame);
-          const visibleFrom = Math.max(block.start, from);
-          const visibleTo = Math.min(block.end, to);
-          if (visibleTo < visibleFrom) return;
-          const mouthTokens = Array.isArray(guide.mouthTokens) ? guide.mouthTokens.map(function(token){ return sanitizeCommandToken(token); }).filter(Boolean) : [];
-          const firstToken = mouthTokens[0] || '1';
-          const lastToken = mouthTokens[mouthTokens.length - 1] || firstToken;
-          const lastTokenFrame = Math.min(to, from + 2);
-          for (let frame = visibleFrom; frame <= visibleTo; frame++) {
-            if (frame === from) {
-              drawSerifuGuideToken(block, colIndex, frame, firstToken);
-            } else if (frame === lastTokenFrame) {
-              drawSerifuGuideToken(block, colIndex, frame, lastToken);
-            } else if (frame < lastTokenFrame) {
-              drawSerifuGuideLine(block, colIndex, frame, true);
-            } else {
-              drawSerifuGuideLine(block, colIndex, frame, false);
-            }
-          }
-        });
-      });
     }
 
     function renderSerifuRangeOverlay(block, entries, interactive) {
@@ -14073,10 +13981,6 @@
       return '';
     }
 
-    function isCameraMarkerToken(value) {
-      return !!normalizeCameraMarkerToken(value);
-    }
-
     function cameraBoundaryLabelsMatch(a, b) {
       const aa = normalizeCameraBoundaryLabel(a);
       const bb = normalizeCameraBoundaryLabel(b);
@@ -14324,11 +14228,6 @@
         if (info) return Object.assign({ field:candidates[i].field }, info);
       }
       return null;
-    }
-
-    function getCameraSpecialShape(seg) {
-      const info = getCameraSpecialShapeInfo(seg);
-      return info ? info.shape : '';
     }
 
     function isCameraTargetShapeSegment(seg, shapeInfo) {
@@ -16389,18 +16288,6 @@
       return out;
     }
 
-    function getTextMemoDurationDefaultWidth(gap) {
-      gap = gap || getTextMemoGapRect();
-      const durationKeys = ['header-seconds', 'header-frames'];
-      let rightEdge = gap.x + Math.min(gap.w, TEXT_MEMO_DEFAULT_W);
-      durationKeys.forEach(function(key){
-        const box = (state.layoutBoxes && state.layoutBoxes[key]) || (state.layoutBoxBaseRects && state.layoutBoxBaseRects[key]);
-        if (box) rightEdge = Math.max(rightEdge, Number(box.x || 0) + Number(box.w || 0));
-      });
-      rightEdge = clampNumber(rightEdge, gap.x + TEXT_MEMO_MIN_W, gap.x + gap.w);
-      return Math.max(TEXT_MEMO_MIN_W, rightEdge - gap.x);
-    }
-
     function createDefaultTextMemo(pageIndex, x, y, options) {
       const list = getTextMemoPageData(pageIndex);
       const gap = getTextMemoGapRect();
@@ -16428,23 +16315,6 @@
       memo.color = desired.color;
       memo.rich = desired.rich;
       list.push(memo);
-      return memo;
-    }
-
-    function getOrCreateTextMemo(pageIndex, x, y) {
-      const list = getTextMemoPageData(pageIndex);
-      if (list[0]) return clampTextMemoBox(list[0]);
-      return createDefaultTextMemo(pageIndex, x, y, {});
-    }
-
-    function ensurePositionModeTextMemo(pageIndex) {
-      if (!state.textMemoEditMode) return null;
-      const targetPage = Math.max(0, Number(pageIndex || 0));
-      let memo = getTextMemoPageData(targetPage)[0] || null;
-      if (memo) {
-        clampTextMemoBox(memo);
-        state.activeTextMemo = { pageIndex:targetPage, id:memo.id };
-      }
       return memo;
     }
 
@@ -18209,7 +18079,13 @@
         const durationTargetFrame = getDurationFrameFromPointerEvent(event);
         if (!durationTargetFrame) return;
         setDurationFrameCount(durationTargetFrame);
-        requestRender();
+        // Changing duration busts the cached grid/cell layer (hold lines depend on it),
+        // so throttle the full rebuild during the drag; the final frame renders on drop.
+        const now = performance.now();
+        if (!drag.lastDurationRenderT || now - drag.lastDurationRenderT > 60) {
+          drag.lastDurationRenderT = now;
+          requestRender();
+        }
         return;
       }
       const targetFrame = getFrameFromPointerEvent(event);
@@ -18240,6 +18116,8 @@
       if (drag && drag.blockType && drag.blockType !== 'duration' && drag.pendingFrom && drag.pendingTo) {
         updateManualBlockLine(drag.blockType, drag.blockId, drag.pendingFrom, drag.pendingTo, { render:false });
         requestRender();
+      } else if (drag && drag.blockType === 'duration') {
+        requestRender(); // ensure the final duration position renders (throttle may have skipped the last move)
       }
       state.activeTimelineDrag = null;
       document.documentElement.classList.remove('timeline-edge-dragging');
@@ -21808,16 +21686,17 @@
 
     bindInput('timelineCommandInput', handleTimelineCommandInputChange);
     bindInput('dialogManual', function(){ scheduleManualSourceRoleSync(); requestCommandInputRender(); });
-    bindInput('cameraManual', function(){ scheduleManualSourceRoleSync(); requestCommandInputRender(); updateCameraDirectiveCompleter(); });
+    bindInput('cameraManual', function(){ scheduleManualSourceRoleSync(); requestCommandInputRender(); scheduleCameraDirectiveCompleter(); });
     bindInput('csvCommandEdit', handleCsvCommandInputChange);
     const cameraManualEl = document.getElementById('cameraManual');
     if (cameraManualEl) {
-      ['focus', 'click', 'keyup', 'mouseup', 'scroll'].forEach(function(eventName){
-        cameraManualEl.addEventListener(eventName, updateCameraDirectiveCompleter);
+      cameraManualEl.addEventListener('focus', updateCameraDirectiveCompleter);
+      ['click', 'keyup', 'mouseup', 'scroll'].forEach(function(eventName){
+        cameraManualEl.addEventListener(eventName, scheduleCameraDirectiveCompleter);
       });
     }
-    window.addEventListener('resize', updateCameraDirectiveCompleter, true);
-    window.addEventListener('scroll', updateCameraDirectiveCompleter, true);
+    window.addEventListener('resize', scheduleCameraDirectiveCompleter, true);
+    window.addEventListener('scroll', scheduleCameraDirectiveCompleter, true);
     updateCameraDirectiveCompleter();
     ['timelineCommandInput', 'csvCommandEdit', 'dialogManual', 'cameraManual'].forEach(function(id){
       const node = document.getElementById(id);
