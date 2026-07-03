@@ -2333,7 +2333,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '788';
+    const APP_VERSION = '789';
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
     const PAPER_HEADER_TEMPLATE_KNOWN_MIN_SCORE = 0.84;
@@ -11101,7 +11101,9 @@
       infos.forEach(function(info){
         const select = createCameraDirectiveSelect(info);
         cameraDirectiveCompleterEl.appendChild(select);
-        if (!positionCameraDirectiveSelect(select, textarea, info)) select.remove();
+        // Keep every editable line's select in the DOM (hidden if off-screen) so scrolling
+        // only re-places them instead of rebuilding.
+        select.style.display = positionCameraDirectiveSelect(select, textarea, info) ? '' : 'none';
       });
       if (!cameraDirectiveCompleterEl.children.length) cameraDirectiveCompleterEl.classList.add('hidden');
     }
@@ -11113,6 +11115,26 @@
         __camCompleterTimer = null;
         updateCameraDirectiveCompleter();
       }, 90);
+    }
+
+    // Scroll/resize only need to re-place the existing selects (cheap) — no DOM rebuild,
+    // and immediate (rAF) so the pickers track the text instead of lagging behind.
+    function repositionCameraDirectiveSelects() {
+      const textarea = document.getElementById('cameraManual');
+      if (!textarea || !cameraDirectiveCompleterEl || cameraDirectiveCompleterEl.classList.contains('hidden')) return;
+      const kids = cameraDirectiveCompleterEl.children;
+      for (let i = 0; i < kids.length; i++) {
+        const sel = kids[i];
+        sel.style.display = positionCameraDirectiveSelect(sel, textarea, { lineIndex: Number(sel.dataset.lineIndex) || 0 }) ? '' : 'none';
+      }
+    }
+    let __camRepositionRaf = null;
+    function scheduleCameraReposition() {
+      if (__camRepositionRaf) return;
+      __camRepositionRaf = window.requestAnimationFrame(function(){
+        __camRepositionRaf = null;
+        repositionCameraDirectiveSelects();
+      });
     }
 
     function applyCameraDirectiveCompletion(directive, lineIndex) {
@@ -21988,12 +22010,13 @@
     const cameraManualEl = document.getElementById('cameraManual');
     if (cameraManualEl) {
       cameraManualEl.addEventListener('focus', updateCameraDirectiveCompleter);
-      ['click', 'keyup', 'mouseup', 'scroll'].forEach(function(eventName){
+      ['click', 'keyup', 'mouseup'].forEach(function(eventName){
         cameraManualEl.addEventListener(eventName, scheduleCameraDirectiveCompleter);
       });
+      cameraManualEl.addEventListener('scroll', scheduleCameraReposition);
     }
-    window.addEventListener('resize', scheduleCameraDirectiveCompleter, true);
-    window.addEventListener('scroll', scheduleCameraDirectiveCompleter, true);
+    window.addEventListener('resize', scheduleCameraReposition, true);
+    window.addEventListener('scroll', scheduleCameraReposition, true);
     updateCameraDirectiveCompleter();
     ['timelineCommandInput', 'csvCommandEdit', 'dialogManual', 'cameraManual'].forEach(function(id){
       const node = document.getElementById(id);
