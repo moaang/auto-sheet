@@ -151,12 +151,13 @@
       padding-top: 10px;
       border-top: 1px solid var(--soft);
     }
+    /* Danger (destructive) actions per the proposal: red ghost — quiet until hovered. */
     .sheet-reset-btn {
       height: 30px;
-      border: 1px solid var(--soft);
+      border: 1px solid transparent;
       border-radius: var(--r-ctl);
-      background: var(--panel);
-      color: var(--text);
+      background: transparent;
+      color: var(--red);
       font: inherit;
       font-size: 12px;
       font-weight: 700;
@@ -164,27 +165,28 @@
       cursor: pointer;
       transition: background .12s ease, border-color .12s ease;
     }
-    .sheet-reset-btn:hover { background: rgba(28,30,34,.05); border-color: var(--soft-strong); }
-    .sheet-reset-btn:hover { background: #f5f5f5; }
+    .sheet-reset-btn:hover { background: rgba(199,64,45,.08); }
     .topbar {
       display: flex;
-      align-items: flex-end;
+      align-items: center;
       justify-content: flex-start;
-      gap: 4px;
+      gap: 8px;
+      row-gap: 8px;
       margin-bottom: 12px;
-      flex-wrap: nowrap;
+      flex-wrap: wrap;
       min-width: 0;
     }
     .title {
-      font-size: 18px;
-      font-weight: 900;
+      font-size: 16.5px;
+      font-weight: 850;
       margin: 0;
       flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       min-width: max-content;
       white-space: nowrap;
-      overflow: visible;
-      text-overflow: clip;
-      letter-spacing: -0.035em;
+      letter-spacing: -0.03em;
       cursor: pointer;
       user-select: none;
       border-radius: 8px;
@@ -196,10 +198,22 @@
       outline: 2px solid var(--focus-ring);
       outline-offset: 2px;
     }
+    .title .ver-chip {
+      font-family: Consolas, ui-monospace, monospace;
+      font-size: 9.5px;
+      font-weight: 500;
+      letter-spacing: .02em;
+      color: var(--muted);
+      border: 1px solid var(--soft);
+      border-radius: 999px;
+      padding: 2px 7px;
+      line-height: 1;
+    }
     .lang-wrap {
       width: 64px;
       min-width: 64px;
       flex: 0 0 64px;
+      margin-left: auto;
     }
     .lang-wrap label {
       font-size: 10px;
@@ -211,55 +225,58 @@
       font-size: 10px;
       border-radius: 8px;
     }
+    /* Project save/load as one segmented pill (per the redesign proposal): the group itself
+       is the container; buttons are borderless segments split by hairline dividers. It takes
+       its own full-width row so it never squeezes or overflows at any width. */
     .settings-io-wrap {
-      display: inline-flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 3px;
-      flex: 1 1 auto;
-      white-space: nowrap;
+      order: 3;
+      display: flex;
+      align-items: stretch;
+      flex: 1 1 100%;
+      max-width: 100%;
       min-width: 0;
-      margin-left: auto;
-      position: relative;
-      max-width: 326px;
-      padding: 3px 4px;
+      height: 32px;
+      margin-left: 0;
+      padding: 0;
       border: 1px solid var(--soft);
       border-radius: var(--r-grp);
-      background: var(--panel-2);
-      box-shadow: none;
+      background: var(--panel);
+      overflow: hidden;
+      white-space: nowrap;
     }
     .settings-mini-btn {
-      height: 26px;
-      border: 1px solid var(--soft);
-      border-radius: 7px;
-      background: var(--panel);
+      border: 0;
+      border-radius: 0;
+      background: transparent;
       color: var(--text);
-      padding: 0 4px;
+      padding: 0 8px;
       font: inherit;
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 700;
       cursor: pointer;
-      max-width: 54px;
-      flex: 0 0 auto;
+      flex: 1 1 auto;
+      min-width: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      transition: background .12s ease, border-color .12s ease;
+      transition: background .12s ease;
     }
-    .settings-mini-btn:hover { background: rgba(28,30,34,.05); border-color: var(--soft-strong); }
+    .settings-mini-btn:hover { background: rgba(28,30,34,.05); }
+    .settings-mini-btn .ic-svg { width: 13px; height: 13px; flex: none; }
     .settings-folder-select {
-      height: 26px;
-      width: 80px;
-      min-width: 66px;
-      max-width: 86px;
-      flex: 1 1 76px;
-      border: 1px solid var(--soft);
-      border-radius: 7px;
-      background: var(--panel);
+      flex: 1 1 92px;
+      min-width: 72px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
       color: var(--text);
-      padding: 0 3px;
+      padding: 0 6px;
       font: inherit;
-      font-size: 10px;
+      font-size: 10.5px;
       font-weight: 700;
       cursor: pointer;
     }
@@ -267,6 +284,9 @@
       opacity: .58;
       cursor: not-allowed;
     }
+    /* Hairline dividers between segments — declared after the segment rules so the
+       buttons' border reset doesn't clobber it (same specificity, later source order). */
+    .settings-io-wrap > * + * { border-left: 1px solid var(--soft); }
     .settings-file-input-hidden { display: none; }
     .card {
       background: var(--panel);
@@ -276,8 +296,20 @@
       margin-bottom: 12px;
       box-shadow: var(--sh-card);
     }
-    .card h3 { margin: 0 0 10px; font-size: 13px; font-weight: 800; letter-spacing: -.005em; display: flex; align-items: center; gap: 7px; }
+    .card h3 { margin: 0 0 10px; font-size: 13px; font-weight: 800; letter-spacing: -.005em; display: flex; align-items: center; gap: 7px; min-width: 0; }
     .card h3 svg { width: 15px; height: 15px; color: var(--muted); flex: none; }
+    /* Format hint lives in the header row (right-aligned, muted) per the proposal. */
+    .card h3 .card-h-hint {
+      margin-left: auto;
+      font-size: 10.5px;
+      font-weight: 500;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-width: 0;
+      letter-spacing: 0;
+    }
     .section-title-row {
       display: flex;
       align-items: center;
@@ -290,13 +322,15 @@
       height: 30px;
       min-width: 92px;
       border: 1px solid var(--soft);
-      border-radius: 8px;
-      background: #fff;
+      border-radius: var(--r-ctl);
+      background: var(--panel);
       color: var(--text);
       font-size: 12px;
-      font-weight: 800;
+      font-weight: 700;
       cursor: pointer;
+      transition: background .12s ease, border-color .12s ease;
     }
+    .section-mini-btn:hover { background: rgba(28,30,34,.05); border-color: var(--soft-strong); }
     .section-mini-btn.active {
       background: var(--text);
       border-color: var(--text);
@@ -556,7 +590,7 @@
     .input-mode-btn {
       min-height: 38px;
       border: 1px solid var(--soft);
-      border-radius: 10px;
+      border-radius: var(--r-ctl);
       background: white;
       color: var(--text);
       font: inherit;
@@ -646,13 +680,13 @@
       margin-bottom: 12px;
       align-items: center;
     }
-    .paper-primary-actions .paper-mini-btn { height: 42px; font-size: 13px; }
+    .paper-primary-actions .paper-mini-btn { height: 36px; font-size: 12.5px; }
+    /* Position Edit is a mode TOGGLE: secondary at rest, ink-filled while the mode is on.
+       Auto Align keeps the card's single always-filled primary. */
     .paper-primary-actions .position-edit-main-btn {
-      background: var(--text);
-      border-color: var(--text);
-      color: white;
-      font-size: 14px;
+      font-size: 13px;
       letter-spacing: .02em;
+      font-weight: 800;
     }
     .paper-primary-actions .position-edit-main-btn.active {
       background: var(--ink-active);
@@ -670,6 +704,16 @@
     .paper-mini-btn:disabled { opacity: 0.45; cursor: default; }
     .paper-mini-btn:disabled:hover { background: var(--panel); border-color: var(--soft); }
     .paper-mini-btn.active { background: var(--text); color: white; border-color: var(--text); }
+    /* Destructive paper actions: red ghost like the other danger buttons. */
+    #clearPaperImageBtn, #paperToolbarClearBtn {
+      color: var(--red);
+      border-color: transparent;
+      background: transparent;
+    }
+    #clearPaperImageBtn:hover, #paperToolbarClearBtn:hover {
+      background: rgba(199,64,45,.08);
+      border-color: transparent;
+    }
     .paper-auto-align-btn {
       min-width: 86px;
       background: var(--text);
@@ -877,7 +921,7 @@
       flex-wrap: wrap;
       margin-bottom: 12px;
     }
-    .preview-title { font-size: 18px; font-weight: 800; }
+    .preview-title { font-size: 14px; font-weight: 800; letter-spacing: -.005em; }
     .preview-meta { display: none; color: var(--muted); font-size: 12px; }
     .toolbar-actions {
       display: flex;
@@ -1173,19 +1217,20 @@
     .serifu-side-btn {
       writing-mode: vertical-rl;
       text-orientation: mixed;
-      padding: 9px 3px;
+      padding: 10px 4px;
       border: 1.5px solid var(--red);
-      border-radius: 8px;
+      border-radius: 10px;
       background: var(--panel);
       color: var(--red);
       font-weight: 800;
-      font-size: 10px;
-      letter-spacing: 1px;
+      font-size: 10.5px;
+      letter-spacing: 2px;
       cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,.10);
+      box-shadow: var(--sh-card);
       user-select: none;
+      transition: background .12s ease;
     }
-    .serifu-side-btn:hover { background: #fff2f2; }
+    .serifu-side-btn:hover { background: #faede9; }
     .serifu-side-btn.active { background: var(--red); color: #fff; }
     .sheet-side-notice {
       position: absolute;
@@ -1536,36 +1581,35 @@
       padding: 0 7px;
     }
 
-    /* Docked camera-direction picker: sits in normal flow right under the textarea,
-       not overlaid on its scrolling content. It shows/edits whichever line the caret
-       is on, so it never needs to track scrollTop — no scroll listeners, no rAF,
-       nothing to lag or leave stranded on iOS momentum-scroll. */
-    .camera-directive-dock {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 6px;
-      margin-top: 4px;
+    /* Per-line camera-direction pickers, back at each line's right edge — but scroll-immune
+       by construction: the textarea auto-grows to fit its content (no internal scrolling to
+       track), and the pickers are absolutely positioned inside a relative wrapper, so sidebar
+       scrolling moves them natively with the textarea. Zero scroll/resize listeners. */
+    .camera-manual-wrap { position: relative; }
+    .camera-manual-wrap #cameraManual { overflow-y: hidden; resize: none; }
+    .camera-directive-completer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none; /* clicks fall through to the textarea; only the selects catch */
     }
-    .camera-directive-dock.hidden { display: none; }
-    .camera-directive-dock-label {
-      font-size: 10px;
-      font-weight: 800;
-      color: var(--muted);
-      white-space: nowrap;
-    }
-    .camera-directive-dock-select {
-      height: 24px;
-      min-width: 70px;
+    .camera-directive-completer.hidden { display: none; }
+    .camera-directive-select {
+      position: absolute;
+      right: 7px;
+      z-index: 3;
+      height: 20px;
+      min-width: 64px;
       border: 1px solid var(--soft);
       border-radius: 6px;
-      padding: 0 6px;
+      padding: 0 16px 0 6px;
       background: var(--panel-2);
       color: var(--text);
       font-family: Arial, Helvetica, sans-serif;
-      font-size: 12px;
-      font-weight: 800;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1;
       cursor: pointer;
+      pointer-events: auto;
     }
 
     .duration-stepper-overlay {
@@ -1748,21 +1792,30 @@
       font-size: 12px;
     }
     .memo-size-label {
-      font-size: 11px;
-      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
       color: var(--muted);
       margin-left: 2px;
     }
+    .memo-size-label .ic-svg { width: 15px; height: 15px; }
+    /* Seamless segmented zoom pill: inner controls are borderless ghosts. */
     .zoom-controls {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 2px;
       margin-left: auto;
       padding: 2px;
       border: 1px solid var(--soft);
       border-radius: var(--r-grp);
       background: var(--panel);
     }
+    .zoom-controls .memo-btn {
+      border: 0;
+      background: transparent;
+      height: 26px;
+      border-radius: 7px;
+    }
+    .zoom-controls .memo-btn:hover { background: rgba(28,30,34,.06); border: 0; }
     .zoom-btn {
       width: 28px;
       min-width: 28px;
@@ -1772,7 +1825,7 @@
       justify-content: center;
     }
     .zoom-reset-btn {
-      min-width: 52px;
+      min-width: 50px;
       padding: 0 8px;
       font-variant-numeric: tabular-nums;
       font-weight: 700;
@@ -2023,26 +2076,7 @@
     .pasted-image-transform-outline { pointer-events: all; cursor: move; touch-action: none; }
     .pasted-image-transform-grip { pointer-events: all; cursor: nwse-resize; touch-action: none; }
     html.pasted-image-dragging, html.pasted-image-dragging body, html.layer-tag-dragging, html.layer-tag-dragging body { overscroll-behavior: none; -webkit-user-select: none; user-select: none; }
-    /* ver511 top JSON controls: text label + grey outline group, not a button-like prefix */
-    .settings-json-prefix {
-      display: inline-flex;
-      align-items: center;
-      height: auto;
-      padding: 0;
-      margin-right: 4px;
-      border: 0;
-      background: transparent;
-      color: var(--text);
-      font-size: 11px;
-      line-height: 1;
-      font-weight: 800;
-      letter-spacing: .01em;
-      flex: 0 0 auto;
-      pointer-events: none;
-    }
-    .settings-file-btn { max-width: 54px; }
-    .settings-path-btn { max-width: 54px; font-size: 9px; }
-    .settings-refresh-btn { max-width: 28px; padding: 0; display: inline-flex; align-items: center; justify-content: center; }
+    .settings-refresh-btn { flex: 0 0 auto; width: 34px; padding: 0; }
 
     /* Forced line-break spacers inside the memo toolbar (only active on narrow screens) */
     .memo-row-break { display: none; }
@@ -2076,27 +2110,13 @@
       line-height: 1.35;
     }
 
-    /* Narrow / phone layout tweaks */
+    /* Narrow / phone layout tweaks (the project segment is already full-width at all sizes) */
     @media (max-width: 560px) {
-      /* Project save/load group must never overflow: wrap to its own full-width row,
-         drop the プロジェクト label, let the buttons/select share the width. */
-      .topbar { flex-wrap: wrap; align-items: center; row-gap: 6px; column-gap: 6px; }
-      .title { flex: 1 1 auto; font-size: 17px; }
-      .lang-wrap { flex: 0 0 auto; width: auto; min-width: 0; }
+      .title { flex: 1 1 auto; }
+      .lang-wrap { flex: 0 0 auto; width: auto; min-width: 0; margin-left: 0; }
       .lang-wrap select { width: 70px; min-width: 70px; }
-      .settings-io-wrap {
-        order: 3;
-        flex: 1 1 100%;
-        max-width: 100%;
-        margin-left: 0;
-        justify-content: flex-start;
-        gap: 4px;
-      }
-      .settings-json-prefix { display: none; }
-      .settings-mini-btn { flex: 1 1 auto; max-width: none; padding: 0 6px; }
-      .settings-file-btn, .settings-path-btn { max-width: none; }
-      .settings-refresh-btn { flex: 0 0 auto; max-width: 30px; }
-      .settings-folder-select { flex: 1 1 72px; max-width: none; width: auto; }
+      .settings-mini-btn { padding: 0 6px; }
+      .settings-mini-btn .ic-svg { display: none; }
 
       /* Memo toolbar: break after Redo and after the color group so rows stay tidy */
       .memo-row-break { display: block; flex-basis: 100%; width: 100%; height: 0; margin: 0; padding: 0; }
@@ -2116,7 +2136,7 @@
     </button>
     <aside class="sidebar">
       <div class="topbar">
-        <h1 id="appTitle" class="title" role="button" tabindex="0" aria-haspopup="dialog" title="Update History">Auto Sheet</h1>
+        <h1 id="appTitle" class="title" role="button" tabindex="0" aria-haspopup="dialog" title="Update History">Auto Sheet <span id="appVersionChip" class="ver-chip" aria-hidden="true"></span></h1>
         <div class="lang-wrap">
           <label for="languageSelect" data-ui-text="languageLabel">Language</label>
           <select id="languageSelect">
@@ -2127,10 +2147,9 @@
           </select>
         </div>
         <div class="settings-io-wrap" aria-label="Current settings import and export">
-          <span class="settings-json-prefix" data-ui-text="settingsProjectLabel">プロジェクト</span>
-          <button id="currentSettingsExportBtn" class="settings-mini-btn" type="button" data-ui-text="settingsExportBtn">設定出力</button>
-          <button id="currentSettingsFileBtn" class="settings-mini-btn settings-file-btn" type="button" data-ui-text="settingsFileBtn">読込</button>
-          <button id="currentSettingsImportBtn" class="settings-mini-btn settings-path-btn" type="button" data-ui-text="settingsImportBtn">設定読込</button>
+          <button id="currentSettingsExportBtn" class="settings-mini-btn" type="button"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 4v10m0 0 4-4m-4 4-4-4M4 17v1.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V17"/></svg><span data-ui-text="settingsExportBtn">保存</span></button>
+          <button id="currentSettingsFileBtn" class="settings-mini-btn" type="button"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 14V4m0 0 4 4m-4-4-4 4M4 17v1.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V17"/></svg><span data-ui-text="settingsFileBtn">読込</span></button>
+          <button id="currentSettingsImportBtn" class="settings-mini-btn" type="button"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3.5 7A1.5 1.5 0 0 1 5 5.5h4l2 2.5h8A1.5 1.5 0 0 1 20.5 9.5V17A1.5 1.5 0 0 1 19 18.5H5A1.5 1.5 0 0 1 3.5 17Z"/></svg><span data-ui-text="settingsImportBtn">読込先</span></button>
           <button id="currentSettingsRefreshBtn" class="settings-mini-btn settings-refresh-btn" type="button" data-ui-title="settingsRefreshBtn" title="Reload" aria-label="Reload"><svg class="ic-svg" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false"><path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3M19.5 4.5v3.9h-3.9"/></svg></button>
           <select id="currentSettingsFolderSelect" class="settings-folder-select" aria-label="Loaded settings JSON" disabled></select>
           <input id="currentSettingsInput" class="settings-file-input-hidden" type="file" accept=".json,.autosheet-settings.json,application/json" />
@@ -2261,19 +2280,16 @@
       </div>
 
       <div class="card">
-        <h3><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7.5h14v9.5h-8.5L7 20v-3H5z"/></svg><span data-ui-text="dialogBlocksTitle">セリフ欄</span></h3>
-        <label for="dialogManual" data-ui-text="dialogFormatLabel">Format: 0+01 | 1+00 | SPEAKER | SAMPLE</label>
+        <h3><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7.5h14v9.5h-8.5L7 20v-3H5z"/></svg><span data-ui-text="dialogBlocksTitle">セリフ欄</span><label class="card-h-hint" for="dialogManual" data-ui-text="dialogFormatLabel">Format: 0+01 | 1+00 | SPEAKER | SAMPLE</label></h3>
         <textarea id="dialogManual"></textarea>
         <div id="dialogHelp" class="hint"></div>
       </div>
 
       <div class="card">
-        <h3><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="7.5" width="11.5" height="10" rx="1.5"/><path d="m15 11 5.5-3v8L15 13.5"/></svg><span data-ui-text="cameraBlocksTitle">カメラ欄</span></h3>
-        <label for="cameraManual" data-ui-text="cameraFormatLabel">Format: start | end | label | camera | label</label>
-        <textarea id="cameraManual"></textarea>
-        <div id="cameraDirectiveDock" class="camera-directive-dock hidden">
-          <span id="cameraDirectiveDockLabel" class="camera-directive-dock-label">L1</span>
-          <select id="cameraDirectiveDockSelect" class="camera-directive-dock-select" aria-label="Camera direction for current line"></select>
+        <h3><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="7.5" width="11.5" height="10" rx="1.5"/><path d="m15 11 5.5-3v8L15 13.5"/></svg><span data-ui-text="cameraBlocksTitle">カメラ欄</span><label class="card-h-hint" for="cameraManual" data-ui-text="cameraFormatLabel">Format: start | end | label | camera | label</label></h3>
+        <div class="camera-manual-wrap">
+          <textarea id="cameraManual" wrap="off"></textarea>
+          <div id="cameraDirectiveCompleter" class="camera-directive-completer hidden" aria-hidden="false"></div>
         </div>
         <div class="camera-examples">
           <span class="camera-examples-title" data-ui-text="cameraExamplesTitle">Examples</span>
@@ -2282,7 +2298,7 @@
           <code>0+01 | 1+00 | FI | Aセル</code>
           <code>0+05 | 1+00 | A1 | AセルOL | A2</code>
         </div>
-        <button id="cameraToMemoBtn" type="button" class="memo-btn" data-ui-text="cameraToMemoBtn">カメラ→メモ</button>
+        <button id="cameraToMemoBtn" type="button" class="memo-btn"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="4.5" y="5.5" width="15" height="13" rx="1.5"/><path d="M8 10h8M8 13.5h5.5"/></svg><span data-ui-text="cameraToMemoBtn">カメラ→メモ</span></button>
         <div id="cameraHelp" class="hint"></div>
       </div>
       <div class="card paper-layout-card" id="paperLayoutCard">
@@ -2417,10 +2433,10 @@
           <button id="memoRedoBtn" class="memo-btn ghost icon-only" type="button" aria-label="Redo memo" data-ui-title="memoRedoBtn"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m16 6 3.5 3.5L16 13M19.5 9.5H9a4.75 4.75 0 0 0 0 9.5h5"/></svg></button>
           <div class="memo-row-break" aria-hidden="true"></div>
           <div class="memo-toolbar-divider" aria-hidden="true"></div>
-          <span class="memo-size-label" data-ui-text="memoPenLabel">Pen</span>
-          <select id="memoPenSizeSelect" class="memo-size-select" aria-label="Memo pen size"></select>
-          <span class="memo-size-label" data-ui-text="memoEraserLabel">Eraser</span>
-          <select id="memoEraserSizeSelect" class="memo-size-select" aria-label="Memo eraser size"></select>
+          <span class="memo-size-label" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" focusable="false"><path d="M4 20l1-4.5L15.5 5a2.12 2.12 0 0 1 3 0l.5.5a2.12 2.12 0 0 1 0 3L8.5 19 4 20ZM13.5 7 17 10.5"/></svg></span>
+          <select id="memoPenSizeSelect" class="memo-size-select" aria-label="Memo pen size" data-ui-title="memoPenLabel"></select>
+          <span class="memo-size-label" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" focusable="false"><path d="M8.5 19.5 3.9 14.9a1.5 1.5 0 0 1 0-2.1l8.5-8.5a1.5 1.5 0 0 1 2.1 0l5.2 5.2a1.5 1.5 0 0 1 0 2.1l-8.4 8.4M8.5 19.5H20M6.5 11.5l6 6"/></svg></span>
+          <select id="memoEraserSizeSelect" class="memo-size-select" aria-label="Memo eraser size" data-ui-title="memoEraserLabel"></select>
           <div class="memo-toolbar-divider" aria-hidden="true"></div>
           <div class="memo-color-group" aria-label="Memo colors">
             <button class="memo-color-btn active" type="button" data-tool="pen" data-color="#111111" aria-label="Black"><span class="swatch" style="background:#111111"></span></button>
@@ -2512,7 +2528,8 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '795';
+    const APP_VERSION = '796';
+    (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
     const PAPER_HEADER_TEMPLATE_KNOWN_MIN_SCORE = 0.84;
@@ -2566,9 +2583,7 @@
     const dougaSheetBtn = document.getElementById('dougaSheetBtn');
     const previewMetaEl = document.getElementById('previewMeta');
     const csvCommandEditEl = document.getElementById('csvCommandEdit');
-    const cameraDirectiveDockEl = document.getElementById('cameraDirectiveDock');
-    const cameraDirectiveDockLabelEl = document.getElementById('cameraDirectiveDockLabel');
-    const cameraDirectiveDockSelectEl = document.getElementById('cameraDirectiveDockSelect');
+    const cameraDirectiveCompleterEl = document.getElementById('cameraDirectiveCompleter');
     const cameraToMemoBtn = document.getElementById('cameraToMemoBtn');
     const prevPageBtn = document.getElementById('prevPageBtn');
     const nextPageBtn = document.getElementById('nextPageBtn');
@@ -2967,7 +2982,7 @@
         textCommandsLabel:'Text Commands', csvFileLabel:'CSV File', csvCommandEditLabel:'Editable Commands from CSV',
         dialogBlocksTitle:'Dialog Area', dialogFormatLabel:'Format: 0+01 | 1+00 | SPEAKER | SAMPLE', cameraBlocksTitle:'Camera Area', cameraFormatLabel:'Format: start | end | label | camera | label', cameraExamplesTitle:'Examples',
         sheetPreviewTitle:'Sheet Preview', chooseExportDirBtn:'Folder', downloadAllBtn:'Output', memoModeBtn:'Memo Mode', cameraToMemoBtn:'Camera→Memo', memoUndoBtn:'Undo', memoRedoBtn:'Redo', memoPenLabel:'Pen', memoEraserLabel:'Eraser', memoEraserButton:'Eraser', memoRightClickNoticeL1:'Right-click the memo area', memoRightClickNoticeL2:'to create / edit a text box', cellReadabilityNotice:'← Enlarge the genga numbers (cell digits)',
-        createdByLabel:'Created by', settingsProjectLabel:'Project', settingsExportBtn:'Save', settingsFileBtn:'Load', settingsImportBtn:'Path', settingsRefreshBtn:'Reload', settingsSelectPlaceholder:'Settings JSON', settingsSelectEmpty:'Select settings', settingsSelectNoSettings:'No settings JSON', textMemoApplyBtn:'Apply', textMemoMenuAdd:'Add text box', textMemoMenuDelete:'Delete text box', textMemoMenuEditMode:'Text box position edit', textMemoMenuEditDone:'Finish text box edit', textMemoMenuAutoArrange:'Auto arrange text boxes', textMemoInitialHint:'Right-click to add or edit text boxes.', clearSheetDataBtn:'Reset All', hideSidebarBtn:'Hide UI', showSidebarBtn:'Show UI', feedbackHeading:'Feedback', feedbackFormLink:'Form', feedbackPlaceholder:'Bug report or request', feedbackHint:'Write anything you know: symptom, reproduction steps, CSV/PSD/image format, expected result, actual result, browser/OS.', feedbackSendBtn:'Send', feedbackEmpty:'Write a message first.', feedbackSending:'Sending...', feedbackSent:'Sent.', feedbackFailed:'Could not send. Open the form link.', shortcutSummaryTopHint:''
+        createdByLabel:'Created by', settingsExportBtn:'Save', settingsFileBtn:'Load', settingsImportBtn:'Path', settingsRefreshBtn:'Reload', settingsSelectPlaceholder:'Settings JSON', settingsSelectEmpty:'Select settings', settingsSelectNoSettings:'No settings JSON', textMemoApplyBtn:'Apply', textMemoMenuAdd:'Add text box', textMemoMenuDelete:'Delete text box', textMemoMenuEditMode:'Text box position edit', textMemoMenuEditDone:'Finish text box edit', textMemoMenuAutoArrange:'Auto arrange text boxes', textMemoInitialHint:'Right-click to add or edit text boxes.', clearSheetDataBtn:'Reset All', hideSidebarBtn:'Hide UI', showSidebarBtn:'Show UI', feedbackHeading:'Feedback', feedbackFormLink:'Form', feedbackPlaceholder:'Bug report or request', feedbackHint:'Write anything you know: symptom, reproduction steps, CSV/PSD/image format, expected result, actual result, browser/OS.', feedbackSendBtn:'Send', feedbackEmpty:'Write a message first.', feedbackSending:'Sending...', feedbackSent:'Sent.', feedbackFailed:'Could not send. Open the form link.', shortcutSummaryTopHint:''
       },
       ja: {
         languageLabel:'言語', headerCardTitle:'ヘッダー', episodeLabel:'話数', titleLabel:'タイトル', cutNoLabel:'カット番号', secondsLabel:'尺 秒', framesLabel:'尺 コマ', authorLabel:'名前', pageLabel:'ページ',
@@ -2975,7 +2990,7 @@
         textCommandsLabel:'テキストコマンド', csvFileLabel:'CSVファイル', csvCommandEditLabel:'CSVから生成された編集可能コマンド',
         dialogBlocksTitle:'セリフ欄', dialogFormatLabel:'形式: 0+01 | 1+00 | 話者 | セリフ例', cameraBlocksTitle:'カメラ欄', cameraFormatLabel:'形式: 開始 | 終了 | 表記 | カメラ | 表記', cameraExamplesTitle:'例',
         sheetPreviewTitle:'シートプレビュー', chooseExportDirBtn:'保存先', downloadAllBtn:'出力', memoModeBtn:'メモモード', cameraToMemoBtn:'カメラ→メモ', memoUndoBtn:'取り消し', memoRedoBtn:'やり直し', memoPenLabel:'ペン', memoEraserLabel:'消しゴム', memoEraserButton:'消しゴム', memoRightClickNoticeL1:'メモ欄で右クリック', memoRightClickNoticeL2:'：テキスト枠の作成・編集', cellReadabilityNotice:'←原画番号（セルの数字）を大きく表示',
-        createdByLabel:'作成', settingsProjectLabel:'プロジェクト', settingsExportBtn:'保存', settingsFileBtn:'読込', settingsImportBtn:'読込先', settingsRefreshBtn:'再読込', settingsSelectPlaceholder:'設定JSON', settingsSelectEmpty:'設定選択', settingsSelectNoSettings:'設定JSONなし', textMemoApplyBtn:'適用', textMemoMenuAdd:'テキスト枠を追加', textMemoMenuDelete:'テキスト枠を削除', textMemoMenuEditMode:'テキスト枠位置編集', textMemoMenuEditDone:'テキスト枠編集終了', textMemoMenuAutoArrange:'テキスト枠を自動整列', textMemoInitialHint:'右クリックでテキスト枠を追加・編集できます。', clearSheetDataBtn:'全体初期化', hideSidebarBtn:'UIを隠す', showSidebarBtn:'UIを表示', feedbackHeading:'報告', feedbackFormLink:'Form', feedbackPlaceholder:'不具合や要望を書く', feedbackHint:'わかる範囲で記入してください: 症状、再現手順、使用したCSV/PSD/画像形式、期待した結果、実際の結果、ブラウザ/OS。', feedbackSendBtn:'送信', feedbackEmpty:'内容を書いてください。', feedbackSending:'送信中...', feedbackSent:'送信しました。', feedbackFailed:'送信できません。Formリンクから送ってください。', shortcutSummaryTopHint:''
+        createdByLabel:'作成', settingsExportBtn:'保存', settingsFileBtn:'読込', settingsImportBtn:'読込先', settingsRefreshBtn:'再読込', settingsSelectPlaceholder:'設定JSON', settingsSelectEmpty:'設定選択', settingsSelectNoSettings:'設定JSONなし', textMemoApplyBtn:'適用', textMemoMenuAdd:'テキスト枠を追加', textMemoMenuDelete:'テキスト枠を削除', textMemoMenuEditMode:'テキスト枠位置編集', textMemoMenuEditDone:'テキスト枠編集終了', textMemoMenuAutoArrange:'テキスト枠を自動整列', textMemoInitialHint:'右クリックでテキスト枠を追加・編集できます。', clearSheetDataBtn:'全体初期化', hideSidebarBtn:'UIを隠す', showSidebarBtn:'UIを表示', feedbackHeading:'報告', feedbackFormLink:'Form', feedbackPlaceholder:'不具合や要望を書く', feedbackHint:'わかる範囲で記入してください: 症状、再現手順、使用したCSV/PSD/画像形式、期待した結果、実際の結果、ブラウザ/OS。', feedbackSendBtn:'送信', feedbackEmpty:'内容を書いてください。', feedbackSending:'送信中...', feedbackSent:'送信しました。', feedbackFailed:'送信できません。Formリンクから送ってください。', shortcutSummaryTopHint:''
       },
       ko: {
         languageLabel:'언어', headerCardTitle:'헤더', episodeLabel:'화수', titleLabel:'제목', cutNoLabel:'컷 번호', secondsLabel:'길이 초', framesLabel:'길이 프레임', authorLabel:'이름', pageLabel:'페이지',
@@ -2983,7 +2998,7 @@
         textCommandsLabel:'텍스트 커맨드', csvFileLabel:'CSV 파일', csvCommandEditLabel:'CSV에서 생성된 편집 가능 커맨드',
         dialogBlocksTitle:'대사란', dialogFormatLabel:'형식: 0+01 | 1+00 | 화자 | 예시', cameraBlocksTitle:'카메라란', cameraFormatLabel:'형식: 시작 | 끝 | 표기 | 카메라 | 표기', cameraExamplesTitle:'예시',
         sheetPreviewTitle:'시트 프리뷰', chooseExportDirBtn:'경로지정', downloadAllBtn:'출력', memoModeBtn:'메모 모드', cameraToMemoBtn:'카메라→메모', memoUndoBtn:'되돌리기', memoRedoBtn:'다시 실행', memoPenLabel:'펜', memoEraserLabel:'지우개', memoEraserButton:'지우개', memoRightClickNoticeL1:'메모 영역 우클릭', memoRightClickNoticeL2:'텍스트 박스 생성·편집', cellReadabilityNotice:'← 원화 번호(셀 숫자)를 크게 표시',
-        createdByLabel:'제작', settingsProjectLabel:'프로젝트', settingsExportBtn:'저장', settingsFileBtn:'불러오기', settingsImportBtn:'경로지정', settingsRefreshBtn:'다시 불러오기', settingsSelectPlaceholder:'설정 JSON', settingsSelectEmpty:'설정 선택', settingsSelectNoSettings:'설정 JSON 없음', textMemoApplyBtn:'적용', textMemoMenuAdd:'텍스트 박스 추가', textMemoMenuDelete:'텍스트 박스 삭제', textMemoMenuEditMode:'텍스트 박스 위치 편집', textMemoMenuEditDone:'텍스트 박스 편집 종료', textMemoMenuAutoArrange:'텍스트 박스 자동 정렬', textMemoInitialHint:'우클릭으로 텍스트 박스를 추가하거나 편집할 수 있습니다.', clearSheetDataBtn:'전체 초기화', hideSidebarBtn:'UI 숨기기', showSidebarBtn:'UI 펼치기', feedbackHeading:'문의', feedbackFormLink:'Form', feedbackPlaceholder:'버그 내용이나 개선 요청', feedbackHint:'가능하면 아는 것만 적어주세요: 증상, 재현 순서, 사용한 CSV/PSD/이미지 형식, 기대한 결과, 실제 결과, 브라우저/OS.', feedbackSendBtn:'보내기', feedbackEmpty:'내용을 먼저 입력하세요.', feedbackSending:'전송 중...', feedbackSent:'전송했습니다.', feedbackFailed:'전송하지 못했습니다. Form 링크로 보내주세요.', shortcutSummaryTopHint:''
+        createdByLabel:'제작', settingsExportBtn:'저장', settingsFileBtn:'불러오기', settingsImportBtn:'경로지정', settingsRefreshBtn:'다시 불러오기', settingsSelectPlaceholder:'설정 JSON', settingsSelectEmpty:'설정 선택', settingsSelectNoSettings:'설정 JSON 없음', textMemoApplyBtn:'적용', textMemoMenuAdd:'텍스트 박스 추가', textMemoMenuDelete:'텍스트 박스 삭제', textMemoMenuEditMode:'텍스트 박스 위치 편집', textMemoMenuEditDone:'텍스트 박스 편집 종료', textMemoMenuAutoArrange:'텍스트 박스 자동 정렬', textMemoInitialHint:'우클릭으로 텍스트 박스를 추가하거나 편집할 수 있습니다.', clearSheetDataBtn:'전체 초기화', hideSidebarBtn:'UI 숨기기', showSidebarBtn:'UI 펼치기', feedbackHeading:'문의', feedbackFormLink:'Form', feedbackPlaceholder:'버그 내용이나 개선 요청', feedbackHint:'가능하면 아는 것만 적어주세요: 증상, 재현 순서, 사용한 CSV/PSD/이미지 형식, 기대한 결과, 실제 결과, 브라우저/OS.', feedbackSendBtn:'보내기', feedbackEmpty:'내용을 먼저 입력하세요.', feedbackSending:'전송 중...', feedbackSent:'전송했습니다.', feedbackFailed:'전송하지 못했습니다. Form 링크로 보내주세요.', shortcutSummaryTopHint:''
       },
       zh: {
         languageLabel:'语言', headerCardTitle:'页眉', episodeLabel:'集数', titleLabel:'标题', cutNoLabel:'镜头编号', secondsLabel:'时长 秒', framesLabel:'时长 帧', authorLabel:'姓名', pageLabel:'页码',
@@ -2991,7 +3006,7 @@
         textCommandsLabel:'文本命令', csvFileLabel:'CSV 文件', csvCommandEditLabel:'从 CSV 生成的可编辑命令',
         dialogBlocksTitle:'对白栏', dialogFormatLabel:'格式: 0+01 | 1+00 | 说话人 | 示例', cameraBlocksTitle:'摄影机栏', cameraFormatLabel:'格式: 起始 | 结束 | 标记 | 摄影 | 标记', cameraExamplesTitle:'示例',
         sheetPreviewTitle:'Sheet 预览', chooseExportDirBtn:'保存处', downloadAllBtn:'输出', memoModeBtn:'备注模式', cameraToMemoBtn:'摄影→备注', memoUndoBtn:'撤销', memoRedoBtn:'重做', memoPenLabel:'笔', memoEraserLabel:'橡皮', memoEraserButton:'橡皮', memoRightClickNoticeL1:'在备注区右键', memoRightClickNoticeL2:'创建/编辑文本框', cellReadabilityNotice:'← 放大原画编号（单元格数字）',
-        createdByLabel:'制作', settingsProjectLabel:'项目', settingsExportBtn:'保存', settingsFileBtn:'导入', settingsImportBtn:'路径', settingsRefreshBtn:'重新读取', settingsSelectPlaceholder:'设置 JSON', settingsSelectEmpty:'选择设置', settingsSelectNoSettings:'无设置 JSON', textMemoApplyBtn:'应用', textMemoMenuAdd:'添加文字框', textMemoMenuDelete:'删除文字框', textMemoMenuEditMode:'文字框位置编辑', textMemoMenuEditDone:'结束文字框编辑', textMemoMenuAutoArrange:'自动排列文字框', textMemoInitialHint:'可通过右键添加或编辑文字框。', clearSheetDataBtn:'全部重置', hideSidebarBtn:'隐藏 UI', showSidebarBtn:'显示 UI', feedbackHeading:'反馈', feedbackFormLink:'Form', feedbackPlaceholder:'错误报告或改进建议', feedbackHint:'请尽量填写已知信息: 症状、复现步骤、使用的 CSV/PSD/图片格式、期望结果、实际结果、浏览器/OS。', feedbackSendBtn:'发送', feedbackEmpty:'请先输入内容。', feedbackSending:'发送中...', feedbackSent:'已发送。', feedbackFailed:'发送失败。请使用 Form 链接。', shortcutSummaryTopHint:''
+        createdByLabel:'制作', settingsExportBtn:'保存', settingsFileBtn:'导入', settingsImportBtn:'路径', settingsRefreshBtn:'重新读取', settingsSelectPlaceholder:'设置 JSON', settingsSelectEmpty:'选择设置', settingsSelectNoSettings:'无设置 JSON', textMemoApplyBtn:'应用', textMemoMenuAdd:'添加文字框', textMemoMenuDelete:'删除文字框', textMemoMenuEditMode:'文字框位置编辑', textMemoMenuEditDone:'结束文字框编辑', textMemoMenuAutoArrange:'自动排列文字框', textMemoInitialHint:'可通过右键添加或编辑文字框。', clearSheetDataBtn:'全部重置', hideSidebarBtn:'隐藏 UI', showSidebarBtn:'显示 UI', feedbackHeading:'反馈', feedbackFormLink:'Form', feedbackPlaceholder:'错误报告或改进建议', feedbackHint:'请尽量填写已知信息: 症状、复现步骤、使用的 CSV/PSD/图片格式、期望结果、实际结果、浏览器/OS。', feedbackSendBtn:'发送', feedbackEmpty:'请先输入内容。', feedbackSending:'发送中...', feedbackSent:'已发送。', feedbackFailed:'发送失败。请使用 Form 链接。', shortcutSummaryTopHint:''
       }
     };
 
@@ -3495,6 +3510,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver796', 'Redesign follow-through + camera picker back in place', ['Finished the redesign items the first pass missed: the Project save/load group is now one segmented pill with icons on its own row (the プロジェクト label is gone), the wordmark got a small version chip, the preview title and zoom pill were refined, destructive buttons (Reset All / Clear) turned into quiet red ghosts, the pen/eraser size selects use icons, and each input card shows its format hint in the header row. The per-line camera direction pickers are also back at each line\'s right edge — the textarea now grows with its content so nothing scrolls inside it, which removes the scroll-lag problem structurally without moving the picker.']],
         ['ver795', 'UI redesign — unified visual language', ['Reworked the whole app\'s surface: one ink/paper palette (chrome stays monochrome; the single accent color is reserved for セリフシート and destructive actions), a single 5-variant button system (primary / secondary / ghost / toggle / danger) replacing four mismatched sizes, and every glyph icon (refresh, chevrons, page arrows, zoom, close) replaced with real SVG icons so nothing depends on font rendering. The preview and memo toolbars are now grouped with dividers and a single primary (出力) action; sidebar cards got small header icons; hint chips moved to a softer style. No feature, layout order, or exported-sheet pixel changed — this is a surface-only pass.']],
         ['ver794', 'Redesigned camera picker; real toggle icon', ['The per-line camera-direction picker no longer floats over the Camera Area textarea tracking scroll position (which lagged and could leave stray widgets on iOS). It is now a single small picker docked below the textarea that follows the cursor line instead — no scroll listeners at all, so nothing to lag or misbehave. Also replaced the sidebar collapse button\'s text character with a real vector icon so it centers correctly on every platform.']],
         ['ver793', 'Mobile layout & camera examples', ['On phones the Project save/load group now wraps to its own row instead of overflowing (the プロジェクト label is hidden), the memo toolbar breaks into tidy rows, and the セリフシート side button is smaller. Centered the cel number inside its ○ mark and enlarged it slightly. Cleaned up the sidebar collapse (‹) button. The Camera Area now shows a worked-examples box with a shorter hint. (ver792 also removed a stray white background behind the active magnifier icon.)']],
@@ -3612,6 +3628,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver796', 'デザイン刷新の仕上げ＋カメラ選択UIを元の位置に', ['前回のデザイン刷新でやり残した項目を実装しました。プロジェクトの保存/読込グループはアイコン付きの1つのまとまり（セグメント）として専用の行に配置（「プロジェクト」ラベルは廃止）、タイトル横に小さなバージョン表示、プレビュー見出しとズームUIの整理、全体初期化・クリアなどの破壊的ボタンは控えめな赤に、ペン/消しゴムのサイズ選択はアイコン表示に、各入力カードの形式ヒントは見出し行の右側に移動しました。カメラ欄の行ごとの選択UIも各行の右端という元の位置に戻しました。テキスト欄が内容に合わせて伸びるため内部スクロールが存在せず、遅れて追従する問題は構造的に起きません。']],
         ['ver795', 'UIデザイン刷新 — 一貫した見た目に', ['アプリ全体の表面を作り直しました。墨（濃いグレー）と紙色を基調に、色を使うのはセリフシートと危険操作だけに絞り、道具自体はモノクロに。バラバラだった4種類のボタンを1つの体系（プライマリ／セカンダリ／ゴースト／トグル／危険）に統一し、↻ ⌄ × ＋ − などの文字アイコンは全てSVGアイコンに置き換えました（フォントによるズレがなくなります）。プレビュー・メモの各ツールバーは区切り線でグループ化し、出力ボタンだけを主役の墨色ボタンに。サイドバーの各カードに小さな見出しアイコンを追加し、緑のヒントもやわらかい配色に。機能・配置順・書き出しシートのピクセルは一切変えていません。']],
         ['ver794', 'カメラ選択UIを再設計、折りたたみは本物のアイコンに', ['カメラ欄の行ごとの選択UIは、テキストのスクロール位置を追いかけて浮かせる方式（iPhoneで遅れて追従したり画面に残ったりしていました）をやめ、テキストエリアの下に固定された1つの選択UIが、いま文字カーソルがある行を表すようにしました。スクロール監視自体をなくしたので、遅延や誤表示が原理的に起きません。左の折りたたみボタンも、文字（‹）ではなくベクターアイコンに変更し、どの環境でも正確に中央に来るようにしました。']],
         ['ver793', 'モバイル配置とカメラ例', ['スマホでプロジェクトの保存/読込グループがはみ出さず自分の行に折り返すようにし（「プロジェクト」ラベルは非表示）、メモツールバーを見やすい行に改行、セリフシートの縦ボタンを小さくしました。セル番号を○マークの中央に揃え、少し大きくしました。左の折りたたみ（‹）ボタンも整えました。カメラ欄に記入例のボックスを追加し、説明を短くしました。（ver792では虫めがねアイコンの背後に残っていた白を除去。）']],
@@ -3729,6 +3746,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver796', '리디자인 마무리 + 카메라 선택탭 원위치 복원', ['지난 리디자인에서 빠졌던 항목을 마저 구현했습니다. 프로젝트 저장/불러오기 그룹은 아이콘이 붙은 세그먼트 하나로 전용 줄에 배치(「プロジェクト」 라벨 삭제), 타이틀 옆에 작은 버전 칩 추가, 프리뷰 제목·줌 UI 정돈, 전체 초기화·클리어 같은 파괴적 버튼은 조용한 빨간 고스트로, 펜/지우개 크기 선택엔 아이콘을, 각 입력 카드의 형식 힌트는 제목 줄 오른쪽으로 옮겼습니다. 카메라란의 줄별 선택탭도 각 줄 오른쪽이라는 원래 위치로 되돌렸습니다. 텍스트칸이 내용에 맞춰 늘어나 내부 스크롤 자체가 없으므로, 위치는 그대로인 채 스크롤 지연·잔상 문제만 구조적으로 사라집니다.']],
         ['ver795', 'UI 디자인 전면 개편 — 일관된 비주얼', ['앱 전체 표면을 다시 만들었습니다. 먹색(짙은 그레이)과 종이색을 기본으로, 색은 セリフシート와 위험 동작에만 남기고 나머지 도구 UI는 무채색으로 정리했습니다. 제각각이던 4종류 버튼을 프라이머리/세컨더리/고스트/토글/데인저 5종 체계 하나로 통일하고, ↻ ⌄ × ＋ − 같은 문자 아이콘을 전부 SVG 아이콘으로 교체했습니다(폰트에 따라 위치가 어긋나는 문제가 사라집니다). 프리뷰·메모 툴바는 구분선으로 그룹을 나누고 出力 버튼만 먹색 프라이머리로 강조했습니다. 사이드바 각 카드에 작은 헤더 아이콘을 추가했고, 초록 힌트도 더 부드러운 톤으로 바꿨습니다. 기능·배치 순서·출력 시트 픽셀은 전혀 바뀌지 않았습니다.']],
         ['ver794', '카메라 선택 UI 재설계, 접기 버튼은 진짜 아이콘으로', ['카메라란의 줄별 선택 UI가 텍스트 스크롤 위치를 실시간으로 쫓아다니며 떠 있던 방식(아이폰에서 뒤늦게 따라오거나 화면에 잔상이 남던 원인)을 버리고, 텍스트칸 아래에 고정된 선택 UI 하나가 지금 커서가 있는 줄을 그대로 보여주도록 바꿨습니다. 스크롤 감시 자체가 없어져서 지연·오동작이 구조적으로 발생할 수 없습니다. 왼쪽 접기 버튼도 문자(‹) 대신 벡터 아이콘으로 바꿔 어떤 환경에서도 정확히 중앙에 오도록 했습니다.']],
         ['ver793', '모바일 레이아웃·카메라 예시', ['폰에서 프로젝트 저장/불러오기 그룹이 삐져나가지 않고 자기 줄로 접히도록(「プロジェクト」 라벨 숨김) 하고, 메모 툴바를 보기 좋게 줄바꿈, セリフシート 세로 버튼을 작게 했습니다. 셀 번호를 ○ 마크 정중앙에 맞추고 살짝 키웠습니다. 왼쪽 접기(‹) 버튼도 깔끔하게 정리. 카메라란에 예시 박스를 넣고 설명을 짧게 다듬었습니다. (ver792에서는 확대경 아이콘 뒤 흰 배경 잔여물 제거.)']],
@@ -3846,6 +3864,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver796', '完成翻新收尾 + 摄影选择器回到原位', ['补齐了上次翻新遗漏的项目：项目保存/读取组改为带图标的分段控件并独占一行（移除「プロジェクト」标签），标题旁新增小版本徽标，整理了预览标题与缩放控件，全部重置/清除等破坏性按钮改为低调的红色幽灵样式，笔/橡皮尺寸选择改用图标，各输入卡片的格式提示移到标题行右侧。摄影栏的逐行方向选择器也回到了每行右端的原位——文本框现在随内容自动增高，内部不再滚动，因此滚动延迟问题从结构上消失，而位置保持不变。']],
         ['ver795', 'UI 设计全面翻新 — 统一视觉语言', ['重做了整个应用的界面：以墨色（深灰）与纸色为基调，颜色只保留给 セリフシート 和危险操作，其余工具 UI 一律无彩色。将原本 4 套不一致的按钮统一为 5 种体系（主要／次要／幽灵／开关／危险），并把 ↻ ⌄ × ＋ − 等文字图标全部换成 SVG 图标（不再受字体渲染影响而错位）。预览与备注工具栏改为用分隔线分组，仅 出力 按钮保留为墨色主要按钮。侧栏各卡片新增小号标题图标，绿色提示也改为更柔和的配色。功能、排列顺序与导出表格像素均未改动。']],
         ['ver794', '重新设计摄影选择器，折叠按钮改为真正的图标', ['摄影栏中逐行的方向选择器，之前是悬浮在文本框之上、实时跟随滚动位置的（在 iPhone 上会延迟跟随或留下残影），现改为固定在文本框下方的单个选择器，跟随光标所在行显示。完全取消了滚动监听，从结构上杜绝了延迟和误显示。左侧折叠按钮也从文字字符（‹）换成矢量图标，在任何平台上都能精确居中。']],
         ['ver793', '移动端布局与摄影示例', ['手机上，项目保存/读取组不再溢出，会折到自己一行（隐藏「プロジェクト」标签）；备注工具栏换行更整齐；セリフシート竖排按钮变小。将单元格编号居中于○标记内并略微放大。整理了左侧折叠（‹）按钮。摄影栏新增示例框，说明更简短。（ver792还移除了放大镜图标后残留的白色背景。）']],
@@ -11217,10 +11236,21 @@
       return getCameraDirectiveEditableLineFromInfo(getTextareaLineInfoAtIndex(textarea, index));
     }
 
-    function hideCameraDirectiveDock() {
-      if (!cameraDirectiveDockEl) return;
-      cameraDirectiveDockEl.classList.add('hidden');
-      delete cameraDirectiveDockEl.dataset.lineIndex;
+    function getCameraDirectiveEditableLines(textarea) {
+      const out = [];
+      if (!textarea) return out;
+      const lines = String(textarea.value || '').replace(/\r/g, '').split('\n');
+      for (let i = 0; i < lines.length; i++) {
+        const info = getCameraDirectiveEditableLineFromInfo(getTextareaLineInfoAtIndex(textarea, i));
+        if (info) out.push(info);
+      }
+      return out;
+    }
+
+    function hideCameraDirectiveCompleter() {
+      if (!cameraDirectiveCompleterEl) return;
+      cameraDirectiveCompleterEl.classList.add('hidden');
+      cameraDirectiveCompleterEl.replaceChildren();
     }
 
     function getDefaultCameraTargetLabel(info) {
@@ -11237,53 +11267,75 @@
       return info.fromText + ' | ' + info.toText + ' | ' + normalized + ' | ' + getDefaultCameraTargetLabel(info);
     }
 
-    // Docked picker (not an overlay glued to scrolled text): reflects whichever line the
-    // caret is currently on. Caret position doesn't change when the textarea is scrolled,
-    // so this needs no scroll/resize listeners and nothing to reposition or leave behind.
-    function getCameraCaretLineIndex(textarea) {
-      const pos = textarea.selectionStart || 0;
-      return String(textarea.value || '').slice(0, pos).split('\n').length - 1;
+    // Per-line pickers at each camera line's right edge (the original placement), but
+    // scroll-immune by construction: autoGrowCameraTextarea keeps the textarea tall enough
+    // that it never scrolls internally, and each select is absolutely positioned inside the
+    // relative .camera-manual-wrap, so it moves with the textarea during sidebar scrolling
+    // without any JS. No scroll/resize listeners exist for this UI at all.
+    function autoGrowCameraTextarea(textarea) {
+      if (!textarea) return;
+      textarea.style.height = 'auto';
+      textarea.style.height = (textarea.scrollHeight + 2) + 'px';
     }
 
-    function updateCameraDirectiveDock() {
+    function createCameraDirectiveSelect(info) {
+      const select = document.createElement('select');
+      select.className = 'camera-directive-select';
+      select.setAttribute('aria-label', 'Camera direction line ' + (info.lineIndex + 1));
+      select.dataset.lineIndex = String(info.lineIndex);
+      CAMERA_DIRECTIVE_COMPLETION_OPTIONS.forEach(function(optionValue){
+        const option = document.createElement('option');
+        option.value = optionValue;
+        option.textContent = optionValue;
+        select.appendChild(option);
+      });
+      select.value = info.currentDirective || '▲';
+      select.addEventListener('change', function(){
+        applyCameraDirectiveCompletion(select.value, select.dataset.lineIndex);
+      });
+      return select;
+    }
+
+    function updateCameraDirectiveCompleter() {
       const textarea = document.getElementById('cameraManual');
-      if (!textarea || !cameraDirectiveDockEl || !cameraDirectiveDockSelectEl) return;
-      if (document.activeElement !== textarea) { hideCameraDirectiveDock(); return; }
-      const lineIndex = getCameraCaretLineIndex(textarea);
-      const info = getCameraDirectiveEditableLineAtIndex(textarea, lineIndex);
-      if (!info) { hideCameraDirectiveDock(); return; }
-      if (cameraDirectiveDockSelectEl.dataset.builtFor !== 'camera') {
-        CAMERA_DIRECTIVE_COMPLETION_OPTIONS.forEach(function(optionValue){
-          const option = document.createElement('option');
-          option.value = optionValue;
-          option.textContent = optionValue;
-          cameraDirectiveDockSelectEl.appendChild(option);
-        });
-        cameraDirectiveDockSelectEl.dataset.builtFor = 'camera';
-        cameraDirectiveDockSelectEl.addEventListener('change', function(){
-          applyCameraDirectiveCompletion(cameraDirectiveDockSelectEl.value, cameraDirectiveDockSelectEl.dataset.lineIndex);
-        });
+      if (!textarea || !cameraDirectiveCompleterEl) return;
+      autoGrowCameraTextarea(textarea);
+      const infos = getCameraDirectiveEditableLines(textarea);
+      cameraDirectiveCompleterEl.replaceChildren();
+      if (!infos.length) {
+        hideCameraDirectiveCompleter();
+        return;
       }
-      cameraDirectiveDockSelectEl.dataset.lineIndex = String(info.lineIndex);
-      cameraDirectiveDockSelectEl.value = info.currentDirective || '▲';
-      cameraDirectiveDockLabelEl.textContent = 'L' + (info.lineIndex + 1);
-      cameraDirectiveDockEl.classList.remove('hidden');
+      const style = window.getComputedStyle ? window.getComputedStyle(textarea) : null;
+      const fontSize = style ? (parseFloat(style.fontSize) || 13) : 13;
+      const lineHeightValue = style ? parseFloat(style.lineHeight) : NaN;
+      const lineHeight = Number.isFinite(lineHeightValue) ? lineHeightValue : fontSize * 1.35;
+      const paddingTop = style ? (parseFloat(style.paddingTop) || 0) : 0;
+      const controlH = 20;
+      cameraDirectiveCompleterEl.classList.remove('hidden');
+      infos.forEach(function(info){
+        const select = createCameraDirectiveSelect(info);
+        // Center the 20px control on its text line, relative to the wrapper (textarea offset included).
+        const y = textarea.offsetTop + paddingTop + info.lineIndex * lineHeight + (lineHeight - controlH) / 2;
+        select.style.top = Math.round(y) + 'px';
+        cameraDirectiveCompleterEl.appendChild(select);
+      });
     }
 
-    let __camDockTimer = null;
-    function scheduleCameraDirectiveDockUpdate() {
-      if (__camDockTimer) clearTimeout(__camDockTimer);
-      __camDockTimer = setTimeout(function(){
-        __camDockTimer = null;
-        updateCameraDirectiveDock();
-      }, 60);
+    let __camCompleterTimer = null;
+    function scheduleCameraDirectiveCompleter() {
+      if (__camCompleterTimer) clearTimeout(__camCompleterTimer);
+      __camCompleterTimer = setTimeout(function(){
+        __camCompleterTimer = null;
+        updateCameraDirectiveCompleter();
+      }, 90);
     }
 
     function applyCameraDirectiveCompletion(directive, lineIndex) {
       const textarea = document.getElementById('cameraManual');
       const info = getCameraDirectiveEditableLineAtIndex(textarea, lineIndex);
       if (!textarea || !info) {
-        updateCameraDirectiveDock();
+        updateCameraDirectiveCompleter();
         return;
       }
       const normalized = normalizeCameraDirectiveCompletion(directive);
@@ -11301,7 +11353,7 @@
       textarea.focus();
       scheduleManualSourceRoleSync();
       requestCommandInputRender({ delay:0 });
-      updateCameraDirectiveDock();
+      updateCameraDirectiveCompleter();
     }
 
     function annotateCrossSegmentMarkers(segments) {
@@ -22151,22 +22203,8 @@
 
     bindInput('timelineCommandInput', handleTimelineCommandInputChange);
     bindInput('dialogManual', function(){ scheduleManualSourceRoleSync(); requestCommandInputRender(); });
-    bindInput('cameraManual', function(){ scheduleManualSourceRoleSync(); requestCommandInputRender(); scheduleCameraDirectiveDockUpdate(); });
+    bindInput('cameraManual', function(){ scheduleManualSourceRoleSync(); requestCommandInputRender(); scheduleCameraDirectiveCompleter(); });
     bindInput('csvCommandEdit', handleCsvCommandInputChange);
-    const cameraManualEl = document.getElementById('cameraManual');
-    if (cameraManualEl) {
-      cameraManualEl.addEventListener('focus', updateCameraDirectiveDock);
-      cameraManualEl.addEventListener('blur', hideCameraDirectiveDock);
-      ['click', 'keyup', 'mouseup'].forEach(function(eventName){
-        cameraManualEl.addEventListener(eventName, scheduleCameraDirectiveDockUpdate);
-      });
-      // Caret can move without click/keyup (native selection-handle drag on touch);
-      // selectionchange catches that too. No scroll/resize listeners needed at all —
-      // the dock's screen position never depends on the textarea's scroll offset.
-      document.addEventListener('selectionchange', function(){
-        if (document.activeElement === cameraManualEl) scheduleCameraDirectiveDockUpdate();
-      });
-    }
     ['timelineCommandInput', 'csvCommandEdit', 'dialogManual', 'cameraManual'].forEach(function(id){
       const node = document.getElementById(id);
       if (!node) return;
@@ -22206,7 +22244,7 @@
     setCommandTextValue('csv', '');
     document.getElementById('dialogManual').value = DEFAULT_DIALOG_SAMPLE_LINE;
     document.getElementById('cameraManual').value = DEFAULT_CAMERA_SAMPLE_LINE;
-    updateCameraDirectiveDock();
+    updateCameraDirectiveCompleter();
     restoreHeaderMemory();
     loadPaperMemory();
     restoreLanguagePreference();
