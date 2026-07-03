@@ -1083,11 +1083,17 @@
       color: var(--red);
     }
 
-    .serifu-side-btn {
+    .sheet-side-stack {
       position: absolute;
       left: 6px;
       top: 300px;
       z-index: 6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .serifu-side-btn {
       writing-mode: vertical-rl;
       text-orientation: mixed;
       padding: 9px 3px;
@@ -1105,10 +1111,6 @@
     .serifu-side-btn:hover { background: #fff2f2; }
     .serifu-side-btn.active { background: var(--red); color: #fff; }
     .sheet-side-notice {
-      position: absolute;
-      left: 6px;
-      top: 470px;
-      z-index: 6;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -2268,10 +2270,12 @@
         </div>
       </div>
       <div class="preview-wrap">
-        <button id="serifuModeBtn" class="serifu-side-btn" type="button" title="セリフシート：ドラッグで範囲選択、離すとシート">セリフシート</button>
-        <div id="memoRightClickNotice" class="sheet-side-notice hidden">
-          <button class="side-notice-close" type="button" aria-label="Close notice">×</button>
-          <span data-ui-text="memoRightClickNotice">メモ欄で右クリック：テキスト枠の作成・編集</span>
+        <div id="sheetSideStack" class="sheet-side-stack">
+          <div id="memoRightClickNotice" class="sheet-side-notice hidden">
+            <button class="side-notice-close" type="button" aria-label="Close notice">×</button>
+            <span data-ui-text="memoRightClickNotice">メモ欄で右クリック：テキスト枠の作成・編集</span>
+          </div>
+          <button id="serifuModeBtn" class="serifu-side-btn" type="button" title="セリフシート：ドラッグで範囲選択、離すとシート">セリフシート</button>
         </div>
         <div id="sheetStage" class="sheet-stage">
           <svg id="sheetSvg" viewBox="0 0 1753 2480" xmlns="http://www.w3.org/2000/svg" aria-label="timesheet preview"></svg>
@@ -2326,7 +2330,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '776';
+    const APP_VERSION = '777';
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
     const PAPER_HEADER_TEMPLATE_KNOWN_MIN_SCORE = 0.84;
