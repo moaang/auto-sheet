@@ -2092,6 +2092,7 @@
             <label class="paper-check-row paper-cell-label-row">
               <span class="paper-check-left"><input id="showCellLabelOutputToggle" type="checkbox" checked /> <span id="showCellLabelOutputText">Show cell label output</span></span>
               <span class="paper-inline-control"><span id="cellColumnCountLabel">Cell columns</span><input id="cellColumnCountInput" type="number" min="1" max="32" step="1" value="8" /></span>
+              <span class="paper-inline-control"><span id="inbetweenColumnCountLabel">動画列数 (0=同)</span><input id="inbetweenColumnCountInput" type="number" min="0" max="32" step="1" value="0" /></span>
             </label>
             <div id="paperLayoutHint" class="hint" style="margin-top:10px;"></div>
           </div>
@@ -2266,7 +2267,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '774';
+    const APP_VERSION = '775';
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
     const PAPER_HEADER_TEMPLATE_KNOWN_MIN_SCORE = 0.84;
@@ -2382,6 +2383,8 @@
     const headerPositionModeBtn = document.getElementById('headerPositionModeBtn');
     const cellColumnCountInputEl = document.getElementById('cellColumnCountInput');
     const cellColumnCountLabelEl = document.getElementById('cellColumnCountLabel');
+    const inbetweenColumnCountInputEl = document.getElementById('inbetweenColumnCountInput');
+    const inbetweenColumnCountLabelEl = document.getElementById('inbetweenColumnCountLabel');
     const paperLayoutDetailsEl = document.getElementById('paperLayoutDetails');
     const paperLayoutSummaryTitleEl = document.getElementById('paperLayoutSummaryTitle');
     const paperLayoutSummaryHintEl = document.getElementById('paperLayoutSummaryHint');
@@ -2474,6 +2477,7 @@
         dm: L.dualMetrics || null, sm: L.singleMetrics || null,
         st: !!state.showTemplate, cl: !!state.showCellLabelOutput, cr: !!state.cellReadabilityLarge,
         cc: (typeof getCellColumnCount === 'function' ? getCellColumnCount() : state.cellColumnCount),
+        ic: (typeof getInbetweenColumnCount === 'function' ? getInbetweenColumnCount() : 0),
         lb: state.layoutBoxes || {}, it: !!interactive, lang: state.lang,
         cells: cells, mo: state.markerOverrides || {},
         df: (typeof getDurationFrameCount === 'function' ? getDurationFrameCount() : 0)
@@ -2567,6 +2571,7 @@
       dougaSheetEnabled: false,
       dougaSheetData: null,
       cellColumnCount: 8,
+      inbetweenColumnCount: 0,
       cellDisplayOrder: [],
       cellLabelDrag: null,
       positionMode: false,
@@ -3232,6 +3237,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver775', 'Template hide fix & separate douga columns', ['"Show built-in sheet template" off now hides the whole grid again, not just the header (regression from the ver769 speed-up). Added a "Douga columns (0=same)" input next to Cell columns, for papers where the genga area has a spare column (e.g. 9) but the douga CELL area has fewer (e.g. 8).']],
         ['ver773', 'セリフシート button on the sheet', ['The lip-sync mode button became a vertical セリフシート button floating on the left of the cel columns (instead of the top toolbar). Also fixed the selection clear (×) button being unclickable inside the mode.']],
         ['ver772', 'Dedicated 口パク (lip-sync) mode', ['Added a 口パク button next to Memo Mode. In this mode, drag down a cel column to select a frame range, then release to open the lip-sync sheet — it no longer overlaps with dot / text / token edits. The old click-and-shift range selection outside the mode has been removed.']],
         ['ver770', 'Smoother camera input & duration drag', ['The camera direction picker no longer rebuilds on every keystroke/scroll (it is debounced), and dragging the duration boundary redraws less aggressively, so the Camera field and the duration handle stay responsive on slower machines. Also removed unused internal code.']],
@@ -3342,6 +3348,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver775', 'テンプレート非表示の修正と動画列数', ['「内蔵シートテンプレートを表示」をオフにするとヘッダーだけでなく罫線グリッド全体が再び非表示になるよう修正（ver769の高速化での退行）。Cell列数の隣に「動画列数（0=同じ）」を追加。原画側に予備列があり（例: 9列）動画CELL側が少ない（例: 8列）用紙に合わせられます。']],
         ['ver773', 'セリフシートボタンをシート左へ', ['口パク（リップシンク）モードのボタンを、上のツールバーからセル列の左に縦置きの「セリフシート」ボタンとして移動しました。モード中に選択のクリア（×）ボタンが押せなかった不具合も修正。']],
         ['ver772', '口パク専用モード', ['メモモードの隣に「口パク」ボタンを追加。このモード中はセル列を縦にドラッグして範囲を選び、離すと口パクシートが開きます。点・テキスト・トークン編集と操作が重ならなくなりました。モード外での旧クリック＆Shift範囲選択は廃止しました。']],
         ['ver770', 'カメラ入力とデュレーションドラッグを軽く', ['カメラの向きピッカーが入力・スクロールのたびに作り直されないようにし（デバウンス）、デュレーション境界のドラッグ中の再描画も抑えました。低スペック環境でもカメラ欄とデュレーションつまみの反応が軽くなります。未使用の内部コードも削除。']],
@@ -3452,6 +3459,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver775', '템플릿 비표시 수정·동화 칸 수 분리', ['「내장 시트 용지양식 표시」를 꺼도 헤더만 숨고 그리드가 남던 문제 수정(ver769 고속화의 회귀). 셀 칸 수 옆에 「동화 칸 수 (0=동일)」 입력 추가 — 원화 쪽에 여유 칸이 있어(예: 9칸) 동화 CELL 쪽(예: 8칸)과 어긋나는 용지에 맞출 수 있습니다.']],
         ['ver773', 'セリフシート 버튼 시트 좌측으로', ['口パク(입모양) 모드 버튼을 상단 툴바에서 셀 열 왼쪽의 세로 「セリフシート」 버튼으로 옮겼습니다. 모드에서 선택 지우기(×) 버튼이 안 눌리던 문제도 수정.']],
         ['ver772', '口パク(입모양) 전용 모드', ['메모 모드 옆에 「口パク」 버튼 추가. 이 모드에서 셀 열을 세로로 드래그해 프레임 범위를 고르고, 손을 떼면 口パク 시트가 열립니다. 점·텍스트·토큰 편집과 조작이 겹치지 않습니다. 모드 밖의 기존 클릭＆Shift 범위 선택은 폐지했습니다.']],
         ['ver770', '카메라 입력·듀레이션 드래그 가볍게', ['카메라 방향 선택탭이 키 입력·스크롤마다 다시 만들어지지 않도록 했고(디바운스), 듀레이션 경계 드래그 중 재그리기도 줄였습니다. 저사양 환경에서도 카메라 입력란과 듀레이션 손잡이 반응이 가벼워집니다. 미사용 내부 코드도 정리했습니다.']],
@@ -3562,6 +3570,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver775', '模板隐藏修复与動画列数', ['关闭「显示内置 Sheet 模板」时现在会重新隐藏整个网格，而不只是表头（ver769 提速造成的回归）。在 Cell 列数旁新增「動画列数（0=相同）」，适配原画区有备用列（如 9 列）而動画 CELL 区较少（如 8 列）的用纸。']],
         ['ver773', 'セリフシート按钮移到表格左侧', ['将口型（口パク）模式按钮从顶部工具栏移到单元格列左侧的竖排「セリフシート」按钮。同时修复了该模式下选中清除（×）按钮无法点击的问题。']],
         ['ver772', '口型（口パク）专用模式', ['在备注模式旁新增「口パク」按钮。该模式下沿单元格列纵向拖动即可选择帧范围，松手即打开口型表——不再与点/文字/记号编辑冲突。模式外的旧「点击＋Shift」范围选择已移除。']],
         ['ver770', '摄影输入与时长拖动更流畅', ['摄影方向选择器不再在每次按键/滚动时重建（已加防抖），拖动时长边界时的重绘也有所减少，因此在低配设备上摄影栏和时长手柄都更跟手。同时删除了未使用的内部代码。']],
@@ -3895,6 +3904,7 @@
         showCellLabel:'Show cell label output',
         showPsdMemo:'Show separated PSD memo',
         cellColumns:'Cell columns',
+        inbetweenColumns:'Douga columns (0=same)',
         cellColumnsHint:'',
         body:'',
         psdMeta:function(memoCount){ return memoCount ? 'PSD paper loaded; separated memo layers: ' + memoCount : 'PSD layers composited to one raster paper layer'; },
@@ -3926,6 +3936,7 @@
         showCellLabel:'Cellラベル出力を表示',
         showPsdMemo:'分離したPSDメモを表示',
         cellColumns:'Cell列数',
+        inbetweenColumns:'動画列数（0=同じ）',
         cellColumnsHint:'',
         body:'',
         psdMeta:function(memoCount){ return memoCount ? 'PSD用紙を読込。分離メモレイヤー: ' + memoCount : 'PSDレイヤーを1枚の用紙ラスターレイヤーに合成'; },
@@ -3957,6 +3968,7 @@
         showCellLabel:'셀 라벨 출력 표시',
         showPsdMemo:'분리된 PSD 메모 표시',
         cellColumns:'셀 칸 수',
+        inbetweenColumns:'동화 칸 수 (0=동일)',
         cellColumnsHint:'',
         body:'',
         psdMeta:function(memoCount){ return memoCount ? 'PSD 용지 로드. 분리된 메모 레이어: ' + memoCount : 'PSD 레이어를 한 장의 용지 래스터 레이어로 합성'; },
@@ -3988,6 +4000,7 @@
         showCellLabel:'显示 Cell 标签输出',
         showPsdMemo:'显示分离的 PSD 备注',
         cellColumns:'Cell 列数',
+        inbetweenColumns:'動画列数（0=相同）',
         cellColumnsHint:'',
         body:'',
         psdMeta:function(memoCount){ return memoCount ? 'PSD 纸张已载入；分离备注图层: ' + memoCount : 'PSD 图层已合成为单张纸张栅格层'; },
@@ -4118,6 +4131,7 @@
       if (showCellLabelOutputTextEl) showCellLabelOutputTextEl.textContent = doc.showCellLabel;
       if (showPsdMemoTextEl) showPsdMemoTextEl.textContent = doc.showPsdMemo;
       if (cellColumnCountLabelEl) cellColumnCountLabelEl.textContent = doc.cellColumns;
+      if (inbetweenColumnCountLabelEl && doc.inbetweenColumns) inbetweenColumnCountLabelEl.textContent = doc.inbetweenColumns;
       if (paperLayoutHintEl) paperLayoutHintEl.textContent = doc.body;
       renderPaperAutoAlignStatus();
       updatePaperImageStatus();
@@ -4154,6 +4168,7 @@
       }
       if (showPsdMemoRowEl) showPsdMemoRowEl.setAttribute('aria-disabled', hasSeparatedPsdMemo ? 'false' : 'true');
       if (cellColumnCountInputEl) cellColumnCountInputEl.value = String(getCellColumnCount());
+      if (inbetweenColumnCountInputEl) inbetweenColumnCountInputEl.value = String(getInbetweenColumnCount());
       if (headerPositionModeBtn) headerPositionModeBtn.classList.toggle('active', !!state.positionMode);
       if (paperToolbarGroupEl) paperToolbarGroupEl.classList.toggle('hidden', !hasPaper);
       if (paperToolbarPositionBtn) {
@@ -13820,6 +13835,17 @@
       return clampCellColumnCount(state.cellColumnCount || 8);
     }
 
+    // Douga (inbetween/CELL) column override: 0 = follow the genga cell column count.
+    function clampInbetweenColumnCount(value) {
+      const n = Math.round(Number(value));
+      if (!Number.isFinite(n) || n <= 0) return 0;
+      return Math.max(1, Math.min(32, n));
+    }
+
+    function getInbetweenColumnCount() {
+      return clampInbetweenColumnCount(state.inbetweenColumnCount || 0);
+    }
+
     function makeCellColumnLabel(index) {
       const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
       let n = Math.max(0, Math.round(index || 0));
@@ -15802,11 +15828,13 @@
       const rowH = bodyH / params.frameCount;
       const nameStripH = 44;
       const originalColW = params.originalAreaW / params.originalEntries.length;
-      const inbetweenColumnCount = Math.max(1, params.originalEntries.length);
+      const inbetweenColumnCount = Math.max(1, getInbetweenColumnCount() || params.originalEntries.length);
       const inbetweenColW = params.inbetweenW / inbetweenColumnCount;
-      const inbetweenNames = params.originalEntries.map(function(entry, idx){
-        return String(entry && entry.label || makeCellColumnLabel(idx));
-      });
+      const inbetweenNames = [];
+      for (let ci = 0; ci < inbetweenColumnCount; ci++) {
+        const entry = params.originalEntries[ci];
+        inbetweenNames.push(String(entry && entry.label || makeCellColumnLabel(ci)));
+      }
       const xOriginalRight = params.blockX + params.originalAreaW;
       const xDialogRight = xOriginalRight + params.dialogW;
       const xInbetweenRight = xDialogRight + params.inbetweenW;
@@ -15839,7 +15867,7 @@
         const templateBodyY = templateCellArea.y;
         const templateBodyH = templateCellArea.h;
 
-        withStaticLayer(function(){
+        withStaticLayer(function(){ withDrawLayer('paper', function(){
           rect(templateMinX, templateHeaderY, templateMaxX - templateMinX, templateHeaderH + templateBodyH, 1.2, 'none', '#111');
           rect(templateCellArea.x, templateHeaderY, templateCellArea.w, templateHeaderH, 1, 'none', '#111');
           rect(templateDialogArea.x, templateHeaderY, templateDialogArea.w, templateHeaderH, 1, 'none', '#111');
@@ -15903,9 +15931,9 @@
             const y = templateBodyY + i * templateRowH + templateRowH / 2;
             text(templateMinX - 16, y, String(frameNumber), 10, 'end', '700');
           }
-        });
+        }); });
       } else {
-        withStaticLayer(function(){
+        withStaticLayer(function(){ withDrawLayer('paper', function(){
           rect(params.blockX, top, params.blockW, nameStripH + bodyH, 1.2, 'none', '#111');
           line(xOriginalRight, top, xOriginalRight, top + nameStripH + bodyH, '#111', 1);
           line(xDialogRight, top, xDialogRight, top + nameStripH + bodyH, '#111', 1);
@@ -15958,7 +15986,7 @@
             const y = top + nameStripH + i * rowH + rowH / 2;
             text(params.blockX - 16, y, String(frameNumber), 10, 'end', '700');
           }
-        });
+        }); });
       }
 
       withStaticLayer(function(){ withDrawLayer('output', function(){
@@ -18461,6 +18489,10 @@
         state.cellColumnCount = clampCellColumnCount(cellColumnCountInputEl.value);
         if (String(cellColumnCountInputEl.value) !== String(state.cellColumnCount)) cellColumnCountInputEl.value = String(state.cellColumnCount);
       }
+      if (inbetweenColumnCountInputEl) {
+        state.inbetweenColumnCount = clampInbetweenColumnCount(inbetweenColumnCountInputEl.value);
+        if (String(inbetweenColumnCountInputEl.value) !== String(state.inbetweenColumnCount)) inbetweenColumnCountInputEl.value = String(state.inbetweenColumnCount);
+      }
       const model = getSyncedRenderModel();
       state.activeTimelineSides = model.layout && model.layout.singleMode ? ['main'] : ['left', 'right'];
       syncDurationInputsToRenderedBoundary(model);
@@ -20005,6 +20037,7 @@
         showCellLabelOutput:!!state.showCellLabelOutput,
         showPsdMemo:!!state.showPsdMemo,
         cellColumnCount:state.cellColumnCount,
+        inbetweenColumnCount:state.inbetweenColumnCount,
         cellDisplayOrder:clonePaperData(state.cellDisplayOrder || []),
         layoutBoxes:clonePaperData(state.layoutBoxes || {}),
         layoutBoxBaseRects:clonePaperData(state.layoutBoxBaseRects || {}),
@@ -20031,6 +20064,7 @@
       state.showCellLabelOutput = typeof snapshot.showCellLabelOutput === 'boolean' ? snapshot.showCellLabelOutput : true;
       state.showPsdMemo = typeof snapshot.showPsdMemo === 'boolean' ? snapshot.showPsdMemo : true;
       state.cellColumnCount = snapshot.cellColumnCount !== undefined ? clampCellColumnCount(snapshot.cellColumnCount) : state.cellColumnCount;
+      state.inbetweenColumnCount = snapshot.inbetweenColumnCount !== undefined ? clampInbetweenColumnCount(snapshot.inbetweenColumnCount) : state.inbetweenColumnCount;
       state.cellDisplayOrder = Array.isArray(snapshot.cellDisplayOrder) ? clonePaperData(snapshot.cellDisplayOrder) : [];
       state.layoutBoxes = clonePaperData(snapshot.layoutBoxes || {});
       state.layoutBoxBaseRects = clonePaperData(snapshot.layoutBoxBaseRects || {});
@@ -20102,6 +20136,7 @@
           showCellLabelOutput:!!state.showCellLabelOutput,
           showPsdMemo:!!state.showPsdMemo,
           cellColumnCount:getCellColumnCount(),
+          inbetweenColumnCount:getInbetweenColumnCount(),
           cellDisplayOrder:JSON.parse(JSON.stringify(state.cellDisplayOrder || [])),
           layoutBoxes:JSON.parse(JSON.stringify(state.layoutBoxes || {}))
         }
@@ -20151,6 +20186,7 @@
       state.showCellLabelOutput = typeof paper.showCellLabelOutput === 'boolean' ? paper.showCellLabelOutput : state.showCellLabelOutput;
       state.showPsdMemo = typeof paper.showPsdMemo === 'boolean' ? paper.showPsdMemo : state.showPsdMemo;
       state.cellColumnCount = paper.cellColumnCount !== undefined ? clampCellColumnCount(paper.cellColumnCount) : state.cellColumnCount;
+      state.inbetweenColumnCount = paper.inbetweenColumnCount !== undefined ? clampInbetweenColumnCount(paper.inbetweenColumnCount) : state.inbetweenColumnCount;
       state.cellDisplayOrder = Array.isArray(paper.cellDisplayOrder) ? paper.cellDisplayOrder : [];
       state.layoutBoxes = paper.layoutBoxes && typeof paper.layoutBoxes === 'object' ? paper.layoutBoxes : {};
       state.layoutBoxBaseRects = {};
@@ -20395,6 +20431,7 @@
           showCellLabelOutput:!!state.showCellLabelOutput,
           showPsdMemo:!!state.showPsdMemo,
           cellColumnCount:getCellColumnCount(),
+          inbetweenColumnCount:getInbetweenColumnCount(),
           cellDisplayOrder:JSON.parse(JSON.stringify(state.cellDisplayOrder || [])),
           layoutBoxes:JSON.parse(JSON.stringify(state.layoutBoxes || {}))
         },
@@ -20553,6 +20590,7 @@
       state.showCellLabelOutput = typeof paper.showCellLabelOutput === 'boolean' ? paper.showCellLabelOutput : state.showCellLabelOutput;
       state.showPsdMemo = typeof paper.showPsdMemo === 'boolean' ? paper.showPsdMemo : state.showPsdMemo;
       state.cellColumnCount = paper.cellColumnCount !== undefined ? clampCellColumnCount(paper.cellColumnCount) : state.cellColumnCount;
+      state.inbetweenColumnCount = paper.inbetweenColumnCount !== undefined ? clampInbetweenColumnCount(paper.inbetweenColumnCount) : state.inbetweenColumnCount;
       state.cellDisplayOrder = Array.isArray(paper.cellDisplayOrder) ? paper.cellDisplayOrder : [];
       state.layoutBoxes = paper.layoutBoxes && typeof paper.layoutBoxes === 'object' ? paper.layoutBoxes : {};
       state.layoutBoxBaseRects = {};
@@ -21824,6 +21862,7 @@
     if (headerPositionModeBtn) headerPositionModeBtn.addEventListener('click', toggleHeaderPositionMode);
     if (paperToolbarPositionBtn) paperToolbarPositionBtn.addEventListener('click', toggleHeaderPositionMode);
     if (cellColumnCountInputEl) cellColumnCountInputEl.addEventListener('input', function(){ state.cellColumnCount = clampCellColumnCount(cellColumnCountInputEl.value); queueSavePaperMemory(); render(); });
+    if (inbetweenColumnCountInputEl) inbetweenColumnCountInputEl.addEventListener('input', function(){ state.inbetweenColumnCount = clampInbetweenColumnCount(inbetweenColumnCountInputEl.value); queueSavePaperMemory(); render(); });
     if (sidebarToggleBtn) sidebarToggleBtn.addEventListener('click', function(){ setSidebarCollapsed(!state.sidebarCollapsed); });
     if (clearSheetDataBtn) clearSheetDataBtn.addEventListener('click', clearSheetData);
     if (showTemplateToggleEl) showTemplateToggleEl.addEventListener('change', function(){ state.showTemplate = !!showTemplateToggleEl.checked; queueSavePaperMemory(); render(); });
