@@ -2332,7 +2332,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '786';
+    const APP_VERSION = '787';
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
     const PAPER_HEADER_TEMPLATE_KNOWN_MIN_SCORE = 0.84;
@@ -2345,6 +2345,7 @@
       { company:'a1', top:0.0266, h:0.0484, split:1, splitRatio:0.642, x:[0.016,0.026,0.036,0.057,0.087,0.138,0.192,0.242,0.294,0.346,0.398,0.449,0.501,0.552,0.603,0.615,0.622,0.655,0.724,0.843,0.886,0.896,0.948,0.999] },
       { company:'bones', top:0.0387, h:0.0319, split:1, splitRatio:0.291, x:[0.001,0.066,0.281,0.409,0.581,0.653,0.726,0.843,0.999] },
       { company:'clw', top:0.0298, h:0.0383, split:1, splitRatio:0.191, x:[0.106,0.410,0.531,0.648,0.738,0.828,0.949] },
+      { company:'clw', top:0.0298, h:0.0379, split:1, splitRatio:0.191, x:[0.000,0.097,0.372,0.481,0.587,0.750,0.859,0.944] },
       { company:'cygamespictures', top:0.0157, h:0.0492, split:1, splitRatio:0.270, x:[0.000,0.129,0.425,0.558,0.698,0.808,0.920] },
       { company:'cygamespictures', top:0.0290, h:0.0355, split:0, splitRatio:0.000, x:[0.089,0.181,0.391,0.486,0.586,0.743,0.902,0.999] },
       { company:'doga', top:0.0121, h:0.0492, split:1, splitRatio:0.122, x:[0.026,0.079,0.111,0.118,0.144,0.226,0.270,0.286,0.301,0.316,0.380,0.404,0.437,0.525,0.620,0.757,0.886,1.000] },
@@ -2357,10 +2358,12 @@
       { company:'mappa', top:0.0185, h:0.0379, split:1, splitRatio:0.256, x:[0.001,0.110,0.214,0.245,0.264,0.285,0.302,0.318,0.367,0.407,0.497,0.608,0.694,0.778,0.889,0.958,1.000] },
       { company:'pinejam', top:0.0391, h:0.0435, split:1, splitRatio:0.333, x:[0.001,0.103,0.366,0.436,0.513,0.698,0.775,0.890,0.999] },
       { company:'saru', top:0.0282, h:0.0379, split:1, splitRatio:0.193, x:[0.000,0.101,0.221,0.246,0.283,0.392,0.508,0.621,0.707,0.793,0.910,1.000] },
+      { company:'saru', top:0.0282, h:0.0379, split:1, splitRatio:0.191, x:[0.001,0.101,0.392,0.508,0.621,0.793,0.910,1.000] },
       { company:'studiobono', top:0.0214, h:0.0391, split:0, splitRatio:0.000, x:[0.001,0.351,0.489,0.659,0.828,1.000] },
       { company:'toei', top:0.0206, h:0.0440, split:1, splitRatio:0.202, x:[0.001,0.305,0.498,0.640,0.720,0.856] },
       { company:'toei', top:0.0206, h:0.0435, split:1, splitRatio:0.202, x:[0.001,0.356,0.581,0.665,0.747,0.840,0.999] },
-      { company:'toho', top:0.0121, h:0.0371, split:1, splitRatio:0.337, x:[0.001,0.207,0.281,0.391,0.487,0.561,0.671,0.781,0.890,0.938,0.999] }
+      { company:'toho', top:0.0121, h:0.0371, split:1, splitRatio:0.337, x:[0.001,0.207,0.281,0.391,0.487,0.561,0.671,0.781,0.890,0.938,0.999] },
+      { company:'whitefox', top:0.0093, h:0.0367, split:1, splitRatio:0.231, x:[0.014,0.304,0.396,0.553,0.686,0.820,0.925] }
     ];
 
     const svg = document.getElementById('sheetSvg');
@@ -3302,6 +3305,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver787', 'Recognize Science SARU / Clover Works / White Fox sheets', ['Paper Auto Align now recognizes the Science SARU, Clover Works, and White Fox timesheet templates (previously detected as "unknown"), so their columns line up correctly.']],
         ['ver776', 'Discoverability: memo boxes & large numbers', ['The default camera sample now pre-fills Camera→Memo, so the memo text boxes are visible from the start. Added two dismissible green hints: one on the sheet left explaining that right-clicking the memo area creates/edits a text box, and one next to the magnifier button explaining it enlarges the genga (cell) numbers. Each hint can be closed with its × and stays hidden.']],
         ['ver775', 'Template hide fix & separate douga columns', ['"Show built-in sheet template" off now hides the whole grid again, not just the header (regression from the ver769 speed-up). Added a "Douga columns (0=same)" input next to Cell columns, for papers where the genga area has a spare column (e.g. 9) but the douga CELL area has fewer (e.g. 8).']],
         ['ver773', 'セリフシート button on the sheet', ['The lip-sync mode button became a vertical セリフシート button floating on the left of the cel columns (instead of the top toolbar). Also fixed the selection clear (×) button being unclickable inside the mode.']],
@@ -3414,6 +3418,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver787', 'サイエンスSARU／クローバーワークス／ホワイトフォックスの用紙に対応', ['用紙自動整列が、サイエンスSARU・クローバーワークス・ホワイトフォックスのタイムシート用紙を認識するようになりました（従来は「unknown」判定）。列が正しく揃います。']],
         ['ver776', 'メモ枠と数字拡大が見つけやすく', ['初期カメラサンプルにカメラ→メモを適用済みにし、最初からメモのテキスト枠が見えるようにしました。緑のヒントを2つ追加：シート左に「メモ欄で右クリック→テキスト枠の作成・編集」、虫めがねボタンの右に「原画番号（セルの数字）を大きく表示」。どちらも×で閉じると以後表示されません。']],
         ['ver775', 'テンプレート非表示の修正と動画列数', ['「内蔵シートテンプレートを表示」をオフにするとヘッダーだけでなく罫線グリッド全体が再び非表示になるよう修正（ver769の高速化での退行）。Cell列数の隣に「動画列数（0=同じ）」を追加。原画側に予備列があり（例: 9列）動画CELL側が少ない（例: 8列）用紙に合わせられます。']],
         ['ver773', 'セリフシートボタンをシート左へ', ['口パク（リップシンク）モードのボタンを、上のツールバーからセル列の左に縦置きの「セリフシート」ボタンとして移動しました。モード中に選択のクリア（×）ボタンが押せなかった不具合も修正。']],
@@ -3526,6 +3531,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver787', '사이언스 사루/클로버웍스/화이트폭스 용지 인식', ['용지 자동정렬이 사이언스 사루·클로버웍스·화이트폭스 타임시트 용지를 인식합니다(기존엔 "unknown" 판정). 칸이 정확히 맞춰집니다.']],
         ['ver776', '메모 박스·숫자 확대 안내', ['기본 카메라 샘플에 카메라→메모를 미리 적용해 처음부터 메모 텍스트 박스가 보이게 했습니다. 초록 안내 2개 추가: 시트 왼쪽에 「메모 영역 우클릭: 텍스트 박스 생성·편집」, 확대경 버튼 오른쪽에 「원화 번호(셀 숫자)를 크게 표시」. 각각 ×로 닫으면 다시 표시되지 않습니다.']],
         ['ver775', '템플릿 비표시 수정·동화 칸 수 분리', ['「내장 시트 용지양식 표시」를 꺼도 헤더만 숨고 그리드가 남던 문제 수정(ver769 고속화의 회귀). 셀 칸 수 옆에 「동화 칸 수 (0=동일)」 입력 추가 — 원화 쪽에 여유 칸이 있어(예: 9칸) 동화 CELL 쪽(예: 8칸)과 어긋나는 용지에 맞출 수 있습니다.']],
         ['ver773', 'セリフシート 버튼 시트 좌측으로', ['口パク(입모양) 모드 버튼을 상단 툴바에서 셀 열 왼쪽의 세로 「セリフシート」 버튼으로 옮겼습니다. 모드에서 선택 지우기(×) 버튼이 안 눌리던 문제도 수정.']],
@@ -3638,6 +3644,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver787', '识别 Science SARU / Clover Works / White Fox 用纸', ['用纸自动对齐现在可识别 Science SARU、Clover Works、White Fox 的时间表用纸（此前判定为「unknown」），列可正确对齐。']],
         ['ver776', '备注框与放大数字更易发现', ['默认摄影示例现已预先执行摄影→备注，一打开就能看到备注文本框。新增两条绿色提示：表格左侧「在备注区右键：创建/编辑文本框」，放大镜按钮右侧「放大原画编号（单元格数字）」。均可用 × 关闭且不再显示。']],
         ['ver775', '模板隐藏修复与動画列数', ['关闭「显示内置 Sheet 模板」时现在会重新隐藏整个网格，而不只是表头（ver769 提速造成的回归）。在 Cell 列数旁新增「動画列数（0=相同）」，适配原画区有备用列（如 9 列）而動画 CELL 区较少（如 8 列）的用纸。']],
         ['ver773', 'セリフシート按钮移到表格左侧', ['将口型（口パク）模式按钮从顶部工具栏移到单元格列左侧的竖排「セリフシート」按钮。同时修复了该模式下选中清除（×）按钮无法点击的问题。']],
