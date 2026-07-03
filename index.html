@@ -1693,11 +1693,8 @@
       justify-content: center;
     }
     .readability-btn svg { width: 25px; height: 25px; display: block; }
-    .readability-btn.active {
-      background: var(--text);
-      border-color: var(--text);
-      color: #fff;
-    }
+    /* Active state inherits the shared .memo-btn.active blue look for consistency;
+       just flip the magnifier icon to white so it reads on the blue. */
     .readability-btn.active svg [stroke] { stroke: #fff; }
     .readability-btn.active svg text { fill: #fff; }
     .memo-color-group {
@@ -2333,7 +2330,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '789';
+    const APP_VERSION = '790';
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
     const PAPER_HEADER_TEMPLATE_KNOWN_MIN_SCORE = 0.84;
