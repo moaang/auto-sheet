@@ -99,23 +99,29 @@
       height: 26px;
       min-width: 26px;
       padding: 0;
-      display: inline-flex;
+      display: flex;
       align-items: center;
       justify-content: center;
       border: 1px solid var(--soft);
       border-radius: 999px;
       background: rgba(255,255,255,.96);
       color: var(--text);
-      font: inherit;
-      font-size: 16px;
-      font-weight: 900;
-      line-height: 1;
-      text-indent: -0.5px; /* optical-center the ‹ / › guillemet glyph */
       cursor: pointer;
       box-shadow: 0 3px 10px rgba(0,0,0,.10);
       transition: background .12s ease, box-shadow .12s ease;
     }
     .sidebar-toggle-btn:hover { background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,.14); }
+    /* A vector chevron, not a text glyph: glyph metrics (side-bearing/baseline) vary by
+       font and platform and never sit pixel-centered in a flex box. An SVG path centered
+       on its own viewBox always centers exactly, on every OS/browser. */
+    .sidebar-toggle-icon {
+      width: 9px;
+      height: 14px;
+      display: block;
+      pointer-events: none;
+      transition: transform .15s ease;
+    }
+    .app.sidebar-collapsed .sidebar-toggle-icon { transform: scaleX(-1); }
     .app.sidebar-collapsed .sidebar-toggle-btn {
       left: 10px;
     }
@@ -1460,37 +1466,36 @@
       padding: 0 7px;
     }
 
-    .camera-directive-completer {
-      position: static;
-      display: block;
-      width: 0;
-      height: 0;
-      padding: 0;
-      border: 0;
-      background: transparent;
-      box-shadow: none;
-      -webkit-user-select: none;
-      user-select: none;
-      pointer-events: none;
+    /* Docked camera-direction picker: sits in normal flow right under the textarea,
+       not overlaid on its scrolling content. It shows/edits whichever line the caret
+       is on, so it never needs to track scrollTop — no scroll listeners, no rAF,
+       nothing to lag or leave stranded on iOS momentum-scroll. */
+    .camera-directive-dock {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+      margin-top: 4px;
     }
-
-    .camera-directive-select {
-      position: fixed;
-      z-index: 10002;
-      width: auto;
-      height: 20px;
-      min-width: 66px;
+    .camera-directive-dock.hidden { display: none; }
+    .camera-directive-dock-label {
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .camera-directive-dock-select {
+      height: 24px;
+      min-width: 70px;
       border: 1px solid var(--soft);
-      border-radius: 5px;
-      padding: 0 18px 0 6px;
+      border-radius: 6px;
+      padding: 0 6px;
       background: var(--panel-2);
       color: var(--text);
       font-family: Arial, Helvetica, sans-serif;
-      font-size: 11px;
-      font-weight: 900;
-      line-height: 1;
+      font-size: 12px;
+      font-weight: 800;
       cursor: pointer;
-      pointer-events: auto;
     }
 
     .duration-stepper-overlay {
@@ -2018,7 +2023,11 @@
 </head>
 <body>
   <div class="app">
-    <button id="sidebarToggleBtn" class="sidebar-toggle-btn" type="button" aria-label="Hide UI" title="Hide UI">‹</button>
+    <button id="sidebarToggleBtn" class="sidebar-toggle-btn" type="button" aria-label="Hide UI" title="Hide UI">
+      <svg class="sidebar-toggle-icon" viewBox="0 0 9 14" aria-hidden="true" focusable="false">
+        <polyline points="8,1 1,7 8,13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline>
+      </svg>
+    </button>
     <aside class="sidebar">
       <div class="topbar">
         <h1 id="appTitle" class="title" role="button" tabindex="0" aria-haspopup="dialog" title="Update History">Auto Sheet</h1>
@@ -2176,7 +2185,10 @@
         <h3 data-ui-text="cameraBlocksTitle">カメラ欄</h3>
         <label for="cameraManual" data-ui-text="cameraFormatLabel">Format: start | end | label | camera | label</label>
         <textarea id="cameraManual"></textarea>
-        <div id="cameraDirectiveCompleter" class="camera-directive-completer hidden"></div>
+        <div id="cameraDirectiveDock" class="camera-directive-dock hidden">
+          <span id="cameraDirectiveDockLabel" class="camera-directive-dock-label">L1</span>
+          <select id="cameraDirectiveDockSelect" class="camera-directive-dock-select" aria-label="Camera direction for current line"></select>
+        </div>
         <div class="camera-examples">
           <span class="camera-examples-title" data-ui-text="cameraExamplesTitle">Examples</span>
           <code>0+01 | 1+00 | A | PAN | B</code>
@@ -2411,7 +2423,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '793';
+    const APP_VERSION = '794';
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
     const PAPER_HEADER_TEMPLATE_KNOWN_MIN_SCORE = 0.84;
@@ -2465,7 +2477,9 @@
     const dougaSheetBtn = document.getElementById('dougaSheetBtn');
     const previewMetaEl = document.getElementById('previewMeta');
     const csvCommandEditEl = document.getElementById('csvCommandEdit');
-    const cameraDirectiveCompleterEl = document.getElementById('cameraDirectiveCompleter');
+    const cameraDirectiveDockEl = document.getElementById('cameraDirectiveDock');
+    const cameraDirectiveDockLabelEl = document.getElementById('cameraDirectiveDockLabel');
+    const cameraDirectiveDockSelectEl = document.getElementById('cameraDirectiveDockSelect');
     const cameraToMemoBtn = document.getElementById('cameraToMemoBtn');
     const prevPageBtn = document.getElementById('prevPageBtn');
     const nextPageBtn = document.getElementById('nextPageBtn');
@@ -3353,7 +3367,8 @@
       if (!sidebarToggleBtn) return;
       const doc = uiTexts[state.lang] || uiTexts.en;
       const label = state.sidebarCollapsed ? (doc.showSidebarBtn || 'Show UI') : (doc.hideSidebarBtn || 'Hide UI');
-      sidebarToggleBtn.textContent = state.sidebarCollapsed ? '›' : '‹';
+      // Direction flips via CSS (.app.sidebar-collapsed .sidebar-toggle-icon { transform: scaleX(-1) }),
+      // not textContent — an SVG chevron centers pixel-perfectly on every platform; a ‹/› glyph swap does not.
       sidebarToggleBtn.setAttribute('aria-pressed', state.sidebarCollapsed ? 'true' : 'false');
       sidebarToggleBtn.setAttribute('aria-label', label);
       sidebarToggleBtn.setAttribute('title', label);
@@ -3384,6 +3399,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver794', 'Redesigned camera picker; real toggle icon', ['The per-line camera-direction picker no longer floats over the Camera Area textarea tracking scroll position (which lagged and could leave stray widgets on iOS). It is now a single small picker docked below the textarea that follows the cursor line instead — no scroll listeners at all, so nothing to lag or misbehave. Also replaced the sidebar collapse button\'s text character with a real vector icon so it centers correctly on every platform.']],
         ['ver793', 'Mobile layout & camera examples', ['On phones the Project save/load group now wraps to its own row instead of overflowing (the プロジェクト label is hidden), the memo toolbar breaks into tidy rows, and the セリフシート side button is smaller. Centered the cel number inside its ○ mark and enlarged it slightly. Cleaned up the sidebar collapse (‹) button. The Camera Area now shows a worked-examples box with a shorter hint. (ver792 also removed a stray white background behind the active magnifier icon.)']],
         ['ver791', 'Cleaner magnifier toggle & hold-line fix', ['The magnifier (large cell numbers) button now keeps its icon when active, showing "on" with a soft tint + accent border instead of a solid color fill. Also fixed the cel hold line drawing a small stray stub inside the last cel’s own cell.']],
         ['ver787', 'Recognize Science SARU / Clover Works / White Fox sheets', ['Paper Auto Align now recognizes the Science SARU, Clover Works, and White Fox timesheet templates (previously detected as "unknown"), so their columns line up correctly.']],
@@ -3499,6 +3515,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver794', 'カメラ選択UIを再設計、折りたたみは本物のアイコンに', ['カメラ欄の行ごとの選択UIは、テキストのスクロール位置を追いかけて浮かせる方式（iPhoneで遅れて追従したり画面に残ったりしていました）をやめ、テキストエリアの下に固定された1つの選択UIが、いま文字カーソルがある行を表すようにしました。スクロール監視自体をなくしたので、遅延や誤表示が原理的に起きません。左の折りたたみボタンも、文字（‹）ではなくベクターアイコンに変更し、どの環境でも正確に中央に来るようにしました。']],
         ['ver793', 'モバイル配置とカメラ例', ['スマホでプロジェクトの保存/読込グループがはみ出さず自分の行に折り返すようにし（「プロジェクト」ラベルは非表示）、メモツールバーを見やすい行に改行、セリフシートの縦ボタンを小さくしました。セル番号を○マークの中央に揃え、少し大きくしました。左の折りたたみ（‹）ボタンも整えました。カメラ欄に記入例のボックスを追加し、説明を短くしました。（ver792では虫めがねアイコンの背後に残っていた白を除去。）']],
         ['ver791', '虫めがねトグルとホールド線の修正', ['虫めがね（セル数字を大きく）ボタンは、オン時もアイコンをそのままに、淡い色＋枠線で「オン」を表示するようにしました（塗りつぶしをやめました）。最後のセルのホールド線がセル内に短く飛び出す不具合も修正。']],
         ['ver787', 'サイエンスSARU／クローバーワークス／ホワイトフォックスの用紙に対応', ['用紙自動整列が、サイエンスSARU・クローバーワークス・ホワイトフォックスのタイムシート用紙を認識するようになりました（従来は「unknown」判定）。列が正しく揃います。']],
@@ -3614,6 +3631,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver794', '카메라 선택 UI 재설계, 접기 버튼은 진짜 아이콘으로', ['카메라란의 줄별 선택 UI가 텍스트 스크롤 위치를 실시간으로 쫓아다니며 떠 있던 방식(아이폰에서 뒤늦게 따라오거나 화면에 잔상이 남던 원인)을 버리고, 텍스트칸 아래에 고정된 선택 UI 하나가 지금 커서가 있는 줄을 그대로 보여주도록 바꿨습니다. 스크롤 감시 자체가 없어져서 지연·오동작이 구조적으로 발생할 수 없습니다. 왼쪽 접기 버튼도 문자(‹) 대신 벡터 아이콘으로 바꿔 어떤 환경에서도 정확히 중앙에 오도록 했습니다.']],
         ['ver793', '모바일 레이아웃·카메라 예시', ['폰에서 프로젝트 저장/불러오기 그룹이 삐져나가지 않고 자기 줄로 접히도록(「プロジェクト」 라벨 숨김) 하고, 메모 툴바를 보기 좋게 줄바꿈, セリフシート 세로 버튼을 작게 했습니다. 셀 번호를 ○ 마크 정중앙에 맞추고 살짝 키웠습니다. 왼쪽 접기(‹) 버튼도 깔끔하게 정리. 카메라란에 예시 박스를 넣고 설명을 짧게 다듬었습니다. (ver792에서는 확대경 아이콘 뒤 흰 배경 잔여물 제거.)']],
         ['ver791', '확대경 토글·홀드선 정리', ['확대경(셀 숫자 크게) 버튼이 켜질 때 아이콘을 그대로 두고, 옅은 색+테두리로만 「켜짐」을 표시하도록 바꿨습니다(단색 채움 제거). 마지막 셀의 홀드선이 셀 안으로 살짝 삐져나오던 것도 수정.']],
         ['ver787', '사이언스 사루/클로버웍스/화이트폭스 용지 인식', ['용지 자동정렬이 사이언스 사루·클로버웍스·화이트폭스 타임시트 용지를 인식합니다(기존엔 "unknown" 판정). 칸이 정확히 맞춰집니다.']],
@@ -3729,6 +3747,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver794', '重新设计摄影选择器，折叠按钮改为真正的图标', ['摄影栏中逐行的方向选择器，之前是悬浮在文本框之上、实时跟随滚动位置的（在 iPhone 上会延迟跟随或留下残影），现改为固定在文本框下方的单个选择器，跟随光标所在行显示。完全取消了滚动监听，从结构上杜绝了延迟和误显示。左侧折叠按钮也从文字字符（‹）换成矢量图标，在任何平台上都能精确居中。']],
         ['ver793', '移动端布局与摄影示例', ['手机上，项目保存/读取组不再溢出，会折到自己一行（隐藏「プロジェクト」标签）；备注工具栏换行更整齐；セリフシート竖排按钮变小。将单元格编号居中于○标记内并略微放大。整理了左侧折叠（‹）按钮。摄影栏新增示例框，说明更简短。（ver792还移除了放大镜图标后残留的白色背景。）']],
         ['ver791', '放大镜开关与保持线修复', ['放大镜（放大单元格数字）按钮在开启时保留图标，改为浅色底+描边显示「开」（取消实色填充）。同时修复了最后一个单元格的保持线在该单元格内多出一小段的问题。']],
         ['ver787', '识别 Science SARU / Clover Works / White Fox 用纸', ['用纸自动对齐现在可识别 Science SARU、Clover Works、White Fox 的时间表用纸（此前判定为「unknown」），列可正确对齐。']],
@@ -11092,28 +11111,16 @@
       };
     }
 
-    function getCameraDirectiveEditableLines(textarea) {
-      const out = [];
-      if (!textarea) return null;
-      const value = String(textarea.value || '').replace(/\r/g, '');
-      const lines = value.split('\n');
-      for (let i = 0; i < lines.length; i++) {
-        const info = getCameraDirectiveEditableLineFromInfo(getTextareaLineInfoAtIndex(textarea, i));
-        if (info) out.push(info);
-      }
-      return out;
-    }
-
     function getCameraDirectiveEditableLineAtIndex(textarea, lineIndex) {
       const index = Number(lineIndex);
       if (!Number.isInteger(index) || index < 0) return null;
       return getCameraDirectiveEditableLineFromInfo(getTextareaLineInfoAtIndex(textarea, index));
     }
 
-    function hideCameraDirectiveCompleter() {
-      if (!cameraDirectiveCompleterEl) return;
-      cameraDirectiveCompleterEl.classList.add('hidden');
-      cameraDirectiveCompleterEl.replaceChildren();
+    function hideCameraDirectiveDock() {
+      if (!cameraDirectiveDockEl) return;
+      cameraDirectiveDockEl.classList.add('hidden');
+      delete cameraDirectiveDockEl.dataset.lineIndex;
     }
 
     function getDefaultCameraTargetLabel(info) {
@@ -11130,104 +11137,53 @@
       return info.fromText + ' | ' + info.toText + ' | ' + normalized + ' | ' + getDefaultCameraTargetLabel(info);
     }
 
-    function createCameraDirectiveSelect(info) {
-      const select = document.createElement('select');
-      select.className = 'camera-directive-select';
-      select.setAttribute('aria-label', 'Camera direction line ' + (info.lineIndex + 1));
-      select.dataset.lineIndex = String(info.lineIndex);
-      CAMERA_DIRECTIVE_COMPLETION_OPTIONS.forEach(function(optionValue){
-        const option = document.createElement('option');
-        option.value = optionValue;
-        option.textContent = optionValue;
-        select.appendChild(option);
-      });
-      select.value = info.currentDirective || '▲';
-      select.addEventListener('change', function(){
-        applyCameraDirectiveCompletion(select.value, select.dataset.lineIndex);
-      });
-      return select;
+    // Docked picker (not an overlay glued to scrolled text): reflects whichever line the
+    // caret is currently on. Caret position doesn't change when the textarea is scrolled,
+    // so this needs no scroll/resize listeners and nothing to reposition or leave behind.
+    function getCameraCaretLineIndex(textarea) {
+      const pos = textarea.selectionStart || 0;
+      return String(textarea.value || '').slice(0, pos).split('\n').length - 1;
     }
 
-    function positionCameraDirectiveSelect(select, textarea, info) {
-      if (!select || !textarea || !info) return false;
-      const rect = textarea.getBoundingClientRect();
-      const style = window.getComputedStyle ? window.getComputedStyle(textarea) : null;
-      const fontSize = style ? (parseFloat(style.fontSize) || 13) : 13;
-      const lineHeightValue = style ? parseFloat(style.lineHeight) : NaN;
-      const lineHeight = Number.isFinite(lineHeightValue) ? lineHeightValue : fontSize * 1.35;
-      const paddingTop = style ? (parseFloat(style.paddingTop) || 0) : 0;
-      const paddingRight = style ? (parseFloat(style.paddingRight) || 0) : 0;
-      const y = rect.top + paddingTop + info.lineIndex * lineHeight - (textarea.scrollTop || 0);
-      const controlH = Math.max(18, Math.round(lineHeight));
-      const visibleTop = rect.top + paddingTop;
-      const visibleBottom = rect.bottom - 4;
-      if (y + controlH < visibleTop || y > visibleBottom) return false;
-      select.style.height = controlH + 'px';
-      select.style.lineHeight = controlH + 'px';
-      const menuW = select.offsetWidth || 66;
-      const menuH = select.offsetHeight || controlH;
-      const left = rect.right - paddingRight - menuW - 8;
-      const topMin = Math.max(4, rect.top + 4);
-      const topMax = Math.max(topMin, Math.min(rect.bottom - menuH - 4, window.innerHeight - menuH - 4));
-      select.style.left = Math.round(clampNumber(left, 4, Math.max(4, window.innerWidth - menuW - 4))) + 'px';
-      select.style.top = Math.round(clampNumber(y, topMin, topMax)) + 'px';
-      return true;
-    }
-
-    function updateCameraDirectiveCompleter() {
+    function updateCameraDirectiveDock() {
       const textarea = document.getElementById('cameraManual');
-      if (!textarea || !cameraDirectiveCompleterEl) return;
-      const infos = getCameraDirectiveEditableLines(textarea);
-      cameraDirectiveCompleterEl.replaceChildren();
-      if (!infos || !infos.length) {
-        hideCameraDirectiveCompleter();
-        return;
+      if (!textarea || !cameraDirectiveDockEl || !cameraDirectiveDockSelectEl) return;
+      if (document.activeElement !== textarea) { hideCameraDirectiveDock(); return; }
+      const lineIndex = getCameraCaretLineIndex(textarea);
+      const info = getCameraDirectiveEditableLineAtIndex(textarea, lineIndex);
+      if (!info) { hideCameraDirectiveDock(); return; }
+      if (cameraDirectiveDockSelectEl.dataset.builtFor !== 'camera') {
+        CAMERA_DIRECTIVE_COMPLETION_OPTIONS.forEach(function(optionValue){
+          const option = document.createElement('option');
+          option.value = optionValue;
+          option.textContent = optionValue;
+          cameraDirectiveDockSelectEl.appendChild(option);
+        });
+        cameraDirectiveDockSelectEl.dataset.builtFor = 'camera';
+        cameraDirectiveDockSelectEl.addEventListener('change', function(){
+          applyCameraDirectiveCompletion(cameraDirectiveDockSelectEl.value, cameraDirectiveDockSelectEl.dataset.lineIndex);
+        });
       }
-      cameraDirectiveCompleterEl.classList.remove('hidden');
-      infos.forEach(function(info){
-        const select = createCameraDirectiveSelect(info);
-        cameraDirectiveCompleterEl.appendChild(select);
-        // Keep every editable line's select in the DOM (hidden if off-screen) so scrolling
-        // only re-places them instead of rebuilding.
-        select.style.display = positionCameraDirectiveSelect(select, textarea, info) ? '' : 'none';
-      });
-      if (!cameraDirectiveCompleterEl.children.length) cameraDirectiveCompleterEl.classList.add('hidden');
+      cameraDirectiveDockSelectEl.dataset.lineIndex = String(info.lineIndex);
+      cameraDirectiveDockSelectEl.value = info.currentDirective || '▲';
+      cameraDirectiveDockLabelEl.textContent = 'L' + (info.lineIndex + 1);
+      cameraDirectiveDockEl.classList.remove('hidden');
     }
 
-    let __camCompleterTimer = null;
-    function scheduleCameraDirectiveCompleter() {
-      if (__camCompleterTimer) clearTimeout(__camCompleterTimer);
-      __camCompleterTimer = setTimeout(function(){
-        __camCompleterTimer = null;
-        updateCameraDirectiveCompleter();
-      }, 90);
-    }
-
-    // Scroll/resize only need to re-place the existing selects (cheap) — no DOM rebuild,
-    // and immediate (rAF) so the pickers track the text instead of lagging behind.
-    function repositionCameraDirectiveSelects() {
-      const textarea = document.getElementById('cameraManual');
-      if (!textarea || !cameraDirectiveCompleterEl || cameraDirectiveCompleterEl.classList.contains('hidden')) return;
-      const kids = cameraDirectiveCompleterEl.children;
-      for (let i = 0; i < kids.length; i++) {
-        const sel = kids[i];
-        sel.style.display = positionCameraDirectiveSelect(sel, textarea, { lineIndex: Number(sel.dataset.lineIndex) || 0 }) ? '' : 'none';
-      }
-    }
-    let __camRepositionRaf = null;
-    function scheduleCameraReposition() {
-      if (__camRepositionRaf) return;
-      __camRepositionRaf = window.requestAnimationFrame(function(){
-        __camRepositionRaf = null;
-        repositionCameraDirectiveSelects();
-      });
+    let __camDockTimer = null;
+    function scheduleCameraDirectiveDockUpdate() {
+      if (__camDockTimer) clearTimeout(__camDockTimer);
+      __camDockTimer = setTimeout(function(){
+        __camDockTimer = null;
+        updateCameraDirectiveDock();
+      }, 60);
     }
 
     function applyCameraDirectiveCompletion(directive, lineIndex) {
       const textarea = document.getElementById('cameraManual');
       const info = getCameraDirectiveEditableLineAtIndex(textarea, lineIndex);
       if (!textarea || !info) {
-        updateCameraDirectiveCompleter();
+        updateCameraDirectiveDock();
         return;
       }
       const normalized = normalizeCameraDirectiveCompletion(directive);
@@ -11245,7 +11201,7 @@
       textarea.focus();
       scheduleManualSourceRoleSync();
       requestCommandInputRender({ delay:0 });
-      updateCameraDirectiveCompleter();
+      updateCameraDirectiveDock();
     }
 
     function annotateCrossSegmentMarkers(segments) {
@@ -22095,19 +22051,22 @@
 
     bindInput('timelineCommandInput', handleTimelineCommandInputChange);
     bindInput('dialogManual', function(){ scheduleManualSourceRoleSync(); requestCommandInputRender(); });
-    bindInput('cameraManual', function(){ scheduleManualSourceRoleSync(); requestCommandInputRender(); scheduleCameraDirectiveCompleter(); });
+    bindInput('cameraManual', function(){ scheduleManualSourceRoleSync(); requestCommandInputRender(); scheduleCameraDirectiveDockUpdate(); });
     bindInput('csvCommandEdit', handleCsvCommandInputChange);
     const cameraManualEl = document.getElementById('cameraManual');
     if (cameraManualEl) {
-      cameraManualEl.addEventListener('focus', updateCameraDirectiveCompleter);
+      cameraManualEl.addEventListener('focus', updateCameraDirectiveDock);
+      cameraManualEl.addEventListener('blur', hideCameraDirectiveDock);
       ['click', 'keyup', 'mouseup'].forEach(function(eventName){
-        cameraManualEl.addEventListener(eventName, scheduleCameraDirectiveCompleter);
+        cameraManualEl.addEventListener(eventName, scheduleCameraDirectiveDockUpdate);
       });
-      cameraManualEl.addEventListener('scroll', scheduleCameraReposition);
+      // Caret can move without click/keyup (native selection-handle drag on touch);
+      // selectionchange catches that too. No scroll/resize listeners needed at all —
+      // the dock's screen position never depends on the textarea's scroll offset.
+      document.addEventListener('selectionchange', function(){
+        if (document.activeElement === cameraManualEl) scheduleCameraDirectiveDockUpdate();
+      });
     }
-    window.addEventListener('resize', scheduleCameraReposition, true);
-    window.addEventListener('scroll', scheduleCameraReposition, true);
-    updateCameraDirectiveCompleter();
     ['timelineCommandInput', 'csvCommandEdit', 'dialogManual', 'cameraManual'].forEach(function(id){
       const node = document.getElementById(id);
       if (!node) return;
@@ -22147,7 +22106,7 @@
     setCommandTextValue('csv', '');
     document.getElementById('dialogManual').value = DEFAULT_DIALOG_SAMPLE_LINE;
     document.getElementById('cameraManual').value = DEFAULT_CAMERA_SAMPLE_LINE;
-    updateCameraDirectiveCompleter();
+    updateCameraDirectiveDock();
     restoreHeaderMemory();
     loadPaperMemory();
     restoreLanguagePreference();
