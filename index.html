@@ -2572,7 +2572,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '807';
+    const APP_VERSION = '808';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -6714,22 +6714,15 @@
         }
         const diagnosticLayer = overlay.diagnosticLayer || null;
         if (diagnosticLayer && Array.isArray(diagnosticLayer.summary) && diagnosticLayer.summary.length) {
-          // Readable debug panel in a clear upper-page area: white background box + rows, so the
-          // grid-alignment numbers don't overlap the sheet title / grid.
-          const lines = diagnosticLayer.summary.slice(0, 14);
-          const panelX = 40;
-          const panelY = 40;
-          const rowH = 20;
-          const panelW = 520;
-          const panelH = 14 + lines.length * rowH;
-          group.appendChild(el('rect', { x:panelX - 8, y:panelY - 16, width:panelW, height:panelH, fill:'rgba(255,255,255,0.92)', stroke:'#0f766e', 'stroke-width':1, rx:6 }));
-          lines.forEach(function(line, index){
+          const baseX = labelBox ? labelBox.x : 42;
+          const baseY = labelBox ? Math.max(18, labelBox.y - 52) : 42;
+          diagnosticLayer.summary.slice(0, 3).forEach(function(line, index){
             group.appendChild(el('text', {
-              x:panelX,
-              y:panelY + index * rowH,
+              x:baseX,
+              y:baseY + index * 14,
               fill:'#0f766e',
-              'font-size':13,
-              'font-family':'Consolas, monospace',
+              'font-size':11,
+              'font-family':'Arial, Helvetica, sans-serif',
               'font-weight':'700'
             }, 'Diag: ' + line));
           });
@@ -7487,15 +7480,8 @@
         const tolerance = Math.max(8, rowH * 0.38);
         const valid = diffs.filter(function(diff){ return Math.abs(diff - rowH) <= tolerance; }).length;
         const validRatio = valid / Math.max(1, diffs.length);
+        const bodyTop = subset[0];
         const bodyBottom = subset[subset.length - 1];
-        // Count 72 uniform cells UP from the reliable bottom line, exactly as the user does by
-        // eye. When the label / grid boundary is a double line, the topmost detected line is the
-        // UPPER one; taking it as the grid top drifts all 72 cells slightly. Anchoring the top at
-        // bottom - 72*rowH lands it on the LOWER boundary line and keeps the spacing even.
-        // Guard: only correct sub-cell drift (a real double line is a fraction of a cell apart).
-        const rawBodyTop = subset[0];
-        const anchoredTop = bodyBottom - (count - 1) * rowH;
-        const bodyTop = Math.abs(anchoredTop - rawBodyTop) < rowH ? anchoredTop : rawBodyTop;
         if (validRatio < 0.88) continue;
         if (bodyTop < 260 || bodyTop > PAGE_H * 0.70) continue;
         if (bodyBottom < PAGE_H * 0.75) continue;
@@ -7505,9 +7491,6 @@
           best = {
             lines:subset,
             bodyTop:bodyTop,
-            rawBodyTop:rawBodyTop,
-            anchoredTop:anchoredTop,
-            anchorApplied:(bodyTop === anchoredTop),
             bodyBottom:bodyBottom,
             rowH:rowH,
             lineCount:PAPER_AUTO_ALIGN_TARGET_BODY_LINES,
@@ -10413,7 +10396,7 @@
       return { penalty:Math.min(70, penalty), notes:notes };
     }
 
-    function makePaperAutoAlignDiagnosticLayer(pair, leftSide, rightSide, headerOverlay, sanity, columns, variantName, bodyGrid, yLines) {
+    function makePaperAutoAlignDiagnosticLayer(pair, leftSide, rightSide, headerOverlay, sanity, columns, variantName) {
       const mechanisms = [];
       const mechanismSeen = new Set();
       function add(name, active, meta) {
@@ -10455,23 +10438,6 @@
         'rightDialog=' + Math.round(Number(rightSide && rightSide.dialog && rightSide.dialog.w || 0)),
         'mechanisms=' + mechanisms.length
       ];
-      // TEMP grid-alignment diagnostics: reveal how the 72-cell body top was chosen so a
-      // double line at the label/grid boundary can be traced from a screenshot.
-      if (bodyGrid) {
-        const rH = Number(bodyGrid.rowH) || 1;
-        const top = Number(bodyGrid.bodyTop) || 0;
-        const bot = Number(bodyGrid.bodyBottom) || 0;
-        summary.push('bodyTop=' + Math.round(top) + ' rawTop=' + Math.round(Number(bodyGrid.rawBodyTop) || 0) + ' anchOn=' + (bodyGrid.anchorApplied ? 1 : 0));
-        summary.push('bottom=' + Math.round(bot) + ' rowH=' + (Math.round(rH * 100) / 100) + ' span/72=' + (Math.round((bot - top) / 72 * 100) / 100));
-        const nearTop = (Array.isArray(yLines) ? yLines : []).map(Number).filter(function(v){
-          return Number.isFinite(v) && v >= top - rH * 2.5 && v <= top + rH * 1.5;
-        }).map(function(v){ return Math.round((v - top) * 10) / 10; });
-        summary.push('topLinesΔ=[' + nearTop.join(',') + ']');
-        const nearBot = (Array.isArray(yLines) ? yLines : []).map(Number).filter(function(v){
-          return Number.isFinite(v) && v >= bot - rH * 1.5 && v <= bot + rH * 2.5;
-        }).map(function(v){ return Math.round((v - bot) * 10) / 10; });
-        summary.push('botLinesΔ=[' + nearBot.join(',') + ']');
-      }
       return {
         summary:summary,
         mechanisms:mechanisms,
@@ -10540,7 +10506,7 @@
       const avgPairScore = Math.max(0, Math.min(240, pair.score));
       const rowScore = Math.max(0, Math.min(120, bodyGrid.score / 10));
       const sanity = assessPaperAutoAlignSanity(boxes, headerOverlay, leftSide, rightSide, columns);
-      const diagnosticLayer = makePaperAutoAlignDiagnosticLayer(pair, leftSide, rightSide, headerOverlay, sanity, columns, variantName || 'standard', bodyGrid, analysis && analysis.yLines);
+      const diagnosticLayer = makePaperAutoAlignDiagnosticLayer(pair, leftSide, rightSide, headerOverlay, sanity, columns, variantName || 'standard');
       const dottedVerticalLineCount = Number(analysis.dottedVerticalLineCount || 0);
       const headerMechanisms = headerOverlay && headerOverlay.mechanisms ? headerOverlay.mechanisms : {};
       const actualDurationPlusDetected = !!(headerOverlay && headerOverlay.durationPlus && !headerOverlay.durationPlus.inferred);
