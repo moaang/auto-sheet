@@ -2572,7 +2572,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '808';
+    const APP_VERSION = '809';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3556,7 +3556,7 @@
 
     const updateLogRecentDocs = {
       en: [
-        ['ver805', 'Paper Auto Align: count the grid from the bottom', ['When the line just below the cell label is doubled, Auto Align used to take the UPPER line as the top of the 72-cell grid, which drifted the whole grid a little. It now counts 72 even cells up from the reliable bottom line, so the top lands on the LOWER line (the one whose spacing is uniform) and the cell coordinates line up.']],
+        ['ver809', 'Paper Auto Align: snap the grid top to the lower double-line', ['When the boundary just below the cell label is a double line, Auto Align caught the UPPER line as the grid top, which made the first cell oversized and drifted the 72 cells. It now detects the oversized first cell and snaps the top down to one even cell above the second line — the LOWER boundary line — so the cells count evenly.']],
         ['ver801', 'Length-edit Undo/Redo as icons', ['The Undo / Redo buttons in the Length Edit row are now icon-only ghost buttons, matching the memo toolbar. This also stops them from overflowing the card on narrow phones.']],
         ['ver800', 'Cleaner 原画 number circle & centering', ['The ring around a genga (cel) number is now always a true circle, even in a horizontally wide cell (it used to stretch into an ellipse). The number itself is centered by font metrics instead of dominant-baseline, so the enlarged digit (magnifier ON) no longer sits low — it stays centered the same way in every browser.']],
         ['ver799', 'Sidebar toggle as a clean divider tab', ['The collapse toggle no longer sits on top of the sidebar scrollbar. It is now a tab attached to the right side of the sidebar/main divider, protruding into the main panel — clear of the scrollbar and reading as one piece with the border line. When the sidebar is collapsed the same tab attaches to the screen\'s left edge.']],
@@ -3680,7 +3680,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
-        ['ver805', '用紙自動整列：本文を下から数える', ['Cellラベルのすぐ下の線が二重になっている用紙で、自動整列が上側の線を72マス本文の先頭として採用し、本文全体がわずかにずれていました。信頼できる一番下の線から72マス分を等間隔で上に数えるようにしたので、先頭は下側の線（マス間隔が均一な方）にそろい、マスの座標が合います。']],
+        ['ver809', '用紙自動整列：本文先頭を下側の二重線にそろえる', ['Cellラベルのすぐ下の境界が二重線の用紙で、自動整列が上側の線を本文の先頭として拾い、最初のマスだけ大きくなって72マスがずれていました。最初のマスが大きすぎることを検出し、先頭を2本目の線から1マス上（＝下側の境界線）へスナップするようにしたので、マスが均等にそろいます。']],
         ['ver801', '尺編集の取り消し/やり直しをアイコンに', ['尺編集の行にある「取り消し」「やり直し」をメモツールバーと同じアイコンのみのゴーストボタンにしました。狭いスマホでボタンがカードからはみ出すのも解消します。']],
         ['ver800', '原画番号の丸と中央揃えをきれいに', ['原画番号を囲む丸が、横に長いセルでも常にきれいな正円になるようにしました（以前は楕円に伸びていました）。数字自体は dominant-baseline ではなくフォントのメトリクスで中央に合わせるようにしたので、拡大表示（虫めがねON）の数字が下に寄って見えることがなくなり、どのブラウザでも同じように中央に来ます。']],
         ['ver799', '折りたたみボタンを境界線のタブに', ['折りたたみボタンがサイドバーのスクロールバーに重ならないようにしました。サイドバーと本体の境界線の右側に付くタブになり、本体側へ少し出っ張る形で、スクロールバーを避けつつ境界線と一体に見えます。サイドバーを畳んだときは、同じタブが画面の左端に付きます。']],
@@ -3804,7 +3804,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
-        ['ver805', '용지 자동정렬: 본문을 아래에서부터 셈', ['Cell 라벨 바로 아래 선이 두 개인 용지에서, 자동정렬이 위쪽 선을 72칸 본문의 시작으로 채택해 본문 전체가 살짝 어긋났습니다. 이제 신뢰할 수 있는 맨 아래 선에서 72칸을 등간격으로 위로 세므로, 시작점이 아래쪽 선(칸 간격이 균일한 선)에 맞고 칸 좌표가 정확히 정렬됩니다.']],
+        ['ver809', '용지 자동정렬: 본문 시작을 아래쪽 이중선에 스냅', ['Cell 라벨 바로 아래 경계가 이중선인 용지에서, 자동정렬이 위쪽 선을 본문 시작으로 잡아 첫 칸만 커지고 72칸이 어긋났습니다. 이제 첫 칸이 유독 큰 걸 감지해, 시작점을 두 번째 선에서 한 칸 위(=아래쪽 경계선)로 스냅하므로 칸이 균일하게 정렬됩니다.']],
         ['ver801', '尺편집 되돌리기/다시실행을 아이콘으로', ['尺編集(길이편집) 행의 「取り消し」「やり直し」를 메모 툴바와 동일한 아이콘 전용 고스트 버튼으로 바꿨습니다. 좁은 폰에서 버튼이 카드 밖으로 삐져나오던 것도 해결됩니다.']],
         ['ver800', '원화 번호 원·중앙정렬 정리', ['원화 번호를 감싸는 원이 셀칸이 가로로 길어도 항상 깔끔한 정원이 되도록 했습니다(이전엔 타원으로 늘어났음). 숫자 자체도 dominant-baseline 대신 폰트 메트릭으로 중앙 정렬하도록 바꿔, 확대(확대경 ON) 시 숫자가 아래로 쏠려 보이던 게 없어지고 어떤 브라우저에서도 동일하게 중앙에 옵니다.']],
         ['ver799', '접기 버튼을 경계선 탭으로', ['접기 버튼이 사이드바 스크롤바 위에 겹치지 않도록 했습니다. 사이드바와 본체 사이 경계선 오른쪽에 붙는 탭이 되어 본체 쪽으로 살짝 나오는 형태로, 스크롤바를 비키면서 경계선과 일체로 보입니다. 사이드바를 접으면 같은 탭이 화면 왼쪽 끝에 붙습니다.']],
@@ -3928,7 +3928,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
-        ['ver805', '纸张自动对齐：从底部数正文', ['当 Cell 标签正下方的线是双线时，自动对齐会把上方那条线当作 72 格正文的顶部，导致整片正文略有偏移。现在从可靠的最底部线向上数 72 个等距格，使顶部对齐到下方那条（间距均匀的）线，格坐标随之对齐。']],
+        ['ver809', '纸张自动对齐：正文顶部对齐到下方双线', ['当 Cell 标签正下方的分界是双线时，自动对齐会把上方那条线当作正文顶部，使第一格偏大、72 格整体错位。现在会检测到过大的第一格，并把顶部下移到第二条线上方一个等距格（即下方分界线），使各格均匀对齐。']],
         ['ver801', '时长编辑的撤销/重做改为图标', ['时长编辑行的「撤销」「重做」改为与备注工具栏一致的纯图标幽灵按钮。也解决了窄屏手机上按钮溢出卡片的问题。']],
         ['ver800', '原画编号圆圈与居中优化', ['原画编号外的圆圈现在即使单元格横向很宽也始终是标准正圆（此前会拉成椭圆）。数字本身改用字体度量居中，而非 dominant-baseline，因此放大（放大镜开启）时数字不再偏下，在任何浏览器中都同样居中。']],
         ['ver799', '折叠按钮改为分界线标签', ['折叠按钮不再压在侧栏滚动条上。现改为附着在侧栏与主区分界线右侧的标签，向主区略微凸出，既避开滚动条又与分界线融为一体。折叠侧栏时，同一标签会贴到屏幕左缘。']],
@@ -7480,7 +7480,14 @@
         const tolerance = Math.max(8, rowH * 0.38);
         const valid = diffs.filter(function(diff){ return Math.abs(diff - rowH) <= tolerance; }).length;
         const validRatio = valid / Math.max(1, diffs.length);
-        const bodyTop = subset[0];
+        // If the FIRST cell is oversized, the top line is the UPPER of a double line at the
+        // label/grid boundary (the true first cell would be one uniform row). Snap the top down
+        // to one row above the second line — i.e. the LOWER boundary line — so the 72 cells count
+        // evenly (measured on A-1: subset[0]=793 upper, subset[1]=820, rowH=23 → 820-23=797 lower).
+        let bodyTop = subset[0];
+        if (subset.length > 1 && (subset[1] - subset[0]) > rowH * 1.15) {
+          bodyTop = subset[1] - rowH;
+        }
         const bodyBottom = subset[subset.length - 1];
         if (validRatio < 0.88) continue;
         if (bodyTop < 260 || bodyTop > PAGE_H * 0.70) continue;
