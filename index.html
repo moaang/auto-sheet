@@ -901,14 +901,27 @@
       box-shadow: none;
       outline: none;
     }
+    /* Undo/Redo as icon-only ghost buttons, matching the memo toolbar for consistency. */
     .shaku-history-btn {
-      min-width: 54px;
-      padding: 0 8px;
+      width: 32px;
+      min-width: 32px;
+      padding: 0;
+      flex: none;
+      border-color: transparent;
+      background: transparent;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text);
+      transition: background .12s ease;
     }
+    .shaku-history-btn .ic-svg { width: 15px; height: 15px; }
+    .shaku-history-btn:hover { background: rgba(28,30,34,.06); border-color: transparent; }
     .shaku-history-btn[disabled] {
       opacity: .42;
       cursor: not-allowed;
     }
+    .shaku-history-btn[disabled]:hover { background: transparent; }
     .shaku-edit-hint {
       min-width: 0;
       color: var(--muted);
@@ -2302,8 +2315,8 @@
         </div>
         <div class="shaku-edit-row">
           <button id="shakuEditBtn" class="shaku-edit-btn" type="button" data-ui-text="shakuEditBtn">尺編集</button>
-          <button id="shakuUndoBtn" class="shaku-edit-btn shaku-history-btn" type="button" data-ui-text="shakuUndoBtn">Undo</button>
-          <button id="shakuRedoBtn" class="shaku-edit-btn shaku-history-btn" type="button" data-ui-text="shakuRedoBtn">Redo</button>
+          <button id="shakuUndoBtn" class="shaku-edit-btn shaku-history-btn" type="button" aria-label="Undo" data-ui-title="shakuUndoBtn"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 6 4.5 9.5 8 13M4.5 9.5H15a4.75 4.75 0 0 1 0 9.5h-5"/></svg></button>
+          <button id="shakuRedoBtn" class="shaku-edit-btn shaku-history-btn" type="button" aria-label="Redo" data-ui-title="shakuRedoBtn"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m16 6 3.5 3.5L16 13M19.5 9.5H9a4.75 4.75 0 0 0 0 9.5h5"/></svg></button>
           <span id="shakuEditHint" class="shaku-edit-hint" data-ui-text="shakuEditHint">青い線をドラッグして尺を選択</span>
         </div>
         <div class="sheet-reset-row">
@@ -2559,7 +2572,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '800';
+    const APP_VERSION = '801';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3543,6 +3556,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver801', 'Length-edit Undo/Redo as icons', ['The Undo / Redo buttons in the Length Edit row are now icon-only ghost buttons, matching the memo toolbar. This also stops them from overflowing the card on narrow phones.']],
         ['ver800', 'Cleaner 原画 number circle & centering', ['The ring around a genga (cel) number is now always a true circle, even in a horizontally wide cell (it used to stretch into an ellipse). The number itself is centered by font metrics instead of dominant-baseline, so the enlarged digit (magnifier ON) no longer sits low — it stays centered the same way in every browser.']],
         ['ver799', 'Sidebar toggle as a clean divider tab', ['The collapse toggle no longer sits on top of the sidebar scrollbar. It is now a tab attached to the right side of the sidebar/main divider, protruding into the main panel — clear of the scrollbar and reading as one piece with the border line. When the sidebar is collapsed the same tab attaches to the screen\'s left edge.']],
         ['ver798', 'Fix broken cell-label row on narrow widths', ['The "Show cell label output" row (checkbox + Cell columns + In-between columns) was cramming all three onto one line, so on phones the label collapsed into a narrow overlapping column. It now lays out predictably at every width: the checkbox label takes its own line, and the two number controls sit on the line below (side by side when there\'s room, stacked on phones).']],
@@ -3665,6 +3679,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver801', '尺編集の取り消し/やり直しをアイコンに', ['尺編集の行にある「取り消し」「やり直し」をメモツールバーと同じアイコンのみのゴーストボタンにしました。狭いスマホでボタンがカードからはみ出すのも解消します。']],
         ['ver800', '原画番号の丸と中央揃えをきれいに', ['原画番号を囲む丸が、横に長いセルでも常にきれいな正円になるようにしました（以前は楕円に伸びていました）。数字自体は dominant-baseline ではなくフォントのメトリクスで中央に合わせるようにしたので、拡大表示（虫めがねON）の数字が下に寄って見えることがなくなり、どのブラウザでも同じように中央に来ます。']],
         ['ver799', '折りたたみボタンを境界線のタブに', ['折りたたみボタンがサイドバーのスクロールバーに重ならないようにしました。サイドバーと本体の境界線の右側に付くタブになり、本体側へ少し出っ張る形で、スクロールバーを避けつつ境界線と一体に見えます。サイドバーを畳んだときは、同じタブが画面の左端に付きます。']],
         ['ver798', '狭い幅でCellラベル行の崩れを修正', ['「Cellラベル出力を表示」の行（チェックボックス＋Cell列数＋動画列数）が3つを1行に詰め込もうとして、スマホではラベルが細い列に折り返して重なっていました。どの幅でも安定して並ぶようにし、チェックボックスのラベルは自分の行に、2つの数値入力はその下の行（余裕があれば横並び、スマホでは縦積み）に配置しました。']],
@@ -3787,6 +3802,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver801', '尺편집 되돌리기/다시실행을 아이콘으로', ['尺編集(길이편집) 행의 「取り消し」「やり直し」를 메모 툴바와 동일한 아이콘 전용 고스트 버튼으로 바꿨습니다. 좁은 폰에서 버튼이 카드 밖으로 삐져나오던 것도 해결됩니다.']],
         ['ver800', '원화 번호 원·중앙정렬 정리', ['원화 번호를 감싸는 원이 셀칸이 가로로 길어도 항상 깔끔한 정원이 되도록 했습니다(이전엔 타원으로 늘어났음). 숫자 자체도 dominant-baseline 대신 폰트 메트릭으로 중앙 정렬하도록 바꿔, 확대(확대경 ON) 시 숫자가 아래로 쏠려 보이던 게 없어지고 어떤 브라우저에서도 동일하게 중앙에 옵니다.']],
         ['ver799', '접기 버튼을 경계선 탭으로', ['접기 버튼이 사이드바 스크롤바 위에 겹치지 않도록 했습니다. 사이드바와 본체 사이 경계선 오른쪽에 붙는 탭이 되어 본체 쪽으로 살짝 나오는 형태로, 스크롤바를 비키면서 경계선과 일체로 보입니다. 사이드바를 접으면 같은 탭이 화면 왼쪽 끝에 붙습니다.']],
         ['ver798', '좁은 폭에서 Cell 라벨 행 깨짐 수정', ['「Cellラベル出力を表示」 행(체크박스 + Cell列数 + 動画列数)이 셋을 한 줄에 욱여넣으려다, 폰에서 라벨이 좁은 세로 열로 접히며 겹쳤습니다. 어떤 폭에서도 안정적으로 배치되도록, 체크박스 라벨은 자기 줄에, 두 숫자 입력은 아래 줄(공간 있으면 나란히, 폰에서는 세로로)로 두었습니다.']],
@@ -3909,6 +3925,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver801', '时长编辑的撤销/重做改为图标', ['时长编辑行的「撤销」「重做」改为与备注工具栏一致的纯图标幽灵按钮。也解决了窄屏手机上按钮溢出卡片的问题。']],
         ['ver800', '原画编号圆圈与居中优化', ['原画编号外的圆圈现在即使单元格横向很宽也始终是标准正圆（此前会拉成椭圆）。数字本身改用字体度量居中，而非 dominant-baseline，因此放大（放大镜开启）时数字不再偏下，在任何浏览器中都同样居中。']],
         ['ver799', '折叠按钮改为分界线标签', ['折叠按钮不再压在侧栏滚动条上。现改为附着在侧栏与主区分界线右侧的标签，向主区略微凸出，既避开滚动条又与分界线融为一体。折叠侧栏时，同一标签会贴到屏幕左缘。']],
         ['ver798', '修复窄屏下 Cell 标签行错位', ['「Cellラベル出力を表示」行（复选框 + Cell列数 + 動画列数）试图把三者塞进一行，在手机上标签折成很窄的一列并互相重叠。现改为在任意宽度下都稳定排布：复选框标签独占一行，两个数字输入放在下一行（有空间时并排，手机上竖排）。']],
@@ -14954,11 +14971,16 @@
         shakuEditBtn.textContent = getShakuUiText('shakuEditBtn');
       }
       if (shakuUndoBtn) {
-        shakuUndoBtn.textContent = getShakuUiText('shakuUndoBtn');
+        // Icon-only button: localize the tooltip, keep the SVG (don't overwrite textContent).
+        const undoLabel = getShakuUiText('shakuUndoBtn');
+        shakuUndoBtn.setAttribute('title', undoLabel);
+        shakuUndoBtn.setAttribute('aria-label', undoLabel);
         shakuUndoBtn.disabled = !(state.shakuUndoStack && state.shakuUndoStack.length);
       }
       if (shakuRedoBtn) {
-        shakuRedoBtn.textContent = getShakuUiText('shakuRedoBtn');
+        const redoLabel = getShakuUiText('shakuRedoBtn');
+        shakuRedoBtn.setAttribute('title', redoLabel);
+        shakuRedoBtn.setAttribute('aria-label', redoLabel);
         shakuRedoBtn.disabled = !(state.shakuRedoStack && state.shakuRedoStack.length);
       }
       if (shakuEditHintEl) shakuEditHintEl.textContent = getShakuUiText('shakuEditHint');
