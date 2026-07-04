@@ -2565,7 +2565,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '819';
+    const APP_VERSION = '820';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3549,6 +3549,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver820', 'Paper load now actually scrolls to its settings card', ['Loading a paper (including drag & drop) used to only flag the settings card as expanded, without expanding a collapsed sidebar or scrolling to it — so if the sidebar was collapsed, nothing visibly happened at all. It now does the same thing as clicking the mini 用紙設定 label: expand the sidebar if collapsed, and scroll the card into view.']],
         ['ver819', 'Douga columns resets per paper; remembers known company papers', ['The "Douga columns" offset now always starts at 0 (same as Cell columns) when a new paper file is loaded, and is locked to 0 (disabled) whenever no company paper is loaded — the built-in sheet template never uses the -1 case, since it only matches a specific printed paper\'s actual column layout. When Auto Align recognizes a known company template and you set -1 for it, that is remembered per company, so loading that same company\'s paper again automatically starts at -1 instead of the generic 0.']],
         ['ver818', 'Built-in template: genga and douga cells now match', ['The genga (ACTION) grid and douga (in-between/CELL) grid used to have noticeably different cell widths (genga was about twice as wide as douga) because their column areas were split from fixed, unequal budgets regardless of column count. They now share one cell width — the existing combined width is re-split in proportion to column count, so a genga cell and a douga cell are always the same size. Dialog and Camera widths, and the overall sheet width, are unchanged.']],
         ['ver817', 'Global undo/redo, mobile edit fix, quieter paper card', ['Added global undo/redo for sheet content — value edits, cell moves, column counts and marker/dot/camera overrides — via Ctrl+Z / Ctrl+Shift+Z (Ctrl+Y) and a new undo/redo button pair in the preview toolbar (works on mobile too). It is separate from the memo and shaku edit histories, and while you are typing in a field the browser\'s own per-field undo still applies; the global step covers everything else once focus leaves the field. Fixed the mobile text editor jumping out of place: the inline value/header editor now positions itself above the on-screen keyboard (using the visual viewport) instead of being scroll-jerked around. Removed the showy red flashing highlight on the paper file picker, and tidied the 用紙設定 toolbar (even left/right padding, no empty gap after クリア).']],
@@ -3681,6 +3682,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver820', '用紙読み込み時に設定カードへ実際にスクロールするように', ['用紙を読み込むと（ドラッグ＆ドロップ含む）設定カードを開いた状態にはしていましたが、サイドバーが折りたたまれていても展開せず、スクロールもしていなかったため、サイドバーが閉じていると見た目には何も起きていませんでした。今はプレビュー上の「用紙設定」ラベルをクリックしたときと同じく、サイドバーが折りたたまれていれば展開し、カードまでスクロールするようになりました。']],
         ['ver819', '動画列数は用紙ごとにリセット・既知の会社用紙は記憶', ['「動画列数」のオフセットは、新しい用紙ファイルを読み込むたびに必ず0（Cell列数と同じ）から始まるようになりました。また、会社指定用紙を読み込んでいないとき（内蔵シートテンプレート使用時）は常に0に固定（入力欄も無効化）されます——この-1指定は特定の印刷用紙の実際の列構成に合わせるためのものなので、内蔵テンプレートでは使いません。自動整列が既知の会社テンプレートを認識し、そこで-1に設定した場合は会社ごとに記憶し、次に同じ会社の用紙を読み込んだときは自動的に-1から始まります。']],
         ['ver818', '内蔵テンプレート：原画と動画のマス幅を統一', ['原画（ACTION）欄と動画（中割り／CELL）欄は、列数に関係なく固定・不均等な幅を割り当てていたため、マスの幅がかなり違って見えていました（原画が動画のおよそ2倍幅）。今は両欄で同じマス幅を使うようにしました——既存の合計幅を列数の比率で分け直すので、原画のマス1つと動画のマス1つは常に同じ大きさになります。Dialog・CAMERAの幅とシート全体の幅は変わりません。']],
         ['ver817', '全体の元に戻す／やり直し・モバイル編集修正・用紙カード整理', ['シート内容（値の編集・セルの移動・列数・マーカー/中割り点/カメラの上書き）に対する全体の「元に戻す／やり直し」を追加しました。Ctrl+Z / Ctrl+Shift+Z（Ctrl+Y）と、プレビューツールバーの元に戻す／やり直しボタン（モバイルでも使えます）で操作できます。メモモードや尺編集の履歴とは別系統で、入力欄で文字を打っている間はブラウザ標準の欄ごとの取り消しがそのまま効き、フォーカスが欄から外れると全体の履歴が働きます。モバイルで文字編集に入るとエディタが飛ぶ問題も修正：セル値・ヘッダーのインライン編集欄が、画面キーボードの上（ビジュアルビューポート基準）に収まるようになり、スクロールで暴れなくなりました。用紙ファイル選択の赤い点滅ハイライトを削除し、「用紙設定」ツールバーの余白も整えました（左右均等、クリアの後ろの空きを解消）。']],
@@ -3813,6 +3815,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver820', '용지 로드 시 설정 카드로 실제로 스크롤되도록 수정', ['용지를 불러오면(드래그앤드롭 포함) 설정 카드를 펼침 상태로만 만들 뿐, 사이드바가 접혀 있어도 펼치지 않고 스크롤도 하지 않아서, 사이드바가 접힌 상태에선 화면상 아무 일도 안 일어난 것처럼 보였습니다. 이제 프리뷰의 「用紙設定」 라벨을 클릭했을 때와 동일하게, 사이드바가 접혀 있으면 펼치고 카드까지 스크롤합니다.']],
         ['ver819', '동화 칸 수는 용지마다 초기화, 인식된 회사 용지는 기억', ['「동화 칸 수」 오프셋은 새 용지 파일을 불러올 때마다 항상 0(Cell 칸 수와 동일)에서 시작합니다. 또한 회사 지정용지가 로드되지 않았을 때(내장 시트 템플릿 사용 시)는 항상 0으로 고정(입력칸 비활성화)됩니다 — 이 -1 설정은 특정 인쇄 용지의 실제 칸 구성에 맞추기 위한 것이라 내장 템플릿에는 적용되지 않습니다. 자동정렬이 알려진 회사 템플릿을 인식하고 그 용지에서 -1로 설정하면 회사별로 기억해두어, 다음에 같은 회사 용지를 불러올 때 자동으로 -1부터 시작합니다.']],
         ['ver818', '내장 템플릿: 원화·동화 셀 크기 통일', ['원화(ACTION) 칸과 동화(중割/CELL) 칸이 칸 수와 무관하게 고정·불균등한 폭으로 배분돼 있어, 셀 크기가 눈에 띄게 달라 보였습니다(원화가 동화의 약 2배 폭). 이제 두 영역이 같은 셀 폭을 공유합니다 — 기존 합산 폭을 칸 수 비율로 재분배해서, 원화 셀 하나와 동화 셀 하나가 항상 같은 크기가 됩니다. Dialog·CAMERA 폭과 시트 전체 폭은 그대로입니다.']],
         ['ver817', '전역 실행취소/다시실행·모바일 편집 수정·용지 카드 정리', ['시트 콘텐츠(값 수정·셀 이동·칸 수·마커/중割점/카메라 오버라이드)에 대한 전역 실행취소/다시실행을 추가했습니다. Ctrl+Z / Ctrl+Shift+Z(Ctrl+Y)와 프리뷰 툴바의 실행취소/다시실행 버튼(모바일에서도 사용 가능)으로 됩니다. 메모모드·尺편집 히스토리와는 별개이며, 입력칸에서 타이핑 중일 땐 브라우저 자체의 칸별 실행취소가 그대로 동작하고 포커스가 칸을 벗어나면 전역 히스토리가 작동합니다. 모바일에서 텍스트 편집 진입 시 편집창이 튀던 문제도 수정: 셀 값·헤더 인라인 편집창이 화면 키보드 위(비주얼 뷰포트 기준)에 자리잡아 스크롤로 흔들리지 않습니다. 용지 파일 선택의 빨간 점멸 강조를 제거하고, 「用紙設定」 툴바 여백도 정리했습니다(좌우 균등, クリア 뒤 빈 공간 제거).']],
@@ -3945,6 +3948,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver820', '载入纸张时会真正滚动到设置卡片', ['载入纸张（含拖放）此前只会把设置卡片标记为展开，但不会展开已收起的侧边栏，也不会滚动过去——如果侧边栏是收起状态，看起来就像什么都没发生。现在的行为与点击预览上方的「用紙設定」标签一致：如果侧边栏收起会自动展开，并滚动到该卡片。']],
         ['ver819', '動画列数按纸张重置·记住已识别的公司纸张', ['「動画列数」偏移量现在每次载入新纸张文件时都会重置为 0（与 Cell 列数相同）。未载入公司指定纸张时（使用内置表格模板），该值始终锁定为 0（输入框禁用）——因为 -1 这一设定只用于匹配某张具体印刷纸张的实际列结构，内置模板不需要它。当自动对齐识别出已知的公司模板、且你为其设置了 -1 时，会按公司记住该设置，下次载入同一公司的纸张会自动从 -1 开始。']],
         ['ver818', '内置模板：原画与动画格子尺寸统一', ['原画（ACTION）栏与动画（中割/CELL）栏此前按固定且不相等的宽度分配区域，与列数无关，导致格子大小明显不同（原画约为动画的两倍宽）。现在两栏共享同一个格子宽度——按列数比例重新分配原有的合计宽度，使一个原画格子与一个动画格子始终大小相同。Dialog、CAMERA 的宽度及整张表的总宽度不变。']],
         ['ver817', '全局撤销/重做·移动端编辑修复·纸张卡片整理', ['为表格内容（数值编辑、单元格移动、列数、标记/中间点/摄影覆盖）新增了全局撤销/重做，可用 Ctrl+Z / Ctrl+Shift+Z（Ctrl+Y）以及预览工具栏中新的撤销/重做按钮（移动端也可用）。它与备注模式、尺编辑的历史相互独立；在输入框中打字时，浏览器自带的逐框撤销照常有效，焦点离开输入框后由全局历史接管。修复了移动端进入文字编辑时编辑框乱跳的问题：单元格数值/页眉的行内编辑框现在会定位在屏幕键盘上方（基于可视视口），不再被滚动带偏。移除了纸张文件选择处红色闪烁高亮，并整理了「用紙設定」工具栏的间距（左右均匀、クリア 后不再留空）。']],
@@ -21047,8 +21051,9 @@
         syncPaperLayoutControls();
         updatePaperImageStatus();
         // Discoverability: a paper often arrives via drag & drop without the settings card ever
-        // being opened — open it so the alignment controls are visible the moment they matter.
-        openPaperLayoutCard(false);
+        // being opened — expand a collapsed sidebar and scroll to the card (not just flag it
+        // open), so the alignment controls are actually visible the moment they matter.
+        openPaperLayoutCard(true);
         pushPaperHistory(beforeSnapshot, getPaperStateSnapshot());
         queueSavePaperMemory();
         render();
