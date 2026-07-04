@@ -2565,7 +2565,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '817';
+    const APP_VERSION = '818';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3548,6 +3548,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver818', 'Built-in template: genga and douga cells now match', ['The genga (ACTION) grid and douga (in-between/CELL) grid used to have noticeably different cell widths (genga was about twice as wide as douga) because their column areas were split from fixed, unequal budgets regardless of column count. They now share one cell width — the existing combined width is re-split in proportion to column count, so a genga cell and a douga cell are always the same size. Dialog and Camera widths, and the overall sheet width, are unchanged.']],
         ['ver817', 'Global undo/redo, mobile edit fix, quieter paper card', ['Added global undo/redo for sheet content — value edits, cell moves, column counts and marker/dot/camera overrides — via Ctrl+Z / Ctrl+Shift+Z (Ctrl+Y) and a new undo/redo button pair in the preview toolbar (works on mobile too). It is separate from the memo and shaku edit histories, and while you are typing in a field the browser\'s own per-field undo still applies; the global step covers everything else once focus leaves the field. Fixed the mobile text editor jumping out of place: the inline value/header editor now positions itself above the on-screen keyboard (using the visual viewport) instead of being scroll-jerked around. Removed the showy red flashing highlight on the paper file picker, and tidied the 用紙設定 toolbar (even left/right padding, no empty gap after クリア).']],
         ['ver816', 'Douga columns is now a simple -1 toggle', ['The "Douga columns" field is now just a two-state stepper — 0 (same as Cell columns, the default) or -1 (one fewer), the only pattern anyone has actually used. Removed the "(0=same)" label text since the up/down arrows make it self-explanatory. It now stores the OFFSET rather than a fixed number, so it keeps tracking Cell columns automatically if that value is changed later. Existing saved projects that had a specific column count keep rendering the same douga column count.']],
         ['ver815', 'Paper card reorganized; honest confidence score', ['The company-paper card now follows the actual workflow: file picker on top, then Auto Align / Position Edit / Reset, then Undo / Redo / Clear, display toggles, and the detection readout moved to the bottom as a compact two-column block. Loading a paper (including drag & drop) now opens this card automatically, and clicking the 用紙設定 label above the preview jumps straight to it — so the setup is discoverable without hunting. The Auto Align confidence % is now computed from measured quality (column-pair match, row-spacing uniformity, repairs applied) instead of a formula whose main term was effectively constant; clean papers read 95-97%, papers that needed repairs or failed sanity checks now visibly score lower. Camera example unified to 0+01 start.']],
@@ -3678,6 +3679,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver818', '内蔵テンプレート：原画と動画のマス幅を統一', ['原画（ACTION）欄と動画（中割り／CELL）欄は、列数に関係なく固定・不均等な幅を割り当てていたため、マスの幅がかなり違って見えていました（原画が動画のおよそ2倍幅）。今は両欄で同じマス幅を使うようにしました——既存の合計幅を列数の比率で分け直すので、原画のマス1つと動画のマス1つは常に同じ大きさになります。Dialog・CAMERAの幅とシート全体の幅は変わりません。']],
         ['ver817', '全体の元に戻す／やり直し・モバイル編集修正・用紙カード整理', ['シート内容（値の編集・セルの移動・列数・マーカー/中割り点/カメラの上書き）に対する全体の「元に戻す／やり直し」を追加しました。Ctrl+Z / Ctrl+Shift+Z（Ctrl+Y）と、プレビューツールバーの元に戻す／やり直しボタン（モバイルでも使えます）で操作できます。メモモードや尺編集の履歴とは別系統で、入力欄で文字を打っている間はブラウザ標準の欄ごとの取り消しがそのまま効き、フォーカスが欄から外れると全体の履歴が働きます。モバイルで文字編集に入るとエディタが飛ぶ問題も修正：セル値・ヘッダーのインライン編集欄が、画面キーボードの上（ビジュアルビューポート基準）に収まるようになり、スクロールで暴れなくなりました。用紙ファイル選択の赤い点滅ハイライトを削除し、「用紙設定」ツールバーの余白も整えました（左右均等、クリアの後ろの空きを解消）。']],
         ['ver816', '動画列数を「-1」だけの単純な切替に', ['「動画列数」欄を、0（Cell列数と同じ・既定）と-1（1列少ない）だけを切り替える単純なステッパーにしました。実際に使われてきたのはこのパターンだけです。上下の矢印だけで意味が分かるため「（0=同じ）」の説明文は削除しました。値は固定の列数ではなく差分として保存するので、後からCell列数を変えても自動的に追従します。既に特定の列数を保存済みのプロジェクトも、これまでと同じ動画列数で表示され続けます。']],
         ['ver815', '用紙カードを整理・信頼度を実測ベースに', ['会社指定用紙のカードを実際の作業順に並べ替えました：ファイル選択 → 自動整列／位置編集／初期化 → 取り消し／やり直し／クリア → 表示切替、そして検出結果の表示はカード最下部にコンパクトな2列表示で移動。用紙を読み込むと（ドラッグ＆ドロップ含む）このカードが自動で開き、プレビュー上の「用紙設定」ラベルをクリックすると直接ジャンプするので、設定方法に気づかないままになりません。自動整列の信頼度％は、実測品質（列ペアの一致度・行間の均一性・補正の有無）から計算するようにしました（旧式は主要項がほぼ定数でした）。きれいな用紙は95〜97%、補正が必要だったり整合チェックに引っかかった用紙は明確に低く出ます。カメラ例も 0+01 開始に統一。']],
@@ -3808,6 +3810,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver818', '내장 템플릿: 원화·동화 셀 크기 통일', ['원화(ACTION) 칸과 동화(중割/CELL) 칸이 칸 수와 무관하게 고정·불균등한 폭으로 배분돼 있어, 셀 크기가 눈에 띄게 달라 보였습니다(원화가 동화의 약 2배 폭). 이제 두 영역이 같은 셀 폭을 공유합니다 — 기존 합산 폭을 칸 수 비율로 재분배해서, 원화 셀 하나와 동화 셀 하나가 항상 같은 크기가 됩니다. Dialog·CAMERA 폭과 시트 전체 폭은 그대로입니다.']],
         ['ver817', '전역 실행취소/다시실행·모바일 편집 수정·용지 카드 정리', ['시트 콘텐츠(값 수정·셀 이동·칸 수·마커/중割점/카메라 오버라이드)에 대한 전역 실행취소/다시실행을 추가했습니다. Ctrl+Z / Ctrl+Shift+Z(Ctrl+Y)와 프리뷰 툴바의 실행취소/다시실행 버튼(모바일에서도 사용 가능)으로 됩니다. 메모모드·尺편집 히스토리와는 별개이며, 입력칸에서 타이핑 중일 땐 브라우저 자체의 칸별 실행취소가 그대로 동작하고 포커스가 칸을 벗어나면 전역 히스토리가 작동합니다. 모바일에서 텍스트 편집 진입 시 편집창이 튀던 문제도 수정: 셀 값·헤더 인라인 편집창이 화면 키보드 위(비주얼 뷰포트 기준)에 자리잡아 스크롤로 흔들리지 않습니다. 용지 파일 선택의 빨간 점멸 강조를 제거하고, 「用紙設定」 툴바 여백도 정리했습니다(좌우 균등, クリア 뒤 빈 공간 제거).']],
         ['ver816', '동화 칸 수를 -1 전용 토글로', ['「동화 칸 수」 항목을 0(Cell 칸 수와 동일, 기본값)과 -1(한 칸 적음)만 오가는 단순한 스테퍼로 바꿨습니다. 실제로 쓰인 패턴은 이것뿐이었습니다. 위아래 화살표만으로 의미가 드러나므로 「(0=동일)」 설명 문구는 삭제했습니다. 값을 고정된 칸 수가 아니라 차이(오프셋)로 저장해서, 나중에 Cell 칸 수를 바꿔도 자동으로 따라갑니다. 이미 특정 칸 수를 저장해둔 프로젝트도 이전과 동일한 동화 칸 수로 계속 표시됩니다.']],
         ['ver815', '용지 카드 정리·신뢰도 실측화', ['회사 지정용지 카드를 실제 작업 순서대로 재배치했습니다: 파일 선택 → 자동정렬/위치편집/초기화 → 되돌리기/다시실행/클리어 → 표시 토글, 그리고 검출 결과는 카드 맨 아래 컴팩트한 2열 블록으로 이동. 용지를 불러오면(드래그앤드롭 포함) 이 카드가 자동으로 열리고, 프리뷰 위 「用紙設定」 라벨을 클릭하면 바로 점프합니다 — 설정 방법을 못 찾는 일이 없도록. 자동정렬 신뢰도 %는 실측 품질(열 페어 일치도·행 간격 균일성·보정 적용 여부)로 계산하도록 바꿨습니다(구식은 주요 항이 사실상 상수였음). 깨끗한 용지는 95~97%, 보정이 필요했거나 정합 검사에 걸린 용지는 뚜렷이 낮게 나옵니다. 카메라 예시도 0+01 시작으로 통일.']],
@@ -3938,6 +3941,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver818', '内置模板：原画与动画格子尺寸统一', ['原画（ACTION）栏与动画（中割/CELL）栏此前按固定且不相等的宽度分配区域，与列数无关，导致格子大小明显不同（原画约为动画的两倍宽）。现在两栏共享同一个格子宽度——按列数比例重新分配原有的合计宽度，使一个原画格子与一个动画格子始终大小相同。Dialog、CAMERA 的宽度及整张表的总宽度不变。']],
         ['ver817', '全局撤销/重做·移动端编辑修复·纸张卡片整理', ['为表格内容（数值编辑、单元格移动、列数、标记/中间点/摄影覆盖）新增了全局撤销/重做，可用 Ctrl+Z / Ctrl+Shift+Z（Ctrl+Y）以及预览工具栏中新的撤销/重做按钮（移动端也可用）。它与备注模式、尺编辑的历史相互独立；在输入框中打字时，浏览器自带的逐框撤销照常有效，焦点离开输入框后由全局历史接管。修复了移动端进入文字编辑时编辑框乱跳的问题：单元格数值/页眉的行内编辑框现在会定位在屏幕键盘上方（基于可视视口），不再被滚动带偏。移除了纸张文件选择处红色闪烁高亮，并整理了「用紙設定」工具栏的间距（左右均匀、クリア 后不再留空）。']],
         ['ver816', '動画列数改为仅 -1 的简单切换', ['「動画列数」栏改为只在 0（与 Cell 列数相同，默认）和 -1（少一列）之间切换的简单步进器——这也是实际唯一用过的模式。上下箭头已经能说明含义，因此删除了「(0=相同)」的说明文字。该值现在存储为与 Cell 列数的差值而非固定数字，之后修改 Cell 列数时会自动跟随。已保存过具体列数的旧项目，动画列数的渲染结果保持不变。']],
         ['ver815', '纸张卡片重组·置信度改为实测', ['公司指定纸张卡片按实际工作流程重新排列：文件选择 → 自动对齐/位置编辑/重置 → 撤销/重做/清除 → 显示开关，检测结果移至卡片底部并改为紧凑的两列显示。载入纸张（含拖放）会自动展开该卡片，点击预览上方的「用紙設定」标签可直接跳转 — 不会再找不到设置入口。自动对齐置信度 % 改为按实测质量（列对匹配度、行距均匀性、是否需要修补）计算（旧公式的主要项几乎恒定）。干净的纸张为 95-97%，需要修补或未通过一致性检查的纸张会明显偏低。摄影示例也统一为 0+01 开头。']],
@@ -18609,6 +18613,18 @@
     function computeLayout(layers, baseLayers, maxFrame) {
       const originalEntries = computeOriginalDisplayEntries(layers);
       const singleMode = layers.length > 10;
+      const inbetweenColumnCount = Math.max(1, getInbetweenColumnCount() || originalEntries.length);
+      // The genga (ACTION/original) and douga (in-between/CELL) grids share one cell width so the
+      // two blocks read as one consistent sheet instead of genga cells looking noticeably wider
+      // than douga cells. Dialog/Camera widths and the overall block width are left untouched —
+      // only the existing combined genga+douga budget is re-split in proportion to column count,
+      // so a shared cellW = combinedBudget / (gengaColumns + dougaColumns) drives both areas.
+      function makeCellMetrics(dialogW, cameraW, legacyOriginalAreaW, legacyInbetweenW) {
+        const combinedCellBudget = legacyOriginalAreaW + legacyInbetweenW;
+        const totalColumns = Math.max(1, originalEntries.length + inbetweenColumnCount);
+        const cellW = combinedCellBudget / totalColumns;
+        return { dialogW:dialogW, cameraW:cameraW, originalAreaW:cellW * originalEntries.length, inbetweenW:cellW * inbetweenColumnCount };
+      }
       return {
         layers:layers,
         baseLayers:baseLayers,
@@ -18617,8 +18633,8 @@
         maxFrame:maxFrame,
         singleMode:singleMode,
         pageFrames:singleMode ? 72 : 144,
-        dualMetrics:{ dialogW:96, inbetweenW:200, cameraW:120, originalAreaW:792 - 96 - 200 - 120 },
-        singleMetrics:{ dialogW:120, inbetweenW:240, cameraW:140, originalAreaW:1636 - 120 - 240 - 140 }
+        dualMetrics:makeCellMetrics(96, 120, 792 - 96 - 200 - 120, 200),
+        singleMetrics:makeCellMetrics(120, 140, 1636 - 120 - 240 - 140, 240)
       };
     }
 
