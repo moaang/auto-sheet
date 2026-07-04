@@ -83,13 +83,27 @@
       overflow-x: hidden;
       scrollbar-gutter: stable;
     }
+    /* The right pane IS the preview canvas: .preview-wrap fills it edge to edge and scrolls,
+       while the toolbars float above the canvas in a fixed stack with drop shadows. */
     .main {
-      padding: 20px;
+      position: relative;
+      padding: 0;
       height: 100vh;
       min-height: 0;
-      overflow: auto;
-      scrollbar-gutter: stable both-edges;
+      overflow: hidden;
     }
+    .floating-bars {
+      position: absolute;
+      top: 12px;
+      left: 26px;
+      right: 16px;
+      z-index: 40;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+    .floating-bars > * { pointer-events: auto; }
     .app.sidebar-collapsed {
       grid-template-columns: minmax(0, 1fr);
     }
@@ -102,8 +116,8 @@
       max-width: 100vw;
       height: 100vh;
       min-height: 0;
-      padding: 20px;
-      overflow: auto;
+      padding: 0;
+      overflow: hidden;
     }
     .app.sidebar-collapsed .preview-wrap {
       width: 100%;
@@ -951,13 +965,14 @@
       user-select: none;
     }
     .preview-wrap {
-      position: relative;
+      position: absolute;
+      inset: 0;
       background: white;
-      border: 1px solid var(--soft);
-      border-radius: 20px;
-      padding: 14px 14px 14px 30px;
+      border: none;
+      border-radius: 0;
+      padding: 150px 14px 14px 30px; /* top padding kept in sync with the floating bar stack by JS */
       overflow: auto;
-      box-shadow: 0 10px 24px rgba(0,0,0,.06);
+      box-shadow: none;
       scrollbar-gutter: stable;
     }
     .preview-toolbar {
@@ -966,7 +981,14 @@
       align-items: center;
       gap: 12px;
       flex-wrap: wrap;
-      margin-bottom: 12px;
+      margin-bottom: 0;
+      padding: 8px 10px;
+      border: 1px solid var(--soft);
+      border-radius: var(--r-grp);
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      box-shadow: 0 14px 34px rgba(0,0,0,.16);
     }
     .preview-title { font-size: 14px; font-weight: 800; letter-spacing: -.005em; }
     .preview-toolbar > div:first-child { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
@@ -1172,8 +1194,17 @@
     .export-status {
       font-size: 12px;
       color: var(--muted);
-      min-height: 18px;
       text-align: right;
+      pointer-events: none;
+      align-self: flex-end;
+    }
+    .export-status:empty { display: none; }
+    .export-status:not(:empty) {
+      background: rgba(255,255,255,.92);
+      border: 1px solid var(--soft);
+      border-radius: var(--r-ctl);
+      padding: 3px 9px;
+      box-shadow: 0 8px 20px rgba(0,0,0,.12);
     }
     svg {
       width: 100%;
@@ -1798,7 +1829,7 @@
       background: rgba(207,42,42,.10);
     }
     .memo-controls-wrap {
-      margin-bottom: 10px;
+      margin-bottom: 0;
     }
     .memo-controls {
       display: flex;
@@ -1809,8 +1840,10 @@
       padding: 8px 10px;
       border: 1px solid var(--soft);
       border-radius: var(--r-grp);
-      background: var(--panel);
-      box-shadow: var(--sh-card);
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      box-shadow: 0 14px 34px rgba(0,0,0,.16);
     }
     .memo-btn, .memo-size-select {
       height: 30px;
@@ -2084,7 +2117,20 @@
       html, body { overflow: auto; }
       .app { grid-template-columns: 1fr; height: auto; overflow: visible; }
       .sidebar { border-right: 0; border-bottom: 1px solid var(--soft); height: auto; max-height: 45vh; }
-      .main { height: auto; min-height: 55vh; }
+      /* Stacked layout: floating bars would cover half the short pane, so fall back to the
+         normal in-flow arrangement (bars above the canvas card). */
+      .main { position: static; height: auto; min-height: 55vh; padding: 14px; overflow: visible; }
+      .floating-bars { position: static; pointer-events: auto; }
+      .preview-wrap {
+        position: relative;
+        inset: auto;
+        margin-top: 10px;
+        border: 1px solid var(--soft);
+        border-radius: 20px;
+        padding: 14px 14px 14px 22px !important; /* beats the JS-synced desktop top padding */
+        box-shadow: 0 10px 24px rgba(0,0,0,.06);
+        max-height: 80vh;
+      }
       /* Stacked layout: no vertical divider to dock onto, so the handle becomes a small
          square button (system rect, not a circle) in the top-right corner. */
       .sidebar-toggle-btn {
@@ -2431,6 +2477,7 @@
     </aside>
 
     <main class="main">
+      <div id="floatingBars" class="floating-bars">
       <div class="preview-toolbar">
         <div>
           <div class="preview-title" data-ui-text="sheetPreviewTitle">Sheet Preview</div>
@@ -2503,6 +2550,7 @@
           </div>
         </div>
       </div>
+      </div>
       <div class="preview-wrap">
         <div id="sheetSideStack" class="sheet-side-stack">
           <div id="memoRightClickNotice" class="sheet-side-notice hidden">
@@ -2565,7 +2613,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '820';
+    const APP_VERSION = '821';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3549,6 +3597,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver821', 'Full-pane canvas with floating toolbars; space / middle-click pan', ['The right pane is now entirely the preview canvas: the toolbar rows (title, undo/redo, 用紙設定, page nav, export, memo tools) keep their positions but float over the canvas as shadowed bars, and the sheet slides beneath them when you scroll. Navigation grew up: hold Space and drag to pan anywhere (Space no longer scrolls the page or triggers a focused button; it still types normally inside text fields), drag with the middle mouse button to pan (the browser autoscroll widget is suppressed), and Ctrl+wheel zooms toward the cursor. Plain wheel scrolling is unchanged. On narrow screens the bars stay in the normal stacked layout.']],
         ['ver820', 'Paper load now actually scrolls to its settings card', ['Loading a paper (including drag & drop) used to only flag the settings card as expanded, without expanding a collapsed sidebar or scrolling to it — so if the sidebar was collapsed, nothing visibly happened at all. It now does the same thing as clicking the mini 用紙設定 label: expand the sidebar if collapsed, and scroll the card into view.']],
         ['ver819', 'Douga columns resets per paper; remembers known company papers', ['The "Douga columns" offset now always starts at 0 (same as Cell columns) when a new paper file is loaded, and is locked to 0 (disabled) whenever no company paper is loaded — the built-in sheet template never uses the -1 case, since it only matches a specific printed paper\'s actual column layout. When Auto Align recognizes a known company template and you set -1 for it, that is remembered per company, so loading that same company\'s paper again automatically starts at -1 instead of the generic 0.']],
         ['ver818', 'Built-in template: genga and douga cells now match', ['The genga (ACTION) grid and douga (in-between/CELL) grid used to have noticeably different cell widths (genga was about twice as wide as douga) because their column areas were split from fixed, unequal budgets regardless of column count. They now share one cell width — the existing combined width is re-split in proportion to column count, so a genga cell and a douga cell are always the same size. Dialog and Camera widths, and the overall sheet width, are unchanged.']],
@@ -3682,6 +3731,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver821', '右ペイン全面キャンバス化・フローティングツールバー・スペース／ホイールクリックでパン', ['右ペイン全体がプレビューキャンバスになりました。ツールバー各段（タイトル、元に戻す/やり直し、用紙設定、ページ送り、出力、メモツール）は位置そのままに、影付きのバーとしてキャンバスの上に浮かび、スクロールするとシートがその下をくぐります。操作系も強化：Space を押しながらドラッグでどこでもパン（Space がページをスクロールしたり、フォーカス中のボタンを押したりしなくなりました。テキスト欄では従来どおり空白が入力されます）、ホイールクリック（中ボタン）ドラッグでもパン（ブラウザのオートスクロールは抑止）、Ctrl+ホイールでカーソル位置に向けてズームします。通常のホイールスクロールは従来どおりです。幅の狭い画面ではバーは従来の積み上げ配置のままです。']],
         ['ver820', '用紙読み込み時に設定カードへ実際にスクロールするように', ['用紙を読み込むと（ドラッグ＆ドロップ含む）設定カードを開いた状態にはしていましたが、サイドバーが折りたたまれていても展開せず、スクロールもしていなかったため、サイドバーが閉じていると見た目には何も起きていませんでした。今はプレビュー上の「用紙設定」ラベルをクリックしたときと同じく、サイドバーが折りたたまれていれば展開し、カードまでスクロールするようになりました。']],
         ['ver819', '動画列数は用紙ごとにリセット・既知の会社用紙は記憶', ['「動画列数」のオフセットは、新しい用紙ファイルを読み込むたびに必ず0（Cell列数と同じ）から始まるようになりました。また、会社指定用紙を読み込んでいないとき（内蔵シートテンプレート使用時）は常に0に固定（入力欄も無効化）されます——この-1指定は特定の印刷用紙の実際の列構成に合わせるためのものなので、内蔵テンプレートでは使いません。自動整列が既知の会社テンプレートを認識し、そこで-1に設定した場合は会社ごとに記憶し、次に同じ会社の用紙を読み込んだときは自動的に-1から始まります。']],
         ['ver818', '内蔵テンプレート：原画と動画のマス幅を統一', ['原画（ACTION）欄と動画（中割り／CELL）欄は、列数に関係なく固定・不均等な幅を割り当てていたため、マスの幅がかなり違って見えていました（原画が動画のおよそ2倍幅）。今は両欄で同じマス幅を使うようにしました——既存の合計幅を列数の比率で分け直すので、原画のマス1つと動画のマス1つは常に同じ大きさになります。Dialog・CAMERAの幅とシート全体の幅は変わりません。']],
@@ -3815,6 +3865,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver821', '우측 팬 전면 캔버스화·플로팅 툴바·스페이스/휠클릭 팬', ['우측 팬 전체가 프리뷰 캔버스가 됐습니다. 툴바 각 줄(타이틀, 실행취소/다시실행, 用紙設定, 페이지 이동, 출력, 메모 도구)은 위치 그대로 그림자 드리운 바로 캔버스 위에 떠 있고, 스크롤하면 시트가 그 밑을 지나갑니다. 조작도 강화: Space를 누른 채 드래그하면 어디서든 팬(Space가 페이지를 스크롤하거나 포커스된 버튼을 누르는 일이 없어졌습니다. 텍스트 입력칸에서는 여전히 공백이 입력됩니다), 휠클릭(가운데 버튼) 드래그로도 팬(브라우저 자동스크롤 위젯 차단), Ctrl+휠로 커서 위치를 향해 줌합니다. 일반 휠 스크롤은 기존 그대로입니다. 좁은 화면에서는 바가 기존의 쌓임 배치를 유지합니다.']],
         ['ver820', '용지 로드 시 설정 카드로 실제로 스크롤되도록 수정', ['용지를 불러오면(드래그앤드롭 포함) 설정 카드를 펼침 상태로만 만들 뿐, 사이드바가 접혀 있어도 펼치지 않고 스크롤도 하지 않아서, 사이드바가 접힌 상태에선 화면상 아무 일도 안 일어난 것처럼 보였습니다. 이제 프리뷰의 「用紙設定」 라벨을 클릭했을 때와 동일하게, 사이드바가 접혀 있으면 펼치고 카드까지 스크롤합니다.']],
         ['ver819', '동화 칸 수는 용지마다 초기화, 인식된 회사 용지는 기억', ['「동화 칸 수」 오프셋은 새 용지 파일을 불러올 때마다 항상 0(Cell 칸 수와 동일)에서 시작합니다. 또한 회사 지정용지가 로드되지 않았을 때(내장 시트 템플릿 사용 시)는 항상 0으로 고정(입력칸 비활성화)됩니다 — 이 -1 설정은 특정 인쇄 용지의 실제 칸 구성에 맞추기 위한 것이라 내장 템플릿에는 적용되지 않습니다. 자동정렬이 알려진 회사 템플릿을 인식하고 그 용지에서 -1로 설정하면 회사별로 기억해두어, 다음에 같은 회사 용지를 불러올 때 자동으로 -1부터 시작합니다.']],
         ['ver818', '내장 템플릿: 원화·동화 셀 크기 통일', ['원화(ACTION) 칸과 동화(중割/CELL) 칸이 칸 수와 무관하게 고정·불균등한 폭으로 배분돼 있어, 셀 크기가 눈에 띄게 달라 보였습니다(원화가 동화의 약 2배 폭). 이제 두 영역이 같은 셀 폭을 공유합니다 — 기존 합산 폭을 칸 수 비율로 재분배해서, 원화 셀 하나와 동화 셀 하나가 항상 같은 크기가 됩니다. Dialog·CAMERA 폭과 시트 전체 폭은 그대로입니다.']],
@@ -3948,6 +3999,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver821', '右侧整面画布·悬浮工具栏·空格/中键平移', ['右侧窗格现在整体就是预览画布：各工具栏（标题、撤销/重做、用紙設定、翻页、导出、备注工具）位置不变，但作为带阴影的悬浮条漂浮在画布上方，滚动时表格会从其下方滑过。操作也升级了：按住空格拖动可随处平移（空格不再滚动页面或触发聚焦的按钮；在文本框内仍正常输入空格），鼠标中键拖动同样可平移（浏览器的自动滚动控件被抑制），Ctrl+滚轮朝光标位置缩放。普通滚轮滚动保持不变。窄屏下工具栏仍采用原来的堆叠布局。']],
         ['ver820', '载入纸张时会真正滚动到设置卡片', ['载入纸张（含拖放）此前只会把设置卡片标记为展开，但不会展开已收起的侧边栏，也不会滚动过去——如果侧边栏是收起状态，看起来就像什么都没发生。现在的行为与点击预览上方的「用紙設定」标签一致：如果侧边栏收起会自动展开，并滚动到该卡片。']],
         ['ver819', '動画列数按纸张重置·记住已识别的公司纸张', ['「動画列数」偏移量现在每次载入新纸张文件时都会重置为 0（与 Cell 列数相同）。未载入公司指定纸张时（使用内置表格模板），该值始终锁定为 0（输入框禁用）——因为 -1 这一设定只用于匹配某张具体印刷纸张的实际列结构，内置模板不需要它。当自动对齐识别出已知的公司模板、且你为其设置了 -1 时，会按公司记住该设置，下次载入同一公司的纸张会自动从 -1 开始。']],
         ['ver818', '内置模板：原画与动画格子尺寸统一', ['原画（ACTION）栏与动画（中割/CELL）栏此前按固定且不相等的宽度分配区域，与列数无关，导致格子大小明显不同（原画约为动画的两倍宽）。现在两栏共享同一个格子宽度——按列数比例重新分配原有的合计宽度，使一个原画格子与一个动画格子始终大小相同。Dialog、CAMERA 的宽度及整张表的总宽度不变。']],
@@ -19718,11 +19770,11 @@
 
     function updatePreviewSpacePanCursor() {
       if (!previewWrapEl) return;
-      previewWrapEl.classList.toggle('space-pan-ready', !!(state.memoMode && state.previewSpacePanKey));
+      previewWrapEl.classList.toggle('space-pan-ready', !!state.previewSpacePanKey);
     }
 
     function isPreviewSpacePanActive() {
-      return !!(state.memoMode && state.previewSpacePanKey);
+      return !!state.previewSpacePanKey;
     }
 
     function cancelPreviewPan() {
@@ -19731,7 +19783,7 @@
     }
 
     function setPreviewSpacePanKey(active) {
-      state.previewSpacePanKey = !!(active && state.memoMode);
+      state.previewSpacePanKey = !!active;
       updatePreviewSpacePanCursor();
       if (!state.previewSpacePanKey && state.previewPan && state.previewPan.spacePan) cancelPreviewPan();
     }
@@ -19745,14 +19797,15 @@
         document.documentElement.classList.remove('text-memo-dragging');
       }
       clearMemoPointerState();
-      if (!state.memoMode) setPreviewSpacePanKey(false);
       updateMemoUI();
       updatePreviewSpacePanCursor();
     }
 
     function handlePreviewSpacePanKeydown(event) {
       if (!event || (event.key !== ' ' && event.code !== 'Space')) return false;
-      if (!state.memoMode || isTypingLikeTarget(event.target)) return false;
+      if (isTypingLikeTarget(event.target)) return false;
+      // Space is reserved for canvas panning everywhere outside text fields: preventDefault also
+      // stops it from scrolling the page or "clicking" a focused button.
       event.preventDefault();
       setPreviewSpacePanKey(true);
       return true;
@@ -19933,12 +19986,13 @@
     function beginPreviewPan(event) {
       if (state.activeTimelineDrag || state.layoutDrag) return;
       const spacePan = isPreviewSpacePanActive();
+      const middlePan = event.button === 1; // wheel-click drags the canvas, like space-drag
       if (!previewWrapEl) return;
-      if (!spacePan && (state.memoMode || Number(state.sheetZoom || 1) <= 1.001)) return;
-      if (event.button !== undefined && event.button !== 0) return;
-      if (!spacePan && (event.shiftKey || isPanBlockedTarget(event.target))) return;
-      if (spacePan) {
-        event.preventDefault();
+      if (event.button !== undefined && event.button !== 0 && !middlePan) return;
+      if (!spacePan && !middlePan && (state.memoMode || Number(state.sheetZoom || 1) <= 1.001)) return;
+      if (!spacePan && !middlePan && (event.shiftKey || isPanBlockedTarget(event.target))) return;
+      if (spacePan || middlePan) {
+        event.preventDefault();  // middle button: also suppresses the browser's autoscroll widget
         event.stopPropagation();
       }
       state.previewPan = {
@@ -22505,6 +22559,20 @@
       previewWrapEl.addEventListener('dragover', handlePreviewFileDragOver);
       previewWrapEl.addEventListener('dragleave', clearPreviewFileDropActive);
       previewWrapEl.addEventListener('drop', handlePreviewFileDrop);
+      // middle-click is a pan gesture; keep the browser's paste/new-tab auxclick out of it
+      previewWrapEl.addEventListener('auxclick', function(event){ if (event.button === 1) event.preventDefault(); });
+    }
+    // Keep the canvas's top padding in sync with the floating toolbar stack, so the sheet starts
+    // below the bars but slides beneath them when scrolled. (The stacked mobile layout overrides
+    // this with !important and lays the bars out in flow instead.)
+    const floatingBarsEl = document.getElementById('floatingBars');
+    if (floatingBarsEl && previewWrapEl && 'ResizeObserver' in window) {
+      const syncFloatingBarsPadding = function(){
+        previewWrapEl.style.paddingTop = Math.round(floatingBarsEl.offsetTop + floatingBarsEl.offsetHeight + 14) + 'px';
+      };
+      new ResizeObserver(syncFloatingBarsPadding).observe(floatingBarsEl);
+      window.addEventListener('resize', syncFloatingBarsPadding);
+      syncFloatingBarsPadding();
     }
     memoCanvas.addEventListener('pointerdown', beginMemoStroke);
     memoCanvas.addEventListener('pointermove', continueMemoStroke);
