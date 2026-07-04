@@ -2632,7 +2632,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '822';
+    const APP_VERSION = '823';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3618,6 +3618,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver823', 'セリフシート pinned to the sheet; sheet can no longer leave the pane', ['The セリフシート side button is now pinned to the sheet itself, sitting at the top-left of the cell grid and following the sheet through panning and zooming. When the grid\'s top-left would leave the screen it keeps following horizontally but its vertical position clamps — never higher than just below the memo bar (so it stays clickable) and never below the pane. Panning limits were also tightened from "a sliver must stay visible" to a proper contain-or-cover rule: when the sheet fits in the pane it moves freely inside it but cannot exit through any edge, and when it is zoomed in larger it must keep covering the pane, so no blank gap ever opens on the left, top, right or bottom.']],
         ['ver822', 'Free canvas: no scrollbars, controls float individually', ['The preview is now a free canvas: scrollbars are gone, and the sheet moves by dragging (Space / middle button / touch), the wheel (which now pans instead of scrolling), and Ctrl+wheel zoom — the only limit is that the sheet can never leave the screen entirely. Zooming out no longer snaps the sheet to the left; it stays where you put it, and 100% resets to the home position. The toolbar row lost its background bar: each control group (undo/redo, 用紙設定, page nav, export) floats independently with its own shadow in the same position, and the シートプレビュー title is just fixed floating text.']],
         ['ver821', 'Full-pane canvas with floating toolbars; space / middle-click pan', ['The right pane is now entirely the preview canvas: the toolbar rows (title, undo/redo, 用紙設定, page nav, export, memo tools) keep their positions but float over the canvas as shadowed bars, and the sheet slides beneath them when you scroll. Navigation grew up: hold Space and drag to pan anywhere (Space no longer scrolls the page or triggers a focused button; it still types normally inside text fields), drag with the middle mouse button to pan (the browser autoscroll widget is suppressed), and Ctrl+wheel zooms toward the cursor. Plain wheel scrolling is unchanged. On narrow screens the bars stay in the normal stacked layout.']],
         ['ver820', 'Paper load now actually scrolls to its settings card', ['Loading a paper (including drag & drop) used to only flag the settings card as expanded, without expanding a collapsed sidebar or scrolling to it — so if the sidebar was collapsed, nothing visibly happened at all. It now does the same thing as clicking the mini 用紙設定 label: expand the sidebar if collapsed, and scroll the card into view.']],
@@ -3753,6 +3754,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver823', 'セリフシートをシートに固定・シートがペイン外へ出ないように', ['セリフシートのサイドボタンをシート本体に固定しました。セル欄の左上に付き、パン・ズームに合わせてシートと一緒に動きます。セル欄の左上が画面外へ出そうなときは、横方向は追従したまま縦位置だけが制限されます——上はメモバーのすぐ下まで（クリックできなくならないように）、下はペインの下端までです。移動制限も「一部が見えていればよい」から本来のcontain-or-cover方式に強化：シートがペインに収まるときはその中で自由に動きますがどの辺からも外へ出られず、拡大してペインより大きいときはペインを覆い続けるため、左・上・右・下のどこにも空白が生じません。']],
         ['ver822', 'フリーキャンバス化：スクロールバー廃止・コントロール個別フローティング', ['プレビューがフリーキャンバスになりました。スクロールバーは廃止され、シートはドラッグ（Space／中ボタン／タッチ）、ホイール（スクロールの代わりにパンします）、Ctrl+ホイールのズームで動かします。制限は「シートが画面から完全に出ない」ことだけです。縮小してもシートが左端に吸着しなくなり、置いた位置に留まります（100%ボタンでホームポジションに戻ります）。ツールバーの背景バーは廃止し、各コントロール群（元に戻す/やり直し・用紙設定・ページ送り・出力）が同じ位置で個別に影付きで浮かびます。「シートプレビュー」タイトルは固定表示の文字だけになりました。']],
         ['ver821', '右ペイン全面キャンバス化・フローティングツールバー・スペース／ホイールクリックでパン', ['右ペイン全体がプレビューキャンバスになりました。ツールバー各段（タイトル、元に戻す/やり直し、用紙設定、ページ送り、出力、メモツール）は位置そのままに、影付きのバーとしてキャンバスの上に浮かび、スクロールするとシートがその下をくぐります。操作系も強化：Space を押しながらドラッグでどこでもパン（Space がページをスクロールしたり、フォーカス中のボタンを押したりしなくなりました。テキスト欄では従来どおり空白が入力されます）、ホイールクリック（中ボタン）ドラッグでもパン（ブラウザのオートスクロールは抑止）、Ctrl+ホイールでカーソル位置に向けてズームします。通常のホイールスクロールは従来どおりです。幅の狭い画面ではバーは従来の積み上げ配置のままです。']],
         ['ver820', '用紙読み込み時に設定カードへ実際にスクロールするように', ['用紙を読み込むと（ドラッグ＆ドロップ含む）設定カードを開いた状態にはしていましたが、サイドバーが折りたたまれていても展開せず、スクロールもしていなかったため、サイドバーが閉じていると見た目には何も起きていませんでした。今はプレビュー上の「用紙設定」ラベルをクリックしたときと同じく、サイドバーが折りたたまれていれば展開し、カードまでスクロールするようになりました。']],
@@ -3888,6 +3890,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver823', 'セリフシート를 시트에 고정·시트가 팬 밖으로 못 나가게', ['セリフシート 사이드 버튼을 시트 본체에 고정했습니다. 셀칸 좌상단에 붙어 팬·줌에 맞춰 시트와 함께 움직입니다. 셀칸 좌상단이 화면 밖으로 나가려 하면 가로는 그대로 따라가면서 세로 위치만 제한됩니다 — 위로는 메모바 바로 아래까지(클릭이 안 되는 일이 없도록), 아래로는 팬 하단까지입니다. 이동 한계도 「일부만 보이면 됨」에서 제대로 된 contain-or-cover 방식으로 강화: 시트가 팬에 들어가는 크기면 그 안에서 자유롭게 움직이되 어느 변으로도 밖으로 못 나가고, 확대해서 팬보다 크면 팬을 계속 덮어야 하므로 좌·상·우·하 어디에도 빈틈이 생기지 않습니다.']],
         ['ver822', '자유 캔버스: 스크롤바 제거·컨트롤 개별 플로팅', ['프리뷰가 자유 캔버스가 됐습니다. 스크롤바는 없어지고, 시트는 드래그(Space/가운데 버튼/터치), 휠(이제 스크롤 대신 팬), Ctrl+휠 줌으로 움직입니다. 제한은 「시트가 화면 밖으로 완전히 나가지 않는다」 하나뿐입니다. 축소해도 시트가 왼쪽에 붙지 않고 놓아둔 위치에 머뭅니다(100% 버튼으로 홈 위치 복귀). 툴바의 배경 바는 없앴습니다 — 각 컨트롤 그룹(실행취소/다시실행·用紙設定·페이지 이동·출력)이 같은 위치에서 각자 그림자를 드리우고 떠 있으며, 「シートプレビュー」 타이틀은 고정된 문자만 남았습니다.']],
         ['ver821', '우측 팬 전면 캔버스화·플로팅 툴바·스페이스/휠클릭 팬', ['우측 팬 전체가 프리뷰 캔버스가 됐습니다. 툴바 각 줄(타이틀, 실행취소/다시실행, 用紙設定, 페이지 이동, 출력, 메모 도구)은 위치 그대로 그림자 드리운 바로 캔버스 위에 떠 있고, 스크롤하면 시트가 그 밑을 지나갑니다. 조작도 강화: Space를 누른 채 드래그하면 어디서든 팬(Space가 페이지를 스크롤하거나 포커스된 버튼을 누르는 일이 없어졌습니다. 텍스트 입력칸에서는 여전히 공백이 입력됩니다), 휠클릭(가운데 버튼) 드래그로도 팬(브라우저 자동스크롤 위젯 차단), Ctrl+휠로 커서 위치를 향해 줌합니다. 일반 휠 스크롤은 기존 그대로입니다. 좁은 화면에서는 바가 기존의 쌓임 배치를 유지합니다.']],
         ['ver820', '용지 로드 시 설정 카드로 실제로 스크롤되도록 수정', ['용지를 불러오면(드래그앤드롭 포함) 설정 카드를 펼침 상태로만 만들 뿐, 사이드바가 접혀 있어도 펼치지 않고 스크롤도 하지 않아서, 사이드바가 접힌 상태에선 화면상 아무 일도 안 일어난 것처럼 보였습니다. 이제 프리뷰의 「用紙設定」 라벨을 클릭했을 때와 동일하게, 사이드바가 접혀 있으면 펼치고 카드까지 스크롤합니다.']],
@@ -4023,6 +4026,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver823', 'セリフシート固定到表格·表格不再移出窗格', ['セリフシート侧边按钮现在固定在表格本体上：位于单元格区左上角，随平移和缩放与表格一起移动。当单元格区左上角将要移出屏幕时，水平方向继续跟随，仅垂直位置受限——上限是备注栏正下方（保证可点击），下限是窗格底部。移动限制也从「露出一角即可」强化为标准的 contain-or-cover 规则：表格能放进窗格时可在其中自由移动但不能从任何一边移出；放大到比窗格大时必须持续覆盖窗格，因此左、上、右、下都不会出现空白。']],
         ['ver822', '自由画布：移除滚动条·控件独立悬浮', ['预览变成了自由画布：滚动条已移除，表格通过拖动（空格/中键/触摸）、滚轮（现在是平移而非滚动）以及 Ctrl+滚轮缩放来移动——唯一的限制是表格不能完全移出屏幕。缩小时表格不再吸附到左侧，而是停留在你放置的位置（100% 按钮回到初始位置）。工具栏的背景条已移除：各控件组（撤销/重做、用紙設定、翻页、导出）在原位置各自带阴影独立悬浮，「シートプレビュー」标题只保留固定的文字。']],
         ['ver821', '右侧整面画布·悬浮工具栏·空格/中键平移', ['右侧窗格现在整体就是预览画布：各工具栏（标题、撤销/重做、用紙設定、翻页、导出、备注工具）位置不变，但作为带阴影的悬浮条漂浮在画布上方，滚动时表格会从其下方滑过。操作也升级了：按住空格拖动可随处平移（空格不再滚动页面或触发聚焦的按钮；在文本框内仍正常输入空格），鼠标中键拖动同样可平移（浏览器的自动滚动控件被抑制），Ctrl+滚轮朝光标位置缩放。普通滚轮滚动保持不变。窄屏下工具栏仍采用原来的堆叠布局。']],
         ['ver820', '载入纸张时会真正滚动到设置卡片', ['载入纸张（含拖放）此前只会把设置卡片标记为展开，但不会展开已收起的侧边栏，也不会滚动过去——如果侧边栏是收起状态，看起来就像什么都没发生。现在的行为与点击预览上方的「用紙設定」标签一致：如果侧边栏收起会自动展开，并滚动到该卡片。']],
@@ -19215,6 +19219,7 @@
       updateCsvSettingsActionVisibility();
       const __renderMs = performance.now() - __renderT0;
       if (__renderMs > 80) maybeReportSlowRender(__renderMs);
+      updateSheetSideStackPosition();
       scheduleContentHistoryCommit();
     }
 
@@ -19380,22 +19385,48 @@
       return Math.max(SHEET_ZOOM_MIN, Math.min(SHEET_ZOOM_MAX, Number(value || 1)));
     }
 
-    // Free view transform: the stage is translated/scaled instead of scrolled, so the sheet can
-    // sit anywhere — the only rule is it can't leave the screen entirely (a MARGIN-px sliver must
-    // stay visible on both axes so it is always recoverable by dragging).
+    // Free view transform: the stage is translated/scaled instead of scrolled. Contain-or-cover
+    // clamp — the sheet can never exit the pane in ANY direction: when it fits inside the padded
+    // area it moves freely within it, and when it is larger (zoomed in) it must keep covering the
+    // area, so no blank gap ever opens at an edge.
     function clampSheetViewPan() {
       if (!previewWrapEl || !sheetStageEl) return;
-      const MARGIN = 96;
       const zoom = clampSheetZoom(state.sheetZoom);
       const wrapCs = getComputedStyle(previewWrapEl);
       const padLeft = parseFloat(wrapCs.paddingLeft) || 0;
       const padTop = parseFloat(wrapCs.paddingTop) || 0;
-      const wrapW = previewWrapEl.clientWidth;
-      const wrapH = previewWrapEl.clientHeight;
-      const stageW = sheetStageEl.offsetWidth * zoom;
-      const stageH = sheetStageEl.offsetHeight * zoom;
-      state.viewPanX = Math.min(wrapW - MARGIN - padLeft, Math.max(MARGIN - padLeft - stageW, Number(state.viewPanX) || 0));
-      state.viewPanY = Math.min(wrapH - MARGIN - padTop, Math.max(MARGIN - padTop - stageH, Number(state.viewPanY) || 0));
+      const padRight = parseFloat(wrapCs.paddingRight) || 0;
+      const padBottom = parseFloat(wrapCs.paddingBottom) || 0;
+      const usableW = previewWrapEl.clientWidth - padLeft - padRight;
+      const usableH = previewWrapEl.clientHeight - padTop - padBottom;
+      const limX = usableW - sheetStageEl.offsetWidth * zoom;
+      const limY = usableH - sheetStageEl.offsetHeight * zoom;
+      state.viewPanX = Math.min(Math.max(Number(state.viewPanX) || 0, Math.min(0, limX)), Math.max(0, limX));
+      state.viewPanY = Math.min(Math.max(Number(state.viewPanY) || 0, Math.min(0, limY)), Math.max(0, limY));
+    }
+
+    // The セリフシート side button is pinned to the sheet's cell-block top-left: it tracks the
+    // stage through pan/zoom horizontally, while its vertical position clamps to the visible
+    // band (below the floating bars, above the pane bottom) so it never scrolls out of reach.
+    function updateSheetSideStackPosition() {
+      const stack = document.getElementById('sheetSideStack');
+      if (!stack || !previewWrapEl || !sheetStageEl) return;
+      const zoom = clampSheetZoom(state.sheetZoom);
+      const wrapCs = getComputedStyle(previewWrapEl);
+      const padLeft = parseFloat(wrapCs.paddingLeft) || 0;
+      const padTop = parseFloat(wrapCs.paddingTop) || 0;
+      const pageScale = (sheetStageEl.offsetWidth * zoom) / PAGE_W;
+      const x = Math.max(2, padLeft + (Number(state.viewPanX) || 0) - stack.offsetWidth - 6);
+      let y = padTop + (Number(state.viewPanY) || 0) + 450 * pageScale; // 450 = grid top in page coords
+      const floatingBars = document.getElementById('floatingBars');
+      const barsFloating = floatingBars && getComputedStyle(floatingBars).position === 'absolute';
+      const notice = document.getElementById('memoRightClickNotice');
+      const noticeExtra = notice && !notice.classList.contains('hidden') ? notice.offsetHeight + 8 : 0;
+      const yMin = (barsFloating ? floatingBars.offsetTop + floatingBars.offsetHeight + 8 : 8) + noticeExtra;
+      const yMax = previewWrapEl.clientHeight - stack.offsetHeight - 8;
+      y = Math.min(Math.max(y, yMin), Math.max(yMin, yMax));
+      stack.style.left = Math.round(x) + 'px';
+      stack.style.top = Math.round(y) + 'px';
     }
 
     function applySheetZoom() {
@@ -19406,6 +19437,7 @@
       if (previewWrapEl) previewWrapEl.classList.toggle('zoomed', zoom > 1.001);
       if (zoomResetBtn) zoomResetBtn.textContent = Math.round(zoom * 100) + '%';
       redrawMemoCanvas();
+      updateSheetSideStackPosition();
     }
 
     function setSheetZoom(nextZoom, anchorClientX, anchorClientY) {
