@@ -971,10 +971,11 @@
       border: none;
       border-radius: 0;
       padding: 150px 14px 14px 30px; /* top padding kept in sync with the floating bar stack by JS */
-      overflow: auto;
+      overflow: hidden; /* free pan/zoom canvas — no scrollbars, navigation is transform-based */
       box-shadow: none;
-      scrollbar-gutter: stable;
     }
+    /* The toolbar row has NO bar of its own: each control group floats independently over the
+       canvas, and the empty space between them lets canvas interactions through. */
     .preview-toolbar {
       display: flex;
       justify-content: space-between;
@@ -982,13 +983,12 @@
       gap: 12px;
       flex-wrap: wrap;
       margin-bottom: 0;
-      padding: 8px 10px;
-      border: 1px solid var(--soft);
-      border-radius: var(--r-grp);
-      background: rgba(255,255,255,.92);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      box-shadow: 0 14px 34px rgba(0,0,0,.16);
+      pointer-events: none;
+    }
+    .preview-toolbar > * { pointer-events: auto; }
+    .preview-toolbar > div:first-child {
+      pointer-events: none; /* the title is a fixed floating label, not a control */
+      text-shadow: 0 1px 0 rgba(255,255,255,.9), 0 0 8px rgba(255,255,255,.9);
     }
     .preview-title { font-size: 14px; font-weight: 800; letter-spacing: -.005em; }
     .preview-toolbar > div:first-child { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
@@ -1007,7 +1007,10 @@
       min-width: 0;
       border: 1px solid var(--soft);
       border-radius: var(--r-grp);
-      background: var(--panel);
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      box-shadow: 0 10px 26px rgba(0,0,0,.16);
       overflow: hidden;
     }
     .page-nav .toolbar-btn.icon-only {
@@ -1026,15 +1029,29 @@
       grid-template-columns: minmax(66px, 78px) minmax(54px, 66px) minmax(50px, 60px);
       align-items: center;
       gap: 6px;
-      width: 216px;
-      max-width: 216px;
+      width: 226px;
+      max-width: 226px;
       min-width: 0;
+      padding: 3px 4px;
+      border: 1px solid var(--soft);
+      border-radius: var(--r-grp);
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      box-shadow: 0 10px 26px rgba(0,0,0,.16);
     }
     .global-history {
       display: inline-flex;
       align-items: center;
       gap: 2px;
       flex: 0 0 auto;
+      padding: 3px 4px;
+      border: 1px solid var(--soft);
+      border-radius: var(--r-grp);
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      box-shadow: 0 10px 26px rgba(0,0,0,.16);
     }
     .global-history .toolbar-btn:disabled { opacity: .4; cursor: default; }
     .paper-toolbar-group {
@@ -1045,7 +1062,10 @@
       padding: 3px 6px;
       border: 1px solid var(--soft);
       border-radius: 10px;
-      background: rgba(255,255,255,.82);
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      box-shadow: 0 10px 26px rgba(0,0,0,.16);
       box-sizing: border-box;
       flex: 0 0 auto;
     }
@@ -1166,8 +1186,6 @@
       outline-offset: -7px;
     }
     .preview-wrap.zoomed {
-      max-height: calc(100vh - 172px);
-      overflow: auto;
       cursor: grab;
       overscroll-behavior: contain;
     }
@@ -1783,7 +1801,8 @@
     .sheet-stage {
       position: relative;
       width: 100%;
-      transform-origin: top left;
+      transform-origin: 0 0; /* free pan/zoom: translate(panX,panY) scale(zoom) set by JS */
+      will-change: transform;
     }
     .position-drag-overlay {
       position: absolute;
@@ -2613,7 +2632,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '821';
+    const APP_VERSION = '822';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -2904,6 +2923,8 @@
       memoEraserSize: 100,
       shortcuts: { brushCycle:'b', eraserToggle:'e', sizeDown:'[', sizeUp:']', memoOff:'backspace' },
       sheetZoom: 1,
+      viewPanX: 0,
+      viewPanY: 0,
       previewSpacePanKey: false,
       gestureStartZoom: 1,
       paperImageDataUrl: '',
@@ -3579,7 +3600,7 @@
       requestAnimationFrame(function(){
         updateMemoCanvasSize();
         updateTextMemoEditorPosition();
-        if (previewWrapEl && state.sidebarCollapsed) previewWrapEl.scrollLeft = 0;
+        applySheetZoom(); // pane width changed — re-clamp the free-view pan
       });
     }
 
@@ -3597,6 +3618,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver822', 'Free canvas: no scrollbars, controls float individually', ['The preview is now a free canvas: scrollbars are gone, and the sheet moves by dragging (Space / middle button / touch), the wheel (which now pans instead of scrolling), and Ctrl+wheel zoom — the only limit is that the sheet can never leave the screen entirely. Zooming out no longer snaps the sheet to the left; it stays where you put it, and 100% resets to the home position. The toolbar row lost its background bar: each control group (undo/redo, 用紙設定, page nav, export) floats independently with its own shadow in the same position, and the シートプレビュー title is just fixed floating text.']],
         ['ver821', 'Full-pane canvas with floating toolbars; space / middle-click pan', ['The right pane is now entirely the preview canvas: the toolbar rows (title, undo/redo, 用紙設定, page nav, export, memo tools) keep their positions but float over the canvas as shadowed bars, and the sheet slides beneath them when you scroll. Navigation grew up: hold Space and drag to pan anywhere (Space no longer scrolls the page or triggers a focused button; it still types normally inside text fields), drag with the middle mouse button to pan (the browser autoscroll widget is suppressed), and Ctrl+wheel zooms toward the cursor. Plain wheel scrolling is unchanged. On narrow screens the bars stay in the normal stacked layout.']],
         ['ver820', 'Paper load now actually scrolls to its settings card', ['Loading a paper (including drag & drop) used to only flag the settings card as expanded, without expanding a collapsed sidebar or scrolling to it — so if the sidebar was collapsed, nothing visibly happened at all. It now does the same thing as clicking the mini 用紙設定 label: expand the sidebar if collapsed, and scroll the card into view.']],
         ['ver819', 'Douga columns resets per paper; remembers known company papers', ['The "Douga columns" offset now always starts at 0 (same as Cell columns) when a new paper file is loaded, and is locked to 0 (disabled) whenever no company paper is loaded — the built-in sheet template never uses the -1 case, since it only matches a specific printed paper\'s actual column layout. When Auto Align recognizes a known company template and you set -1 for it, that is remembered per company, so loading that same company\'s paper again automatically starts at -1 instead of the generic 0.']],
@@ -3731,6 +3753,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver822', 'フリーキャンバス化：スクロールバー廃止・コントロール個別フローティング', ['プレビューがフリーキャンバスになりました。スクロールバーは廃止され、シートはドラッグ（Space／中ボタン／タッチ）、ホイール（スクロールの代わりにパンします）、Ctrl+ホイールのズームで動かします。制限は「シートが画面から完全に出ない」ことだけです。縮小してもシートが左端に吸着しなくなり、置いた位置に留まります（100%ボタンでホームポジションに戻ります）。ツールバーの背景バーは廃止し、各コントロール群（元に戻す/やり直し・用紙設定・ページ送り・出力）が同じ位置で個別に影付きで浮かびます。「シートプレビュー」タイトルは固定表示の文字だけになりました。']],
         ['ver821', '右ペイン全面キャンバス化・フローティングツールバー・スペース／ホイールクリックでパン', ['右ペイン全体がプレビューキャンバスになりました。ツールバー各段（タイトル、元に戻す/やり直し、用紙設定、ページ送り、出力、メモツール）は位置そのままに、影付きのバーとしてキャンバスの上に浮かび、スクロールするとシートがその下をくぐります。操作系も強化：Space を押しながらドラッグでどこでもパン（Space がページをスクロールしたり、フォーカス中のボタンを押したりしなくなりました。テキスト欄では従来どおり空白が入力されます）、ホイールクリック（中ボタン）ドラッグでもパン（ブラウザのオートスクロールは抑止）、Ctrl+ホイールでカーソル位置に向けてズームします。通常のホイールスクロールは従来どおりです。幅の狭い画面ではバーは従来の積み上げ配置のままです。']],
         ['ver820', '用紙読み込み時に設定カードへ実際にスクロールするように', ['用紙を読み込むと（ドラッグ＆ドロップ含む）設定カードを開いた状態にはしていましたが、サイドバーが折りたたまれていても展開せず、スクロールもしていなかったため、サイドバーが閉じていると見た目には何も起きていませんでした。今はプレビュー上の「用紙設定」ラベルをクリックしたときと同じく、サイドバーが折りたたまれていれば展開し、カードまでスクロールするようになりました。']],
         ['ver819', '動画列数は用紙ごとにリセット・既知の会社用紙は記憶', ['「動画列数」のオフセットは、新しい用紙ファイルを読み込むたびに必ず0（Cell列数と同じ）から始まるようになりました。また、会社指定用紙を読み込んでいないとき（内蔵シートテンプレート使用時）は常に0に固定（入力欄も無効化）されます——この-1指定は特定の印刷用紙の実際の列構成に合わせるためのものなので、内蔵テンプレートでは使いません。自動整列が既知の会社テンプレートを認識し、そこで-1に設定した場合は会社ごとに記憶し、次に同じ会社の用紙を読み込んだときは自動的に-1から始まります。']],
@@ -3865,6 +3888,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver822', '자유 캔버스: 스크롤바 제거·컨트롤 개별 플로팅', ['프리뷰가 자유 캔버스가 됐습니다. 스크롤바는 없어지고, 시트는 드래그(Space/가운데 버튼/터치), 휠(이제 스크롤 대신 팬), Ctrl+휠 줌으로 움직입니다. 제한은 「시트가 화면 밖으로 완전히 나가지 않는다」 하나뿐입니다. 축소해도 시트가 왼쪽에 붙지 않고 놓아둔 위치에 머뭅니다(100% 버튼으로 홈 위치 복귀). 툴바의 배경 바는 없앴습니다 — 각 컨트롤 그룹(실행취소/다시실행·用紙設定·페이지 이동·출력)이 같은 위치에서 각자 그림자를 드리우고 떠 있으며, 「シートプレビュー」 타이틀은 고정된 문자만 남았습니다.']],
         ['ver821', '우측 팬 전면 캔버스화·플로팅 툴바·스페이스/휠클릭 팬', ['우측 팬 전체가 프리뷰 캔버스가 됐습니다. 툴바 각 줄(타이틀, 실행취소/다시실행, 用紙設定, 페이지 이동, 출력, 메모 도구)은 위치 그대로 그림자 드리운 바로 캔버스 위에 떠 있고, 스크롤하면 시트가 그 밑을 지나갑니다. 조작도 강화: Space를 누른 채 드래그하면 어디서든 팬(Space가 페이지를 스크롤하거나 포커스된 버튼을 누르는 일이 없어졌습니다. 텍스트 입력칸에서는 여전히 공백이 입력됩니다), 휠클릭(가운데 버튼) 드래그로도 팬(브라우저 자동스크롤 위젯 차단), Ctrl+휠로 커서 위치를 향해 줌합니다. 일반 휠 스크롤은 기존 그대로입니다. 좁은 화면에서는 바가 기존의 쌓임 배치를 유지합니다.']],
         ['ver820', '용지 로드 시 설정 카드로 실제로 스크롤되도록 수정', ['용지를 불러오면(드래그앤드롭 포함) 설정 카드를 펼침 상태로만 만들 뿐, 사이드바가 접혀 있어도 펼치지 않고 스크롤도 하지 않아서, 사이드바가 접힌 상태에선 화면상 아무 일도 안 일어난 것처럼 보였습니다. 이제 프리뷰의 「用紙設定」 라벨을 클릭했을 때와 동일하게, 사이드바가 접혀 있으면 펼치고 카드까지 스크롤합니다.']],
         ['ver819', '동화 칸 수는 용지마다 초기화, 인식된 회사 용지는 기억', ['「동화 칸 수」 오프셋은 새 용지 파일을 불러올 때마다 항상 0(Cell 칸 수와 동일)에서 시작합니다. 또한 회사 지정용지가 로드되지 않았을 때(내장 시트 템플릿 사용 시)는 항상 0으로 고정(입력칸 비활성화)됩니다 — 이 -1 설정은 특정 인쇄 용지의 실제 칸 구성에 맞추기 위한 것이라 내장 템플릿에는 적용되지 않습니다. 자동정렬이 알려진 회사 템플릿을 인식하고 그 용지에서 -1로 설정하면 회사별로 기억해두어, 다음에 같은 회사 용지를 불러올 때 자동으로 -1부터 시작합니다.']],
@@ -3999,6 +4023,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver822', '自由画布：移除滚动条·控件独立悬浮', ['预览变成了自由画布：滚动条已移除，表格通过拖动（空格/中键/触摸）、滚轮（现在是平移而非滚动）以及 Ctrl+滚轮缩放来移动——唯一的限制是表格不能完全移出屏幕。缩小时表格不再吸附到左侧，而是停留在你放置的位置（100% 按钮回到初始位置）。工具栏的背景条已移除：各控件组（撤销/重做、用紙設定、翻页、导出）在原位置各自带阴影独立悬浮，「シートプレビュー」标题只保留固定的文字。']],
         ['ver821', '右侧整面画布·悬浮工具栏·空格/中键平移', ['右侧窗格现在整体就是预览画布：各工具栏（标题、撤销/重做、用紙設定、翻页、导出、备注工具）位置不变，但作为带阴影的悬浮条漂浮在画布上方，滚动时表格会从其下方滑过。操作也升级了：按住空格拖动可随处平移（空格不再滚动页面或触发聚焦的按钮；在文本框内仍正常输入空格），鼠标中键拖动同样可平移（浏览器的自动滚动控件被抑制），Ctrl+滚轮朝光标位置缩放。普通滚轮滚动保持不变。窄屏下工具栏仍采用原来的堆叠布局。']],
         ['ver820', '载入纸张时会真正滚动到设置卡片', ['载入纸张（含拖放）此前只会把设置卡片标记为展开，但不会展开已收起的侧边栏，也不会滚动过去——如果侧边栏是收起状态，看起来就像什么都没发生。现在的行为与点击预览上方的「用紙設定」标签一致：如果侧边栏收起会自动展开，并滚动到该卡片。']],
         ['ver819', '動画列数按纸张重置·记住已识别的公司纸张', ['「動画列数」偏移量现在每次载入新纸张文件时都会重置为 0（与 Cell 列数相同）。未载入公司指定纸张时（使用内置表格模板），该值始终锁定为 0（输入框禁用）——因为 -1 这一设定只用于匹配某张具体印刷纸张的实际列结构，内置模板不需要它。当自动对齐识别出已知的公司模板、且你为其设置了 -1 时，会按公司记住该设置，下次载入同一公司的纸张会自动从 -1 开始。']],
@@ -19355,15 +19380,30 @@
       return Math.max(SHEET_ZOOM_MIN, Math.min(SHEET_ZOOM_MAX, Number(value || 1)));
     }
 
+    // Free view transform: the stage is translated/scaled instead of scrolled, so the sheet can
+    // sit anywhere — the only rule is it can't leave the screen entirely (a MARGIN-px sliver must
+    // stay visible on both axes so it is always recoverable by dragging).
+    function clampSheetViewPan() {
+      if (!previewWrapEl || !sheetStageEl) return;
+      const MARGIN = 96;
+      const zoom = clampSheetZoom(state.sheetZoom);
+      const wrapCs = getComputedStyle(previewWrapEl);
+      const padLeft = parseFloat(wrapCs.paddingLeft) || 0;
+      const padTop = parseFloat(wrapCs.paddingTop) || 0;
+      const wrapW = previewWrapEl.clientWidth;
+      const wrapH = previewWrapEl.clientHeight;
+      const stageW = sheetStageEl.offsetWidth * zoom;
+      const stageH = sheetStageEl.offsetHeight * zoom;
+      state.viewPanX = Math.min(wrapW - MARGIN - padLeft, Math.max(MARGIN - padLeft - stageW, Number(state.viewPanX) || 0));
+      state.viewPanY = Math.min(wrapH - MARGIN - padTop, Math.max(MARGIN - padTop - stageH, Number(state.viewPanY) || 0));
+    }
+
     function applySheetZoom() {
       const zoom = clampSheetZoom(state.sheetZoom);
       state.sheetZoom = zoom;
-      if (sheetStageEl) sheetStageEl.style.width = (zoom * 100) + '%';
+      clampSheetViewPan();
+      if (sheetStageEl) sheetStageEl.style.transform = 'translate(' + (Number(state.viewPanX) || 0) + 'px, ' + (Number(state.viewPanY) || 0) + 'px) scale(' + zoom + ')';
       if (previewWrapEl) previewWrapEl.classList.toggle('zoomed', zoom > 1.001);
-      if (zoom <= 1.001 && previewWrapEl) {
-        previewWrapEl.scrollLeft = 0;
-        previewWrapEl.scrollTop = 0;
-      }
       if (zoomResetBtn) zoomResetBtn.textContent = Math.round(zoom * 100) + '%';
       redrawMemoCanvas();
     }
@@ -19373,22 +19413,38 @@
       let anchor = null;
       if (previewWrapEl && Number.isFinite(anchorClientX) && Number.isFinite(anchorClientY)) {
         const rect = previewWrapEl.getBoundingClientRect();
+        const wrapCs = getComputedStyle(previewWrapEl);
+        const padLeft = parseFloat(wrapCs.paddingLeft) || 0;
+        const padTop = parseFloat(wrapCs.paddingTop) || 0;
+        const localX = anchorClientX - rect.left;
+        const localY = anchorClientY - rect.top;
         anchor = {
-          x: (previewWrapEl.scrollLeft + anchorClientX - rect.left) / oldZoom,
-          y: (previewWrapEl.scrollTop + anchorClientY - rect.top) / oldZoom,
-          offsetX: anchorClientX - rect.left,
-          offsetY: anchorClientY - rect.top
+          contentX: (localX - padLeft - (Number(state.viewPanX) || 0)) / oldZoom,
+          contentY: (localY - padTop - (Number(state.viewPanY) || 0)) / oldZoom,
+          localX: localX,
+          localY: localY,
+          padLeft: padLeft,
+          padTop: padTop
         };
       }
       state.sheetZoom = clampSheetZoom(nextZoom);
-      applySheetZoom();
-      if (previewWrapEl && anchor && state.sheetZoom > 1.001) {
-        previewWrapEl.scrollLeft = Math.max(0, anchor.x * state.sheetZoom - anchor.offsetX);
-        previewWrapEl.scrollTop = Math.max(0, anchor.y * state.sheetZoom - anchor.offsetY);
+      if (anchor) {
+        // keep the content point under the cursor fixed while the scale changes
+        state.viewPanX = anchor.localX - anchor.padLeft - anchor.contentX * state.sheetZoom;
+        state.viewPanY = anchor.localY - anchor.padTop - anchor.contentY * state.sheetZoom;
       }
+      applySheetZoom();
+    }
+
+    function panSheetView(dx, dy) {
+      state.viewPanX = (Number(state.viewPanX) || 0) + dx;
+      state.viewPanY = (Number(state.viewPanY) || 0) + dy;
+      applySheetZoom();
     }
 
     function resetSheetZoom() {
+      state.viewPanX = 0;
+      state.viewPanY = 0;
       setSheetZoom(1);
     }
 
@@ -19417,9 +19473,17 @@
 
     function handlePreviewWheelZoom(event) {
       const canZoom = event.shiftKey || event.ctrlKey || event.metaKey || event.altKey;
-      if (!canZoom) return;
       event.preventDefault();
       event.stopPropagation();
+      if (!canZoom) {
+        // plain wheel keeps its scroll feel, but moves the free-view transform (no scrollbars)
+        let dx = event.deltaX;
+        let dy = event.deltaY;
+        if (event.deltaMode === 1) { dx *= 16; dy *= 16; }
+        else if (event.deltaMode === 2) { dx *= 240; dy *= 240; }
+        panSheetView(-dx, -dy);
+        return;
+      }
       changeSheetZoom(normalizeWheelDelta(event), event.clientX, event.clientY);
     }
 
@@ -19987,9 +20051,11 @@
       if (state.activeTimelineDrag || state.layoutDrag) return;
       const spacePan = isPreviewSpacePanActive();
       const middlePan = event.button === 1; // wheel-click drags the canvas, like space-drag
+      // touch has no scrollbars/wheel — a plain one-finger drag pans (outside memo drawing)
+      const touchPan = event.pointerType === 'touch' && !state.memoMode;
       if (!previewWrapEl) return;
       if (event.button !== undefined && event.button !== 0 && !middlePan) return;
-      if (!spacePan && !middlePan && (state.memoMode || Number(state.sheetZoom || 1) <= 1.001)) return;
+      if (!spacePan && !middlePan && !touchPan && (state.memoMode || Number(state.sheetZoom || 1) <= 1.001)) return;
       if (!spacePan && !middlePan && (event.shiftKey || isPanBlockedTarget(event.target))) return;
       if (spacePan || middlePan) {
         event.preventDefault();  // middle button: also suppresses the browser's autoscroll widget
@@ -19999,8 +20065,8 @@
         pointerId: event.pointerId,
         startX: event.clientX,
         startY: event.clientY,
-        scrollLeft: previewWrapEl.scrollLeft,
-        scrollTop: previewWrapEl.scrollTop,
+        panX: Number(state.viewPanX) || 0,
+        panY: Number(state.viewPanY) || 0,
         active: false,
         spacePan: spacePan
       };
@@ -20021,8 +20087,9 @@
         }
       }
       event.preventDefault();
-      previewWrapEl.scrollLeft = pan.scrollLeft - dx;
-      previewWrapEl.scrollTop = pan.scrollTop - dy;
+      state.viewPanX = pan.panX + dx;
+      state.viewPanY = pan.panY + dy;
+      applySheetZoom();
     }
 
     function endPreviewPan(event) {
@@ -22569,6 +22636,7 @@
     if (floatingBarsEl && previewWrapEl && 'ResizeObserver' in window) {
       const syncFloatingBarsPadding = function(){
         previewWrapEl.style.paddingTop = Math.round(floatingBarsEl.offsetTop + floatingBarsEl.offsetHeight + 14) + 'px';
+        applySheetZoom(); // padding feeds the free-view clamp
       };
       new ResizeObserver(syncFloatingBarsPadding).observe(floatingBarsEl);
       window.addEventListener('resize', syncFloatingBarsPadding);
