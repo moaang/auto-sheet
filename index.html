@@ -777,29 +777,33 @@
       line-height: 1.45;
       min-height: 32px;
     }
+    /* Diagnostics readout: compact reference block pinned at the card bottom. */
     .paper-auto-align-status {
       display: none;
-      margin-top: 8px;
-      padding: 9px 10px;
-      border: 1px solid #b8cee9;
-      border-radius: 10px;
-      background: #f8fbff;
-      color: #184f90;
-      font-size: 11px;
-      line-height: 1.45;
+      margin-top: 10px;
+      padding: 7px 9px;
+      border: 1px solid var(--soft);
+      border-radius: var(--r-ctl);
+      background: var(--panel-2);
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.4;
     }
     .paper-auto-align-status.active { display: block; }
     .paper-auto-align-status strong {
       display: block;
-      color: #123b6f;
-      font-size: 12px;
-      margin-bottom: 4px;
+      color: var(--text);
+      font-size: 10.5px;
+      margin-bottom: 3px;
     }
     .paper-auto-align-status ol {
-      margin: 4px 0 0 18px;
+      margin: 2px 0 0 14px;
       padding: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: 12px;
     }
-    .paper-auto-align-status li { margin: 2px 0; }
+    .paper-auto-align-status li { margin: 1px 0; }
     .paper-auto-align-status.error {
       border-color: rgba(207,42,42,.45);
       background: #fff8f8;
@@ -1027,7 +1031,11 @@
       line-height: 1;
       white-space: nowrap;
       flex: 0 0 auto;
+      cursor: pointer;
+      text-decoration: underline dotted;
+      text-underline-offset: 3px;
     }
+    .paper-toolbar-title:hover { color: var(--text); }
     .paper-toolbar-btn {
       height: 30px;
       min-width: 0;
@@ -2341,7 +2349,7 @@
           <code>0+01 | 1+00 | A | PAN | B</code>
           <code>0+01 | 1+00 | A | TU | B</code>
           <code>0+01 | 1+00 | FI | Aセル</code>
-          <code>0+05 | 1+00 | A1 | AセルOL | A2</code>
+          <code>0+01 | 1+00 | A1 | AセルOL | A2</code>
         </div>
         <button id="cameraToMemoBtn" type="button" class="memo-btn"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="4.5" y="5.5" width="15" height="13" rx="1.5"/><path d="M8 10h8M8 13.5h5.5"/></svg><span data-ui-text="cameraToMemoBtn">カメラ→メモ</span></button>
         <div id="cameraHelp" class="hint"></div>
@@ -2356,25 +2364,24 @@
             <svg class="manual-chevron ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.5 9.5 12 15l5.5-5.5"/></svg>
           </summary>
           <div class="paper-layout-content">
-            <div class="paper-primary-actions">
-              <button id="headerPositionModeBtn" class="paper-mini-btn position-edit-main-btn" type="button">Position Edit</button>
-              <button id="autoAlignPaperBtn" class="paper-mini-btn paper-auto-align-btn" type="button">Auto Align</button>
-              <button id="resetLayoutAdjustBtn" class="paper-mini-btn" type="button">Position Reset</button>
-            </div>
-
             <label id="paperImageInputLabel" for="paperImageInput">会社指定用紙画像（JPG / PNG / PSD）</label>
             <div id="paperFileSelectSection" class="guide-target-section">
               <input id="paperImageInput" type="file" accept="image/jpeg,image/png,.jpg,.jpeg,.png,.psd,image/vnd.adobe.photoshop,.clip" />
             </div>
-            <label class="paper-check-row paper-psd-memo-row" id="showPsdMemoRow" aria-disabled="true"><input id="showPsdMemoToggle" type="checkbox" checked disabled /> <span id="showPsdMemoText">Show separated PSD memo</span></label>
             <div id="paperImageStatus" class="status">No paper image loaded.</div>
             <div id="paperImagePixelInfo" class="paper-pixel-info">Source pixels: -</div>
+
+            <div class="paper-primary-actions">
+              <button id="autoAlignPaperBtn" class="paper-mini-btn paper-auto-align-btn" type="button">Auto Align</button>
+              <button id="headerPositionModeBtn" class="paper-mini-btn position-edit-main-btn" type="button">Position Edit</button>
+              <button id="resetLayoutAdjustBtn" class="paper-mini-btn" type="button">Position Reset</button>
+            </div>
             <div class="paper-actions">
-              <button id="clearPaperImageBtn" class="paper-mini-btn" type="button">Clear Paper</button>
               <button id="paperUndoBtn" class="paper-mini-btn" type="button" disabled>Undo</button>
               <button id="paperRedoBtn" class="paper-mini-btn" type="button" disabled>Redo</button>
+              <button id="clearPaperImageBtn" class="paper-mini-btn" type="button">Clear Paper</button>
             </div>
-            <div id="paperAutoAlignStatus" class="paper-auto-align-status" aria-live="polite"></div>
+            <label class="paper-check-row paper-psd-memo-row" id="showPsdMemoRow" aria-disabled="true"><input id="showPsdMemoToggle" type="checkbox" checked disabled /> <span id="showPsdMemoText">Show separated PSD memo</span></label>
 
             <label class="paper-check-row"><input id="showTemplateToggle" type="checkbox" checked /> <span id="showTemplateText">Show built-in sheet template</span></label>
             <label class="paper-check-row"><input id="showHeaderOutputToggle" type="checkbox" checked /> <span id="showHeaderOutputText">Show header output</span></label>
@@ -2385,6 +2392,7 @@
               <span class="paper-inline-control"><span id="inbetweenColumnCountLabel">動画列数 (0=同)</span><input id="inbetweenColumnCountInput" type="number" min="0" max="32" step="1" value="0" /></span>
             </label>
             <div id="paperLayoutHint" class="hint" style="margin-top:10px;"></div>
+            <div id="paperAutoAlignStatus" class="paper-auto-align-status" aria-live="polite"></div>
           </div>
         </details>
       </div>
@@ -2572,7 +2580,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '814';
+    const APP_VERSION = '815';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3555,6 +3563,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver815', 'Paper card reorganized; honest confidence score', ['The company-paper card now follows the actual workflow: file picker on top, then Auto Align / Position Edit / Reset, then Undo / Redo / Clear, display toggles, and the detection readout moved to the bottom as a compact two-column block. Loading a paper (including drag & drop) now opens this card automatically, and clicking the 用紙設定 label above the preview jumps straight to it — so the setup is discoverable without hunting. The Auto Align confidence % is now computed from measured quality (column-pair match, row-spacing uniformity, repairs applied) instead of a formula whose main term was effectively constant; clean papers read 95-97%, papers that needed repairs or failed sanity checks now visibly score lower. Camera example unified to 0+01 start.']],
         ['ver814', 'Madhouse header split lands on the real line', ['The caption/value split on Madhouse paper now lands on the actual printed separator line. The line is printed so light that no pixel crosses the dark threshold, so it is now found by a column-relative scan: a real separator dips slightly below each column\'s own background across most of the width, while caption text or the corner logo dips deeply but only in its few columns. A ±1-row window catches the anti-aliased line core. Verified across all 14 bundled papers — only Madhouse changed. Also removed one leftover unused variable (code audit found no uncalled functions or unused CSS).']],
         ['ver813', 'Auto Align: count 72 cells from the bottom; Madhouse header captions excluded', ['The 72-cell grid top is now resolved by walking the detected lines UP from the reliable bottom line, one cell at a time (a missing faint interior line counts as two cells). This structurally removes the case where the cell-label row got swallowed as the first frame cell — verified on Madhouse, whose label row previously shifted the whole grid. Also, on papers whose caption/value split line is printed faint and broken (Madhouse), the header caption row (話数/タイトル/カット…) is now excluded from the value boxes, like it already was on Kinema Citrus. All 14 bundled company papers verified unchanged except the two Madhouse fixes.']],
         ['ver811', 'Paper Auto Align: cell-label row is one cell', ['Restored the fix that keeps the CELL column-label band exactly one grid cell tall when aligning a company paper (it could stretch to two cells on papers with a taller section-title header, pushing the label down). Combined with the ver809 grid-top snap; the 72-cell grid now excludes the header/label rows across the company templates (A-1, Madhouse, 8bit, Science SARU, Kinema Citrus, TOHO, etc.).']],
@@ -3682,6 +3691,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver815', '用紙カードを整理・信頼度を実測ベースに', ['会社指定用紙のカードを実際の作業順に並べ替えました：ファイル選択 → 自動整列／位置編集／初期化 → 取り消し／やり直し／クリア → 表示切替、そして検出結果の表示はカード最下部にコンパクトな2列表示で移動。用紙を読み込むと（ドラッグ＆ドロップ含む）このカードが自動で開き、プレビュー上の「用紙設定」ラベルをクリックすると直接ジャンプするので、設定方法に気づかないままになりません。自動整列の信頼度％は、実測品質（列ペアの一致度・行間の均一性・補正の有無）から計算するようにしました（旧式は主要項がほぼ定数でした）。きれいな用紙は95〜97%、補正が必要だったり整合チェックに引っかかった用紙は明確に低く出ます。カメラ例も 0+01 開始に統一。']],
         ['ver814', 'MADHOUSEヘッダーの区切りを実際の線に合わせる', ['MADHOUSE用紙の見出し／入力の区切りが、実際に印刷されている区切り線の位置に合うようになりました。この線は非常に薄く、通常のしきい値では1ピクセルも検出できないため、列ごとの相対スキャンで検出します（本物の区切り線は幅のほぼ全域でわずかに沈み、見出し文字やロゴは自分の列だけ深く沈む）。±1行のウィンドウでアンチエイリアスされた線の芯を捉えます。同梱14社の用紙で検証し、変化はMADHOUSEのみ。あわせて未使用変数1件を削除（監査の結果、未呼び出し関数・未使用CSSはゼロでした）。']],
         ['ver813', '自動整列：72マスを下から数える／MADHOUSEの見出し行を除外', ['72マス本文の先頭を、信頼できる一番下の線から検出線を1マスずつ上へたどって決めるようにしました（薄くて検出できなかった中間線は2マス分として数えます）。これにより、Cellラベル行が最初のフレームマスとして飲み込まれるケースが構造的になくなります（MADHOUSEで本文全体がずれていた問題を実測で確認・修正）。また、見出し（話数/タイトル/カット…）と入力欄の区切り線が薄く途切れて印刷されている用紙（MADHOUSE）でも、Kinema Citrusと同様に見出し行をヘッダー値ボックスから除外するようにしました。同梱14社の用紙で、MADHOUSEの2件以外は変化がないことを確認済みです。']],
         ['ver811', '用紙自動整列：Cellラベル行を1マスに', ['会社指定用紙に合わせるとき、Cell列ラベルの帯を常にちょうど1マス分の高さに保つ修正を戻しました（見出し行が高い用紙で2マス分に伸び、ラベルが下がる問題）。ver809の先頭スナップと合わせています。']],
@@ -3809,6 +3819,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver815', '용지 카드 정리·신뢰도 실측화', ['회사 지정용지 카드를 실제 작업 순서대로 재배치했습니다: 파일 선택 → 자동정렬/위치편집/초기화 → 되돌리기/다시실행/클리어 → 표시 토글, 그리고 검출 결과는 카드 맨 아래 컴팩트한 2열 블록으로 이동. 용지를 불러오면(드래그앤드롭 포함) 이 카드가 자동으로 열리고, 프리뷰 위 「用紙設定」 라벨을 클릭하면 바로 점프합니다 — 설정 방법을 못 찾는 일이 없도록. 자동정렬 신뢰도 %는 실측 품질(열 페어 일치도·행 간격 균일성·보정 적용 여부)로 계산하도록 바꿨습니다(구식은 주요 항이 사실상 상수였음). 깨끗한 용지는 95~97%, 보정이 필요했거나 정합 검사에 걸린 용지는 뚜렷이 낮게 나옵니다. 카메라 예시도 0+01 시작으로 통일.']],
         ['ver814', 'MADHOUSE 헤더 분할선을 실제 선 위치로', ['MADHOUSE 용지의 설명행/입력칸 분할이 실제 인쇄된 구분선 위치에 정확히 맞습니다. 이 선은 너무 옅어 일반 임계값으론 픽셀 하나도 안 걸리므로, 컬럼-상대 스캔으로 찾습니다(진짜 구분선은 거의 전 폭에서 살짝 가라앉고, 설명 문자·로고는 자기 컬럼에서만 깊게 가라앉음). ±1행 윈도우로 안티앨리어싱된 선의 심을 잡습니다. 동봉 14개사 용지 검증 — 변화는 MADHOUSE뿐. 아울러 미사용 변수 1건 제거(감사 결과 미호출 함수·미사용 CSS 0건).']],
         ['ver813', '자동정렬: 72칸을 아래에서부터 세기 / MADHOUSE 설명행 배제', ['72칸 본문의 시작점을, 신뢰할 수 있는 맨 아래 선에서 감지선을 한 칸씩 위로 따라가며 결정하도록 바꿨습니다(옅어서 감지 못 한 중간 선은 2칸으로 계산). 이로써 셀 라벨 행이 첫 프레임 칸으로 먹히는 경우가 구조적으로 사라집니다(MADHOUSE에서 본문 전체가 밀리던 문제를 실측 확인·수정). 또한 설명행(話数/タイトル/カット…)과 입력칸의 구분선이 옅고 끊겨 인쇄된 용지(MADHOUSE)에서도 Kinema Citrus처럼 설명행을 헤더 값 박스에서 배제합니다. 동봉된 14개사 용지에서 MADHOUSE 2건 외에는 변화가 없음을 확인했습니다.']],
         ['ver811', '용지 자동정렬: Cell 라벨 행을 1칸으로', ['회사 지정용지에 맞출 때 Cell 열 라벨 띠를 항상 정확히 1칸 높이로 유지하는 수정을 복원했습니다(섹션 제목 헤더가 높은 용지에서 2칸으로 늘어나 라벨이 내려가던 문제). ver809의 시작점 스냅과 함께 적용됩니다.']],
@@ -3936,6 +3947,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver815', '纸张卡片重组·置信度改为实测', ['公司指定纸张卡片按实际工作流程重新排列：文件选择 → 自动对齐/位置编辑/重置 → 撤销/重做/清除 → 显示开关，检测结果移至卡片底部并改为紧凑的两列显示。载入纸张（含拖放）会自动展开该卡片，点击预览上方的「用紙設定」标签可直接跳转 — 不会再找不到设置入口。自动对齐置信度 % 改为按实测质量（列对匹配度、行距均匀性、是否需要修补）计算（旧公式的主要项几乎恒定）。干净的纸张为 95-97%，需要修补或未通过一致性检查的纸张会明显偏低。摄影示例也统一为 0+01 开头。']],
         ['ver814', 'MADHOUSE 页眉分隔对齐到真实线条', ['MADHOUSE 纸张的标题/输入分隔现在落在实际印刷的分隔线上。该线印得极淡，常规阈值检测不到任何像素，因此改用逐列相对扫描（真正的分隔线在几乎全宽范围内轻微下沉，而标题文字或角落的 logo 只在自己所在的少数列中深度下沉），并用 ±1 行窗口捕捉抗锯齿线芯。已在捆绑的 14 家纸张上验证——仅 MADHOUSE 变化。另删除 1 个未使用变量（审计结果：无未调用函数、无未使用 CSS）。']],
         ['ver813', '自动对齐：从底部数 72 格 / 排除 MADHOUSE 标题行', ['72 格正文的顶部改为从可靠的最底部线沿检测线逐格向上推算（过淡未检出的中间线按两格计）。这从结构上消除了 Cell 标签行被当作第一格的情况（在 MADHOUSE 上实测确认并修复了整片正文偏移）。另外，在标题行（話数/タイトル/カット…）与输入格的分隔线印得很淡且断续的纸张（MADHOUSE）上，也会像 Kinema Citrus 一样把标题行从页眉值框中排除。已确认捆绑的 14 家公司纸张中，除 MADHOUSE 的两处修正外均无变化。']],
         ['ver811', '纸张自动对齐：Cell 标签行为一格', ['恢复了对齐公司指定纸张时把 Cell 列标签带始终保持为一格高的修正（标题行较高的纸张上它会拉伸为两格，使标签下移）。与 ver809 的顶部吸附一同生效。']],
@@ -7554,6 +7566,8 @@
             bodyTop:bodyTop,
             bodyBottom:bodyBottom,
             rowH:rowH,
+            validRatio:validRatio,
+            avgDev:avgDev,
             lineCount:PAPER_AUTO_ALIGN_TARGET_BODY_LINES,
             cellCount:PAPER_AUTO_ALIGN_TARGET_BODY_LINES - 1,
             strict:true,
@@ -7600,11 +7614,13 @@
         }
         if (cells === target) walkTop = cur;
         if (walkTop == null) return;
+        best.missingLineCount = doubles;
         // snap a virtual top to a real detected line when one sits right there
         for (let k = 0; k < all.length; k++) {
           if (Math.abs(all[k] - walkTop) <= rowHref * 0.35) { walkTop = all[k]; break; }
         }
         if (Math.abs(walkTop - best.bodyTop) > rowHref * 0.5) {
+          best.topAdjusted = true;
           best.bodyTop = walkTop;
           // label band = the single cell above the corrected top
           let lt = walkTop - rowHref;
@@ -10641,8 +10657,6 @@
       const overlayBoxes = Object.assign({}, boxes);
       if (leftSide.follow) overlayBoxes['follow-left'] = normalizeRect({ x:leftSide.follow.left, y:bodyY, w:leftSide.follow.right - leftSide.follow.left, h:bodyH }, 18, 18);
       if (rightSide.follow) overlayBoxes['follow-right'] = normalizeRect({ x:rightSide.follow.left, y:bodyY, w:rightSide.follow.right - rightSide.follow.left, h:bodyH }, 18, 18);
-      const avgPairScore = Math.max(0, Math.min(240, pair.score));
-      const rowScore = Math.max(0, Math.min(120, bodyGrid.score / 10));
       const sanity = assessPaperAutoAlignSanity(boxes, headerOverlay, leftSide, rightSide, columns);
       const diagnosticLayer = makePaperAutoAlignDiagnosticLayer(pair, leftSide, rightSide, headerOverlay, sanity, columns, variantName || 'standard');
       const dottedVerticalLineCount = Number(analysis.dottedVerticalLineCount || 0);
@@ -10651,8 +10665,19 @@
       const inferredDurationPlusUsed = !!(headerOverlay && headerOverlay.durationPlus && headerOverlay.durationPlus.inferred);
       const dialogPattern = getPaperAutoAlignDialogPatternName(pair, analysis, variantName || 'standard');
       const cameraPattern = getPaperAutoAlignCameraPatternName(analysis, bodyGrid, leftSide, rightSide, variantName || 'standard');
-      const rawConfidence = Math.round(42 + avgPairScore * 0.14 + rowScore * 0.16);
-      const confidence = Math.max(15, Math.min(98, rawConfidence - sanity.penalty));
+      // Confidence from MEASURED quality (the old formula mixed in the window-selection score,
+      // whose 1000-point base saturated its term into a near-constant):
+      //  - pairQuality: how well the two column groups matched (0..1)
+      //  - gridQuality: row-spacing uniformity of the 72-cell body — validRatio spread over its
+      //    real range (0.88..1.0) times an average-deviation factor
+      //  - penalties: sanity checks plus bottom-walk repairs (each missing interior line and a
+      //    label-swallow top correction mean the detection needed fixing → less certain)
+      const pairQuality = Math.max(0, Math.min(1, Number(pair.score || 0) / 240));
+      const gridQuality = Math.max(0, Math.min(1, ((Number(bodyGrid.validRatio) || 0) - 0.85) / 0.15)) *
+        Math.max(0, Math.min(1, 1 - (Number(bodyGrid.avgDev) || 0) / 8));
+      const walkPenalty = (Number(bodyGrid.missingLineCount) || 0) * 4 + (bodyGrid.topAdjusted ? 3 : 0);
+      const rawConfidence = Math.round(30 + pairQuality * 40 + gridQuality * 28);
+      const confidence = Math.max(15, Math.min(98, rawConfidence - sanity.penalty - walkPenalty));
       return {
         layoutBoxes:boxes,
         cellColumnCount:columns,
@@ -20747,6 +20772,15 @@
       }
     }
 
+    function openPaperLayoutCard(scrollTo) {
+      const details = document.getElementById('paperLayoutDetails');
+      if (details) details.open = true;
+      if (!scrollTo) return;
+      if (state.sidebarCollapsed) setSidebarCollapsed(false);
+      const card = document.getElementById('paperLayoutCard');
+      if (card && typeof card.scrollIntoView === 'function') card.scrollIntoView({ behavior:'smooth', block:'start' });
+    }
+
     async function handlePaperImageUpload(file) {
       if (!file) return;
       const beforeSnapshot = getPaperStateSnapshot();
@@ -20794,6 +20828,9 @@
         state.positionMode = true;
         syncPaperLayoutControls();
         updatePaperImageStatus();
+        // Discoverability: a paper often arrives via drag & drop without the settings card ever
+        // being opened — open it so the alignment controls are visible the moment they matter.
+        openPaperLayoutCard(false);
         pushPaperHistory(beforeSnapshot, getPaperStateSnapshot());
         queueSavePaperMemory();
         render();
@@ -22386,6 +22423,8 @@
     }
     if (clearPaperImageBtn) clearPaperImageBtn.addEventListener('click', clearPaperImage);
     if (paperToolbarClearBtn) paperToolbarClearBtn.addEventListener('click', clearPaperImage);
+    // 用紙設定 title in the preview toolbar jumps to the full settings card in the sidebar.
+    if (paperToolbarTitleEl) paperToolbarTitleEl.addEventListener('click', function(){ openPaperLayoutCard(true); });
     if (paperUndoBtn) paperUndoBtn.addEventListener('click', undoPaperChange);
     if (paperRedoBtn) paperRedoBtn.addEventListener('click', redoPaperChange);
     if (resetLayoutAdjustBtn) resetLayoutAdjustBtn.addEventListener('click', resetLayoutAdjustments);
