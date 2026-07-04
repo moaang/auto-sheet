@@ -2389,7 +2389,7 @@
             <label class="paper-check-row paper-cell-label-row">
               <span class="paper-check-left"><input id="showCellLabelOutputToggle" type="checkbox" checked /> <span id="showCellLabelOutputText">Show cell label output</span></span>
               <span class="paper-inline-control"><span id="cellColumnCountLabel">Cell columns</span><input id="cellColumnCountInput" type="number" min="1" max="32" step="1" value="8" /></span>
-              <span class="paper-inline-control"><span id="inbetweenColumnCountLabel">動画列数 (0=同)</span><input id="inbetweenColumnCountInput" type="number" min="0" max="32" step="1" value="0" /></span>
+              <span class="paper-inline-control"><span id="inbetweenColumnCountLabel">動画列数</span><input id="inbetweenColumnCountInput" type="number" min="-1" max="0" step="1" value="0" title="0 = Cell columns と同じ / -1 = Cell columns − 1" /></span>
             </label>
             <div id="paperLayoutHint" class="hint" style="margin-top:10px;"></div>
             <div id="paperAutoAlignStatus" class="paper-auto-align-status" aria-live="polite"></div>
@@ -2580,7 +2580,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '815';
+    const APP_VERSION = '816';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3563,6 +3563,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver816', 'Douga columns is now a simple -1 toggle', ['The "Douga columns" field is now just a two-state stepper — 0 (same as Cell columns, the default) or -1 (one fewer), the only pattern anyone has actually used. Removed the "(0=same)" label text since the up/down arrows make it self-explanatory. It now stores the OFFSET rather than a fixed number, so it keeps tracking Cell columns automatically if that value is changed later. Existing saved projects that had a specific column count keep rendering the same douga column count.']],
         ['ver815', 'Paper card reorganized; honest confidence score', ['The company-paper card now follows the actual workflow: file picker on top, then Auto Align / Position Edit / Reset, then Undo / Redo / Clear, display toggles, and the detection readout moved to the bottom as a compact two-column block. Loading a paper (including drag & drop) now opens this card automatically, and clicking the 用紙設定 label above the preview jumps straight to it — so the setup is discoverable without hunting. The Auto Align confidence % is now computed from measured quality (column-pair match, row-spacing uniformity, repairs applied) instead of a formula whose main term was effectively constant; clean papers read 95-97%, papers that needed repairs or failed sanity checks now visibly score lower. Camera example unified to 0+01 start.']],
         ['ver814', 'Madhouse header split lands on the real line', ['The caption/value split on Madhouse paper now lands on the actual printed separator line. The line is printed so light that no pixel crosses the dark threshold, so it is now found by a column-relative scan: a real separator dips slightly below each column\'s own background across most of the width, while caption text or the corner logo dips deeply but only in its few columns. A ±1-row window catches the anti-aliased line core. Verified across all 14 bundled papers — only Madhouse changed. Also removed one leftover unused variable (code audit found no uncalled functions or unused CSS).']],
         ['ver813', 'Auto Align: count 72 cells from the bottom; Madhouse header captions excluded', ['The 72-cell grid top is now resolved by walking the detected lines UP from the reliable bottom line, one cell at a time (a missing faint interior line counts as two cells). This structurally removes the case where the cell-label row got swallowed as the first frame cell — verified on Madhouse, whose label row previously shifted the whole grid. Also, on papers whose caption/value split line is printed faint and broken (Madhouse), the header caption row (話数/タイトル/カット…) is now excluded from the value boxes, like it already was on Kinema Citrus. All 14 bundled company papers verified unchanged except the two Madhouse fixes.']],
@@ -3691,6 +3692,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver816', '動画列数を「-1」だけの単純な切替に', ['「動画列数」欄を、0（Cell列数と同じ・既定）と-1（1列少ない）だけを切り替える単純なステッパーにしました。実際に使われてきたのはこのパターンだけです。上下の矢印だけで意味が分かるため「（0=同じ）」の説明文は削除しました。値は固定の列数ではなく差分として保存するので、後からCell列数を変えても自動的に追従します。既に特定の列数を保存済みのプロジェクトも、これまでと同じ動画列数で表示され続けます。']],
         ['ver815', '用紙カードを整理・信頼度を実測ベースに', ['会社指定用紙のカードを実際の作業順に並べ替えました：ファイル選択 → 自動整列／位置編集／初期化 → 取り消し／やり直し／クリア → 表示切替、そして検出結果の表示はカード最下部にコンパクトな2列表示で移動。用紙を読み込むと（ドラッグ＆ドロップ含む）このカードが自動で開き、プレビュー上の「用紙設定」ラベルをクリックすると直接ジャンプするので、設定方法に気づかないままになりません。自動整列の信頼度％は、実測品質（列ペアの一致度・行間の均一性・補正の有無）から計算するようにしました（旧式は主要項がほぼ定数でした）。きれいな用紙は95〜97%、補正が必要だったり整合チェックに引っかかった用紙は明確に低く出ます。カメラ例も 0+01 開始に統一。']],
         ['ver814', 'MADHOUSEヘッダーの区切りを実際の線に合わせる', ['MADHOUSE用紙の見出し／入力の区切りが、実際に印刷されている区切り線の位置に合うようになりました。この線は非常に薄く、通常のしきい値では1ピクセルも検出できないため、列ごとの相対スキャンで検出します（本物の区切り線は幅のほぼ全域でわずかに沈み、見出し文字やロゴは自分の列だけ深く沈む）。±1行のウィンドウでアンチエイリアスされた線の芯を捉えます。同梱14社の用紙で検証し、変化はMADHOUSEのみ。あわせて未使用変数1件を削除（監査の結果、未呼び出し関数・未使用CSSはゼロでした）。']],
         ['ver813', '自動整列：72マスを下から数える／MADHOUSEの見出し行を除外', ['72マス本文の先頭を、信頼できる一番下の線から検出線を1マスずつ上へたどって決めるようにしました（薄くて検出できなかった中間線は2マス分として数えます）。これにより、Cellラベル行が最初のフレームマスとして飲み込まれるケースが構造的になくなります（MADHOUSEで本文全体がずれていた問題を実測で確認・修正）。また、見出し（話数/タイトル/カット…）と入力欄の区切り線が薄く途切れて印刷されている用紙（MADHOUSE）でも、Kinema Citrusと同様に見出し行をヘッダー値ボックスから除外するようにしました。同梱14社の用紙で、MADHOUSEの2件以外は変化がないことを確認済みです。']],
@@ -3819,6 +3821,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver816', '동화 칸 수를 -1 전용 토글로', ['「동화 칸 수」 항목을 0(Cell 칸 수와 동일, 기본값)과 -1(한 칸 적음)만 오가는 단순한 스테퍼로 바꿨습니다. 실제로 쓰인 패턴은 이것뿐이었습니다. 위아래 화살표만으로 의미가 드러나므로 「(0=동일)」 설명 문구는 삭제했습니다. 값을 고정된 칸 수가 아니라 차이(오프셋)로 저장해서, 나중에 Cell 칸 수를 바꿔도 자동으로 따라갑니다. 이미 특정 칸 수를 저장해둔 프로젝트도 이전과 동일한 동화 칸 수로 계속 표시됩니다.']],
         ['ver815', '용지 카드 정리·신뢰도 실측화', ['회사 지정용지 카드를 실제 작업 순서대로 재배치했습니다: 파일 선택 → 자동정렬/위치편집/초기화 → 되돌리기/다시실행/클리어 → 표시 토글, 그리고 검출 결과는 카드 맨 아래 컴팩트한 2열 블록으로 이동. 용지를 불러오면(드래그앤드롭 포함) 이 카드가 자동으로 열리고, 프리뷰 위 「用紙設定」 라벨을 클릭하면 바로 점프합니다 — 설정 방법을 못 찾는 일이 없도록. 자동정렬 신뢰도 %는 실측 품질(열 페어 일치도·행 간격 균일성·보정 적용 여부)로 계산하도록 바꿨습니다(구식은 주요 항이 사실상 상수였음). 깨끗한 용지는 95~97%, 보정이 필요했거나 정합 검사에 걸린 용지는 뚜렷이 낮게 나옵니다. 카메라 예시도 0+01 시작으로 통일.']],
         ['ver814', 'MADHOUSE 헤더 분할선을 실제 선 위치로', ['MADHOUSE 용지의 설명행/입력칸 분할이 실제 인쇄된 구분선 위치에 정확히 맞습니다. 이 선은 너무 옅어 일반 임계값으론 픽셀 하나도 안 걸리므로, 컬럼-상대 스캔으로 찾습니다(진짜 구분선은 거의 전 폭에서 살짝 가라앉고, 설명 문자·로고는 자기 컬럼에서만 깊게 가라앉음). ±1행 윈도우로 안티앨리어싱된 선의 심을 잡습니다. 동봉 14개사 용지 검증 — 변화는 MADHOUSE뿐. 아울러 미사용 변수 1건 제거(감사 결과 미호출 함수·미사용 CSS 0건).']],
         ['ver813', '자동정렬: 72칸을 아래에서부터 세기 / MADHOUSE 설명행 배제', ['72칸 본문의 시작점을, 신뢰할 수 있는 맨 아래 선에서 감지선을 한 칸씩 위로 따라가며 결정하도록 바꿨습니다(옅어서 감지 못 한 중간 선은 2칸으로 계산). 이로써 셀 라벨 행이 첫 프레임 칸으로 먹히는 경우가 구조적으로 사라집니다(MADHOUSE에서 본문 전체가 밀리던 문제를 실측 확인·수정). 또한 설명행(話数/タイトル/カット…)과 입력칸의 구분선이 옅고 끊겨 인쇄된 용지(MADHOUSE)에서도 Kinema Citrus처럼 설명행을 헤더 값 박스에서 배제합니다. 동봉된 14개사 용지에서 MADHOUSE 2건 외에는 변화가 없음을 확인했습니다.']],
@@ -3947,6 +3950,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver816', '動画列数改为仅 -1 的简单切换', ['「動画列数」栏改为只在 0（与 Cell 列数相同，默认）和 -1（少一列）之间切换的简单步进器——这也是实际唯一用过的模式。上下箭头已经能说明含义，因此删除了「(0=相同)」的说明文字。该值现在存储为与 Cell 列数的差值而非固定数字，之后修改 Cell 列数时会自动跟随。已保存过具体列数的旧项目，动画列数的渲染结果保持不变。']],
         ['ver815', '纸张卡片重组·置信度改为实测', ['公司指定纸张卡片按实际工作流程重新排列：文件选择 → 自动对齐/位置编辑/重置 → 撤销/重做/清除 → 显示开关，检测结果移至卡片底部并改为紧凑的两列显示。载入纸张（含拖放）会自动展开该卡片，点击预览上方的「用紙設定」标签可直接跳转 — 不会再找不到设置入口。自动对齐置信度 % 改为按实测质量（列对匹配度、行距均匀性、是否需要修补）计算（旧公式的主要项几乎恒定）。干净的纸张为 95-97%，需要修补或未通过一致性检查的纸张会明显偏低。摄影示例也统一为 0+01 开头。']],
         ['ver814', 'MADHOUSE 页眉分隔对齐到真实线条', ['MADHOUSE 纸张的标题/输入分隔现在落在实际印刷的分隔线上。该线印得极淡，常规阈值检测不到任何像素，因此改用逐列相对扫描（真正的分隔线在几乎全宽范围内轻微下沉，而标题文字或角落的 logo 只在自己所在的少数列中深度下沉），并用 ±1 行窗口捕捉抗锯齿线芯。已在捆绑的 14 家纸张上验证——仅 MADHOUSE 变化。另删除 1 个未使用变量（审计结果：无未调用函数、无未使用 CSS）。']],
         ['ver813', '自动对齐：从底部数 72 格 / 排除 MADHOUSE 标题行', ['72 格正文的顶部改为从可靠的最底部线沿检测线逐格向上推算（过淡未检出的中间线按两格计）。这从结构上消除了 Cell 标签行被当作第一格的情况（在 MADHOUSE 上实测确认并修复了整片正文偏移）。另外，在标题行（話数/タイトル/カット…）与输入格的分隔线印得很淡且断续的纸张（MADHOUSE）上，也会像 Kinema Citrus 一样把标题行从页眉值框中排除。已确认捆绑的 14 家公司纸张中，除 MADHOUSE 的两处修正外均无变化。']],
@@ -4298,7 +4302,7 @@
         showCellLabel:'Show cell label output',
         showPsdMemo:'Show separated PSD memo',
         cellColumns:'Cell columns',
-        inbetweenColumns:'Douga columns (0=same)',
+        inbetweenColumns:'Douga columns',
         cellColumnsHint:'',
         body:'',
         psdMeta:function(memoCount){ return memoCount ? 'PSD paper loaded; separated memo layers: ' + memoCount : 'PSD layers composited to one raster paper layer'; },
@@ -4330,7 +4334,7 @@
         showCellLabel:'Cellラベル出力を表示',
         showPsdMemo:'分離したPSDメモを表示',
         cellColumns:'Cell列数',
-        inbetweenColumns:'動画列数（0=同じ）',
+        inbetweenColumns:'動画列数',
         cellColumnsHint:'',
         body:'',
         psdMeta:function(memoCount){ return memoCount ? 'PSD用紙を読込。分離メモレイヤー: ' + memoCount : 'PSDレイヤーを1枚の用紙ラスターレイヤーに合成'; },
@@ -4362,7 +4366,7 @@
         showCellLabel:'셀 라벨 출력 표시',
         showPsdMemo:'분리된 PSD 메모 표시',
         cellColumns:'셀 칸 수',
-        inbetweenColumns:'동화 칸 수 (0=동일)',
+        inbetweenColumns:'동화 칸 수',
         cellColumnsHint:'',
         body:'',
         psdMeta:function(memoCount){ return memoCount ? 'PSD 용지 로드. 분리된 메모 레이어: ' + memoCount : 'PSD 레이어를 한 장의 용지 래스터 레이어로 합성'; },
@@ -4394,7 +4398,7 @@
         showCellLabel:'显示 Cell 标签输出',
         showPsdMemo:'显示分离的 PSD 备注',
         cellColumns:'Cell 列数',
-        inbetweenColumns:'動画列数（0=相同）',
+        inbetweenColumns:'動画列数',
         cellColumnsHint:'',
         body:'',
         psdMeta:function(memoCount){ return memoCount ? 'PSD 纸张已载入；分离备注图层: ' + memoCount : 'PSD 图层已合成为单张纸张栅格层'; },
@@ -4562,7 +4566,7 @@
       }
       if (showPsdMemoRowEl) showPsdMemoRowEl.setAttribute('aria-disabled', hasSeparatedPsdMemo ? 'false' : 'true');
       if (cellColumnCountInputEl) cellColumnCountInputEl.value = String(getCellColumnCount());
-      if (inbetweenColumnCountInputEl) inbetweenColumnCountInputEl.value = String(getInbetweenColumnCount());
+      if (inbetweenColumnCountInputEl) inbetweenColumnCountInputEl.value = String(clampInbetweenColumnCount(state.inbetweenColumnCount || 0));
       if (headerPositionModeBtn) headerPositionModeBtn.classList.toggle('active', !!state.positionMode);
       if (paperToolbarGroupEl) paperToolbarGroupEl.classList.toggle('hidden', !hasPaper);
       if (paperToolbarPositionBtn) {
@@ -14367,15 +14371,28 @@
       return clampCellColumnCount(state.cellColumnCount || 8);
     }
 
-    // Douga (inbetween/CELL) column override: 0 = follow the genga cell column count.
+    // Douga (inbetween/CELL) column count, stored as a DELTA from the genga Cell column count
+    // (0 = same, -1 = one fewer) rather than an absolute count. The only real-world case is
+    // "one fewer than Cell columns", so the input only ever offers those two values via its
+    // up/down stepper — and storing a delta means it keeps tracking Cell columns automatically
+    // if that value is changed later, instead of going stale as a fixed absolute number.
     function clampInbetweenColumnCount(value) {
       const n = Math.round(Number(value));
-      if (!Number.isFinite(n) || n <= 0) return 0;
-      return Math.max(1, Math.min(32, n));
+      if (!Number.isFinite(n)) return 0;
+      if (n > 0) {
+        // Legacy data: before this field stored a delta, it held the actual absolute douga
+        // column count. New code never writes a value above 0, so any positive number here can
+        // only be an old save — convert it once so a previously saved project keeps rendering
+        // the same douga column count instead of silently resetting to "same as Cell columns".
+        const cellColumns = clampCellColumnCount(state.cellColumnCount || 8);
+        return n - cellColumns <= -1 ? -1 : 0;
+      }
+      return n < 0 ? -1 : 0;
     }
 
     function getInbetweenColumnCount() {
-      return clampInbetweenColumnCount(state.inbetweenColumnCount || 0);
+      const delta = clampInbetweenColumnCount(state.inbetweenColumnCount || 0);
+      return Math.max(1, getCellColumnCount() + delta);
     }
 
     function makeCellColumnLabel(index) {
