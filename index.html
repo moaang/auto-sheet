@@ -109,35 +109,35 @@
       width: 100%;
       max-width: none;
     }
-    /* Sidebar toggle as a drawer HANDLE docked on the sidebar/main divider — part of the
-       border line rather than a circle floating over content or the scrollbar. */
+    /* Sidebar toggle as a drawer HANDLE: a tab attached to the RIGHT side of the divider
+       (its left edge flush on the 500px column line), protruding into the main panel — so
+       it never overlaps the sidebar's scrollbar (which lives inside the sidebar, left of
+       the divider) and reads as one piece with the border line, not a floating circle. */
     .sidebar-toggle-btn {
       position: fixed;
       top: 8px;
-      left: 500px; /* = sidebar grid column width; the handle straddles the divider */
-      transform: translateX(-50%);
+      left: 500px; /* = sidebar grid column width; left edge sits ON the divider */
+      transform: none;
       z-index: 10020;
-      width: 18px;
-      height: 46px;
+      width: 20px;
+      height: 48px;
       padding: 0;
       display: flex;
       align-items: center;
       justify-content: center;
       border: 1px solid var(--soft);
-      border-radius: 9px;
+      border-left: 0;               /* merges with the divider line */
+      border-radius: 0 9px 9px 0;   /* tab pointing right, into main */
       background: var(--panel);
       color: var(--muted);
       cursor: pointer;
-      box-shadow: var(--sh-card);
-      transition: background .12s ease, color .12s ease, box-shadow .12s ease;
+      box-shadow: 2px 1px 4px rgba(28,30,34,.06);
+      transition: background .12s ease, color .12s ease;
     }
-    .sidebar-toggle-btn:hover { background: #fff; color: var(--text); box-shadow: 0 3px 10px rgba(28,30,34,.14); }
-    /* Collapsed: the handle becomes a tab attached to the screen's left edge. */
+    .sidebar-toggle-btn:hover { background: #fff; color: var(--text); }
+    /* Collapsed: the sidebar is gone, so the same tab attaches to the screen's left edge. */
     .app.sidebar-collapsed .sidebar-toggle-btn {
       left: 0;
-      transform: none;
-      border-left: 0;
-      border-radius: 0 9px 9px 0;
     }
     /* A vector chevron, not a text glyph: glyph metrics (side-bearing/baseline) vary by
        font and platform and never sit pixel-centered in a flex box. An SVG path centered
@@ -2559,7 +2559,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '798';
+    const APP_VERSION = '799';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3543,6 +3543,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver799', 'Sidebar toggle as a clean divider tab', ['The collapse toggle no longer sits on top of the sidebar scrollbar. It is now a tab attached to the right side of the sidebar/main divider, protruding into the main panel — clear of the scrollbar and reading as one piece with the border line. When the sidebar is collapsed the same tab attaches to the screen\'s left edge.']],
         ['ver798', 'Fix broken cell-label row on narrow widths', ['The "Show cell label output" row (checkbox + Cell columns + In-between columns) was cramming all three onto one line, so on phones the label collapsed into a narrow overlapping column. It now lays out predictably at every width: the checkbox label takes its own line, and the two number controls sit on the line below (side by side when there\'s room, stacked on phones).']],
         ['ver797', 'Redesign corrections from screenshots', ['Camera line pickers are small again at each line\'s right edge (a global select rule had been stretching them full-width). Toolbar icons (出力 arrow etc.) now render — the sheet-page white-background rule was silently painting over every UI icon. The preview title shows the page resolution (1753 × 2480). The language control is a quiet globe + text. The sidebar toggle is no longer a floating circle: it\'s a slim handle docked on the sidebar/main divider (a left-edge tab when collapsed). The pen/eraser icons beside the size selects are now clickable tool selectors, replacing the separate 消しゴム button.']],
         ['ver796', 'Redesign follow-through + camera picker back in place', ['Finished the redesign items the first pass missed: the Project save/load group is now one segmented pill with icons on its own row (the プロジェクト label is gone), the wordmark got a small version chip, the preview title and zoom pill were refined, destructive buttons (Reset All / Clear) turned into quiet red ghosts, the pen/eraser size selects use icons, and each input card shows its format hint in the header row. The per-line camera direction pickers are also back at each line\'s right edge — the textarea now grows with its content so nothing scrolls inside it, which removes the scroll-lag problem structurally without moving the picker.']],
@@ -3663,6 +3664,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver799', '折りたたみボタンを境界線のタブに', ['折りたたみボタンがサイドバーのスクロールバーに重ならないようにしました。サイドバーと本体の境界線の右側に付くタブになり、本体側へ少し出っ張る形で、スクロールバーを避けつつ境界線と一体に見えます。サイドバーを畳んだときは、同じタブが画面の左端に付きます。']],
         ['ver798', '狭い幅でCellラベル行の崩れを修正', ['「Cellラベル出力を表示」の行（チェックボックス＋Cell列数＋動画列数）が3つを1行に詰め込もうとして、スマホではラベルが細い列に折り返して重なっていました。どの幅でも安定して並ぶようにし、チェックボックスのラベルは自分の行に、2つの数値入力はその下の行（余裕があれば横並び、スマホでは縦積み）に配置しました。']],
         ['ver797', 'スクリーンショット指摘の修正', ['カメラ欄の行ごとの選択UIが再び各行の右端に小さく表示されるようになりました（全体のselectルールが横いっぱいに引き伸ばしていました）。出力ボタンなどのツールバーアイコンが正しく描画されます（シート描画用の白背景ルールがUIアイコンを塗りつぶしていました）。プレビュー見出しの隣にページ解像度（1753 × 2480）を表示。言語設定は地球アイコン＋文字の控えめな表示に。左の折りたたみボタンは浮いた丸ではなく、サイドバーと本体の境界線にドッキングした細いハンドルになりました（折りたたみ時は左端のタブ）。ペン/消しゴムのサイズ選択横のアイコンはクリックでそのツールを選択でき、別置きの消しゴムボタンを置き換えました。']],
         ['ver796', 'デザイン刷新の仕上げ＋カメラ選択UIを元の位置に', ['前回のデザイン刷新でやり残した項目を実装しました。プロジェクトの保存/読込グループはアイコン付きの1つのまとまり（セグメント）として専用の行に配置（「プロジェクト」ラベルは廃止）、タイトル横に小さなバージョン表示、プレビュー見出しとズームUIの整理、全体初期化・クリアなどの破壊的ボタンは控えめな赤に、ペン/消しゴムのサイズ選択はアイコン表示に、各入力カードの形式ヒントは見出し行の右側に移動しました。カメラ欄の行ごとの選択UIも各行の右端という元の位置に戻しました。テキスト欄が内容に合わせて伸びるため内部スクロールが存在せず、遅れて追従する問題は構造的に起きません。']],
@@ -3783,6 +3785,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver799', '접기 버튼을 경계선 탭으로', ['접기 버튼이 사이드바 스크롤바 위에 겹치지 않도록 했습니다. 사이드바와 본체 사이 경계선 오른쪽에 붙는 탭이 되어 본체 쪽으로 살짝 나오는 형태로, 스크롤바를 비키면서 경계선과 일체로 보입니다. 사이드바를 접으면 같은 탭이 화면 왼쪽 끝에 붙습니다.']],
         ['ver798', '좁은 폭에서 Cell 라벨 행 깨짐 수정', ['「Cellラベル出力を表示」 행(체크박스 + Cell列数 + 動画列数)이 셋을 한 줄에 욱여넣으려다, 폰에서 라벨이 좁은 세로 열로 접히며 겹쳤습니다. 어떤 폭에서도 안정적으로 배치되도록, 체크박스 라벨은 자기 줄에, 두 숫자 입력은 아래 줄(공간 있으면 나란히, 폰에서는 세로로)로 두었습니다.']],
         ['ver797', '스크린샷 지적사항 수정', ['카메라란 줄별 선택탭이 다시 각 줄 오른쪽에 작게 표시됩니다(전역 select 규칙이 가로로 늘리고 있었음). 出力 등 툴바 아이콘이 제대로 그려집니다(시트 렌더용 흰 배경 규칙이 UI 아이콘을 덮고 있었음). 프리뷰 제목 옆에 페이지 해상도(1753 × 2480) 표시. 언어 설정은 지구본 아이콘+텍스트의 조용한 형태로. 왼쪽 접기 버튼은 떠 있는 원 대신 사이드바 경계선에 도킹된 얇은 핸들이 됐습니다(접으면 좌측 엣지 탭). 펜/지우개 크기 선택 옆 아이콘을 클릭하면 해당 툴이 선택되며, 별도의 消しゴム 버튼을 대체합니다.']],
         ['ver796', '리디자인 마무리 + 카메라 선택탭 원위치 복원', ['지난 리디자인에서 빠졌던 항목을 마저 구현했습니다. 프로젝트 저장/불러오기 그룹은 아이콘이 붙은 세그먼트 하나로 전용 줄에 배치(「プロジェクト」 라벨 삭제), 타이틀 옆에 작은 버전 칩 추가, 프리뷰 제목·줌 UI 정돈, 전체 초기화·클리어 같은 파괴적 버튼은 조용한 빨간 고스트로, 펜/지우개 크기 선택엔 아이콘을, 각 입력 카드의 형식 힌트는 제목 줄 오른쪽으로 옮겼습니다. 카메라란의 줄별 선택탭도 각 줄 오른쪽이라는 원래 위치로 되돌렸습니다. 텍스트칸이 내용에 맞춰 늘어나 내부 스크롤 자체가 없으므로, 위치는 그대로인 채 스크롤 지연·잔상 문제만 구조적으로 사라집니다.']],
@@ -3903,6 +3906,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver799', '折叠按钮改为分界线标签', ['折叠按钮不再压在侧栏滚动条上。现改为附着在侧栏与主区分界线右侧的标签，向主区略微凸出，既避开滚动条又与分界线融为一体。折叠侧栏时，同一标签会贴到屏幕左缘。']],
         ['ver798', '修复窄屏下 Cell 标签行错位', ['「Cellラベル出力を表示」行（复选框 + Cell列数 + 動画列数）试图把三者塞进一行，在手机上标签折成很窄的一列并互相重叠。现改为在任意宽度下都稳定排布：复选框标签独占一行，两个数字输入放在下一行（有空间时并排，手机上竖排）。']],
         ['ver797', '按截图反馈修正', ['摄影栏逐行选择器重新以小尺寸显示在每行右端（全局 select 规则曾把它拉伸至全宽）。出力等工具栏图标现已正常渲染（表格页的白底规则曾覆盖所有 UI 图标）。预览标题旁显示页面分辨率（1753 × 2480）。语言设置改为地球图标＋文字的低调样式。左侧折叠按钮不再是悬浮圆形，而是停靠在侧栏分界线上的细长把手（折叠时变为左缘小标签）。笔/橡皮尺寸选择旁的图标可点击选择对应工具，取代了独立的橡皮按钮。']],
         ['ver796', '完成翻新收尾 + 摄影选择器回到原位', ['补齐了上次翻新遗漏的项目：项目保存/读取组改为带图标的分段控件并独占一行（移除「プロジェクト」标签），标题旁新增小版本徽标，整理了预览标题与缩放控件，全部重置/清除等破坏性按钮改为低调的红色幽灵样式，笔/橡皮尺寸选择改用图标，各输入卡片的格式提示移到标题行右侧。摄影栏的逐行方向选择器也回到了每行右端的原位——文本框现在随内容自动增高，内部不再滚动，因此滚动延迟问题从结构上消失，而位置保持不变。']],
