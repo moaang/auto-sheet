@@ -758,11 +758,14 @@
       border: 1px solid var(--soft); border-radius: 10px; background: white; font-size: 12px; font-weight: 700;
     }
     .paper-check-row input { width: auto; }
-    .paper-cell-label-row { justify-content: space-between; gap: 12px; }
+    /* This row never reliably fits its checkbox label + two number controls on one line
+       (even in the 500px sidebar), so lay it out predictably at every width: the label
+       gets its own row, the two controls share the row below and stack only when too tight. */
+    .paper-cell-label-row { flex-wrap: wrap; gap: 8px 12px; }
     .paper-psd-memo-row[aria-disabled="true"] { opacity: 0.45; }
-    .paper-check-left { display: inline-flex; align-items: center; gap: 8px; min-width: 0; }
-    .paper-inline-control { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; white-space: nowrap; color: var(--text); font-size: 12px; font-weight: 800; }
-    .paper-inline-control input { width: 64px; height: 30px; padding: 4px 6px; text-align: center; font-weight: 800; }
+    .paper-check-left { display: inline-flex; align-items: center; gap: 8px; flex: 1 1 100%; }
+    .paper-inline-control { display: inline-flex; align-items: center; gap: 6px; flex: 1 1 auto; justify-content: space-between; white-space: nowrap; color: var(--text); font-size: 12px; font-weight: 800; }
+    .paper-inline-control input { width: 64px; height: 30px; padding: 4px 6px; text-align: center; font-weight: 800; flex: none; }
     .paper-pixel-info {
       margin-top: 6px;
       padding: 8px 10px;
@@ -2148,6 +2151,9 @@
 
       /* Smaller vertical セリフシート side button */
       .serifu-side-btn { padding: 6px 2px; font-size: 8px; letter-spacing: .5px; }
+
+      /* On phones the two number controls stack (each full-width, label left / input right). */
+      .paper-cell-label-row .paper-inline-control { flex: 1 1 100%; }
     }
 
   </style>
@@ -2553,7 +2559,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '797';
+    const APP_VERSION = '798';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3537,6 +3543,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver798', 'Fix broken cell-label row on narrow widths', ['The "Show cell label output" row (checkbox + Cell columns + In-between columns) was cramming all three onto one line, so on phones the label collapsed into a narrow overlapping column. It now lays out predictably at every width: the checkbox label takes its own line, and the two number controls sit on the line below (side by side when there\'s room, stacked on phones).']],
         ['ver797', 'Redesign corrections from screenshots', ['Camera line pickers are small again at each line\'s right edge (a global select rule had been stretching them full-width). Toolbar icons (出力 arrow etc.) now render — the sheet-page white-background rule was silently painting over every UI icon. The preview title shows the page resolution (1753 × 2480). The language control is a quiet globe + text. The sidebar toggle is no longer a floating circle: it\'s a slim handle docked on the sidebar/main divider (a left-edge tab when collapsed). The pen/eraser icons beside the size selects are now clickable tool selectors, replacing the separate 消しゴム button.']],
         ['ver796', 'Redesign follow-through + camera picker back in place', ['Finished the redesign items the first pass missed: the Project save/load group is now one segmented pill with icons on its own row (the プロジェクト label is gone), the wordmark got a small version chip, the preview title and zoom pill were refined, destructive buttons (Reset All / Clear) turned into quiet red ghosts, the pen/eraser size selects use icons, and each input card shows its format hint in the header row. The per-line camera direction pickers are also back at each line\'s right edge — the textarea now grows with its content so nothing scrolls inside it, which removes the scroll-lag problem structurally without moving the picker.']],
         ['ver795', 'UI redesign — unified visual language', ['Reworked the whole app\'s surface: one ink/paper palette (chrome stays monochrome; the single accent color is reserved for セリフシート and destructive actions), a single 5-variant button system (primary / secondary / ghost / toggle / danger) replacing four mismatched sizes, and every glyph icon (refresh, chevrons, page arrows, zoom, close) replaced with real SVG icons so nothing depends on font rendering. The preview and memo toolbars are now grouped with dividers and a single primary (出力) action; sidebar cards got small header icons; hint chips moved to a softer style. No feature, layout order, or exported-sheet pixel changed — this is a surface-only pass.']],
@@ -3656,6 +3663,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver798', '狭い幅でCellラベル行の崩れを修正', ['「Cellラベル出力を表示」の行（チェックボックス＋Cell列数＋動画列数）が3つを1行に詰め込もうとして、スマホではラベルが細い列に折り返して重なっていました。どの幅でも安定して並ぶようにし、チェックボックスのラベルは自分の行に、2つの数値入力はその下の行（余裕があれば横並び、スマホでは縦積み）に配置しました。']],
         ['ver797', 'スクリーンショット指摘の修正', ['カメラ欄の行ごとの選択UIが再び各行の右端に小さく表示されるようになりました（全体のselectルールが横いっぱいに引き伸ばしていました）。出力ボタンなどのツールバーアイコンが正しく描画されます（シート描画用の白背景ルールがUIアイコンを塗りつぶしていました）。プレビュー見出しの隣にページ解像度（1753 × 2480）を表示。言語設定は地球アイコン＋文字の控えめな表示に。左の折りたたみボタンは浮いた丸ではなく、サイドバーと本体の境界線にドッキングした細いハンドルになりました（折りたたみ時は左端のタブ）。ペン/消しゴムのサイズ選択横のアイコンはクリックでそのツールを選択でき、別置きの消しゴムボタンを置き換えました。']],
         ['ver796', 'デザイン刷新の仕上げ＋カメラ選択UIを元の位置に', ['前回のデザイン刷新でやり残した項目を実装しました。プロジェクトの保存/読込グループはアイコン付きの1つのまとまり（セグメント）として専用の行に配置（「プロジェクト」ラベルは廃止）、タイトル横に小さなバージョン表示、プレビュー見出しとズームUIの整理、全体初期化・クリアなどの破壊的ボタンは控えめな赤に、ペン/消しゴムのサイズ選択はアイコン表示に、各入力カードの形式ヒントは見出し行の右側に移動しました。カメラ欄の行ごとの選択UIも各行の右端という元の位置に戻しました。テキスト欄が内容に合わせて伸びるため内部スクロールが存在せず、遅れて追従する問題は構造的に起きません。']],
         ['ver795', 'UIデザイン刷新 — 一貫した見た目に', ['アプリ全体の表面を作り直しました。墨（濃いグレー）と紙色を基調に、色を使うのはセリフシートと危険操作だけに絞り、道具自体はモノクロに。バラバラだった4種類のボタンを1つの体系（プライマリ／セカンダリ／ゴースト／トグル／危険）に統一し、↻ ⌄ × ＋ − などの文字アイコンは全てSVGアイコンに置き換えました（フォントによるズレがなくなります）。プレビュー・メモの各ツールバーは区切り線でグループ化し、出力ボタンだけを主役の墨色ボタンに。サイドバーの各カードに小さな見出しアイコンを追加し、緑のヒントもやわらかい配色に。機能・配置順・書き出しシートのピクセルは一切変えていません。']],
@@ -3775,6 +3783,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver798', '좁은 폭에서 Cell 라벨 행 깨짐 수정', ['「Cellラベル出力を表示」 행(체크박스 + Cell列数 + 動画列数)이 셋을 한 줄에 욱여넣으려다, 폰에서 라벨이 좁은 세로 열로 접히며 겹쳤습니다. 어떤 폭에서도 안정적으로 배치되도록, 체크박스 라벨은 자기 줄에, 두 숫자 입력은 아래 줄(공간 있으면 나란히, 폰에서는 세로로)로 두었습니다.']],
         ['ver797', '스크린샷 지적사항 수정', ['카메라란 줄별 선택탭이 다시 각 줄 오른쪽에 작게 표시됩니다(전역 select 규칙이 가로로 늘리고 있었음). 出力 등 툴바 아이콘이 제대로 그려집니다(시트 렌더용 흰 배경 규칙이 UI 아이콘을 덮고 있었음). 프리뷰 제목 옆에 페이지 해상도(1753 × 2480) 표시. 언어 설정은 지구본 아이콘+텍스트의 조용한 형태로. 왼쪽 접기 버튼은 떠 있는 원 대신 사이드바 경계선에 도킹된 얇은 핸들이 됐습니다(접으면 좌측 엣지 탭). 펜/지우개 크기 선택 옆 아이콘을 클릭하면 해당 툴이 선택되며, 별도의 消しゴム 버튼을 대체합니다.']],
         ['ver796', '리디자인 마무리 + 카메라 선택탭 원위치 복원', ['지난 리디자인에서 빠졌던 항목을 마저 구현했습니다. 프로젝트 저장/불러오기 그룹은 아이콘이 붙은 세그먼트 하나로 전용 줄에 배치(「プロジェクト」 라벨 삭제), 타이틀 옆에 작은 버전 칩 추가, 프리뷰 제목·줌 UI 정돈, 전체 초기화·클리어 같은 파괴적 버튼은 조용한 빨간 고스트로, 펜/지우개 크기 선택엔 아이콘을, 각 입력 카드의 형식 힌트는 제목 줄 오른쪽으로 옮겼습니다. 카메라란의 줄별 선택탭도 각 줄 오른쪽이라는 원래 위치로 되돌렸습니다. 텍스트칸이 내용에 맞춰 늘어나 내부 스크롤 자체가 없으므로, 위치는 그대로인 채 스크롤 지연·잔상 문제만 구조적으로 사라집니다.']],
         ['ver795', 'UI 디자인 전면 개편 — 일관된 비주얼', ['앱 전체 표면을 다시 만들었습니다. 먹색(짙은 그레이)과 종이색을 기본으로, 색은 セリフシート와 위험 동작에만 남기고 나머지 도구 UI는 무채색으로 정리했습니다. 제각각이던 4종류 버튼을 프라이머리/세컨더리/고스트/토글/데인저 5종 체계 하나로 통일하고, ↻ ⌄ × ＋ − 같은 문자 아이콘을 전부 SVG 아이콘으로 교체했습니다(폰트에 따라 위치가 어긋나는 문제가 사라집니다). 프리뷰·메모 툴바는 구분선으로 그룹을 나누고 出力 버튼만 먹색 프라이머리로 강조했습니다. 사이드바 각 카드에 작은 헤더 아이콘을 추가했고, 초록 힌트도 더 부드러운 톤으로 바꿨습니다. 기능·배치 순서·출력 시트 픽셀은 전혀 바뀌지 않았습니다.']],
@@ -3894,6 +3903,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver798', '修复窄屏下 Cell 标签行错位', ['「Cellラベル出力を表示」行（复选框 + Cell列数 + 動画列数）试图把三者塞进一行，在手机上标签折成很窄的一列并互相重叠。现改为在任意宽度下都稳定排布：复选框标签独占一行，两个数字输入放在下一行（有空间时并排，手机上竖排）。']],
         ['ver797', '按截图反馈修正', ['摄影栏逐行选择器重新以小尺寸显示在每行右端（全局 select 规则曾把它拉伸至全宽）。出力等工具栏图标现已正常渲染（表格页的白底规则曾覆盖所有 UI 图标）。预览标题旁显示页面分辨率（1753 × 2480）。语言设置改为地球图标＋文字的低调样式。左侧折叠按钮不再是悬浮圆形，而是停靠在侧栏分界线上的细长把手（折叠时变为左缘小标签）。笔/橡皮尺寸选择旁的图标可点击选择对应工具，取代了独立的橡皮按钮。']],
         ['ver796', '完成翻新收尾 + 摄影选择器回到原位', ['补齐了上次翻新遗漏的项目：项目保存/读取组改为带图标的分段控件并独占一行（移除「プロジェクト」标签），标题旁新增小版本徽标，整理了预览标题与缩放控件，全部重置/清除等破坏性按钮改为低调的红色幽灵样式，笔/橡皮尺寸选择改用图标，各输入卡片的格式提示移到标题行右侧。摄影栏的逐行方向选择器也回到了每行右端的原位——文本框现在随内容自动增高，内部不再滚动，因此滚动延迟问题从结构上消失，而位置保持不变。']],
         ['ver795', 'UI 设计全面翻新 — 统一视觉语言', ['重做了整个应用的界面：以墨色（深灰）与纸色为基调，颜色只保留给 セリフシート 和危险操作，其余工具 UI 一律无彩色。将原本 4 套不一致的按钮统一为 5 种体系（主要／次要／幽灵／开关／危险），并把 ↻ ⌄ × ＋ − 等文字图标全部换成 SVG 图标（不再受字体渲染影响而错位）。预览与备注工具栏改为用分隔线分组，仅 出力 按钮保留为墨色主要按钮。侧栏各卡片新增小号标题图标，绿色提示也改为更柔和的配色。功能、排列顺序与导出表格像素均未改动。']],
