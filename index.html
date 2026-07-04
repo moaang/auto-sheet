@@ -2572,7 +2572,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '813';
+    const APP_VERSION = '814';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -2707,7 +2707,6 @@
     const paperLayoutHintEl = document.getElementById('paperLayoutHint');
     const paperAutoAlignStatusEl = document.getElementById('paperAutoAlignStatus');
     const cellInputModeButtons = Array.from(document.querySelectorAll('[data-input-mode]'));
-    const csvColumnRoleSectionEl = document.getElementById('csvColumnRoleSection');
     const paperFileSelectSectionEl = document.getElementById('paperFileSelectSection');
     const memoColorButtons = Array.from(document.querySelectorAll('.memo-color-btn'));
     const memoPenToolBtn = document.getElementById('memoPenToolBtn');
@@ -3556,6 +3555,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver814', 'Madhouse header split lands on the real line', ['The caption/value split on Madhouse paper now lands on the actual printed separator line. The line is printed so light that no pixel crosses the dark threshold, so it is now found by a column-relative scan: a real separator dips slightly below each column\'s own background across most of the width, while caption text or the corner logo dips deeply but only in its few columns. A ±1-row window catches the anti-aliased line core. Verified across all 14 bundled papers — only Madhouse changed. Also removed one leftover unused variable (code audit found no uncalled functions or unused CSS).']],
         ['ver813', 'Auto Align: count 72 cells from the bottom; Madhouse header captions excluded', ['The 72-cell grid top is now resolved by walking the detected lines UP from the reliable bottom line, one cell at a time (a missing faint interior line counts as two cells). This structurally removes the case where the cell-label row got swallowed as the first frame cell — verified on Madhouse, whose label row previously shifted the whole grid. Also, on papers whose caption/value split line is printed faint and broken (Madhouse), the header caption row (話数/タイトル/カット…) is now excluded from the value boxes, like it already was on Kinema Citrus. All 14 bundled company papers verified unchanged except the two Madhouse fixes.']],
         ['ver811', 'Paper Auto Align: cell-label row is one cell', ['Restored the fix that keeps the CELL column-label band exactly one grid cell tall when aligning a company paper (it could stretch to two cells on papers with a taller section-title header, pushing the label down). Combined with the ver809 grid-top snap; the 72-cell grid now excludes the header/label rows across the company templates (A-1, Madhouse, 8bit, Science SARU, Kinema Citrus, TOHO, etc.).']],
         ['ver809', 'Paper Auto Align: snap the grid top to the lower double-line', ['When the boundary just below the cell label is a double line, Auto Align caught the UPPER line as the grid top, which made the first cell oversized and drifted the 72 cells. It now detects the oversized first cell and snaps the top down to one even cell above the second line — the LOWER boundary line — so the cells count evenly.']],
@@ -3682,6 +3682,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver814', 'MADHOUSEヘッダーの区切りを実際の線に合わせる', ['MADHOUSE用紙の見出し／入力の区切りが、実際に印刷されている区切り線の位置に合うようになりました。この線は非常に薄く、通常のしきい値では1ピクセルも検出できないため、列ごとの相対スキャンで検出します（本物の区切り線は幅のほぼ全域でわずかに沈み、見出し文字やロゴは自分の列だけ深く沈む）。±1行のウィンドウでアンチエイリアスされた線の芯を捉えます。同梱14社の用紙で検証し、変化はMADHOUSEのみ。あわせて未使用変数1件を削除（監査の結果、未呼び出し関数・未使用CSSはゼロでした）。']],
         ['ver813', '自動整列：72マスを下から数える／MADHOUSEの見出し行を除外', ['72マス本文の先頭を、信頼できる一番下の線から検出線を1マスずつ上へたどって決めるようにしました（薄くて検出できなかった中間線は2マス分として数えます）。これにより、Cellラベル行が最初のフレームマスとして飲み込まれるケースが構造的になくなります（MADHOUSEで本文全体がずれていた問題を実測で確認・修正）。また、見出し（話数/タイトル/カット…）と入力欄の区切り線が薄く途切れて印刷されている用紙（MADHOUSE）でも、Kinema Citrusと同様に見出し行をヘッダー値ボックスから除外するようにしました。同梱14社の用紙で、MADHOUSEの2件以外は変化がないことを確認済みです。']],
         ['ver811', '用紙自動整列：Cellラベル行を1マスに', ['会社指定用紙に合わせるとき、Cell列ラベルの帯を常にちょうど1マス分の高さに保つ修正を戻しました（見出し行が高い用紙で2マス分に伸び、ラベルが下がる問題）。ver809の先頭スナップと合わせています。']],
         ['ver809', '用紙自動整列：本文先頭を下側の二重線にそろえる', ['Cellラベルのすぐ下の境界が二重線の用紙で、自動整列が上側の線を本文の先頭として拾い、最初のマスだけ大きくなって72マスがずれていました。最初のマスが大きすぎることを検出し、先頭を2本目の線から1マス上（＝下側の境界線）へスナップするようにしたので、マスが均等にそろいます。']],
@@ -3808,6 +3809,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver814', 'MADHOUSE 헤더 분할선을 실제 선 위치로', ['MADHOUSE 용지의 설명행/입력칸 분할이 실제 인쇄된 구분선 위치에 정확히 맞습니다. 이 선은 너무 옅어 일반 임계값으론 픽셀 하나도 안 걸리므로, 컬럼-상대 스캔으로 찾습니다(진짜 구분선은 거의 전 폭에서 살짝 가라앉고, 설명 문자·로고는 자기 컬럼에서만 깊게 가라앉음). ±1행 윈도우로 안티앨리어싱된 선의 심을 잡습니다. 동봉 14개사 용지 검증 — 변화는 MADHOUSE뿐. 아울러 미사용 변수 1건 제거(감사 결과 미호출 함수·미사용 CSS 0건).']],
         ['ver813', '자동정렬: 72칸을 아래에서부터 세기 / MADHOUSE 설명행 배제', ['72칸 본문의 시작점을, 신뢰할 수 있는 맨 아래 선에서 감지선을 한 칸씩 위로 따라가며 결정하도록 바꿨습니다(옅어서 감지 못 한 중간 선은 2칸으로 계산). 이로써 셀 라벨 행이 첫 프레임 칸으로 먹히는 경우가 구조적으로 사라집니다(MADHOUSE에서 본문 전체가 밀리던 문제를 실측 확인·수정). 또한 설명행(話数/タイトル/カット…)과 입력칸의 구분선이 옅고 끊겨 인쇄된 용지(MADHOUSE)에서도 Kinema Citrus처럼 설명행을 헤더 값 박스에서 배제합니다. 동봉된 14개사 용지에서 MADHOUSE 2건 외에는 변화가 없음을 확인했습니다.']],
         ['ver811', '용지 자동정렬: Cell 라벨 행을 1칸으로', ['회사 지정용지에 맞출 때 Cell 열 라벨 띠를 항상 정확히 1칸 높이로 유지하는 수정을 복원했습니다(섹션 제목 헤더가 높은 용지에서 2칸으로 늘어나 라벨이 내려가던 문제). ver809의 시작점 스냅과 함께 적용됩니다.']],
         ['ver809', '용지 자동정렬: 본문 시작을 아래쪽 이중선에 스냅', ['Cell 라벨 바로 아래 경계가 이중선인 용지에서, 자동정렬이 위쪽 선을 본문 시작으로 잡아 첫 칸만 커지고 72칸이 어긋났습니다. 이제 첫 칸이 유독 큰 걸 감지해, 시작점을 두 번째 선에서 한 칸 위(=아래쪽 경계선)로 스냅하므로 칸이 균일하게 정렬됩니다.']],
@@ -3934,6 +3936,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver814', 'MADHOUSE 页眉分隔对齐到真实线条', ['MADHOUSE 纸张的标题/输入分隔现在落在实际印刷的分隔线上。该线印得极淡，常规阈值检测不到任何像素，因此改用逐列相对扫描（真正的分隔线在几乎全宽范围内轻微下沉，而标题文字或角落的 logo 只在自己所在的少数列中深度下沉），并用 ±1 行窗口捕捉抗锯齿线芯。已在捆绑的 14 家纸张上验证——仅 MADHOUSE 变化。另删除 1 个未使用变量（审计结果：无未调用函数、无未使用 CSS）。']],
         ['ver813', '自动对齐：从底部数 72 格 / 排除 MADHOUSE 标题行', ['72 格正文的顶部改为从可靠的最底部线沿检测线逐格向上推算（过淡未检出的中间线按两格计）。这从结构上消除了 Cell 标签行被当作第一格的情况（在 MADHOUSE 上实测确认并修复了整片正文偏移）。另外，在标题行（話数/タイトル/カット…）与输入格的分隔线印得很淡且断续的纸张（MADHOUSE）上，也会像 Kinema Citrus 一样把标题行从页眉值框中排除。已确认捆绑的 14 家公司纸张中，除 MADHOUSE 的两处修正外均无变化。']],
         ['ver811', '纸张自动对齐：Cell 标签行为一格', ['恢复了对齐公司指定纸张时把 Cell 列标签带始终保持为一格高的修正（标题行较高的纸张上它会拉伸为两格，使标签下移）。与 ver809 的顶部吸附一同生效。']],
         ['ver809', '纸张自动对齐：正文顶部对齐到下方双线', ['当 Cell 标签正下方的分界是双线时，自动对齐会把上方那条线当作正文顶部，使第一格偏大、72 格整体错位。现在会检测到过大的第一格，并把顶部下移到第二条线上方一个等距格（即下方分界线），使各格均匀对齐。']],
@@ -7437,6 +7440,53 @@
           return pos > 12 && pos < PAGE_W - 12 && Number(line.hitRatio || 0) >= 0.10;
         });
       };
+      // Column-relative row scan for FAINT full-width lines that never cross darkThreshold
+      // (e.g. Madhouse's light caption/value separator). Each column is compared against its
+      // OWN median over the scanned band, so a solid faint line shows a small dip across most
+      // columns (high coverage), while text or a logo dips deeply but only in its few columns.
+      function columnRelativeRowScan(left, right, top, bottom, step) {
+        const l = Math.max(0, Math.round(left));
+        const r = Math.min(PAGE_W - 1, Math.round(right));
+        const t = Math.max(0, Math.round(top));
+        const b = Math.min(PAGE_H - 1, Math.round(bottom));
+        const st = Math.max(1, Math.round(step || 3));
+        if (r <= l || b <= t) return [];
+        const cols = [];
+        for (let x = l; x <= r; x += st) cols.push(x);
+        const rowsN = b - t + 1;
+        const lums = new Array(rowsN);
+        for (let yy = t; yy <= b; yy++) {
+          const base = yy * PAGE_W * 4;
+          const row = new Array(cols.length);
+          for (let c = 0; c < cols.length; c++) row[c] = getPaperAutoAlignLuma(data, base + cols[c] * 4);
+          lums[yy - t] = row;
+        }
+        const colMed = new Array(cols.length);
+        const tmp = new Array(rowsN);
+        for (let c = 0; c < cols.length; c++) {
+          for (let ri = 0; ri < rowsN; ri++) tmp[ri] = lums[ri][c];
+          tmp.sort(function(a, b2){ return a - b2; });
+          colMed[c] = tmp[Math.floor(rowsN / 2)];
+        }
+        const out = [];
+        for (let ri = 0; ri < rowsN; ri++) {
+          let dipSum = 0, cov = 0;
+          const rowPrev = lums[Math.max(0, ri - 1)];
+          const row = lums[ri];
+          const rowNext = lums[Math.min(rowsN - 1, ri + 1)];
+          for (let c = 0; c < cols.length; c++) {
+            // ±1-row window: an anti-aliased faint line spreads its ink over 2-3 rows, so per
+            // single row only part of the columns dip — the 3-row minimum catches the line core
+            // in every column, while text/logo columns are unaffected (already at their minimum).
+            const lum = Math.min(rowPrev[c], row[c], rowNext[c]);
+            const d = colMed[c] - lum;
+            if (d > 2.2) cov += 1;
+            if (d > 0) dipSum += d;
+          }
+          out.push({ y:t + ri, relDip:dipSum / cols.length, coverage:cov / cols.length });
+        }
+        return out;
+      }
       return {
         xDetailed:xDetailed,
         yDetailed:yDetailed,
@@ -7444,6 +7494,7 @@
         yLines:yDetailed.map(function(line){ return line.pos; }),
         medianLum:median,
         darkThreshold:Math.round(darkThreshold),
+        columnRelativeRowScan:columnRelativeRowScan,
         sampleHorizontalBand:sampleHorizontalBand,
         isDarkNear:isDarkNear,
         measureDarkSpan:measureDarkSpan,
@@ -8950,27 +9001,30 @@
       let splitY = segmentLines.filter(function(segment){
         return segment.pos > headerTop + 14 && segment.pos < headerBottom - 12 && Math.min(segment.end, headerRight) - Math.max(segment.start, headerLeft) > (headerRight - headerLeft) * 0.42;
       }).sort(function(a,b){ return Math.abs(a.pos - (headerTop + headerH * 0.42)) - Math.abs(b.pos - (headerTop + headerH * 0.42)); })[0];
-      if (!splitY && analysis && typeof analysis.findHorizontalSegments === 'function') {
-        // Faint caption separator (e.g. Madhouse's light grey print): the caption/value split line
-        // spans the whole header but is broken at every field border, so its longest RUN never
-        // reaches the big-minRun segment list above. Rescan the header band with a small minRun
-        // and accept a candidate by its overall SPAN across the header instead.
-        splitY = analysis.findHorizontalSegments({
-          left:Math.max(0, Math.round(headerLeft - 8)),
-          right:Math.min(PAGE_W - 1, Math.round(headerRight + 8)),
-          top:Math.round(headerTop + 14),
-          bottom:Math.round(headerBottom - 12),
-          minRun:70
-        }).filter(function(segment){
-          const span = Math.min(Number(segment.end || 0), headerRight) - Math.max(Number(segment.start || 0), headerLeft);
-          // caption strips live in the UPPER part of the header, and the value band that
-          // remains below the split must stay a usable height — this keeps the fallback from
-          // grabbing underline decorations near the header bottom (e.g. TOHO).
-          return segment.pos > headerTop + 14 &&
-            segment.pos < headerTop + headerH * 0.55 &&
-            (headerBottom - segment.pos) >= headerH * 0.38 &&
-            span > (headerRight - headerLeft) * 0.55;
-        }).sort(function(a,b){ return Math.abs(a.pos - (headerTop + headerH * 0.42)) - Math.abs(b.pos - (headerTop + headerH * 0.42)); })[0];
+      if (!splitY && analysis && typeof analysis.columnRelativeRowScan === 'function') {
+        // Faint caption separator (Madhouse): printed so light that not a single pixel crosses
+        // the global dark threshold. Column-relative scan: a solid separator dips slightly below
+        // each column's own background across MOST of the width (high coverage), while caption
+        // text or the corner logo dips deeply but only in its few columns (low coverage).
+        const scanTop = Math.round(headerTop + 12);
+        const scanBottom = Math.round(headerTop + headerH * 0.55);
+        const sx = Math.round(headerLeft + 8);
+        const ex = Math.round(headerRight - 8);
+        if (scanBottom > scanTop + 4 && ex > sx + 120) {
+          const rows = analysis.columnRelativeRowScan(sx, ex, scanTop, scanBottom, 3);
+          let bestRow = null;
+          for (let i = 0; i < rows.length; i++) {
+            const row = rows[i];
+            if (row.coverage < 0.55) continue;                       // solid line, not text/logo
+            if (row.relDip < 2.5) continue;
+            if ((headerBottom - row.y) < headerH * 0.38) continue;   // value band must stay usable
+            // COVERAGE separates a solid faint line from a deep-but-narrow logo/text row, so it
+            // ranks first; relDip only breaks ties between the line's own adjacent rows.
+            if (!bestRow || row.coverage > bestRow.coverage + 0.02 ||
+                (Math.abs(row.coverage - bestRow.coverage) <= 0.02 && row.relDip > bestRow.relDip)) bestRow = row;
+          }
+          if (bestRow) splitY = { pos:bestRow.y };
+        }
       }
       const splitYDetected = !!splitY;
       if (!splitY) splitY = { pos:upperY.filter(function(y){ return y > headerTop + 14 && y < headerBottom - 12; })[0] || Math.round(headerTop + headerH * 0.42) };
