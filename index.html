@@ -2572,7 +2572,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '806';
+    const APP_VERSION = '807';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -6714,15 +6714,22 @@
         }
         const diagnosticLayer = overlay.diagnosticLayer || null;
         if (diagnosticLayer && Array.isArray(diagnosticLayer.summary) && diagnosticLayer.summary.length) {
-          const baseX = labelBox ? labelBox.x : 42;
-          const baseY = labelBox ? Math.max(18, labelBox.y - 150) : 42;
-          diagnosticLayer.summary.slice(0, 12).forEach(function(line, index){
+          // Readable debug panel in a clear upper-page area: white background box + rows, so the
+          // grid-alignment numbers don't overlap the sheet title / grid.
+          const lines = diagnosticLayer.summary.slice(0, 14);
+          const panelX = 40;
+          const panelY = 40;
+          const rowH = 20;
+          const panelW = 520;
+          const panelH = 14 + lines.length * rowH;
+          group.appendChild(el('rect', { x:panelX - 8, y:panelY - 16, width:panelW, height:panelH, fill:'rgba(255,255,255,0.92)', stroke:'#0f766e', 'stroke-width':1, rx:6 }));
+          lines.forEach(function(line, index){
             group.appendChild(el('text', {
-              x:baseX,
-              y:baseY + index * 14,
+              x:panelX,
+              y:panelY + index * rowH,
               fill:'#0f766e',
-              'font-size':11,
-              'font-family':'Arial, Helvetica, sans-serif',
+              'font-size':13,
+              'font-family':'Consolas, monospace',
               'font-weight':'700'
             }, 'Diag: ' + line));
           });
@@ -10452,13 +10459,18 @@
       // double line at the label/grid boundary can be traced from a screenshot.
       if (bodyGrid) {
         const rH = Number(bodyGrid.rowH) || 1;
-        summary.push('bodyTop=' + Math.round(Number(bodyGrid.bodyTop) || 0));
-        summary.push('rawTop=' + Math.round(Number(bodyGrid.rawBodyTop) || 0) + ' anchTop=' + Math.round(Number(bodyGrid.anchoredTop) || 0) + ' anchOn=' + (bodyGrid.anchorApplied ? 1 : 0));
-        summary.push('bottom=' + Math.round(Number(bodyGrid.bodyBottom) || 0) + ' rowH=' + (Math.round(rH * 10) / 10));
-        const near = (Array.isArray(yLines) ? yLines : []).map(Number).filter(function(v){
-          return Number.isFinite(v) && Math.abs(v - (Number(bodyGrid.bodyTop) || 0)) <= rH * 2.2;
-        }).map(function(v){ return Math.round(v - (Number(bodyGrid.bodyTop) || 0)); });
-        summary.push('topLinesΔ=[' + near.join(',') + ']');
+        const top = Number(bodyGrid.bodyTop) || 0;
+        const bot = Number(bodyGrid.bodyBottom) || 0;
+        summary.push('bodyTop=' + Math.round(top) + ' rawTop=' + Math.round(Number(bodyGrid.rawBodyTop) || 0) + ' anchOn=' + (bodyGrid.anchorApplied ? 1 : 0));
+        summary.push('bottom=' + Math.round(bot) + ' rowH=' + (Math.round(rH * 100) / 100) + ' span/72=' + (Math.round((bot - top) / 72 * 100) / 100));
+        const nearTop = (Array.isArray(yLines) ? yLines : []).map(Number).filter(function(v){
+          return Number.isFinite(v) && v >= top - rH * 2.5 && v <= top + rH * 1.5;
+        }).map(function(v){ return Math.round((v - top) * 10) / 10; });
+        summary.push('topLinesΔ=[' + nearTop.join(',') + ']');
+        const nearBot = (Array.isArray(yLines) ? yLines : []).map(Number).filter(function(v){
+          return Number.isFinite(v) && v >= bot - rH * 1.5 && v <= bot + rH * 2.5;
+        }).map(function(v){ return Math.round((v - bot) * 10) / 10; });
+        summary.push('botLinesΔ=[' + nearBot.join(',') + ']');
       }
       return {
         summary:summary,
