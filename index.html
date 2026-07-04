@@ -2572,7 +2572,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '803';
+    const APP_VERSION = '804';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3556,8 +3556,6 @@
 
     const updateLogRecentDocs = {
       en: [
-        ['ver803', 'Paper Auto Align: anchor the grid from the bottom', ['When the cell-label / grid boundary is drawn as a double line, Auto Align used to take the UPPER line as the grid top, which drifted all 72 cells slightly. The grid is now anchored from the reliable bottom line — exactly 72 uniform cells above it — so the top lands on the lower boundary line and the cell spacing stays even from the bottom.']],
-        ['ver802', 'Paper Auto Align: cell-label row is one cell', ['When aligning a company paper, the CELL column-label band above the frame grid is now always exactly one grid cell tall. It used to stretch to two cells on papers with a taller section-title header (8bit, Science SARU, Kinema Citrus, Madhouse, TOHO, etc.), which pushed the label band down and misaligned the 72-frame grid. The label now snaps to the single cell directly above the grid.']],
         ['ver801', 'Length-edit Undo/Redo as icons', ['The Undo / Redo buttons in the Length Edit row are now icon-only ghost buttons, matching the memo toolbar. This also stops them from overflowing the card on narrow phones.']],
         ['ver800', 'Cleaner 原画 number circle & centering', ['The ring around a genga (cel) number is now always a true circle, even in a horizontally wide cell (it used to stretch into an ellipse). The number itself is centered by font metrics instead of dominant-baseline, so the enlarged digit (magnifier ON) no longer sits low — it stays centered the same way in every browser.']],
         ['ver799', 'Sidebar toggle as a clean divider tab', ['The collapse toggle no longer sits on top of the sidebar scrollbar. It is now a tab attached to the right side of the sidebar/main divider, protruding into the main panel — clear of the scrollbar and reading as one piece with the border line. When the sidebar is collapsed the same tab attaches to the screen\'s left edge.']],
@@ -3681,8 +3679,6 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
-        ['ver803', '用紙自動整列：本文を下から揃える', ['Cellラベルと本文の境界が二重線で引かれている用紙で、自動整列が上側の線を本文の先頭として採用し、72マス全体がわずかにずれていました。信頼できる一番下の線を基準に、そこからちょうど72マス分を等間隔で上へ取るようにしたので、先頭は下側の境界線にそろい、マス間隔が下から均一になります。']],
-        ['ver802', '用紙自動整列：Cellラベル行を1マスに', ['会社指定用紙に合わせるとき、フレーム罫の上にあるCell列ラベルの帯を、常にちょうど1マス分の高さにしました。これまでは見出し行が高い用紙（8bit・Science SARU・Kinema Citrus・Madhouse・TOHOなど）でラベル帯が2マス分に伸び、72マスの本文がずれる原因になっていました。ラベルは本文のすぐ上の1マスにそろいます。']],
         ['ver801', '尺編集の取り消し/やり直しをアイコンに', ['尺編集の行にある「取り消し」「やり直し」をメモツールバーと同じアイコンのみのゴーストボタンにしました。狭いスマホでボタンがカードからはみ出すのも解消します。']],
         ['ver800', '原画番号の丸と中央揃えをきれいに', ['原画番号を囲む丸が、横に長いセルでも常にきれいな正円になるようにしました（以前は楕円に伸びていました）。数字自体は dominant-baseline ではなくフォントのメトリクスで中央に合わせるようにしたので、拡大表示（虫めがねON）の数字が下に寄って見えることがなくなり、どのブラウザでも同じように中央に来ます。']],
         ['ver799', '折りたたみボタンを境界線のタブに', ['折りたたみボタンがサイドバーのスクロールバーに重ならないようにしました。サイドバーと本体の境界線の右側に付くタブになり、本体側へ少し出っ張る形で、スクロールバーを避けつつ境界線と一体に見えます。サイドバーを畳んだときは、同じタブが画面の左端に付きます。']],
@@ -3806,8 +3802,6 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
-        ['ver803', '용지 자동정렬: 본문을 아래에서부터 정렬', ['Cell 라벨과 본문 경계가 이중선으로 그려진 용지에서, 자동정렬이 위쪽 선을 본문 시작으로 채택해 72칸 전체가 살짝 어긋났습니다. 이제 신뢰할 수 있는 맨 아래 선을 기준으로 정확히 72칸을 등간격으로 위로 잡아, 시작점이 아래쪽 경계선에 맞고 칸 간격이 아래에서부터 일정해집니다.']],
-        ['ver802', '용지 자동정렬: Cell 라벨 행을 1칸으로', ['회사 지정용지에 맞출 때, 프레임 그리드 위의 Cell 열 라벨 띠를 항상 정확히 1칸 높이로 맞췄습니다. 이전에는 섹션 제목 헤더가 높은 용지(8bit·Science SARU·Kinema Citrus·Madhouse·TOHO 등)에서 라벨 띠가 2칸으로 늘어나, 72칸 본문이 어긋나는 원인이었습니다. 이제 라벨은 본문 바로 위 1칸에 정렬됩니다.']],
         ['ver801', '尺편집 되돌리기/다시실행을 아이콘으로', ['尺編集(길이편집) 행의 「取り消し」「やり直し」를 메모 툴바와 동일한 아이콘 전용 고스트 버튼으로 바꿨습니다. 좁은 폰에서 버튼이 카드 밖으로 삐져나오던 것도 해결됩니다.']],
         ['ver800', '원화 번호 원·중앙정렬 정리', ['원화 번호를 감싸는 원이 셀칸이 가로로 길어도 항상 깔끔한 정원이 되도록 했습니다(이전엔 타원으로 늘어났음). 숫자 자체도 dominant-baseline 대신 폰트 메트릭으로 중앙 정렬하도록 바꿔, 확대(확대경 ON) 시 숫자가 아래로 쏠려 보이던 게 없어지고 어떤 브라우저에서도 동일하게 중앙에 옵니다.']],
         ['ver799', '접기 버튼을 경계선 탭으로', ['접기 버튼이 사이드바 스크롤바 위에 겹치지 않도록 했습니다. 사이드바와 본체 사이 경계선 오른쪽에 붙는 탭이 되어 본체 쪽으로 살짝 나오는 형태로, 스크롤바를 비키면서 경계선과 일체로 보입니다. 사이드바를 접으면 같은 탭이 화면 왼쪽 끝에 붙습니다.']],
@@ -3931,8 +3925,6 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
-        ['ver803', '纸张自动对齐：正文从底部对齐', ['当 Cell 标签与正文的分界以双线绘制时，自动对齐会把上方那条线当作正文顶部，导致 72 格整体略有偏移。现在以可靠的最底部线为基准，向上取恰好 72 个等距格，使顶部对齐到下方分界线，格间距从底部起保持均匀。']],
-        ['ver802', '纸张自动对齐：Cell 标签行为一格', ['对齐公司指定纸张时，帧格上方的 Cell 列标签带现在始终恰好为一格高。此前在标题行较高的纸张（8bit、Science SARU、Kinema Citrus、Madhouse、TOHO 等）上，标签带会拉伸为两格，导致 72 格正文错位。现在标签对齐到正文正上方的一格。']],
         ['ver801', '时长编辑的撤销/重做改为图标', ['时长编辑行的「撤销」「重做」改为与备注工具栏一致的纯图标幽灵按钮。也解决了窄屏手机上按钮溢出卡片的问题。']],
         ['ver800', '原画编号圆圈与居中优化', ['原画编号外的圆圈现在即使单元格横向很宽也始终是标准正圆（此前会拉成椭圆）。数字本身改用字体度量居中，而非 dominant-baseline，因此放大（放大镜开启）时数字不再偏下，在任何浏览器中都同样居中。']],
         ['ver799', '折叠按钮改为分界线标签', ['折叠按钮不再压在侧栏滚动条上。现改为附着在侧栏与主区分界线右侧的标签，向主区略微凸出，既避开滚动条又与分界线融为一体。折叠侧栏时，同一标签会贴到屏幕左缘。']],
@@ -7458,17 +7450,22 @@
       let best = null;
       const count = PAPER_AUTO_ALIGN_TARGET_BODY_LINES;
       function inferLabelTopForBodyGrid(startIndex, bodyTop, rowH) {
-        // The cell column-label row is a SINGLE grid cell directly above the body. Clamp the
-        // label band to ~one row height: use the detected grid line above the body only when
-        // it really is about one cell up, otherwise snap to exactly one row. This prevents a
-        // taller section-title header (or a missing label line) from stretching the label band
-        // to two cells, which misaligned it on TOHO / Madhouse / etc. whose label row is 1 cell.
-        const oneCellTop = Math.max(0, bodyTop - rowH);
-        const prevLine = Number(lines[startIndex - 1]);
-        if (Number.isFinite(prevLine) && Math.abs((bodyTop - prevLine) - rowH) <= Math.max(6, rowH * 0.45)) {
-          return Math.max(0, Math.min(bodyTop - 8, prevLine));
+        const fallback = Math.max(0, bodyTop - rowH);
+        let labelTop = Number.isFinite(Number(lines[startIndex - 1])) ? Number(lines[startIndex - 1]) : fallback;
+        const secondLabelTop = Number(lines[startIndex - 2]);
+        if (Number.isFinite(secondLabelTop)) {
+          const labelGap = labelTop - secondLabelTop;
+          const labelH = bodyTop - secondLabelTop;
+          if (
+            labelGap >= Math.max(8, rowH * 0.38) &&
+            labelGap <= Math.max(42, rowH * 1.45) &&
+            labelH >= Math.max(24, rowH * 1.25) &&
+            labelH <= Math.max(82, rowH * 2.75)
+          ) {
+            labelTop = secondLabelTop;
+          }
         }
-        return Math.max(0, Math.min(bodyTop - 8, oneCellTop));
+        return Math.max(0, Math.min(bodyTop - 8, labelTop));
       }
       for (let startIndex = 0; startIndex + count <= lines.length; startIndex++) {
         const subset = lines.slice(startIndex, startIndex + count);
@@ -7479,15 +7476,8 @@
         const tolerance = Math.max(8, rowH * 0.38);
         const valid = diffs.filter(function(diff){ return Math.abs(diff - rowH) <= tolerance; }).length;
         const validRatio = valid / Math.max(1, diffs.length);
-        const rawBodyTop = subset[0];
+        const bodyTop = subset[0];
         const bodyBottom = subset[subset.length - 1];
-        // Anchor the grid from the reliable BOTTOM line: exactly (count-1) uniform cells above
-        // it. When the cell-label / grid boundary is a double line, the topmost detected line
-        // can be the UPPER one, which would drift all 72 cells (spacing computed top-down).
-        // Snapping the top to bottom - cells*rowH lands it on the lower boundary line and keeps
-        // the spacing uniform from the bottom. Guard: only correct sub-cell drift.
-        const anchoredTop = bodyBottom - (count - 1) * rowH;
-        const bodyTop = Math.abs(anchoredTop - rawBodyTop) < rowH ? anchoredTop : rawBodyTop;
         if (validRatio < 0.88) continue;
         if (bodyTop < 260 || bodyTop > PAGE_H * 0.70) continue;
         if (bodyBottom < PAGE_H * 0.75) continue;
