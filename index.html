@@ -2572,7 +2572,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '812';
+    const APP_VERSION = '813';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3556,6 +3556,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver813', 'Auto Align: count 72 cells from the bottom; Madhouse header captions excluded', ['The 72-cell grid top is now resolved by walking the detected lines UP from the reliable bottom line, one cell at a time (a missing faint interior line counts as two cells). This structurally removes the case where the cell-label row got swallowed as the first frame cell — verified on Madhouse, whose label row previously shifted the whole grid. Also, on papers whose caption/value split line is printed faint and broken (Madhouse), the header caption row (話数/タイトル/カット…) is now excluded from the value boxes, like it already was on Kinema Citrus. All 14 bundled company papers verified unchanged except the two Madhouse fixes.']],
         ['ver811', 'Paper Auto Align: cell-label row is one cell', ['Restored the fix that keeps the CELL column-label band exactly one grid cell tall when aligning a company paper (it could stretch to two cells on papers with a taller section-title header, pushing the label down). Combined with the ver809 grid-top snap; the 72-cell grid now excludes the header/label rows across the company templates (A-1, Madhouse, 8bit, Science SARU, Kinema Citrus, TOHO, etc.).']],
         ['ver809', 'Paper Auto Align: snap the grid top to the lower double-line', ['When the boundary just below the cell label is a double line, Auto Align caught the UPPER line as the grid top, which made the first cell oversized and drifted the 72 cells. It now detects the oversized first cell and snaps the top down to one even cell above the second line — the LOWER boundary line — so the cells count evenly.']],
         ['ver801', 'Length-edit Undo/Redo as icons', ['The Undo / Redo buttons in the Length Edit row are now icon-only ghost buttons, matching the memo toolbar. This also stops them from overflowing the card on narrow phones.']],
@@ -3681,6 +3682,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver813', '自動整列：72マスを下から数える／MADHOUSEの見出し行を除外', ['72マス本文の先頭を、信頼できる一番下の線から検出線を1マスずつ上へたどって決めるようにしました（薄くて検出できなかった中間線は2マス分として数えます）。これにより、Cellラベル行が最初のフレームマスとして飲み込まれるケースが構造的になくなります（MADHOUSEで本文全体がずれていた問題を実測で確認・修正）。また、見出し（話数/タイトル/カット…）と入力欄の区切り線が薄く途切れて印刷されている用紙（MADHOUSE）でも、Kinema Citrusと同様に見出し行をヘッダー値ボックスから除外するようにしました。同梱14社の用紙で、MADHOUSEの2件以外は変化がないことを確認済みです。']],
         ['ver811', '用紙自動整列：Cellラベル行を1マスに', ['会社指定用紙に合わせるとき、Cell列ラベルの帯を常にちょうど1マス分の高さに保つ修正を戻しました（見出し行が高い用紙で2マス分に伸び、ラベルが下がる問題）。ver809の先頭スナップと合わせています。']],
         ['ver809', '用紙自動整列：本文先頭を下側の二重線にそろえる', ['Cellラベルのすぐ下の境界が二重線の用紙で、自動整列が上側の線を本文の先頭として拾い、最初のマスだけ大きくなって72マスがずれていました。最初のマスが大きすぎることを検出し、先頭を2本目の線から1マス上（＝下側の境界線）へスナップするようにしたので、マスが均等にそろいます。']],
         ['ver801', '尺編集の取り消し/やり直しをアイコンに', ['尺編集の行にある「取り消し」「やり直し」をメモツールバーと同じアイコンのみのゴーストボタンにしました。狭いスマホでボタンがカードからはみ出すのも解消します。']],
@@ -3806,6 +3808,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver813', '자동정렬: 72칸을 아래에서부터 세기 / MADHOUSE 설명행 배제', ['72칸 본문의 시작점을, 신뢰할 수 있는 맨 아래 선에서 감지선을 한 칸씩 위로 따라가며 결정하도록 바꿨습니다(옅어서 감지 못 한 중간 선은 2칸으로 계산). 이로써 셀 라벨 행이 첫 프레임 칸으로 먹히는 경우가 구조적으로 사라집니다(MADHOUSE에서 본문 전체가 밀리던 문제를 실측 확인·수정). 또한 설명행(話数/タイトル/カット…)과 입력칸의 구분선이 옅고 끊겨 인쇄된 용지(MADHOUSE)에서도 Kinema Citrus처럼 설명행을 헤더 값 박스에서 배제합니다. 동봉된 14개사 용지에서 MADHOUSE 2건 외에는 변화가 없음을 확인했습니다.']],
         ['ver811', '용지 자동정렬: Cell 라벨 행을 1칸으로', ['회사 지정용지에 맞출 때 Cell 열 라벨 띠를 항상 정확히 1칸 높이로 유지하는 수정을 복원했습니다(섹션 제목 헤더가 높은 용지에서 2칸으로 늘어나 라벨이 내려가던 문제). ver809의 시작점 스냅과 함께 적용됩니다.']],
         ['ver809', '용지 자동정렬: 본문 시작을 아래쪽 이중선에 스냅', ['Cell 라벨 바로 아래 경계가 이중선인 용지에서, 자동정렬이 위쪽 선을 본문 시작으로 잡아 첫 칸만 커지고 72칸이 어긋났습니다. 이제 첫 칸이 유독 큰 걸 감지해, 시작점을 두 번째 선에서 한 칸 위(=아래쪽 경계선)로 스냅하므로 칸이 균일하게 정렬됩니다.']],
         ['ver801', '尺편집 되돌리기/다시실행을 아이콘으로', ['尺編集(길이편집) 행의 「取り消し」「やり直し」를 메모 툴바와 동일한 아이콘 전용 고스트 버튼으로 바꿨습니다. 좁은 폰에서 버튼이 카드 밖으로 삐져나오던 것도 해결됩니다.']],
@@ -3931,6 +3934,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver813', '自动对齐：从底部数 72 格 / 排除 MADHOUSE 标题行', ['72 格正文的顶部改为从可靠的最底部线沿检测线逐格向上推算（过淡未检出的中间线按两格计）。这从结构上消除了 Cell 标签行被当作第一格的情况（在 MADHOUSE 上实测确认并修复了整片正文偏移）。另外，在标题行（話数/タイトル/カット…）与输入格的分隔线印得很淡且断续的纸张（MADHOUSE）上，也会像 Kinema Citrus 一样把标题行从页眉值框中排除。已确认捆绑的 14 家公司纸张中，除 MADHOUSE 的两处修正外均无变化。']],
         ['ver811', '纸张自动对齐：Cell 标签行为一格', ['恢复了对齐公司指定纸张时把 Cell 列标签带始终保持为一格高的修正（标题行较高的纸张上它会拉伸为两格，使标签下移）。与 ver809 的顶部吸附一同生效。']],
         ['ver809', '纸张自动对齐：正文顶部对齐到下方双线', ['当 Cell 标签正下方的分界是双线时，自动对齐会把上方那条线当作正文顶部，使第一格偏大、72 格整体错位。现在会检测到过大的第一格，并把顶部下移到第二条线上方一个等距格（即下方分界线），使各格均匀对齐。']],
         ['ver801', '时长编辑的撤销/重做改为图标', ['时长编辑行的「撤销」「重做」改为与备注工具栏一致的纯图标幽灵按钮。也解决了窄屏手机上按钮溢出卡片的问题。']],
@@ -7508,6 +7512,58 @@
         }
       }
       if (!best) throw new Error('ACTION/대사/CELL/카메라 영역에 필요한 72칸 본문을 인식하지 못했습니다. 4구간 인식범위는 반드시 밑에서부터 73개 가로선으로 이루어진 72칸이어야 합니다. fallback 또는 추정 body는 사용하지 않습니다.');
+      // Bottom-walk resolver: count the 72 cells UP from the reliable bottom line, following the
+      // DETECTED lines step by step (≈1×rowH = one cell, ≈2×rowH = one missed light line = two
+      // cells, tiny gap = double-line twin → skip). When the paper loses one faint interior line
+      // (canvas re-encode), the 73-line window can only exist by swallowing the cell-label line at
+      // the top — the walk is immune to that, because it never consults lines above the 72nd cell.
+      // Following real lines (not bottom + 72*rowH extrapolation) avoids cumulative rowH error.
+      (function(){
+        const all = lines;
+        const bottomIdx = all.lastIndexOf(best.bodyBottom);
+        if (bottomIdx < 2) return;
+        const rowHref = best.rowH;
+        let cur = best.bodyBottom;
+        let idx = bottomIdx;
+        let cells = 0;
+        let doubles = 0;
+        let walkTop = null;
+        const target = PAPER_AUTO_ALIGN_TARGET_BODY_LINES - 1; // 72 cells
+        while (cells < target) {
+          if (idx <= 0) { walkTop = null; break; }
+          const gap = cur - all[idx - 1];
+          const ratio = gap / rowHref;
+          if (ratio < 0.55) { idx -= 1; continue; }               // double-line twin / noise: skip
+          if (ratio <= 1.45) { cells += 1; cur = all[idx - 1]; idx -= 1; continue; }
+          if (ratio <= 2.45) {                                     // one light line missing
+            doubles += 1;
+            if (doubles > 2) { walkTop = null; break; }
+            if (cells + 2 > target) {                              // missing line IS the grid top
+              cells = target;
+              cur = cur - rowHref;                                 // virtual top, one cell up
+              break;
+            }
+            cells += 2; cur = all[idx - 1]; idx -= 1; continue;
+          }
+          walkTop = null; break;                                   // irregular gap: walk failed
+        }
+        if (cells === target) walkTop = cur;
+        if (walkTop == null) return;
+        // snap a virtual top to a real detected line when one sits right there
+        for (let k = 0; k < all.length; k++) {
+          if (Math.abs(all[k] - walkTop) <= rowHref * 0.35) { walkTop = all[k]; break; }
+        }
+        if (Math.abs(walkTop - best.bodyTop) > rowHref * 0.5) {
+          best.bodyTop = walkTop;
+          // label band = the single cell above the corrected top
+          let lt = walkTop - rowHref;
+          for (let k = 0; k < all.length; k++) {
+            const d = walkTop - all[k];
+            if (d >= rowHref * 0.55 && d <= rowHref * 1.45) { lt = all[k]; break; }
+          }
+          best.labelTop = Math.max(0, Math.min(best.bodyTop - 8, lt));
+        }
+      })();
       return best;
     }
 
@@ -8894,6 +8950,28 @@
       let splitY = segmentLines.filter(function(segment){
         return segment.pos > headerTop + 14 && segment.pos < headerBottom - 12 && Math.min(segment.end, headerRight) - Math.max(segment.start, headerLeft) > (headerRight - headerLeft) * 0.42;
       }).sort(function(a,b){ return Math.abs(a.pos - (headerTop + headerH * 0.42)) - Math.abs(b.pos - (headerTop + headerH * 0.42)); })[0];
+      if (!splitY && analysis && typeof analysis.findHorizontalSegments === 'function') {
+        // Faint caption separator (e.g. Madhouse's light grey print): the caption/value split line
+        // spans the whole header but is broken at every field border, so its longest RUN never
+        // reaches the big-minRun segment list above. Rescan the header band with a small minRun
+        // and accept a candidate by its overall SPAN across the header instead.
+        splitY = analysis.findHorizontalSegments({
+          left:Math.max(0, Math.round(headerLeft - 8)),
+          right:Math.min(PAGE_W - 1, Math.round(headerRight + 8)),
+          top:Math.round(headerTop + 14),
+          bottom:Math.round(headerBottom - 12),
+          minRun:70
+        }).filter(function(segment){
+          const span = Math.min(Number(segment.end || 0), headerRight) - Math.max(Number(segment.start || 0), headerLeft);
+          // caption strips live in the UPPER part of the header, and the value band that
+          // remains below the split must stay a usable height — this keeps the fallback from
+          // grabbing underline decorations near the header bottom (e.g. TOHO).
+          return segment.pos > headerTop + 14 &&
+            segment.pos < headerTop + headerH * 0.55 &&
+            (headerBottom - segment.pos) >= headerH * 0.38 &&
+            span > (headerRight - headerLeft) * 0.55;
+        }).sort(function(a,b){ return Math.abs(a.pos - (headerTop + headerH * 0.42)) - Math.abs(b.pos - (headerTop + headerH * 0.42)); })[0];
+      }
       const splitYDetected = !!splitY;
       if (!splitY) splitY = { pos:upperY.filter(function(y){ return y > headerTop + 14 && y < headerBottom - 12; })[0] || Math.round(headerTop + headerH * 0.42) };
       function getHeaderJointMinArm() {
