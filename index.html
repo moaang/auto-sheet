@@ -2559,7 +2559,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '799';
+    const APP_VERSION = '800';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3543,6 +3543,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver800', 'Cleaner 原画 number circle & centering', ['The ring around a genga (cel) number is now always a true circle, even in a horizontally wide cell (it used to stretch into an ellipse). The number itself is centered by font metrics instead of dominant-baseline, so the enlarged digit (magnifier ON) no longer sits low — it stays centered the same way in every browser.']],
         ['ver799', 'Sidebar toggle as a clean divider tab', ['The collapse toggle no longer sits on top of the sidebar scrollbar. It is now a tab attached to the right side of the sidebar/main divider, protruding into the main panel — clear of the scrollbar and reading as one piece with the border line. When the sidebar is collapsed the same tab attaches to the screen\'s left edge.']],
         ['ver798', 'Fix broken cell-label row on narrow widths', ['The "Show cell label output" row (checkbox + Cell columns + In-between columns) was cramming all three onto one line, so on phones the label collapsed into a narrow overlapping column. It now lays out predictably at every width: the checkbox label takes its own line, and the two number controls sit on the line below (side by side when there\'s room, stacked on phones).']],
         ['ver797', 'Redesign corrections from screenshots', ['Camera line pickers are small again at each line\'s right edge (a global select rule had been stretching them full-width). Toolbar icons (出力 arrow etc.) now render — the sheet-page white-background rule was silently painting over every UI icon. The preview title shows the page resolution (1753 × 2480). The language control is a quiet globe + text. The sidebar toggle is no longer a floating circle: it\'s a slim handle docked on the sidebar/main divider (a left-edge tab when collapsed). The pen/eraser icons beside the size selects are now clickable tool selectors, replacing the separate 消しゴム button.']],
@@ -3664,6 +3665,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver800', '原画番号の丸と中央揃えをきれいに', ['原画番号を囲む丸が、横に長いセルでも常にきれいな正円になるようにしました（以前は楕円に伸びていました）。数字自体は dominant-baseline ではなくフォントのメトリクスで中央に合わせるようにしたので、拡大表示（虫めがねON）の数字が下に寄って見えることがなくなり、どのブラウザでも同じように中央に来ます。']],
         ['ver799', '折りたたみボタンを境界線のタブに', ['折りたたみボタンがサイドバーのスクロールバーに重ならないようにしました。サイドバーと本体の境界線の右側に付くタブになり、本体側へ少し出っ張る形で、スクロールバーを避けつつ境界線と一体に見えます。サイドバーを畳んだときは、同じタブが画面の左端に付きます。']],
         ['ver798', '狭い幅でCellラベル行の崩れを修正', ['「Cellラベル出力を表示」の行（チェックボックス＋Cell列数＋動画列数）が3つを1行に詰め込もうとして、スマホではラベルが細い列に折り返して重なっていました。どの幅でも安定して並ぶようにし、チェックボックスのラベルは自分の行に、2つの数値入力はその下の行（余裕があれば横並び、スマホでは縦積み）に配置しました。']],
         ['ver797', 'スクリーンショット指摘の修正', ['カメラ欄の行ごとの選択UIが再び各行の右端に小さく表示されるようになりました（全体のselectルールが横いっぱいに引き伸ばしていました）。出力ボタンなどのツールバーアイコンが正しく描画されます（シート描画用の白背景ルールがUIアイコンを塗りつぶしていました）。プレビュー見出しの隣にページ解像度（1753 × 2480）を表示。言語設定は地球アイコン＋文字の控えめな表示に。左の折りたたみボタンは浮いた丸ではなく、サイドバーと本体の境界線にドッキングした細いハンドルになりました（折りたたみ時は左端のタブ）。ペン/消しゴムのサイズ選択横のアイコンはクリックでそのツールを選択でき、別置きの消しゴムボタンを置き換えました。']],
@@ -3785,6 +3787,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver800', '원화 번호 원·중앙정렬 정리', ['원화 번호를 감싸는 원이 셀칸이 가로로 길어도 항상 깔끔한 정원이 되도록 했습니다(이전엔 타원으로 늘어났음). 숫자 자체도 dominant-baseline 대신 폰트 메트릭으로 중앙 정렬하도록 바꿔, 확대(확대경 ON) 시 숫자가 아래로 쏠려 보이던 게 없어지고 어떤 브라우저에서도 동일하게 중앙에 옵니다.']],
         ['ver799', '접기 버튼을 경계선 탭으로', ['접기 버튼이 사이드바 스크롤바 위에 겹치지 않도록 했습니다. 사이드바와 본체 사이 경계선 오른쪽에 붙는 탭이 되어 본체 쪽으로 살짝 나오는 형태로, 스크롤바를 비키면서 경계선과 일체로 보입니다. 사이드바를 접으면 같은 탭이 화면 왼쪽 끝에 붙습니다.']],
         ['ver798', '좁은 폭에서 Cell 라벨 행 깨짐 수정', ['「Cellラベル出力を表示」 행(체크박스 + Cell列数 + 動画列数)이 셋을 한 줄에 욱여넣으려다, 폰에서 라벨이 좁은 세로 열로 접히며 겹쳤습니다. 어떤 폭에서도 안정적으로 배치되도록, 체크박스 라벨은 자기 줄에, 두 숫자 입력은 아래 줄(공간 있으면 나란히, 폰에서는 세로로)로 두었습니다.']],
         ['ver797', '스크린샷 지적사항 수정', ['카메라란 줄별 선택탭이 다시 각 줄 오른쪽에 작게 표시됩니다(전역 select 규칙이 가로로 늘리고 있었음). 出力 등 툴바 아이콘이 제대로 그려집니다(시트 렌더용 흰 배경 규칙이 UI 아이콘을 덮고 있었음). 프리뷰 제목 옆에 페이지 해상도(1753 × 2480) 표시. 언어 설정은 지구본 아이콘+텍스트의 조용한 형태로. 왼쪽 접기 버튼은 떠 있는 원 대신 사이드바 경계선에 도킹된 얇은 핸들이 됐습니다(접으면 좌측 엣지 탭). 펜/지우개 크기 선택 옆 아이콘을 클릭하면 해당 툴이 선택되며, 별도의 消しゴム 버튼을 대체합니다.']],
@@ -3906,6 +3909,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver800', '原画编号圆圈与居中优化', ['原画编号外的圆圈现在即使单元格横向很宽也始终是标准正圆（此前会拉成椭圆）。数字本身改用字体度量居中，而非 dominant-baseline，因此放大（放大镜开启）时数字不再偏下，在任何浏览器中都同样居中。']],
         ['ver799', '折叠按钮改为分界线标签', ['折叠按钮不再压在侧栏滚动条上。现改为附着在侧栏与主区分界线右侧的标签，向主区略微凸出，既避开滚动条又与分界线融为一体。折叠侧栏时，同一标签会贴到屏幕左缘。']],
         ['ver798', '修复窄屏下 Cell 标签行错位', ['「Cellラベル出力を表示」行（复选框 + Cell列数 + 動画列数）试图把三者塞进一行，在手机上标签折成很窄的一列并互相重叠。现改为在任意宽度下都稳定排布：复选框标签独占一行，两个数字输入放在下一行（有空间时并排，手机上竖排）。']],
         ['ver797', '按截图反馈修正', ['摄影栏逐行选择器重新以小尺寸显示在每行右端（全局 select 规则曾把它拉伸至全宽）。出力等工具栏图标现已正常渲染（表格页的白底规则曾覆盖所有 UI 图标）。预览标题旁显示页面分辨率（1753 × 2480）。语言设置改为地球图标＋文字的低调样式。左侧折叠按钮不再是悬浮圆形，而是停靠在侧栏分界线上的细长把手（折叠时变为左缘小标签）。笔/橡皮尺寸选择旁的图标可点击选择对应工具，取代了独立的橡皮按钮。']],
@@ -11090,7 +11094,12 @@
       }
       const cx = (x1 + x2) / 2;
       const cy = (y1 + y2) / 2;
-      if (kind === 'circle') appendSvgNode(el('ellipse', { cx:cx, cy:cy, rx:Math.min((x2-x1)*0.42,14 * markerScale), ry:Math.min((y2-y1)*0.42,12 * markerScale), fill:'none', stroke:'#111', 'stroke-width':cellOutputStroke(1.1), 'pointer-events':'none' }));
+      if (kind === 'circle') {
+        // Single radius (min of both half-extents) so the 原画 number ring stays a clean
+        // circle even in a wide cell, instead of stretching into an ellipse.
+        const r = Math.min((x2 - x1) * 0.42, (y2 - y1) * 0.42, 13 * markerScale);
+        appendSvgNode(el('circle', { cx:cx, cy:cy, r:r, fill:'none', stroke:'#111', 'stroke-width':cellOutputStroke(1.1), 'pointer-events':'none' }));
+      }
       if (kind === 'triangle') {
         const points = cx + ',' + (y1 + markerPad) + ' ' + (x2 - markerPad) + ',' + (y2 - markerPad) + ' ' + (x1 + markerPad) + ',' + (y2 - markerPad);
         appendSvgNode(el('polygon', { points:points, fill:'none', stroke:'#111', 'stroke-width':cellOutputStroke(1.1), 'pointer-events':'none' }));
@@ -16436,9 +16445,12 @@
               }
               if (seg.label) {
                 const labelEditConfig = { get:function(){ return seg.label || ''; }, set:function(v){ updateCommandSegmentLabelByUid(entry.uid, seg.from, v); } };
-                const labelNode = text(getCellTextX(x1, x2), (y1 + y2) / 2, seg.label, cellOutputSize(12), getCellTextAnchor(), '700', '#111');
-                // Digits sit slightly high with dominant-baseline:middle; 'central' centers them in the ○ marker.
-                labelNode.setAttribute('dominant-baseline', 'central');
+                // Center the digit by font metrics (baseline sits cap-height/2 below the cell
+                // center) rather than dominant-baseline:central, which renders at a slightly
+                // different height across browsers (Safari sat the enlarged digit low).
+                const numSize = cellOutputSize(12);
+                const labelNode = text(getCellTextX(x1, x2), (y1 + y2) / 2 + numSize * 0.33, seg.label, numSize, getCellTextAnchor(), '700', '#111');
+                labelNode.setAttribute('dominant-baseline', 'alphabetic');
                 labelNode.style.cursor = 'pointer';
                 markCellFrameHit(labelNode);
                 prepareTouchDragHit(labelNode);
