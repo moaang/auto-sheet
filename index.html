@@ -506,6 +506,39 @@
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-size: 11px;
     }
+    /* Quick-guide beginner layout: big numbered steps, one tip box, bold key words. */
+    .manual-step {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 14px 0 6px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .manual-content .manual-step:first-child { margin-top: 0; }
+    .manual-step-no {
+      flex: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--ink-active);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .manual-content strong { font-weight: 800; }
+    .manual-tip {
+      margin-top: 12px;
+      padding: 8px 10px;
+      border: 1px solid var(--soft);
+      border-radius: var(--r-ctl);
+      background: #f4f6f4;
+      font-size: 11.5px;
+      line-height: 1.6;
+    }
 
     .shortcut-card .manual-summary-hint, #shortcutSummaryHint { display: none; }
     .shortcut-content {
@@ -2632,7 +2665,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '823';
+    const APP_VERSION = '824';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3618,6 +3651,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver824', 'Beginner-friendly Quick Guide; support button', ['The Quick Guide was rewritten from scratch as a plain 3-step walkthrough — put content in, fix it on the sheet, save — with numbered badges, bold key actions, and a single tip about company paper. The jargon-heavy command/edit reference is gone; every format now shows one concrete example instead. Also added a quiet "応援する" (support) button in the bottom-left corner linking to Ko-fi; Auto Sheet stays free either way.']],
         ['ver823', 'セリフシート pinned to the sheet; sheet can no longer leave the pane', ['The セリフシート side button is now pinned to the sheet itself, sitting at the top-left of the cell grid and following the sheet through panning and zooming. When the grid\'s top-left would leave the screen it keeps following horizontally but its vertical position clamps — never higher than just below the memo bar (so it stays clickable) and never below the pane. Panning limits were also tightened from "a sliver must stay visible" to a proper contain-or-cover rule: when the sheet fits in the pane it moves freely inside it but cannot exit through any edge, and when it is zoomed in larger it must keep covering the pane, so no blank gap ever opens on the left, top, right or bottom.']],
         ['ver822', 'Free canvas: no scrollbars, controls float individually', ['The preview is now a free canvas: scrollbars are gone, and the sheet moves by dragging (Space / middle button / touch), the wheel (which now pans instead of scrolling), and Ctrl+wheel zoom — the only limit is that the sheet can never leave the screen entirely. Zooming out no longer snaps the sheet to the left; it stays where you put it, and 100% resets to the home position. The toolbar row lost its background bar: each control group (undo/redo, 用紙設定, page nav, export) floats independently with its own shadow in the same position, and the シートプレビュー title is just fixed floating text.']],
         ['ver821', 'Full-pane canvas with floating toolbars; space / middle-click pan', ['The right pane is now entirely the preview canvas: the toolbar rows (title, undo/redo, 用紙設定, page nav, export, memo tools) keep their positions but float over the canvas as shadowed bars, and the sheet slides beneath them when you scroll. Navigation grew up: hold Space and drag to pan anywhere (Space no longer scrolls the page or triggers a focused button; it still types normally inside text fields), drag with the middle mouse button to pan (the browser autoscroll widget is suppressed), and Ctrl+wheel zooms toward the cursor. Plain wheel scrolling is unchanged. On narrow screens the bars stay in the normal stacked layout.']],
@@ -3754,6 +3788,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver824', '簡単説明書を初心者向けに全面書き直し・応援ボタン追加', ['簡単説明書を「入れる → 直す → 保存する」の3ステップ構成に全面リニューアルしました。番号バッジと太字で操作がひと目で分かり、形式の羅列は具体例1つずつに置き換えています。会社用紙のヒントも1行にまとめました。また、画面左下にさりげなく「応援する」ボタン（Ko-fiリンク）を設置。Auto Sheetはこれまで通り無料です。']],
         ['ver823', 'セリフシートをシートに固定・シートがペイン外へ出ないように', ['セリフシートのサイドボタンをシート本体に固定しました。セル欄の左上に付き、パン・ズームに合わせてシートと一緒に動きます。セル欄の左上が画面外へ出そうなときは、横方向は追従したまま縦位置だけが制限されます——上はメモバーのすぐ下まで（クリックできなくならないように）、下はペインの下端までです。移動制限も「一部が見えていればよい」から本来のcontain-or-cover方式に強化：シートがペインに収まるときはその中で自由に動きますがどの辺からも外へ出られず、拡大してペインより大きいときはペインを覆い続けるため、左・上・右・下のどこにも空白が生じません。']],
         ['ver822', 'フリーキャンバス化：スクロールバー廃止・コントロール個別フローティング', ['プレビューがフリーキャンバスになりました。スクロールバーは廃止され、シートはドラッグ（Space／中ボタン／タッチ）、ホイール（スクロールの代わりにパンします）、Ctrl+ホイールのズームで動かします。制限は「シートが画面から完全に出ない」ことだけです。縮小してもシートが左端に吸着しなくなり、置いた位置に留まります（100%ボタンでホームポジションに戻ります）。ツールバーの背景バーは廃止し、各コントロール群（元に戻す/やり直し・用紙設定・ページ送り・出力）が同じ位置で個別に影付きで浮かびます。「シートプレビュー」タイトルは固定表示の文字だけになりました。']],
         ['ver821', '右ペイン全面キャンバス化・フローティングツールバー・スペース／ホイールクリックでパン', ['右ペイン全体がプレビューキャンバスになりました。ツールバー各段（タイトル、元に戻す/やり直し、用紙設定、ページ送り、出力、メモツール）は位置そのままに、影付きのバーとしてキャンバスの上に浮かび、スクロールするとシートがその下をくぐります。操作系も強化：Space を押しながらドラッグでどこでもパン（Space がページをスクロールしたり、フォーカス中のボタンを押したりしなくなりました。テキスト欄では従来どおり空白が入力されます）、ホイールクリック（中ボタン）ドラッグでもパン（ブラウザのオートスクロールは抑止）、Ctrl+ホイールでカーソル位置に向けてズームします。通常のホイールスクロールは従来どおりです。幅の狭い画面ではバーは従来の積み上げ配置のままです。']],
@@ -3890,6 +3925,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver824', '간단 설명서 초보자용 전면 리뉴얼·응원 버튼 추가', ['간단 설명서를 「넣기 → 고치기 → 저장」 3단계 구성으로 전면 새로 썼습니다. 번호 배지와 굵은 글씨로 할 일이 한눈에 보이고, 형식 나열은 구체적인 예시 하나씩으로 바꿨습니다. 회사 용지 팁도 한 줄로 정리. 그리고 화면 좌하단에 조용히 「応援する」(응원하기) 버튼(Ko-fi 링크)을 넣었습니다. Auto Sheet는 그대로 무료입니다.']],
         ['ver823', 'セリフシート를 시트에 고정·시트가 팬 밖으로 못 나가게', ['セリフシート 사이드 버튼을 시트 본체에 고정했습니다. 셀칸 좌상단에 붙어 팬·줌에 맞춰 시트와 함께 움직입니다. 셀칸 좌상단이 화면 밖으로 나가려 하면 가로는 그대로 따라가면서 세로 위치만 제한됩니다 — 위로는 메모바 바로 아래까지(클릭이 안 되는 일이 없도록), 아래로는 팬 하단까지입니다. 이동 한계도 「일부만 보이면 됨」에서 제대로 된 contain-or-cover 방식으로 강화: 시트가 팬에 들어가는 크기면 그 안에서 자유롭게 움직이되 어느 변으로도 밖으로 못 나가고, 확대해서 팬보다 크면 팬을 계속 덮어야 하므로 좌·상·우·하 어디에도 빈틈이 생기지 않습니다.']],
         ['ver822', '자유 캔버스: 스크롤바 제거·컨트롤 개별 플로팅', ['프리뷰가 자유 캔버스가 됐습니다. 스크롤바는 없어지고, 시트는 드래그(Space/가운데 버튼/터치), 휠(이제 스크롤 대신 팬), Ctrl+휠 줌으로 움직입니다. 제한은 「시트가 화면 밖으로 완전히 나가지 않는다」 하나뿐입니다. 축소해도 시트가 왼쪽에 붙지 않고 놓아둔 위치에 머뭅니다(100% 버튼으로 홈 위치 복귀). 툴바의 배경 바는 없앴습니다 — 각 컨트롤 그룹(실행취소/다시실행·用紙設定·페이지 이동·출력)이 같은 위치에서 각자 그림자를 드리우고 떠 있으며, 「シートプレビュー」 타이틀은 고정된 문자만 남았습니다.']],
         ['ver821', '우측 팬 전면 캔버스화·플로팅 툴바·스페이스/휠클릭 팬', ['우측 팬 전체가 프리뷰 캔버스가 됐습니다. 툴바 각 줄(타이틀, 실행취소/다시실행, 用紙設定, 페이지 이동, 출력, 메모 도구)은 위치 그대로 그림자 드리운 바로 캔버스 위에 떠 있고, 스크롤하면 시트가 그 밑을 지나갑니다. 조작도 강화: Space를 누른 채 드래그하면 어디서든 팬(Space가 페이지를 스크롤하거나 포커스된 버튼을 누르는 일이 없어졌습니다. 텍스트 입력칸에서는 여전히 공백이 입력됩니다), 휠클릭(가운데 버튼) 드래그로도 팬(브라우저 자동스크롤 위젯 차단), Ctrl+휠로 커서 위치를 향해 줌합니다. 일반 휠 스크롤은 기존 그대로입니다. 좁은 화면에서는 바가 기존의 쌓임 배치를 유지합니다.']],
@@ -4026,6 +4062,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver824', '简易说明书面向新手全面重写·新增支持按钮', ['简易说明书全面改为「放入 → 修改 → 保存」三步结构：数字徽章加粗体关键词一眼看懂，格式罗列换成了每种一个具体示例，公司纸张提示也浓缩为一行。另外左下角悄悄加了「応援する」(支持) 按钮（Ko-fi 链接）。Auto Sheet 依旧完全免费。']],
         ['ver823', 'セリフシート固定到表格·表格不再移出窗格', ['セリフシート侧边按钮现在固定在表格本体上：位于单元格区左上角，随平移和缩放与表格一起移动。当单元格区左上角将要移出屏幕时，水平方向继续跟随，仅垂直位置受限——上限是备注栏正下方（保证可点击），下限是窗格底部。移动限制也从「露出一角即可」强化为标准的 contain-or-cover 规则：表格能放进窗格时可在其中自由移动但不能从任何一边移出；放大到比窗格大时必须持续覆盖窗格，因此左、上、右、下都不会出现空白。']],
         ['ver822', '自由画布：移除滚动条·控件独立悬浮', ['预览变成了自由画布：滚动条已移除，表格通过拖动（空格/中键/触摸）、滚轮（现在是平移而非滚动）以及 Ctrl+滚轮缩放来移动——唯一的限制是表格不能完全移出屏幕。缩小时表格不再吸附到左侧，而是停留在你放置的位置（100% 按钮回到初始位置）。工具栏的背景条已移除：各控件组（撤销/重做、用紙設定、翻页、导出）在原位置各自带阴影独立悬浮，「シートプレビュー」标题只保留固定的文字。']],
         ['ver821', '右侧整面画布·悬浮工具栏·空格/中键平移', ['右侧窗格现在整体就是预览画布：各工具栏（标题、撤销/重做、用紙設定、翻页、导出、备注工具）位置不变，但作为带阴影的悬浮条漂浮在画布上方，滚动时表格会从其下方滑过。操作也升级了：按住空格拖动可随处平移（空格不再滚动页面或触发聚焦的按钮；在文本框内仍正常输入空格），鼠标中键拖动同样可平移（浏览器的自动滚动控件被抑制），Ctrl+滚轮朝光标位置缩放。普通滚轮滚动保持不变。窄屏下工具栏仍采用原来的堆叠布局。']],
@@ -4253,108 +4290,104 @@
         title: 'Quick Guide',
         hint: '',
         html: `
-          <h4>Auto Sheet Prototype · Quick Guide</h4>
-          <p>This tool is mainly used by loading a CLIP STUDIO PAINT CSV and turning it into an animation timesheet preview.</p>
-          <h5>Export CSV from CLIP STUDIO PAINT</h5>
-          <ol>
-            <li>In CLIP STUDIO PAINT, choose <code>File</code> → <code>Export animation</code> → <code>Timesheet information</code>.</li>
-            <li>This saves the contents of the <code>Timeline</code> palette as a CSV file.</li>
-            <li>In this tool, choose <code>CSV Upload(CLIP STUDIO)</code> and load that CSV.</li>
-            <li>The initial setting for each column is <code>Cell</code>. Change it to <code>Hide</code> to hide it, <code>Dialog</code> to send it to the dialog lane, or <code>Camera</code> to send it to the camera lane.</li>
-          </ol>
-          <h5>Commands</h5>
+          <h4>Make a timesheet in 3 steps</h4>
+          <div class="manual-step"><span class="manual-step-no">1</span>Put something on the sheet</div>
           <ul>
-            <li>Text Commands: <code>A: 1 n n dot n n 2</code>. <code>dot</code> is a douga/inbetween point.</li>
-            <li>Dialog minimum: <code>0+01 | 1+00 |</code>. Extra: <code>0+01 | 1+00 | A | SAMPLE</code>.</li>
-            <li>Camera FI/FO/OL: <code>0+01 | 1+00 | FI | Aセル</code>. Legacy extended lines such as <code>0+01 | 1+00 | A | PAN | B</code> still work.</li>
+            <li><strong>From CLIP STUDIO:</strong> <code>File</code> → <code>Export animation</code> → <code>Timesheet information</code> to save a CSV, then just drop it into <strong>CSV Upload</strong> here.</li>
+            <li><strong>Or type it yourself:</strong> write <code>A: 1 2 3</code> in Text Commands and cel A shows 1, 2, 3. Use <code>n</code> to hold the same drawing (e.g. <code>A: 1 n n 2</code>).</li>
+            <li><strong>Dialog:</strong> <code>0+01 | 1+00 | speaker | line</code> (start | end | who | what).</li>
+            <li><strong>Camera:</strong> <code>0+01 | 1+00 | A | PAN | B</code> (examples sit right under the box).</li>
           </ul>
-          <h5>Preview editing</h5>
+          <div class="manual-step"><span class="manual-step-no">2</span>Fix things on the sheet</div>
           <ul>
-            <li>Shift-click an original cel to switch <code>○ / △ / none</code>. Click a black hold line or dot to toggle the dot; Shift-click it to enter text. Red hold lines open text editing on click.</li>
-            <li>Drag red Dialog/Camera line handles to adjust timing by frame; the command text updates automatically.</li>
-            <li>Click editable text on the sheet to edit it in place. The matched input field updates while you type.</li>
+            <li><strong>Click any text</strong> to rewrite it right there.</li>
+            <li><strong>Drag the ends of the red lines</strong> (dialog / camera) to stretch the timing.</li>
+            <li>Made a mistake? <strong>Ctrl+Z</strong> undoes it.</li>
           </ul>
+          <div class="manual-step"><span class="manual-step-no">3</span>Save</div>
+          <ul>
+            <li><strong>Output</strong> button → every page as PNG / JPG / PSD.</li>
+            <li><strong>Save</strong> button → your whole work in one file. Next time, <strong>Load</strong> continues where you left off.</li>
+          </ul>
+          <div class="manual-tip">💡 Want it on a studio's official paper? Open "<strong>External Paper Load</strong>", drop in the paper image, and press <strong>Auto Align</strong> — it snaps into place automatically.</div>
         `
       },
       ja: {
         title: '簡単説明書',
         hint: '',
         html: `
-          <h4>Auto Sheet Prototype · 簡単説明書</h4>
-          <p>CLIP STUDIO PAINT のCSVを読み込み、タイムシートプレビューを作成する使い方が基本になる。</p>
-          <h5>CLIP STUDIOでCSVを書き出す</h5>
-          <ol>
-            <li>CLIP STUDIO PAINT で <code>ファイル</code> → <code>アニメーション書き出し</code> → <code>タイムシート情報</code> を選ぶ。</li>
-            <li>これで <code>タイムライン</code> パレットの内容をCSVファイルとして保存できる。</li>
-            <li>このツールで <code>CSV Upload(CLIP STUDIO)</code> を選び、そのCSVを読み込む。</li>
-            <li>各列の初期設定は <code>Cell</code>。<code>Hide</code> で非表示、<code>Dialog</code> でセリフ欄、<code>Camera</code> でカメラ欄へ送れる。</li>
-          </ol>
-          <h5>コマンド</h5>
+          <h4>3ステップでタイムシートができます</h4>
+          <div class="manual-step"><span class="manual-step-no">1</span>中身を入れる</div>
           <ul>
-            <li>Text Commands: <code>A: 1 n n dot n n 2</code>。<code>dot</code> は動画点/中割点。</li>
-            <li>Dialog最小形式: <code>0+01 | 1+00 |</code>。追加形式: <code>0+01 | 1+00 | A | SAMPLE</code>。</li>
-            <li>Camera FI/FO/OL: <code>0+01 | 1+00 | FI | Aセル</code>。従来の拡張形式 <code>0+01 | 1+00 | A | PAN | B</code> も使えます。</li>
+            <li><strong>CLIP STUDIOから：</strong><code>ファイル</code> → <code>アニメーション書き出し</code> → <code>タイムシート情報</code> でCSVを保存 → このツールの <strong>CSV読込</strong> に入れるだけ。</li>
+            <li><strong>手で書くなら：</strong>テキストコマンドに <code>A: 1 2 3</code> と書くと、Aセルに 1・2・3 が並びます。同じ絵を続けたいコマは <code>n</code>（例：<code>A: 1 n n 2</code>）。</li>
+            <li><strong>セリフ：</strong><code>0+01 | 1+00 | 話者 | セリフ</code>（始まり | 終わり | だれ | なに）。</li>
+            <li><strong>カメラ：</strong><code>0+01 | 1+00 | A | PAN | B</code>（欄のすぐ下に例があります）。</li>
           </ul>
-          <h5>プレビュー編集</h5>
+          <div class="manual-step"><span class="manual-step-no">2</span>シートの上で直す</div>
           <ul>
-            <li>原画セルをShiftクリックすると <code>○ / △ / 無印</code> が切り替わる。黒い継続線/動画点はクリックで動画点ON/OFF、Shiftクリックで文字入力。赤い継続線はクリックで文字入力になる。</li>
-            <li>Dialog/Cameraの赤い線の端をドラッグすると、1フレーム単位でタイミングを調整できる。コマンド欄にも自動反映される。</li>
-            <li>シート上の編集可能な文字をクリックすると、その場で直接編集できる。入力中も対応する入力欄へ反映される。</li>
+            <li>直したい<strong>文字をクリック</strong> → その場で書き直せます。</li>
+            <li>セリフ・カメラの<strong>赤い線の端をドラッグ</strong> → タイミングを伸び縮みできます。</li>
+            <li>間違えたら <strong>Ctrl+Z</strong> で元に戻せます。</li>
           </ul>
+          <div class="manual-step"><span class="manual-step-no">3</span>保存する</div>
+          <ul>
+            <li><strong>出力</strong> ボタン → PNG / JPG / PSD で全ページ保存。</li>
+            <li><strong>保存</strong> ボタン → 作業まるごと1ファイルに。次回は <strong>読込</strong> で続きからできます。</li>
+          </ul>
+          <div class="manual-tip">💡 会社の用紙で出したいときは「<strong>会社指定用紙を敷く</strong>」に用紙画像を入れて <strong>Auto Align</strong> を押すだけ。自動でぴったり合います。</div>
         `
       },
       ko: {
         title: '간단 설명서',
         hint: '',
         html: `
-          <h4>Auto Sheet Prototype · 간단 설명서</h4>
-          <p>이 툴은 CLIP STUDIO PAINT의 CSV를 불러와 타임시트 프리뷰를 만드는 방식이 기본이다.</p>
-          <h5>CLIP STUDIO에서 CSV 내보내기</h5>
-          <ol>
-            <li>CLIP STUDIO PAINT에서 <code>파일</code> → <code>애니메이션 내보내기</code> → <code>타임시트 정보</code> 를 선택한다.</li>
-            <li>이렇게 하면 <code>타임라인</code> 팔레트의 내용을 CSV 파일로 저장할 수 있다.</li>
-            <li>이 툴에서 <code>CSV Upload(CLIP STUDIO)</code> 를 선택하고 해당 CSV를 불러온다.</li>
-            <li>각 열의 초기 설정은 <code>Cell</code>이며, <code>Hide</code>로 숨기기, <code>Dialog</code>로 대사란으로 보내기, <code>Camera</code>로 카메라란으로 보내기가 가능하다.</li>
-          </ol>
-          <h5>커맨드</h5>
+          <h4>3단계면 타임시트가 완성됩니다</h4>
+          <div class="manual-step"><span class="manual-step-no">1</span>내용 넣기</div>
           <ul>
-            <li>Text Commands: <code>A: 1 n n dot n n 2</code>. <code>dot</code> 은 동화점이다.</li>
-            <li>Dialog 최소 형식: <code>0+01 | 1+00 |</code>. 추가 형식: <code>0+01 | 1+00 | A | SAMPLE</code>.</li>
-            <li>Camera FI/FO/OL: <code>0+01 | 1+00 | FI | Aセル</code>. 기존 확장 형식 <code>0+01 | 1+00 | A | PAN | B</code>도 동작합니다.</li>
+            <li><strong>CLIP STUDIO에서:</strong> <code>파일</code> → <code>애니메이션 내보내기</code> → <code>타임시트 정보</code>로 CSV 저장 → 이 툴의 <strong>CSV 읽기</strong>에 넣기만 하면 됩니다.</li>
+            <li><strong>직접 쓰려면:</strong> 텍스트 커맨드에 <code>A: 1 2 3</code>이라고 쓰면 A셀에 1·2·3이 나란히 들어갑니다. 같은 그림을 유지할 칸은 <code>n</code> (예: <code>A: 1 n n 2</code>).</li>
+            <li><strong>대사:</strong> <code>0+01 | 1+00 | 화자 | 대사</code> (시작 | 끝 | 누가 | 뭐라고).</li>
+            <li><strong>카메라:</strong> <code>0+01 | 1+00 | A | PAN | B</code> (입력칸 바로 아래에 예시가 있습니다).</li>
           </ul>
-          <h5>프리뷰 편집</h5>
+          <div class="manual-step"><span class="manual-step-no">2</span>시트 위에서 고치기</div>
           <ul>
-            <li>원화를 Shift+클릭하면 <code>○ / △ / 무표시</code> 가 전환된다. 검은 지속선/동화점은 클릭으로 동화점 ON/OFF, Shift+클릭으로 텍스트 입력. 빨간 지속선은 클릭으로 텍스트 입력한다.</li>
-            <li>Dialog/Camera 빨간선 끝을 드래그하면 1프레임 단위로 타이밍을 조정한다. 커맨드 입력란에도 자동 반영된다.</li>
-            <li>시트 위의 편집 가능한 글자를 클릭하면 그 자리에서 직접 수정한다. 입력 중에도 대응 입력란에 바로 반영된다.</li>
+            <li>고치고 싶은 <strong>글자를 클릭</strong> → 그 자리에서 바로 수정됩니다.</li>
+            <li>대사·카메라의 <strong>빨간 선 끝을 드래그</strong> → 타이밍이 늘었다 줄었다 합니다.</li>
+            <li>실수했다면 <strong>Ctrl+Z</strong>로 되돌리세요.</li>
           </ul>
+          <div class="manual-step"><span class="manual-step-no">3</span>저장하기</div>
+          <ul>
+            <li><strong>출력</strong> 버튼 → 전 페이지를 PNG / JPG / PSD로 저장.</li>
+            <li><strong>보존</strong> 버튼 → 작업 전체를 파일 하나로. 다음엔 <strong>읽기</strong>로 이어서 하면 됩니다.</li>
+          </ul>
+          <div class="manual-tip">💡 회사 지정용지에 얹고 싶으면 「<strong>회사 지정용지 깔기</strong>」에 용지 이미지를 넣고 <strong>Auto Align</strong>만 누르세요. 자동으로 딱 맞춰집니다.</div>
         `
       },
       zh: {
         title: '简易说明书',
         hint: '',
         html: `
-          <h4>Auto Sheet Prototype · 简易说明书</h4>
-          <p>此工具的基本用法是读取 CLIP STUDIO PAINT 的 CSV，并生成时间表预览。</p>
-          <h5>从 CLIP STUDIO 导出 CSV</h5>
-          <ol>
-            <li>在 CLIP STUDIO PAINT 中选择 <code>文件</code> → <code>导出动画</code> → <code>时间表信息</code>。</li>
-            <li>这样可以将 <code>时间轴</code> 面板的内容保存为 CSV 文件。</li>
-            <li>在此工具中选择 <code>CSV Upload(CLIP STUDIO)</code> 并读取该 CSV。</li>
-            <li>各列的初始设置为 <code>Cell</code>。可改为 <code>Hide</code> 隐藏，改为 <code>Dialog</code> 发送到对白栏，或改为 <code>Camera</code> 发送到摄影栏。</li>
-          </ol>
-          <h5>命令</h5>
+          <h4>3 步做出时间表</h4>
+          <div class="manual-step"><span class="manual-step-no">1</span>放入内容</div>
           <ul>
-            <li>Text Commands: <code>A: 1 n n dot n n 2</code>。<code>dot</code> 表示动画点/中割点。</li>
-            <li>Dialog 最小格式: <code>0+01 | 1+00 |</code>。追加格式: <code>0+01 | 1+00 | A | SAMPLE</code>。</li>
-            <li>Camera FI/FO/OL: <code>0+01 | 1+00 | FI | Aセル</code>。旧的扩展格式 <code>0+01 | 1+00 | A | PAN | B</code> 仍可使用。</li>
+            <li><strong>从 CLIP STUDIO：</strong><code>文件</code> → <code>导出动画</code> → <code>时间表信息</code> 保存 CSV，然后放进这里的 <strong>CSV 读取</strong> 就行。</li>
+            <li><strong>想手写的话：</strong>在文本命令里写 <code>A: 1 2 3</code>，A 栏就会依次出现 1、2、3。想保持同一张画的格子写 <code>n</code>（例：<code>A: 1 n n 2</code>）。</li>
+            <li><strong>台词：</strong><code>0+01 | 1+00 | 说话人 | 台词</code>（开始 | 结束 | 谁 | 说什么）。</li>
+            <li><strong>摄影：</strong><code>0+01 | 1+00 | A | PAN | B</code>（输入框正下方有示例）。</li>
           </ul>
-          <h5>预览编辑</h5>
+          <div class="manual-step"><span class="manual-step-no">2</span>在表上直接改</div>
           <ul>
-            <li>Shift 点击原画 Cell 可切换 <code>○ / △ / 无标记</code>。黑色保持线/动画点用点击切换动画点 ON/OFF，Shift 点击输入文字。红色保持线点击后输入文字。</li>
-            <li>拖动 Dialog/Camera 红线端点，可按 1 帧单位调整时间，并自动反映到命令输入框。</li>
-            <li>点击 Sheet 上可编辑文字即可原地修改，输入过程中也会同步到对应输入框。</li>
+            <li><strong>点击想改的文字</strong> → 就地重写。</li>
+            <li><strong>拖动红线两端</strong>（台词 / 摄影）→ 时间随之伸缩。</li>
+            <li>改错了？<strong>Ctrl+Z</strong> 撤销。</li>
           </ul>
+          <div class="manual-step"><span class="manual-step-no">3</span>保存</div>
+          <ul>
+            <li><strong>输出</strong> 按钮 → 全部页面保存为 PNG / JPG / PSD。</li>
+            <li><strong>保存</strong> 按钮 → 整个工作存成一个文件。下次用 <strong>读取</strong> 接着做。</li>
+          </ul>
+          <div class="manual-tip">💡 想印在公司指定纸张上？打开「<strong>铺设公司指定纸张</strong>」，放入纸张图片后按 <strong>Auto Align</strong>——会自动对齐到位。</div>
         `
       }
     };
@@ -22943,6 +22976,17 @@
       vw: window.innerWidth || 0,
       vh: window.innerHeight || 0
     });
+  </script>
+  <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+  <script>
+    if (typeof kofiWidgetOverlay !== 'undefined') {
+      kofiWidgetOverlay.draw('moaang', {
+        'type': 'floating-chat',
+        'floating-chat.donateButton.text': '応援する',
+        'floating-chat.donateButton.background-color': '#c7402d',
+        'floating-chat.donateButton.text-color': '#fff'
+      });
+    }
   </script>
 </body>
 </html>
