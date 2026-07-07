@@ -2676,7 +2676,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '826';
+    const APP_VERSION = '827';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3666,6 +3666,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver827', 'Quick Guide: correct button names + paper by drag & drop', ['Step 3 now uses the real button names for saving/loading a project (was "Preserve/Read" in some languages). The company-paper tip is reworded around drag & drop: drop a blank copy of the studio timesheet onto the sheet and it aligns automatically — no need to press Auto Align, since dropping a paper already runs it.']],
         ['ver826', 'Clearer input-field guide for the 3 boxes', ['The hints and examples for the Sheet input, Dialog, and Camera boxes were rewritten in plain language to match the Quick Guide. Every box now shows one concrete example with the meaning of each part (start | end | who | what, etc.), and the Camera examples now label what PAN / TU / FI / OL actually do. Applies to all 4 languages.']],
         ['ver825', 'Fixed a mislabeled/duplicated Quick Guide section', ['The settings-save note below the 3 steps called the Save button "Output" — wrong, since Output already means the PNG/JPG/PSD image export covered in step 3. It now says Save/Load/Path/Reload, matching the real buttons. Also removed a separate Output paragraph that just repeated step 3 with extra PSD-layer detail.']],
         ['ver824', 'Beginner-friendly Quick Guide; support button', ['The Quick Guide was rewritten from scratch as a plain 3-step walkthrough — put content in, fix it on the sheet, save — with numbered badges, bold key actions, and a single tip about company paper. The jargon-heavy command/edit reference is gone; every format now shows one concrete example instead. Also added a quiet "応援する" (support) button in the bottom-left corner linking to Ko-fi; Auto Sheet stays free either way.']],
@@ -3805,6 +3806,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver827', '簡単説明書：ボタン名の修正と用紙のドラッグ＆ドロップ', ['ステップ3の保存・読込の説明を実際のボタン名に合わせました（一部言語で「保存/読込」ではない語になっていた箇所を修正）。会社用紙のヒントもドラッグ＆ドロップ中心に書き直し：会社のタイムシートの空用紙画像をシートにドロップするだけで自動整列します（用紙をドロップした時点で自動整列が走るため、Auto Alignを押す必要はありません）。']],
         ['ver826', '3つの入力欄の説明をわかりやすく整理', ['シート入力・セリフ欄・カメラ欄のヒントと例を、簡単説明書に合わせてやさしい言葉に書き直しました。どの欄も具体例1つと各項目の意味（始まり｜終わり｜だれ｜なに 等）を表示し、カメラの例には PAN／TU／FI／OL が何をするかの注釈を付けました。4言語すべてに反映しています。']],
         ['ver825', '簡単説明書の誤表記・重複を修正', ['3ステップの下にあった設定保存の説明が、保存ボタンを「出力」と呼んでいた誤りを修正。出力は既にPNG/JPG/PSD書き出し（ステップ3）の意味なので紛らわしい状態でした。実際のボタン名（保存／読込／読込先／再読込）に合わせています。またステップ3の内容をPSDレイヤーの詳細付きでそのまま繰り返していた別の出力説明も削除しました。']],
         ['ver824', '簡単説明書を初心者向けに全面書き直し・応援ボタン追加', ['簡単説明書を「入れる → 直す → 保存する」の3ステップ構成に全面リニューアルしました。番号バッジと太字で操作がひと目で分かり、形式の羅列は具体例1つずつに置き換えています。会社用紙のヒントも1行にまとめました。また、画面左下にさりげなく「応援する」ボタン（Ko-fiリンク）を設置。Auto Sheetはこれまで通り無料です。']],
@@ -3944,6 +3946,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver827', '간단 설명서: 버튼명 정정 + 용지 드래그앤드롭', ['3단계의 저장·불러오기 설명을 실제 버튼명에 맞췄습니다(일부 언어에서 「보존/읽기」로 잘못 적혀 있던 부분 수정). 회사 지정용지 팁도 드래그앤드롭 중심으로 다시 썼습니다: 회사 타임시트의 빈 양식 이미지를 시트 위로 드롭하면 자동으로 정렬됩니다(용지를 드롭한 시점에 자동 정렬이 실행되므로 Auto Align을 누를 필요가 없습니다).']],
         ['ver826', '3개 입력란 설명을 알기 쉽게 정리', ['시트 입력·대사란·카메라란의 힌트와 예시를 간단 설명서에 맞춰 쉬운 말로 다시 썼습니다. 각 란마다 구체적인 예 하나와 각 항목의 뜻(시작｜끝｜누가｜무엇 등)을 보여주고, 카메라 예시에는 PAN／TU／FI／OL 이 무엇을 하는지 주석을 달았습니다. 4개 언어 모두 반영했습니다.']],
         ['ver825', '간단 설명서 오표기·중복 수정', ['3단계 아래 설정 저장 설명에서 저장 버튼을 「출력」이라고 부르던 오류를 고쳤습니다. 출력은 이미 PNG/JPG/PSD 내보내기(3단계)를 뜻해서 헷갈리는 상태였습니다. 실제 버튼명(저장/불러오기/경로지정/다시 불러오기)에 맞췄습니다. 3단계 내용을 PSD 레이어 상세와 함께 그대로 반복하던 별도 출력 설명도 제거했습니다.']],
         ['ver824', '간단 설명서 초보자용 전면 리뉴얼·응원 버튼 추가', ['간단 설명서를 「넣기 → 고치기 → 저장」 3단계 구성으로 전면 새로 썼습니다. 번호 배지와 굵은 글씨로 할 일이 한눈에 보이고, 형식 나열은 구체적인 예시 하나씩으로 바꿨습니다. 회사 용지 팁도 한 줄로 정리. 그리고 화면 좌하단에 조용히 「応援する」(응원하기) 버튼(Ko-fi 링크)을 넣었습니다. Auto Sheet는 그대로 무료입니다.']],
@@ -4083,6 +4086,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver827', '简易说明书：修正按钮名称 + 纸张拖放', ['第 3 步的保存·导入说明改用实际按钮名称（部分语言中曾误写为「保存/读取」）。公司指定纸张的提示也改以拖放为中心：把公司时间表的空白纸张图片拖放到表上即可自动对齐（放入纸张时就会自动运行对齐，无需再按 Auto Align）。']],
         ['ver826', '让 3 个输入栏的说明更易懂', ['把 Sheet 输入、对白栏、摄影机栏的提示和示例改用简单语言重写，与简易说明书保持一致。每个栏都显示一个具体示例以及各部分的含义（起始｜结束｜谁｜内容 等），并在摄影机示例中标注 PAN／TU／FI／OL 各自的作用。4 种语言均已更新。']],
         ['ver825', '修正简易说明书的错误标注与重复内容', ['3 步下方关于保存设置的说明中，把保存按钮称为"输出"是错误的——输出已经指第 3 步里的 PNG/JPG/PSD 图像导出，容易混淆。现已改为实际按钮名称（保存/导入/路径/重新读取）。同时删除了与第 3 步重复、只是多了 PSD 图层细节的单独输出段落。']],
         ['ver824', '简易说明书面向新手全面重写·新增支持按钮', ['简易说明书全面改为「放入 → 修改 → 保存」三步结构：数字徽章加粗体关键词一眼看懂，格式罗列换成了每种一个具体示例，公司纸张提示也浓缩为一行。另外左下角悄悄加了「応援する」(支持) 按钮（Ko-fi 链接）。Auto Sheet 依旧完全免费。']],
@@ -4332,7 +4336,7 @@
             <li><strong>Output</strong> button → every page as PNG / JPG / PSD.</li>
             <li><strong>Save</strong> button → your whole work in one file. Next time, <strong>Load</strong> continues where you left off.</li>
           </ul>
-          <div class="manual-tip">💡 Want it on a studio's official paper? Open "<strong>External Paper Load</strong>", drop in the paper image, and press <strong>Auto Align</strong> — it snaps into place automatically.</div>
+          <div class="manual-tip">💡 Want it on your studio's official paper? Just <strong>drag a blank copy of that timesheet onto the sheet</strong> — it lines up automatically.</div>
         `
       },
       ja: {
@@ -4358,7 +4362,7 @@
             <li><strong>出力</strong> ボタン → PNG / JPG / PSD で全ページ保存。</li>
             <li><strong>保存</strong> ボタン → 作業まるごと1ファイルに。次回は <strong>読込</strong> で続きからできます。</li>
           </ul>
-          <div class="manual-tip">💡 会社の用紙で出したいときは「<strong>会社指定用紙を敷く</strong>」に用紙画像を入れて <strong>Auto Align</strong> を押すだけ。自動でぴったり合います。</div>
+          <div class="manual-tip">💡 会社のタイムシート用紙で出したいときは、その<strong>空の用紙画像をシートにドラッグ＆ドロップ</strong>するだけ。自動でぴったり合います。</div>
         `
       },
       ko: {
@@ -4382,9 +4386,9 @@
           <div class="manual-step"><span class="manual-step-no">3</span>저장하기</div>
           <ul>
             <li><strong>출력</strong> 버튼 → 전 페이지를 PNG / JPG / PSD로 저장.</li>
-            <li><strong>보존</strong> 버튼 → 작업 전체를 파일 하나로. 다음엔 <strong>읽기</strong>로 이어서 하면 됩니다.</li>
+            <li><strong>저장</strong> 버튼 → 작업 전체를 파일 하나로. 다음엔 <strong>불러오기</strong>로 이어서 하면 됩니다.</li>
           </ul>
-          <div class="manual-tip">💡 회사 지정용지에 얹고 싶으면 「<strong>회사 지정용지 깔기</strong>」에 용지 이미지를 넣고 <strong>Auto Align</strong>만 누르세요. 자동으로 딱 맞춰집니다.</div>
+          <div class="manual-tip">💡 회사의 타임시트 양식을 그대로 쓰고 싶으면, <strong>빈 타임시트 이미지를 시트 위로 드래그앤드롭</strong>하세요. 자동으로 딱 맞춰집니다.</div>
         `
       },
       zh: {
@@ -4408,9 +4412,9 @@
           <div class="manual-step"><span class="manual-step-no">3</span>保存</div>
           <ul>
             <li><strong>输出</strong> 按钮 → 全部页面保存为 PNG / JPG / PSD。</li>
-            <li><strong>保存</strong> 按钮 → 整个工作存成一个文件。下次用 <strong>读取</strong> 接着做。</li>
+            <li><strong>保存</strong> 按钮 → 整个工作存成一个文件。下次用 <strong>导入</strong> 接着做。</li>
           </ul>
-          <div class="manual-tip">💡 想印在公司指定纸张上？打开「<strong>铺设公司指定纸张</strong>」，放入纸张图片后按 <strong>Auto Align</strong>——会自动对齐到位。</div>
+          <div class="manual-tip">💡 想用公司的时间表纸张？把那张<strong>空白时间表图片拖放到表上</strong>即可——会自动对齐到位。</div>
         `
       }
     };
