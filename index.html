@@ -2665,7 +2665,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '824';
+    const APP_VERSION = '825';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3651,6 +3651,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver825', 'Fixed a mislabeled/duplicated Quick Guide section', ['The settings-save note below the 3 steps called the Save button "Output" — wrong, since Output already means the PNG/JPG/PSD image export covered in step 3. It now says Save/Load/Path/Reload, matching the real buttons. Also removed a separate Output paragraph that just repeated step 3 with extra PSD-layer detail.']],
         ['ver824', 'Beginner-friendly Quick Guide; support button', ['The Quick Guide was rewritten from scratch as a plain 3-step walkthrough — put content in, fix it on the sheet, save — with numbered badges, bold key actions, and a single tip about company paper. The jargon-heavy command/edit reference is gone; every format now shows one concrete example instead. Also added a quiet "応援する" (support) button in the bottom-left corner linking to Ko-fi; Auto Sheet stays free either way.']],
         ['ver823', 'セリフシート pinned to the sheet; sheet can no longer leave the pane', ['The セリフシート side button is now pinned to the sheet itself, sitting at the top-left of the cell grid and following the sheet through panning and zooming. When the grid\'s top-left would leave the screen it keeps following horizontally but its vertical position clamps — never higher than just below the memo bar (so it stays clickable) and never below the pane. Panning limits were also tightened from "a sliver must stay visible" to a proper contain-or-cover rule: when the sheet fits in the pane it moves freely inside it but cannot exit through any edge, and when it is zoomed in larger it must keep covering the pane, so no blank gap ever opens on the left, top, right or bottom.']],
         ['ver822', 'Free canvas: no scrollbars, controls float individually', ['The preview is now a free canvas: scrollbars are gone, and the sheet moves by dragging (Space / middle button / touch), the wheel (which now pans instead of scrolling), and Ctrl+wheel zoom — the only limit is that the sheet can never leave the screen entirely. Zooming out no longer snaps the sheet to the left; it stays where you put it, and 100% resets to the home position. The toolbar row lost its background bar: each control group (undo/redo, 用紙設定, page nav, export) floats independently with its own shadow in the same position, and the シートプレビュー title is just fixed floating text.']],
@@ -3788,6 +3789,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver825', '簡単説明書の誤表記・重複を修正', ['3ステップの下にあった設定保存の説明が、保存ボタンを「出力」と呼んでいた誤りを修正。出力は既にPNG/JPG/PSD書き出し（ステップ3）の意味なので紛らわしい状態でした。実際のボタン名（保存／読込／読込先／再読込）に合わせています。またステップ3の内容をPSDレイヤーの詳細付きでそのまま繰り返していた別の出力説明も削除しました。']],
         ['ver824', '簡単説明書を初心者向けに全面書き直し・応援ボタン追加', ['簡単説明書を「入れる → 直す → 保存する」の3ステップ構成に全面リニューアルしました。番号バッジと太字で操作がひと目で分かり、形式の羅列は具体例1つずつに置き換えています。会社用紙のヒントも1行にまとめました。また、画面左下にさりげなく「応援する」ボタン（Ko-fiリンク）を設置。Auto Sheetはこれまで通り無料です。']],
         ['ver823', 'セリフシートをシートに固定・シートがペイン外へ出ないように', ['セリフシートのサイドボタンをシート本体に固定しました。セル欄の左上に付き、パン・ズームに合わせてシートと一緒に動きます。セル欄の左上が画面外へ出そうなときは、横方向は追従したまま縦位置だけが制限されます——上はメモバーのすぐ下まで（クリックできなくならないように）、下はペインの下端までです。移動制限も「一部が見えていればよい」から本来のcontain-or-cover方式に強化：シートがペインに収まるときはその中で自由に動きますがどの辺からも外へ出られず、拡大してペインより大きいときはペインを覆い続けるため、左・上・右・下のどこにも空白が生じません。']],
         ['ver822', 'フリーキャンバス化：スクロールバー廃止・コントロール個別フローティング', ['プレビューがフリーキャンバスになりました。スクロールバーは廃止され、シートはドラッグ（Space／中ボタン／タッチ）、ホイール（スクロールの代わりにパンします）、Ctrl+ホイールのズームで動かします。制限は「シートが画面から完全に出ない」ことだけです。縮小してもシートが左端に吸着しなくなり、置いた位置に留まります（100%ボタンでホームポジションに戻ります）。ツールバーの背景バーは廃止し、各コントロール群（元に戻す/やり直し・用紙設定・ページ送り・出力）が同じ位置で個別に影付きで浮かびます。「シートプレビュー」タイトルは固定表示の文字だけになりました。']],
@@ -3925,6 +3927,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver825', '간단 설명서 오표기·중복 수정', ['3단계 아래 설정 저장 설명에서 저장 버튼을 「출력」이라고 부르던 오류를 고쳤습니다. 출력은 이미 PNG/JPG/PSD 내보내기(3단계)를 뜻해서 헷갈리는 상태였습니다. 실제 버튼명(저장/불러오기/경로지정/다시 불러오기)에 맞췄습니다. 3단계 내용을 PSD 레이어 상세와 함께 그대로 반복하던 별도 출력 설명도 제거했습니다.']],
         ['ver824', '간단 설명서 초보자용 전면 리뉴얼·응원 버튼 추가', ['간단 설명서를 「넣기 → 고치기 → 저장」 3단계 구성으로 전면 새로 썼습니다. 번호 배지와 굵은 글씨로 할 일이 한눈에 보이고, 형식 나열은 구체적인 예시 하나씩으로 바꿨습니다. 회사 용지 팁도 한 줄로 정리. 그리고 화면 좌하단에 조용히 「応援する」(응원하기) 버튼(Ko-fi 링크)을 넣었습니다. Auto Sheet는 그대로 무료입니다.']],
         ['ver823', 'セリフシート를 시트에 고정·시트가 팬 밖으로 못 나가게', ['セリフシート 사이드 버튼을 시트 본체에 고정했습니다. 셀칸 좌상단에 붙어 팬·줌에 맞춰 시트와 함께 움직입니다. 셀칸 좌상단이 화면 밖으로 나가려 하면 가로는 그대로 따라가면서 세로 위치만 제한됩니다 — 위로는 메모바 바로 아래까지(클릭이 안 되는 일이 없도록), 아래로는 팬 하단까지입니다. 이동 한계도 「일부만 보이면 됨」에서 제대로 된 contain-or-cover 방식으로 강화: 시트가 팬에 들어가는 크기면 그 안에서 자유롭게 움직이되 어느 변으로도 밖으로 못 나가고, 확대해서 팬보다 크면 팬을 계속 덮어야 하므로 좌·상·우·하 어디에도 빈틈이 생기지 않습니다.']],
         ['ver822', '자유 캔버스: 스크롤바 제거·컨트롤 개별 플로팅', ['프리뷰가 자유 캔버스가 됐습니다. 스크롤바는 없어지고, 시트는 드래그(Space/가운데 버튼/터치), 휠(이제 스크롤 대신 팬), Ctrl+휠 줌으로 움직입니다. 제한은 「시트가 화면 밖으로 완전히 나가지 않는다」 하나뿐입니다. 축소해도 시트가 왼쪽에 붙지 않고 놓아둔 위치에 머뭅니다(100% 버튼으로 홈 위치 복귀). 툴바의 배경 바는 없앴습니다 — 각 컨트롤 그룹(실행취소/다시실행·用紙設定·페이지 이동·출력)이 같은 위치에서 각자 그림자를 드리우고 떠 있으며, 「シートプレビュー」 타이틀은 고정된 문자만 남았습니다.']],
@@ -4062,6 +4065,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver825', '修正简易说明书的错误标注与重复内容', ['3 步下方关于保存设置的说明中，把保存按钮称为"输出"是错误的——输出已经指第 3 步里的 PNG/JPG/PSD 图像导出，容易混淆。现已改为实际按钮名称（保存/导入/路径/重新读取）。同时删除了与第 3 步重复、只是多了 PSD 图层细节的单独输出段落。']],
         ['ver824', '简易说明书面向新手全面重写·新增支持按钮', ['简易说明书全面改为「放入 → 修改 → 保存」三步结构：数字徽章加粗体关键词一眼看懂，格式罗列换成了每种一个具体示例，公司纸张提示也浓缩为一行。另外左下角悄悄加了「応援する」(支持) 按钮（Ko-fi 链接）。Auto Sheet 依旧完全免费。']],
         ['ver823', 'セリフシート固定到表格·表格不再移出窗格', ['セリフシート侧边按钮现在固定在表格本体上：位于单元格区左上角，随平移和缩放与表格一起移动。当单元格区左上角将要移出屏幕时，水平方向继续跟随，仅垂直位置受限——上限是备注栏正下方（保证可点击），下限是窗格底部。移动限制也从「露出一角即可」强化为标准的 contain-or-cover 规则：表格能放进窗格时可在其中自由移动但不能从任何一边移出；放大到比窗格大时必须持续覆盖窗格，因此左、上、右、下都不会出现空白。']],
         ['ver822', '自由画布：移除滚动条·控件独立悬浮', ['预览变成了自由画布：滚动条已移除，表格通过拖动（空格/中键/触摸）、滚轮（现在是平移而非滚动）以及 Ctrl+滚轮缩放来移动——唯一的限制是表格不能完全移出屏幕。缩小时表格不再吸附到左侧，而是停留在你放置的位置（100% 按钮回到初始位置）。工具栏的背景条已移除：各控件组（撤销/重做、用紙設定、翻页、导出）在原位置各自带阴影独立悬浮，「シートプレビュー」标题只保留固定的文字。']],
@@ -4578,25 +4582,22 @@
       }
     };
 
+    // Advanced/optional note appended after the 3-step walkthrough. Uses the REAL button
+    // labels (settingsExportBtn/settingsFileBtn/settingsImportBtn/settingsRefreshBtn), not the
+    // 出力/Output label — that button is a separate action (image export) already covered in
+    // step 3, and reusing its name here to mean "save settings JSON" was the actual bug reported.
     const manualBottomSettingsDocs = {
-      en: '<h5>Save and Load All Settings</h5><ul><li><code>Export</code> saves one settings JSON for this Auto Sheet. Supported browsers open a save dialog so you can choose the destination path. The filename is made as <code>sheet_title_episode_cut_settei.json</code>, with empty parts removed.</li><li><code>Load</code> imports one JSON file. <code>Path</code> scans the selected folder and its subfolders, then the selector beside it lets you switch between multiple cut settings JSON files. <code>↻</code> rescans the same path.</li></ul>',
-      ja: '<h5>全体設定の保存と読み込み</h5><ul><li><code>出力</code>は現在の全体設定を設定JSONとして1ファイル保存する。対応ブラウザでは保存ダイアログが開き、書き出し先を指定できる。ファイル名は<code>sheet_title_episode_cut_settei.json</code>形式で、空の項目は自動的に省略される。</li><li><code>読込</code>は設定JSONを1ファイルだけ読み込む。<code>読込先指定</code>は選択フォルダと下位フォルダを走査し、隣の選択欄から複数カットの設定JSONを切り替えられる。<code>↻</code>は同じ読込先を再走査する。</li></ul>',
-      ko: '<h5>전체설정값 보존 및 불러오기</h5><ul><li><code>내보내기</code>는 현재 전체 설정을 설정 JSON 하나로 저장한다. 지원 브라우저에서는 저장 대화상자가 열려 내보내는 경로를 지정할 수 있다. 파일명은 <code>sheet_title_episode_cut_settei.json</code> 규칙이며 빈 항목은 자동으로 빠진다.</li><li><code>불러오기</code>는 설정 JSON 하나만 불러온다. <code>경로지정</code>은 선택한 폴더와 하위 폴더를 스캔하고, 폴더에 여러 컷의 JSON 설정 파일을 보존해두면 옆의 선택탭에서 쉽게 전환할 수 있다. <code>↻</code> 버튼은 해당 경로를 다시 불러온다.</li></ul>',
-      zh: '<h5>整体设置保存与导入</h5><ul><li><code>导出</code>会把当前整体设置保存为一个设置 JSON。支持的浏览器会打开保存对话框，可指定导出路径。文件名规则为 <code>sheet_title_episode_cut_settei.json</code>，空项目会自动省略。</li><li><code>导入</code>只导入一个 JSON 文件。<code>路径</code>会扫描所选文件夹及其子文件夹；把多个镜头的 JSON 设置文件保存在该文件夹后，可用旁边的选择框快速切换。<code>↻</code>会重新读取同一路径。</li></ul>'
-    };
-
-    const manualBottomOutputDocs = {
-      en: '<h5>Output</h5><ul><li><code>Output</code> exports every page as PNG/JPG/PSD. PSD output contains four layers: Memo, Text Output, Template, and Background.</li></ul>',
-      ja: '<h5>出力</h5><ul><li><code>出力</code>で全ページをPNG/JPG/PSDとして書き出す。PSDはMemo、Text Output、Template、Backgroundの4レイヤー構成。</li></ul>',
-      ko: '<h5>출력</h5><ul><li><code>출력</code>으로 모든 페이지를 PNG/JPG/PSD 출력한다. PSD는 Memo, Text Output, Template, Background 4층이다.</li></ul>',
-      zh: '<h5>输出</h5><ul><li><code>输出</code>会将所有页面导出为 PNG/JPG/PSD。PSD 包含 Memo、Text Output、Template、Background 四层。</li></ul>'
+      en: '<h5>Save your work, or pick up later</h5><ul><li><strong>Save</strong> puts the whole project into one file. The filename is built automatically, like <code>sheet_title_episode_cut_settei.json</code>.</li><li><strong>Load</strong> opens one saved file back up.</li><li>Working on many cuts? <strong>Path</strong> points at a folder — every settings file in it (and its subfolders) shows up in the dropdown next to it, so you can switch between cuts. <strong>Reload</strong> rescans that same folder.</li></ul>',
+      ja: '<h5>作業を保存・続きから開く</h5><ul><li><strong>保存</strong>で今の作業全部を1つのファイルにする。ファイル名は<code>sheet_タイトル_話数_カット_settei.json</code>のように自動でつく。</li><li><strong>読込</strong>で保存したファイルを1つ選んで開く。</li><li>カットがたくさんある場合は<strong>読込先</strong>でフォルダを指定すると、そのフォルダ（と中のフォルダ）の設定ファイルが横の選択欄に並び、切り替えて開ける。<strong>再読込</strong>で同じフォルダを読み直す。</li></ul>',
+      ko: '<h5>작업 저장하고 나중에 이어서 열기</h5><ul><li><strong>저장</strong>으로 지금 작업 전체를 파일 하나로 만든다. 파일명은 <code>sheet_타이틀_화수_컷_settei.json</code>처럼 자동으로 붙는다.</li><li><strong>불러오기</strong>로 저장해둔 파일 하나를 골라서 연다.</li><li>컷이 여러 개면 <strong>경로지정</strong>으로 폴더를 지정하자 — 그 폴더(와 하위 폴더) 안의 설정 파일들이 옆 선택칸에 쭉 나와서 컷을 바꿔가며 열 수 있다. <strong>다시 불러오기</strong>는 같은 폴더를 다시 스캔한다.</li></ul>',
+      zh: '<h5>保存进度，之后接着做</h5><ul><li><strong>保存</strong>把当前整个项目存成一个文件。文件名会自动生成，比如 <code>sheet_标题_集数_镜头_settei.json</code>。</li><li><strong>导入</strong>选择一个已保存的文件打开。</li><li>如果有多个镜头，<strong>路径</strong>可以指定一个文件夹——该文件夹（及子文件夹）里的所有设置文件都会列在旁边的下拉框中，方便切换镜头。<strong>重新读取</strong>会重新扫描同一文件夹。</li></ul>'
     };
 
     function renderManual() {
       const doc = manualDocs[state.lang] || manualDocs.en;
       if (manualSummaryTitleEl) manualSummaryTitleEl.textContent = doc.title;
       if (manualSummaryHintEl) manualSummaryHintEl.textContent = doc.hint;
-      if (manualContentEl) manualContentEl.innerHTML = (doc.html || '') + (manualBottomOutputDocs[state.lang] || manualBottomOutputDocs.en || '') + (manualBottomSettingsDocs[state.lang] || manualBottomSettingsDocs.en || '');
+      if (manualContentEl) manualContentEl.innerHTML = (doc.html || '') + (manualBottomSettingsDocs[state.lang] || manualBottomSettingsDocs.en || '');
     }
 
     function getShortcutTexts() {
