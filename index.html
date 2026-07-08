@@ -2621,7 +2621,7 @@
             <span class="notice-line" data-ui-text="memoRightClickNoticeL1">メモ欄で右クリック</span>
             <span class="notice-line" data-ui-text="memoRightClickNoticeL2">：テキスト枠の作成・編集</span>
           </div>
-          <button id="serifuModeBtn" class="serifu-side-btn" type="button" title="セリフシート：ドラッグで範囲選択、離すとシート">セリフシート</button>
+          <button id="serifuModeBtn" class="serifu-side-btn" type="button" title="セリフシート：ドラッグで範囲選択、範囲を右クリックでシート">セリフシート</button>
         </div>
         <div id="sheetStage" class="sheet-stage">
           <svg id="sheetSvg" viewBox="0 0 1753 2480" xmlns="http://www.w3.org/2000/svg" aria-label="timesheet preview"></svg>
@@ -2676,7 +2676,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '830';
+    const APP_VERSION = '831';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3666,6 +3666,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver831', 'Serifu Sheet: right-click the range to open it', ['Releasing a drag popped the sheet open immediately (ver772), and left-clicking the blue range reopened it — so redrawing a range you had just closed was awkward. Now the drag only picks the range, and the sheet opens on right-click, as it did back in ver682. A left press anywhere, including inside the current range, simply starts a new range.']],
         ['ver830', 'Reverted the ver828 support-button move', ['ver828 moved the Ko-fi support button to the bottom-right, on the claim that it was blocking the セリフシート drag-select. That was wrong - the drag-select was never broken. The button is back at the bottom-left where it was, and the override CSS is gone.']],
         ['ver829', 'Quick Guide: load the CSV by drag & drop too', ['Step 1 pointed at the CSV Upload control. Dropping a .csv straight onto the sheet already worked and is the shorter path, so the guide now says that instead — matching how the company-paper tip is worded.']],
         ['ver827', 'Quick Guide: correct button names + paper by drag & drop', ['Step 3 now uses the real button names for saving/loading a project (was "Preserve/Read" in some languages). The company-paper tip is reworded around drag & drop: drop a blank copy of the studio timesheet onto the sheet and it aligns automatically — no need to press Auto Align, since dropping a paper already runs it.']],
@@ -3808,6 +3809,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver831', 'セリフシート：範囲を右クリックで開く', ['ドラッグを離した瞬間にシートが開き（ver772）、青い範囲を左クリックしても再び開いていたため、閉じた直後に範囲を引き直すのが煩わしい状態でした。ドラッグは範囲選択のみとし、シートはver682と同じく右クリックで開きます。現在の範囲の内側を含め、左ボタンを押すとそのまま新しい範囲の選択になります。']],
         ['ver830', 'ver828の応援ボタン移動を取り消し', ['ver828では「応援ボタンがセリフシートのドラッグ選択を塞いでいる」として右下へ移動しましたが、これは誤りでドラッグ選択は壊れていませんでした。ボタンは元の左下に戻し、上書きのCSSも削除しました。']],
         ['ver829', '簡単説明書：CSVもドラッグ＆ドロップで読み込む', ['ステップ1がCSV読込の操作を案内していましたが、.csvをそのままシートにドロップするだけで読み込めます（以前から動作していました）。こちらの方が手数が少ないため、会社用紙のヒントと同じ書き方に統一しました。']],
         ['ver827', '簡単説明書：ボタン名の修正と用紙のドラッグ＆ドロップ', ['ステップ3の保存・読込の説明を実際のボタン名に合わせました（一部言語で「保存/読込」ではない語になっていた箇所を修正）。会社用紙のヒントもドラッグ＆ドロップ中心に書き直し：会社のタイムシートの空用紙画像をシートにドロップするだけで自動整列します（用紙をドロップした時点で自動整列が走るため、Auto Alignを押す必要はありません）。']],
@@ -3950,6 +3952,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver831', '세리후 시트: 범위를 우클릭해서 열기', ['드래그를 놓는 순간 시트가 바로 떴고(ver772), 파란 범위를 좌클릭해도 다시 열려서 창을 닫고 범위를 다시 잡기가 불편했습니다. 이제 드래그는 범위 선택만 하고, 시트는 ver682처럼 우클릭으로 엽니다. 현재 범위 안쪽을 포함해 어디든 좌클릭하면 그냥 새 범위를 잡습니다.']],
         ['ver830', 'ver828의 후원 버튼 이동을 되돌림', ['ver828에서 후원 버튼이 세리후 시트 드래그 선택을 막는다고 보고 오른쪽 아래로 옮겼는데, 사실이 아니었습니다. 드래그 선택은 멀쩡했습니다. 버튼을 원래 자리인 왼쪽 아래로 되돌리고 덮어쓰던 CSS도 제거했습니다.']],
         ['ver829', '간단 설명서: CSV도 드래그앤드롭으로', ['1단계가 CSV 읽기 버튼을 안내하고 있었는데, .csv를 시트 위로 바로 드롭해도 읽힙니다(원래부터 동작하던 기능). 이쪽이 손이 덜 가서 회사 지정용지 팁과 같은 방식으로 문구를 통일했습니다.']],
         ['ver827', '간단 설명서: 버튼명 정정 + 용지 드래그앤드롭', ['3단계의 저장·불러오기 설명을 실제 버튼명에 맞췄습니다(일부 언어에서 「보존/읽기」로 잘못 적혀 있던 부분 수정). 회사 지정용지 팁도 드래그앤드롭 중심으로 다시 썼습니다: 회사 타임시트의 빈 양식 이미지를 시트 위로 드롭하면 자동으로 정렬됩니다(용지를 드롭한 시점에 자동 정렬이 실행되므로 Auto Align을 누를 필요가 없습니다).']],
@@ -4092,6 +4095,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver831', 'セリフシート：右键点击范围打开', ['松开拖拽时表格会立即弹出（ver772），左键点击蓝色范围也会再次打开，导致关闭后重新框选很不方便。现在拖拽只负责选择范围，表格改为右键打开，与 ver682 一致。包括当前范围内部在内，按下左键都会直接开始框选新范围。']],
         ['ver830', '撤销 ver828 的支持按钮移动', ['ver828 认为支持按钮挡住了 セリフシート 的拖拽选择，因而把它移到右下角，但这是误判——拖拽选择本来就正常。按钮已移回原来的左下角，覆盖用的 CSS 也已删除。']],
         ['ver829', '简易说明书：CSV 也可拖放导入', ['第 1 步原本指向 CSV 读取控件，其实把 .csv 直接拖放到表上就能读取（原本就支持）。这样步骤更少，因此改成与公司指定纸张提示相同的写法。']],
         ['ver827', '简易说明书：修正按钮名称 + 纸张拖放', ['第 3 步的保存·导入说明改用实际按钮名称（部分语言中曾误写为「保存/读取」）。公司指定纸张的提示也改以拖放为中心：把公司时间表的空白纸张图片拖放到表上即可自动对齐（放入纸张时就会自动运行对齐，无需再按 Auto Align）。']],
@@ -13954,7 +13958,8 @@
         if (selection) state.serifuRangeSelection = selection;
         suppressNextClickBriefly(260);
         render();
-        if (state.serifuMode && state.serifuRangeSelection) setTimeout(openSerifuSheetModal, 0);
+        // Releasing only picks the range. Opening the sheet is a separate,
+        // deliberate right-click, so the range can be redrawn freely first.
       }
       state.serifuRangeDrag = null;
       document.documentElement.classList.remove('serifu-range-dragging');
@@ -17878,8 +17883,10 @@
           event.preventDefault();
           event.stopPropagation();
           if (event.stopImmediatePropagation) event.stopImmediatePropagation();
-          // The capture layer sits above the selection overlay, so its clear-X / box would be
-          // unclickable — hit-test them here first and act instead of starting a new drag.
+          // The capture layer sits above the selection overlay, so its clear-X would be
+          // unclickable — hit-test it here first and act instead of starting a new drag.
+          // A left press anywhere else (including inside the current range) starts a new
+          // range, so a mis-drawn selection can just be drawn over.
           const sel = state.serifuRangeSelection;
           if (sel) {
             const pt = getSvgPointFromPointerEvent(event);
@@ -17888,11 +17895,21 @@
               const btnSize = 16, pad = 6;
               const bx = rect.x + rect.w + 4, by = rect.y + rect.h - btnSize;
               if (pt.x >= bx - pad && pt.x <= bx + btnSize + pad && pt.y >= by - pad && pt.y <= by + btnSize + pad) { clearSerifuRangeSelection(); return; }
-              if (pt.x >= rect.x && pt.x <= rect.x + rect.w && pt.y >= rect.y && pt.y <= rect.y + rect.h) { setTimeout(openSerifuSheetModal, 0); return; }
             }
           }
           beginSerifuRangeDrag(event, info.entry, info.frame, info.range);
         }, { passive:false });
+        // Same reason: the overlay's own contextmenu listener never fires while this
+        // capture layer is on top, so the right-click → sheet menu lives here too.
+        hit.addEventListener('contextmenu', function(event){
+          const sel = state.serifuRangeSelection;
+          if (!sel) return;
+          const pt = getSvgPointFromPointerEvent(event);
+          const rect = getSerifuSelectionRect(tempBlock, entries, sel);
+          if (!rect) return;
+          if (pt.x < rect.x || pt.x > rect.x + rect.w || pt.y < rect.y || pt.y > rect.y + rect.h) return;
+          openSerifuRangeContextMenu(event);
+        });
         appendSvgNode(hit);
       });
     }
