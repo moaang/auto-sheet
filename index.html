@@ -1463,6 +1463,26 @@
       background: rgba(28, 30, 34, .07);
       color: var(--text);
     }
+    /* Ko-fi's overlay-widget.js injects a fixed button at bottom-LEFT with
+       z-index 99999999. That lands right on top of the sheet's left cel
+       columns, and its iframe swallowed every pointer event there - so the
+       セリフシート drag-select (and anything else in that corner) silently did
+       nothing. Move it to the bottom-right and drop it below our own modals.
+       Ko-fi's own stylesheet is injected after this one and already uses
+       !important, so plain class selectors lose the tie - hence html body. */
+    html body .floatingchat-container-wrap,
+    html body .floatingchat-container-wrap-mobi {
+      left: auto !important;
+      right: 16px !important;
+      z-index: 9000 !important;
+    }
+    html body .floating-chat-kofi-popup-iframe,
+    html body .floating-chat-kofi-popup-iframe-mobi {
+      left: auto !important;
+      right: 16px !important;
+      z-index: 9001 !important;
+    }
+
     .serifu-sheet-modal-backdrop {
       position: fixed;
       inset: 0;
@@ -2676,7 +2696,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '827';
+    const APP_VERSION = '828';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3666,6 +3686,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver828', 'Fixed the support button blocking the sheet', ['The Ko-fi support button added in ver824 is injected at the bottom-left with a huge z-index, so its iframe sat on top of the sheet\'s left cel columns and ate every pointer event there. The セリフシート drag-select stopped opening, along with anything else clicked in that corner. The button now sits at the bottom-right and below our own dialogs.']],
         ['ver827', 'Quick Guide: correct button names + paper by drag & drop', ['Step 3 now uses the real button names for saving/loading a project (was "Preserve/Read" in some languages). The company-paper tip is reworded around drag & drop: drop a blank copy of the studio timesheet onto the sheet and it aligns automatically — no need to press Auto Align, since dropping a paper already runs it.']],
         ['ver826', 'Clearer input-field guide for the 3 boxes', ['The hints and examples for the Sheet input, Dialog, and Camera boxes were rewritten in plain language to match the Quick Guide. Every box now shows one concrete example with the meaning of each part (start | end | who | what, etc.), and the Camera examples now label what PAN / TU / FI / OL actually do. Applies to all 4 languages.']],
         ['ver825', 'Fixed a mislabeled/duplicated Quick Guide section', ['The settings-save note below the 3 steps called the Save button "Output" — wrong, since Output already means the PNG/JPG/PSD image export covered in step 3. It now says Save/Load/Path/Reload, matching the real buttons. Also removed a separate Output paragraph that just repeated step 3 with extra PSD-layer detail.']],
@@ -3806,6 +3827,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver828', '応援ボタンがシートを塞いでいた不具合を修正', ['ver824で追加したKo-fiの応援ボタンは画面左下に非常に大きなz-indexで挿入されるため、そのiframeがシート左側のセル欄の上に重なり、その範囲のポインタ操作をすべて吸い取っていました。セリフシートのドラッグ選択が開かなくなっていたのはこれが原因です。ボタンを右下へ移動し、ダイアログより下の重なり順にしました。']],
         ['ver827', '簡単説明書：ボタン名の修正と用紙のドラッグ＆ドロップ', ['ステップ3の保存・読込の説明を実際のボタン名に合わせました（一部言語で「保存/読込」ではない語になっていた箇所を修正）。会社用紙のヒントもドラッグ＆ドロップ中心に書き直し：会社のタイムシートの空用紙画像をシートにドロップするだけで自動整列します（用紙をドロップした時点で自動整列が走るため、Auto Alignを押す必要はありません）。']],
         ['ver826', '3つの入力欄の説明をわかりやすく整理', ['シート入力・セリフ欄・カメラ欄のヒントと例を、簡単説明書に合わせてやさしい言葉に書き直しました。どの欄も具体例1つと各項目の意味（始まり｜終わり｜だれ｜なに 等）を表示し、カメラの例には PAN／TU／FI／OL が何をするかの注釈を付けました。4言語すべてに反映しています。']],
         ['ver825', '簡単説明書の誤表記・重複を修正', ['3ステップの下にあった設定保存の説明が、保存ボタンを「出力」と呼んでいた誤りを修正。出力は既にPNG/JPG/PSD書き出し（ステップ3）の意味なので紛らわしい状態でした。実際のボタン名（保存／読込／読込先／再読込）に合わせています。またステップ3の内容をPSDレイヤーの詳細付きでそのまま繰り返していた別の出力説明も削除しました。']],
@@ -3946,6 +3968,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver828', '후원 버튼이 시트를 가로막던 버그 수정', ['ver824에 넣은 Ko-fi 후원 버튼이 화면 왼쪽 아래에 아주 큰 z-index로 삽입돼서, 그 iframe이 시트 왼쪽 셀 칸 위를 덮고 그 영역의 포인터 조작을 전부 먹고 있었습니다. 세리후 시트 드래그 선택이 안 열리던 게 이 때문입니다. 버튼을 오른쪽 아래로 옮기고 다이얼로그보다 아래 겹침 순서로 낮췄습니다.']],
         ['ver827', '간단 설명서: 버튼명 정정 + 용지 드래그앤드롭', ['3단계의 저장·불러오기 설명을 실제 버튼명에 맞췄습니다(일부 언어에서 「보존/읽기」로 잘못 적혀 있던 부분 수정). 회사 지정용지 팁도 드래그앤드롭 중심으로 다시 썼습니다: 회사 타임시트의 빈 양식 이미지를 시트 위로 드롭하면 자동으로 정렬됩니다(용지를 드롭한 시점에 자동 정렬이 실행되므로 Auto Align을 누를 필요가 없습니다).']],
         ['ver826', '3개 입력란 설명을 알기 쉽게 정리', ['시트 입력·대사란·카메라란의 힌트와 예시를 간단 설명서에 맞춰 쉬운 말로 다시 썼습니다. 각 란마다 구체적인 예 하나와 각 항목의 뜻(시작｜끝｜누가｜무엇 등)을 보여주고, 카메라 예시에는 PAN／TU／FI／OL 이 무엇을 하는지 주석을 달았습니다. 4개 언어 모두 반영했습니다.']],
         ['ver825', '간단 설명서 오표기·중복 수정', ['3단계 아래 설정 저장 설명에서 저장 버튼을 「출력」이라고 부르던 오류를 고쳤습니다. 출력은 이미 PNG/JPG/PSD 내보내기(3단계)를 뜻해서 헷갈리는 상태였습니다. 실제 버튼명(저장/불러오기/경로지정/다시 불러오기)에 맞췄습니다. 3단계 내용을 PSD 레이어 상세와 함께 그대로 반복하던 별도 출력 설명도 제거했습니다.']],
@@ -4086,6 +4109,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver828', '修复支持按钮遮挡表格的问题', ['ver824 加入的 Ko-fi 支持按钮以极高的 z-index 插入在左下角，其 iframe 覆盖在表格左侧的 Cell 栏之上，吞掉了该区域的所有指针操作。セリフシート 的拖拽选择无法打开正是因为这个。现已将按钮移到右下角，并把层级降到对话框之下。']],
         ['ver827', '简易说明书：修正按钮名称 + 纸张拖放', ['第 3 步的保存·导入说明改用实际按钮名称（部分语言中曾误写为「保存/读取」）。公司指定纸张的提示也改以拖放为中心：把公司时间表的空白纸张图片拖放到表上即可自动对齐（放入纸张时就会自动运行对齐，无需再按 Auto Align）。']],
         ['ver826', '让 3 个输入栏的说明更易懂', ['把 Sheet 输入、对白栏、摄影机栏的提示和示例改用简单语言重写，与简易说明书保持一致。每个栏都显示一个具体示例以及各部分的含义（起始｜结束｜谁｜内容 等），并在摄影机示例中标注 PAN／TU／FI／OL 各自的作用。4 种语言均已更新。']],
         ['ver825', '修正简易说明书的错误标注与重复内容', ['3 步下方关于保存设置的说明中，把保存按钮称为"输出"是错误的——输出已经指第 3 步里的 PNG/JPG/PSD 图像导出，容易混淆。现已改为实际按钮名称（保存/导入/路径/重新读取）。同时删除了与第 3 步重复、只是多了 PSD 图层细节的单独输出段落。']],
