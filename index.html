@@ -2696,7 +2696,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '828';
+    const APP_VERSION = '829';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3686,6 +3686,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver829', 'Quick Guide: load the CSV by drag & drop too', ['Step 1 pointed at the CSV Upload control. Dropping a .csv straight onto the sheet already worked and is the shorter path, so the guide now says that instead — matching how the company-paper tip is worded.']],
         ['ver828', 'Fixed the support button blocking the sheet', ['The Ko-fi support button added in ver824 is injected at the bottom-left with a huge z-index, so its iframe sat on top of the sheet\'s left cel columns and ate every pointer event there. The セリフシート drag-select stopped opening, along with anything else clicked in that corner. The button now sits at the bottom-right and below our own dialogs.']],
         ['ver827', 'Quick Guide: correct button names + paper by drag & drop', ['Step 3 now uses the real button names for saving/loading a project (was "Preserve/Read" in some languages). The company-paper tip is reworded around drag & drop: drop a blank copy of the studio timesheet onto the sheet and it aligns automatically — no need to press Auto Align, since dropping a paper already runs it.']],
         ['ver826', 'Clearer input-field guide for the 3 boxes', ['The hints and examples for the Sheet input, Dialog, and Camera boxes were rewritten in plain language to match the Quick Guide. Every box now shows one concrete example with the meaning of each part (start | end | who | what, etc.), and the Camera examples now label what PAN / TU / FI / OL actually do. Applies to all 4 languages.']],
@@ -3827,6 +3828,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver829', '簡単説明書：CSVもドラッグ＆ドロップで読み込む', ['ステップ1がCSV読込の操作を案内していましたが、.csvをそのままシートにドロップするだけで読み込めます（以前から動作していました）。こちらの方が手数が少ないため、会社用紙のヒントと同じ書き方に統一しました。']],
         ['ver828', '応援ボタンがシートを塞いでいた不具合を修正', ['ver824で追加したKo-fiの応援ボタンは画面左下に非常に大きなz-indexで挿入されるため、そのiframeがシート左側のセル欄の上に重なり、その範囲のポインタ操作をすべて吸い取っていました。セリフシートのドラッグ選択が開かなくなっていたのはこれが原因です。ボタンを右下へ移動し、ダイアログより下の重なり順にしました。']],
         ['ver827', '簡単説明書：ボタン名の修正と用紙のドラッグ＆ドロップ', ['ステップ3の保存・読込の説明を実際のボタン名に合わせました（一部言語で「保存/読込」ではない語になっていた箇所を修正）。会社用紙のヒントもドラッグ＆ドロップ中心に書き直し：会社のタイムシートの空用紙画像をシートにドロップするだけで自動整列します（用紙をドロップした時点で自動整列が走るため、Auto Alignを押す必要はありません）。']],
         ['ver826', '3つの入力欄の説明をわかりやすく整理', ['シート入力・セリフ欄・カメラ欄のヒントと例を、簡単説明書に合わせてやさしい言葉に書き直しました。どの欄も具体例1つと各項目の意味（始まり｜終わり｜だれ｜なに 等）を表示し、カメラの例には PAN／TU／FI／OL が何をするかの注釈を付けました。4言語すべてに反映しています。']],
@@ -3968,6 +3970,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver829', '간단 설명서: CSV도 드래그앤드롭으로', ['1단계가 CSV 읽기 버튼을 안내하고 있었는데, .csv를 시트 위로 바로 드롭해도 읽힙니다(원래부터 동작하던 기능). 이쪽이 손이 덜 가서 회사 지정용지 팁과 같은 방식으로 문구를 통일했습니다.']],
         ['ver828', '후원 버튼이 시트를 가로막던 버그 수정', ['ver824에 넣은 Ko-fi 후원 버튼이 화면 왼쪽 아래에 아주 큰 z-index로 삽입돼서, 그 iframe이 시트 왼쪽 셀 칸 위를 덮고 그 영역의 포인터 조작을 전부 먹고 있었습니다. 세리후 시트 드래그 선택이 안 열리던 게 이 때문입니다. 버튼을 오른쪽 아래로 옮기고 다이얼로그보다 아래 겹침 순서로 낮췄습니다.']],
         ['ver827', '간단 설명서: 버튼명 정정 + 용지 드래그앤드롭', ['3단계의 저장·불러오기 설명을 실제 버튼명에 맞췄습니다(일부 언어에서 「보존/읽기」로 잘못 적혀 있던 부분 수정). 회사 지정용지 팁도 드래그앤드롭 중심으로 다시 썼습니다: 회사 타임시트의 빈 양식 이미지를 시트 위로 드롭하면 자동으로 정렬됩니다(용지를 드롭한 시점에 자동 정렬이 실행되므로 Auto Align을 누를 필요가 없습니다).']],
         ['ver826', '3개 입력란 설명을 알기 쉽게 정리', ['시트 입력·대사란·카메라란의 힌트와 예시를 간단 설명서에 맞춰 쉬운 말로 다시 썼습니다. 각 란마다 구체적인 예 하나와 각 항목의 뜻(시작｜끝｜누가｜무엇 등)을 보여주고, 카메라 예시에는 PAN／TU／FI／OL 이 무엇을 하는지 주석을 달았습니다. 4개 언어 모두 반영했습니다.']],
@@ -4109,6 +4112,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver829', '简易说明书：CSV 也可拖放导入', ['第 1 步原本指向 CSV 读取控件，其实把 .csv 直接拖放到表上就能读取（原本就支持）。这样步骤更少，因此改成与公司指定纸张提示相同的写法。']],
         ['ver828', '修复支持按钮遮挡表格的问题', ['ver824 加入的 Ko-fi 支持按钮以极高的 z-index 插入在左下角，其 iframe 覆盖在表格左侧的 Cell 栏之上，吞掉了该区域的所有指针操作。セリフシート 的拖拽选择无法打开正是因为这个。现已将按钮移到右下角，并把层级降到对话框之下。']],
         ['ver827', '简易说明书：修正按钮名称 + 纸张拖放', ['第 3 步的保存·导入说明改用实际按钮名称（部分语言中曾误写为「保存/读取」）。公司指定纸张的提示也改以拖放为中心：把公司时间表的空白纸张图片拖放到表上即可自动对齐（放入纸张时就会自动运行对齐，无需再按 Auto Align）。']],
         ['ver826', '让 3 个输入栏的说明更易懂', ['把 Sheet 输入、对白栏、摄影机栏的提示和示例改用简单语言重写，与简易说明书保持一致。每个栏都显示一个具体示例以及各部分的含义（起始｜结束｜谁｜内容 等），并在摄影机示例中标注 PAN／TU／FI／OL 各自的作用。4 种语言均已更新。']],
@@ -4344,7 +4348,7 @@
           <h4>Make a timesheet in 3 steps</h4>
           <div class="manual-step"><span class="manual-step-no">1</span>Put something on the sheet</div>
           <ul>
-            <li><strong>From CLIP STUDIO:</strong> <code>File</code> → <code>Export animation</code> → <code>Timesheet information</code> to save a CSV, then just drop it into <strong>CSV Upload</strong> here.</li>
+            <li><strong>From CLIP STUDIO:</strong> <code>File</code> → <code>Export animation</code> → <code>Timesheet information</code> to save a CSV, then <strong>drag that CSV onto the sheet</strong> — it loads itself.</li>
             <li><strong>Or type it yourself:</strong> write <code>A: 1 2 3</code> in Text Commands and cel A shows 1, 2, 3. Use <code>n</code> to hold the same drawing (e.g. <code>A: 1 n n 2</code>).</li>
             <li><strong>Dialog:</strong> <code>0+01 | 1+00 | speaker | line</code> (start | end | who | what).</li>
             <li><strong>Camera:</strong> <code>0+01 | 1+00 | A | PAN | B</code> (examples sit right under the box).</li>
@@ -4370,7 +4374,7 @@
           <h4>3ステップでタイムシートができます</h4>
           <div class="manual-step"><span class="manual-step-no">1</span>中身を入れる</div>
           <ul>
-            <li><strong>CLIP STUDIOから：</strong><code>ファイル</code> → <code>アニメーション書き出し</code> → <code>タイムシート情報</code> でCSVを保存 → このツールの <strong>CSV読込</strong> に入れるだけ。</li>
+            <li><strong>CLIP STUDIOから：</strong><code>ファイル</code> → <code>アニメーション書き出し</code> → <code>タイムシート情報</code> でCSVを保存 → その<strong>CSVをシートにドラッグ＆ドロップ</strong>するだけ。自動で読み込まれます。</li>
             <li><strong>手で書くなら：</strong>テキストコマンドに <code>A: 1 2 3</code> と書くと、Aセルに 1・2・3 が並びます。同じ絵を続けたいコマは <code>n</code>（例：<code>A: 1 n n 2</code>）。</li>
             <li><strong>セリフ：</strong><code>0+01 | 1+00 | 話者 | セリフ</code>（始まり | 終わり | だれ | なに）。</li>
             <li><strong>カメラ：</strong><code>0+01 | 1+00 | A | PAN | B</code>（欄のすぐ下に例があります）。</li>
@@ -4396,7 +4400,7 @@
           <h4>3단계면 타임시트가 완성됩니다</h4>
           <div class="manual-step"><span class="manual-step-no">1</span>내용 넣기</div>
           <ul>
-            <li><strong>CLIP STUDIO에서:</strong> <code>파일</code> → <code>애니메이션 내보내기</code> → <code>타임시트 정보</code>로 CSV 저장 → 이 툴의 <strong>CSV 읽기</strong>에 넣기만 하면 됩니다.</li>
+            <li><strong>CLIP STUDIO에서:</strong> <code>파일</code> → <code>애니메이션 내보내기</code> → <code>타임시트 정보</code>로 CSV 저장 → 그 <strong>CSV를 시트 위로 드래그앤드롭</strong>하세요. 알아서 불러옵니다.</li>
             <li><strong>직접 쓰려면:</strong> 텍스트 커맨드에 <code>A: 1 2 3</code>이라고 쓰면 A셀에 1·2·3이 나란히 들어갑니다. 같은 그림을 유지할 칸은 <code>n</code> (예: <code>A: 1 n n 2</code>).</li>
             <li><strong>대사:</strong> <code>0+01 | 1+00 | 화자 | 대사</code> (시작 | 끝 | 누가 | 뭐라고).</li>
             <li><strong>카메라:</strong> <code>0+01 | 1+00 | A | PAN | B</code> (입력칸 바로 아래에 예시가 있습니다).</li>
@@ -4422,7 +4426,7 @@
           <h4>3 步做出时间表</h4>
           <div class="manual-step"><span class="manual-step-no">1</span>放入内容</div>
           <ul>
-            <li><strong>从 CLIP STUDIO：</strong><code>文件</code> → <code>导出动画</code> → <code>时间表信息</code> 保存 CSV，然后放进这里的 <strong>CSV 读取</strong> 就行。</li>
+            <li><strong>从 CLIP STUDIO：</strong><code>文件</code> → <code>导出动画</code> → <code>时间表信息</code> 保存 CSV，然后把那个 <strong>CSV 拖放到表上</strong>即可，会自动读取。</li>
             <li><strong>想手写的话：</strong>在文本命令里写 <code>A: 1 2 3</code>，A 栏就会依次出现 1、2、3。想保持同一张画的格子写 <code>n</code>（例：<code>A: 1 n n 2</code>）。</li>
             <li><strong>台词：</strong><code>0+01 | 1+00 | 说话人 | 台词</code>（开始 | 结束 | 谁 | 说什么）。</li>
             <li><strong>摄影：</strong><code>0+01 | 1+00 | A | PAN | B</code>（输入框正下方有示例）。</li>
