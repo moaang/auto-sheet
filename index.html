@@ -539,6 +539,46 @@
       font-size: 11.5px;
       line-height: 1.6;
     }
+    .manual-tvp {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border: 1px solid var(--soft);
+      border-radius: var(--r-ctl);
+      background: #f4f6f4;
+      font-size: 11.5px;
+      line-height: 1.6;
+    }
+    .manual-tvp-title {
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+    .manual-tvp p { margin: 0 0 8px; }
+    .manual-tvp ul {
+      margin: 0 0 10px;
+      padding-left: 18px;
+    }
+    .manual-tvp li { margin: 2px 0; }
+    .manual-tvp-dl {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 12px;
+      border-radius: var(--r-ctl);
+      background: var(--ink-active);
+      color: #fff;
+      font-weight: 800;
+      text-decoration: none;
+    }
+    .manual-tvp-dl .ic-svg {
+      width: 15px;
+      height: 15px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .manual-tvp-dl:hover { filter: brightness(1.08); }
 
     .shortcut-card .manual-summary-hint, #shortcutSummaryHint { display: none; }
     .shortcut-content {
@@ -689,6 +729,35 @@
       letter-spacing: -0.055em;
       transform: scaleX(0.96);
       transform-origin: center center;
+    }
+    .tvp-download-chip {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin: 6px 0 0 auto;
+      width: fit-content;
+      padding: 4px 9px;
+      border: 1px solid var(--soft);
+      border-radius: 999px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 10.5px;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .tvp-download-chip .ic-svg {
+      width: 13px;
+      height: 13px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .tvp-download-chip:hover {
+      color: var(--text);
+      border-color: var(--muted);
     }
     .input-mode-btn.active {
       background: var(--ink-active);
@@ -2378,6 +2447,10 @@
           <button class="input-mode-btn active" type="button" data-input-mode="text" data-ui-text="inputModeTextCommands" role="tab" aria-selected="true">Text Commands</button>
           <button class="input-mode-btn" type="button" data-input-mode="csv" data-ui-text="inputModeCsv" role="tab" aria-selected="false">CSV Upload</button>
         </div>
+        <a id="tvpPanelDownload" class="tvp-download-chip" href="AutoSheet.tvpx" download="AutoSheet.tvpx">
+          <svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 4v10m0 0 4-4m-4 4-4-4M5 18.5h14"/></svg>
+          <span data-ui-text="tvpPanelDownload">TVPaint用パネル</span>
+        </a>
         <div id="textModeBox" class="mode-box">
           <label for="timelineCommandInput" data-ui-text="textCommandsLabel">Text Commands</label>
           <label class="command-filter-toggle">
@@ -2676,7 +2749,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '831';
+    const APP_VERSION = '832';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3130,7 +3203,7 @@
     const uiTexts = {
       en: {
         languageLabel:'Language', headerCardTitle:'Header', episodeLabel:'Ep.no', titleLabel:'Title', cutNoLabel:'Cut.no', secondsLabel:'Duration sec', framesLabel:'Duration frame', authorLabel:'name', pageLabel:'Page',
-        originalCellTitle:'Sheet Input', inputModeLabel:'Input Mode', inputModeTextCommands:'Text Commands', inputModeCsv:'CSV Upload', csvSettingsExportBtn:'Save Project', shakuEditBtn:'Length Edit', shakuEditHint:'Drag a blue frame line to select a range.', shakuCutBtn:'Cut', shakuStretchBtn:'Extend', shakuSelectedLabel:'Selected', shakuUndoBtn:'Undo', shakuRedoBtn:'Redo', shakuFlashCut:'Cut applied', shakuFlashStretch:'Extend applied', dougaSheetCreate:'Make Douga', dougaSheetRefresh:'Refresh Douga', dougaSheetTitle:'Generate a read-only douga sheet from Cell numbers and dot marks', cellReadabilityTitle:'Large Cell text',
+        originalCellTitle:'Sheet Input', inputModeLabel:'Input Mode', inputModeTextCommands:'Text Commands', inputModeCsv:'CSV Upload', tvpPanelDownload:'TVPaint panel', csvSettingsExportBtn:'Save Project', shakuEditBtn:'Length Edit', shakuEditHint:'Drag a blue frame line to select a range.', shakuCutBtn:'Cut', shakuStretchBtn:'Extend', shakuSelectedLabel:'Selected', shakuUndoBtn:'Undo', shakuRedoBtn:'Redo', shakuFlashCut:'Cut applied', shakuFlashStretch:'Extend applied', dougaSheetCreate:'Make Douga', dougaSheetRefresh:'Refresh Douga', dougaSheetTitle:'Generate a read-only douga sheet from Cell numbers and dot marks', cellReadabilityTitle:'Large Cell text',
         textCommandsLabel:'Text Commands', csvFileLabel:'CSV File', csvCommandEditLabel:'Editable Commands from CSV',
         dialogBlocksTitle:'Dialog Area', dialogFormatLabel:'Ex: 0+01 | 1+00 | speaker | line  (start | end | who | what)', cameraBlocksTitle:'Camera Area', cameraFormatLabel:'Ex: 0+01 | 1+00 | A | PAN | B  (start | end | from | move | to)', cameraExamplesTitle:'Examples',
         cameraExPan:'pan (A → B)', cameraExTu:'track up / push in', cameraExFi:'fade in', cameraExOl:'overlap (switch)',
@@ -3139,7 +3212,7 @@
       },
       ja: {
         languageLabel:'言語', headerCardTitle:'ヘッダー', episodeLabel:'話数', titleLabel:'タイトル', cutNoLabel:'カット番号', secondsLabel:'尺 秒', framesLabel:'尺 コマ', authorLabel:'名前', pageLabel:'ページ',
-        originalCellTitle:'シート入力', inputModeLabel:'入力モード', inputModeTextCommands:'テキストコマンド', inputModeCsv:'CSV読込', csvSettingsExportBtn:'プロジェクト保存', shakuEditBtn:'尺編集(演出向け)', shakuEditHint:'青いフレーム線をドラッグして尺を選択', shakuCutBtn:'切る', shakuStretchBtn:'伸ばす', shakuSelectedLabel:'選択', shakuUndoBtn:'取り消し', shakuRedoBtn:'やり直し', shakuFlashCut:'切る 反映', shakuFlashStretch:'伸ばす 反映', dougaSheetCreate:'動画作成', dougaSheetRefresh:'動画更新', dougaSheetTitle:'Cell番号と動画点から編集不可の動画欄を生成', cellReadabilityTitle:'Cell文字を大きく表示',
+        originalCellTitle:'シート入力', inputModeLabel:'入力モード', inputModeTextCommands:'テキストコマンド', inputModeCsv:'CSV読込', tvpPanelDownload:'TVPaint用パネル', csvSettingsExportBtn:'プロジェクト保存', shakuEditBtn:'尺編集(演出向け)', shakuEditHint:'青いフレーム線をドラッグして尺を選択', shakuCutBtn:'切る', shakuStretchBtn:'伸ばす', shakuSelectedLabel:'選択', shakuUndoBtn:'取り消し', shakuRedoBtn:'やり直し', shakuFlashCut:'切る 反映', shakuFlashStretch:'伸ばす 反映', dougaSheetCreate:'動画作成', dougaSheetRefresh:'動画更新', dougaSheetTitle:'Cell番号と動画点から編集不可の動画欄を生成', cellReadabilityTitle:'Cell文字を大きく表示',
         textCommandsLabel:'テキストコマンド', csvFileLabel:'CSVファイル', csvCommandEditLabel:'CSVから生成された編集可能コマンド',
         dialogBlocksTitle:'セリフ欄', dialogFormatLabel:'例: 0+01 | 1+00 | 話者 | セリフ（始まり｜終わり｜だれ｜なに）', cameraBlocksTitle:'カメラ欄', cameraFormatLabel:'例: 0+01 | 1+00 | A | PAN | B（始まり｜終わり｜前｜動き｜後）', cameraExamplesTitle:'例',
         cameraExPan:'流し（A→B）', cameraExTu:'寄り（トラックアップ）', cameraExFi:'フェードイン', cameraExOl:'オーバーラップ（切替）',
@@ -3148,7 +3221,7 @@
       },
       ko: {
         languageLabel:'언어', headerCardTitle:'헤더', episodeLabel:'화수', titleLabel:'제목', cutNoLabel:'컷 번호', secondsLabel:'길이 초', framesLabel:'길이 프레임', authorLabel:'이름', pageLabel:'페이지',
-        originalCellTitle:'시트 입력', inputModeLabel:'입력 방식', inputModeTextCommands:'텍스트 커맨드', inputModeCsv:'CSV 읽기', csvSettingsExportBtn:'프로젝트 저장', shakuEditBtn:'연출용 편집툴', shakuEditHint:'파란 프레임선을 드래그해 길이를 선택', shakuCutBtn:'자르기', shakuStretchBtn:'늘리기', shakuSelectedLabel:'선택', shakuUndoBtn:'되돌리기', shakuRedoBtn:'다시 실행', shakuFlashCut:'자르기 반영', shakuFlashStretch:'늘리기 반영', dougaSheetCreate:'동화시트 작성', dougaSheetRefresh:'동화시트 갱신', dougaSheetTitle:'셀 번호와 동화점으로 수정 불가능한 동화칸 생성', cellReadabilityTitle:'셀 글자 크게 보기',
+        originalCellTitle:'시트 입력', inputModeLabel:'입력 방식', inputModeTextCommands:'텍스트 커맨드', inputModeCsv:'CSV 읽기', tvpPanelDownload:'TVPaint용 패널', csvSettingsExportBtn:'프로젝트 저장', shakuEditBtn:'연출용 편집툴', shakuEditHint:'파란 프레임선을 드래그해 길이를 선택', shakuCutBtn:'자르기', shakuStretchBtn:'늘리기', shakuSelectedLabel:'선택', shakuUndoBtn:'되돌리기', shakuRedoBtn:'다시 실행', shakuFlashCut:'자르기 반영', shakuFlashStretch:'늘리기 반영', dougaSheetCreate:'동화시트 작성', dougaSheetRefresh:'동화시트 갱신', dougaSheetTitle:'셀 번호와 동화점으로 수정 불가능한 동화칸 생성', cellReadabilityTitle:'셀 글자 크게 보기',
         textCommandsLabel:'텍스트 커맨드', csvFileLabel:'CSV 파일', csvCommandEditLabel:'CSV에서 생성된 편집 가능 커맨드',
         dialogBlocksTitle:'대사란', dialogFormatLabel:'예: 0+01 | 1+00 | 화자 | 대사（시작｜끝｜누가｜무엇）', cameraBlocksTitle:'카메라란', cameraFormatLabel:'예: 0+01 | 1+00 | A | PAN | B（시작｜끝｜이전｜움직임｜이후）', cameraExamplesTitle:'예시',
         cameraExPan:'팬 이동（A→B）', cameraExTu:'당김（트랙업）', cameraExFi:'페이드 인', cameraExOl:'오버랩（전환）',
@@ -3157,7 +3230,7 @@
       },
       zh: {
         languageLabel:'语言', headerCardTitle:'页眉', episodeLabel:'集数', titleLabel:'标题', cutNoLabel:'镜头编号', secondsLabel:'时长 秒', framesLabel:'时长 帧', authorLabel:'姓名', pageLabel:'页码',
-        originalCellTitle:'表格输入', inputModeLabel:'输入模式', inputModeTextCommands:'文本命令', inputModeCsv:'CSV 导入', csvSettingsExportBtn:'保存项目', shakuEditBtn:'时长编辑', shakuEditHint:'拖动蓝色帧线选择范围', shakuCutBtn:'切除', shakuStretchBtn:'延长', shakuSelectedLabel:'选择', shakuUndoBtn:'撤销', shakuRedoBtn:'重做', shakuFlashCut:'切除已应用', shakuFlashStretch:'延长已应用', dougaSheetCreate:'生成动画栏', dougaSheetRefresh:'刷新动画栏', dougaSheetTitle:'由 Cell 编号和动画点生成只读动画栏', cellReadabilityTitle:'放大 Cell 文字',
+        originalCellTitle:'表格输入', inputModeLabel:'输入模式', inputModeTextCommands:'文本命令', inputModeCsv:'CSV 导入', tvpPanelDownload:'TVPaint 面板', csvSettingsExportBtn:'保存项目', shakuEditBtn:'时长编辑', shakuEditHint:'拖动蓝色帧线选择范围', shakuCutBtn:'切除', shakuStretchBtn:'延长', shakuSelectedLabel:'选择', shakuUndoBtn:'撤销', shakuRedoBtn:'重做', shakuFlashCut:'切除已应用', shakuFlashStretch:'延长已应用', dougaSheetCreate:'生成动画栏', dougaSheetRefresh:'刷新动画栏', dougaSheetTitle:'由 Cell 编号和动画点生成只读动画栏', cellReadabilityTitle:'放大 Cell 文字',
         textCommandsLabel:'文本命令', csvFileLabel:'CSV 文件', csvCommandEditLabel:'从 CSV 生成的可编辑命令',
         dialogBlocksTitle:'对白栏', dialogFormatLabel:'例: 0+01 | 1+00 | 说话人 | 台词（起始｜结束｜谁｜内容）', cameraBlocksTitle:'摄影机栏', cameraFormatLabel:'例: 0+01 | 1+00 | A | PAN | B（起始｜结束｜之前｜运动｜之后）', cameraExamplesTitle:'示例',
         cameraExPan:'摇镜（A→B）', cameraExTu:'推近（Track Up）', cameraExFi:'淡入', cameraExOl:'叠化（切换）',
@@ -3666,6 +3739,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver832', 'TVPaint panel: download it right from here', ['Added a free TVPaint custom panel (.tvpx) that turns a TVPaint timeline into Text Commands for this tool. Grab it from the small link next to the CSV Upload toggle, or from the new section at the bottom of the Quick Guide. The panel bundles 4 buttons — Instance Numbering, Type Name of All Instance, Toggle Image Mark and AutoSheet TXT — used in that order to number the drawings, mark inbetweens, and write out the text.']],
         ['ver831', 'Serifu Sheet: right-click the range to open it', ['Releasing a drag popped the sheet open immediately (ver772), and left-clicking the blue range reopened it — so redrawing a range you had just closed was awkward. Now the drag only picks the range, and the sheet opens on right-click, as it did back in ver682. A left press anywhere, including inside the current range, simply starts a new range.']],
         ['ver830', 'Reverted the ver828 support-button move', ['ver828 moved the Ko-fi support button to the bottom-right, on the claim that it was blocking the セリフシート drag-select. That was wrong - the drag-select was never broken. The button is back at the bottom-left where it was, and the override CSS is gone.']],
         ['ver829', 'Quick Guide: load the CSV by drag & drop too', ['Step 1 pointed at the CSV Upload control. Dropping a .csv straight onto the sheet already worked and is the shorter path, so the guide now says that instead — matching how the company-paper tip is worded.']],
@@ -3809,6 +3883,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver832', 'TVPaint用パネルをここから直接ダウンロード', ['TVPaintのタイムラインをこのツールのText Commandsに変換する無料の専用パネル（.tvpx）を追加しました。CSV読込トグルの横の小さいリンク、または簡単説明書の一番下の項目から入手できます。パネルには Instance Numbering / Type Name of All Instance / Toggle Image Mark / AutoSheet TXT の4ボタンが入っており、この順で原画に番号を振り、動画点をマークし、テキストを書き出します。']],
         ['ver831', 'セリフシート：範囲を右クリックで開く', ['ドラッグを離した瞬間にシートが開き（ver772）、青い範囲を左クリックしても再び開いていたため、閉じた直後に範囲を引き直すのが煩わしい状態でした。ドラッグは範囲選択のみとし、シートはver682と同じく右クリックで開きます。現在の範囲の内側を含め、左ボタンを押すとそのまま新しい範囲の選択になります。']],
         ['ver830', 'ver828の応援ボタン移動を取り消し', ['ver828では「応援ボタンがセリフシートのドラッグ選択を塞いでいる」として右下へ移動しましたが、これは誤りでドラッグ選択は壊れていませんでした。ボタンは元の左下に戻し、上書きのCSSも削除しました。']],
         ['ver829', '簡単説明書：CSVもドラッグ＆ドロップで読み込む', ['ステップ1がCSV読込の操作を案内していましたが、.csvをそのままシートにドロップするだけで読み込めます（以前から動作していました）。こちらの方が手数が少ないため、会社用紙のヒントと同じ書き方に統一しました。']],
@@ -3952,6 +4027,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver832', 'TVPaint용 패널을 여기서 바로 다운로드', ['TVPaint 타임라인을 이 툴의 Text Commands로 바꿔 주는 무료 전용 패널(.tvpx)을 추가했습니다. CSV 읽기 토글 옆의 작은 링크, 또는 간단 설명서 맨 아래 항목에서 받을 수 있습니다. 패널에는 Instance Numbering / Type Name of All Instance / Toggle Image Mark / AutoSheet TXT 4개 버튼이 들어 있고, 이 순서로 원화에 번호를 매기고 동화점을 표시한 뒤 텍스트로 내보냅니다.']],
         ['ver831', '세리후 시트: 범위를 우클릭해서 열기', ['드래그를 놓는 순간 시트가 바로 떴고(ver772), 파란 범위를 좌클릭해도 다시 열려서 창을 닫고 범위를 다시 잡기가 불편했습니다. 이제 드래그는 범위 선택만 하고, 시트는 ver682처럼 우클릭으로 엽니다. 현재 범위 안쪽을 포함해 어디든 좌클릭하면 그냥 새 범위를 잡습니다.']],
         ['ver830', 'ver828의 후원 버튼 이동을 되돌림', ['ver828에서 후원 버튼이 세리후 시트 드래그 선택을 막는다고 보고 오른쪽 아래로 옮겼는데, 사실이 아니었습니다. 드래그 선택은 멀쩡했습니다. 버튼을 원래 자리인 왼쪽 아래로 되돌리고 덮어쓰던 CSS도 제거했습니다.']],
         ['ver829', '간단 설명서: CSV도 드래그앤드롭으로', ['1단계가 CSV 읽기 버튼을 안내하고 있었는데, .csv를 시트 위로 바로 드롭해도 읽힙니다(원래부터 동작하던 기능). 이쪽이 손이 덜 가서 회사 지정용지 팁과 같은 방식으로 문구를 통일했습니다.']],
@@ -4095,6 +4171,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver832', 'TVPaint 面板：可直接在此下载', ['新增了一个免费的 TVPaint 专用面板（.tvpx），可把 TVPaint 时间线转换为本工具的 Text Commands。可从 CSV 导入切换按钮旁的小链接，或简易说明书底部的新板块获取。面板包含 Instance Numbering / Type Name of All Instance / Toggle Image Mark / AutoSheet TXT 4 个按钮，按此顺序为原画编号、标记中间画并导出文本。']],
         ['ver831', 'セリフシート：右键点击范围打开', ['松开拖拽时表格会立即弹出（ver772），左键点击蓝色范围也会再次打开，导致关闭后重新框选很不方便。现在拖拽只负责选择范围，表格改为右键打开，与 ver682 一致。包括当前范围内部在内，按下左键都会直接开始框选新范围。']],
         ['ver830', '撤销 ver828 的支持按钮移动', ['ver828 认为支持按钮挡住了 セリフシート 的拖拽选择，因而把它移到右下角，但这是误判——拖拽选择本来就正常。按钮已移回原来的左下角，覆盖用的 CSS 也已删除。']],
         ['ver829', '简易说明书：CSV 也可拖放导入', ['第 1 步原本指向 CSV 读取控件，其实把 .csv 直接拖放到表上就能读取（原本就支持）。这样步骤更少，因此改成与公司指定纸张提示相同的写法。']],
@@ -4349,6 +4426,17 @@
             <li><strong>Save</strong> button → your whole work in one file. Next time, <strong>Load</strong> continues where you left off.</li>
           </ul>
           <div class="manual-tip">💡 Want it on your studio's official paper? Just <strong>drag a blank copy of that timesheet onto the sheet</strong> — it lines up automatically.</div>
+          <div class="manual-tvp">
+            <div class="manual-tvp-title">Using TVPaint? Turn your timeline into Text Commands.</div>
+            <p>Install the free panel and use the 4 buttons in order, then paste the result into <strong>Text Commands</strong> above.</p>
+            <ul>
+              <li><strong>Instance Numbering</strong> — auto-numbers the unnamed drawings 1, 2, 3…</li>
+              <li><strong>Type Name of All Instance</strong> — retype those key-drawing numbers all at once</li>
+              <li><strong>Toggle Image Mark</strong> — mark a frame as an inbetween (douga)</li>
+              <li><strong>AutoSheet TXT</strong> — read all of the above and write out the Text Commands</li>
+            </ul>
+            <a class="manual-tvp-dl" href="AutoSheet.tvpx" download="AutoSheet.tvpx"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 4v10m0 0 4-4m-4 4-4-4M5 18.5h14"/></svg>Download the TVPaint panel (.tvpx)</a>
+          </div>
         `
       },
       ja: {
@@ -4375,6 +4463,17 @@
             <li><strong>保存</strong> ボタン → 作業まるごと1ファイルに。次回は <strong>読込</strong> で続きからできます。</li>
           </ul>
           <div class="manual-tip">💡 会社のタイムシート用紙で出したいときは、その<strong>空の用紙画像をシートにドラッグ＆ドロップ</strong>するだけ。自動でぴったり合います。</div>
+          <div class="manual-tvp">
+            <div class="manual-tvp-title">TVPaintのタイムラインをそのままText Commandsに。</div>
+            <p>無料パネルを入れて、4つのボタンを順番に使い、出てきた文字を上の <strong>テキストコマンド</strong> に貼るだけ。</p>
+            <ul>
+              <li><strong>Instance Numbering</strong> — 名前が空のコマに 1・2・3… と通し番号を一括で振る</li>
+              <li><strong>Type Name of All Instance</strong> — その原画番号をまとめて打ち直せる</li>
+              <li><strong>Toggle Image Mark</strong> — そのコマを動画（中割り）としてマークする</li>
+              <li><strong>AutoSheet TXT</strong> — 上記を読み取ってText Commandsを書き出す</li>
+            </ul>
+            <a class="manual-tvp-dl" href="AutoSheet.tvpx" download="AutoSheet.tvpx"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 4v10m0 0 4-4m-4 4-4-4M5 18.5h14"/></svg>TVPaint用パネルをダウンロード（.tvpx）</a>
+          </div>
         `
       },
       ko: {
@@ -4401,6 +4500,17 @@
             <li><strong>저장</strong> 버튼 → 작업 전체를 파일 하나로. 다음엔 <strong>불러오기</strong>로 이어서 하면 됩니다.</li>
           </ul>
           <div class="manual-tip">💡 회사의 타임시트 양식을 그대로 쓰고 싶으면, <strong>빈 타임시트 이미지를 시트 위로 드래그앤드롭</strong>하세요. 자동으로 딱 맞춰집니다.</div>
+          <div class="manual-tvp">
+            <div class="manual-tvp-title">TVPaint 타임라인을 그대로 Text Commands로.</div>
+            <p>무료 패널을 설치하고 버튼 4개를 순서대로 쓴 다음, 나온 글자를 위의 <strong>텍스트 커맨드</strong>에 붙여넣으면 됩니다.</p>
+            <ul>
+              <li><strong>Instance Numbering</strong> — 이름이 비어 있는 그림에 1, 2, 3… 순번을 한 번에 매김</li>
+              <li><strong>Type Name of All Instance</strong> — 그 원화 번호를 한꺼번에 다시 입력해 보정</li>
+              <li><strong>Toggle Image Mark</strong> — 그 칸을 동화(중간 그림)로 마크</li>
+              <li><strong>AutoSheet TXT</strong> — 위 내용을 읽어 Text Commands로 내보냄</li>
+            </ul>
+            <a class="manual-tvp-dl" href="AutoSheet.tvpx" download="AutoSheet.tvpx"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 4v10m0 0 4-4m-4 4-4-4M5 18.5h14"/></svg>TVPaint용 패널 다운로드 (.tvpx)</a>
+          </div>
         `
       },
       zh: {
@@ -4427,6 +4537,17 @@
             <li><strong>保存</strong> 按钮 → 整个工作存成一个文件。下次用 <strong>导入</strong> 接着做。</li>
           </ul>
           <div class="manual-tip">💡 想用公司的时间表纸张？把那张<strong>空白时间表图片拖放到表上</strong>即可——会自动对齐到位。</div>
+          <div class="manual-tvp">
+            <div class="manual-tvp-title">用 TVPaint？把时间线直接变成 Text Commands。</div>
+            <p>安装免费面板，按顺序使用这 4 个按钮，再把结果粘贴到上面的 <strong>文本命令</strong> 里。</p>
+            <ul>
+              <li><strong>Instance Numbering</strong> — 给未命名的画一次性编上 1、2、3…</li>
+              <li><strong>Type Name of All Instance</strong> — 之后可一次性重打这些原画编号</li>
+              <li><strong>Toggle Image Mark</strong> — 把某帧标记为动画（中间画）</li>
+              <li><strong>AutoSheet TXT</strong> — 读取以上内容并导出为 Text Commands</li>
+            </ul>
+            <a class="manual-tvp-dl" href="AutoSheet.tvpx" download="AutoSheet.tvpx"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 4v10m0 0 4-4m-4 4-4-4M5 18.5h14"/></svg>下载 TVPaint 面板（.tvpx）</a>
+          </div>
         `
       }
     };
@@ -4991,7 +5112,7 @@
     }
 
 
-    function frameToTimecode(frameNumber) {
+    function frameToShakuPosition(frameNumber) {
       const frame = Math.max(1, Math.round(Number(frameNumber) || 1));
       const sec = Math.floor(frame / FIXED_FPS);
       const rem = frame % FIXED_FPS;
@@ -5209,9 +5330,9 @@
       const cleanText = String(textValue || '').trim();
       const cleanEndLabel = String(endLabel || '').trim();
       let lineText = '';
-      if (cleanEndLabel) lineText = frameToTimecode(fromFrame) + ' | ' + frameToTimecode(toFrame) + ' | ' + cleanLabel + ' | ' + cleanText + ' | ' + cleanEndLabel;
-      else if (cleanLabel) lineText = frameToTimecode(fromFrame) + ' | ' + frameToTimecode(toFrame) + ' | ' + cleanLabel + ' | ' + cleanText;
-      else lineText = frameToTimecode(fromFrame) + ' | ' + frameToTimecode(toFrame) + ' | ' + cleanText;
+      if (cleanEndLabel) lineText = frameToShakuPosition(fromFrame) + ' | ' + frameToShakuPosition(toFrame) + ' | ' + cleanLabel + ' | ' + cleanText + ' | ' + cleanEndLabel;
+      else if (cleanLabel) lineText = frameToShakuPosition(fromFrame) + ' | ' + frameToShakuPosition(toFrame) + ' | ' + cleanLabel + ' | ' + cleanText;
+      else lineText = frameToShakuPosition(fromFrame) + ' | ' + frameToShakuPosition(toFrame) + ' | ' + cleanText;
       return appendManualSourceSuffix(lineText, sourceToken);
     }
 
@@ -15387,7 +15508,7 @@
       return { x:block.blockX, y:y1, w:block.blockW, h:Math.max(2, y2 - y1) };
     }
 
-    function framesToDurationText(frameCount) {
+    function framesToShakuLength(frameCount) {
       const frames = Math.max(0, Math.round(Number(frameCount) || 0));
       return Math.floor(frames / FIXED_FPS) + '+' + String(frames % FIXED_FPS).padStart(2, '0');
     }
@@ -15545,7 +15666,7 @@
       const box = getShakuRangeRect(block, from, to);
       const flashColor = flash.mode === 'cut' ? '#cf2a2a' : '#2f9d50';
       const flashFill = flash.mode === 'cut' ? 'rgba(207,42,42,.12)' : 'rgba(47,157,80,.12)';
-      const label = (flash.mode === 'cut' ? getShakuUiText('shakuFlashCut') : getShakuUiText('shakuFlashStretch')) + ' ' + framesToDurationText(flash.frameCount || (to - from + 1));
+      const label = (flash.mode === 'cut' ? getShakuUiText('shakuFlashCut') : getShakuUiText('shakuFlashStretch')) + ' ' + framesToShakuLength(flash.frameCount || (to - from + 1));
       withDrawLayer('output', function(){
         appendSvgNode(attachFade(el('rect', { x:box.x, y:box.y, width:box.w, height:box.h, fill:flashFill, stroke:flashColor, 'stroke-width':6, opacity:opacity.toFixed(3), rx:4, ry:4, 'pointer-events':'none' })));
         const tx = Math.min(box.x + box.w - 8, Math.max(box.x + 8, box.x + 14));
@@ -15568,7 +15689,7 @@
         const px = Math.max(block.blockX + 4, Math.min(block.blockX + block.blockW - panelW - 4, box.x + box.w - panelW - 4));
         const py = Math.max(getOutputRowTop(block, block.start, 'cell') + 4, Math.min(getOutputRowTop(block, block.end, 'cell') + getOutputRowH(block, 'cell') - panelH - 4, box.y + box.h + 6));
         appendSvgNode(el('rect', { x:px, y:py, width:panelW, height:panelH, fill:'white', stroke:SHAKU_BLUE, 'stroke-width':1.6, rx:9, ry:9 }));
-        const durationText = framesToDurationText(sel.frameCount || (to - from + 1));
+        const durationText = framesToShakuLength(sel.frameCount || (to - from + 1));
         appendSvgNode(el('text', { x:px + 10, y:py + 15, fill:SHAKU_BLUE, 'font-size':13, 'font-family':'Arial, Helvetica, sans-serif', 'font-weight':'800', 'dominant-baseline':'middle' }, durationText));
         const cutX = px + 8;
         const extendX = px + 94;
