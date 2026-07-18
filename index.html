@@ -1678,6 +1678,22 @@
       background: var(--ink-active);
       color: #fff;
     }
+    .export-preflight-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 2px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .export-preflight-row + .export-preflight-row {
+      border-top: 1px solid var(--soft);
+    }
+    .export-preflight-row input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      flex: none;
+    }
 
     .text-memo-apply-fixed {
       position: fixed;
@@ -2749,7 +2765,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '833';
+    const APP_VERSION = '834';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3139,7 +3155,10 @@
         noCsv: 'No CSV loaded.',
         csvLoaded: count => `CSV loaded. ${count} displayable columns detected.`,
         csvError: msg => `CSV read failed: ${msg}`,
-        csvUnsupported: 'Not a CLIP STUDIO or TVPaint CSV.'
+        csvUnsupported: 'Not a CLIP STUDIO or TVPaint CSV.',
+        exportPreflightTitle: 'Include in the export?',
+        exportPreflightConfirm: 'Export',
+        exportPreflightCancel: 'Cancel'
       },
       ja: {
         textHelp: '1行＝1セル行。「A: 1 2 3」でAセルに絵1・2・3が並ぶ。\n同じ絵を伸ばすときは n（A: 1 n n 2 → 絵1が3コマ）。\nその他: dot＝中割り点 / x＝バツ / _＝空きコマ / rep＝リピート。',
@@ -3152,7 +3171,10 @@
         noCsv: 'CSV未読込。',
         csvLoaded: count => `CSV読込完了。表示可能列 ${count} 個を検出。`,
         csvError: msg => `CSV読込失敗: ${msg}`,
-        csvUnsupported: 'CLIP STUDIO / TVPaint CSVではありません。'
+        csvUnsupported: 'CLIP STUDIO / TVPaint CSVではありません。',
+        exportPreflightTitle: '書き出しに含める内容',
+        exportPreflightConfirm: '出力する',
+        exportPreflightCancel: 'キャンセル'
       },
       ko: {
         textHelp: '한 줄＝셀 한 행. 「A: 1 2 3」이면 A셀에 그림 1·2·3이 놓인다.\n같은 그림을 늘릴 땐 n（A: 1 n n 2 → 그림 1이 3칸）.\n그 외: dot＝중간점 / x＝가위표 / _＝빈 칸 / rep＝반복.',
@@ -3165,7 +3187,10 @@
         noCsv: 'CSV가 아직 로드되지 않았다.',
         csvLoaded: count => `CSV 로드 완료. 표시 가능한 열 ${count}개를 인식했다.`,
         csvError: msg => `CSV 읽기 실패: ${msg}`,
-        csvUnsupported: 'CLIP STUDIO / TVPaint CSV가 아니다.'
+        csvUnsupported: 'CLIP STUDIO / TVPaint CSV가 아니다.',
+        exportPreflightTitle: '출력에 포함할 항목',
+        exportPreflightConfirm: '출력하기',
+        exportPreflightCancel: '취소'
       },
       zh: {
         textHelp: '一行＝一个 Cell 行。「A: 1 2 3」把画 1·2·3 放进 A 格。\n用 n 让同一张画延续（A: 1 n n 2 → 画 1 占 3 帧）。\n其他: dot＝中割点 / x＝叉号 / _＝空帧 / rep＝重复。',
@@ -3178,7 +3203,10 @@
         noCsv: '尚未读取 CSV。',
         csvLoaded: count => `CSV 读取完成。检测到 ${count} 个可显示列。`,
         csvError: msg => `CSV 读取失败: ${msg}`,
-        csvUnsupported: '不是 CLIP STUDIO / TVPaint CSV。'
+        csvUnsupported: '不是 CLIP STUDIO / TVPaint CSV。',
+        exportPreflightTitle: '导出时包含的内容',
+        exportPreflightConfirm: '导出',
+        exportPreflightCancel: '取消'
       }
     };
 
@@ -3739,6 +3767,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver834', 'A checklist right before export', ['A support report showed a company paper PNG with the built-in ruled template still turned on, so it showed up in the exported PSD. The built-in show/hide toggles already existed in 用紙設定, but nothing surfaced them at the one moment they actually matter. The Output button now shows the same 4 toggles (built-in template, header, Duration + mark, Cell labels) right before export, so a stray one is caught without needing to know the settings panel exists.']],
         ['ver833', 'TVPaint panel wording cleanup', ['The Quick Guide called it a generic free panel. It is now named the Auto Sheet panel throughout, to match the download chip and avoid implying it is a general TVPaint feature.']],
         ['ver832', 'TVPaint panel: download it right from here', ['Added a free TVPaint custom panel (.tvpx) that turns a TVPaint timeline into Text Commands for this tool. Grab it from the small link next to the CSV Upload toggle, or from the new section at the bottom of the Quick Guide. The panel bundles 4 buttons — Instance Numbering, Type Name of All Instance, Toggle Image Mark and AutoSheet TXT — used in that order to number the drawings, mark inbetweens, and write out the text.']],
         ['ver831', 'Serifu Sheet: right-click the range to open it', ['Releasing a drag popped the sheet open immediately (ver772), and left-clicking the blue range reopened it — so redrawing a range you had just closed was awkward. Now the drag only picks the range, and the sheet opens on right-click, as it did back in ver682. A left press anywhere, including inside the current range, simply starts a new range.']],
@@ -3884,6 +3913,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver834', '出力の直前に確認チェックリスト', ['会社指定用紙のPNGを使っているのに、内蔵の罫線テンプレートが表示されたままPSD書き出しに残ってしまうという報告がありました。表示・非表示の切り替え自体は元々 用紙設定 にありましたが、実際に関係する場面（書き出しの直前）では何も案内されていませんでした。出力ボタンを押すと、同じ4つの切り替え（内蔵テンプレート・ヘッダー・秒数+マーク・Cellラベル）が書き出し直前に表示されるようにし、設定パネルの存在を知らなくても取りこぼしに気づけるようにしました。']],
         ['ver833', 'TVPaint用パネルの表記を整理', ['簡単説明書で「無料パネル」という表記になっていた箇所を、ダウンロードのラベルと合わせて「Auto Sheet用パネル」に統一しました。']],
         ['ver832', 'TVPaint用パネルをここから直接ダウンロード', ['TVPaintのタイムラインをこのツールのText Commandsに変換する無料の専用パネル（.tvpx）を追加しました。CSV読込トグルの横の小さいリンク、または簡単説明書の一番下の項目から入手できます。パネルには Instance Numbering / Type Name of All Instance / Toggle Image Mark / AutoSheet TXT の4ボタンが入っており、この順で原画に番号を振り、動画点をマークし、テキストを書き出します。']],
         ['ver831', 'セリフシート：範囲を右クリックで開く', ['ドラッグを離した瞬間にシートが開き（ver772）、青い範囲を左クリックしても再び開いていたため、閉じた直後に範囲を引き直すのが煩わしい状態でした。ドラッグは範囲選択のみとし、シートはver682と同じく右クリックで開きます。現在の範囲の内側を含め、左ボタンを押すとそのまま新しい範囲の選択になります。']],
@@ -4029,6 +4059,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver834', '출력 직전 확인 체크리스트', ['회사 지정용지 PNG를 쓰는데 내장 눈금 템플릿이 켜져 있는 채로 PSD 출력에 남았다는 문의가 있었습니다. 표시/비표시 자체는 원래 용지설정 안에 있었지만, 정작 필요한 순간(출력 직전)엔 아무것도 안내되지 않았습니다. 이제 출력 버튼을 누르면 같은 4개 항목(내장 템플릿·헤더·Duration+마크·Cell 라벨)을 출력 직전에 다시 보여줘서, 설정 패널의 존재를 몰라도 빠뜨린 걸 알아챌 수 있습니다.']],
         ['ver833', 'TVPaint용 패널 표기 정리', ['간단 설명서에 "무료 패널"이라고 돼 있던 부분을, 다운로드 라벨과 맞춰 "Auto Sheet용 패널"로 통일했습니다.']],
         ['ver832', 'TVPaint용 패널을 여기서 바로 다운로드', ['TVPaint 타임라인을 이 툴의 Text Commands로 바꿔 주는 무료 전용 패널(.tvpx)을 추가했습니다. CSV 읽기 토글 옆의 작은 링크, 또는 간단 설명서 맨 아래 항목에서 받을 수 있습니다. 패널에는 Instance Numbering / Type Name of All Instance / Toggle Image Mark / AutoSheet TXT 4개 버튼이 들어 있고, 이 순서로 원화에 번호를 매기고 동화점을 표시한 뒤 텍스트로 내보냅니다.']],
         ['ver831', '세리후 시트: 범위를 우클릭해서 열기', ['드래그를 놓는 순간 시트가 바로 떴고(ver772), 파란 범위를 좌클릭해도 다시 열려서 창을 닫고 범위를 다시 잡기가 불편했습니다. 이제 드래그는 범위 선택만 하고, 시트는 ver682처럼 우클릭으로 엽니다. 현재 범위 안쪽을 포함해 어디든 좌클릭하면 그냥 새 범위를 잡습니다.']],
@@ -4174,6 +4205,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver834', '导出前的确认清单', ['有用户反馈：使用公司指定的纸张 PNG 时，内置网格模板仍处于显示状态，结果被一起导出到了 PSD 里。显示/隐藏本身一直都在 用纸设置 里，但在真正需要用到的那一刻（导出前）却完全没有提示。现在点击输出按钮后，会在导出前再次显示同样的 4 个开关（内置模板、Header、Duration + 标记、Cell 标签），这样即使不知道设置面板的存在也能发现漏掉的项。']],
         ['ver833', '整理 TVPaint 面板的措辞', ['简易说明书里写的「免费面板」已统一改为「Auto Sheet 专用面板」，与下载按钮的措辞保持一致。']],
         ['ver832', 'TVPaint 面板：可直接在此下载', ['新增了一个免费的 TVPaint 专用面板（.tvpx），可把 TVPaint 时间线转换为本工具的 Text Commands。可从 CSV 导入切换按钮旁的小链接，或简易说明书底部的新板块获取。面板包含 Instance Numbering / Type Name of All Instance / Toggle Image Mark / AutoSheet TXT 4 个按钮，按此顺序为原画编号、标记中间画并导出文本。']],
         ['ver831', 'セリフシート：右键点击范围打开', ['松开拖拽时表格会立即弹出（ver772），左键点击蓝色范围也会再次打开，导致关闭后重新框选很不方便。现在拖拽只负责选择范围，表格改为右键打开，与 ver682 一致。包括当前范围内部在内，按下左键都会直接开始框选新范围。']],
@@ -22655,6 +22687,67 @@
       return buildPsdBlobFromCanvases(layersBottomToTop, mergedCanvas, size);
     }
 
+    function closeExportPreflightModal() {
+      const el = document.querySelector('.export-preflight-modal-backdrop');
+      if (el) el.remove();
+      document.removeEventListener('keydown', handleExportPreflightModalKeydown, true);
+    }
+
+    function handleExportPreflightModalKeydown(event) {
+      if (event.key === 'Escape') { event.preventDefault(); closeExportPreflightModal(); }
+    }
+
+    // Surfaces the same 4 show/hide toggles from 用紙設定 right before export, so a stray
+    // checkbox (e.g. the built-in template left on over a company paper) is caught at the
+    // one moment it actually matters, instead of requiring the user to already know these
+    // settings exist. See the ver833-era support report about ruled lines surviving PSD export.
+    function openExportPreflightModal() {
+      if (state.isExporting) return;
+      closeExportPreflightModal();
+      const paperDoc = getPaperLayoutTexts();
+      const rows = [
+        { key:'showTemplate', label:paperDoc.showTemplate },
+        { key:'showHeaderOutput', label:paperDoc.showHeader },
+        { key:'showDurationPlusOutput', label:paperDoc.showDurationPlus },
+        { key:'showCellLabelOutput', label:paperDoc.showCellLabel }
+      ];
+      const backdrop = document.createElement('div');
+      backdrop.className = 'serifu-sheet-modal-backdrop export-preflight-modal-backdrop';
+      backdrop.innerHTML =
+        '<div class="serifu-sheet-modal" role="dialog" aria-modal="true">' +
+          '<h3>' + escapeStatusHtml(t('exportPreflightTitle')) + '</h3>' +
+          '<div class="export-preflight-rows">' +
+            rows.map(function(row){
+              return '<label class="export-preflight-row"><input type="checkbox" data-preflight-field="' + row.key + '"' + (state[row.key] !== false ? ' checked' : '') + ' /><span>' + escapeStatusHtml(row.label || row.key) + '</span></label>';
+            }).join('') +
+          '</div>' +
+          '<div class="serifu-sheet-actions"><button type="button" data-preflight-cancel>' + escapeStatusHtml(t('exportPreflightCancel')) + '</button><button type="button" class="primary" data-preflight-confirm>' + escapeStatusHtml(t('exportPreflightConfirm')) + '</button></div>' +
+        '</div>';
+      const box = backdrop.querySelector('.serifu-sheet-modal');
+      backdrop.querySelector('[data-preflight-cancel]').addEventListener('click', function(event){
+        event.preventDefault();
+        closeExportPreflightModal();
+      });
+      backdrop.querySelector('[data-preflight-confirm]').addEventListener('click', function(event){
+        event.preventDefault();
+        rows.forEach(function(row){
+          const input = backdrop.querySelector('[data-preflight-field="' + row.key + '"]');
+          state[row.key] = !!(input && input.checked);
+        });
+        syncPaperLayoutControls();
+        queueSavePaperMemory();
+        closeExportPreflightModal();
+        render();
+        downloadAllPages();
+      });
+      backdrop.addEventListener('pointerdown', function(event){
+        if (event.target === backdrop) closeExportPreflightModal();
+      });
+      box.addEventListener('pointerdown', function(event){ event.stopPropagation(); });
+      document.body.appendChild(backdrop);
+      document.addEventListener('keydown', handleExportPreflightModalKeydown, true);
+    }
+
     async function downloadAllPages() {
       if (state.isExporting) return;
       if (flushPendingCommandInputRender()) flushQueuedRender();
@@ -22997,7 +23090,7 @@
       }
     });
     if (chooseExportDirBtn) chooseExportDirBtn.addEventListener('click', chooseExportDirectory);
-    downloadAllBtn.addEventListener('click', downloadAllPages);
+    downloadAllBtn.addEventListener('click', openExportPreflightModal);
     if (paperImageInputEl) {
       paperImageInputEl.addEventListener('change', function(event){ handlePaperImageUpload(event.target.files && event.target.files[0]); });
     }
