@@ -2765,7 +2765,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '834';
+    const APP_VERSION = '835';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3767,6 +3767,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver835', 'XDTS import (drag & drop)', ['CLIP STUDIO can export a timesheet as .xdts (Exchange Digital Time Sheet, CELSYS\'s open exposure-sheet format also used by Toei Animation Digital Exposure Sheet and OpenToonz) instead of CSV. Dropping an .xdts onto the sheet now reads its Cell field and converts it straight into Text Commands, same as CSV drag & drop. Verified line-by-line against a real exported file. The format also defines Dialog and Camerawork fields, but even OpenToonz\'s own open-source importer never reads them, so there is no verified schema to build those on yet - only Cell data comes in for now.']],
         ['ver834', 'A checklist right before export', ['A support report showed a company paper PNG with the built-in ruled template still turned on, so it showed up in the exported PSD. The built-in show/hide toggles already existed in 用紙設定, but nothing surfaced them at the one moment they actually matter. The Output button now shows the same 4 toggles (built-in template, header, Duration + mark, Cell labels) right before export, so a stray one is caught without needing to know the settings panel exists.']],
         ['ver833', 'TVPaint panel wording cleanup', ['The Quick Guide called it a generic free panel. It is now named the Auto Sheet panel throughout, to match the download chip and avoid implying it is a general TVPaint feature.']],
         ['ver832', 'TVPaint panel: download it right from here', ['Added a free TVPaint custom panel (.tvpx) that turns a TVPaint timeline into Text Commands for this tool. Grab it from the small link next to the CSV Upload toggle, or from the new section at the bottom of the Quick Guide. The panel bundles 4 buttons — Instance Numbering, Type Name of All Instance, Toggle Image Mark and AutoSheet TXT — used in that order to number the drawings, mark inbetweens, and write out the text.']],
@@ -3913,6 +3914,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver835', 'XDTS読み込み（ドラッグ＆ドロップ）', ['CLIP STUDIOはタイムシートをCSVの代わりに .xdts（Exchange Digital Time Sheet：CELSYSが公開しているオープンな露出シート交換形式で、東映アニメーションのデジタル動画用紙やOpenToonzも対応）として書き出せます。.xdtsをシートにドロップすると、そのCellフィールドを読み取ってText Commandsに変換します（CSVのドラッグ＆ドロップと同じ動き）。実際に書き出されたファイルと1行ずつ突き合わせて検証済みです。この形式にはDialog・Cameraworkフィールドも定義されていますが、OpenToonz自身のオープンソース実装ですら読み込んでおらず、確認できる仕様がまだないため、今回はCellのみ対応しています。']],
         ['ver834', '出力の直前に確認チェックリスト', ['会社指定用紙のPNGを使っているのに、内蔵の罫線テンプレートが表示されたままPSD書き出しに残ってしまうという報告がありました。表示・非表示の切り替え自体は元々 用紙設定 にありましたが、実際に関係する場面（書き出しの直前）では何も案内されていませんでした。出力ボタンを押すと、同じ4つの切り替え（内蔵テンプレート・ヘッダー・秒数+マーク・Cellラベル）が書き出し直前に表示されるようにし、設定パネルの存在を知らなくても取りこぼしに気づけるようにしました。']],
         ['ver833', 'TVPaint用パネルの表記を整理', ['簡単説明書で「無料パネル」という表記になっていた箇所を、ダウンロードのラベルと合わせて「Auto Sheet用パネル」に統一しました。']],
         ['ver832', 'TVPaint用パネルをここから直接ダウンロード', ['TVPaintのタイムラインをこのツールのText Commandsに変換する無料の専用パネル（.tvpx）を追加しました。CSV読込トグルの横の小さいリンク、または簡単説明書の一番下の項目から入手できます。パネルには Instance Numbering / Type Name of All Instance / Toggle Image Mark / AutoSheet TXT の4ボタンが入っており、この順で原画に番号を振り、動画点をマークし、テキストを書き出します。']],
@@ -4059,6 +4061,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver835', 'XDTS 읽기 (드래그앤드롭)', ['CLIP STUDIO는 타임시트를 CSV 대신 .xdts(Exchange Digital Time Sheet — CELSYS가 공개한 오픈 노출시트 교환 포맷, 도에이 애니메이션 디지털 동화용지와 OpenToonz도 씀)로도 내보낼 수 있습니다. .xdts를 시트에 드롭하면 그 Cell 필드를 읽어 Text Commands로 변환합니다(CSV 드래그앤드롭과 동일한 동작). 실제 내보낸 파일과 한 줄씩 대조해서 검증했습니다. 이 포맷엔 Dialog·Camerawork 필드도 정의돼 있지만, OpenToonz 자체의 오픈소스 구현조차 그걸 읽지 않아서 확인 가능한 구조가 아직 없기 때문에, 이번엔 Cell만 지원합니다.']],
         ['ver834', '출력 직전 확인 체크리스트', ['회사 지정용지 PNG를 쓰는데 내장 눈금 템플릿이 켜져 있는 채로 PSD 출력에 남았다는 문의가 있었습니다. 표시/비표시 자체는 원래 용지설정 안에 있었지만, 정작 필요한 순간(출력 직전)엔 아무것도 안내되지 않았습니다. 이제 출력 버튼을 누르면 같은 4개 항목(내장 템플릿·헤더·Duration+마크·Cell 라벨)을 출력 직전에 다시 보여줘서, 설정 패널의 존재를 몰라도 빠뜨린 걸 알아챌 수 있습니다.']],
         ['ver833', 'TVPaint용 패널 표기 정리', ['간단 설명서에 "무료 패널"이라고 돼 있던 부분을, 다운로드 라벨과 맞춰 "Auto Sheet용 패널"로 통일했습니다.']],
         ['ver832', 'TVPaint용 패널을 여기서 바로 다운로드', ['TVPaint 타임라인을 이 툴의 Text Commands로 바꿔 주는 무료 전용 패널(.tvpx)을 추가했습니다. CSV 읽기 토글 옆의 작은 링크, 또는 간단 설명서 맨 아래 항목에서 받을 수 있습니다. 패널에는 Instance Numbering / Type Name of All Instance / Toggle Image Mark / AutoSheet TXT 4개 버튼이 들어 있고, 이 순서로 원화에 번호를 매기고 동화점을 표시한 뒤 텍스트로 내보냅니다.']],
@@ -4205,6 +4208,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver835', 'XDTS 导入（拖放）', ['CLIP STUDIO 除了 CSV，还能把时间表导出为 .xdts（Exchange Digital Time Sheet：CELSYS 提供的开放曝光表交换格式，东映动画数字曝光表和 OpenToonz 也在用）。把 .xdts 拖放到表上，会读取其中的 Cell 字段并转换成 Text Commands，与 CSV 拖放的行为一致，已逐行对照真实导出的文件验证过。该格式还定义了 Dialog、Camerawork 字段，但连 OpenToonz 自己的开源实现都没有读取它们，目前没有可核实的结构，所以这次只支持 Cell。']],
         ['ver834', '导出前的确认清单', ['有用户反馈：使用公司指定的纸张 PNG 时，内置网格模板仍处于显示状态，结果被一起导出到了 PSD 里。显示/隐藏本身一直都在 用纸设置 里，但在真正需要用到的那一刻（导出前）却完全没有提示。现在点击输出按钮后，会在导出前再次显示同样的 4 个开关（内置模板、Header、Duration + 标记、Cell 标签），这样即使不知道设置面板的存在也能发现漏掉的项。']],
         ['ver833', '整理 TVPaint 面板的措辞', ['简易说明书里写的「免费面板」已统一改为「Auto Sheet 专用面板」，与下载按钮的措辞保持一致。']],
         ['ver832', 'TVPaint 面板：可直接在此下载', ['新增了一个免费的 TVPaint 专用面板（.tvpx），可把 TVPaint 时间线转换为本工具的 Text Commands。可从 CSV 导入切换按钮旁的小链接，或简易说明书底部的新板块获取。面板包含 Instance Numbering / Type Name of All Instance / Toggle Image Mark / AutoSheet TXT 4 个按钮，按此顺序为原画编号、标记中间画并导出文本。']],
@@ -4445,7 +4449,7 @@
           <h4>Make a timesheet in 3 steps</h4>
           <div class="manual-step"><span class="manual-step-no">1</span>Put something on the sheet</div>
           <ul>
-            <li><strong>From CLIP STUDIO:</strong> <code>File</code> → <code>Export animation</code> → <code>Timesheet information</code> to save a CSV, then <strong>drag that CSV onto the sheet</strong> — it loads itself.</li>
+            <li><strong>From CLIP STUDIO:</strong> <code>File</code> → <code>Export animation</code> → <code>Timesheet information</code> to save a CSV or an <code>.xdts</code>, then <strong>drag that file onto the sheet</strong> — either one loads itself.</li>
             <li><strong>Or type it yourself:</strong> write <code>A: 1 2 3</code> in Text Commands and cel A shows 1, 2, 3. Use <code>n</code> to hold the same drawing (e.g. <code>A: 1 n n 2</code>).</li>
             <li><strong>Dialog:</strong> <code>0+01 | 1+00 | speaker | line</code> (start | end | who | what).</li>
             <li><strong>Camera:</strong> <code>0+01 | 1+00 | A | PAN | B</code> (examples sit right under the box).</li>
@@ -4482,7 +4486,7 @@
           <h4>3ステップでタイムシートができます</h4>
           <div class="manual-step"><span class="manual-step-no">1</span>中身を入れる</div>
           <ul>
-            <li><strong>CLIP STUDIOから：</strong><code>ファイル</code> → <code>アニメーション書き出し</code> → <code>タイムシート情報</code> でCSVを保存 → その<strong>CSVをシートにドラッグ＆ドロップ</strong>するだけ。自動で読み込まれます。</li>
+            <li><strong>CLIP STUDIOから：</strong><code>ファイル</code> → <code>アニメーション書き出し</code> → <code>タイムシート情報</code> でCSVか<code>.xdts</code>を保存 → その<strong>ファイルをシートにドラッグ＆ドロップ</strong>するだけ。どちらも自動で読み込まれます。</li>
             <li><strong>手で書くなら：</strong>テキストコマンドに <code>A: 1 2 3</code> と書くと、Aセルに 1・2・3 が並びます。同じ絵を続けたいコマは <code>n</code>（例：<code>A: 1 n n 2</code>）。</li>
             <li><strong>セリフ：</strong><code>0+01 | 1+00 | 話者 | セリフ</code>（始まり | 終わり | だれ | なに）。</li>
             <li><strong>カメラ：</strong><code>0+01 | 1+00 | A | PAN | B</code>（欄のすぐ下に例があります）。</li>
@@ -4519,7 +4523,7 @@
           <h4>3단계면 타임시트가 완성됩니다</h4>
           <div class="manual-step"><span class="manual-step-no">1</span>내용 넣기</div>
           <ul>
-            <li><strong>CLIP STUDIO에서:</strong> <code>파일</code> → <code>애니메이션 내보내기</code> → <code>타임시트 정보</code>로 CSV 저장 → 그 <strong>CSV를 시트 위로 드래그앤드롭</strong>하세요. 알아서 불러옵니다.</li>
+            <li><strong>CLIP STUDIO에서:</strong> <code>파일</code> → <code>애니메이션 내보내기</code> → <code>타임시트 정보</code>로 CSV나 <code>.xdts</code> 저장 → 그 <strong>파일을 시트 위로 드래그앤드롭</strong>하세요. 둘 다 알아서 불러옵니다.</li>
             <li><strong>직접 쓰려면:</strong> 텍스트 커맨드에 <code>A: 1 2 3</code>이라고 쓰면 A셀에 1·2·3이 나란히 들어갑니다. 같은 그림을 유지할 칸은 <code>n</code> (예: <code>A: 1 n n 2</code>).</li>
             <li><strong>대사:</strong> <code>0+01 | 1+00 | 화자 | 대사</code> (시작 | 끝 | 누가 | 뭐라고).</li>
             <li><strong>카메라:</strong> <code>0+01 | 1+00 | A | PAN | B</code> (입력칸 바로 아래에 예시가 있습니다).</li>
@@ -4556,7 +4560,7 @@
           <h4>3 步做出时间表</h4>
           <div class="manual-step"><span class="manual-step-no">1</span>放入内容</div>
           <ul>
-            <li><strong>从 CLIP STUDIO：</strong><code>文件</code> → <code>导出动画</code> → <code>时间表信息</code> 保存 CSV，然后把那个 <strong>CSV 拖放到表上</strong>即可，会自动读取。</li>
+            <li><strong>从 CLIP STUDIO：</strong><code>文件</code> → <code>导出动画</code> → <code>时间表信息</code> 保存 CSV 或 <code>.xdts</code>，然后把那个 <strong>文件拖放到表上</strong>即可，两种都会自动读取。</li>
             <li><strong>想手写的话：</strong>在文本命令里写 <code>A: 1 2 3</code>，A 栏就会依次出现 1、2、3。想保持同一张画的格子写 <code>n</code>（例：<code>A: 1 n n 2</code>）。</li>
             <li><strong>台词：</strong><code>0+01 | 1+00 | 说话人 | 台词</code>（开始 | 结束 | 谁 | 说什么）。</li>
             <li><strong>摄影：</strong><code>0+01 | 1+00 | A | PAN | B</code>（输入框正下方有示例）。</li>
@@ -14276,27 +14280,52 @@
       }
     }
 
-    function pickRandomMouthToken(tokens, previous, generated) {
+    // 口パクのランダム配置（2026-07-19 改訂・conte エディタの gengaSerifuRollArray と同一ルール）。
+    // 旧実装は「直前のトークンだけ除外して均等抽選」＋繰り返しパターンガードだったが、そのガードは死んでいた:
+    // `generated` は長さ分を 'n' で先に埋めた配列なので slice(-3) と slice(-6,-3) が常に ['n','n','n'] で一致し、
+    // 続くフィルタも 'n' しか除外しない（実測 66000 回発動して除外候補 0 個）。口が3枚だと直前を除いた候補が
+    // 2つしか残らないため、2つ前の口に戻る確率がちょうど 50% になり「1 2 1 2 1 2 1 3 1 3 1 3」に見えていた。
+    // ⚠シャッフルバッグ方式は不採用: 2つ前戻りは 50%→30% に減るが単調な開閉（1 2 3 / 3 2 1）が 16.7%→23.3%
+    // に増え、口パクとしてはむしろ不自然になる。
+    // 採用ルール: 1回の戻り（1 3 1 / 1 2 1 / 2 3 2）と混在（1 3 2）は自然なので残し、単調な開閉は減らし、
+    // 「同じ2枚の往復が続く」ことだけを幾何級数的に抑える（1回目は等倍、2回目 ×0.2、3回目 ×0.04…）。
+    // 実測（3枚・20000回）: 戻り 49.9→43.8%、単調 16.8→11.2%、3回以上の往復 20.8→10.4%。
+    const SERIFU_MOUTH_MONO_WEIGHT = 0.30;
+    const SERIFU_MOUTH_PAIR_WEIGHT = 0.20;
+    function serifuMouthOrder(token) { // 'x'（閉じ口・カバー）はどの作画番号より下に並べる
+      const parsed = parseFloat(String(token == null ? '' : token).replace(/[^0-9.]/g, ''));
+      return isFinite(parsed) ? parsed : -Infinity;
+    }
+    // ★events は「実際に打たれた口だけ」の配列。旧ガードが 'n' 込みのフレーム配列を見ていたのが不発の原因。
+    function pickRandomMouthToken(tokens, previous, events) {
       if (!tokens.length) return '1';
       if (tokens.length === 1) return tokens[0];
-      const candidates = tokens.filter(function(token){ return token !== previous; });
-      let pool = candidates.length ? candidates : tokens.slice();
-      if (generated.length >= 5) {
-        const lastPattern = generated.slice(generated.length - 3).join('\u0001');
-        const beforePattern = generated.slice(generated.length - 6, generated.length - 3).join('\u0001');
-        if (lastPattern && lastPattern === beforePattern) {
-          pool = pool.filter(function(token){ return generated.slice(generated.length - 2).concat([token]).join('\u0001') !== lastPattern; });
-          if (!pool.length) pool = candidates.length ? candidates : tokens.slice();
+      const evs = Array.isArray(events) ? events : [];
+      let pool = tokens.filter(function(token){ return token !== previous; });
+      if (!pool.length) pool = tokens.slice();
+      const p1 = evs[evs.length - 1], p2 = evs[evs.length - 2];
+      let run = 0; // いま続いている …A B A B の往復回数
+      for (let k = evs.length - 1; k >= 2; k--) { if (evs[k] === evs[k - 2]) run++; else break; }
+      const weights = pool.map(function(token){
+        let s = 1;
+        if (p1 !== undefined && p2 !== undefined) {
+          const a = serifuMouthOrder(p2), b = serifuMouthOrder(p1), c = serifuMouthOrder(token);
+          if ((a < b && c > b) || (a > b && c < b)) s *= SERIFU_MOUTH_MONO_WEIGHT; // 同じ向きに開閉し続ける
+          if (token === p2) s *= Math.pow(SERIFU_MOUTH_PAIR_WEIGHT, run);          // 1回目の戻りは等倍
         }
-      }
-      return pool[Math.floor(Math.random() * pool.length)] || pool[0] || tokens[0];
+        return s;
+      });
+      let total = 0; weights.forEach(function(x){ total += x; });
+      let r = Math.random() * total;
+      for (let i = 0; i < pool.length; i++) { r -= weights[i]; if (r <= 0) return pool[i]; }
+      return pool[pool.length - 1] || tokens[0];
     }
 
-    function pickRandomNonClosingMouthToken(tokens, closeToken, previous, generated) {
+    function pickRandomNonClosingMouthToken(tokens, closeToken, previous, events) {
       const close = String(closeToken || '').trim();
       const candidates = (tokens || []).filter(function(token){ return String(token || '').trim() && String(token || '').trim() !== close; });
       if (!candidates.length) return close || tokens[0] || '1';
-      return pickRandomMouthToken(candidates, previous, generated);
+      return pickRandomMouthToken(candidates, previous, events);
     }
 
     function buildSerifuRandomEntryTokens(tokens, length) {
@@ -14307,13 +14336,15 @@
       const eventOffsets = [];
       for (let offset = 0; offset < frameLength; offset += 3) eventOffsets.push(offset);
       if (!eventOffsets.length) eventOffsets.push(0);
+      const events = []; // 打たれた口だけを順に貯める（重み付けはこれを見る）
       let previous = '';
       eventOffsets.forEach(function(offset, index){
         const isLastEvent = index === eventOffsets.length - 1;
         const token = isLastEvent
-          ? pickRandomNonClosingMouthToken(cleanTokens, closeToken, previous, generated)
-          : pickRandomMouthToken(cleanTokens, previous, generated);
+          ? pickRandomNonClosingMouthToken(cleanTokens, closeToken, previous, events)
+          : pickRandomMouthToken(cleanTokens, previous, events);
         generated[offset] = token;
+        events.push(token);
         previous = token;
       });
       return generated;
@@ -21859,6 +21890,11 @@
       return name.endsWith('.csv') || type === 'text/csv' || type === 'application/vnd.ms-excel';
     }
 
+    function isXdtsDropFile(file) {
+      if (!file) return false;
+      return String(file.name || '').toLowerCase().endsWith('.xdts');
+    }
+
     async function readDroppedTextFile(file) {
       if (file && typeof file.text === 'function') return file.text();
       return new Promise(function(resolve, reject){
@@ -21982,6 +22018,132 @@
       }
     }
 
+    // -----------------------------------------------------------------------
+    // XDTS (exchangeDigitalTimeSheet) import.
+    //
+    // XDTS is CELSYS's open exposure-sheet exchange format (CLIP STUDIO,
+    // Toei Animation Digital Exposure Sheet, OpenToonz, Callipeg all read
+    // it). Verified against OpenToonz's BSD-licensed reference parser
+    // (toonz/sources/toonz/xdtsio.cpp) rather than guessed:
+    //   - Only the CELL field (fieldId 0) is handled here. DIALOG(3) and
+    //     CAMERAWORK(5) field IDs exist in the format and CLIP STUDIO does
+    //     populate a camera field when a project has 2D camera folders, but
+    //     even OpenToonz's own importer never reads those fields, so there
+    //     is no verified schema for their "values" contents to build from.
+    //   - Frames are sparse keys; a track's value holds until the next
+    //     entry, same as this app's own "n" hold token.
+    //   - "SYMBOL_NULL_CELL" = empty frame (this app's "_").
+    //   - "SYMBOL_HYPHEN" = "ignore", which XDTS itself treats as a plain
+    //     hold of the previous value.
+    //   - "SYMBOL_TICK_1"/"SYMBOL_TICK_2" mark a frame WITHOUT changing the
+    //     held value - the closest match in this app's tokens is "dot"
+    //     (inbetween marker on a hold). XDTS has two tick colors; both map
+    //     to the same "dot" since this app only has one.
+    //   - A frame entry at or past the track's "duration" is a terminator
+    //     used only to say "the hold ends here" - it must NOT produce an
+    //     extra token past the last real frame.
+    function parseXdtsFrameRawValue(entry) {
+      const data = entry && Array.isArray(entry.data) ? entry.data[0] : null;
+      const values = data && Array.isArray(data.values) ? data.values : null;
+      const raw = values && values.length ? values[0] : undefined;
+      return raw === undefined || raw === null ? '' : String(raw);
+    }
+
+    function xdtsTrackToTokens(track, duration) {
+      const frames = (track && Array.isArray(track.frames) ? track.frames.slice() : [])
+        .filter(function(entry){ return entry && Number.isFinite(Number(entry.frame)); })
+        .sort(function(a, b){ return Number(a.frame) - Number(b.frame); });
+      const tokens = [];
+      let lastValue = null;
+      let cursor = 0;
+      frames.forEach(function(entry){
+        const frameNo = Number(entry.frame);
+        if (frameNo < 0) return; // documented CSP export anomaly, not a real frame
+        const fillTo = Math.min(frameNo, duration);
+        while (cursor < fillTo) {
+          tokens.push(lastValue === null ? '_' : 'n');
+          cursor++;
+        }
+        if (frameNo >= duration) return; // terminator sentinel, contributes no token
+        const raw = parseXdtsFrameRawValue(entry);
+        if (raw === 'SYMBOL_TICK_1' || raw === 'SYMBOL_TICK_2') {
+          tokens.push('dot');
+        } else if (raw === 'SYMBOL_NULL_CELL') {
+          tokens.push('_');
+          lastValue = null;
+        } else if (raw === 'SYMBOL_HYPHEN' || raw === '') {
+          tokens.push(lastValue === null ? '_' : 'n');
+        } else {
+          const label = raw.replace(/\s+/g, '');
+          tokens.push(label);
+          lastValue = label;
+        }
+        cursor++;
+      });
+      while (cursor < duration) {
+        tokens.push(lastValue === null ? '_' : 'n');
+        cursor++;
+      }
+      return tokens;
+    }
+
+    function buildTextCommandsFromXdts(xdtsJson) {
+      const timeTable = xdtsJson && Array.isArray(xdtsJson.timeTables) ? xdtsJson.timeTables[0] : null;
+      if (!timeTable) return '';
+      const fields = Array.isArray(timeTable.fields) ? timeTable.fields : [];
+      const cellField = fields.find(function(f){ return Number(f && f.fieldId) === 0; });
+      if (!cellField || !Array.isArray(cellField.tracks) || !cellField.tracks.length) return '';
+
+      let duration = Number(timeTable.duration) || 0;
+      if (duration <= 0) {
+        cellField.tracks.forEach(function(track){
+          (track.frames || []).forEach(function(entry){
+            duration = Math.max(duration, Number(entry && entry.frame) || 0);
+          });
+        });
+      }
+      if (duration <= 0) return '';
+
+      const headerEntry = (Array.isArray(timeTable.timeTableHeaders) ? timeTable.timeTableHeaders : [])
+        .find(function(h){ return Number(h && h.fieldId) === 0; });
+      const names = headerEntry && Array.isArray(headerEntry.names) ? headerEntry.names : [];
+
+      const tracksByNo = {};
+      cellField.tracks.forEach(function(track){ tracksByNo[Number(track && track.trackNo) || 0] = track; });
+      const trackCount = Math.max(names.length, cellField.tracks.length);
+
+      const lines = [];
+      for (let i = 0; i < trackCount; i++) {
+        const track = tracksByNo[i];
+        const rawLabel = String((names[i] != null ? names[i] : '')).trim();
+        const label = rawLabel || String.fromCharCode(65 + (i % 26));
+        const tokens = track ? xdtsTrackToTokens(track, duration) : new Array(duration).fill('_');
+        lines.push(label + ': ' + tokens.join(' '));
+      }
+      return lines.join('\n');
+    }
+
+    async function loadDroppedXdtsFile(file) {
+      if (!file) return false;
+      try {
+        const text = await readDroppedTextFile(file);
+        const braceIndex = text.indexOf('{');
+        if (braceIndex < 0) throw new Error('Not an XDTS file');
+        const json = JSON.parse(text.slice(braceIndex));
+        const commandText = buildTextCommandsFromXdts(json);
+        if (!commandText) throw new Error('No Cell field found in this XDTS file');
+        const modeSelect = document.getElementById('cellInputMode');
+        if (modeSelect) modeSelect.value = 'text';
+        setCommandTextValue('text', commandText);
+        updateModeUI();
+        setExportStatus('XDTS loaded: ' + (file.name || 'dropped.xdts'));
+        return true;
+      } catch (err) {
+        setExportStatus('XDTS read failed: ' + (err && err.message ? err.message : err));
+        return false;
+      }
+    }
+
     function handlePreviewFileDragOver(event) {
       if (!dragEventMayContainFiles(event)) return;
       event.preventDefault();
@@ -22010,6 +22172,11 @@
       const csvFile = files.find(isCsvDropFile);
       if (csvFile) {
         await loadDroppedCsvFile(csvFile);
+        return;
+      }
+      const xdtsFile = files.find(isXdtsDropFile);
+      if (xdtsFile) {
+        await loadDroppedXdtsFile(xdtsFile);
         return;
       }
       const paperFile = files.find(isPaperDropFile);
