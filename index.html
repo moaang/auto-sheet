@@ -2765,7 +2765,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '840';
+    const APP_VERSION = '841';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3767,6 +3767,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver841', 'A blank frame name is left blank on the sheet', ['A camera line written without a start or end frame name used to have an A (or B) drawn for it on the sheet, so a letter appeared that exists nowhere in what you typed and read as a real frame name. The mark is now drawn bare, which also matches the end side, where a blank name already drew nothing.']],
         ['ver840', 'Notes that arrive with a sheet file are placed automatically', ['A settings file can carry note text with no position of its own (conte writes its held-effect notes that way, so this app decides where they sit). Those notes are now laid out into the free area on load instead of landing with no size. The automatic camera notes are also no longer allowed to delete notes that came from elsewhere.']],
         ['ver839', 'Camera memo: a merged run now fits on one line', ['A memo made from camera works that connect end to end is sized to hold the whole run on a single line. At the old fixed width a merged run wrapped onto two lines, which visually split the very thing the merge had joined. A box you widened yourself is never shrunk, and the width never exceeds the free area.']],
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
@@ -3918,6 +3919,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver841', '空欄のフレーム名はシートでも空欄に', ['始まり／終わりのフレーム名を書かなかったカメラ行に、これまではシート側でA（終わりはB）を描いていました。入力のどこにも無い文字が本物のフレーム名のように見えてしまいます。これからは記号だけを描きます。終わり側は元から空欄なら何も描かないので、始まり側もそれに揃いました。']],
         ['ver840', 'シートファイルに入ってきたメモを自動で配置', ['設定ファイルには位置を持たないメモ文が入っていることがあります（conteは「かかりっぱなしの効果」のメモをその形で書き出し、置き場所はこのアプリに任せます）。読み込み時に空きスペースへ配置するようにしました。これまではサイズが無いまま置かれていました。あわせて、カメラの自動メモが他から来たメモを消してしまわないようにしました。']],
         ['ver839', 'カメラのメモ：つながった動きが1行に収まるように', ['端が接してつながるカメラワークからできたメモは、1行で収まる幅で作るようにしました。これまでは固定幅のため2行に折り返され、せっかくまとめた1つの動きが見た目で分かれてしまっていました。自分で広げた枠は縮めません。空きスペースを超える幅にもなりません。']],
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
@@ -4069,6 +4071,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver841', '비워 둔 프레임 이름은 시트에서도 비워 둠', ['시작·끝 프레임 이름을 적지 않은 카메라 줄에 지금까지는 시트 쪽에서 A(끝은 B)를 그려 넣었습니다. 입력 어디에도 없는 글자가 진짜 프레임 이름처럼 보였습니다. 이제는 표식만 그립니다. 끝 쪽은 원래 비어 있으면 아무것도 안 그렸으므로 시작 쪽이 거기에 맞춰졌습니다.']],
         ['ver840', '시트 파일에 담겨 온 메모를 자동 배치', ['설정 파일에는 위치가 없는 메모 문구가 들어 있을 수 있습니다(conte는 걸려 있는 효과 메모를 그렇게 내보내고 배치는 이 앱에 맡깁니다). 이제 불러올 때 빈 공간에 배치합니다 — 전에는 크기 없이 놓였습니다. 아울러 카메라 자동 메모가 다른 곳에서 온 메모를 지우지 않도록 했습니다.']],
         ['ver839', '카메라 메모: 합쳐진 동작이 한 줄에 들어가도록', ['끝이 맞닿아 이어지는 카메라워크로 만든 메모는 전체가 한 줄에 들어가는 폭으로 만듭니다. 기존 고정 폭에서는 두 줄로 접혀서, 기껏 하나로 합친 동작이 보기에는 갈라져 있었습니다. 직접 넓힌 상자는 줄이지 않고, 빈 공간을 넘는 폭도 되지 않습니다.']],
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
@@ -4220,6 +4223,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver841', '留空的画框名称在表单上也保持留空', ['未填写起点或终点画框名称的摄影行，此前会在表单上画出 A（终点为 B）。这会让输入中根本不存在的字母看起来像真正的画框名称。现在只画标记。终点侧原本留空时就不画，起点侧现在与之一致。']],
         ['ver840', '随表单文件带入的备注会自动排布', ['设置文件中可能含有没有自身位置的备注文字（conte 会以这种形式导出「一直生效的效果」备注，把摆放交给本应用）。现在会在载入时排布到空白区域，此前会以没有尺寸的状态放置。同时，摄影自动备注不再会删除来自其他来源的备注。']],
         ['ver839', '摄影备注：合并后的运动可容纳于一行', ['由首尾相接的摄影运动合并而成的备注，会按能容纳整段的宽度生成。此前固定宽度会折成两行，使刚刚合并起来的同一个运动在视觉上又被拆开。手动加宽过的框不会被缩小，宽度也不会超出空白区域。']],
         ['ver838', '摄影栏：载入时的标记修正、持续线连通、相连的运动合并为一行备注', ['载入设置文件时会重新生成摄影栏的标记选择。此前会保留上一个文件的选择，导致出现错误的标记（多余的 O.L），或新增的行完全没有标记。', '载入设置文件时会自动生成摄影备注，不必再按「カメラ→メモ」。', '相连的摄影运动交界处，竖向持续线不再断开；它会贯穿交界，标记落在线上。', '当标记为三角形时，交界处会同时画出两个标记（前一个运动的结束与下一个运动的开始）。因为三角形指向的是一个瞬间，无法表示共用的交界。虚线（-）仍然共用一个标记。', '首尾相接的摄影运动现在合并为一行备注，例如「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」。']],
@@ -15238,15 +15242,19 @@
       const edgeY = edge === 'end' ? rowTop + rowH : rowTop;
       const midY = rowTop + rowH / 2;
       const labelY = midY;
-      const endpointLabel = String(labelValue || (edge === 'end' ? 'B' : 'A')).trim();
+      // No invented letter: a line written with a blank boundary means the author had no frame name to give, so
+      // the mark is drawn bare. Substituting A/B here put an "A" on the sheet that exists nowhere in the source,
+      // and it read as a real frame label. The end mark is only drawn when endLabel is set, so it was already
+      // blank — this makes the start side agree with it.
+      const endpointLabel = String(labelValue == null ? '' : labelValue).trim();
       if (markerStyle === '▲') {
         drawCameraFilledTriangle(guideX, edgeY, edge);
-        drawCompactText(guideX + 18, labelY + 0.5, endpointLabel, 18, 'start', '900', '#111');
+        if (endpointLabel) drawCompactText(guideX + 18, labelY + 0.5, endpointLabel, 18, 'start', '900', '#111');
         return;
       }
       if (markerStyle === '-') {
         line(guideX - 8, midY, guideX + 10, midY, '#111', 1.6);
-        drawCompactText(guideX + 18, labelY + 0.5, endpointLabel, 18, 'start', '900', '#111');
+        if (endpointLabel) drawCompactText(guideX + 18, labelY + 0.5, endpointLabel, 18, 'start', '900', '#111');
       }
     }
 
