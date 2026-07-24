@@ -2765,7 +2765,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '841';
+    const APP_VERSION = '842';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3036,6 +3036,7 @@
       currentPreviewPage: 0,
       totalPages: 1,
       isExporting: false,
+      exportFilenameOverride: '',
       exportDirectoryHandle: null,
       exportDirectoryName: '',
       loadedSettingsFiles: [],
@@ -3157,6 +3158,8 @@
         csvError: msg => `CSV read failed: ${msg}`,
         csvUnsupported: 'Not a CLIP STUDIO or TVPaint CSV.',
         exportPreflightTitle: 'Include in the export?',
+        exportPreflightFilenameLabel: 'Filename',
+        exportPreflightFilenameHint: 'Edit freely. For multiple pages, the last number in this name goes up by 1 per page (TVPaint-style) - page 1 stays exactly as typed.',
         exportPreflightConfirm: 'Export',
         exportPreflightCancel: 'Cancel'
       },
@@ -3173,6 +3176,8 @@
         csvError: msg => `CSV読込失敗: ${msg}`,
         csvUnsupported: 'CLIP STUDIO / TVPaint CSVではありません。',
         exportPreflightTitle: '書き出しに含める内容',
+        exportPreflightFilenameLabel: 'ファイル名',
+        exportPreflightFilenameHint: '自由に編集できます。複数ページの場合、この名前の最後の数字がページごとに1つずつ増えます（TVPaint方式）。1ページ目は入力した通りのままです。',
         exportPreflightConfirm: '出力する',
         exportPreflightCancel: 'キャンセル'
       },
@@ -3189,6 +3194,8 @@
         csvError: msg => `CSV 읽기 실패: ${msg}`,
         csvUnsupported: 'CLIP STUDIO / TVPaint CSV가 아니다.',
         exportPreflightTitle: '출력에 포함할 항목',
+        exportPreflightFilenameLabel: '파일명',
+        exportPreflightFilenameHint: '자유롭게 고칠 수 있습니다. 페이지가 여러 장이면 이 이름의 마지막 숫자가 페이지마다 1씩 올라갑니다(TVPaint 방식). 1페이지는 입력한 그대로 나갑니다.',
         exportPreflightConfirm: '출력하기',
         exportPreflightCancel: '취소'
       },
@@ -3205,6 +3212,8 @@
         csvError: msg => `CSV 读取失败: ${msg}`,
         csvUnsupported: '不是 CLIP STUDIO / TVPaint CSV。',
         exportPreflightTitle: '导出时包含的内容',
+        exportPreflightFilenameLabel: '文件名',
+        exportPreflightFilenameHint: '可以自由修改。如果有多页，这个名称里最后的数字会按页递增（TVPaint 方式），第 1 页保持原样输出。',
         exportPreflightConfirm: '导出',
         exportPreflightCancel: '取消'
       }
@@ -3767,6 +3776,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver842', 'Edit the filename before export', ['Added a filename field to the export confirmation screen, pre-filled with the same name this app already builds automatically. Edit it freely. For a multi-page export, the last number in that name goes up by 1 per page (TVPaint-style renumbering) - page 1 always keeps exactly what you typed.']],
         ['ver841', 'A blank frame name is left blank on the sheet', ['A camera line written without a start or end frame name used to have an A (or B) drawn for it on the sheet, so a letter appeared that exists nowhere in what you typed and read as a real frame name. The mark is now drawn bare, which also matches the end side, where a blank name already drew nothing.']],
         ['ver840', 'Notes that arrive with a sheet file are placed automatically', ['A settings file can carry note text with no position of its own (conte writes its held-effect notes that way, so this app decides where they sit). Those notes are now laid out into the free area on load instead of landing with no size. The automatic camera notes are also no longer allowed to delete notes that came from elsewhere.']],
         ['ver839', 'Camera memo: a merged run now fits on one line', ['A memo made from camera works that connect end to end is sized to hold the whole run on a single line. At the old fixed width a merged run wrapped onto two lines, which visually split the very thing the merge had joined. A box you widened yourself is never shrunk, and the width never exceeds the free area.']],
@@ -3919,6 +3929,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver842', '出力前にファイル名を編集できるように', ['書き出し確認画面にファイル名の入力欄を追加しました。このアプリが元々自動で作る名前がそのまま入っているので、自由に書き換えられます。複数ページを書き出す場合、その名前の最後の数字がページごとに1つずつ増えます（TVPaint方式のリネーム）。1ページ目は入力した通りのまま出力されます。']],
         ['ver841', '空欄のフレーム名はシートでも空欄に', ['始まり／終わりのフレーム名を書かなかったカメラ行に、これまではシート側でA（終わりはB）を描いていました。入力のどこにも無い文字が本物のフレーム名のように見えてしまいます。これからは記号だけを描きます。終わり側は元から空欄なら何も描かないので、始まり側もそれに揃いました。']],
         ['ver840', 'シートファイルに入ってきたメモを自動で配置', ['設定ファイルには位置を持たないメモ文が入っていることがあります（conteは「かかりっぱなしの効果」のメモをその形で書き出し、置き場所はこのアプリに任せます）。読み込み時に空きスペースへ配置するようにしました。これまではサイズが無いまま置かれていました。あわせて、カメラの自動メモが他から来たメモを消してしまわないようにしました。']],
         ['ver839', 'カメラのメモ：つながった動きが1行に収まるように', ['端が接してつながるカメラワークからできたメモは、1行で収まる幅で作るようにしました。これまでは固定幅のため2行に折り返され、せっかくまとめた1つの動きが見た目で分かれてしまっていました。自分で広げた枠は縮めません。空きスペースを超える幅にもなりません。']],
@@ -4071,6 +4082,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver842', '출력 전에 파일명을 고칠 수 있음', ['출력 확인 화면에 파일명 입력란을 추가했습니다. 이 앱이 원래 자동으로 만들던 이름이 그대로 들어가 있어서 자유롭게 고칠 수 있습니다. 여러 페이지를 출력할 땐 그 이름의 마지막 숫자가 페이지마다 1씩 올라갑니다(TVPaint 방식 리네이밍). 1페이지는 입력한 그대로 나갑니다.']],
         ['ver841', '비워 둔 프레임 이름은 시트에서도 비워 둠', ['시작·끝 프레임 이름을 적지 않은 카메라 줄에 지금까지는 시트 쪽에서 A(끝은 B)를 그려 넣었습니다. 입력 어디에도 없는 글자가 진짜 프레임 이름처럼 보였습니다. 이제는 표식만 그립니다. 끝 쪽은 원래 비어 있으면 아무것도 안 그렸으므로 시작 쪽이 거기에 맞춰졌습니다.']],
         ['ver840', '시트 파일에 담겨 온 메모를 자동 배치', ['설정 파일에는 위치가 없는 메모 문구가 들어 있을 수 있습니다(conte는 걸려 있는 효과 메모를 그렇게 내보내고 배치는 이 앱에 맡깁니다). 이제 불러올 때 빈 공간에 배치합니다 — 전에는 크기 없이 놓였습니다. 아울러 카메라 자동 메모가 다른 곳에서 온 메모를 지우지 않도록 했습니다.']],
         ['ver839', '카메라 메모: 합쳐진 동작이 한 줄에 들어가도록', ['끝이 맞닿아 이어지는 카메라워크로 만든 메모는 전체가 한 줄에 들어가는 폭으로 만듭니다. 기존 고정 폭에서는 두 줄로 접혀서, 기껏 하나로 합친 동작이 보기에는 갈라져 있었습니다. 직접 넓힌 상자는 줄이지 않고, 빈 공간을 넘는 폭도 되지 않습니다.']],
@@ -4223,6 +4235,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver842', '导出前可以修改文件名', ['在导出确认界面加入了文件名输入框，里面预填的就是这个应用本来自动生成的名字，可以自由修改。导出多页时，名字里最后的数字会按页递增（TVPaint 式重命名），第 1 页会原样保留你输入的内容。']],
         ['ver841', '留空的画框名称在表单上也保持留空', ['未填写起点或终点画框名称的摄影行，此前会在表单上画出 A（终点为 B）。这会让输入中根本不存在的字母看起来像真正的画框名称。现在只画标记。终点侧原本留空时就不画，起点侧现在与之一致。']],
         ['ver840', '随表单文件带入的备注会自动排布', ['设置文件中可能含有没有自身位置的备注文字（conte 会以这种形式导出「一直生效的效果」备注，把摆放交给本应用）。现在会在载入时排布到空白区域，此前会以没有尺寸的状态放置。同时，摄影自动备注不再会删除来自其他来源的备注。']],
         ['ver839', '摄影备注：合并后的运动可容纳于一行', ['由首尾相接的摄影运动合并而成的备注，会按能容纳整段的宽度生成。此前固定宽度会折成两行，使刚刚合并起来的同一个运动在视觉上又被拆开。手动加宽过的框不会被缩小，宽度也不会超出空白区域。']],
@@ -20502,6 +20515,30 @@
       return parts.join('_').replace(/[^a-zA-Z0-9._-]+/g, '_').replace(/_+/g, '_').replace(/^_+|_+$/g, '');
     }
 
+    function sanitizeFilenameBase(value) {
+      return String(value || '').replace(/[^a-zA-Z0-9._-]+/g, '_').replace(/_+/g, '_').replace(/^_+|_+$/g, '');
+    }
+
+    // TVPaint-style sequence renumbering: bump the LAST run of digits in the
+    // name by pageOffset (page 1 = offset 0, stays exactly as typed), keeping
+    // the original digit width unless the incremented value needs more room.
+    // A name with no digits at all just gets a page suffix from page 2 on, so
+    // pages never silently overwrite each other.
+    function offsetFilenameSequence(base, pageOffset) {
+      if (!pageOffset) return base;
+      const match = base.match(/(\d+)(?!.*\d)/);
+      if (!match) return base + '_' + String(pageOffset + 1).padStart(2, '0');
+      const digits = match[1];
+      const nextNumber = String(Number(digits) + pageOffset).padStart(digits.length, '0');
+      return base.slice(0, match.index) + nextNumber + base.slice(match.index + digits.length);
+    }
+
+    function resolveExportFilenameBase(pageIndex) {
+      const sanitized = sanitizeFilenameBase(state.exportFilenameOverride);
+      if (!sanitized) return makeFilenameBase(pageIndex + 1);
+      return offsetFilenameSequence(sanitized, pageIndex);
+    }
+
     function serializeSvg(targetSvg) {
       const clone = targetSvg.cloneNode(true);
       clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
@@ -23005,11 +23042,17 @@
         { key:'showDurationPlusOutput', label:paperDoc.showDurationPlus },
         { key:'showCellLabelOutput', label:paperDoc.showCellLabel }
       ];
+      const defaultFilename = makeFilenameBase(1);
       const backdrop = document.createElement('div');
       backdrop.className = 'serifu-sheet-modal-backdrop export-preflight-modal-backdrop';
       backdrop.innerHTML =
         '<div class="serifu-sheet-modal" role="dialog" aria-modal="true">' +
           '<h3>' + escapeStatusHtml(t('exportPreflightTitle')) + '</h3>' +
+          '<div class="serifu-sheet-field full">' +
+            '<label for="exportPreflightFilenameInput">' + escapeStatusHtml(t('exportPreflightFilenameLabel')) + '</label>' +
+            '<input type="text" id="exportPreflightFilenameInput" data-preflight-filename value="' + escapeStatusHtml(defaultFilename) + '" />' +
+            '<div class="hint">' + escapeStatusHtml(t('exportPreflightFilenameHint')) + '</div>' +
+          '</div>' +
           '<div class="export-preflight-rows">' +
             rows.map(function(row){
               return '<label class="export-preflight-row"><input type="checkbox" data-preflight-field="' + row.key + '"' + (state[row.key] !== false ? ' checked' : '') + ' /><span>' + escapeStatusHtml(row.label || row.key) + '</span></label>';
@@ -23028,6 +23071,8 @@
           const input = backdrop.querySelector('[data-preflight-field="' + row.key + '"]');
           state[row.key] = !!(input && input.checked);
         });
+        const filenameInput = backdrop.querySelector('[data-preflight-filename]');
+        state.exportFilenameOverride = filenameInput ? filenameInput.value : '';
         syncPaperLayoutControls();
         queueSavePaperMemory();
         closeExportPreflightModal();
@@ -23040,6 +23085,8 @@
       box.addEventListener('pointerdown', function(event){ event.stopPropagation(); });
       document.body.appendChild(backdrop);
       document.addEventListener('keydown', handleExportPreflightModalKeydown, true);
+      const filenameInputEl = backdrop.querySelector('[data-preflight-filename]');
+      if (filenameInputEl) setTimeout(function(){ filenameInputEl.focus(); filenameInputEl.select(); }, 0);
     }
 
     async function downloadAllPages() {
@@ -23059,13 +23106,13 @@
           if (format === 'psd') {
             setExportStatus('Building PSD ' + (pageIndex + 1) + ' / ' + model.totalPages + '...');
             blob = await renderPageToPsdBlob(pageIndex, model, exportSize);
-            filename = makeFilenameBase(pageIndex + 1) + '.psd';
+            filename = resolveExportFilenameBase(pageIndex) + '.psd';
           } else {
             const tempSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
             renderPage(tempSvg, pageIndex, model, false);
             const svgString = serializeSvg(tempSvg);
             blob = await svgStringToBlob(svgString, format, pageIndex, exportSize);
-            filename = makeFilenameBase(pageIndex + 1) + '.' + format;
+            filename = resolveExportFilenameBase(pageIndex) + '.' + format;
           }
           const saveMode = await saveExportBlob(blob, filename);
           setExportStatus((saveMode === 'folder' ? 'Saved ' : 'Downloaded ') + (pageIndex + 1) + ' / ' + model.totalPages);
