@@ -2765,7 +2765,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '846';
+    const APP_VERSION = '847';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3776,6 +3776,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver847', 'The circled frame name now matches the drawing column exactly', ['ver846 drew its own ring, so it came out a different size from the circled numbers in the drawing column right beside it, its letter was too heavy, and pressing the large-text button inflated the ring as well as the letter. The drawing column already had the right answer: the ring is sized from the cell and barely moves, while only the number grows and darkens. Both now share one rule, so the camera column and the drawing column can no longer drift apart.']],
         ['ver846', 'The circled frame name is drawn big enough to read', ['ver845 used the ready-made circled characters (Ⓐ), but those pack the ring inside the character box, so the letter itself came out about half size and sat off the centre of its cell. The ring is now drawn as a real circle with the letter full size inside it, centred on the row, and it follows the large-text readability setting like every other number on the sheet.']],
         ['ver845', 'Frame names are circled on the sheet', ['The camera column drew a frame name as a plain letter (A, a, B) while the automatic note beside it already wrote the circled form. The sheet now draws the circled form too, so both agree. Nothing changes about what you type - keep writing plain A, B, a, b; the circle is only how it is printed. A name longer than one character keeps the (BG1) form.']],
         ['ver844', 'Instruction notes are listed in order instead of piling up', ['Notes that arrive with a sheet file used to be dropped one by one into whatever free spot was nearest, and each was given the same default width no matter how long its text was - so a long instruction spilled out of its own box and printed over its neighbour. Each note is now sized to its own text (wrapping only if it would take more than half the width) and laid out as a list: down the left, then the next column to the right. Notes you positioned yourself are never moved and never covered.']],
@@ -3933,6 +3934,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver847', '丸囲みのフレーム名を原画欄と完全に揃える', ['ver846は独自に丸を描いていたため、すぐ隣の原画欄の丸数字と大きさが合わず、文字も太すぎ、「文字を大きく」を押すと文字だけでなく丸まで膨らんでいました。原画欄には元から正解があります——丸はマスから決まってほとんど変わらず、大きくなるのは数字だけ、というやり方です。両方が同じ規則を共有するようにしたので、カメラ欄と原画欄がずれることはもうありません。']],
         ['ver846', '丸囲みのフレーム名を読める大きさで描く', ['ver845では既成の丸囲み文字（Ⓐ）を使っていましたが、あの文字は丸を字の枠の中に含むため、同じ文字サイズでも中の文字が半分ほどになり、位置もマスの中心からずれていました。これからは丸を図形として描き、その中に文字を原寸で入れます。行の中央に揃え、他の数字と同じく「文字を大きく」の設定にも従います。']],
         ['ver845', 'シートのフレーム名を丸囲みで描く', ['カメラ欄はフレーム名をそのままの文字（A・a・B）で描いていましたが、隣の自動メモは前から丸囲み（Ⓐ・ⓐ）で書いていました。シート側も丸囲みで描くようにして、両方の表記を揃えました。入力は今までどおりで構いません。A・B・a・b と普通に書いてください。丸囲みは出力の形です。2文字以上の名前はこれまでどおり (BG1) の形になります。']],
         ['ver844', '撮影指示のメモを重ねず順番に並べる', ['シートファイルに入ってきたメモは、これまで空いている一番近い場所へ一つずつ置かれ、文章の長さに関係なく同じ既定の幅が与えられていました。そのため長い指示は自分の枠からはみ出し、隣のメモの上に印刷されていました。これからは各メモを自分の文章に合わせた幅にし（画面の半分を超えるときだけ折り返します）、左上から下へ、いっぱいになったら右の列へ、という順に並べます。自分で動かしたメモは動かしませんし、その上に重ねることもありません。']],
@@ -4090,6 +4092,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver847', '동그라미 프레임 이름을 원화란과 완전히 일치시킴', ['ver846은 자체적으로 동그라미를 그려서 바로 옆 원화란의 동그라미 숫자와 크기가 안 맞고, 글자도 너무 굵었으며, 확대 버튼을 누르면 글자뿐 아니라 동그라미까지 커졌습니다. 원화란에 이미 정답이 있었습니다 — 동그라미는 칸에서 정해져 거의 변하지 않고 숫자만 커지고 진해지는 방식입니다. 이제 양쪽이 같은 규칙을 공유하므로 카메라란과 원화란이 다시 어긋날 수 없습니다.']],
         ['ver846', '동그라미 프레임 이름을 읽을 수 있는 크기로', ['ver845에서는 기성 원문자(Ⓐ)를 썼는데, 그 글자는 동그라미를 글자 상자 안에 품고 있어서 같은 폰트 크기에서도 안쪽 글자가 절반 정도로 작아지고 위치도 칸 중앙에서 어긋났습니다. 이제 동그라미를 도형으로 그리고 그 안에 글자를 제 크기로 넣습니다. 행 중앙에 맞추고, 다른 숫자들처럼 큰 글씨 가독성 설정도 따릅니다.']],
         ['ver845', '시트의 프레임 이름을 동그라미로 표기', ['카메라란은 프레임 이름을 A, a, B처럼 맨 글자로 그렸는데, 바로 옆 자동 메모는 예전부터 Ⓐ, ⓐ처럼 동그라미로 쓰고 있었습니다. 이제 시트도 동그라미로 그려 두 표기를 맞췄습니다. 입력 방식은 그대로입니다. A, B, a, b로 편하게 쓰시면 되고 동그라미는 출력 형태일 뿐입니다. 두 글자 이상인 이름은 기존대로 (BG1) 형태가 됩니다.']],
         ['ver844', '촬영지시 메모를 겹치지 않고 순서대로 나열', ['시트 파일에 실려 온 메모는 그동안 가장 가까운 빈자리에 하나씩 놓였고, 글이 길든 짧든 같은 기본 폭을 받았습니다. 그래서 긴 지시는 자기 상자를 넘쳐 옆 메모 위에 인쇄됐습니다. 이제 각 메모를 자기 글 길이에 맞춰 잡고(화면 절반을 넘길 때만 줄바꿈), 왼쪽 위에서 아래로, 다 차면 오른쪽 열로 순서대로 나열합니다. 직접 옮겨 둔 메모는 움직이지 않고 그 위에 겹치지도 않습니다.']],
@@ -4247,6 +4250,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver847', '带圈画格名称与原画栏完全一致', ['ver846 自行绘制圆圈，因此与紧邻的原画栏带圈数字大小不一致，文字过粗，并且按下放大文字时连圆圈也一起变大。原画栏本就有正确做法——圆圈由格子决定、几乎不变，只有数字变大变深。现在两者共用同一规则，摄影栏与原画栏不会再产生偏差。']],
         ['ver846', '带圈画格名称改为可读大小', ['ver845 使用现成的带圈字符（Ⓐ），但这类字符把圆圈包含在字框内，因此同样字号下里面的字只有约一半大小，位置也偏离格子中心。现在改为把圆圈作为图形绘制，字按原尺寸放在其中，并与行居中对齐，同时跟随「放大文字」的可读性设置。']],
         ['ver845', '表格上的画格名称改为带圈显示', ['摄影栏此前把画格名称按原样字母（A、a、B）绘制，而旁边的自动备注早已使用带圈形式（Ⓐ、ⓐ）。现在表格也采用带圈形式，两处表记保持一致。输入方式不变，照常填写 A、B、a、b 即可，带圈只是输出形式。超过一个字符的名称仍保持 (BG1) 形式。']],
         ['ver844', '拍摄指示备注按顺序排列，不再重叠', ['随表格文件传入的备注以往会被逐个放到最近的空位，并且无论文字长短都使用相同的默认宽度，因此较长的指示会溢出自己的框，印在相邻备注上。现在每条备注按自身文字长度设定宽度（超过半屏时才换行），并从左上向下依次排列，排满后移到右侧一列。你自己摆放过的备注不会被移动，也不会被覆盖。']],
@@ -6088,6 +6092,15 @@
 
     function cellOutputStroke(width) {
       return Math.round((Number(width) || 1) * (state.cellReadabilityLarge ? 1.45 : 1) * 10) / 10;
+    }
+
+    // ver847: ONE ring-radius rule for every circled cell marker (原画欄 numbers and the camera column's frame
+    // names). Derived from the CELL, capped at 13, and the readability toggle only nudges it 1.28x — the text
+    // beside it scales 1.75x, which is the whole point: pressing the magnifier must grow the NUMBER, not balloon
+    // the ring around it.
+    function sheetMarkerCircleRadius(boxW, boxH) {
+      const markerScale = state.cellReadabilityLarge ? 1.28 : 1;
+      return Math.min((Number(boxW) || 0) * 0.42, (Number(boxH) || 0) * 0.42, 13 * markerScale);
     }
 
     function cloneRect(rect) {
@@ -11680,7 +11693,9 @@
       if (kind === 'circle') {
         // Single radius (min of both half-extents) so the 原画 number ring stays a clean
         // circle even in a wide cell, instead of stretching into an ellipse.
-        const r = Math.min((x2 - x1) * 0.42, (y2 - y1) * 0.42, 13 * markerScale);
+        // ver847: the rule lives in sheetMarkerCircleRadius now — the camera column draws the same ring and the
+        // two had already drifted apart once.
+        const r = sheetMarkerCircleRadius(x2 - x1, y2 - y1);
         appendSvgNode(el('circle', { cx:cx, cy:cy, r:r, fill:'none', stroke:'#111', 'stroke-width':cellOutputStroke(1.1), 'pointer-events':'none' }));
       }
       if (kind === 'triangle') {
@@ -15299,14 +15314,19 @@
       const str = String(rawLabel == null ? '' : rawLabel).trim();
       if (!str) return;
       if (str.length !== 1) { // BG1 etc. — no room for a ring; keep the established (BG1) form
-        text(cx, cy, '(' + str + ')', cellOutputSize(11), 'middle', '900', '#111');
+        text(cx, cy, '(' + str + ')', cellOutputSize(11), 'middle', '700', '#111');
         return;
       }
-      const r = Math.max(7, Math.min(cellOutputSize(9), Math.max(7, (Number(rowH) || 14) * 0.72)));
-      appendSvgNode(el('circle', { cx:cx + r, cy:cy, r:r, fill:'#fff', stroke:'#111', 'stroke-width':cellOutputStroke(1.3) }));
-      // 1.75r fills about two thirds of the ring's inner height — the point of the change is legibility, so the
-      // letter is deliberately near the ring rather than politely inside it.
-      text(cx + r, cy, str, Math.round(r * 1.75 * 10) / 10, 'middle', '900', '#111');
+      // Same ring and same lettering as the 原画欄 number beside it: cell-derived radius, no fill (the guide line
+      // must stay visible through it), stroke 1.1, and the digit at cellOutputSize(12)/700 positioned by cap
+      // height rather than dominant-baseline:central — that baseline renders at different heights across
+      // browsers and sat the enlarged glyph low in Safari, which is why the 原画欄 does it this way.
+      const r = sheetMarkerCircleRadius(rowH, rowH);
+      const ringX = cx + r;
+      appendSvgNode(el('circle', { cx:ringX, cy:cy, r:r, fill:'none', stroke:'#111', 'stroke-width':cellOutputStroke(1.1), 'pointer-events':'none' }));
+      const numSize = cellOutputSize(12);
+      const node = text(ringX, cy + numSize * 0.33, str, numSize, 'middle', '700', '#111');
+      node.setAttribute('dominant-baseline', 'alphabetic');
     }
 
     function drawCameraSecondFrameText(block, areaX, areaW, lane, laneCount, seg, editConfig) {
