@@ -2765,7 +2765,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '842';
+    const APP_VERSION = '843';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3159,7 +3159,7 @@
         csvUnsupported: 'Not a CLIP STUDIO or TVPaint CSV.',
         exportPreflightTitle: 'Include in the export?',
         exportPreflightFilenameLabel: 'Filename',
-        exportPreflightFilenameHint: 'Edit freely. For multiple pages, the last number in this name goes up by 1 per page (TVPaint-style) - page 1 stays exactly as typed.',
+        exportPreflightFilenameHint: 'The last number in this name goes up by 1 per page (page 1 stays as typed).',
         exportPreflightConfirm: 'Export',
         exportPreflightCancel: 'Cancel'
       },
@@ -3177,7 +3177,7 @@
         csvUnsupported: 'CLIP STUDIO / TVPaint CSVではありません。',
         exportPreflightTitle: '書き出しに含める内容',
         exportPreflightFilenameLabel: 'ファイル名',
-        exportPreflightFilenameHint: '自由に編集できます。複数ページの場合、この名前の最後の数字がページごとに1つずつ増えます（TVPaint方式）。1ページ目は入力した通りのままです。',
+        exportPreflightFilenameHint: 'この名前の最後の数字がページごとに1つずつ増えます（1ページ目はそのまま）。',
         exportPreflightConfirm: '出力する',
         exportPreflightCancel: 'キャンセル'
       },
@@ -3195,7 +3195,7 @@
         csvUnsupported: 'CLIP STUDIO / TVPaint CSV가 아니다.',
         exportPreflightTitle: '출력에 포함할 항목',
         exportPreflightFilenameLabel: '파일명',
-        exportPreflightFilenameHint: '자유롭게 고칠 수 있습니다. 페이지가 여러 장이면 이 이름의 마지막 숫자가 페이지마다 1씩 올라갑니다(TVPaint 방식). 1페이지는 입력한 그대로 나갑니다.',
+        exportPreflightFilenameHint: '이 이름의 마지막 숫자가 페이지마다 1씩 올라갑니다(1페이지는 그대로).',
         exportPreflightConfirm: '출력하기',
         exportPreflightCancel: '취소'
       },
@@ -3213,7 +3213,7 @@
         csvUnsupported: '不是 CLIP STUDIO / TVPaint CSV。',
         exportPreflightTitle: '导出时包含的内容',
         exportPreflightFilenameLabel: '文件名',
-        exportPreflightFilenameHint: '可以自由修改。如果有多页，这个名称里最后的数字会按页递增（TVPaint 方式），第 1 页保持原样输出。',
+        exportPreflightFilenameHint: '这个名称里最后的数字会按页递增（第 1 页保持原样）。',
         exportPreflightConfirm: '导出',
         exportPreflightCancel: '取消'
       }
@@ -3776,6 +3776,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ['ver843', 'Shortened the filename hint', ['The note under the new filename field spelled out the whole mechanism. Trimmed to just the one fact that matters: the last number goes up by 1 per page.']],
         ['ver842', 'Edit the filename before export', ['Added a filename field to the export confirmation screen, pre-filled with the same name this app already builds automatically. Edit it freely. For a multi-page export, the last number in that name goes up by 1 per page (TVPaint-style renumbering) - page 1 always keeps exactly what you typed.']],
         ['ver841', 'A blank frame name is left blank on the sheet', ['A camera line written without a start or end frame name used to have an A (or B) drawn for it on the sheet, so a letter appeared that exists nowhere in what you typed and read as a real frame name. The mark is now drawn bare, which also matches the end side, where a blank name already drew nothing.']],
         ['ver840', 'Notes that arrive with a sheet file are placed automatically', ['A settings file can carry note text with no position of its own (conte writes its held-effect notes that way, so this app decides where they sit). Those notes are now laid out into the free area on load instead of landing with no size. The automatic camera notes are also no longer allowed to delete notes that came from elsewhere.']],
@@ -3929,6 +3930,7 @@
         ['ver641', 'Paper upload race cleanup', ['Paper upload cancels pending Auto Align work immediately, and failed uploads restore the previous paper snapshot instead of clearing it.']]
       ],
       ja: [
+        ['ver843', 'ファイル名の説明を短く', ['新しいファイル名欄の下の説明が仕組みを全部書きすぎていました。「最後の数字がページごとに1つ増える」という一点だけに絞りました。']],
         ['ver842', '出力前にファイル名を編集できるように', ['書き出し確認画面にファイル名の入力欄を追加しました。このアプリが元々自動で作る名前がそのまま入っているので、自由に書き換えられます。複数ページを書き出す場合、その名前の最後の数字がページごとに1つずつ増えます（TVPaint方式のリネーム）。1ページ目は入力した通りのまま出力されます。']],
         ['ver841', '空欄のフレーム名はシートでも空欄に', ['始まり／終わりのフレーム名を書かなかったカメラ行に、これまではシート側でA（終わりはB）を描いていました。入力のどこにも無い文字が本物のフレーム名のように見えてしまいます。これからは記号だけを描きます。終わり側は元から空欄なら何も描かないので、始まり側もそれに揃いました。']],
         ['ver840', 'シートファイルに入ってきたメモを自動で配置', ['設定ファイルには位置を持たないメモ文が入っていることがあります（conteは「かかりっぱなしの効果」のメモをその形で書き出し、置き場所はこのアプリに任せます）。読み込み時に空きスペースへ配置するようにしました。これまではサイズが無いまま置かれていました。あわせて、カメラの自動メモが他から来たメモを消してしまわないようにしました。']],
@@ -4082,6 +4084,7 @@
         ['ver641', '用紙アップロード競合対策', ['用紙アップロード時に保留中の Auto Align を即時キャンセルし、失敗時は現在の用紙を消さず前の状態へ戻します。']]
       ],
       ko: [
+        ['ver843', '파일명 설명 문구를 짧게', ['새 파일명 입력란 아래 설명이 원리를 너무 다 풀어서 적었습니다. "마지막 숫자가 페이지마다 1씩 올라간다"는 사실 하나만 남겼습니다.']],
         ['ver842', '출력 전에 파일명을 고칠 수 있음', ['출력 확인 화면에 파일명 입력란을 추가했습니다. 이 앱이 원래 자동으로 만들던 이름이 그대로 들어가 있어서 자유롭게 고칠 수 있습니다. 여러 페이지를 출력할 땐 그 이름의 마지막 숫자가 페이지마다 1씩 올라갑니다(TVPaint 방식 리네이밍). 1페이지는 입력한 그대로 나갑니다.']],
         ['ver841', '비워 둔 프레임 이름은 시트에서도 비워 둠', ['시작·끝 프레임 이름을 적지 않은 카메라 줄에 지금까지는 시트 쪽에서 A(끝은 B)를 그려 넣었습니다. 입력 어디에도 없는 글자가 진짜 프레임 이름처럼 보였습니다. 이제는 표식만 그립니다. 끝 쪽은 원래 비어 있으면 아무것도 안 그렸으므로 시작 쪽이 거기에 맞춰졌습니다.']],
         ['ver840', '시트 파일에 담겨 온 메모를 자동 배치', ['설정 파일에는 위치가 없는 메모 문구가 들어 있을 수 있습니다(conte는 걸려 있는 효과 메모를 그렇게 내보내고 배치는 이 앱에 맡깁니다). 이제 불러올 때 빈 공간에 배치합니다 — 전에는 크기 없이 놓였습니다. 아울러 카메라 자동 메모가 다른 곳에서 온 메모를 지우지 않도록 했습니다.']],
@@ -4235,6 +4238,7 @@
         ['ver641', '용지 업로드 경합 정리', ['용지 업로드 시 진행 중인 Auto Align을 즉시 취소하고, 업로드 실패 시 현재 용지를 지우지 않고 이전 상태로 복구합니다.']]
       ],
       zh: [
+        ['ver843', '精简文件名提示文字', ['新文件名输入框下方的说明把原理写得太详细。现在只保留一点：最后的数字会按页递增。']],
         ['ver842', '导出前可以修改文件名', ['在导出确认界面加入了文件名输入框，里面预填的就是这个应用本来自动生成的名字，可以自由修改。导出多页时，名字里最后的数字会按页递增（TVPaint 式重命名），第 1 页会原样保留你输入的内容。']],
         ['ver841', '留空的画框名称在表单上也保持留空', ['未填写起点或终点画框名称的摄影行，此前会在表单上画出 A（终点为 B）。这会让输入中根本不存在的字母看起来像真正的画框名称。现在只画标记。终点侧原本留空时就不画，起点侧现在与之一致。']],
         ['ver840', '随表单文件带入的备注会自动排布', ['设置文件中可能含有没有自身位置的备注文字（conte 会以这种形式导出「一直生效的效果」备注，把摆放交给本应用）。现在会在载入时排布到空白区域，此前会以没有尺寸的状态放置。同时，摄影自动备注不再会删除来自其他来源的备注。']],
