@@ -2767,7 +2767,18 @@
     const SHEET_ZOOM_MAX = 4;
     const SHEET_ZOOM_BUTTON_FACTOR = 1.12;
     const CELL_LONG_PRESS_MOVE_TOLERANCE = 4;
+    // 셀 마커(○·△) 표기. 선을 얇게 하고 반투명으로 둬, 숫자와 겹쳐도 숫자가 읽히게 한다 —
+    // 3자리 숫자는 삼각형 안에 기하학적으로 들어가지 않으므로(2026-08-08 실측) 겹침을 없애는
+    // 대신 방해를 줄이는 쪽을 택했다. 숫자 크기·자간은 건드리지 않는다.
+    const CELL_MARKER_STROKE = 0.8;          // 이전 1.1
+    const CELL_MARKER_OPACITY = 0.5;
+    // 삼각형은 **밑변 위치를 그대로 두고** 좌우와 꼭짓점만 넓힌다. 밑변을 내리면 삼각형이 길어져
+    // 숫자가 놓이는 높이가 상대적으로 위쪽(좁은 쪽)이 되어 오히려 좁아진다.
+    const CELL_MARKER_TRI_SIDE_PAD = 1;      // 좌우 여백 (이전에는 markerPad 와 같은 4)
+    const CELL_MARKER_TRI_APEX_RISE = 1;     // 꼭짓점을 셀 위로 빼는 양 (윗칸 ○ 와 1.1 여유)
     const SHAKU_BLUE = '#1f6feb';
+    // 尺 바깥 구간을 덮는 흰색의 진하기. 0 이면 표시 없음, 1 이면 완전히 가려진다.
+    const PAST_DURATION_DIM_OPACITY = 0.62;
     const SHAKU_FLASH_DURATION_MS = 6000;
     const SHAKU_FLASH_FADE_MS = 650;
     const TEXT_MEMO_DRAG_MOVE_TOLERANCE = 4;
@@ -2792,7 +2803,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '864';
+    const APP_VERSION = '865';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3813,6 +3824,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ["ver865", "Cell numbers no longer get buried in their mark, and frames past the cut length are dimmed", ["The triangle mark is larger and both marks are drawn thinner and semi-transparent, so a two- or three-digit number stays readable where it overlaps. Number size is unchanged.", "Frames after the cut-length boundary are shown dimmed, so it is obvious at a glance which rows fall outside the final length.", "Undo and save fixes: Ctrl+Z now restores camera Fr/% annotations. Layer name tags you added by hand are saved with the project. A camera memo you edited by hand keeps your text when the file is reopened. Paper Undo no longer reverts a column count you typed yourself. Ctrl+Z now works while in position-adjust mode."]],
         ["ver861", "An invalid repeat now shows a standing warning banner naming the column and frame, not just red text", ["A repeat (rep) with no established pattern before it already turned its label red on the sheet. Now a banner also appears above the preview, naming the exact column and frame, and it stays up until the repeat is fixed or removed.", "The touch long-press setup every other cell hit area gets was missing specifically on the repeat-continuation dots — added for consistency, no effect on mouse use."]],
         ["ver860", "If a cut-length drag gets forcibly interrupted, it now reverts instead of possibly sticking half-applied", ["Dragging the seconds/frames length and getting cut off mid-drag (app losing focus, a touch gesture taking over) used to leave whatever length the drag had reached at that instant. It now restores the length you had before you started dragging."]],
         ["ver859", "Several real bugs found in a full code review are fixed", ["CSV layer-name sorting no longer mistakes ordinary words ending in 'ue'/'shita' (Blue, Value, Continue...) for a 上/下 order marker.", "The Quick Guide now names the actual Export button instead of an old 'Output' name that no longer exists.", "A Korean UI label that had been left in Japanese now reads in Korean.", "Repeat-column numbering on the Douga sheet no longer goes stale when you only edit a cell's label or dialogue text.", "Pasting a second image no longer lands exactly on top of the first — it now finds a free spot nearby.", "Brush/eraser shortcuts now fully close whatever text-memo drag or menu was open, instead of leaving it stuck."]],
@@ -3838,6 +3850,7 @@
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver865", "セル番号がマークに埋もれないようにし、尺の外のコマを薄く表示します", ["三角マークを大きくし、○と△の線を細く・半透明にしました。2桁3桁の番号が重なっても読めます。数字の大きさは変えていません。", "尺の境界より後ろのコマを薄く表示します。どこからが最終尺の外かが一目で分かります。", "取り消し・保存の修正：Ctrl+Zでカメラの Fr／％ 表記が戻るようになりました。手で付けたレイヤー名タグが保存されます。手で直したカメラメモが、ファイルを開き直しても消えません。用紙の取り消しが、自分で入力したマス数を戻さなくなりました。位置調整モード中もCtrl+Zが効きます。"]],
         ["ver861", "無効なリピートに、赤字だけでなく列とコマ番号を示す常設の警告バナーを追加しました", ["直前に繰り返すパターンが確立していないリピート（rep）は、これまでもシート上でラベルが赤字になっていました。今はプレビュー上部にもバナーが出て、どの列の何コマ目かを示し、直すか消すまで表示され続けます。", "他のセルのヒット領域には全て入っているタッチ長押し設定が、リピート継続の点だけ抜けていたので揃えました（マウス操作には影響なし）。"]],
         ["ver860", "尺（秒・コマ）ドラッグが途中で強制中断された場合、半端な値のままにならず元に戻るようにしました", ["秒・コマ入力をドラッグ中にフォーカスが外れたりタッチジェスチャーに割り込まれたりして中断されると、その瞬間の中途半端な長さが残っていました。今はドラッグ開始前の長さに戻ります。"]],
         ["ver859", "全体コードレビューで見つかった実際の不具合をいくつか修正しました", ["CSV レイヤー名ソートが、'ue'/'shita' で終わる普通の単語（Blue、Value、Continue など）を 上/下 の指示と誤認しなくなりました。", "クイックガイドの案内が、実際には存在しない 「出力」ではなく、実際の「書き出し」ボタンを指すようになりました。", "日本語のまま残っていた韓国語 UI ラベルが、韓国語で表示されるようになりました。", "動画シートのリピート列番号が、セルのラベルやセリフテキストだけを編集しても古いままにならなくなりました。", "2枚目の画像を貼り付けても 1枚目にぴったり重ならなくなり、近くの空いている場所に自動で配置されます。", "ブラシ/消しゴムのショートカットで、開いていたテキストメモのドラッグやメニューが残らずにちゃんと閉じるようになりました。"]],
@@ -3863,6 +3876,7 @@
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver865", "셀 번호가 마커에 묻히지 않게 하고, 尺 바깥 코마를 옅게 표시합니다", ["△ 마커를 키우고 ○·△ 선을 얇게·반투명으로 바꿨습니다. 두세 자리 번호가 겹쳐도 읽힙니다. 숫자 크기는 그대로입니다.", "尺(컷 길이) 경계 뒤쪽 코마가 옅게 표시됩니다. 어디부터가 최종 尺 밖인지 한눈에 보입니다.", "되돌리기·저장 수정: Ctrl+Z로 카메라 Fr/% 표기가 되살아납니다. 손으로 붙인 레이어 이름표가 저장됩니다. 손으로 고친 카메라 메모가 파일을 다시 열어도 유지됩니다. 용지 되돌리기가 직접 입력한 칸 수를 되돌리지 않습니다. 위치조정 모드에서도 Ctrl+Z가 듣습니다."]],
         ["ver861", "무효한 리피트에 빨간 글자뿐 아니라 열·코마 번호를 알려주는 상시 경고 배너를 추가했습니다", ["직전에 반복할 패턴이 확립되지 않은 리피트(rep)는 이전에도 시트에서 라벨이 빨갛게 표시됐습니다. 이제 프리뷰 위쪽에도 배너가 떠서 어느 열, 몇 코마인지 알려주고, 고치거나 지울 때까지 계속 떠 있습니다.", "다른 셀 히트 영역엔 다 들어있는 터치 롱프레스 설정이 리피트 지속 점에만 빠져 있어서 맞췄습니다(마우스 사용엔 영향 없음)."]],
         ["ver860", "컷 길이(초/코마) 드래그가 도중에 강제로 끊기면 어중간한 값 그대로 남지 않고 원래대로 돌아갑니다", ["초/코마 길이를 드래그하던 중 포커스가 빠지거나 터치 제스처가 끼어들어 끊기면 그 순간의 어중간한 길이가 그대로 남아있었습니다. 이제는 드래그 시작 전 길이로 되돌아갑니다."]],
         ["ver859", "전체 코드 점검에서 나온 실제 버그 여러 건을 고쳤습니다", ["CSV 레이어명 정렬이 'ue'/'shita'로 끓난는 평범한 영단어(Blue, Value, Continue 등)를 상/하 표기로 오인식하지 않게 되었습니다.", "Quick Guide가 이제 실제로 없는 옷드 이름 '출력' 대신 실제 버튼명(출력/내보내기 버튼)을 가리킵니다.", "일본어로 남아 있던 한국어 UI 라벨 하나가 한국어로 바뀌었습니다.", "동화란 리피트 번호가 셀의 라벨이나 대사만 고쳐도 옵은 값으로 남아 있던 문제를 고쳐습니다.", "이미지를 두 번째로 붙여넣으면 첫 번째와 정확히 격치는 대신 근처 빈자리를 찾아 자동으로 놓입니다.", "브러시/지우개 단축키가 열려 있던 텍스트 메모 드래그나 메뉴를 남김없이 닫고 들어갑니다."]],
@@ -3888,6 +3902,7 @@
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver865", "让格子编号不再被标记压住，并把尺之外的格数显示为浅色", ["放大三角标记，并把○与△的线条改为更细、半透明。两位三位编号即使重叠也能看清。数字大小未改变。", "尺（镜头长度）边界之后的格数会显示为浅色，一眼就能看出哪些行在最终尺之外。", "撤销与保存修正：Ctrl+Z 现在会恢复摄影的 Fr／％ 标注。手动添加的图层名标签会随项目保存。手动修改过的摄影备注在重新打开文件后不会丢失。纸张撤销不再回退你自己输入的列数。位置调整模式下 Ctrl+Z 也能使用。"]],
         ["ver861", "无效重复现在除了红字之外，还会显示常驻警告横幅，标明具体的列和格数", ["如果重复（rep）之前没有建立好可重复的规律，表格上早已把标签显示为红色。现在预览区上方也会出现横幅，标明具体是哪一列第几格，并会一直显示到你修正或删除为止。", "其他单元格点击区域都有的触摸长按设置，唯独重复延续点缺了这一项，现已补齐（不影响鼠标操作）。"]],
         ["ver860", "拖动镜头长度（秒/格）时若被强制中断，不再停留在中途数值，而是恢复原值", ["拖动秒/格长度时如果因失焦或触摸手势介入而被打断，之前会停留在中断瞬间的中途长度。现在会恢复到开始拖动前的长度。"]],
         ["ver859", "全面代码审查中发现并修复了几个实际问题", ["CSV 图层名排序不再把以 'ue'/'shita' 结尾的普通英文词（Blue、Value、Continue 等）误认为 上/下 标记。", "Quick Guide 现在指向真正存在的导出按钮，而不是已不存在的旧名称“输出”。", "一个仍保留为日语的韩语界面标签现已改为韩语。", "动画表的重复列编号不再因仅修改单元格标签或台词而保持旧值。", "连续粘贴第二张图片时不再与第一张完全重叠，而会自动找到附近的空位。", "画笔/橡皮擦快捷键现在会完全关闭之前打开的文本备忘录拖拽或菜单，而不会卡住。"]],
@@ -14848,6 +14863,9 @@
         // column count. New code never writes a value above 0, so any positive number here can
         // only be an old save — convert it once so a previously saved project keeps rendering
         // the same douga column count instead of silently resetting to "same as Cell columns".
+        // (2026-08-08: that sentence was false until then — collectPaperSubschema wrote the
+        // absolute count on every save, so this branch was the normal decoder, not a migration.
+        // It now writes the delta, which is what makes the claim above true.)
         const cellColumns = clampCellColumnCount(state.cellColumnCount || 8);
         return n - cellColumns <= -1 ? -1 : 0;
       }
@@ -16942,11 +16960,15 @@
         // ver847: the rule lives in sheetMarkerCircleRadius now — the camera column draws the same ring and the
         // two had already drifted apart once.
         const r = sheetMarkerCircleRadius(x2 - x1, y2 - y1);
-        appendSvgNode(el('circle', { cx:cx, cy:cy, r:r, fill:'none', stroke:'#111', 'stroke-width':cellOutputStroke(1.1), 'pointer-events':'none' }));
+        appendSvgNode(el('circle', { cx:cx, cy:cy, r:r, fill:'none', stroke:'#111', 'stroke-width':cellOutputStroke(CELL_MARKER_STROKE), opacity:CELL_MARKER_OPACITY, 'pointer-events':'none' }));
       }
       if (kind === 'triangle') {
-        const points = cx + ',' + (y1 + markerPad) + ' ' + (x2 - markerPad) + ',' + (y2 - markerPad) + ' ' + (x1 + markerPad) + ',' + (y2 - markerPad);
-        appendSvgNode(el('polygon', { points:points, fill:'none', stroke:'#111', 'stroke-width':cellOutputStroke(1.1), 'pointer-events':'none' }));
+        // 밑변 y 는 markerPad 그대로(= 이전과 같은 자리). 좌우와 꼭짓점만 넓혀 숫자가 앉는
+        // 높이에서의 폭을 7.4 → 14.3 으로 늘린다.
+        const apexY = y1 - CELL_MARKER_TRI_APEX_RISE;
+        const baseY = y2 - markerPad;
+        const points = cx + ',' + apexY + ' ' + (x2 - CELL_MARKER_TRI_SIDE_PAD) + ',' + baseY + ' ' + (x1 + CELL_MARKER_TRI_SIDE_PAD) + ',' + baseY;
+        appendSvgNode(el('polygon', { points:points, fill:'none', stroke:'#111', 'stroke-width':cellOutputStroke(CELL_MARKER_STROKE), opacity:CELL_MARKER_OPACITY, 'pointer-events':'none' }));
       }
     }
 
@@ -17753,6 +17775,31 @@
         return { x:block.blockX, w:block.blockW };
       }
       return { x:left, w:Math.max(1, right - left) };
+    }
+
+    // 尺 바깥(빨간 경계선 뒤)을 옅게 덮는다. 원화·대사·동화·카메라를 한 번에 덮도록 폭은
+    // getDurationBoundaryArea 를 쓴다 — 경계선이 쓰는 그 폭이라 선과 칠이 같은 범위를 가리킨다.
+    // 블록 전체가 尺 밖인 페이지(내용이 尺보다 긴 경우)도 이 계산으로 통째로 덮인다.
+    function renderPastDurationDimming(block, durationFrame) {
+      const end = Math.round(Number(durationFrame) || 0);
+      if (!end || end >= block.end) return;
+      const from = Math.max(block.start, end + 1);
+      if (from > block.end) return;
+      withDrawLayer('output', function(){
+        const area = getDurationBoundaryArea(block);
+        const y1 = getOutputRowTop(block, from, 'cell');
+        const y2 = getOutputRowTop(block, block.end + 1, 'cell');
+        if (y2 <= y1) return;
+        appendSvgNode(el('rect', {
+          x:area.x,
+          y:y1,
+          width:area.w,
+          height:y2 - y1,
+          fill:'#ffffff',
+          opacity:PAST_DURATION_DIM_OPACITY,
+          'pointer-events':'none'
+        }));
+      });
     }
 
     function renderDurationBoundary(block, durationFrame, interactive) {
@@ -18658,9 +18705,13 @@
         const oneLineW = Math.ceil(estimateTextMemoTextWidth(memoText, fontSize)) + 16; // +16 ≈ the box's own inset
         const fitW = clampNumber(oneLineW, TEXT_MEMO_MIN_W, Math.max(TEXT_MEMO_MIN_W, gapRect.w), TEXT_MEMO_DEFAULT_W);
         if (existing) {
-          existing.text = memoText;
-          existing.rich = [];
-          existing.w = Math.max(Number(existing.w) || 0, fitW);
+          // 손대지 않은 것만 갱신한다. edited 가 붙었으면 본문·서식·폭 전부 그대로 둔다 —
+          // 폭은 새 본문 기준으로 계산된 값이라 옛 본문에 맞출 이유가 없다.
+          if (!existing.edited) {
+            existing.text = memoText;
+            existing.rich = [];
+            existing.w = Math.max(Number(existing.w) || 0, fitW);
+          }
         } else {
           const memo = createDefaultTextMemo(pageIndex, null, null, { text:memoText, color:'#111111', w:fitW });
           if (memo) { memo.auto = true; memo.srcKey = key; }
@@ -18670,7 +18721,9 @@
         // Only sweep the memos THIS function owns. An imported payload can carry auto memos from another
         // producer (conte ships held-FX notes under an "fx-" srcKey); those are not ours to delete.
         const srcKey = String((list[i] && list[i].srcKey) || '');
-        if (list[i] && list[i].auto && srcKey.indexOf('cam-') === 0 && !wanted.has(srcKey)) list.splice(i, 1);
+        // edited 는 여기서도 빠진다 — 빼지 않으면 카메라 줄을 지우는 순간 고쳐 둔 메모가
+        // 사라져, 본문만 지키는 반쪽 보호가 된다.
+        if (list[i] && list[i].auto && !list[i].edited && srcKey.indexOf('cam-') === 0 && !wanted.has(srcKey)) list.splice(i, 1);
       }
       layoutAutoTextMemos(pageIndex); // ver844: order + size them as a list instead of a nearest-free-slot blob
       render();
@@ -19359,7 +19412,12 @@
       if (memo) {
         const nextText = String(active.editor.value || '');
         const oldText = String(memo.text || '');
-        if (oldText !== nextText) adjustTextMemoRichRuns(memo, oldText, nextText);
+        if (oldText !== nextText) {
+          adjustTextMemoRichRuns(memo, oldText, nextText);
+          // 손으로 고친 메모는 카메라란에서 다시 만들 때 본문을 덮어쓰지 않는다(edited 소비처는
+          // writeCameraLinesToMemo). 자동 배치는 계속 받으므로 auto 는 그대로 둔다.
+          memo.edited = true;
+        }
         memo.text = nextText;
         normalizeTextMemoRichRuns(memo);
       }
@@ -19536,6 +19594,7 @@
       const memo = getTextMemoPageData(Number(active.pageIndex || 0)).find(function(item){ return item && item.id === active.id; });
       if (!memo) return;
       setTextMemoRichRun(memo, start, end, type === 'box' ? 'box' : 'bold');
+      memo.edited = true;   // 굵게·네모도 손댄 것이다 — 재생성이 rich 를 비우지 않게 한다
       state.textMemoLastSelection = { id:active.id, pageIndex:Number(active.pageIndex || 0), start:start, end:end };
       closeTextMemoEditor({ render:false });
       state.activeTextMemo = { pageIndex:Number(active.pageIndex || 0), id:active.id };
@@ -20056,6 +20115,7 @@
         const blockCameras = model.cameraBlocks.filter(function(seg){ return !(seg.to < rendered.start || seg.from > rendered.end); });
         renderRangeSegments(rendered, blockDialogs, blockCameras, model.dialogLaneCount, model.cameraLaneCount);
         renderRepeatContinuations(rendered, model.layout, durationFrame, explicitDurationFrame, isInteractive);
+        renderPastDurationDimming(rendered, durationFrame);   // 선보다 먼저 — 나중이면 선이 흐려진다
         renderDurationBoundary(rendered, durationFrame, isInteractive);
       });
       renderTextMemos(pageIndex, isInteractive);
@@ -20276,6 +20336,10 @@
         state.dougaSheetData = snap.dougaSheetData && typeof snap.dougaSheetData === 'object' ? JSON.parse(JSON.stringify(snap.dougaSheetData)) : null;
         state.markerOverrides = snap.markerOverrides && typeof snap.markerOverrides === 'object' ? JSON.parse(JSON.stringify(snap.markerOverrides)) : {};
         state.cameraPreviewStyles = snap.cameraPreviewStyles && typeof snap.cameraPreviewStyles === 'object' ? JSON.parse(JSON.stringify(snap.cameraPreviewStyles)) : {};
+        // getContentSnapshot 이 담는 값은 전부 여기서 되돌려야 한다. 이 한 줄이 빠져 있어서
+        // 「undo 스택에는 쌓이는데 Ctrl+Z 로 Fr/% 표기만 안 돌아오는」 상태였다(conte 공급값이라
+        // 재생성 경로가 없어 _settei.json 재로드 말고는 복구 수단이 없었다).
+        state.cameraEndpointFr = snap.cameraEndpointFr && typeof snap.cameraEndpointFr === 'object' ? JSON.parse(JSON.stringify(snap.cameraEndpointFr)) : {};
         state.dotOverrides = snap.dotOverrides && typeof snap.dotOverrides === 'object' ? JSON.parse(JSON.stringify(snap.dotOverrides)) : {};
         normalizeDurationInputs();
         syncPaperLayoutControls();
@@ -20339,7 +20403,10 @@
     }
 
     function inGlobalHistorySpecialMode() {
-      return !!(state.memoMode || state.shakuMode || state.textMemoEditMode || state.positionMode);
+      // positionMode 는 빠져 있다 — 다른 셋과 달리 **전용 히스토리가 없다**. 레이아웃 상자 드래그는
+      // 용지 히스토리에 쌓이지 않으므로 Ctrl+Z 가 가로챌 대상이 없고, 막아 두면 자동정렬이
+      // positionMode 를 켜는 탓에 「자동정렬 직후 Ctrl+Z 가 먹통」이 된다(2026-08-08).
+      return !!(state.memoMode || state.shakuMode || state.textMemoEditMode);
     }
 
 
@@ -22000,9 +22067,9 @@
         showDurationPlusOutput:state.showDurationPlusOutput !== false,
         showCellLabelOutput:!!state.showCellLabelOutput,
         showPsdMemo:!!state.showPsdMemo,
-        cellColumnCount:state.cellColumnCount,
-        inbetweenColumnCount:state.inbetweenColumnCount,
-        cellDisplayOrder:clonePaperData(state.cellDisplayOrder || []),
+        // 칸 수·열 순서는 여기 담지 않는다 — 내용 히스토리(getContentSnapshot)가 이미 담고
+        // applyContentSnapshot 이 복원한다. 두 벌을 들고 있었을 때, 자동정렬 뒤 사용자가 입력칸으로
+        // 고친 칸 수를 용지 Undo 가 옛 값으로 덮어써 조용히 사라뜨렸다(2026-08-08).
         layoutBoxes:clonePaperData(state.layoutBoxes || {}),
         layoutBoxBaseRects:clonePaperData(state.layoutBoxBaseRects || {}),
         positionMode:!!state.positionMode,
@@ -22027,9 +22094,9 @@
       state.showDurationPlusOutput = typeof snapshot.showDurationPlusOutput === 'boolean' ? snapshot.showDurationPlusOutput : true;
       state.showCellLabelOutput = typeof snapshot.showCellLabelOutput === 'boolean' ? snapshot.showCellLabelOutput : true;
       state.showPsdMemo = typeof snapshot.showPsdMemo === 'boolean' ? snapshot.showPsdMemo : true;
-      state.cellColumnCount = snapshot.cellColumnCount !== undefined ? clampCellColumnCount(snapshot.cellColumnCount) : state.cellColumnCount;
-      state.inbetweenColumnCount = snapshot.inbetweenColumnCount !== undefined ? clampInbetweenColumnCount(snapshot.inbetweenColumnCount) : state.inbetweenColumnCount;
-      state.cellDisplayOrder = Array.isArray(snapshot.cellDisplayOrder) ? clonePaperData(snapshot.cellDisplayOrder) : [];
+      // 칸 수·열 순서는 되돌리지 않는다(위 getPaperStateSnapshot 주석 참조). 특히
+      // cellDisplayOrder 는 무조건 대입이었어서, 키만 빼고 이 줄을 남기면 용지 Undo 마다
+      // 열 순서가 통째로 초기화된다 — 두 함수를 반드시 같이 고쳐야 하는 이유다.
       state.layoutBoxes = clonePaperData(snapshot.layoutBoxes || {});
       state.layoutBoxBaseRects = clonePaperData(snapshot.layoutBoxBaseRects || {});
       state.positionMode = !!snapshot.positionMode;
@@ -22099,7 +22166,11 @@
         showCellLabelOutput:!!state.showCellLabelOutput,
         showPsdMemo:!!state.showPsdMemo,
         cellColumnCount:getCellColumnCount(),
-        inbetweenColumnCount:getInbetweenColumnCount(),
+        // 델타(-1|0)로 저장한다. 예전에는 getInbetweenColumnCount() 의 절대값을 썼는데, 그러면
+        // 읽는 쪽이 cellColumnCount 를 먼저 적용해야만 환산이 맞는 순서 의존이 생기고, 저장 순간
+        // 용지 이미지가 없으면 델타가 0 으로 격하됐다. 구 절대값은 clampInbetweenColumnCount 가
+        // 계속 마이그레이션하므로 기존 파일은 그대로 열린다.
+        inbetweenColumnCount:clampInbetweenColumnCount(state.inbetweenColumnCount || 0),
         cellDisplayOrder:JSON.parse(JSON.stringify(state.cellDisplayOrder || [])),
         layoutBoxes:JSON.parse(JSON.stringify(state.layoutBoxes || {}))
       };
@@ -22417,7 +22488,12 @@
           markerOverrides:JSON.parse(JSON.stringify(state.markerOverrides || {})),
           cameraPreviewStyles:JSON.parse(JSON.stringify(state.cameraPreviewStyles || {})),
           cameraEndpointFr:JSON.parse(JSON.stringify(state.cameraEndpointFr || {})),
-          dotOverrides:JSON.parse(JSON.stringify(state.dotOverrides || {}))
+          dotOverrides:JSON.parse(JSON.stringify(state.dotOverrides || {})),
+          // 손으로 붙인 이름표만 담는다 — book 자동 태그는 syncTextCommandBookNameTags /
+          // syncCsvBookNameTags 가 커맨드 텍스트에서 다시 만들므로 저장하면 중복된다.
+          layerNameTags:(state.layerNameTags || []).filter(function(tag){
+            return tag && !tag.autoBookTag && !tag.autoTextBookTag;
+          }).map(function(tag){ return JSON.parse(JSON.stringify(tag)); })
         },
         memo:{
           mode:!!state.memoMode,
@@ -22558,6 +22634,7 @@
       state.cameraPreviewStyles = overrides.cameraPreviewStyles && typeof overrides.cameraPreviewStyles === 'object' ? overrides.cameraPreviewStyles : {};
       state.cameraEndpointFr = overrides.cameraEndpointFr && typeof overrides.cameraEndpointFr === 'object' ? overrides.cameraEndpointFr : {};
       state.dotOverrides = overrides.dotOverrides && typeof overrides.dotOverrides === 'object' ? overrides.dotOverrides : {};
+      state.layerNameTags = Array.isArray(overrides.layerNameTags) ? JSON.parse(JSON.stringify(overrides.layerNameTags)) : [];
       materializeDotOverridesIntoCommandText();
       const memo = payload.memo || {};
       // Pasted images are transient overlays; settings load/reset clears them instead of storing large data URLs.
