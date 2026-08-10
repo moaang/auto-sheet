@@ -2803,7 +2803,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '867';
+    const APP_VERSION = '868';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3824,6 +3824,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ["ver868", "Camera-column text stays readable where it crosses the ruling or the frame numbers", ["The instruction text (PAN, layer T.U), the circled frame name, the (BG1) form and the Fr/% annotation beside it now sit on a white plate. It is deliberately half-transparent, not opaque \u2014 the guide line and the sheet ruling still show through, which is what the ring\u2019s clear fill was always for.", "Nothing about what you type or how the sheet is laid out changed; only what is drawn under those glyphs."]],
         ["ver865", "Cell numbers no longer get buried in their mark, and frames past the cut length are dimmed", ["The triangle mark is larger and both marks are drawn thinner and semi-transparent, so a two- or three-digit number stays readable where it overlaps. Number size is unchanged.", "Frames after the cut-length boundary are shown dimmed, so it is obvious at a glance which rows fall outside the final length.", "Undo and save fixes: Ctrl+Z now restores camera Fr/% annotations. Layer name tags you added by hand are saved with the project. A camera memo you edited by hand keeps your text when the file is reopened. Paper Undo no longer reverts a column count you typed yourself. Ctrl+Z now works while in position-adjust mode."]],
         ["ver861", "An invalid repeat now shows a standing warning banner naming the column and frame, not just red text", ["A repeat (rep) with no established pattern before it already turned its label red on the sheet. Now a banner also appears above the preview, naming the exact column and frame, and it stays up until the repeat is fixed or removed.", "The touch long-press setup every other cell hit area gets was missing specifically on the repeat-continuation dots — added for consistency, no effect on mouse use."]],
         ["ver860", "If a cut-length drag gets forcibly interrupted, it now reverts instead of possibly sticking half-applied", ["Dragging the seconds/frames length and getting cut off mid-drag (app losing focus, a touch gesture taking over) used to leave whatever length the drag had reached at that instant. It now restores the length you had before you started dragging."]],
@@ -3850,6 +3851,7 @@
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver868", "\u30ab\u30e1\u30e9\u6b04\u306e\u6587\u5b57\u304c\u3001\u7f6b\u7dda\u3084\u30d5\u30ec\u30fc\u30e0\u756a\u53f7\u3068\u91cd\u306a\u3063\u3066\u3082\u8aad\u3081\u308b\u3088\u3046\u306b\u306a\u308a\u307e\u3057\u305f", ["\u64ae\u5f71\u6307\u793a\uff08PAN\u3001\u30ec\u30a4\u30e4\u30fcT.U\uff09\u3001\u4e38\u4ed8\u304d\u306e\u30d5\u30ec\u30fc\u30e0\u540d\u3001(BG1) \u306e\u5f62\u3001\u305d\u306e\u6a2a\u306e Fr\uff0f% \u306e\u6ce8\u8a18\u306b\u3001\u767d\u3044\u4e0b\u6577\u304d\u3092\u6577\u3044\u3066\u3044\u307e\u3059\u3002\u5857\u308a\u3064\u3076\u3055\u305a\u534a\u900f\u660e\u306b\u3057\u3066\u3042\u308b\u306e\u306f\u3001\u30ac\u30a4\u30c9\u7dda\u3084\u7528\u7d19\u306e\u7f6b\u7dda\u304c\u900f\u3051\u3066\u898b\u3048\u306a\u3051\u308c\u3070\u306a\u3089\u306a\u3044\u304b\u3089\u3067\u3059\uff08\u30ea\u30f3\u30b0\u3092\u5857\u3089\u306a\u3044\u3067\u304d\u305f\u7406\u7531\u3068\u540c\u3058\uff09\u3002", "\u5165\u529b\u306e\u4ed5\u65b9\u3082\u30b7\u30fc\u30c8\u306e\u4f4d\u7f6e\u3082\u5909\u308f\u3063\u3066\u3044\u307e\u305b\u3093\u3002\u5909\u308f\u3063\u305f\u306e\u306f\u5b57\u306e\u4e0b\u306b\u63cf\u304b\u308c\u308b\u3082\u306e\u3060\u3051\u3067\u3059\u3002"]],
         ["ver865", "セル番号がマークに埋もれないようにし、尺の外のコマを薄く表示します", ["三角マークを大きくし、○と△の線を細く・半透明にしました。2桁3桁の番号が重なっても読めます。数字の大きさは変えていません。", "尺の境界より後ろのコマを薄く表示します。どこからが最終尺の外かが一目で分かります。", "取り消し・保存の修正：Ctrl+Zでカメラの Fr／％ 表記が戻るようになりました。手で付けたレイヤー名タグが保存されます。手で直したカメラメモが、ファイルを開き直しても消えません。用紙の取り消しが、自分で入力したマス数を戻さなくなりました。位置調整モード中もCtrl+Zが効きます。"]],
         ["ver861", "無効なリピートに、赤字だけでなく列とコマ番号を示す常設の警告バナーを追加しました", ["直前に繰り返すパターンが確立していないリピート（rep）は、これまでもシート上でラベルが赤字になっていました。今はプレビュー上部にもバナーが出て、どの列の何コマ目かを示し、直すか消すまで表示され続けます。", "他のセルのヒット領域には全て入っているタッチ長押し設定が、リピート継続の点だけ抜けていたので揃えました（マウス操作には影響なし）。"]],
         ["ver860", "尺（秒・コマ）ドラッグが途中で強制中断された場合、半端な値のままにならず元に戻るようにしました", ["秒・コマ入力をドラッグ中にフォーカスが外れたりタッチジェスチャーに割り込まれたりして中断されると、その瞬間の中途半端な長さが残っていました。今はドラッグ開始前の長さに戻ります。"]],
@@ -3876,6 +3878,7 @@
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver868", "\uce74\uba54\ub77c\ub780 \uae00\uc790\uac00 \uad18\uc120\u00b7\ud504\ub808\uc784 \ubc88\ud638\uc640 \uacb9\uccd0\ub3c4 \uc77d\ud799\ub2c8\ub2e4", ["\ucd2c\uc601\uc9c0\uc2dc(PAN, \ub808\uc774\uc5b4 T.U), \ub3d9\uadf8\ub77c\ubbf8 \ud504\ub808\uc784 \uc774\ub984, (BG1) \ud615\ud0dc, \uadf8 \uc606\uc758 Fr\uff0f% \ud45c\uae30 \ubc11\uc5d0 \ud770 \ud310\uc744 \uae54\uc558\uc2b5\ub2c8\ub2e4. \uafc9 \ucc44\uc6b0\uc9c0 \uc54a\uace0 \ubc18\ud22c\uba85\uc73c\ub85c \ub454 \uac83\uc740 \uac00\uc774\ub4dc\uc120\uacfc \uc6a9\uc9c0 \uad18\uc120\uc774 \ube44\uce20\uc5b4\uc57c \ud558\uae30 \ub54c\ubb38\uc785\ub2c8\ub2e4(\uace0\ub9ac\ub97c \uc548 \ucc44\uc6cc \uc628 \uc774\uc720\uc640 \uac19\uc2b5\ub2c8\ub2e4).", "\uc785\ub825 \ubc29\uc2dd\ub3c4 \uc2dc\ud2b8 \ubc30\uce58\ub3c4 \uadf8\ub300\ub85c\uc785\ub2c8\ub2e4. \ubc14\ub010 \uac83\uc740 \uae00\uc790 \ubc11\uc5d0 \uadf8\ub824\uc9c0\ub294 \uac83\ubfd0\uc785\ub2c8\ub2e4."]],
         ["ver865", "셀 번호가 마커에 묻히지 않게 하고, 尺 바깥 코마를 옅게 표시합니다", ["△ 마커를 키우고 ○·△ 선을 얇게·반투명으로 바꿨습니다. 두세 자리 번호가 겹쳐도 읽힙니다. 숫자 크기는 그대로입니다.", "尺(컷 길이) 경계 뒤쪽 코마가 옅게 표시됩니다. 어디부터가 최종 尺 밖인지 한눈에 보입니다.", "되돌리기·저장 수정: Ctrl+Z로 카메라 Fr/% 표기가 되살아납니다. 손으로 붙인 레이어 이름표가 저장됩니다. 손으로 고친 카메라 메모가 파일을 다시 열어도 유지됩니다. 용지 되돌리기가 직접 입력한 칸 수를 되돌리지 않습니다. 위치조정 모드에서도 Ctrl+Z가 듣습니다."]],
         ["ver861", "무효한 리피트에 빨간 글자뿐 아니라 열·코마 번호를 알려주는 상시 경고 배너를 추가했습니다", ["직전에 반복할 패턴이 확립되지 않은 리피트(rep)는 이전에도 시트에서 라벨이 빨갛게 표시됐습니다. 이제 프리뷰 위쪽에도 배너가 떠서 어느 열, 몇 코마인지 알려주고, 고치거나 지울 때까지 계속 떠 있습니다.", "다른 셀 히트 영역엔 다 들어있는 터치 롱프레스 설정이 리피트 지속 점에만 빠져 있어서 맞췄습니다(마우스 사용엔 영향 없음)."]],
         ["ver860", "컷 길이(초/코마) 드래그가 도중에 강제로 끊기면 어중간한 값 그대로 남지 않고 원래대로 돌아갑니다", ["초/코마 길이를 드래그하던 중 포커스가 빠지거나 터치 제스처가 끼어들어 끊기면 그 순간의 어중간한 길이가 그대로 남아있었습니다. 이제는 드래그 시작 전 길이로 되돌아갑니다."]],
@@ -15280,7 +15283,9 @@
       const sc = laneScale == null ? 1 : laneScale;
       const annot = String((state.cameraEndpointFr && state.cameraEndpointFr[str]) || '').trim();
       if (str.length !== 1) { // BG1 etc. — no room for a ring; keep the established (BG1) form
-        text(cx, cy, '(' + str + ')' + (annot ? ' ' + annot : ''), cellOutputSize(11) * sc, 'middle', '700', '#111');
+        const wide = '(' + str + ')' + (annot ? ' ' + annot : '');
+        drawTextPlate(cx, cy, wide, cellOutputSize(11) * sc, 'middle', false, false);
+        text(cx, cy, wide, cellOutputSize(11) * sc, 'middle', '700', '#111');
         return;
       }
       // Same ring and same lettering as the 原画欄 number beside it: cell-derived radius, no fill (the guide line
@@ -15289,12 +15294,15 @@
       // browsers and sat the enlarged glyph low in Safari, which is why the 原画欄 does it this way.
       const r = sheetMarkerCircleRadius(rowH, rowH) * sc;
       const ringX = cx + r;
-      appendSvgNode(el('circle', { cx:ringX, cy:cy, r:r, fill:'none', stroke:'#111', 'stroke-width':cellOutputStroke(1.1), 'pointer-events':'none' }));
+      // the ring's own fill IS its plate — white at 50%, so the guide line still shows through (a separate
+      // rect behind it would draw the line twice: once under the plate, once through it).
+      appendSvgNode(el('circle', { cx:ringX, cy:cy, r:r, fill:'#fff', 'fill-opacity':0.5, stroke:'#111', 'stroke-width':cellOutputStroke(1.1), 'pointer-events':'none' }));
       const numSize = cellOutputSize(12) * sc;
       const node = text(ringX, cy + numSize * 0.33, str, numSize, 'middle', '700', '#111');
       node.setAttribute('dominant-baseline', 'alphabetic');
       if (annot) { // just clear of the ring, on the same baseline as the letter — ver: 7px base, tighter to the ring
         const aSize = cellOutputSize(7) * sc;
+        drawTextPlate(ringX + r + aSize * 0.3, cy + aSize * 0.33, annot, aSize, 'start', false, true);
         const aNode = text(ringX + r + aSize * 0.3, cy + aSize * 0.33, annot, aSize, 'start', '600', '#111');
         aNode.setAttribute('dominant-baseline', 'alphabetic');
       }
@@ -15350,7 +15358,10 @@
         curveSeg.push([px, py]);
       }
       flushCurveSeg();
-      if (midInThisBlock) drawCompactText(guideX + bow, yMidRange, String(displayText || ''), 22, 'middle', '600', '#111', editConfig);
+      if (midInThisBlock) {
+        drawTextPlate(guideX + bow, yMidRange, String(displayText || ''), 22, 'middle', true, false);
+        drawCompactText(guideX + bow, yMidRange, String(displayText || ''), 22, 'middle', '600', '#111', editConfig);
+      }
     }
 
     function normalizeCameraShapeToken(value) {
@@ -17114,6 +17125,30 @@
       if (editConfig) attachEditableText(node, editConfig);
       appendSvgNode(node);
       return node;
+    }
+
+    // 用紙の罫線・ガイド線・フレーム番号と重なると字が読めなくなる（カメラ欄で顕著: `70%` と `73` が
+    // 重なる）。その下に敷く白い板。**50%** であって塗り潰しではない — 潰すと今度は用紙の様式そのものが
+    // 途切れて見える(リングを fill:'none' にしてある理由と同じ趣旨: 下の線は透けていなければならない)。
+    // ★字を描く関数より **先に** 呼ぶこと。SVG は文書順に描くので、後から呼べば字の上に乗る。
+    // 幅は getBBox() ではなく字種から見積もる — getBBox は SVG がレンダーツリーに載っている時しか正しい値を
+    // 返さず、このレンダラは書き出し(オフスクリーン)からも呼ばれる。全角は size、半角は size*0.56。
+    // compact: drawCompactText の scale(0.6667 1) を掛けるか。alphabetic: y がベースラインか(既定は中央)。
+    function drawTextPlate(x, y, value, size, anchor, compact, alphabetic) {
+      const str = String(value == null ? '' : value);
+      if (!str) return null;
+      const sz = Number(size) || 22;
+      let w = 0;
+      Array.from(str).forEach(function(ch) {
+        w += /[\u3000-\u30ff\u3400-\u9fff\uff01-\uff60\uffe0-\uffe6]/.test(ch) ? sz : sz * 0.56;
+      });
+      if (compact) w *= 0.6667;
+      const px = anchor === 'middle' ? x - w / 2 : (anchor === 'end' ? x - w : x);
+      const py = alphabetic ? y - sz * 0.82 : y - sz * 0.66;
+      return appendSvgNode(el('rect', {
+        x: px - 2, y: py, width: w + 4, height: sz * 1.32,
+        fill:'#fff', 'fill-opacity':0.5, 'pointer-events':'none'
+      }));
     }
 
     function drawTimelineBoxLabel(areaX, areaW, rowTop, rowH, lane, laneCount, labelValue, editConfig) {
