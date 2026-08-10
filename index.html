@@ -2803,7 +2803,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '871';
+    const APP_VERSION = '872';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3066,6 +3066,7 @@
       markerOverrides: {},
       cameraPreviewStyles: {},
       cameraEndpointFr: {},   // ver839: label -> '60Fr', supplied by conte; annotates the endpoint rings (no manual authoring here)
+      cameraSeries: [],       // ver872: [{group,name,lines[]}] — which camera-manual LINES form one work, and its name. Supplied by conte; see drawCameraSeriesBows.
       dotOverrides: {},
       csvFileBuffer: null,
       csvOriginalRows: [],
@@ -3824,6 +3825,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ["ver872", "With frame-number naming, the camera column finally says whose work each line is", ["That naming writes no instruction text, so a column of numbers gave no way to tell the camera move from a layer\u2019s own FX. Each run now gets one bow alongside it with its name in the gap \u2014 the same shape the per-segment bow already uses.", "Which lines form one run, and what it is called, is something only the source knows, so it now travels in the settings file (like the Fr/% annotations do). Files without it simply draw nothing extra."]],
         ["ver871", "A camera run no longer jumps to the neighbouring lane part-way through", ["Frame names were compared case-insensitively, so `A` and `a` \u2014 or `18K` and `18k` \u2014 counted as the same name and two unrelated runs were treated as connected. Because that same test decides which lane a segment inherits, the last stretch of a camera move could land in the layer-FX lane: one continuous line suddenly continued on the column next to it.", "Case is part of the name now. On a sheet `A` and `a` were always different frame names (both series sit in the same column), and the storyboard app writes camera in upper case and layer FX in lower case for exactly that reason. Full-width/half-width unification is unchanged."]],
         ["ver870", "A connected camera run no longer spells its shared frame name twice in the memo", ["Camera\u2192Memo used to write 「(1K)\u2192(4K) (4K)\u2192(9K) (9K)\u2192(13K)\u2026」 \u2014 every join appeared once as one segment\u2019s end and again as the next one\u2019s start. When a run carries no instruction text (the frame-number naming, where the names are the whole content), the names are chained instead: 「(1K)\u2192(4K)\u2192(9K)\u2192\u2026」.", "A run that does carry instruction text is unchanged \u2014 there what happens over each stretch is the information, and folding it would attach a move to the wrong pair of frames."]],
         ["ver869", "Two differences against the storyboard app\u2019s own sheet are gone", ["A row that starts with a 動画 dot no longer gets an automatic \u00d7 in front of it. The dot already says \u201cthere is a picture here\u201d \u2014 you can type one at the head of a command line \u2014 but the automatic leading \u00d7 only looked at drawing numbers, so it covered such a row with \u201cno picture yet\u201d.", "With frame-number naming (12K), the camera column now draws only its straight run line, no bowed curve. That naming carries no instruction text, so the curve had nothing to hold and several of them ran side by side."]],
@@ -3854,6 +3856,7 @@
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver872", "\u30d5\u30ec\u30fc\u30e0\u756a\u53f7\u8868\u8a18\u3067\u3082\u3001\u30ab\u30e1\u30e9\u6b04\u306e\u3069\u306e\u7dda\u304c\u8ab0\u306e\u30ef\u30fc\u30af\u304b\u5206\u304b\u308b\u3088\u3046\u306b\u306a\u308a\u307e\u3057\u305f", ["\u305d\u306e\u8868\u8a18\u306f\u6307\u793a\u8a9e\u3092\u66f8\u304b\u306a\u3044\u306e\u3067\u3001\u756a\u53f7\u3060\u3051\u304c\u4e26\u3093\u3067\u30ab\u30e1\u30e9\u30ef\u30fc\u30af\u306a\u306e\u304b\u30ec\u30a4\u30e4\u30fc\u306e FX \u306a\u306e\u304b\u8aad\u3081\u307e\u305b\u3093\u3067\u3057\u305f\u3002\u307e\u3068\u307e\u308a\u3054\u3068\u306b\u5f13\u3092\u4e00\u672c\u6dfb\u3048\u3001\u305d\u306e\u7a74\u306b\u540d\u524d\u3092\u66f8\u304d\u307e\u3059\u2014\u533a\u9593\u306e\u5f13\u3068\u540c\u3058\u5f62\u3067\u3059\u3002", "\u3069\u306e\u884c\u304c\u3072\u3068\u307e\u3068\u307e\u308a\u3067\u540d\u524d\u304c\u4f55\u304b\u306f\u4f5c\u308b\u5074\u3057\u304b\u77e5\u3089\u306a\u3044\u306e\u3067\u3001Fr\uff0f% \u306e\u6ce8\u8a18\u3068\u540c\u3058\u304f\u8a2d\u5b9a\u30d5\u30a1\u30a4\u30eb\u3067\u53d7\u3051\u53d6\u308a\u307e\u3059\u3002\u7121\u3044\u30d5\u30a1\u30a4\u30eb\u3067\u306f\u4f55\u3082\u5897\u3048\u307e\u305b\u3093\u3002"]],
         ["ver871", "\u30ab\u30e1\u30e9\u30ef\u30fc\u30af\u306e\u7e26\u7dda\u304c\u9014\u4e2d\u304b\u3089\u96a3\u306e\u30ec\u30fc\u30f3\u306b\u98db\u3076\u306e\u3092\u76f4\u3057\u307e\u3057\u305f", ["\u30d5\u30ec\u30fc\u30e0\u540d\u3092\u5927\u5c0f\u6587\u5b57\u3092\u7121\u8996\u3057\u3066\u6bd4\u3079\u3066\u3044\u305f\u306e\u3067\u3001`A` \u3068 `a`\u3001`18K` \u3068 `18k` \u304c\u540c\u3058\u540d\u524d\u6271\u3044\u306b\u306a\u308a\u3001\u7121\u95a2\u4fc2\u306a\u4e8c\u3064\u306e\u9023\u306a\u308a\u304c\u300c\u3064\u306a\u304c\u3063\u3066\u3044\u308b\u300d\u3068\u5224\u5b9a\u3055\u308c\u3066\u3044\u307e\u3057\u305f\u3002\u305d\u306e\u5224\u5b9a\u306f\u30ec\u30fc\u30f3\u306e\u5f15\u304d\u7d99\u304e\u306b\u3082\u4f7f\u308f\u308c\u308b\u305f\u3081\u3001\u30ab\u30e1\u30e9\u306e\u6700\u5f8c\u306e\u533a\u9593\u304c\u30ec\u30a4\u30e4\u30fcFX \u306e\u30ec\u30fc\u30f3\u3078\u79fb\u308a\u3001\u4e00\u672c\u306e\u6301\u7d9a\u7dda\u304c\u9014\u4e2d\u304b\u3089\u96a3\u306e\u7e26\u7dda\u306b\u7d9a\u3044\u3066\u3044\u307e\u3057\u305f\u3002", "\u5927\u5c0f\u6587\u5b57\u306f\u540d\u524d\u306e\u4e00\u90e8\u3068\u3057\u3066\u6271\u3044\u307e\u3059\u3002\u30b7\u30fc\u30c8\u3067\u306f `A` \u3068 `a` \u306f\u5143\u3005\u3079\u3064\u306e\u30d5\u30ec\u30fc\u30e0\u540d\u3067\u3059\u3002\u5168\u89d2\u534a\u89d2\u306e\u7d71\u4e00\u306f\u5f93\u6765\u901a\u308a\u3067\u3059\u3002"]],
         ["ver870", "\u9023\u7d50\u3057\u305f\u30ab\u30e1\u30e9\u30ef\u30fc\u30af\u306e\u5171\u6709\u30d5\u30ec\u30fc\u30e0\u540d\u3092\u3001\u30e1\u30e2\u3067\u4e8c\u5ea6\u66f8\u304b\u306a\u304f\u306a\u308a\u307e\u3057\u305f", ["\u30ab\u30e1\u30e9\u2192\u30e1\u30e2 \u306f\u300c(1K)\u2192(4K) (4K)\u2192(9K) (9K)\u2192(13K)\u2026\u300d\u306e\u3088\u3046\u306b\u3001\u7d99\u304e\u76ee\u3092\u524d\u306e\u7d42\u308f\u308a\u3068\u6b21\u306e\u59cb\u307e\u308a\u3067\u4e8c\u5ea6\u66f8\u3044\u3066\u3044\u307e\u3057\u305f\u3002\u6307\u793a\u8a9e\u306e\u7121\u3044\u9023\u7d50\uff08\u30d5\u30ec\u30fc\u30e0\u756a\u53f7\u8868\u8a18\u3002\u540d\u524d\u305d\u306e\u3082\u306e\u304c\u5185\u5bb9\uff09\u306a\u3089\u3001\u300c(1K)\u2192(4K)\u2192(9K)\u2192\u2026\u300d\u3068\u9023\u306d\u307e\u3059\u3002", "\u6307\u793a\u8a9e\u306e\u3042\u308b\u9023\u7d50\u306f\u5f93\u6765\u306e\u307e\u307e\u3067\u3059\u2014\u305d\u3053\u3067\u306f\u533a\u9593\u3054\u3068\u306b\u4f55\u3092\u3059\u308b\u304b\u304c\u60c5\u5831\u3060\u304b\u3089\u3067\u3059\u3002"]],
         ["ver869", "\u7d75\u30b3\u30f3\u30c6\u5074\u306e\u30b7\u30fc\u30c8\u3068\u306e\u9055\u3044\u3092\uff12\u3064\u63c3\u3048\u307e\u3057\u305f", ["\u52d5\u753b\u30de\u30fc\u30af\uff08\u30c9\u30c3\u30c8\uff09\u3067\u59cb\u307e\u308b\u884c\u306b\u3001\u81ea\u52d5\u306e\u5148\u982d\u00d7\u3092\u4ed8\u3051\u306a\u304f\u306a\u308a\u307e\u3057\u305f\u3002\u30c9\u30c3\u30c8\u3082\u300c\u305d\u3053\u306b\u7d75\u304c\u3042\u308b\u300d\u5370\u3067\u3001\u30b3\u30de\u30f3\u30c9\u6b04\u306a\u3089\u884c\u982d\u306b\u3082\u66f8\u3051\u307e\u3059\u304c\u3001\u81ea\u52d5\u306e\u5148\u982d\u00d7\u306f\u7d75\u756a\u53f7\u3057\u304b\u898b\u3066\u3044\u307e\u305b\u3093\u3067\u3057\u305f\u3002", "\u30d5\u30ec\u30fc\u30e0\u756a\u53f7\u8868\u8a18\uff0812K\uff09\u306e\u3068\u304d\u3001\u30ab\u30e1\u30e9\u6b04\u306f\u7e26\u306e\u6301\u7d9a\u7dda\u3060\u3051\u3092\u5f15\u304d\u307e\u3059\uff08\u5f13\u306a\u308a\u306e\u66f2\u7dda\u3092\u5f15\u304b\u306a\u3044\uff09\u3002\u305d\u306e\u8868\u8a18\u306f\u6307\u793a\u8a9e\u3092\u66f8\u304b\u306a\u3044\u306e\u3067\u3001\u66f2\u7dda\u306b\u5165\u308c\u308b\u4e2d\u8eab\u304c\u7121\u3044\u307e\u307e\u4f55\u672c\u3082\u4e26\u3093\u3067\u3044\u307e\u3057\u305f\u3002"]],
@@ -3884,6 +3887,7 @@
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver872", "\ud504\ub808\uc784 \ubc88\ud638 \ud45c\uae30\uc5d0\uc11c\ub3c4 \uce74\uba54\ub77c\ub780\uc758 \uc5b4\ub290 \uc904\uc774 \ub204\uad6c\uc758 \uc6cc\ud06c\uc778\uc9c0 \ubcf4\uc785\ub2c8\ub2e4", ["\uadf8 \ud45c\uae30\ub294 \uc9c0\uc2dc\uc5b4\ub97c \uc548 \uc4f0\ubbc0\ub85c \ubc88\ud638\ub9cc \ub298\uc5b4\uc11c\uc11c \uce74\uba54\ub77c \uc6cc\ud06c\uc778\uc9c0 \ub808\uc774\uc5b4 FX \uc778\uc9c0 \uc54c \uc218 \uc5c6\uc5c8\uc2b5\ub2c8\ub2e4. \uc774\uc81c \ud55c \ubb36\uc74c\ub9c8\ub2e4 \ud65c\uc744 \ud558\ub098 \ub300\uace0 \uadf8 \uad6c\uba4d\uc5d0 \uc774\ub984\uc744 \uc501\ub2c8\ub2e4 \u2014 \uad6c\uac04 \ud65c\uacfc \uac19\uc740 \ubaa8\uc591\uc785\ub2c8\ub2e4.", "\uc5b4\ub290 \uc904\uc774 \ud55c \ubb36\uc74c\uc774\uace0 \uc774\ub984\uc774 \ubb34\uc5c7\uc778\uc9c0\ub294 \ub9cc\ub4dc\ub294 \ucabd\ub9cc \uc544\ub294 \uc815\ubcf4\ub77c, Fr\uff0f% \ud45c\uae30\ucc98\ub7fc \uc124\uc815 \ud30c\uc77c\ub85c \ubc1b\uc2b5\ub2c8\ub2e4. \uc5c6\ub294 \ud30c\uc77c\uc740 \uc544\ubb34\uac83\ub3c4 \ub298\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."]],
         ["ver871", "\uce74\uba54\ub77c \uc6cc\ud06c\uc758 \uc138\ub85c\uc120\uc774 \ub3c4\uc911\uc5d0 \uc606 \ub808\uc778\uc73c\ub85c \ub118\uc5b4\uac00\ub358 \uac83\uc744 \uace0\ucce4\uc2b5\ub2c8\ub2e4", ["\ud504\ub808\uc784 \uc774\ub984\uc744 \ub300\uc18c\ubb38\uc790 \uad6c\ubd84 \uc5c6\uc774 \ube44\uad50\ud574\uc11c `A` \uc640 `a`, `18K` \uc640 `18k` \uac00 \uac19\uc740 \uc774\ub984\uc73c\ub85c \ucde8\uae09\ub418\uace0, \ubb34\uad00\ud55c \ub450 \uc5f0\uacb0\uc774 \u300c\uc774\uc5b4\uc838 \uc788\ub2e4\u300d\uace0 \ud310\uc815\ub410\uc2b5\ub2c8\ub2e4. \uadf8 \ud310\uc815\uc740 \ub808\uc778 \uc0c1\uc18d\uc5d0\ub3c4 \uc4f0\uc774\ubbc0\ub85c, \uce74\uba54\ub77c\uc758 \ub9c8\uc9c0\ub9c9 \uad6c\uac04\uc774 \ub808\uc774\uc5b4 FX \ub808\uc778\uc73c\ub85c \uc62e\uaca8\uac00 \ud55c \uc904\uc758 \uc9c0\uc18d\uc120\uc774 \ub3c4\uc911\ubd80\ud130 \uc606 \uc138\ub85c\uc120\uc73c\ub85c \uc774\uc5b4\uc84c\uc2b5\ub2c8\ub2e4.", "\uc774\uc81c \ub300\uc18c\ubb38\uc790\ub294 \uc774\ub984\uc758 \uc77c\ubd80\uc785\ub2c8\ub2e4. \uc2dc\ud2b8\uc5d0\uc11c `A` \uc640 `a` \ub294 \uc6d0\ub798 \ub2e4\ub978 \ud504\ub808\uc784 \uc774\ub984\uc785\ub2c8\ub2e4. \uc804\uac01\u00b7\ubc18\uac01 \ud1b5\uc77c\uc740 \uc885\uc804\ub300\ub85c\uc785\ub2c8\ub2e4."]],
         ["ver870", "\uc5f0\uacb0\ub41c \uce74\uba54\ub77c \uc6cc\ud06c\uc758 \uacf5\uc720 \ud504\ub808\uc784 \uc774\ub984\uc744 \uba54\ubaa8\uc5d0 \ub450 \ubc88 \uc4f0\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4", ["\uce74\uba54\ub77c\u2192\uba54\ubaa8 \ub294 \u300c(1K)\u2192(4K) (4K)\u2192(9K) (9K)\u2192(13K)\u2026\u300d\ucc98\ub7fc \uc774\uc74c\ub9c8\ub514\ub97c \uc55e \uad6c\uac04\uc758 \ub05d\uacfc \ub2e4\uc74c \uad6c\uac04\uc758 \uc2dc\uc791\uc73c\ub85c \ub450 \ubc88 \uc37c\uc2b5\ub2c8\ub2e4. \uc9c0\uc2dc\uc5b4\uac00 \uc5c6\ub294 \uc5f0\uacb0(\ud504\ub808\uc784 \ubc88\ud638 \ud45c\uae30 \u2014 \uc774\ub984 \uc790\uccb4\uac00 \ub0b4\uc6a9)\uc774\uba74 \u300c(1K)\u2192(4K)\u2192(9K)\u2192\u2026\u300d\ub85c \uc774\uc5b4 \uc501\ub2c8\ub2e4.", "\uc9c0\uc2dc\uc5b4\uac00 \uc788\ub294 \uc5f0\uacb0\uc740 \uadf8\ub300\ub85c\uc785\ub2c8\ub2e4 \u2014 \uac70\uae30\uc11c\ub294 \uad6c\uac04\ub9c8\ub2e4 \ubb34\uc5c7\uc744 \ud558\ub294\uc9c0\uac00 \uc815\ubcf4\uc785\ub2c8\ub2e4."]],
         ["ver869", "\uc2a4\ud1a0\ub9ac\ubcf4\ub4dc \uc571\uc758 \uc2dc\ud2b8\uc640 \ub2ec\ub790\ub358 \ub450 \uac00\uc9c0\ub97c \ub9de\ucd94\uc5c8\uc2b5\ub2c8\ub2e4", ["\ub3d9\ud654 \ub9c8\ud06c(\uc810)\uc73c\ub85c \uc2dc\uc791\ud558\ub294 \ud589\uc5d0 \uc790\ub3d9 \uc120\ub450 \u00d7 \ub97c \ubd99\uc774\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc810\ub3c4 \u300c\uac70\uae30 \uadf8\ub9bc\uc774 \uc788\ub2e4\u300d\ub294 \ud45c\uc2dc\uace0 \ucee4\ub9e8\ub4dc\ub780\uc5d0\uc11c\ub294 \ud589 \uba38\ub9ac\uc5d0\ub3c4 \uc4f8 \uc218 \uc788\ub294\ub370, \uc790\ub3d9 \uc120\ub450 \u00d7 \ub294 \uadf8\ub9bc \ubc88\ud638\ub9cc \ubcf4\uace0 \uc788\uc5c8\uc2b5\ub2c8\ub2e4.", "\ud504\ub808\uc784 \ubc88\ud638 \ud45c\uae30(12K)\uc77c \ub54c \uce74\uba54\ub77c\ub780\uc740 \uc138\ub85c \uc9c0\uc18d\uc120\ub9cc \uadf8\ub9bd\ub2c8\ub2e4(\ud65c \ubaa8\uc591 \uacf1\uc120\uc744 \uc548 \uadf8\ub9bd\ub2c8\ub2e4). \uadf8 \ud45c\uae30\ub294 \uc9c0\uc2dc\uc5b4\ub97c \uc548 \uc4f0\ubbc0\ub85c \uacf1\uc120\uc5d0 \ub4e4\uc5b4\uac08 \ub0b4\uc6a9\uc774 \uc5c6\ub294 \ucc44 \uc5ec\ub7ec \uac1c\uac00 \ub098\ub780\ud788 \uc788\uc5c8\uc2b5\ub2c8\ub2e4."]],
@@ -5857,6 +5861,7 @@
       state.markerOverrides = {};
       state.cameraPreviewStyles = {};
       state.cameraEndpointFr = {};
+      state.cameraSeries = [];
       state.dotOverrides = {};
     }
 
@@ -15353,53 +15358,85 @@
     // UNCLIPPED segment's true middle frame, so a work spanning a page break gets exactly one gap+label,
     // on whichever page actually contains that frame — the same "draw once, at the true anchor" rule the
     // old textFrame-based version used, just centered instead of pinned near the top.
+    // ver872: カメラ欄の弓は **区間用も系列用も同じ絵** だ。違うのは適用点（どの範囲に、何と書くか）
+    //   だけなので一本にする（絵コンテ側 ver1775 と同じ形）。
+    //   yTop/yBottom は行の中央から中央まで。spanH は別に受ける — たわみと字の穴は「その区間が何コマ分か」
+    //   から出る値で、線が引かれる長さ(中央〜中央)とは rowH ぶんずれる。ここを一緒にすると見た目が動く。
+    function drawCameraBow(laneX, yTop, yBottom, spanH, rowH, label, laneGap, editConfig) {
+      if (yBottom <= yTop) return;
+      const bow = laneGap == null
+        ? Math.min(15, Math.max(5, spanH * 0.11))
+        : Math.min(15, Math.max(5, spanH * 0.11), Math.max(4, laneGap * 0.3));
+      const ctrlX = laneX + bow * 2;
+      const midY = (yTop + yBottom) / 2;
+      const gapH = label ? Math.min(rowH * 0.62, spanH * 0.42) : 0;
+      let acc = [];
+      const flush = function() {
+        if (acc.length > 1) {
+          appendSvgNode(el('path', {
+            d:'M' + acc.map(function(p){ return p[0].toFixed(2) + ' ' + p[1].toFixed(2); }).join('L'),
+            fill:'none', stroke:'#111', 'stroke-width':1, 'stroke-linecap':'round', 'pointer-events':'none'
+          }));
+        }
+        acc = [];
+      };
+      for (let k = 0; k <= 48; k++) {
+        const t = k / 48, mt = 1 - t;
+        const py = yTop + (yBottom - yTop) * t;
+        if (py - yTop < 5 || yBottom - py < 5) { flush(); continue; }    // the two end holes
+        if (gapH && Math.abs(py - midY) < gapH) { flush(); continue; }   // the hole the text sits in
+        acc.push([mt * mt * laneX + 2 * mt * t * ctrlX + t * t * laneX, py]);
+      }
+      flush();
+      if (label) {
+        drawTextPlate(laneX + bow, midY, label, 22, 'middle', true, false);
+        drawCompactText(laneX + bow, midY, label, 22, 'middle', '600', '#111', editConfig);
+      }
+    }
+
+    // ver872: 1k 表記の系列名（目盛りPAN / BG …）。その表記は指示語を書かないので縦線と番号しか残らず、
+    //   どの線が誰のワークなのかが読めなかった。系列そのもの（どの行がひとまとまりで名前は何か）は
+    //   作る側しか知らないので overrides.cameraSeries で受け取り、ここは描くだけ — Fr/% と同じ流儀。
+    function drawCameraSeriesBows(block, cameraSegs, cameraLaneCount) {
+      const list = Array.isArray(state.cameraSeries) ? state.cameraSeries : [];
+      if (!list.length) return;
+      const area = getCameraArea(block);
+      const rowH = getOutputRowH(block, 'camera');
+      const laneGap = cameraLaneCount > 1 ? (area.w - 24) / (cameraLaneCount - 1) : (area.w - 12);
+      list.forEach(function(series){
+        const name = String(series && series.name || '').trim();
+        const lines = (series && Array.isArray(series.lines)) ? series.lines : [];
+        if (!name || !lines.length) return;
+        const mine = (cameraSegs || []).filter(function(seg){
+          return lines.indexOf(seg.lineIndex) >= 0 && isCameraFrameLabelledSegment(seg);
+        });
+        if (!mine.length) return;
+        // the whole series, then clipped to THIS block (a series can span pages)
+        const wholeFrom = Math.min.apply(null, mine.map(function(s){ return s.from; }));
+        const wholeTo = Math.max.apply(null, mine.map(function(s){ return s.to; }));
+        const from = Math.max(wholeFrom, block.start);
+        const to = Math.min(wholeTo, block.end);
+        if (to <= from) return;
+        const lane = mine[0].lane || 0;
+        const laneX = getDistributedLaneX(area.x, area.w, lane, cameraLaneCount, 12);
+        const yTop = getOutputRowTop(block, from, 'camera') + rowH / 2;
+        const yBottom = getOutputRowTop(block, to, 'camera') + rowH / 2;
+        // the name goes in the block that holds the series' own middle, so it is written once
+        const globalMid = wholeFrom + (wholeTo - wholeFrom) / 2;
+        const label = (globalMid >= from && globalMid <= to) ? name : '';
+        drawCameraBow(laneX, yTop, yBottom, (to - from + 1) * rowH, rowH, label, laneGap, null);
+      });
+    }
+
     function drawCameraRangeCurve(guideX, guideTop, guideBottom, rowH, seg, from, to, editConfig, laneGap) {
       if (guideBottom <= guideTop) return;
-      if (isCameraFrameLabelledSegment(seg)) return;   // ver869: 1k 表記は持続線のみ（曲線も指示文も引かない）
+      if (isCameraFrameLabelledSegment(seg)) return;   // ver869: 1k 表記は持続線のみ（系列の弓は上の関数が引く）
       const displayText = getCameraSegmentDisplayText(seg);
       const hasText = !!String(displayText || '').trim();
       const globalMid = seg.from + (seg.to - seg.from) / 2;
       const midInThisBlock = hasText && globalMid >= from && globalMid <= to;
-      const yMidRange = (guideTop + guideBottom) / 2;
-      const gapH = midInThisBlock ? Math.min(rowH * 0.62, (guideBottom - guideTop) * 0.42) : 0;
-      // ver: also capped by the lane gap — a generous vertical span could otherwise bow the curve past a
-      // lane packed in right next to it (same reasoning as drawCameraMarkerEndpoint's laneScale).
-      const bow = laneGap == null
-        ? Math.min(15, Math.max(5, (guideBottom - guideTop) * 0.11))
-        : Math.min(15, Math.max(5, (guideBottom - guideTop) * 0.11), Math.max(4, laneGap * 0.3));
-      const ctrlX = guideX + bow * 2;
-      // ver (corrects the previous version's misreading — shrinking the DOMAIN before evaluating the curve
-      // is not the same thing): the curve's basis is EXACTLY the row-centre on both ends (guideTop/guideBottom
-      // ± half a row — the same spot the ring sits at), full stop. What gets a 5px hole is the DRAWN curve
-      // itself, at both its own ends — the same "skip samples near a point" technique gapH already uses for
-      // the text hole in the middle, just two more of them at t=0 and t=1 instead of one at the middle. So
-      // one work's curve never reads as fused to its neighbour's (the persistent LINE, untouched, is what
-      // says "this is one continuous path"; each curve is its own distinct mark).
-      const curveTop = guideTop + rowH / 2;
-      const curveBottom = guideBottom - rowH / 2;
-      let curveSeg = [];
-      const flushCurveSeg = function() {
-        if (curveSeg.length > 1) {
-          appendSvgNode(el('path', {
-            d:'M' + curveSeg.map(function(p){ return p[0].toFixed(2) + ' ' + p[1].toFixed(2); }).join('L'),
-            fill:'none', stroke:'#111', 'stroke-width':1, 'stroke-linecap':'round', 'pointer-events':'none'
-          }));
-        }
-        curveSeg = [];
-      };
-      if (curveTop < curveBottom) for (let k = 0; k <= 48; k++) {
-        const tt = k / 48, mt = 1 - tt;
-        const px = mt * mt * guideX + 2 * mt * tt * ctrlX + tt * tt * guideX;
-        const py = curveTop + (curveBottom - curveTop) * tt;
-        if (py - curveTop < 5 || curveBottom - py < 5) { flushCurveSeg(); continue; }   // ver: the two end holes
-        if (gapH && Math.abs(py - yMidRange) < gapH) { flushCurveSeg(); continue; }
-        curveSeg.push([px, py]);
-      }
-      flushCurveSeg();
-      if (midInThisBlock) {
-        drawTextPlate(guideX + bow, yMidRange, String(displayText || ''), 22, 'middle', true, false);
-        drawCompactText(guideX + bow, yMidRange, String(displayText || ''), 22, 'middle', '600', '#111', editConfig);
-      }
+      drawCameraBow(guideX, guideTop + rowH / 2, guideBottom - rowH / 2, guideBottom - guideTop, rowH,
+                    midInThisBlock ? String(displayText || '') : '', laneGap, editConfig);
     }
 
     function normalizeCameraShapeToken(value) {
@@ -17331,6 +17368,7 @@
       });
 
       // ══ 카메라란 ②-b 이 루프 안이 카메라 표기다 — 위쪽 대사 루프와 한 함수를 나눠 쓴다 ═════
+      drawCameraSeriesBows(block, cameraSegs, cameraLaneCount);   // ver872: 1k 表記の系列弓＋名前
       cameraSegs.forEach(function(seg){
         const from = Math.max(seg.from, block.start);
         const to = Math.min(seg.to, block.end);
@@ -22726,6 +22764,7 @@
       state.markerOverrides = overrides.markerOverrides && typeof overrides.markerOverrides === 'object' ? overrides.markerOverrides : {};
       state.cameraPreviewStyles = overrides.cameraPreviewStyles && typeof overrides.cameraPreviewStyles === 'object' ? overrides.cameraPreviewStyles : {};
       state.cameraEndpointFr = overrides.cameraEndpointFr && typeof overrides.cameraEndpointFr === 'object' ? overrides.cameraEndpointFr : {};
+      state.cameraSeries = Array.isArray(overrides.cameraSeries) ? JSON.parse(JSON.stringify(overrides.cameraSeries)) : [];   // ver872
       state.dotOverrides = overrides.dotOverrides && typeof overrides.dotOverrides === 'object' ? overrides.dotOverrides : {};
       state.layerNameTags = Array.isArray(overrides.layerNameTags) ? JSON.parse(JSON.stringify(overrides.layerNameTags)) : [];
       materializeDotOverridesIntoCommandText();
