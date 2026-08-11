@@ -2803,7 +2803,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '876';
+    const APP_VERSION = '877';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3830,6 +3830,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ["ver877", "The continuation line after an × you typed is now black everywhere", ["Inside a block a × you typed drew a black line, but where the line runs on to the end of the cut length it came out red — the same red used for the leading × that is added for you. The rule had been written out twice and only one copy was finished.", "A × you wrote and a × the sheet added are different things, and they should not look the same."]],
         ["ver875", "A long memo line is no longer cut short while the box still has room", ["Line wrapping counted characters and assumed every one was the same width, so a line could be broken even though it still fit \u2014 and the leftover, having nowhere to go in a one-line-tall box, simply vanished. Wrapping now measures the actual text.", "The box height is worked out with that same wrapping, so what is written and what is shown agree."]],
         ["ver874", "An auto-generated camera memo no longer has its last characters cut off, and typing in a memo is lighter", ["The box width was worked out by two different formulas \u2014 one when the memo is created, a wider one when you edit it \u2014 so a long line was 14px too narrow until the first edit. Both use the same rule now.", "Text width measurements are remembered, so a keystroke no longer re-measures every line and every styled run from scratch."]],
         ["ver873", "A repeat\u2019s continuation line now stops at the \u00d7", ["The vertical line that runs down from a \u30ea\u30d4\u30fc\u30c8 kept going past an \u00d7 all the way to the end of the cut length. An \u00d7 states that there is no picture from that frame on, so the repeat ends there.", "The automatic leading \u00d7 is not counted \u2014 it is not something you wrote."]],
@@ -3864,6 +3865,7 @@
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver877", "自分で入れた × の後に続く持続線を、どこでも黒に揃えました", ["ブロックの中では黒でしたが、尺の終わりまで伸びる区間だけ赤になっていました — 自動で付く先頭の × と同じ赤です。同じ規則を二か所に別々に書いていて、片方が未完成でした。", "自分で書いた × と、シートが自動で付けた × は別のものなので、同じ見た目になってはいけません。"]],
         ["ver875", "\u7bb1\u306b\u307e\u3060\u4f59\u88d5\u304c\u3042\u308b\u306e\u306b\u9577\u3044\u884c\u304c\u9014\u4e2d\u3067\u5207\u308c\u308b\u306e\u3092\u76f4\u3057\u307e\u3057\u305f", ["\u6298\u308a\u8fd4\u3057\u3092\u6587\u5b57\u6570\u3067\u6c7a\u3081\u3066\u304a\u308a\u3001\u3069\u306e\u5b57\u3082\u540c\u3058\u5e45\u3060\u3068\u898b\u306a\u3057\u3066\u3044\u305f\u306e\u3067\u3001\u307e\u3060\u5165\u308b\u306e\u306b\u884c\u3092\u5272\u3063\u3066\u3057\u307e\u3044\u3001\u6ea2\u308c\u305f\u5206\u306f\u4e00\u884c\u5206\u306e\u9ad8\u3055\u306e\u7bb1\u306b\u5c45\u5834\u6240\u304c\u306a\u304f\u6d88\u3048\u3066\u3044\u307e\u3057\u305f\u3002\u5b9f\u969b\u306e\u5e45\u3092\u6e2c\u3063\u3066\u6298\u308a\u8fd4\u3057\u307e\u3059\u3002", "\u7bb1\u306e\u9ad8\u3055\u3082\u540c\u3058\u6298\u308a\u8fd4\u3057\u3067\u6570\u3048\u308b\u306e\u3067\u3001\u66f8\u3044\u305f\u3082\u306e\u3068\u898b\u3048\u308b\u3082\u306e\u304c\u4e00\u81f4\u3057\u307e\u3059\u3002"]],
         ["ver874", "\u81ea\u52d5\u751f\u6210\u306e\u30ab\u30e1\u30e9\u30e1\u30e2\u306e\u672b\u5c3e\u304c\u5207\u308c\u306a\u304f\u306a\u308a\u3001\u30e1\u30e2\u306e\u5165\u529b\u3082\u8efd\u304f\u306a\u308a\u307e\u3057\u305f", ["\u7bb1\u306e\u5e45\u3092\u6c42\u3081\u308b\u5f0f\u304c\u4e8c\u3064\u3042\u308a\uff08\u4f5c\u308b\u3068\u304d\u3068\u3001\u7de8\u96c6\u3057\u305f\u3068\u304d\u306e\u5e83\u3044\u65b9\uff09\u3001\u9577\u3044\u884c\u306f\u6700\u521d\u306e\u7de8\u96c6\u307e\u3067 14px \u72ed\u304f\u306a\u3063\u3066\u3044\u307e\u3057\u305f\u3002\u540c\u3058\u898f\u5247\u306b\u63c3\u3048\u307e\u3057\u305f\u3002", "\u6587\u5b57\u5e45\u306e\u5b9f\u6e2c\u3092\u899a\u3048\u3066\u304a\u304f\u306e\u3067\u3001\u4e00\u6587\u5b57\u6253\u3064\u305f\u3073\u306b\u5168\u884c\u30fb\u5168\u66f8\u5f0f\u3092\u6e2c\u308a\u76f4\u3055\u306a\u304f\u306a\u308a\u307e\u3057\u305f\u3002"]],
         ["ver873", "\u30ea\u30d4\u30fc\u30c8\u306e\u6301\u7d9a\u7dda\u304c \u00d7 \u3067\u6b62\u307e\u308b\u3088\u3046\u306b\u306a\u308a\u307e\u3057\u305f", ["\u30ea\u30d4\u30fc\u30c8\u304b\u3089\u4e0b\u306b\u4f38\u3073\u308b\u7e26\u7dda\u304c\u3001\u00d7 \u3092\u8d8a\u3048\u3066\u5c3a\u306e\u7d42\u308f\u308a\u307e\u3067\u5f15\u304b\u308c\u7d9a\u3051\u3066\u3044\u307e\u3057\u305f\u3002\u00d7 \u306f\u300c\u305d\u3053\u304b\u3089\u5148\u306f\u7d75\u304c\u7121\u3044\u300d\u3068\u3044\u3046\u5165\u529b\u306a\u306e\u3067\u3001\u30ea\u30d4\u30fc\u30c8\u306f\u305d\u3053\u3067\u7d42\u308f\u308a\u307e\u3059\u3002", "\u81ea\u52d5\u3067\u4ed8\u304f\u5148\u982d\u306e \u00d7 \u306f\u6570\u3048\u307e\u305b\u3093 \u2014 \u4eba\u304c\u66f8\u3044\u305f\u3082\u306e\u3067\u306f\u306a\u3044\u304b\u3089\u3067\u3059\u3002"]],
@@ -3898,6 +3900,7 @@
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver877", "직접 넣은 × 뒤로 이어지는 지속선을 어디서든 검정으로 맞추었습니다", ["블록 안에서는 검정이었는데, 尺 끝까지 뻗는 구간만 빨강이었습니다 — 자동으로 붙는 선두 × 와 같은 빨강입니다. 같은 규칙을 두 곳에 따로 적어 두고 한쪽을 끝맺지 않은 탓입니다.", "직접 쓴 × 와 시트가 자동으로 붙인 × 는 다른 것이니 같아 보이면 안 됩니다."]],
         ["ver875", "\uc0c1\uc790\uc5d0 \uc790\ub9ac\uac00 \ub0a8\uc558\ub294\ub370\ub3c4 \uae34 \uc904\uc774 \uc911\uac04\uc5d0\uc11c \uc798\ub9ac\ub358 \uac83\uc744 \uace0\ucce4\uc2b5\ub2c8\ub2e4", ["\uc904\ubc14\uafc8\uc744 \uae00\uc790 \uc218\ub85c \uc815\ud558\uba74\uc11c \ubaa8\ub4e0 \uae00\uc790\uac00 \uac19\uc740 \ud3ed\uc774\ub77c\uace0 \ubcf4\uc558\uae30 \ub54c\ubb38\uc5d0, \uc544\uc9c1 \ub4e4\uc5b4\uac08 \uc218 \uc788\ub294\ub370\ub3c4 \uc904\uc744 \ub098\ub204\uace0, \ub118\uce5c \ubd80\ubd84\uc740 \ud55c \uc904\uc9dc\ub9ac \ub192\uc774\uc758 \uc0c1\uc790\uc5d0\uc11c \uac08 \uacf3\uc774 \uc5c6\uc5b4 \uc0ac\ub77c\uc84c\uc2b5\ub2c8\ub2e4. \uc774\uc81c \uc2e4\uc81c \ud3ed\uc744 \uc7ac\uc11c \uc904\uc744 \ub098\ub220\ub2c8\ub2e4.", "\uc0c1\uc790 \ub192\uc774\ub3c4 \uac19\uc740 \uc904\ubc14\uafc8\uc73c\ub85c \uc138\ubbc0\ub85c, \uc4f4 \uac83\uacfc \ubcf4\uc774\ub294 \uac83\uc774 \uc77c\uce58\ud569\ub2c8\ub2e4."]],
         ["ver874", "\uc790\ub3d9 \uc0dd\uc131\ub41c \uce74\uba54\ub77c \uba54\ubaa8\uc758 \ub05d\uc774 \uc798\ub9ac\uc9c0 \uc54a\uace0, \uba54\ubaa8 \ud3b8\uc9d1\ub3c4 \uac00\ubcfc\uc6cc\uc84c\uc2b5\ub2c8\ub2e4", ["\uc0c1\uc790 \ud3ed\uc744 \uad6c\ud558\ub294 \uc2dd\uc774 \ub458\uc774\uc5b4\uc11c(\ub9cc\ub4e4 \ub54c\uc640 \ud3b8\uc9d1\ud560 \ub54c\uc758 \ub354 \ub118\ub294 \ucabd), \uae34 \uc904\uc740 \ucc98\uc74c \ud3b8\uc9d1\ud560 \ub54c\uae4c\uc9c0 14px \uc880\uc558\uc2b5\ub2c8\ub2e4. \uac19\uc740 \uaddc\uce59\uc73c\ub85c \ub9de\ucdc4\uc2b5\ub2c8\ub2e4.", "\uae00\uc790 \ud3ed \uc2e4\uce21\uc744 \uae30\uc5b5\ud574 \ub450\ubbc0\ub85c, \ud55c \uae00\uc790 \uce60 \ub54c\ub9c8\ub2e4 \ubaa8\ub4e0 \uc904\u00b7\ubaa8\ub4e0 \uc11c\uc2dd\uc744 \ub2e4\uc2dc \uc7ac\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."]],
         ["ver873", "\ub9ac\ud53c\ud2b8\uc758 \uc9c0\uc18d\uc120\uc774 \u00d7 \uc5d0\uc11c \ub053\uae41\ub2c8\ub2e4", ["\ub9ac\ud53c\ud2b8\uc5d0\uc11c \uc544\ub798\ub85c \ub0b4\ub824\uac00\ub294 \uc138\ub85c\uc120\uc774 \u00d7 \ub97c \uc9c0\ub098 \ucef7 \uae38\uc774 \ub05d\uae4c\uc9c0 \uacc4\uc18d \uadf8\ub824\uc84c\uc2b5\ub2c8\ub2e4. \u00d7 \ub294 \u300c\uc5ec\uae30\ubd80\ud130\ub294 \uadf8\ub9bc\uc774 \uc5c6\ub2e4\u300d\ub294 \uc785\ub825\uc774\ubbc0\ub85c \ub9ac\ud53c\ud2b8\ub3c4 \uac70\uae30\uc11c \ub05d\ub0a9\ub2c8\ub2e4.", "\uc790\ub3d9\uc73c\ub85c \ubd99\ub294 \uc120\ub450 \u00d7 \ub294 \uc138\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4 \u2014 \uc0ac\ub78c\uc774 \uc4f4 \uac83\uc774 \uc544\ub2c8\ub2c8\uae4c\uc694."]],
@@ -3932,6 +3935,7 @@
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver877", "自己输入的 × 后面的延续线，现在处处都是黑色", ["在区块内是黑色，但延伸到尺末尾的那段却是红色 — 与自动添加的开头 × 同色。同一条规则写了两遍，只完成了一遍。", "自己写的 × 和表格自动加的 × 是两回事，不该长得一样。"]],
         ["ver865", "让格子编号不再被标记压住，并把尺之外的格数显示为浅色", ["放大三角标记，并把○与△的线条改为更细、半透明。两位三位编号即使重叠也能看清。数字大小未改变。", "尺（镜头长度）边界之后的格数会显示为浅色，一眼就能看出哪些行在最终尺之外。", "撤销与保存修正：Ctrl+Z 现在会恢复摄影的 Fr／％ 标注。手动添加的图层名标签会随项目保存。手动修改过的摄影备注在重新打开文件后不会丢失。纸张撤销不再回退你自己输入的列数。位置调整模式下 Ctrl+Z 也能使用。"]],
         ["ver861", "无效重复现在除了红字之外，还会显示常驻警告横幅，标明具体的列和格数", ["如果重复（rep）之前没有建立好可重复的规律，表格上早已把标签显示为红色。现在预览区上方也会出现横幅，标明具体是哪一列第几格，并会一直显示到你修正或删除为止。", "其他单元格点击区域都有的触摸长按设置，唯独重复延续点缺了这一项，现已补齐（不影响鼠标操作）。"]],
         ["ver860", "拖动镜头长度（秒/格）时若被强制中断，不再停留在中途数值，而是恢复原值", ["拖动秒/格长度时如果因失焦或触摸手势介入而被打断，之前会停留在中断瞬间的中途长度。现在会恢复到开始拖动前的长度。"]],
@@ -18133,15 +18137,18 @@
           const previewEndFrame = Math.max(0, Math.round(Number(layer.previewEndFrame) || 0));
           const bounds = getOutputCellBounds(block, columnIndex);
           const xCenter = (bounds.x1 + bounds.x2) / 2;
-          const strokeColor = lastSeg.kind === 'cross' ? RED : '#111';
+          // 블록 안 경로(renderBlock 의 seg 분기)와 같은 규칙: 직접 넣은 × 는 검정, 자동으로 붙는 선두 × 만 빨강.
+          // 2026-08-11: lastIsExplicitCross 가 선언만 돼 있고 안 쓰여서 이 경로만 전부 빨강이었다 — 같은 판정이 두 벌이었다.
+          const strokeColor = lastSeg.kind === 'cross' ? (lastIsExplicitCross ? '#111' : RED) : '#111';
           const strokeWidth = lastSeg.kind === 'cross' ? 1.4 : 1;
           for (let frame = fromFrame; frame <= toFrame; frame++) {
             if (previewEndFrame && frame === previewEndFrame) continue;
             const rowTop = getOutputRowTop(block, frame, 'cell');
             const rowH = getOutputRowH(block, 'cell');
-            let y1 = rowTop + 1.5;
+            const y1 = rowTop + 1.5;
             const y2 = rowTop + rowH - 1.5;
-            if (frame === lastSeg.to) y1 = Math.min(y2, rowTop + rowH / 2 + 7);
+            // (2026-08-11) 여기 있던 `if (frame === lastSeg.to)` y1 보정은 도달할 수 없어 지웠다 —
+            // fromFrame = max(block.start, lastSeg.to + 1) 이라 frame 은 항상 lastSeg.to 보다 크다.
             if (y2 > y1) renderCellContinuationLine(xCenter, y1, y2, strokeColor, strokeWidth, lastSeg.kind === 'cross');
           }
         });
