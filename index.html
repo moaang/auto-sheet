@@ -2803,7 +2803,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '877';
+    const APP_VERSION = '878';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -11595,7 +11595,7 @@
       if (parts.length >= 5) {
         label = parts[2] || '';
         txt = parts[3] || '';
-        endLabel = parts.slice(4).join('|').trim();
+        endLabel = String(parts[4] || '').trim();  // 규격은 5칸이므로 6번째 칸부터는 무시한다(2026-08-11 판정). 5칸 이하 줄에는 영향 없음.
       } else if (parts.length >= 4) {
         label = parts[2] || '';
         txt = parts.slice(3).join('|').trim();
@@ -11674,7 +11674,7 @@
       if (!from || !to || to < from) return null;
       const startLabel = parts[2] || '';
       const cameraText = parts.length >= 5 ? (parts[3] || '') : parts.slice(3).join('|').trim();
-      const endLabel = parts.length >= 5 ? parts.slice(4).join('|').trim() : '';
+      const endLabel = parts.length >= 5 ? String(parts[4] || '').trim() : '';  // 규격은 5칸이므로 6번째 칸부터는 무시한다(2026-08-11 판정). 5칸 이하 줄에는 영향 없음.
       // Directive in the label position (FI/FO target, legacy OL|A1|A2),
       // or a within-cut O.L written in the middle text (A1|AセルOL|A2, BG1|OL|BG2).
       let specialInfo = getCameraSpecialShapeTokenInfo(startLabel);
