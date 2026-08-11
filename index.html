@@ -2803,7 +2803,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '874';
+    const APP_VERSION = '875';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3830,6 +3830,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ["ver875", "A long memo line is no longer cut short while the box still has room", ["Line wrapping counted characters and assumed every one was the same width, so a line could be broken even though it still fit \u2014 and the leftover, having nowhere to go in a one-line-tall box, simply vanished. Wrapping now measures the actual text.", "The box height is worked out with that same wrapping, so what is written and what is shown agree."]],
         ["ver874", "An auto-generated camera memo no longer has its last characters cut off, and typing in a memo is lighter", ["The box width was worked out by two different formulas \u2014 one when the memo is created, a wider one when you edit it \u2014 so a long line was 14px too narrow until the first edit. Both use the same rule now.", "Text width measurements are remembered, so a keystroke no longer re-measures every line and every styled run from scratch."]],
         ["ver873", "A repeat\u2019s continuation line now stops at the \u00d7", ["The vertical line that runs down from a \u30ea\u30d4\u30fc\u30c8 kept going past an \u00d7 all the way to the end of the cut length. An \u00d7 states that there is no picture from that frame on, so the repeat ends there.", "The automatic leading \u00d7 is not counted \u2014 it is not something you wrote."]],
         ["ver872", "With frame-number naming, the camera column finally says whose work each line is", ["That naming writes no instruction text, so a column of numbers gave no way to tell the camera move from a layer\u2019s own FX. Each run now gets one bow alongside it with its name in the gap \u2014 the same shape the per-segment bow already uses.", "Which lines form one run, and what it is called, is something only the source knows, so it now travels in the settings file (like the Fr/% annotations do). Files without it simply draw nothing extra."]],
@@ -3863,6 +3864,7 @@
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver875", "\u7bb1\u306b\u307e\u3060\u4f59\u88d5\u304c\u3042\u308b\u306e\u306b\u9577\u3044\u884c\u304c\u9014\u4e2d\u3067\u5207\u308c\u308b\u306e\u3092\u76f4\u3057\u307e\u3057\u305f", ["\u6298\u308a\u8fd4\u3057\u3092\u6587\u5b57\u6570\u3067\u6c7a\u3081\u3066\u304a\u308a\u3001\u3069\u306e\u5b57\u3082\u540c\u3058\u5e45\u3060\u3068\u898b\u306a\u3057\u3066\u3044\u305f\u306e\u3067\u3001\u307e\u3060\u5165\u308b\u306e\u306b\u884c\u3092\u5272\u3063\u3066\u3057\u307e\u3044\u3001\u6ea2\u308c\u305f\u5206\u306f\u4e00\u884c\u5206\u306e\u9ad8\u3055\u306e\u7bb1\u306b\u5c45\u5834\u6240\u304c\u306a\u304f\u6d88\u3048\u3066\u3044\u307e\u3057\u305f\u3002\u5b9f\u969b\u306e\u5e45\u3092\u6e2c\u3063\u3066\u6298\u308a\u8fd4\u3057\u307e\u3059\u3002", "\u7bb1\u306e\u9ad8\u3055\u3082\u540c\u3058\u6298\u308a\u8fd4\u3057\u3067\u6570\u3048\u308b\u306e\u3067\u3001\u66f8\u3044\u305f\u3082\u306e\u3068\u898b\u3048\u308b\u3082\u306e\u304c\u4e00\u81f4\u3057\u307e\u3059\u3002"]],
         ["ver874", "\u81ea\u52d5\u751f\u6210\u306e\u30ab\u30e1\u30e9\u30e1\u30e2\u306e\u672b\u5c3e\u304c\u5207\u308c\u306a\u304f\u306a\u308a\u3001\u30e1\u30e2\u306e\u5165\u529b\u3082\u8efd\u304f\u306a\u308a\u307e\u3057\u305f", ["\u7bb1\u306e\u5e45\u3092\u6c42\u3081\u308b\u5f0f\u304c\u4e8c\u3064\u3042\u308a\uff08\u4f5c\u308b\u3068\u304d\u3068\u3001\u7de8\u96c6\u3057\u305f\u3068\u304d\u306e\u5e83\u3044\u65b9\uff09\u3001\u9577\u3044\u884c\u306f\u6700\u521d\u306e\u7de8\u96c6\u307e\u3067 14px \u72ed\u304f\u306a\u3063\u3066\u3044\u307e\u3057\u305f\u3002\u540c\u3058\u898f\u5247\u306b\u63c3\u3048\u307e\u3057\u305f\u3002", "\u6587\u5b57\u5e45\u306e\u5b9f\u6e2c\u3092\u899a\u3048\u3066\u304a\u304f\u306e\u3067\u3001\u4e00\u6587\u5b57\u6253\u3064\u305f\u3073\u306b\u5168\u884c\u30fb\u5168\u66f8\u5f0f\u3092\u6e2c\u308a\u76f4\u3055\u306a\u304f\u306a\u308a\u307e\u3057\u305f\u3002"]],
         ["ver873", "\u30ea\u30d4\u30fc\u30c8\u306e\u6301\u7d9a\u7dda\u304c \u00d7 \u3067\u6b62\u307e\u308b\u3088\u3046\u306b\u306a\u308a\u307e\u3057\u305f", ["\u30ea\u30d4\u30fc\u30c8\u304b\u3089\u4e0b\u306b\u4f38\u3073\u308b\u7e26\u7dda\u304c\u3001\u00d7 \u3092\u8d8a\u3048\u3066\u5c3a\u306e\u7d42\u308f\u308a\u307e\u3067\u5f15\u304b\u308c\u7d9a\u3051\u3066\u3044\u307e\u3057\u305f\u3002\u00d7 \u306f\u300c\u305d\u3053\u304b\u3089\u5148\u306f\u7d75\u304c\u7121\u3044\u300d\u3068\u3044\u3046\u5165\u529b\u306a\u306e\u3067\u3001\u30ea\u30d4\u30fc\u30c8\u306f\u305d\u3053\u3067\u7d42\u308f\u308a\u307e\u3059\u3002", "\u81ea\u52d5\u3067\u4ed8\u304f\u5148\u982d\u306e \u00d7 \u306f\u6570\u3048\u307e\u305b\u3093 \u2014 \u4eba\u304c\u66f8\u3044\u305f\u3082\u306e\u3067\u306f\u306a\u3044\u304b\u3089\u3067\u3059\u3002"]],
         ["ver872", "\u30d5\u30ec\u30fc\u30e0\u756a\u53f7\u8868\u8a18\u3067\u3082\u3001\u30ab\u30e1\u30e9\u6b04\u306e\u3069\u306e\u7dda\u304c\u8ab0\u306e\u30ef\u30fc\u30af\u304b\u5206\u304b\u308b\u3088\u3046\u306b\u306a\u308a\u307e\u3057\u305f", ["\u305d\u306e\u8868\u8a18\u306f\u6307\u793a\u8a9e\u3092\u66f8\u304b\u306a\u3044\u306e\u3067\u3001\u756a\u53f7\u3060\u3051\u304c\u4e26\u3093\u3067\u30ab\u30e1\u30e9\u30ef\u30fc\u30af\u306a\u306e\u304b\u30ec\u30a4\u30e4\u30fc\u306e FX \u306a\u306e\u304b\u8aad\u3081\u307e\u305b\u3093\u3067\u3057\u305f\u3002\u307e\u3068\u307e\u308a\u3054\u3068\u306b\u5f13\u3092\u4e00\u672c\u6dfb\u3048\u3001\u305d\u306e\u7a74\u306b\u540d\u524d\u3092\u66f8\u304d\u307e\u3059\u2014\u533a\u9593\u306e\u5f13\u3068\u540c\u3058\u5f62\u3067\u3059\u3002", "\u3069\u306e\u884c\u304c\u3072\u3068\u307e\u3068\u307e\u308a\u3067\u540d\u524d\u304c\u4f55\u304b\u306f\u4f5c\u308b\u5074\u3057\u304b\u77e5\u3089\u306a\u3044\u306e\u3067\u3001Fr\uff0f% \u306e\u6ce8\u8a18\u3068\u540c\u3058\u304f\u8a2d\u5b9a\u30d5\u30a1\u30a4\u30eb\u3067\u53d7\u3051\u53d6\u308a\u307e\u3059\u3002\u7121\u3044\u30d5\u30a1\u30a4\u30eb\u3067\u306f\u4f55\u3082\u5897\u3048\u307e\u305b\u3093\u3002"]],
@@ -3896,6 +3898,7 @@
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver875", "\uc0c1\uc790\uc5d0 \uc790\ub9ac\uac00 \ub0a8\uc558\ub294\ub370\ub3c4 \uae34 \uc904\uc774 \uc911\uac04\uc5d0\uc11c \uc798\ub9ac\ub358 \uac83\uc744 \uace0\ucce4\uc2b5\ub2c8\ub2e4", ["\uc904\ubc14\uafc8\uc744 \uae00\uc790 \uc218\ub85c \uc815\ud558\uba74\uc11c \ubaa8\ub4e0 \uae00\uc790\uac00 \uac19\uc740 \ud3ed\uc774\ub77c\uace0 \ubcf4\uc558\uae30 \ub54c\ubb38\uc5d0, \uc544\uc9c1 \ub4e4\uc5b4\uac08 \uc218 \uc788\ub294\ub370\ub3c4 \uc904\uc744 \ub098\ub204\uace0, \ub118\uce5c \ubd80\ubd84\uc740 \ud55c \uc904\uc9dc\ub9ac \ub192\uc774\uc758 \uc0c1\uc790\uc5d0\uc11c \uac08 \uacf3\uc774 \uc5c6\uc5b4 \uc0ac\ub77c\uc84c\uc2b5\ub2c8\ub2e4. \uc774\uc81c \uc2e4\uc81c \ud3ed\uc744 \uc7ac\uc11c \uc904\uc744 \ub098\ub220\ub2c8\ub2e4.", "\uc0c1\uc790 \ub192\uc774\ub3c4 \uac19\uc740 \uc904\ubc14\uafc8\uc73c\ub85c \uc138\ubbc0\ub85c, \uc4f4 \uac83\uacfc \ubcf4\uc774\ub294 \uac83\uc774 \uc77c\uce58\ud569\ub2c8\ub2e4."]],
         ["ver874", "\uc790\ub3d9 \uc0dd\uc131\ub41c \uce74\uba54\ub77c \uba54\ubaa8\uc758 \ub05d\uc774 \uc798\ub9ac\uc9c0 \uc54a\uace0, \uba54\ubaa8 \ud3b8\uc9d1\ub3c4 \uac00\ubcfc\uc6cc\uc84c\uc2b5\ub2c8\ub2e4", ["\uc0c1\uc790 \ud3ed\uc744 \uad6c\ud558\ub294 \uc2dd\uc774 \ub458\uc774\uc5b4\uc11c(\ub9cc\ub4e4 \ub54c\uc640 \ud3b8\uc9d1\ud560 \ub54c\uc758 \ub354 \ub118\ub294 \ucabd), \uae34 \uc904\uc740 \ucc98\uc74c \ud3b8\uc9d1\ud560 \ub54c\uae4c\uc9c0 14px \uc880\uc558\uc2b5\ub2c8\ub2e4. \uac19\uc740 \uaddc\uce59\uc73c\ub85c \ub9de\ucdc4\uc2b5\ub2c8\ub2e4.", "\uae00\uc790 \ud3ed \uc2e4\uce21\uc744 \uae30\uc5b5\ud574 \ub450\ubbc0\ub85c, \ud55c \uae00\uc790 \uce60 \ub54c\ub9c8\ub2e4 \ubaa8\ub4e0 \uc904\u00b7\ubaa8\ub4e0 \uc11c\uc2dd\uc744 \ub2e4\uc2dc \uc7ac\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."]],
         ["ver873", "\ub9ac\ud53c\ud2b8\uc758 \uc9c0\uc18d\uc120\uc774 \u00d7 \uc5d0\uc11c \ub053\uae41\ub2c8\ub2e4", ["\ub9ac\ud53c\ud2b8\uc5d0\uc11c \uc544\ub798\ub85c \ub0b4\ub824\uac00\ub294 \uc138\ub85c\uc120\uc774 \u00d7 \ub97c \uc9c0\ub098 \ucef7 \uae38\uc774 \ub05d\uae4c\uc9c0 \uacc4\uc18d \uadf8\ub824\uc84c\uc2b5\ub2c8\ub2e4. \u00d7 \ub294 \u300c\uc5ec\uae30\ubd80\ud130\ub294 \uadf8\ub9bc\uc774 \uc5c6\ub2e4\u300d\ub294 \uc785\ub825\uc774\ubbc0\ub85c \ub9ac\ud53c\ud2b8\ub3c4 \uac70\uae30\uc11c \ub05d\ub0a9\ub2c8\ub2e4.", "\uc790\ub3d9\uc73c\ub85c \ubd99\ub294 \uc120\ub450 \u00d7 \ub294 \uc138\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4 \u2014 \uc0ac\ub78c\uc774 \uc4f4 \uac83\uc774 \uc544\ub2c8\ub2c8\uae4c\uc694."]],
         ["ver872", "\ud504\ub808\uc784 \ubc88\ud638 \ud45c\uae30\uc5d0\uc11c\ub3c4 \uce74\uba54\ub77c\ub780\uc758 \uc5b4\ub290 \uc904\uc774 \ub204\uad6c\uc758 \uc6cc\ud06c\uc778\uc9c0 \ubcf4\uc785\ub2c8\ub2e4", ["\uadf8 \ud45c\uae30\ub294 \uc9c0\uc2dc\uc5b4\ub97c \uc548 \uc4f0\ubbc0\ub85c \ubc88\ud638\ub9cc \ub298\uc5b4\uc11c\uc11c \uce74\uba54\ub77c \uc6cc\ud06c\uc778\uc9c0 \ub808\uc774\uc5b4 FX \uc778\uc9c0 \uc54c \uc218 \uc5c6\uc5c8\uc2b5\ub2c8\ub2e4. \uc774\uc81c \ud55c \ubb36\uc74c\ub9c8\ub2e4 \ud65c\uc744 \ud558\ub098 \ub300\uace0 \uadf8 \uad6c\uba4d\uc5d0 \uc774\ub984\uc744 \uc501\ub2c8\ub2e4 \u2014 \uad6c\uac04 \ud65c\uacfc \uac19\uc740 \ubaa8\uc591\uc785\ub2c8\ub2e4.", "\uc5b4\ub290 \uc904\uc774 \ud55c \ubb36\uc74c\uc774\uace0 \uc774\ub984\uc774 \ubb34\uc5c7\uc778\uc9c0\ub294 \ub9cc\ub4dc\ub294 \ucabd\ub9cc \uc544\ub294 \uc815\ubcf4\ub77c, Fr\uff0f% \ud45c\uae30\ucc98\ub7fc \uc124\uc815 \ud30c\uc77c\ub85c \ubc1b\uc2b5\ub2c8\ub2e4. \uc5c6\ub294 \ud30c\uc77c\uc740 \uc544\ubb34\uac83\ub3c4 \ub298\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."]],
@@ -19084,10 +19087,27 @@
       return segments.length ? segments : [{ text:text, bold:false, box:false }];
     }
 
+    // ver875: 折り返しは **実測した幅** で決める。以前は文字数で切っていて、どの字も fontSize*0.58 の
+    //   幅だと決めつけていた — 実際にはそれより狭い字が多く、まだ入るのに切ってしまう。
+    //   実測: 本文 699px・箱 730px（余裕あり）なのに、文字数の上限が 68 で 70 文字が 2 行に割れ、
+    //   箱の高さは 1 行ぶんなので 2 行目が捨てられて末尾が消えていた（ユーザー報告「2k) 짤리는데」）。
+    //   幅は estimateTextMemoTextWidth（キャッシュ付き）で測り、入る文字数は二分探索で出す。
     function wrapTextMemoLines(textValue, memo) {
       const source = String(textValue || '');
       const rawLines = source.split('\n');
-      const maxChars = Math.max(1, Math.floor((Number(memo.w) - 12) / Math.max(5, Number(memo.fontSize || 18) * 0.58)));
+      const fontSize = Math.max(1, Number(memo.fontSize || 18));
+      const maxW = Math.max(fontSize * 0.58, Number(memo.w || TEXT_MEMO_DEFAULT_W) - 12);
+      const fitCount = function(text) {
+        if (!text) return 0;
+        if (estimateTextMemoTextWidth(text, fontSize) <= maxW) return text.length;
+        let lo = 1, hi = text.length;
+        while (lo < hi) {
+          const mid = Math.ceil((lo + hi) / 2);
+          if (estimateTextMemoTextWidth(text.slice(0, mid), fontSize) <= maxW) lo = mid;
+          else hi = mid - 1;
+        }
+        return Math.max(1, lo);
+      };
       const lines = [];
       let offset = 0;
       rawLines.forEach(function(raw, rawIndex){
@@ -19098,15 +19118,17 @@
           return;
         }
         let local = 0;
-        while (lineText.length > maxChars) {
-          lines.push({ text:lineText.slice(0, maxChars), start:offset + local, end:offset + local + maxChars });
-          lineText = lineText.slice(maxChars);
-          local += maxChars;
+        for (;;) {
+          const take = fitCount(lineText);
+          if (take >= lineText.length) break;
+          lines.push({ text:lineText.slice(0, take), start:offset + local, end:offset + local + take });
+          lineText = lineText.slice(take);
+          local += take;
         }
         lines.push({ text:lineText, start:offset + local, end:offset + raw.length });
         offset += raw.length + (rawIndex < rawLines.length - 1 ? 1 : 0);
       });
-      return lines.slice(0, Math.max(1, Math.floor((Number(memo.h) - 10) / (Number(memo.fontSize || 18) * 1.25))));
+      return lines.slice(0, Math.max(1, Math.floor((Number(memo.h) - 10) / (fontSize * 1.25))));
     }
 
     // ══ [입력] 클립보드 이미지 취입 — 페이지별 보관 · ID · 박스 클램프 ═══════════════════════════════════════════════════════════════════
@@ -19418,10 +19440,11 @@
       const minW = Math.min(TEXT_MEMO_MIN_W, Math.max(1, Number(gap.w) || 1));
       const maxW = Math.max(1, Number(gap.w) || 1);
       const targetW = clampNumber(getTextMemoFitWidth(memo, textValue), minW, maxW);
-      const wrapChars = Math.max(1, Math.floor((targetW - 30) / Math.max(5, fontSize * 0.58)));
-      const visualLineCount = lines.reduce(function(sum, line){
-        return sum + Math.max(1, Math.ceil(String(line.text || '').length / wrapChars));
-      }, 0);
+      // ver875: 何行になるかは **折り返しと同じ関数** に訊く。ここだけ文字数で見積もっていたので、
+      //   実際の折り返しが増えても高さが足りず、はみ出た行が描かれないままになっていた。
+      const visualLineCount = Math.max(1, wrapTextMemoLines(textValue, {
+        w:targetW, h:Number.MAX_SAFE_INTEGER, fontSize:fontSize, rich:memo.rich
+      }).length);
       const next = Object.assign({}, memo, {
         w:targetW,
         h:Math.ceil(visualLineCount * lineH + 14),
