@@ -2803,7 +2803,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '886';
+    const APP_VERSION = '887';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -11095,6 +11095,22 @@
         const headerLeft = Number(headerOverlay.x || 0);
         const headerW = Math.max(1, Number(headerOverlay.w || 0));
         if (author.x < headerLeft + headerW * 0.48) add('authorTooFarLeft', 14);
+      }
+      // 마크는 **제자리에 있어야 한다** — 「+」는 초 칸과 프레임 칸 사이, 사선은 페이지 칸 안이다
+      // (구조 목록 A-4·A-5). 있는지만 보던 검사에 자리까지 더한다: 결과가 틀리면 마크가 엉뚱한
+      // 자리에 남으므로, 그 어긋남이 조용히 틀린 답을 드러낸다.
+      if (headerOverlay && headerOverlay.durationPlus && sec && frm) {
+        const plusX = Number(headerOverlay.durationPlus.x);
+        const timeLeft = Math.min(sec.x, frm.x) - 12;
+        const timeRight = Math.max(sec.x + sec.w, frm.x + frm.w) + 12;
+        if (Number.isFinite(plusX) && (plusX < timeLeft || plusX > timeRight)) add('durationPlusOutsideTime', 20);
+      }
+      if (headerOverlay && headerOverlay.pageSlashBox && page) {
+        const slashX = Number(headerOverlay.pageSlashBox.x);
+        const slashW = Number(headerOverlay.pageSlashBox.w) || 0;
+        if (Number.isFinite(slashX) && (slashX < page.x - 14 || slashX + slashW > page.x + page.w + 14)) {
+          add('pageSlashOutsidePage', 20);
+        }
       }
       function ordered(boxes) {
         return boxes.filter(Boolean).every(function(box, index, filtered){ return index === 0 || box.x >= filtered[index - 1].x - 8; });
