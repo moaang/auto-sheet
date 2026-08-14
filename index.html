@@ -2803,7 +2803,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '878';
+    const APP_VERSION = '879';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -2977,6 +2977,9 @@
     const OUTPUT_DIRECTORY_PICKER_ID = 'output-directory';
     const PAPER_AUTO_ALIGN_MIN_COLUMNS = 7;
     const PAPER_AUTO_ALIGN_MAX_COLUMNS = 10;
+    // 1블록(3초) 용지 재해석에서만 쓰는 상한. 좌우 2블록 경로는 위 10 을 그대로 쓴다 — 7·9·10 열에
+    // 붙은 보정 점수들이 그 범위를 전제로 맞춰져 있어, 넓히면 기존 용지 판정이 흔들린다.
+    const PAPER_AUTO_ALIGN_SINGLE_MAX_COLUMNS = 20;
     const PAPER_AUTO_ALIGN_TARGET_BODY_LINES = 73;
     const PAPER_AUTO_ALIGN_PAIR_CANDIDATE_LIMIT = 72;
     const PAPER_AUTO_ALIGN_PAIR_CENTER_TOLERANCE = PAGE_W * 0.20;
@@ -3830,6 +3833,7 @@
 
     const updateLogRecentDocs = {
       en: [
+        ["ver879", "Auto Align now handles a paper laid out as one block instead of two", ["A paper whose body is a single block \u2014 not split into a left and a right half \u2014 could not be aligned at all. The number of blocks is now read from the paper itself (whether the body border runs unbroken across the middle) instead of from whether left/right matching happens to succeed, because such a paper can pass the left/right test by coincidence.", "Row rules drawn as a dotted line are recognised now, and a single missing column rule is filled in from its neighbours.", "A narrow extra cell after the last drawing column is no longer counted as a drawing column, so the Douga and Camera columns land where they belong."]],
         ["ver877", "The continuation line after an × you typed is now black everywhere", ["Inside a block a × you typed drew a black line, but where the line runs on to the end of the cut length it came out red — the same red used for the leading × that is added for you. The rule had been written out twice and only one copy was finished.", "A × you wrote and a × the sheet added are different things, and they should not look the same."]],
         ["ver875", "A long memo line is no longer cut short while the box still has room", ["Line wrapping counted characters and assumed every one was the same width, so a line could be broken even though it still fit \u2014 and the leftover, having nowhere to go in a one-line-tall box, simply vanished. Wrapping now measures the actual text.", "The box height is worked out with that same wrapping, so what is written and what is shown agree."]],
         ["ver874", "An auto-generated camera memo no longer has its last characters cut off, and typing in a memo is lighter", ["The box width was worked out by two different formulas \u2014 one when the memo is created, a wider one when you edit it \u2014 so a long line was 14px too narrow until the first edit. Both use the same rule now.", "Text width measurements are remembered, so a keystroke no longer re-measures every line and every styled run from scratch."]],
@@ -3865,6 +3869,7 @@
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver879", "\u5de6\u53f3\u4e8c\u3064\u306b\u5206\u304b\u308c\u3066\u3044\u306a\u3044\u3001\u4e00\u30d6\u30ed\u30c3\u30af\u306e\u7528\u7d19\u3082\u81ea\u52d5\u6574\u5217\u3067\u304d\u308b\u3088\u3046\u306b\u306a\u308a\u307e\u3057\u305f", ["\u672c\u6587\u304c\u5de6\u53f3\u306b\u5206\u304b\u308c\u305a\u4e00\u3064\u306e\u30d6\u30ed\u30c3\u30af\u306b\u306a\u3063\u3066\u3044\u308b\u7528\u7d19\u306f\u3001\u3053\u308c\u307e\u3067\u81ea\u52d5\u6574\u5217\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002\u30d6\u30ed\u30c3\u30af\u306e\u6570\u306f\u3001\u5de6\u53f3\u306e\u5bfe\u5fdc\u4ed8\u3051\u304c\u6210\u529f\u3059\u308b\u304b\u3069\u3046\u304b\u3067\u306f\u306a\u304f\u3001\u7528\u7d19\u305d\u306e\u3082\u306e\uff08\u672c\u6587\u306e\u67a0\u7dda\u304c\u4e2d\u592e\u3092\u9014\u5207\u308c\u305a\u306b\u901a\u3063\u3066\u3044\u308b\u304b\uff09\u304b\u3089\u5224\u5b9a\u3057\u307e\u3059 \u2014 \u305d\u3046\u3057\u305f\u7528\u7d19\u306f\u5de6\u53f3\u306e\u6761\u4ef6\u3092\u5076\u7136\u901a\u3063\u3066\u3057\u307e\u3046\u3053\u3068\u304c\u3042\u308b\u305f\u3081\u3067\u3059\u3002", "\u70b9\u7dda\u3067\u5f15\u304b\u308c\u305f\u6a2a\u7f6b\u3092\u8a8d\u8b58\u3057\u3001\u4e00\u672c\u3060\u3051\u6b20\u3051\u305f\u7e26\u7f6b\u306f\u96a3\u306e\u9593\u9694\u304b\u3089\u88dc\u3044\u307e\u3059\u3002", "\u6700\u5f8c\u306e\u539f\u753b\u6b04\u306e\u5f8c\u308d\u306b\u3042\u308b\u5e45\u306e\u72ed\u3044\u67a0\u3092\u539f\u753b\u306e\u6b04\u6570\u306b\u6570\u3048\u306a\u304f\u306a\u308a\u3001\u52d5\u753b\u6b04\u3068\u30ab\u30e1\u30e9\u6b04\u304c\u6b63\u3057\u3044\u4f4d\u7f6e\u306b\u5165\u308a\u307e\u3059\u3002"]],
         ["ver877", "自分で入れた × の後に続く持続線を、どこでも黒に揃えました", ["ブロックの中では黒でしたが、尺の終わりまで伸びる区間だけ赤になっていました — 自動で付く先頭の × と同じ赤です。同じ規則を二か所に別々に書いていて、片方が未完成でした。", "自分で書いた × と、シートが自動で付けた × は別のものなので、同じ見た目になってはいけません。"]],
         ["ver875", "\u7bb1\u306b\u307e\u3060\u4f59\u88d5\u304c\u3042\u308b\u306e\u306b\u9577\u3044\u884c\u304c\u9014\u4e2d\u3067\u5207\u308c\u308b\u306e\u3092\u76f4\u3057\u307e\u3057\u305f", ["\u6298\u308a\u8fd4\u3057\u3092\u6587\u5b57\u6570\u3067\u6c7a\u3081\u3066\u304a\u308a\u3001\u3069\u306e\u5b57\u3082\u540c\u3058\u5e45\u3060\u3068\u898b\u306a\u3057\u3066\u3044\u305f\u306e\u3067\u3001\u307e\u3060\u5165\u308b\u306e\u306b\u884c\u3092\u5272\u3063\u3066\u3057\u307e\u3044\u3001\u6ea2\u308c\u305f\u5206\u306f\u4e00\u884c\u5206\u306e\u9ad8\u3055\u306e\u7bb1\u306b\u5c45\u5834\u6240\u304c\u306a\u304f\u6d88\u3048\u3066\u3044\u307e\u3057\u305f\u3002\u5b9f\u969b\u306e\u5e45\u3092\u6e2c\u3063\u3066\u6298\u308a\u8fd4\u3057\u307e\u3059\u3002", "\u7bb1\u306e\u9ad8\u3055\u3082\u540c\u3058\u6298\u308a\u8fd4\u3057\u3067\u6570\u3048\u308b\u306e\u3067\u3001\u66f8\u3044\u305f\u3082\u306e\u3068\u898b\u3048\u308b\u3082\u306e\u304c\u4e00\u81f4\u3057\u307e\u3059\u3002"]],
         ["ver874", "\u81ea\u52d5\u751f\u6210\u306e\u30ab\u30e1\u30e9\u30e1\u30e2\u306e\u672b\u5c3e\u304c\u5207\u308c\u306a\u304f\u306a\u308a\u3001\u30e1\u30e2\u306e\u5165\u529b\u3082\u8efd\u304f\u306a\u308a\u307e\u3057\u305f", ["\u7bb1\u306e\u5e45\u3092\u6c42\u3081\u308b\u5f0f\u304c\u4e8c\u3064\u3042\u308a\uff08\u4f5c\u308b\u3068\u304d\u3068\u3001\u7de8\u96c6\u3057\u305f\u3068\u304d\u306e\u5e83\u3044\u65b9\uff09\u3001\u9577\u3044\u884c\u306f\u6700\u521d\u306e\u7de8\u96c6\u307e\u3067 14px \u72ed\u304f\u306a\u3063\u3066\u3044\u307e\u3057\u305f\u3002\u540c\u3058\u898f\u5247\u306b\u63c3\u3048\u307e\u3057\u305f\u3002", "\u6587\u5b57\u5e45\u306e\u5b9f\u6e2c\u3092\u899a\u3048\u3066\u304a\u304f\u306e\u3067\u3001\u4e00\u6587\u5b57\u6253\u3064\u305f\u3073\u306b\u5168\u884c\u30fb\u5168\u66f8\u5f0f\u3092\u6e2c\u308a\u76f4\u3055\u306a\u304f\u306a\u308a\u307e\u3057\u305f\u3002"]],
@@ -3900,6 +3905,7 @@
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver879", "\uc88c\uc6b0 \ub450 \ube14\ub85d\uc73c\ub85c \ub098\ub258\uc9c0 \uc54a\uc740, \ud55c \ube14\ub85d\uc9dc\ub9ac \uc6a9\uc9c0\ub3c4 \uc790\ub3d9\uc815\ub82c\uc774 \ub429\ub2c8\ub2e4", ["\ubcf8\ubb38\uc774 \uc88c\uc6b0\ub85c \ub098\ub258\uc9c0 \uc54a\uace0 \ud55c \ub369\uc5b4\ub9ac\uc778 \uc6a9\uc9c0\ub294 \uc9c0\uae08\uae4c\uc9c0 \uc790\ub3d9\uc815\ub82c\uc774 \ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4. \ube14\ub85d \uc218\ub294 \uc88c\uc6b0 \uc9dd\uc9d3\uae30\uac00 \uc131\uacf5\ud558\ub290\ub0d0\uac00 \uc544\ub2c8\ub77c \uc6a9\uc9c0 \uc790\uccb4(\ubcf8\ubb38 \ud14c\ub450\ub9ac\uac00 \uac00\uc6b4\ub370\ub97c \ub04a\uae40 \uc5c6\uc774 \uc9c0\ub098\ub294\uc9c0)\ub85c \ud310\uc815\ud569\ub2c8\ub2e4 \u2014 \uadf8\ub7f0 \uc6a9\uc9c0\ub294 \uc88c\uc6b0 \uc870\uac74\uc744 \uc6b0\uc5f0\ud788 \ud1b5\uacfc\ud558\uae30\ub3c4 \ud558\uae30 \ub54c\ubb38\uc785\ub2c8\ub2e4.", "\uc810\uc120\uc73c\ub85c \uadf8\uc5b4\uc9c4 \uac00\ub85c \uce78\uc120\uc744 \uc778\uc2dd\ud558\uace0, \ud55c \uc904\ub9cc \ube60\uc9c4 \uc138\ub85c \uce78\uc120\uc740 \uc774\uc6c3 \uac04\uaca9\uc5d0\uc11c \ucc44\uc6c1\ub2c8\ub2e4.", "\ub9c8\uc9c0\ub9c9 \uc6d0\ud654 \uce78 \ub4a4\uc5d0 \uc788\ub294 \ud3ed\uc774 \uc881\uc740 \uce78\uc744 \uc6d0\ud654 \uce78 \uc218\uc5d0 \uc138\uc9c0 \uc54a\uac8c \ub418\uc5b4, \ub3d9\ud654\ub780\uacfc \uce74\uba54\ub77c\ub780\uc774 \uc81c\uc790\ub9ac\uc5d0 \ub4e4\uc5b4\uac11\ub2c8\ub2e4."]],
         ["ver877", "직접 넣은 × 뒤로 이어지는 지속선을 어디서든 검정으로 맞추었습니다", ["블록 안에서는 검정이었는데, 尺 끝까지 뻗는 구간만 빨강이었습니다 — 자동으로 붙는 선두 × 와 같은 빨강입니다. 같은 규칙을 두 곳에 따로 적어 두고 한쪽을 끝맺지 않은 탓입니다.", "직접 쓴 × 와 시트가 자동으로 붙인 × 는 다른 것이니 같아 보이면 안 됩니다."]],
         ["ver875", "\uc0c1\uc790\uc5d0 \uc790\ub9ac\uac00 \ub0a8\uc558\ub294\ub370\ub3c4 \uae34 \uc904\uc774 \uc911\uac04\uc5d0\uc11c \uc798\ub9ac\ub358 \uac83\uc744 \uace0\ucce4\uc2b5\ub2c8\ub2e4", ["\uc904\ubc14\uafc8\uc744 \uae00\uc790 \uc218\ub85c \uc815\ud558\uba74\uc11c \ubaa8\ub4e0 \uae00\uc790\uac00 \uac19\uc740 \ud3ed\uc774\ub77c\uace0 \ubcf4\uc558\uae30 \ub54c\ubb38\uc5d0, \uc544\uc9c1 \ub4e4\uc5b4\uac08 \uc218 \uc788\ub294\ub370\ub3c4 \uc904\uc744 \ub098\ub204\uace0, \ub118\uce5c \ubd80\ubd84\uc740 \ud55c \uc904\uc9dc\ub9ac \ub192\uc774\uc758 \uc0c1\uc790\uc5d0\uc11c \uac08 \uacf3\uc774 \uc5c6\uc5b4 \uc0ac\ub77c\uc84c\uc2b5\ub2c8\ub2e4. \uc774\uc81c \uc2e4\uc81c \ud3ed\uc744 \uc7ac\uc11c \uc904\uc744 \ub098\ub220\ub2c8\ub2e4.", "\uc0c1\uc790 \ub192\uc774\ub3c4 \uac19\uc740 \uc904\ubc14\uafc8\uc73c\ub85c \uc138\ubbc0\ub85c, \uc4f4 \uac83\uacfc \ubcf4\uc774\ub294 \uac83\uc774 \uc77c\uce58\ud569\ub2c8\ub2e4."]],
         ["ver874", "\uc790\ub3d9 \uc0dd\uc131\ub41c \uce74\uba54\ub77c \uba54\ubaa8\uc758 \ub05d\uc774 \uc798\ub9ac\uc9c0 \uc54a\uace0, \uba54\ubaa8 \ud3b8\uc9d1\ub3c4 \uac00\ubcfc\uc6cc\uc84c\uc2b5\ub2c8\ub2e4", ["\uc0c1\uc790 \ud3ed\uc744 \uad6c\ud558\ub294 \uc2dd\uc774 \ub458\uc774\uc5b4\uc11c(\ub9cc\ub4e4 \ub54c\uc640 \ud3b8\uc9d1\ud560 \ub54c\uc758 \ub354 \ub118\ub294 \ucabd), \uae34 \uc904\uc740 \ucc98\uc74c \ud3b8\uc9d1\ud560 \ub54c\uae4c\uc9c0 14px \uc880\uc558\uc2b5\ub2c8\ub2e4. \uac19\uc740 \uaddc\uce59\uc73c\ub85c \ub9de\ucdc4\uc2b5\ub2c8\ub2e4.", "\uae00\uc790 \ud3ed \uc2e4\uce21\uc744 \uae30\uc5b5\ud574 \ub450\ubbc0\ub85c, \ud55c \uae00\uc790 \uce60 \ub54c\ub9c8\ub2e4 \ubaa8\ub4e0 \uc904\u00b7\ubaa8\ub4e0 \uc11c\uc2dd\uc744 \ub2e4\uc2dc \uc7ac\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."]],
@@ -3935,6 +3941,7 @@
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver879", "\u672a\u5206\u4e3a\u5de6\u53f3\u4e24\u5757\u7684\u5355\u5757\u7eb8\u5f20\u73b0\u5728\u4e5f\u80fd\u81ea\u52a8\u5bf9\u9f50", ["\u6b63\u6587\u6ca1\u6709\u5206\u6210\u5de6\u53f3\u4e24\u534a\u3001\u800c\u662f\u4e00\u6574\u5757\u7684\u7eb8\u5f20\uff0c\u6b64\u524d\u65e0\u6cd5\u81ea\u52a8\u5bf9\u9f50\u3002\u5757\u6570\u73b0\u5728\u7531\u7eb8\u5f20\u672c\u8eab\u5224\u5b9a\uff08\u6b63\u6587\u8fb9\u6846\u662f\u5426\u4e0d\u95f4\u65ad\u5730\u7a7f\u8fc7\u4e2d\u592e\uff09\uff0c\u800c\u4e0d\u662f\u770b\u5de6\u53f3\u914d\u5bf9\u662f\u5426\u78b0\u5de7\u6210\u529f\u2014\u2014\u8fd9\u7c7b\u7eb8\u5f20\u6709\u65f6\u4f1a\u5076\u7136\u901a\u8fc7\u5de6\u53f3\u6761\u4ef6\u3002", "\u4ee5\u865a\u7ebf\u7ed8\u5236\u7684\u6a2a\u5411\u683c\u7ebf\u73b0\u5728\u80fd\u88ab\u8bc6\u522b\uff0c\u7f3a\u5931\u7684\u5355\u6761\u7eb5\u5411\u683c\u7ebf\u4f1a\u4f9d\u636e\u76f8\u90bb\u95f4\u8ddd\u8865\u9f50\u3002", "\u6700\u540e\u4e00\u4e2a\u539f\u753b\u680f\u4e4b\u540e\u7684\u7a84\u683c\u4e0d\u518d\u8ba1\u5165\u539f\u753b\u680f\u6570\uff0c\u52a8\u753b\u680f\u548c\u6444\u5f71\u680f\u56e0\u800c\u843d\u5728\u6b63\u786e\u4f4d\u7f6e\u3002"]],
         ["ver877", "自己输入的 × 后面的延续线，现在处处都是黑色", ["在区块内是黑色，但延伸到尺末尾的那段却是红色 — 与自动添加的开头 × 同色。同一条规则写了两遍，只完成了一遍。", "自己写的 × 和表格自动加的 × 是两回事，不该长得一样。"]],
         ["ver865", "让格子编号不再被标记压住，并把尺之外的格数显示为浅色", ["放大三角标记，并把○与△的线条改为更细、半透明。两位三位编号即使重叠也能看清。数字大小未改变。", "尺（镜头长度）边界之后的格数会显示为浅色，一眼就能看出哪些行在最终尺之外。", "撤销与保存修正：Ctrl+Z 现在会恢复摄影的 Fr／％ 标注。手动添加的图层名标签会随项目保存。手动修改过的摄影备注在重新打开文件后不会丢失。纸张撤销不再回退你自己输入的列数。位置调整模式下 Ctrl+Z 也能使用。"]],
         ["ver861", "无效重复现在除了红字之外，还会显示常驻警告横幅，标明具体的列和格数", ["如果重复（rep）之前没有建立好可重复的规律，表格上早已把标签显示为红色。现在预览区上方也会出现横幅，标明具体是哪一列第几格，并会一直显示到你修正或删除为止。", "其他单元格点击区域都有的触摸长按设置，唯独重复延续点缺了这一项，现已补齐（不影响鼠标操作）。"]],
@@ -7950,7 +7957,25 @@
       });
     }
 
-    function evaluatePaperAutoAlignCellGaps(gaps, columns) {
+    function evaluatePaperAutoAlignCellGaps(gaps, columns, allowNarrowTail) {
+      // 꼬리 칸 하나만 눈에 띄게 좁으면 그건 표시 칸이 아니라 덧붙은 칸이다(마지막 원화 칸 뒤의
+      // 임시칸). **균일 판정보다 먼저** 본다 — 좁은 칸 하나는 허용오차 안에 들어와 그냥 균일한
+      // 격자로 통과해 버리기 때문이다. 1블록 재해석에서만 켠다.
+      if (allowNarrowTail && columns >= 8 && gaps.length === columns) {
+        const narrowBase = gaps.slice(0, -1);
+        const narrowBaseW = medianPaperAutoAlignNumber(narrowBase);
+        const narrowBaseDev = Math.max.apply(null, narrowBase.map(function(gap){ return Math.abs(gap - narrowBaseW); }));
+        const narrowLast = gaps[gaps.length - 1];
+        if (narrowBaseW >= 18 && narrowBaseW <= 80 &&
+            narrowBaseDev <= Math.max(3, narrowBaseW * 0.12) &&
+            narrowLast >= narrowBaseW * 0.45 && narrowLast <= narrowBaseW * 0.86) {
+          // 앞 칸들이 곧 원화란이므로 폭은 중앙값이 아니라 실제 합/칸수로 낸다 — 그래야
+          // cellRight 가 실제 마지막 선에 정확히 떨어진다.
+          const narrowExactW = narrowBase.reduce(function(a,b){ return a + b; }, 0) / narrowBase.length;
+          return { ok:true, cellW:narrowExactW, columns:columns - 1, variableTail:true, tailSlack:0,
+                   baseGaps:narrowBase, lastGap:narrowLast, narrowTail:true };
+        }
+      }
       const allW = medianPaperAutoAlignNumber(gaps);
       const allDev = Math.max.apply(null, gaps.map(function(gap){ return Math.abs(gap - allW); }));
       const allTol = Math.max(8, allW * 0.30);
@@ -7984,7 +8009,12 @@
       return count;
     }
 
-    function makePaperAutoAlignColumnGroups(xLines, xDetailed, bodyGrid, analysis) {
+    // maxColumns 는 1블록 재해석에서만 넓혀 부른다(판정 q3=A). 생략하면 기존 상한이라
+    // 좌우 2블록 경로는 글자 그대로 이전과 같은 후보를 만든다.
+    function makePaperAutoAlignColumnGroups(xLines, xDetailed, bodyGrid, analysis, maxColumns) {
+      const columnCeiling = Math.max(PAPER_AUTO_ALIGN_MAX_COLUMNS, Math.round(Number(maxColumns) || 0) || PAPER_AUTO_ALIGN_MAX_COLUMNS);
+      // 상한을 넓혀 부른 호출 = 1블록 재해석이다. 좁은 꼬리 칸 교정은 여기서만 켠다.
+      const wideMode = columnCeiling > PAPER_AUTO_ALIGN_MAX_COLUMNS;
       const lines = (xLines || []).map(Number).filter(Number.isFinite).sort(function(a,b){ return a-b; });
       const groups = [];
       const seen = new Set();
@@ -7993,7 +8023,7 @@
       function pushCandidate(startIndex, rightIndex, displayColumns, cellW, options) {
         options = options || {};
         if (rightIndex <= startIndex || rightIndex + 1 >= lines.length) return;
-        if (displayColumns < PAPER_AUTO_ALIGN_MIN_COLUMNS || displayColumns > PAPER_AUTO_ALIGN_MAX_COLUMNS) return;
+        if (displayColumns < PAPER_AUTO_ALIGN_MIN_COLUMNS || displayColumns > columnCeiling) return;
         if (cellW < 18 || cellW > 82) return;
         const actualActionW = lines[rightIndex] - lines[startIndex];
         const cellRight = options.variableTail ? lines[startIndex] + cellW * displayColumns : lines[rightIndex];
@@ -8109,6 +8139,7 @@
             center:(lines[startIndex] + cellRight) / 2,
             score:score,
             variableTail:!!options.variableTail,
+            narrowTail:!!options.narrowTail,
             sparseGrid:!!options.sparseGrid,
             extraInternalLines:extraInternalLines,
             dialogMetric:metric,
@@ -8122,12 +8153,12 @@
         }
       }
       for (let i = 0; i < lines.length; i++) {
-        for (let observedColumns = PAPER_AUTO_ALIGN_MIN_COLUMNS; observedColumns <= PAPER_AUTO_ALIGN_MAX_COLUMNS; observedColumns++) {
+        for (let observedColumns = PAPER_AUTO_ALIGN_MIN_COLUMNS; observedColumns <= columnCeiling; observedColumns++) {
           const rightIndex = i + observedColumns;
           if (rightIndex + 1 >= lines.length) continue;
           const gaps = [];
           for (let g = 0; g < observedColumns; g++) gaps.push(lines[i + g + 1] - lines[i + g]);
-          const evaluation = evaluatePaperAutoAlignCellGaps(gaps, observedColumns);
+          const evaluation = evaluatePaperAutoAlignCellGaps(gaps, observedColumns, wideMode);
           if (!evaluation.ok) continue;
           pushCandidate(i, rightIndex, evaluation.columns || observedColumns, evaluation.cellW, Object.assign({}, evaluation, { gaps:gaps }));
         }
@@ -8141,7 +8172,7 @@
           const observedGapDeviation = averageAbsDeviation(observedGaps, observedCellW);
           const observedGridAlreadyUniform = observedGapCount >= PAPER_AUTO_ALIGN_MIN_COLUMNS &&
             observedGapDeviation <= Math.max(1.8, observedCellW * 0.07);
-          for (let displayColumns = PAPER_AUTO_ALIGN_MIN_COLUMNS; displayColumns <= PAPER_AUTO_ALIGN_MAX_COLUMNS; displayColumns++) {
+          for (let displayColumns = PAPER_AUTO_ALIGN_MIN_COLUMNS; displayColumns <= columnCeiling; displayColumns++) {
             if (displayColumns > observedGapCount && observedGridAlreadyUniform) continue;
             const cellW = width / displayColumns;
             if (cellW < 18 || cellW > 82) continue;
@@ -8223,7 +8254,9 @@
     }
 
     function scorePaperAutoAlignGridSpan(lines, startIndex, endIndex, columns, preferredColumns) {
-      if (columns < 6 || columns > 10 || endIndex <= startIndex) return null;
+      // 상한 10 은 좌우 2블록 용지를 전제한 값이다. 호출부가 10 이하만 넘기면 동작은 그대로이고,
+      // 원화가 10열을 넘는 1블록 용지에서만 이 위가 쓰인다.
+      if (columns < 6 || columns > PAPER_AUTO_ALIGN_SINGLE_MAX_COLUMNS || endIndex <= startIndex) return null;
       const left = lines[startIndex];
       const right = lines[endIndex];
       const width = right - left;
@@ -8265,7 +8298,12 @@
       if (startIndex + 5 >= searchEndIndex) return null;
       let best = null;
       const minColumns = Math.max(6, group.columns - 2);
-      const maxColumns = Math.min(10, group.columns + 2);
+      // 동화는 원화와 같은 열 수인 것이 기본이다. 상한 10 은 좌우 2블록 용지를 전제한 값이라,
+      // 원화가 그보다 많은 1블록 용지(3초 시트, 18열)에서는 min > max 가 되어 루프가 한 번도
+      // 돌지 않았다 — 그러면 동화를 못 찾고 카메라가 동화 자리로 밀린다.
+      const maxColumns = group.columns > PAPER_AUTO_ALIGN_MAX_COLUMNS
+        ? group.columns + 2
+        : Math.min(PAPER_AUTO_ALIGN_MAX_COLUMNS, group.columns + 2);
       const maxFollowerSpan = Math.max(group.actionW * 2.55, group.cellW * (group.columns + 7));
       const hasDottedBoundaryLines = Array.isArray(lineDetails) && lineDetails.some(function(line){ return !!(line && line.dotted); });
       function hasStrongCameraDividerAfterFollower(endIndex, columns) {
@@ -8430,6 +8468,79 @@
         });
       });
       if (!best) throw new Error('Left/right matching column groups were not found');
+      return best;
+    }
+
+    // 간격이 이웃들의 두 배인 자리에 선을 하나 넣는다 — 점선이라 그 줄만 검출을 못 넘은 경우다.
+    // 이웃 간격의 중앙값과 비교하므로, 원래 넓은 자리(대사칸처럼 폭이 다른 칸)는 건드리지 않는다.
+    function fillPaperAutoAlignVerticalGaps(xLines) {
+      const lines = (xLines || []).map(Number).filter(Number.isFinite).sort(function(a,b){ return a-b; });
+      if (lines.length < 6) return lines;
+      const gaps = [];
+      for (let i = 1; i < lines.length; i++) gaps.push(lines[i] - lines[i - 1]);
+      const out = [lines[0]];
+      for (let i = 1; i < lines.length; i++) {
+        const gap = lines[i] - lines[i - 1];
+        const near = [];
+        for (let j = Math.max(0, i - 5); j < Math.min(gaps.length, i + 4); j++) {
+          if (j !== i - 1) near.push(gaps[j]);
+        }
+        near.sort(function(a,b){ return a - b; });
+        const median = near.length ? near[Math.floor(near.length / 2)] : gap;
+        if (median >= 12 && gap > median * 1.70 && gap < median * 2.35) {
+          out.push(Math.round(lines[i - 1] + gap / 2));
+        }
+        out.push(lines[i]);
+      }
+      return out;
+    }
+
+    // 본문 테두리가 페이지 가운데를 관통하는가 = 박스가 통짜인가. 2블록 용지는 좌·우 박스 사이가
+    // 끊겨 있고, 1블록 용지는 이어져 있다. 위·아래 **둘 다** 관통해야 1블록으로 본다 — 상단
+    // 테두리만 페이지를 가로지르는 용지가 실제로 있어(8bit·A1·doga) 한쪽만 보면 오판한다.
+    function isPaperAutoAlignSingleBlockPaper(analysis, bodyGrid) {
+      if (!analysis || typeof analysis.isDarkNear !== 'function' || !bodyGrid) return false;
+      function crossesMiddle(y) {
+        const yy = Number(y);
+        if (!Number.isFinite(yy)) return false;
+        const from = Math.round(PAGE_W / 2 - 70);
+        const to = Math.round(PAGE_W / 2 + 70);
+        for (let x = from; x <= to; x += 3) {
+          if (!analysis.isDarkNear(x, yy, 2)) return false;
+        }
+        return true;
+      }
+      return crossesMiddle(bodyGrid.bodyTop) && crossesMiddle(bodyGrid.bodyBottom);
+    }
+
+    // 좌우 한 쌍을 못 찾았을 때의 재해석 — 블록이 하나뿐인 용지(3초 시트)를 위한 길이다.
+    // 짝짓기와 같은 잣대를 쓰되 「짝」 조건만 뺀다: 카메라 폭 하한과 「카메라는 대사 뒤」는 그대로.
+    function choosePaperAutoAlignSingleBlock(groups, xLines, xDetailed) {
+      const sorted = (xLines || []).map(Number).filter(Number.isFinite).sort(function(a,b){ return a-b; });
+      const bodyLeft = sorted.length ? sorted[0] : 0;
+      let best = null;
+      (groups || []).forEach(function(group){
+        let side;
+        try {
+          side = resolvePaperAutoAlignTimelineSide(xLines, group, null, xDetailed);
+        } catch (err) {
+          return;
+        }
+        if (!side) return;
+        const minCamera = Math.max(group.dialogW * 0.60, group.cellW * 1.35);
+        if (side.camera.w < minCamera) return;
+        if (side.camera.x <= group.dialogEnd) return;
+        // 1블록에서는 열 수 취향(group.score 의 7·9·10 가산)이 판단 근거가 못 된다 — 쪼갤 상대가
+        // 없으니 **본문을 얼마나 제대로 덮는가**가 정답의 표시다.
+        const covered = (side.camera.x + side.camera.w) - side.cell.x;
+        const startGap = Math.max(0, side.cell.x - bodyLeft);   // 본문 왼쪽 끝에서 시작해야 한다
+        let score = covered * 0.30 - startGap * 0.55 + group.score * 0.15;
+        if (side.follow) {
+          score += side.follow.score * 0.15;
+          score -= Math.abs(side.follow.columns - group.columns) * 6;
+        }
+        if (!best || score > best.score) best = { single:true, left:group, right:null, score:score, leftSide:side, rightSide:null };
+      });
       return best;
     }
 
@@ -10857,6 +10968,7 @@
         if (!group) return;
         add(prefix + '-sparse-grid', !!group.sparseGrid);
         add(prefix + '-variable-tail', !!group.variableTail);
+        add(prefix + '-narrow-tail-dropped', !!group.narrowTail);
         (group.scoreReasons || []).forEach(function(reason){
           add(prefix + '-' + reason, true);
         });
@@ -10916,9 +11028,34 @@
 
     function makePaperAutoAlignLayoutResult(analysis, bodyGrid, variantName) {
       const columnGroups = makePaperAutoAlignColumnGroups(analysis.xLines, analysis.xDetailed, bodyGrid, analysis);
-      const pair = choosePaperAutoAlignColumnPair(columnGroups, analysis.xLines, analysis.xDetailed);
+      let pair = null;
+      let pairError = null;
+      // 용지 구조로 먼저 가른다. 3초 용지는 좌우 짝 조건을 **우연히 통과**하므로(실측), 짝짓기
+      // 실패를 기다리면 영영 1블록 경로에 못 간다.
+      const singleBlockPaper = isPaperAutoAlignSingleBlockPaper(analysis, bodyGrid);
+      if (!singleBlockPaper) {
+        try {
+          pair = choosePaperAutoAlignColumnPair(columnGroups, analysis.xLines, analysis.xDetailed);
+        } catch (err) {
+          pairError = err;
+        }
+      }
+      if (!pair) {
+        // 블록이 하나뿐인 용지(3초 시트). 여기서만 열 수 상한을 넓혀 후보를 다시 만든다.
+        // 점선 탓에 빠진 세로선을 여기서만 채운다 — 좌우 2블록 경로가 받는 선은 손대지 않는다.
+        const singleLines = fillPaperAutoAlignVerticalGaps(analysis.xLines);
+        const wideGroups = makePaperAutoAlignColumnGroups(singleLines, analysis.xDetailed, bodyGrid, analysis, PAPER_AUTO_ALIGN_SINGLE_MAX_COLUMNS);
+        pair = choosePaperAutoAlignSingleBlock(wideGroups, singleLines, analysis.xDetailed);
+        if (!pair) throw pairError || new Error('Left/right matching column groups were not found');
+      }
+      const singleBlock = !!pair.single;
+      if (singleBlock) {
+        // 아래 조립 코드가 좌우를 모두 참조한다 — 같은 값으로 채워 두면 그 코드를 건드리지 않아도
+        // 된다. 실제로 갈라지는 것은 상자 이름뿐이다.
+        pair = Object.assign({}, pair, { right:pair.left, rightSide:pair.leftSide });
+      }
       let leftSide = pair.leftSide || resolvePaperAutoAlignTimelineSide(analysis.xLines, pair.left, pair.right, analysis.xDetailed);
-      let rightSide = pair.rightSide || resolvePaperAutoAlignTimelineSide(analysis.xLines, pair.right, null, analysis.xDetailed);
+      let rightSide = singleBlock ? leftSide : (pair.rightSide || resolvePaperAutoAlignTimelineSide(analysis.xLines, pair.right, null, analysis.xDetailed));
       const columns = resolvePaperAutoAlignDisplayColumnCount(pair, leftSide, rightSide);
       const expandedSides = expandPaperAutoAlignRecoveredCameras(analysis, pair, leftSide, rightSide, columns);
       leftSide = expandedSides.left;
@@ -10927,7 +11064,14 @@
       const bodyH = Math.max(24, bodyGrid.bodyBottom - bodyGrid.bodyTop);
       const labelTop = Math.max(0, Math.min(bodyY - 8, bodyGrid.labelTop));
       const labelH = Math.max(14, bodyY - labelTop);
-      const boxes = {
+      // 1블록이면 렌더·위치조정이 이미 아는 main 키로 낸다(판정 q2=A). left/right 로 내면
+      // 1블록 모드의 렌더가 cell-main 을 찾다 못 찾아 자동정렬 결과를 통째로 무시한다.
+      const boxes = singleBlock ? {
+        'cell-main':{ x:leftSide.cell.x, y:bodyY, w:leftSide.cell.w, h:bodyH },
+        'dialog-main':{ x:leftSide.dialog.x, y:bodyY, w:leftSide.dialog.w, h:bodyH },
+        'camera-main':{ x:leftSide.camera.x, y:bodyY, w:leftSide.camera.w, h:bodyH },
+        'cell-label-main':{ x:leftSide.cell.x, y:labelTop, w:leftSide.cell.w, h:labelH }
+      } : {
         'cell-left':{ x:leftSide.cell.x, y:bodyY, w:leftSide.cell.w, h:bodyH },
         'dialog-left':{ x:leftSide.dialog.x, y:bodyY, w:leftSide.dialog.w, h:bodyH },
         'camera-left':{ x:leftSide.camera.x, y:bodyY, w:leftSide.camera.w, h:bodyH },
@@ -10997,6 +11141,7 @@
           leftCameraW:leftSide.camera.w,
           rightCameraW:rightSide.camera.w,
           variant:variantName || 'standard',
+          singleBlock:singleBlock,
           dottedVerticalLineCount:dottedVerticalLineCount
         }
       };
@@ -11044,8 +11189,69 @@
       }
     }
 
+    // 본문 칸선이 점선인 용지를 위한 보강. 가로선 후보 조건은 「가로로 연속해서 어두운 길이」라
+    // 점선은 후보가 되지 못한다(실측: 점선 용지의 본문 최장 연속은 16px, 실선 용지는 141px,
+    // 문턱은 70px). 여기서는 연속 길이 대신 **덮인 비율**로 행을 찾는다 — 선은 많은 열에서 조금씩
+    // 어두워지고 글자·로고는 few 열에서만 깊게 어두워진다는, 헤더 흐린 선 탐색과 같은 성질이다.
+    // 균일 간격 판정은 findPaperAutoAlignBodyGrid 가 그대로 하므로 여기서는 후보만 넉넉히 낸다.
+    function findPaperAutoAlignDottedRowLines(analysis) {
+      if (!analysis || typeof analysis.columnRelativeRowScan !== 'function') return null;
+      const left = Math.round(PAGE_W * 0.04);
+      const right = Math.round(PAGE_W * 0.96);
+      const top = 240;
+      const bottom = Math.round(PAGE_H * 0.99);
+      if (right - left < 200 || bottom - top < 400) return null;
+      let rows;
+      try {
+        rows = analysis.columnRelativeRowScan(left, right, top, bottom, 3);
+      } catch (err) {
+        sendClientErrorEvent('paper_auto_align_dotted_rows', err);
+        return null;
+      }
+      if (!rows || !rows.length) return null;
+      const hits = [];
+      for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        if (!row) continue;
+        if (Number(row.coverage || 0) < 0.34) continue;   // 선이지 글자가 아니다
+        if (Number(row.relDip || 0) < 1.6) continue;      // 종이 얼룩과 가른다
+        hits.push({ pos:Math.round(row.y), maxRun:1, ink:1 });
+      }
+      if (hits.length < PAPER_AUTO_ALIGN_TARGET_BODY_LINES) return null;
+      const clustered = clusterPaperAutoAlignPositions(hits, 6);
+      return clustered.map(function(line){ return Number(line.pos); }).filter(Number.isFinite);
+    }
+
     function inferPaperAutoAlignLayoutFromLines(analysis) {
-      const bodyGrid = findPaperAutoAlignBodyGrid(analysis.yLines);
+      // findPaperAutoAlignBodyGrid 는 못 찾으면 **throw 한다**(null 이 아니다). 그래서 점선 보강은
+      // 예외를 받아서 시도해야 한다 — 처음엔 `if (!bodyGrid)` 로 감쌌다가 도달조차 못 했다.
+      let bodyGrid = null;
+      let bodyGridError = null;
+      try {
+        bodyGrid = findPaperAutoAlignBodyGrid(analysis.yLines);
+      } catch (err) {
+        bodyGridError = err;
+      }
+      if (!bodyGrid) {
+        const dottedRows = findPaperAutoAlignDottedRowLines(analysis);
+        if (dottedRows && dottedRows.length) {
+          const merged = clusterPaperAutoAlignPositions(
+            (analysis.yLines || []).concat(dottedRows).map(function(pos){ return { pos:Math.round(pos), maxRun:1, ink:1 }; }), 6
+          ).map(function(line){ return Number(line.pos); }).filter(Number.isFinite);
+          try {
+            const dottedGrid = findPaperAutoAlignBodyGrid(merged);
+            if (dottedGrid) {
+              bodyGrid = dottedGrid;
+              analysis = Object.assign({}, analysis, { yLines:merged, dottedRowGrid:true });
+            }
+          } catch (err) {
+            // 점선으로도 못 찾았다 — 아래에서 원래 예외를 그대로 올린다
+          }
+        }
+        // 보강도 실패했으면 **원래 예외**를 그대로 던진다. 메시지가 바뀌면 기존 실패 용지의
+        // 안내가 달라지고, 점선 시도가 새 오류처럼 보인다.
+        if (!bodyGrid && bodyGridError) throw bodyGridError;
+      }
       const baseResult = makePaperAutoAlignLayoutResult(analysis, bodyGrid, 'standard');
       if (isStableStandardPaperAutoAlignResult(baseResult)) return baseResult;
       const dottedBoundaryResult = makePaperAutoAlignDottedBoundaryResult(analysis, bodyGrid, baseResult);
