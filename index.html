@@ -2803,7 +2803,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '884';
+    const APP_VERSION = '885';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -8030,9 +8030,23 @@
       return count;
     }
 
+    // 원화 칸 폭은 실측 25.0~32.0 이다(구조 목록 C-3, 16/16). 좁힌 문으로 먼저 돌면 후보의 74%가
+    // **픽셀을 만지기 전에** 걸러진다 — pushCandidate 는 후보마다 대역을 스캔한다. 좁힌 문으로
+    // 후보가 하나도 안 나오면 원래 범위로 한 번 더 돈다(표본 밖 용지가 와도 길이 사라지지 않는다).
+    const PAPER_AUTO_ALIGN_CELL_WIDTH_PASSES = [[22, 36], [18, 82]];
+
+    function makePaperAutoAlignColumnGroups(xLines, xDetailed, bodyGrid, analysis, maxColumns) {
+      for (let pass = 0; pass < PAPER_AUTO_ALIGN_CELL_WIDTH_PASSES.length; pass++) {
+        const range = PAPER_AUTO_ALIGN_CELL_WIDTH_PASSES[pass];
+        const found = buildPaperAutoAlignColumnGroups(xLines, xDetailed, bodyGrid, analysis, maxColumns, range[0], range[1]);
+        if (found.length) return found;
+      }
+      return [];
+    }
+
     // maxColumns 는 1블록 재해석에서만 넓혀 부른다(판정 q3=A). 생략하면 기존 상한이라
     // 좌우 2블록 경로는 글자 그대로 이전과 같은 후보를 만든다.
-    function makePaperAutoAlignColumnGroups(xLines, xDetailed, bodyGrid, analysis, maxColumns) {
+    function buildPaperAutoAlignColumnGroups(xLines, xDetailed, bodyGrid, analysis, maxColumns, minCellW, maxCellW) {
       const columnCeiling = Math.max(PAPER_AUTO_ALIGN_MAX_COLUMNS, Math.round(Number(maxColumns) || 0) || PAPER_AUTO_ALIGN_MAX_COLUMNS);
       // 상한을 넓혀 부른 호출 = 1블록 재해석이다. 좁은 꼬리 칸 교정은 여기서만 켠다.
       const wideMode = columnCeiling > PAPER_AUTO_ALIGN_MAX_COLUMNS;
@@ -8045,7 +8059,7 @@
         options = options || {};
         if (rightIndex <= startIndex || rightIndex + 1 >= lines.length) return;
         if (displayColumns < PAPER_AUTO_ALIGN_MIN_COLUMNS || displayColumns > columnCeiling) return;
-        if (cellW < 18 || cellW > 82) return;
+        if (cellW < minCellW || cellW > maxCellW) return;
         const actualActionW = lines[rightIndex] - lines[startIndex];
         const cellRight = options.variableTail ? lines[startIndex] + cellW * displayColumns : lines[rightIndex];
         for (let dialogEndIndex = rightIndex + 1; dialogEndIndex <= Math.min(rightIndex + 4, lines.length - 1); dialogEndIndex++) {
@@ -8196,7 +8210,7 @@
           for (let displayColumns = PAPER_AUTO_ALIGN_MIN_COLUMNS; displayColumns <= columnCeiling; displayColumns++) {
             if (displayColumns > observedGapCount && observedGridAlreadyUniform) continue;
             const cellW = width / displayColumns;
-            if (cellW < 18 || cellW > 82) continue;
+            if (cellW < minCellW || cellW > maxCellW) continue;
             const tolerance = Math.max(6, cellW * 0.30);
             let matches = 0;
             let deviation = 0;
@@ -8353,16 +8367,26 @@
         }
         return false;
       }
-      for (let endIndex = startIndex + 5; endIndex < searchEndIndex; endIndex++) {
-        if (lines[endIndex] - lines[startIndex] > maxFollowerSpan) break;
-        for (let columns = minColumns; columns <= maxColumns; columns++) {
-          const preferredColumns = hasStrongCameraDividerAfterFollower(endIndex, columns) ? columns : group.columns;
-          const candidate = scorePaperAutoAlignGridSpan(lines, startIndex, endIndex, columns, preferredColumns);
-          if (!candidate) continue;
-          const widthRatio = (candidate.right - candidate.left) / Math.max(1, group.actionW);
-          if (widthRatio < 0.55 || widthRatio > 2.45) continue;
-          candidate.score -= Math.abs(widthRatio - 1.15) * 8;
-          if (!best || candidate.score > best.score) best = candidate;
+      // 동화 칸 수는 원화와 같거나 하나 적다 — 그 둘뿐이다(구조 목록 C-4, 16/16). 1차는 그
+      // 두 개만 보고, 못 찾으면 종전 범위(±2)로 한 번 더 돈다.
+      const followerColumnPasses = [
+        [Math.max(minColumns, Math.min(maxColumns, group.columns - 1)), Math.min(maxColumns, group.columns)],
+        [minColumns, maxColumns]
+      ];
+      for (let pass = 0; pass < followerColumnPasses.length && !best; pass++) {
+        const passMinColumns = followerColumnPasses[pass][0];
+        const passMaxColumns = followerColumnPasses[pass][1];
+        for (let endIndex = startIndex + 5; endIndex < searchEndIndex; endIndex++) {
+          if (lines[endIndex] - lines[startIndex] > maxFollowerSpan) break;
+          for (let columns = passMinColumns; columns <= passMaxColumns; columns++) {
+            const preferredColumns = hasStrongCameraDividerAfterFollower(endIndex, columns) ? columns : group.columns;
+            const candidate = scorePaperAutoAlignGridSpan(lines, startIndex, endIndex, columns, preferredColumns);
+            if (!candidate) continue;
+            const widthRatio = (candidate.right - candidate.left) / Math.max(1, group.actionW);
+            if (widthRatio < 0.55 || widthRatio > 2.45) continue;
+            candidate.score -= Math.abs(widthRatio - 1.15) * 8;
+            if (!best || candidate.score > best.score) best = candidate;
+          }
         }
       }
       return best;
@@ -8446,48 +8470,53 @@
         return value;
       }
       let best = null;
-      leftGroups.forEach(function(left){
-        rightGroups.forEach(function(right){
-          if (right.left <= left.left) return;
-          const columnDiff = Math.abs(left.columns - right.columns);
-          if (columnDiff > 1) return;
-          const cellRatio = Math.abs(left.cellW - right.cellW) / Math.max(left.cellW, right.cellW, 1);
-          if (cellRatio > 0.38) return;
-          const dialogRatio = Math.abs(left.dialogW - right.dialogW) / Math.max(left.dialogW, right.dialogW, 1);
-          if (dialogRatio > 0.48) return;
-          const centerBalance = Math.abs(((left.center + right.center) / 2) - PAGE_W / 2);
-          if (centerBalance > PAPER_AUTO_ALIGN_PAIR_CENTER_TOLERANCE) return;
-          let leftSide;
-          let rightSide;
-          try {
-            leftSide = resolveSideCached(left, right);
-            rightSide = resolveSideCached(right, null);
-          } catch (err) {
-            sendClientErrorEvent('paper_auto_align_column_pair', err);
-            return;
-          }
-          const minLeftCamera = Math.max(left.dialogW * 0.60, left.cellW * 1.35);
-          const minRightCamera = Math.max(right.dialogW * 0.60, right.cellW * 1.35);
-          if (!leftSide || !rightSide || leftSide.camera.w < minLeftCamera || rightSide.camera.w < minRightCamera) return;
-          if (leftSide.camera.x <= left.dialogEnd || rightSide.camera.x <= right.dialogEnd) return;
-          let score = left.score + right.score - columnDiff * 26 - cellRatio * 80 - dialogRatio * 70 - centerBalance * 0.10;
-          if (centerBalance > PAPER_AUTO_ALIGN_PAIR_CENTER_TOLERANCE * 0.70) score -= (centerBalance - PAPER_AUTO_ALIGN_PAIR_CENTER_TOLERANCE * 0.70) * 0.18;
-          if (left.columns === right.columns) score += 28;
-          if (leftSide.follow && rightSide.follow) {
-            const leftFollowDiff = Math.abs(leftSide.follow.columns - left.columns);
-            const rightFollowDiff = Math.abs(rightSide.follow.columns - right.columns);
-            score += leftSide.follow.score + rightSide.follow.score;
-            score -= leftFollowDiff * 14;
-            score -= rightFollowDiff * 14;
-            if (leftFollowDiff === 0 && rightFollowDiff === 0) score += 34;
-            else if (leftFollowDiff <= 1 && rightFollowDiff <= 1) score += 22;
-          }
-          if (left.columns === 9 && right.columns === 9) score += 16;
-          if (left.columns === 10 && right.columns === 10) score += 18;
-          score += Math.min(leftSide.camera.w, rightSide.camera.w) * 0.04;
-          if (!best || score > best.score) best = { left:left, right:right, score:score, leftSide:leftSide, rightSide:rightSide };
+      // 좌우 두 블록은 열 수가 언제나 같다(구조 목록 E-1, 15/15). 1차는 차이 0 인 짝만 본다 —
+      // 하나도 못 찾으면 종전의 ±1 로 넓혀 한 번 더 돈다.
+      for (let pass = 0; pass < 2 && !best; pass++) {
+        const maxColumnDiff = pass;
+        leftGroups.forEach(function(left){
+          rightGroups.forEach(function(right){
+            if (right.left <= left.left) return;
+            const columnDiff = Math.abs(left.columns - right.columns);
+            if (columnDiff > maxColumnDiff) return;
+            const cellRatio = Math.abs(left.cellW - right.cellW) / Math.max(left.cellW, right.cellW, 1);
+            if (cellRatio > 0.38) return;
+            const dialogRatio = Math.abs(left.dialogW - right.dialogW) / Math.max(left.dialogW, right.dialogW, 1);
+            if (dialogRatio > 0.48) return;
+            const centerBalance = Math.abs(((left.center + right.center) / 2) - PAGE_W / 2);
+            if (centerBalance > PAPER_AUTO_ALIGN_PAIR_CENTER_TOLERANCE) return;
+            let leftSide;
+            let rightSide;
+            try {
+              leftSide = resolveSideCached(left, right);
+              rightSide = resolveSideCached(right, null);
+            } catch (err) {
+              sendClientErrorEvent('paper_auto_align_column_pair', err);
+              return;
+            }
+            const minLeftCamera = Math.max(left.dialogW * 0.60, left.cellW * 1.35);
+            const minRightCamera = Math.max(right.dialogW * 0.60, right.cellW * 1.35);
+            if (!leftSide || !rightSide || leftSide.camera.w < minLeftCamera || rightSide.camera.w < minRightCamera) return;
+            if (leftSide.camera.x <= left.dialogEnd || rightSide.camera.x <= right.dialogEnd) return;
+            let score = left.score + right.score - columnDiff * 26 - cellRatio * 80 - dialogRatio * 70 - centerBalance * 0.10;
+            if (centerBalance > PAPER_AUTO_ALIGN_PAIR_CENTER_TOLERANCE * 0.70) score -= (centerBalance - PAPER_AUTO_ALIGN_PAIR_CENTER_TOLERANCE * 0.70) * 0.18;
+            if (left.columns === right.columns) score += 28;
+            if (leftSide.follow && rightSide.follow) {
+              const leftFollowDiff = Math.abs(leftSide.follow.columns - left.columns);
+              const rightFollowDiff = Math.abs(rightSide.follow.columns - right.columns);
+              score += leftSide.follow.score + rightSide.follow.score;
+              score -= leftFollowDiff * 14;
+              score -= rightFollowDiff * 14;
+              if (leftFollowDiff === 0 && rightFollowDiff === 0) score += 34;
+              else if (leftFollowDiff <= 1 && rightFollowDiff <= 1) score += 22;
+            }
+            if (left.columns === 9 && right.columns === 9) score += 16;
+            if (left.columns === 10 && right.columns === 10) score += 18;
+            score += Math.min(leftSide.camera.w, rightSide.camera.w) * 0.04;
+            if (!best || score > best.score) best = { left:left, right:right, score:score, leftSide:leftSide, rightSide:rightSide };
+          });
         });
-      });
+      }
       if (!best) throw new Error('Left/right matching column groups were not found');
       return best;
     }
