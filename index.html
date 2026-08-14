@@ -2803,7 +2803,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '885';
+    const APP_VERSION = '886';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -8030,15 +8030,32 @@
       return count;
     }
 
-    // 원화 칸 폭은 실측 25.0~32.0 이다(구조 목록 C-3, 16/16). 좁힌 문으로 먼저 돌면 후보의 74%가
-    // **픽셀을 만지기 전에** 걸러진다 — pushCandidate 는 후보마다 대역을 스캔한다. 좁힌 문으로
-    // 후보가 하나도 안 나오면 원래 범위로 한 번 더 돈다(표본 밖 용지가 와도 길이 사라지지 않는다).
-    const PAPER_AUTO_ALIGN_CELL_WIDTH_PASSES = [[22, 36], [18, 82]];
+    // 원화 칸 폭은 **칸 높이의 0.95~1.28배**다(구조 목록 C-3b, 16/16). 절대 픽셀이 아니라 **비율**로
+    // 재는 것이 중요하다 — 칸 높이도 같은 정규화를 겪으므로 용지 해상도나 종이 비율이 달라도 그대로
+    // 성립한다. 0.88~1.40 으로 두면 절대값(22~36px)과 **똑같이 74% 를 거르면서**(9,295 대 9,331)
+    // 해상도 의존이 없다. 좁힌 문으로 후보가 하나도 안 나오면 **종전 절대 범위**로 한 번 더 돈다 —
+    // 지금 성공하는 길을 그대로 보존하는 것이 폴백의 목적이다.
+    const PAPER_AUTO_ALIGN_CELL_WIDTH_PASSES = [{ ratio:[0.88, 1.40] }, { abs:[18, 82] }];
 
     function makePaperAutoAlignColumnGroups(xLines, xDetailed, bodyGrid, analysis, maxColumns) {
+      const gridLines = bodyGrid && Array.isArray(bodyGrid.lines) ? bodyGrid.lines : [];
+      const rowH = gridLines.length > 2
+        ? (gridLines[gridLines.length - 1] - gridLines[0]) / (gridLines.length - 1)
+        : 0;
       for (let pass = 0; pass < PAPER_AUTO_ALIGN_CELL_WIDTH_PASSES.length; pass++) {
-        const range = PAPER_AUTO_ALIGN_CELL_WIDTH_PASSES[pass];
-        const found = buildPaperAutoAlignColumnGroups(xLines, xDetailed, bodyGrid, analysis, maxColumns, range[0], range[1]);
+        const band = PAPER_AUTO_ALIGN_CELL_WIDTH_PASSES[pass];
+        let minCellW;
+        let maxCellW;
+        if (band.ratio && rowH > 0) {
+          minCellW = rowH * band.ratio[0];
+          maxCellW = rowH * band.ratio[1];
+        } else if (band.abs) {
+          minCellW = band.abs[0];
+          maxCellW = band.abs[1];
+        } else {
+          continue;   // 행 높이를 못 구한 경우의 비율 밴드는 건너뛰고 절대 밴드로 간다
+        }
+        const found = buildPaperAutoAlignColumnGroups(xLines, xDetailed, bodyGrid, analysis, maxColumns, minCellW, maxCellW);
         if (found.length) return found;
       }
       return [];
