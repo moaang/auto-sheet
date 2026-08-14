@@ -2803,7 +2803,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '883';
+    const APP_VERSION = '884';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -7220,6 +7220,8 @@
         const thickEdgeShadow = (pos <= 6 || pos >= PAGE_W - 7) && Number(line.thickness || 1) >= 12;
         return !(nearPageEdge || thickEdgeShadow || (pos >= PAGE_W - 3 && fullHeightRun));
       });
+
+      // ── [스캔] 픽셀 샘플링 — 대역 평균 · 어두움 판정 · 폭 측정 ────────────
       const sampleHorizontalBand = function(x1, x2, yPositions) {
         const left = Math.max(0, Math.min(PAGE_W - 1, Math.round(Math.min(x1, x2) + 2)));
         const right = Math.max(0, Math.min(PAGE_W - 1, Math.round(Math.max(x1, x2) - 2)));
@@ -7247,6 +7249,7 @@
         }
         return { hitRatio:hit / Math.max(1, count), avgDarkRatio:sum / Math.max(1, count), count:count };
       };
+
       const isDarkNear = function(x, y, radius) {
         const r = Math.max(0, Math.round(radius || 0));
         const cx = Math.round(x);
@@ -7259,6 +7262,7 @@
         }
         return false;
       };
+
       const measureDarkSpan = function(x, y, axis, limit) {
         const maxStep = Math.max(8, Math.round(limit || 96));
         const cx = Math.round(x);
@@ -7283,6 +7287,8 @@
         }
         return { before:before, after:after, length:before + after + 1 };
       };
+
+      // ── [스캔] 직진성 측정 — 접합 · 세로 · 가로 ────────────
       const hasHorizontalLineJoint = function(x, y, minArm, limit) {
         const arm = Math.max(5, Math.round(Number(minArm) || 8));
         const maxLimit = Math.max(arm * 2 + 8, Math.round(Number(limit) || 84));
@@ -7293,6 +7299,7 @@
         }
         return false;
       };
+
       const measureVerticalStraightness = function(x, top, bottom, radius) {
         const cx = Math.round(Number(x) || 0);
         const y1 = Math.max(0, Math.round(Number(top) || 0));
@@ -7334,6 +7341,7 @@
           fragments:fragments
         };
       };
+
       const measureHorizontalStraightness = function(y, left, right, radius) {
         const cy = Math.round(Number(y) || 0);
         const x1 = Math.max(0, Math.round(Number(left) || 0));
@@ -7377,6 +7385,8 @@
           fragments:fragments
         };
       };
+
+      // ── [스캔] 선분 검출 — 가로 · 세로 ────────────
       const findHorizontalSegments = function(rect) {
         rect = rect || {};
         const left = Math.max(0, Math.round(Number(rect.left) || 0));
@@ -7470,6 +7480,7 @@
           });
         }).sort(function(a,b){ return a.pos - b.pos; });
       };
+
       const findVerticalSegments = function(rect) {
         rect = rect || {};
         const left = Math.max(0, Math.round(Number(rect.left) || 0));
@@ -7524,6 +7535,8 @@
           return Number(line.ink || 0) / height >= minCoverage * 0.72 || Number(line.maxRun || 0) >= minRun;
         });
       };
+
+      // ── [스캔] 마크 · 사선 검출과 채점 ────────────
       const findPlusMarks = function(rect) {
         const left = Math.max(0, Math.round(Number(rect && rect.left) || 0));
         const right = Math.min(PAGE_W - 1, Math.round(Number(rect && rect.right) || PAGE_W));
@@ -7579,6 +7592,7 @@
         });
         return clustered.slice(0, 12);
       };
+
       const analyzeDiagonalSlash = function(rect) {
         const left = Math.max(0, Number(rect && rect.left) || 0);
         const right = Math.min(PAGE_W - 1, Number(rect && rect.right) || PAGE_W);
@@ -7684,9 +7698,12 @@
           line:best.line
         };
       };
+
       const scoreDiagonalSlash = function(rect) {
         return analyzeDiagonalSlash(rect).score;
       };
+
+      // ── [스캔] 점선 경계 · 열 상대 행 스캔 ────────────
       const findDottedVerticalBoundaryLines = function(bodyGrid) {
         const gridLines = bodyGrid && Array.isArray(bodyGrid.lines) ? bodyGrid.lines : [];
         const bodyTop = Math.max(0, Math.round(Number(bodyGrid && bodyGrid.bodyTop) || 0));
@@ -7754,6 +7771,7 @@
       // (e.g. Madhouse's light caption/value separator). Each column is compared against its
       // OWN median over the scanned band, so a solid faint line shows a small dip across most
       // columns (high coverage), while text or a logo dips deeply but only in its few columns.
+
       function columnRelativeRowScan(left, right, top, bottom, step) {
         const l = Math.max(0, Math.round(left));
         const r = Math.min(PAGE_W - 1, Math.round(right));
@@ -8823,6 +8841,13 @@
     }
 
     // ══ 용지 인식 ⑤ 디버그 값 정규화 · 헤더 사선(Page/화수) 판정 ════════════════════════════════════════════════════════
+    // 「그 대역이 가로로 비어 있는가」 — 대사란과 카메라란이 **문턱만 달리** 쓰던 같은 식이다.
+    // raw 는 호출부가 고른다(대사는 group.dialogMetric 을 먼저 본다).
+    function isPaperAutoAlignSectionHorizontallyEmpty(pattern, raw, hitLimit, darkLimit) {
+      return Number((pattern && pattern.absenceRatio) || 0) >= 0.50 ||
+        (Number((raw && raw.hitRatio) || 0) < hitLimit && Number((raw && raw.avgDarkRatio) || 0) < darkLimit);
+    }
+
     function roundPaperAutoAlignDebugValue(value, precision) {
       const scale = Math.pow(10, precision == null ? 1 : precision);
       return Math.round((Number(value) || 0) * scale) / scale;
@@ -8843,6 +8868,22 @@
       };
     }
 
+    // 디버그 선분과 세로선 후보가 공유하는 8필드 — 두 정규화가 같은 정밀도로 각자 반올림하던 것을
+    // 한 벌로 모은다. **키 순서는 그대로 둬야 하므로** 값만 여기서 만들고 배치는 호출부가 한다.
+    function makePaperAutoAlignDebugLineMetrics(src, flags) {
+      const s = src || {};
+      return {
+        runStart:Number.isFinite(Number(s.runStart)) ? roundPaperAutoAlignDebugValue(s.runStart, 1) : null,
+        runEnd:Number.isFinite(Number(s.runEnd)) ? roundPaperAutoAlignDebugValue(s.runEnd, 1) : null,
+        maxRun:roundPaperAutoAlignDebugValue(s.maxRun, 1),
+        straightness:roundPaperAutoAlignDebugValue(s.straightness, 3),
+        centerHitRatio:roundPaperAutoAlignDebugValue(s.centerHitRatio, 3),
+        straightRunRatio:roundPaperAutoAlignDebugValue(s.straightRunRatio, 3),
+        fragments:roundPaperAutoAlignDebugValue(s.fragments, 0),
+        source:String((flags && flags.source) || s.source || '')
+      };
+    }
+
     function normalizePaperAutoAlignDebugSegment(segment, selected, flags) {
       if (!segment) return null;
       flags = flags || {};
@@ -8850,20 +8891,21 @@
       const start = Number(segment.start);
       const end = Number(segment.end);
       if (![pos, start, end].every(Number.isFinite) || end <= start) return null;
+      const shared = makePaperAutoAlignDebugLineMetrics(segment, flags);
       return {
         pos:roundPaperAutoAlignDebugValue(pos, 1),
         start:roundPaperAutoAlignDebugValue(start, 1),
         end:roundPaperAutoAlignDebugValue(end, 1),
-        runStart:Number.isFinite(Number(segment.runStart)) ? roundPaperAutoAlignDebugValue(segment.runStart, 1) : null,
-        runEnd:Number.isFinite(Number(segment.runEnd)) ? roundPaperAutoAlignDebugValue(segment.runEnd, 1) : null,
+        runStart:shared.runStart,
+        runEnd:shared.runEnd,
         spanStart:Number.isFinite(Number(segment.spanStart)) ? roundPaperAutoAlignDebugValue(segment.spanStart, 1) : null,
         spanEnd:Number.isFinite(Number(segment.spanEnd)) ? roundPaperAutoAlignDebugValue(segment.spanEnd, 1) : null,
-        maxRun:roundPaperAutoAlignDebugValue(segment.maxRun, 1),
-        straightness:roundPaperAutoAlignDebugValue(segment.straightness, 3),
-        centerHitRatio:roundPaperAutoAlignDebugValue(segment.centerHitRatio, 3),
-        straightRunRatio:roundPaperAutoAlignDebugValue(segment.straightRunRatio, 3),
-        fragments:roundPaperAutoAlignDebugValue(segment.fragments, 0),
-        source:String(flags.source || segment.source || ''),
+        maxRun:shared.maxRun,
+        straightness:shared.straightness,
+        centerHitRatio:shared.centerHitRatio,
+        straightRunRatio:shared.straightRunRatio,
+        fragments:shared.fragments,
+        source:shared.source,
         solid:!!flags.solid || !!segment.solid,
         selected:!!selected
       };
@@ -8880,25 +8922,26 @@
       const spanEnd = Number.isFinite(Number(line.spanEnd))
         ? Number(line.spanEnd)
         : (Number.isFinite(Number(line.runEnd)) ? Number(line.runEnd) : headerBottom);
+      const shared = makePaperAutoAlignDebugLineMetrics(line, flags);
       return {
         x:roundPaperAutoAlignDebugValue(x, 1),
         spanStart:roundPaperAutoAlignDebugValue(spanStart, 1),
         spanEnd:roundPaperAutoAlignDebugValue(spanEnd, 1),
-        runStart:Number.isFinite(Number(line.runStart)) ? roundPaperAutoAlignDebugValue(line.runStart, 1) : null,
-        runEnd:Number.isFinite(Number(line.runEnd)) ? roundPaperAutoAlignDebugValue(line.runEnd, 1) : null,
-        maxRun:roundPaperAutoAlignDebugValue(line.maxRun, 1),
+        runStart:shared.runStart,
+        runEnd:shared.runEnd,
+        maxRun:shared.maxRun,
         ink:roundPaperAutoAlignDebugValue(line.ink, 1),
         thickness:roundPaperAutoAlignDebugValue(line.thickness || 1, 1),
-        source:String(flags.source || line.source || ''),
+        source:shared.source,
         accepted:!!flags.accepted,
         selected:!!flags.selected,
         edge:!!flags.edge,
         loose:!!flags.loose,
-        straightness:roundPaperAutoAlignDebugValue(line.straightness, 3),
-        centerHitRatio:roundPaperAutoAlignDebugValue(line.centerHitRatio, 3),
+        straightness:shared.straightness,
+        centerHitRatio:shared.centerHitRatio,
         nearHitRatio:roundPaperAutoAlignDebugValue(line.nearHitRatio, 3),
-        straightRunRatio:roundPaperAutoAlignDebugValue(line.straightRunRatio, 3),
-        fragments:roundPaperAutoAlignDebugValue(line.fragments, 0),
+        straightRunRatio:shared.straightRunRatio,
+        fragments:shared.fragments,
         displayTop:roundPaperAutoAlignDebugValue(Math.max(0, Number(headerTop || 0) - 36), 1),
         displayBottom:roundPaperAutoAlignDebugValue(Math.min(PAGE_H - 1, Number(headerBottom || 0) + 42), 1)
       };
@@ -9113,10 +9156,13 @@
       let headerDebugVerticalCandidates = [];
       let headerDebugPlusCandidates = [];
       const headerPaperEdgeMargin = 3;
+
+      // ── [헤더] 가로 선분 수집 · 종이 가장자리 잡음 제외 ────────────
       function isHeaderPaperEdgeNoiseX(x) {
         const xx = Number(x);
         return !Number.isFinite(xx) || xx <= headerPaperEdgeMargin || xx >= PAGE_W - 1 - headerPaperEdgeMargin;
       }
+
       function makeHeaderRectFromSegments() {
         if (!analysis || typeof analysis.findHorizontalSegments !== 'function') return null;
         const segments = analysis.findHorizontalSegments({
@@ -9253,14 +9299,17 @@
       // ver-audit 2026-08-02: 이 둘은 makeHeaderRectFromSegments 안에도 같은 사본이 있었다.
       // 안쪽에 갇혀 형제 함수에서 안 보인다는 이유로 바깥에 다시 선언한 것이었고,
       // 바깥 하나로 합쳤다(함수 선언이라 호이스팅되어 안쪽에서도 보인다).
+
       function getHeaderSegmentRunStart(segment) {
         const value = Number(segment && segment.runStart);
         return Number.isFinite(value) ? value : Number(segment && segment.start);
       }
+
       function getHeaderSegmentRunEnd(segment) {
         const value = Number(segment && segment.runEnd);
         return Number.isFinite(value) ? value : Number(segment && segment.end);
       }
+
       function addHeaderDebugHorizontalSegment(segment, selected, flags) {
         const normalized = normalizePaperAutoAlignDebugSegment(segment, selected, flags);
         if (!normalized) return;
@@ -9286,6 +9335,7 @@
         }
         headerDebugHorizontalSegments.push(normalized);
       }
+
       function addSolidParallelHeaderHorizontalDebugSegments() {
         const yMin = headerTop - Math.max(68, headerH * 0.80);
         const yMax = headerBottom + Math.max(28, headerH * 0.36);
@@ -9317,6 +9367,7 @@
         });
       }
       addSolidParallelHeaderHorizontalDebugSegments();
+
       function findSelectedHeaderHorizontalSegment(pos) {
         const target = Number(pos);
         if (!Number.isFinite(target)) return null;
@@ -9325,6 +9376,7 @@
           return !best || dist < best.dist ? { segment:segment, dist:dist } : best;
         }, null)?.segment || null;
       }
+
       function detectHeaderRightBreakBeforePageField() {
         if (!analysis || typeof analysis.findVerticalSegments !== 'function' || typeof analysis.isDarkNear !== 'function') return null;
         const topSeg = findSelectedHeaderHorizontalSegment(headerRect.selectedTopSegment);
@@ -9454,9 +9506,12 @@
       }
       const splitYDetected = !!splitY;
       if (!splitY) splitY = { pos:upperY.filter(function(y){ return y > headerTop + 14 && y < headerBottom - 12; })[0] || Math.round(headerTop + headerH * 0.42) };
+
+      // ── [헤더] 접합부(joint) 증거 판정 ────────────
       function getHeaderJointMinArm() {
         return Math.max(7, Math.min(18, headerWForJoints * 0.008));
       }
+
       function getHeaderHorizontalArmEvidence(x, y, minArm) {
         if (!analysis || typeof analysis.measureDarkSpan !== 'function') return null;
         const xx = Number(x);
@@ -9521,6 +9576,7 @@
         }
         return best;
       }
+
       function getHeaderBandJointEvidence(x, minArm) {
         const evidence = {
           jointCount:0,
@@ -9553,6 +9609,7 @@
         });
         return evidence;
       }
+
       function getHeaderLocalEndpointHorizontalJoint(x, minArm) {
         const xx = Number(x);
         if (!Number.isFinite(xx)) return null;
@@ -9565,9 +9622,11 @@
         }
         return null;
       }
+
       function getHeaderEndpointHorizontalJoint(x, minArm) {
         return getHeaderLocalEndpointHorizontalJoint(x, minArm);
       }
+
       function getHeaderHorizontalJointKind(x) {
         if (!analysis || typeof analysis.measureDarkSpan !== 'function') return 'cross';
         const minArm = getHeaderJointMinArm();
@@ -9578,9 +9637,11 @@
         if (evidence.jointCount >= 2) return 'band';
         return 'none';
       }
+
       function hasHeaderStructuralJoint(x) {
         return getHeaderHorizontalJointKind(x) !== 'none';
       }
+
       function getHeaderBandJointYs() {
         const minOverlap = Math.max(120, headerWForJoints * 0.36);
         const ys = [headerTop, headerBottom];
@@ -9595,9 +9656,12 @@
         ys.sort(function(a,b){ return a-b; });
         return ys.filter(function(y, index){ return index === 0 || Math.abs(y - ys[index - 1]) > 5; });
       }
+
       function countHeaderBandJoints(x, minArm) {
         return getHeaderBandJointEvidence(x, minArm).jointCount;
       }
+
+      // ── [헤더] 세로선 자격 — 길이 · 커버리지 · 사이드레일 · 완전연결 ────────────
       function getHeaderVerticalLengthMetric(x) {
         if (!analysis || typeof analysis.measureDarkSpan !== 'function') return { length:headerH, ratio:1 };
         const centerY = headerTop + headerH / 2;
@@ -9610,6 +9674,7 @@
           after:Number(span && span.after || 0)
         };
       }
+
       function getHeaderVerticalCoverageMetric(lineInfo) {
         const runStart = Number(lineInfo && lineInfo.runStart);
         const runEnd = Number(lineInfo && lineInfo.runEnd);
@@ -9653,17 +9718,20 @@
           centeredLong:centeredLong
         };
       }
+
       function isHeaderVerticalCoverageStructurallyPlausible(lineInfo) {
         if (lineInfo && lineInfo.endpointInferred) return true;
         const coverage = getHeaderVerticalCoverageMetric(lineInfo);
         return coverage.fullSpan || coverage.centeredLong;
       }
+
       function hasMinimumHeaderVerticalStrokeCoverage(lineInfo, ratio) {
         const minRatio = Math.max(0.50, Number(ratio) || 0.50);
         const maxRunRatio = Number(lineInfo && lineInfo.maxRun || 0) / Math.max(1, headerH);
         const inkRatio = Number(lineInfo && lineInfo.ink || 0) / Math.max(1, headerH);
         return maxRunRatio >= minRatio || inkRatio >= minRatio;
       }
+
       function isHeaderVerticalJointSampleY(y) {
         const yy = Number(y);
         if (!Number.isFinite(yy)) return false;
@@ -9672,6 +9740,7 @@
           return Math.abs(yy - Number(jointY || 0)) <= slack;
         });
       }
+
       function getHeaderVerticalSideRailMetric(x, lineInfo) {
         if (!analysis || typeof analysis.isDarkNear !== 'function') {
           return { samples:0, leftClearRatio:1, rightClearRatio:1, bothClearRatio:1, bothClearRunRatio:1 };
@@ -9725,6 +9794,7 @@
           bothClearRunRatio:maxBothRun / Math.max(1, samples)
         };
       }
+
       function isHeaderVerticalSideRailClean(x, lineInfo, relaxed) {
         const metric = getHeaderVerticalSideRailMetric(x, lineInfo);
         if (metric.samples < Math.max(8, Math.round(headerH * 0.16))) return true;
@@ -9736,6 +9806,7 @@
           metric.bothClearRatio >= bothMin &&
           metric.bothClearRunRatio >= runMin;
       }
+
       function getHeaderVerticalFullConnectionMetric(x, lineInfo) {
         if (!analysis || typeof analysis.isDarkNear !== 'function') {
           return { connected:false, hitRatio:0, topConnected:false, bottomConnected:false };
@@ -9777,9 +9848,11 @@
           bottomConnected:bottomConnected
         };
       }
+
       function isHeaderVerticalFullyConnected(x, lineInfo) {
         return !!getHeaderVerticalFullConnectionMetric(x, lineInfo).connected;
       }
+
       function isStrongHeaderEndpointDivider(x, lineInfo) {
         const endpoint = getHeaderEndpointHorizontalJoint(x, getHeaderJointMinArm());
         if (!endpoint || Number(endpoint.score || 0) < 3) return false;
@@ -9791,6 +9864,7 @@
         const inkRatio = Number(lineInfo && lineInfo.ink || 0) / Math.max(1, headerH);
         return maxRunRatio >= 0.84 && inkRatio >= 0.84 && Number(full.hitRatio || 0) >= 0.70;
       }
+
       function isHeaderVerticalLengthPlausible(x, lineInfo) {
         if (lineInfo && lineInfo.endpointInferred) return true;
         const metric = getHeaderVerticalLengthMetric(x);
@@ -9806,6 +9880,7 @@
         }
         return true;
       }
+
       function isHeaderDividerLine(pos, lineInfo) {
         const x = Number(pos);
         if (!Number.isFinite(x)) return false;
@@ -9852,6 +9927,7 @@
           (bandLineLike && structurallyPlaced && maxRun >= headerH * 0.18) ||
           (endpointLineLike && structurallyPlaced);
       }
+
       function isLooseHeaderDividerLine(lineInfo) {
         const x = Number(lineInfo && lineInfo.pos);
         if (!Number.isFinite(x)) return false;
@@ -9890,6 +9966,8 @@
       let confirmedHeaderEndpointLeft = null;
       let confirmedHeaderEndpointRight = null;
       const headerDebugCandidateMap = new Map();
+
+      // ── [헤더] 세로선 수집 · 종이 가장자리 정리 ────────────
       function addHeaderDebugVerticalCandidate(line, source) {
         if (!line) return;
         const key = Math.round(Number(line.pos || 0));
@@ -9907,6 +9985,7 @@
           loose:isLooseHeaderDividerLine(line)
         }));
       }
+
       function findHeaderEndpointVerticalLines() {
         if (!analysis || typeof analysis.findVerticalSegments !== 'function') return [];
         const tolerance = Math.max(5, Math.min(13, headerH * 0.16));
@@ -9940,6 +10019,7 @@
           return index === 0 || Math.abs(Number(line.pos || 0) - Number(lines[index - 1].pos || 0)) > tolerance;
         });
       }
+
       function findHeaderBandJointVerticalLines() {
         if (!analysis || typeof analysis.findVerticalSegments !== 'function' || getHeaderBandJointYs().length < 2) return [];
         const tolerance = Math.max(5, Math.min(13, headerH * 0.16));
@@ -10030,6 +10110,7 @@
           (x >= headerLeft - 5 && x <= headerRight + 5 || getHeaderHorizontalJointKind(x) === 'endpoint');
       });
       headerLines = mergePaperAutoAlignUniquePositions(headerLines, 5);
+
       function expandHeaderBoundsFromEndpointLines(lines) {
         function endpointItemForLine(x) {
           return Array.from(headerDebugCandidateMap.values()).find(function(line){
@@ -10065,6 +10146,7 @@
       headerLines = headerLines.filter(function(x){
         return x >= headerLeft - 5 && x <= headerRight + 5;
       });
+
       function trimPaperEdgeHeaderLines(lines) {
         const sorted = (lines || []).slice().sort(function(a,b){ return a-b; });
         while (sorted.length > 4 && !hasHeaderStructuralJoint(sorted[0])) sorted.shift();
@@ -10072,11 +10154,13 @@
         return sorted;
       }
       headerLines = trimPaperEdgeHeaderLines(headerLines);
+
       function findHeaderDebugCandidateForX(x) {
         return Array.from(headerDebugCandidateMap.values()).find(function(line){
           return Math.abs(Number(line.pos || 0) - Number(x || 0)) <= 5;
         }) || null;
       }
+
       function filterHeaderLinesByMajorityFullConnection(lines) {
         const sorted = (lines || []).slice().sort(function(a,b){ return a-b; });
         if (sorted.length < 6) return sorted;
@@ -10108,6 +10192,8 @@
       let slashRightLimit = Number.isFinite(Number(confirmedHeaderEndpointRight))
         ? Math.min(headerRight, Number(confirmedHeaderEndpointRight) + endpointPad)
         : headerRight;
+
+      // ── [헤더] 구간(interval) 탐색 · 박스 생성 ────────────
       function isInsideConfirmedHeaderEndpointRange(left, right) {
         const l = Number(left);
         const r = Number(right);
@@ -10120,6 +10206,7 @@
         return isInsideConfirmedHeaderEndpointRange(interval.left, interval.right);
       });
       let slashIntervals = endpointBoundedIntervals.length ? endpointBoundedIntervals : intervals;
+
       function refreshHeaderIntervalsForVirtualLines() {
         headerLines = mergePaperAutoAlignUniquePositions(headerLines, 5).filter(function(x){
           return !isHeaderPaperEdgeNoiseX(x) && x >= headerLeft - 5 && x <= headerRight + 5;
@@ -10136,6 +10223,7 @@
         });
         slashIntervals = endpointBoundedIntervals.length ? endpointBoundedIntervals : intervals;
       }
+
       function intervalContaining(x) {
         return slashIntervals.reduce(function(best, interval){
           if (x >= interval.left - 4 && x <= interval.right + 4) {
@@ -10144,6 +10232,7 @@
           return best;
         }, null);
       }
+
       function intervalAroundPoint(x, minGap, minWidth) {
         const gap = Math.max(12, Number(minGap) || 0);
         const minW = Math.max(28, Number(minWidth) || 0);
@@ -10156,6 +10245,7 @@
         }
         return intervalContaining(x);
       }
+
       function nearestInterval(left, right) {
         const target = (left + right) / 2;
         return slashIntervals.reduce(function(best, interval){
@@ -10164,6 +10254,7 @@
           return !best || dist < best.dist ? { interval:interval, dist:dist } : best;
         }, null);
       }
+
       function boxFromBounds(left, right, pad, inputBandOnly) {
         const p = Number(pad) === 0 ? 0 : Math.max(2, Number(pad) || 0);
         return {
@@ -10173,10 +10264,12 @@
           h:inputBandOnly ? headerBoxH : fullHeaderBoxH
         };
       }
+
       function boxFromInterval(interval, pad, inputBandOnly) {
         if (!interval) return null;
         return boxFromBounds(interval.left, interval.right, pad, inputBandOnly);
       }
+
       function getHeaderSegmentEndpointNearY(y, side) {
         const yy = Number(y);
         if (!Number.isFinite(yy)) return null;
@@ -10208,6 +10301,8 @@
         });
         return candidates.length ? candidates[0].endpoint : null;
       }
+
+      // ── [헤더] 끝점 정렬 보정 — 좌 · Duration 뒤 우 ────────────
       function findAlignedHeaderHorizontalEndpointX(side) {
         if (!splitYDetected) return null;
         const splitPos = Number(splitY && splitY.pos);
@@ -10227,6 +10322,7 @@
         if (!endpoint || endpoint.side !== expectedSide) return null;
         return x;
       }
+
       function pushAlignedHeaderEndpointDebugCandidate(virtualLine, alignedX, source) {
         const normalized = normalizePaperAutoAlignDebugVerticalCandidate(virtualLine, headerTop, headerBottom, {
           source:source,
@@ -10241,6 +10337,7 @@
           headerDebugVerticalCandidates = headerDebugVerticalCandidates.slice(0, 140);
         }
       }
+
       function maybeAddAlignedLeftEndpointClosure() {
         const alignedX = findAlignedHeaderHorizontalEndpointX('left');
         if (!Number.isFinite(Number(alignedX))) return;
@@ -10329,6 +10426,7 @@
       const gap = Math.max(5, Math.min(16, (durationRight - durationLeft) * 0.07));
       const secondsBox = { x:durationLeft + 4, y:fullHeaderBoxY, w:Math.max(26, plusX - gap - durationLeft - 4), h:fullHeaderBoxH };
       const framesBox = { x:plusX + gap, y:fullHeaderBoxY, w:Math.max(26, durationRight - plusX - gap - 4), h:fullHeaderBoxH };
+
       function findAlignedHeaderRightEndpointXAfterDuration() {
         if (!splitYDetected) return null;
         const splitPos = Number(splitY && splitY.pos);
@@ -10348,6 +10446,7 @@
         if (!endpoint || endpoint.side !== 'end') return null;
         return x;
       }
+
       function maybeAddAlignedRightEndpointClosureAfterDuration() {
         if (!durationPlus || durationPlus.inferred || !durationInterval) return;
         const alignedX = findAlignedHeaderRightEndpointXAfterDuration();
@@ -10405,6 +10504,8 @@
       let selectedSlash = null;
       let forcedPageSlash = false;
       const headerDiagonalDetections = [];
+
+      // ── [헤더] 사선(Page/화수) 검출 ────────────
       function addHeaderDiagonalDetection(interval, slashInfo, source) {
         const item = makePaperAutoAlignHeaderDiagonalDetection(interval, slashInfo, source, inputY, inputH);
         if (!item) return null;
@@ -10587,12 +10688,15 @@
         pageInterval = choosePaperAutoAlignDefaultHeaderPageInterval(slashIntervals, durationRight, slashLeftLimit, slashRightLimit, slashWidth);
         pageBox = boxFromInterval(pageInterval, 2);
       }
+
+      // ── [헤더] 구간 확정 · 타이틀/화수 분할 · 값 밴드 확정 ────────────
       function makeHeaderInterval(left, right, source) {
         const l = Number(left);
         const r = Number(right);
         if (!Number.isFinite(l) || !Number.isFinite(r) || r <= l) return null;
         return { left:l, right:r, w:r - l, index:-1, source:source || '' };
       }
+
       function splitCombinedTitleEpisodeInterval(titleInterval, episodeInterval) {
         if (!titleInterval) return { title:titleInterval, episode:episodeInterval };
         const combinedLeft = Number(titleInterval.left);
@@ -10613,6 +10717,7 @@
           episode:makeHeaderInterval(clampedSplit, combinedRight, 'combined-episode')
         };
       }
+
       function resolvePaperAutoAlignHeaderTitleEpisodeIntervals(beforeCutIntervals) {
         const candidates = (beforeCutIntervals || []).filter(Boolean);
         function sameInterval(a, b) {
@@ -10741,6 +10846,7 @@
         y:Math.round(inputY),
         h:Math.max(18, Math.round(headerBottom - inputY - 2))
       } : null;
+
       function confirmHeaderValueBandBox(box) {
         if (!box || !confirmedHeaderValueBand) return box;
         return Object.assign({}, box, {
@@ -10876,8 +10982,7 @@
       const hasBlankBody = groups.some(function(group){
         const pattern = group.sectionHorizontalPattern || {};
         const raw = group.dialogMetric || pattern.raw || {};
-        return Number(pattern.absenceRatio || 0) >= 0.50 ||
-          (Number(raw.hitRatio || 0) < 0.46 && Number(raw.avgDarkRatio || 0) < 0.18) ||
+        return isPaperAutoAlignSectionHorizontallyEmpty(pattern, raw, 0.46, 0.18) ||
           (group.scoreReasons || []).indexOf('wide-empty-dialog') >= 0 ||
           (group.scoreReasons || []).indexOf('clear-dialog-after-uniform-columns') >= 0;
       });
@@ -10897,9 +11002,7 @@
           return getPaperAutoAlignSectionHorizontalPresence(analysis, side.camera.x, side.camera.x + side.camera.w, bodyGrid, 'absent');
         }).filter(Boolean);
         if (emptySamples.some(function(pattern){
-          const raw = pattern.raw || {};
-          return Number(pattern.absenceRatio || 0) >= 0.50 ||
-            (Number(raw.hitRatio || 0) < 0.48 && Number(raw.avgDarkRatio || 0) < 0.22);
+          return isPaperAutoAlignSectionHorizontallyEmpty(pattern, pattern.raw || {}, 0.48, 0.22);
         })) return 'horizontalEmpty';
       }
       const hasBoldBoundary = sides.some(function(side){
