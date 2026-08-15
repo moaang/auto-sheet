@@ -2792,7 +2792,7 @@
           <label for="timelineCommandInput" data-ui-text="textCommandsLabel">Text Commands</label>
           <label class="command-filter-toggle">
             <input id="textCommandCellViewToggle" type="checkbox" />
-            <span>Hide non-Cell commands</span>
+            <span data-ui-text="hideNonCellCommandsLabel">Hide non-Cell commands</span>
           </label>
           <textarea id="timelineCommandInput"></textarea>
           <textarea id="timelineCommandCellView" class="hidden" spellcheck="false"></textarea>
@@ -2816,7 +2816,7 @@
           <label for="csvCommandEdit" style="margin-top:10px;" data-ui-text="csvCommandEditLabel">Editable Commands from CSV</label>
           <label class="command-filter-toggle">
             <input id="csvCommandCellViewToggle" type="checkbox" />
-            <span>Hide non-Cell commands</span>
+            <span data-ui-text="hideNonCellCommandsLabel">Hide non-Cell commands</span>
           </label>
           <textarea id="csvCommandEdit"></textarea>
           <textarea id="csvCommandCellView" class="hidden" spellcheck="false"></textarea>
@@ -2923,7 +2923,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '892';
+    const APP_VERSION = '893';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3230,6 +3230,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       sidebarWidth: 500,
       rightPanelWidth: 420,
       activePanelResize: null,
+      stageSlotContextMenu: null,
       memoTool: 'pen',
       memoColor: '#111111',
       memoPenSize: 2,
@@ -3423,7 +3424,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         dialogBlocksTitle:'Dialog Area', dialogFormatLabel:'Ex: 0+01 | 1+00 | speaker | line  (start | end | who | what)', cameraBlocksTitle:'Camera Area', cameraFormatLabel:'Ex: 0+01 | 1+00 | A | PAN | B  (start | end | from | move | to)', cameraExamplesTitle:'Examples',
         cameraExPan:'pan (A → B)', cameraExTu:'track up / push in', cameraExFi:'fade in', cameraExOl:'overlap (switch)',
         sheetPreviewTitle:'Sheet Preview', chooseExportDirBtn:'Folder', downloadAllBtn:'Export', memoModeBtn:'Memo Mode', cameraToMemoBtn:'Camera→Memo', memoUndoBtn:'Undo', memoRedoBtn:'Redo', memoPenLabel:'Pen', memoEraserLabel:'Eraser', memoRightClickNoticeL1:'Right-click the memo area', memoRightClickNoticeL2:'to create / edit a text box', cellReadabilityNotice:'← Enlarge the genga numbers (cell digits)',
-        stageHeading:'Stage', stageAddSlotLabel:'Add a stage', hideRightPanelBtn:'Hide Dialog/Camera', showRightPanelBtn:'Show Dialog/Camera', createdByLabel:'Created by', settingsExportBtn:'Save', settingsFileBtn:'Load', settingsImportBtn:'Path', settingsRefreshBtn:'Reload', settingsSelectPlaceholder:'Settings JSON', settingsSelectEmpty:'Select settings', settingsSelectNoSettings:'No settings JSON', textMemoApplyBtn:'Apply', textMemoMenuAdd:'Add text box', textMemoMenuDelete:'Delete text box', textMemoMenuEditMode:'Text box position edit', textMemoMenuEditDone:'Finish text box edit', textMemoMenuAutoArrange:'Auto arrange text boxes', textMemoInitialHint:'Right-click to add or edit text boxes.', clearSheetDataBtn:'Reset All', hideSidebarBtn:'Hide UI', showSidebarBtn:'Show UI', feedbackHeading:'Feedback', feedbackFormLink:'Form', feedbackPlaceholder:'Bug report or request', feedbackHint:'Write anything you know: symptom, reproduction steps, CSV/PSD/image format, expected result, actual result, browser/OS.', feedbackSendBtn:'Send', feedbackEmpty:'Write a message first.', feedbackSending:'Sending...', feedbackSent:'Sent.', feedbackFailed:'Could not send. Open the form link.', shortcutSummaryTopHint:''
+        stageHeading:'Stage', stageAddSlotLabel:'Add a stage', stageCustomOption:'Custom…', stageDeleteBtn:'Delete', stageDeleteLastHint:'Cannot delete the last remaining stage', hideNonCellCommandsLabel:'Hide non-Cell commands', hideRightPanelBtn:'Hide Dialog/Camera', showRightPanelBtn:'Show Dialog/Camera', createdByLabel:'Created by', settingsExportBtn:'Save', settingsFileBtn:'Load', settingsImportBtn:'Path', settingsRefreshBtn:'Reload', settingsSelectPlaceholder:'Settings JSON', settingsSelectEmpty:'Select settings', settingsSelectNoSettings:'No settings JSON', textMemoApplyBtn:'Apply', textMemoMenuAdd:'Add text box', textMemoMenuDelete:'Delete text box', textMemoMenuEditMode:'Text box position edit', textMemoMenuEditDone:'Finish text box edit', textMemoMenuAutoArrange:'Auto arrange text boxes', textMemoInitialHint:'Right-click to add or edit text boxes.', clearSheetDataBtn:'Reset All', hideSidebarBtn:'Hide UI', showSidebarBtn:'Show UI', feedbackHeading:'Feedback', feedbackFormLink:'Form', feedbackPlaceholder:'Bug report or request', feedbackHint:'Write anything you know: symptom, reproduction steps, CSV/PSD/image format, expected result, actual result, browser/OS.', feedbackSendBtn:'Send', feedbackEmpty:'Write a message first.', feedbackSending:'Sending...', feedbackSent:'Sent.', feedbackFailed:'Could not send. Open the form link.', shortcutSummaryTopHint:''
       },
       ja: {
         languageLabel:'言語', headerCardTitle:'ヘッダー', episodeLabel:'話数', titleLabel:'タイトル', cutNoLabel:'カット番号', secondsLabel:'尺 秒', framesLabel:'尺 コマ', authorLabel:'名前', pageLabel:'ページ',
@@ -3432,7 +3433,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         dialogBlocksTitle:'セリフ欄', dialogFormatLabel:'例: 0+01 | 1+00 | 話者 | セリフ（始まり｜終わり｜だれ｜なに）', cameraBlocksTitle:'カメラ欄', cameraFormatLabel:'例: 0+01 | 1+00 | A | PAN | B（始まり｜終わり｜前｜動き｜後）', cameraExamplesTitle:'例',
         cameraExPan:'流し（A→B）', cameraExTu:'寄り（トラックアップ）', cameraExFi:'フェードイン', cameraExOl:'オーバーラップ（切替）',
         sheetPreviewTitle:'シートプレビュー', chooseExportDirBtn:'保存先', downloadAllBtn:'書き出し', memoModeBtn:'メモモード', cameraToMemoBtn:'カメラ→メモ', memoUndoBtn:'取り消し', memoRedoBtn:'やり直し', memoPenLabel:'ペン', memoEraserLabel:'消しゴム', memoRightClickNoticeL1:'メモ欄で右クリック', memoRightClickNoticeL2:'：テキスト枠の作成・編集', cellReadabilityNotice:'←原画番号（セルの数字）を大きく表示',
-        stageHeading:'段階', stageAddSlotLabel:'段階を追加', hideRightPanelBtn:'セリフ/カメラを隠す', showRightPanelBtn:'セリフ/カメラを表示', createdByLabel:'作成', settingsExportBtn:'保存', settingsFileBtn:'読込', settingsImportBtn:'読込先', settingsRefreshBtn:'再読込', settingsSelectPlaceholder:'設定JSON', settingsSelectEmpty:'設定選択', settingsSelectNoSettings:'設定JSONなし', textMemoApplyBtn:'適用', textMemoMenuAdd:'テキスト枠を追加', textMemoMenuDelete:'テキスト枠を削除', textMemoMenuEditMode:'テキスト枠位置編集', textMemoMenuEditDone:'テキスト枠編集終了', textMemoMenuAutoArrange:'テキスト枠を自動整列', textMemoInitialHint:'右クリックでテキスト枠を追加・編集できます。', clearSheetDataBtn:'全体初期化', hideSidebarBtn:'UIを隠す', showSidebarBtn:'UIを表示', feedbackHeading:'報告', feedbackFormLink:'Form', feedbackPlaceholder:'不具合や要望を書く', feedbackHint:'わかる範囲で記入してください: 症状、再現手順、使用したCSV/PSD/画像形式、期待した結果、実際の結果、ブラウザ/OS。', feedbackSendBtn:'送信', feedbackEmpty:'内容を書いてください。', feedbackSending:'送信中...', feedbackSent:'送信しました。', feedbackFailed:'送信できません。Formリンクから送ってください。', shortcutSummaryTopHint:''
+        stageHeading:'段階', stageAddSlotLabel:'段階を追加', stageCustomOption:'直接入力…', stageDeleteBtn:'削除', stageDeleteLastHint:'最後の1段階は削除できません', hideNonCellCommandsLabel:'Cell以外のコマンドを隠す', hideRightPanelBtn:'セリフ/カメラを隠す', showRightPanelBtn:'セリフ/カメラを表示', createdByLabel:'作成', settingsExportBtn:'保存', settingsFileBtn:'読込', settingsImportBtn:'読込先', settingsRefreshBtn:'再読込', settingsSelectPlaceholder:'設定JSON', settingsSelectEmpty:'設定選択', settingsSelectNoSettings:'設定JSONなし', textMemoApplyBtn:'適用', textMemoMenuAdd:'テキスト枠を追加', textMemoMenuDelete:'テキスト枠を削除', textMemoMenuEditMode:'テキスト枠位置編集', textMemoMenuEditDone:'テキスト枠編集終了', textMemoMenuAutoArrange:'テキスト枠を自動整列', textMemoInitialHint:'右クリックでテキスト枠を追加・編集できます。', clearSheetDataBtn:'全体初期化', hideSidebarBtn:'UIを隠す', showSidebarBtn:'UIを表示', feedbackHeading:'報告', feedbackFormLink:'Form', feedbackPlaceholder:'不具合や要望を書く', feedbackHint:'わかる範囲で記入してください: 症状、再現手順、使用したCSV/PSD/画像形式、期待した結果、実際の結果、ブラウザ/OS。', feedbackSendBtn:'送信', feedbackEmpty:'内容を書いてください。', feedbackSending:'送信中...', feedbackSent:'送信しました。', feedbackFailed:'送信できません。Formリンクから送ってください。', shortcutSummaryTopHint:''
       },
       ko: {
         languageLabel:'언어', headerCardTitle:'헤더', episodeLabel:'화수', titleLabel:'제목', cutNoLabel:'컷 번호', secondsLabel:'길이 초', framesLabel:'길이 프레임', authorLabel:'이름', pageLabel:'페이지',
@@ -3441,7 +3442,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         dialogBlocksTitle:'대사란', dialogFormatLabel:'예: 0+01 | 1+00 | 화자 | 대사（시작｜끝｜누가｜무엇）', cameraBlocksTitle:'카메라란', cameraFormatLabel:'예: 0+01 | 1+00 | A | PAN | B（시작｜끝｜이전｜움직임｜이후）', cameraExamplesTitle:'예시',
         cameraExPan:'팬 이동（A→B）', cameraExTu:'당김（트랙업）', cameraExFi:'페이드 인', cameraExOl:'오버랩（전환）',
         sheetPreviewTitle:'시트 프리뷰', chooseExportDirBtn:'경로지정', downloadAllBtn:'출력', memoModeBtn:'메모 모드', cameraToMemoBtn:'카메라→메모', memoUndoBtn:'되돌리기', memoRedoBtn:'다시 실행', memoPenLabel:'펜', memoEraserLabel:'지우개', memoRightClickNoticeL1:'메모 영역 우클릭', memoRightClickNoticeL2:'텍스트 박스 생성·편집', cellReadabilityNotice:'← 원화 번호(셀 숫자)를 크게 표시',
-        stageHeading:'단계', stageAddSlotLabel:'단계 추가', hideRightPanelBtn:'대사/카메라 숨기기', showRightPanelBtn:'대사/카메라 보이기', createdByLabel:'제작', settingsExportBtn:'저장', settingsFileBtn:'불러오기', settingsImportBtn:'경로지정', settingsRefreshBtn:'다시 불러오기', settingsSelectPlaceholder:'설정 JSON', settingsSelectEmpty:'설정 선택', settingsSelectNoSettings:'설정 JSON 없음', textMemoApplyBtn:'적용', textMemoMenuAdd:'텍스트 박스 추가', textMemoMenuDelete:'텍스트 박스 삭제', textMemoMenuEditMode:'텍스트 박스 위치 편집', textMemoMenuEditDone:'텍스트 박스 편집 종료', textMemoMenuAutoArrange:'텍스트 박스 자동 정렬', textMemoInitialHint:'우클릭으로 텍스트 박스를 추가하거나 편집할 수 있습니다.', clearSheetDataBtn:'전체 초기화', hideSidebarBtn:'UI 숨기기', showSidebarBtn:'UI 펼치기', feedbackHeading:'문의', feedbackFormLink:'Form', feedbackPlaceholder:'버그 내용이나 개선 요청', feedbackHint:'가능하면 아는 것만 적어주세요: 증상, 재현 순서, 사용한 CSV/PSD/이미지 형식, 기대한 결과, 실제 결과, 브라우저/OS.', feedbackSendBtn:'보내기', feedbackEmpty:'내용을 먼저 입력하세요.', feedbackSending:'전송 중...', feedbackSent:'전송했습니다.', feedbackFailed:'전송하지 못했습니다. Form 링크로 보내주세요.', shortcutSummaryTopHint:''
+        stageHeading:'단계', stageAddSlotLabel:'단계 추가', stageCustomOption:'직접입력…', stageDeleteBtn:'삭제', stageDeleteLastHint:'마지막 단계는 삭제할 수 없습니다', hideNonCellCommandsLabel:'Cell 외 커맨드 숨기기', hideRightPanelBtn:'대사/카메라 숨기기', showRightPanelBtn:'대사/카메라 보이기', createdByLabel:'제작', settingsExportBtn:'저장', settingsFileBtn:'불러오기', settingsImportBtn:'경로지정', settingsRefreshBtn:'다시 불러오기', settingsSelectPlaceholder:'설정 JSON', settingsSelectEmpty:'설정 선택', settingsSelectNoSettings:'설정 JSON 없음', textMemoApplyBtn:'적용', textMemoMenuAdd:'텍스트 박스 추가', textMemoMenuDelete:'텍스트 박스 삭제', textMemoMenuEditMode:'텍스트 박스 위치 편집', textMemoMenuEditDone:'텍스트 박스 편집 종료', textMemoMenuAutoArrange:'텍스트 박스 자동 정렬', textMemoInitialHint:'우클릭으로 텍스트 박스를 추가하거나 편집할 수 있습니다.', clearSheetDataBtn:'전체 초기화', hideSidebarBtn:'UI 숨기기', showSidebarBtn:'UI 펼치기', feedbackHeading:'문의', feedbackFormLink:'Form', feedbackPlaceholder:'버그 내용이나 개선 요청', feedbackHint:'가능하면 아는 것만 적어주세요: 증상, 재현 순서, 사용한 CSV/PSD/이미지 형식, 기대한 결과, 실제 결과, 브라우저/OS.', feedbackSendBtn:'보내기', feedbackEmpty:'내용을 먼저 입력하세요.', feedbackSending:'전송 중...', feedbackSent:'전송했습니다.', feedbackFailed:'전송하지 못했습니다. Form 링크로 보내주세요.', shortcutSummaryTopHint:''
       },
       zh: {
         languageLabel:'语言', headerCardTitle:'页眉', episodeLabel:'集数', titleLabel:'标题', cutNoLabel:'镜头编号', secondsLabel:'时长 秒', framesLabel:'时长 帧', authorLabel:'姓名', pageLabel:'页码',
@@ -3450,7 +3451,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         dialogBlocksTitle:'对白栏', dialogFormatLabel:'例: 0+01 | 1+00 | 说话人 | 台词（起始｜结束｜谁｜内容）', cameraBlocksTitle:'摄影机栏', cameraFormatLabel:'例: 0+01 | 1+00 | A | PAN | B（起始｜结束｜之前｜运动｜之后）', cameraExamplesTitle:'示例',
         cameraExPan:'摇镜（A→B）', cameraExTu:'推近（Track Up）', cameraExFi:'淡入', cameraExOl:'叠化（切换）',
         sheetPreviewTitle:'Sheet 预览', chooseExportDirBtn:'保存处', downloadAllBtn:'导出', memoModeBtn:'备注模式', cameraToMemoBtn:'摄影→备注', memoUndoBtn:'撤销', memoRedoBtn:'重做', memoPenLabel:'笔', memoEraserLabel:'橡皮', memoRightClickNoticeL1:'在备注区右键', memoRightClickNoticeL2:'创建/编辑文本框', cellReadabilityNotice:'← 放大原画编号（单元格数字）',
-        stageHeading:'阶段', stageAddSlotLabel:'添加阶段', hideRightPanelBtn:'隐藏对白/摄影', showRightPanelBtn:'显示对白/摄影', createdByLabel:'制作', settingsExportBtn:'保存', settingsFileBtn:'导入', settingsImportBtn:'路径', settingsRefreshBtn:'重新读取', settingsSelectPlaceholder:'设置 JSON', settingsSelectEmpty:'选择设置', settingsSelectNoSettings:'无设置 JSON', textMemoApplyBtn:'应用', textMemoMenuAdd:'添加文字框', textMemoMenuDelete:'删除文字框', textMemoMenuEditMode:'文字框位置编辑', textMemoMenuEditDone:'结束文字框编辑', textMemoMenuAutoArrange:'自动排列文字框', textMemoInitialHint:'可通过右键添加或编辑文字框。', clearSheetDataBtn:'全部重置', hideSidebarBtn:'隐藏 UI', showSidebarBtn:'显示 UI', feedbackHeading:'反馈', feedbackFormLink:'Form', feedbackPlaceholder:'错误报告或改进建议', feedbackHint:'请尽量填写已知信息: 症状、复现步骤、使用的 CSV/PSD/图片格式、期望结果、实际结果、浏览器/OS。', feedbackSendBtn:'发送', feedbackEmpty:'请先输入内容。', feedbackSending:'发送中...', feedbackSent:'已发送。', feedbackFailed:'发送失败。请使用 Form 链接。', shortcutSummaryTopHint:''
+        stageHeading:'阶段', stageAddSlotLabel:'添加阶段', stageCustomOption:'自定义…', stageDeleteBtn:'删除', stageDeleteLastHint:'无法删除最后一个阶段', hideNonCellCommandsLabel:'隐藏非 Cell 命令', hideRightPanelBtn:'隐藏对白/摄影', showRightPanelBtn:'显示对白/摄影', createdByLabel:'制作', settingsExportBtn:'保存', settingsFileBtn:'导入', settingsImportBtn:'路径', settingsRefreshBtn:'重新读取', settingsSelectPlaceholder:'设置 JSON', settingsSelectEmpty:'选择设置', settingsSelectNoSettings:'无设置 JSON', textMemoApplyBtn:'应用', textMemoMenuAdd:'添加文字框', textMemoMenuDelete:'删除文字框', textMemoMenuEditMode:'文字框位置编辑', textMemoMenuEditDone:'结束文字框编辑', textMemoMenuAutoArrange:'自动排列文字框', textMemoInitialHint:'可通过右键添加或编辑文字框。', clearSheetDataBtn:'全部重置', hideSidebarBtn:'隐藏 UI', showSidebarBtn:'显示 UI', feedbackHeading:'反馈', feedbackFormLink:'Form', feedbackPlaceholder:'错误报告或改进建议', feedbackHint:'请尽量填写已知信息: 症状、复现步骤、使用的 CSV/PSD/图片格式、期望结果、实际结果、浏览器/OS。', feedbackSendBtn:'发送', feedbackEmpty:'请先输入内容。', feedbackSending:'发送中...', feedbackSent:'已发送。', feedbackFailed:'发送失败。请使用 Form 链接。', shortcutSummaryTopHint:''
       }
     };
 
@@ -3944,10 +3945,18 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     // ══ [입력] 사이드바·오른쪽 탭 너비/접기 공용 커널 — 세로경계 드래그 리사이즈 포함 ══════════════════════════════════════════
     // 폭의 정본은 state.sidebarWidth/rightPanelWidth (열렸을 때 원하는 폭) 다. 화면에 실제로
     // 먹이는 --sidebar-w/--rightpanel-w 변수는 그 값의 반영일 뿐이라, 접었다 펴도 원래 폭을 잃지 않는다.
-    // rightpanel 의 400 은 실측값이다(2026-08-16) — 대사란·카메라란 카드 폭을 좁혀 가며 재 보니
-    // 카메라 예시의 코드 열(가장 긴 예시 기준 185px 고정)과 설명 열이 400px 미만에서부터
-    // 설명이 한 줄을 못 채워 줄바꿈되기 시작했다. 그 아래로는 못 끌게 막는다.
-    const APP_PANEL_MIN_W = { sidebar:320, rightpanel:400 };
+    // 둘 다 실측값이다(2026-08-16) — "글자가 잘리기 전까지만 줄어들게" 기준으로 scrollWidth>
+    // clientWidth 를 4개 언어 전부 돌며 재서 잡았다(sr-only/opacity:0 요소는 오탐이라 제외).
+    // **한국어가 매번 가장 길어서 두 값 다 한국어 기준이다** — 일본어만 재고 정했다가 두 번
+    // 다시 잰 적이 있다(불러오기/경로지정, 텍스트 커맨드/CSV읽기 가 폭을 더 먹는다).
+    //   sidebar: 한국어 保存/読込/読込先 계열(저장/불러오기/경로지정) 이 360px 까지도 잘렸다 — 380 으로.
+    //   rightpanel: 300px 에서도 한국어 텍스트 커맨드/CSV읽기 줄이 가로 스크롤을 만들었다 — 320 으로.
+    //     (제목·버튼·select 자체가 잘리는 것은 4개 언어 다 280px 까지도 없었다 — 진짜 바닥은 항상
+    //     가로 스크롤 쪽이었다.) 카메라 예시 설명이 한 줄을 못 채우는 건 320~380px 에 남지만
+    //     참고표(고정 콘텐츠)일 뿐이라 기능은 안 깨진다 — 가로 스크롤 쪽을 우선했다(사용자 지시).
+    //   모바일 폭(≤1200px, 1컬럼 쌓임)은 320px 폰에서도 이 값들과 무관하게 안 잘린다 — 그 폭에서
+    //   settings-mini-btn 은 아이콘을 숨기는 별도 @media(max-width:560px) 규칙을 타기 때문이다.
+    const APP_PANEL_MIN_W = { sidebar:380, rightpanel:320 };
     const APP_PANEL_MAX_W = { sidebar:800, rightpanel:640 };
     const APP_PANEL_DEFAULT_W = { sidebar:500, rightpanel:420 };
 
@@ -4100,6 +4109,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver893", "Stage slots got custom names, right-click delete, and both panels' minimum width was re-measured in Korean", ["Stage presets are now just \u539f\u753b (base) plus its three revision passes \u2014 the separate \u30ec\u30a4\u30a2\u30a6\u30c8 track is gone, so there are 4 preset slots instead of 6.", "The \u300c\uff0b\u300d slot's dropdown now also offers \u300cCustom\u2026\u300d for typing your own stage name. Double-click any existing slot to rename it (always becomes a custom name once edited). Right-click a slot for a Delete option \u2014 the last remaining stage can't be deleted.", "Both panels' minimum drag width were re-measured with every UI language, not just the one they were built in \u2014 Korean labels run longer than Japanese or English ones and were getting cut off at the old minimums. Both floors moved out a bit to cover that.", "\u300cHide non-Cell commands\u300d and the shortcut-settings names (Brush/Color Cycle, Eraser, etc.) were stuck in English regardless of the app's language \u2014 both now follow it."]],
         ["ver892", "Sheet Input joined the right panel, stages are now slots you click, and cramped labels got room", ["The Sheet Input box (Text Commands / CSV) moved out of the left panel into the right one, joining Dialog Area and Camera Area \u2014 all three content boxes are on the right now.", "Stage now shows as a row of slots instead of a dropdown: existing stages are buttons you click to switch, and a dashed \u300c\uff0b\u300d slot picks a code and creates a new one on the spot.", "In the right panel, box titles no longer wrap into two lines when narrow, and the format hint wraps onto its own line instead of being cut off with \u201c\u2026\u201d. The camera examples list lines up in two steady columns so the description no longer jumps to a second line. The camera line's direction/OL picker got smaller since it only ever shows 1\u20132 characters.", "The Export button in the sheet toolbar now gets the same width budget as the two buttons next to it \u2014 it used to be the narrowest of the three for no reason.", "The right panel can no longer be dragged narrower than the point where those examples would start wrapping."]],
         ["ver891", "The sidebar's edge can now be dragged, and Dialog/Camera moved to a new panel on the right", ["Drag the line where the left panel meets the sheet preview to resize it \u2014 the width is remembered. The button that used to hide the whole left panel still works the same way.", "The Dialog Area and Camera Area boxes moved out of the left panel into a new panel on the right. It has its own hide button and its own draggable edge, sized and remembered separately from the left one.", "Nothing about typing commands, dialog, or camera lines changed \u2014 only where those two boxes sit."]],
         ["ver890", "One file can now hold several stages \u2014 layout, key animation, the director's revision", ["A new box above the quick guide. \u300cDuplicate\u300d copies everything you have now into a new stage; the dropdown switches between them. Stage names follow the project-suffix vocabulary (\u30ec\u30a4\u30a2\u30a6\u30c8 / \u539f\u753b / LO\u6f14\u51fa\u4fee\u6b63 / LO\u4f5c\u76e3\u4fee\u6b63 / \u539f\u753b\u6f14\u51fa\u4fee\u6b63 / \u539f\u753b\u4f5c\u76e3\u4fee\u6b63), and the dropdown's lower half renames the stage you are on.", "Each stage keeps its own timing, dialog, camera and header. The paper image and the pen memos stay shared \u2014 including the memos made by \u300cCamera\u2192Memo\u300d, which now remember which stage wrote them, so switching stages no longer wipes another stage's notes.", "Everything lives in one settings JSON, so a cut is still one file. Files saved before this update open as a single stage. Undo does not cross a stage boundary \u2014 switching starts a fresh history, the same as loading a project.", "The feedback box is now collapsed like the quick guide."]],
@@ -4142,6 +4152,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver893", "\u6bb5\u968e\u30b9\u30ed\u30c3\u30c8\u306b\u76f4\u63a5\u5165\u529b\u30fb\u53f3\u30af\u30ea\u30c3\u30af\u524a\u9664\u304c\u4ed8\u304d\u3001\u4e21\u30d1\u30cd\u30eb\u306e\u6700\u5c0f\u5e45\u3092\u97d3\u56fd\u8a9e\u57fa\u6e96\u3067\u6e2c\u308a\u76f4\u3057\u307e\u3057\u305f", ["\u6bb5\u968e\u306e\u30d7\u30ea\u30bb\u30c3\u30c8\u306f\u539f\u753b\uff08\u57fa\u672c\uff09\u3068\u305d\u306e\u4fee\u6b633\u7a2e\u3060\u3051\u306b\u306a\u308a\u307e\u3057\u305f \u2014 \u5225\u7cfb\u7d71\u3060\u3063\u305f\u30ec\u30a4\u30a2\u30a6\u30c8\u306f\u5ec3\u6b62\u3057\u3001\u30d7\u30ea\u30bb\u30c3\u30c8\u30b9\u30ed\u30c3\u30c8\u306f6\u500b\u304b\u30894\u500b\u306b\u6e1b\u308a\u307e\u3057\u305f\u3002", "\u300c\uff0b\u300d\u30b9\u30ed\u30c3\u30c8\u306e\u30d7\u30eb\u30c0\u30a6\u30f3\u306b\u300c\u76f4\u63a5\u5165\u529b\u2026\u300d\u304c\u5897\u3048\u3001\u597d\u304d\u306a\u540d\u524d\u3067\u6bb5\u968e\u3092\u4f5c\u308c\u307e\u3059\u3002\u65e2\u5b58\u306e\u30b9\u30ed\u30c3\u30c8\u306f\u30c0\u30d6\u30eb\u30af\u30ea\u30c3\u30af\u3067\u540d\u524d\u3092\u5909\u3048\u3089\u308c\u307e\u3059\uff08\u7de8\u96c6\u3059\u308b\u3068\u5fc5\u305a\u76f4\u63a5\u5165\u529b\u6271\u3044\u306b\u306a\u308a\u307e\u3059\uff09\u3002\u30b9\u30ed\u30c3\u30c8\u3092\u53f3\u30af\u30ea\u30c3\u30af\u3059\u308b\u3068\u524a\u9664\u30e1\u30cb\u30e5\u30fc\u304c\u51fa\u307e\u3059 \u2014 \u6700\u5f8c\u306e1\u6bb5\u968e\u306f\u524a\u9664\u3067\u304d\u307e\u305b\u3093\u3002", "\u4e21\u30d1\u30cd\u30eb\u306e\u6700\u5c0f\u30c9\u30e9\u30c3\u30b0\u5e45\u3092\u3001\u4f5c\u3063\u305f\u6642\u306e\u8a00\u8a9e\u3060\u3051\u3067\u306a\u304f4\u8a00\u8a9e\u3059\u3079\u3066\u3067\u6e2c\u308a\u76f4\u3057\u307e\u3057\u305f \u2014 \u97d3\u56fd\u8a9e\u306e\u30e9\u30d9\u30eb\u306f\u65e5\u672c\u8a9e\u3084\u82f1\u8a9e\u3088\u308a\u9577\u304f\u3001\u3053\u308c\u307e\u3067\u306e\u6700\u5c0f\u5024\u3067\u306f\u6b20\u3051\u3066\u3044\u307e\u3057\u305f\u3002\u4e21\u65b9\u3068\u3082\u5c11\u3057\u5e83\u3052\u3066\u3042\u308a\u307e\u3059\u3002", "\u300cHide non-Cell commands\u300d\u3068\u30b7\u30e7\u30fc\u30c8\u30ab\u30c3\u30c8\u8a2d\u5b9a\u306e\u9805\u76ee\u540d\uff08Brush/Color Cycle\u30fbEraser \u306a\u3069\uff09\u304c\u8a00\u8a9e\u3092\u5207\u308a\u66ff\u3048\u3066\u3082\u82f1\u8a9e\u306e\u307e\u307e\u3067\u3057\u305f \u2014 \u3069\u3061\u3089\u3082\u8a00\u8a9e\u306b\u8ffd\u5f93\u3059\u308b\u3088\u3046\u306b\u3057\u307e\u3057\u305f\u3002"]],
         ["ver892", "\u30b7\u30fc\u30c8\u5165\u529b\u304c\u53f3\u30d1\u30cd\u30eb\u306b\u5408\u6d41\u3057\u3001\u6bb5\u968e\u306f\u30af\u30ea\u30c3\u30af\u3059\u308b\u30b9\u30ed\u30c3\u30c8\u306b\u3001\u8a70\u307e\u3063\u3066\u3044\u305f\u30e9\u30d9\u30eb\u306b\u3082\u4f59\u88d5\u304c\u3067\u304d\u307e\u3057\u305f", ["\u30b7\u30fc\u30c8\u5165\u529b\uff08\u30c6\u30ad\u30b9\u30c8\u30b3\u30de\u30f3\u30c9\uff0fCSV\uff09\u3092\u5de6\u30d1\u30cd\u30eb\u304b\u3089\u53f3\u30d1\u30cd\u30eb\u306b\u79fb\u3057\u3001\u30bb\u30ea\u30d5\u6b04\u30fb\u30ab\u30e1\u30e9\u6b04\u3068\u5408\u6d41\u3057\u307e\u3057\u305f \u2014 \u5165\u529b\u7cfb\u306e3\u3064\u306e\u6b04\u304c\u53f3\u5074\u306b\u307e\u3068\u307e\u308a\u307e\u3057\u305f\u3002", "\u6bb5\u968e\u306f\u30d7\u30eb\u30c0\u30a6\u30f3\u3067\u306f\u306a\u304f\u6a2a\u4e26\u3073\u306e\u30b9\u30ed\u30c3\u30c8\u8868\u793a\u306b\u306a\u308a\u307e\u3057\u305f\u3002\u65e2\u5b58\u306e\u6bb5\u968e\u306f\u30dc\u30bf\u30f3\u3067\u30af\u30ea\u30c3\u30af\u3059\u308b\u3068\u5207\u308a\u66ff\u308f\u308a\u3001\u70b9\u7dda\u306e\u300c\uff0b\u300d\u3092\u62bc\u3059\u3068\u30b3\u30fc\u30c9\u3092\u9078\u3076\u305d\u306e\u5834\u3067\u65b0\u3057\u3044\u6bb5\u968e\u304c\u4f5c\u3089\u308c\u307e\u3059\u3002", "\u53f3\u30d1\u30cd\u30eb\u3067\u306f\u3001\u72ed\u304f\u306a\u3063\u3066\u3082\u6b04\u306e\u30bf\u30a4\u30c8\u30eb\u304c2\u884c\u306b\u6298\u308a\u8fd4\u3055\u306a\u304f\u306a\u308a\u3001\u66f8\u5f0f\u306e\u4f8b\u306f\u300c\u2026\u300d\u3067\u5207\u308c\u308b\u4ee3\u308f\u308a\u306b\u6539\u884c\u3067\u5168\u6587\u304c\u898b\u3048\u308b\u3088\u3046\u306b\u306a\u308a\u307e\u3057\u305f\u3002\u30ab\u30e1\u30e9\u306e\u4f8b\u306f2\u5217\u306b\u304d\u3061\u3093\u3068\u63c3\u3046\u3088\u3046\u306b\u306a\u308a\u3001\u8aac\u660e\u304c\u52dd\u624b\u306b\u6b21\u306e\u884c\u3078\u843d\u3061\u306a\u304f\u306a\u308a\u307e\u3057\u305f\u3002\u30ab\u30e1\u30e9\u884c\u306e\u5411\u304d/OL\u9078\u629e\u30821\u301c2\u6587\u5b57\u3057\u304b\u51fa\u306a\u3044\u306e\u3067\u5c0f\u3055\u304f\u3057\u307e\u3057\u305f\u3002", "\u30b7\u30fc\u30c8\u30c4\u30fc\u30eb\u30d0\u30fc\u306e\u66f8\u304d\u51fa\u3057\u30dc\u30bf\u30f3\u304c\u3001\u96a3\u306e2\u3064\u306e\u30dc\u30bf\u30f3\u3068\u540c\u3058\u5e45\u306e\u4f59\u88d5\u3092\u6301\u3064\u3088\u3046\u306b\u306a\u308a\u307e\u3057\u305f \u2014 \u7406\u7531\u306a\u304f\u4e00\u756a\u72ed\u304f\u306a\u3063\u3066\u3044\u305f\u306e\u3092\u76f4\u3057\u307e\u3057\u305f\u3002", "\u53f3\u30d1\u30cd\u30eb\u306f\u3001\u4e0a\u306e\u4f8b\u304c\u6298\u308a\u8fd4\u3057\u59cb\u3081\u308b\u5e45\u3088\u308a\u72ed\u304f\u306f\u30c9\u30e9\u30c3\u30b0\u3067\u304d\u306a\u304f\u306a\u308a\u307e\u3057\u305f\u3002"]],
         ["ver891", "\u30b5\u30a4\u30c9\u30d0\u30fc\u306e\u5883\u754c\u3092\u30c9\u30e9\u30c3\u30b0\u3067\u304d\u308b\u3088\u3046\u306b\u306a\u308a\u3001\u30bb\u30ea\u30d5\u6b04\u30fb\u30ab\u30e1\u30e9\u6b04\u304c\u53f3\u5074\u306e\u65b0\u3057\u3044\u30d1\u30cd\u30eb\u306b\u79fb\u308a\u307e\u3057\u305f", ["\u5de6\u30d1\u30cd\u30eb\u3068\u30b7\u30fc\u30c8\u30d7\u30ec\u30d3\u30e5\u30fc\u306e\u5883\u754c\u7dda\u3092\u30c9\u30e9\u30c3\u30b0\u3059\u308b\u3068\u5e45\u3092\u5909\u3048\u3089\u308c\u307e\u3059 \u2014 \u305d\u306e\u5e45\u306f\u899a\u3048\u3066\u3044\u307e\u3059\u3002\u5de6\u30d1\u30cd\u30eb\u5168\u4f53\u3092\u96a0\u3059\u30dc\u30bf\u30f3\u306f\u4eca\u307e\u3067\u3069\u304a\u308a\u3067\u3059\u3002", "\u30bb\u30ea\u30d5\u6b04\u3068\u30ab\u30e1\u30e9\u6b04\u3092\u5de6\u30d1\u30cd\u30eb\u304b\u3089\u53f3\u5074\u306e\u65b0\u3057\u3044\u30d1\u30cd\u30eb\u306b\u79fb\u3057\u307e\u3057\u305f\u3002\u53f3\u30d1\u30cd\u30eb\u306b\u3082\u5c02\u7528\u306e\u96a0\u3059\u30dc\u30bf\u30f3\u3068\u30c9\u30e9\u30c3\u30b0\u3067\u304d\u308b\u5883\u754c\u304c\u3042\u308a\u3001\u5e45\u306f\u5de6\u30d1\u30cd\u30eb\u3068\u5225\u306b\u899a\u3048\u307e\u3059\u3002", "\u30b3\u30de\u30f3\u30c9\u5165\u529b\u3084\u30bb\u30ea\u30d5\u30fb\u30ab\u30e1\u30e9\u306e\u4e2d\u8eab\u306f\u4f55\u3082\u5909\u308f\u3063\u3066\u3044\u307e\u305b\u3093 \u2014 \u305d\u306e2\u3064\u306e\u6b04\u306e\u7f6e\u304d\u5834\u6240\u304c\u5909\u308f\u3063\u305f\u3060\u3051\u3067\u3059\u3002"]],
         ["ver890", "1\u3064\u306e\u30d5\u30a1\u30a4\u30eb\u306b\u8907\u6570\u306e\u6bb5\u968e\uff08\u30ec\u30a4\u30a2\u30a6\u30c8\u30fb\u539f\u753b\u30fb\u6f14\u51fa\u4fee\u6b63\uff09\u3092\u6b8b\u305b\u308b\u3088\u3046\u306b\u306a\u308a\u307e\u3057\u305f", ["\u7c21\u5358\u8aac\u660e\u66f8\u306e\u4e0a\u306b\u65b0\u3057\u3044\u6b04\u304c\u3067\u304d\u307e\u3057\u305f\u3002\u300c\u8907\u88fd\u300d\u3067\u4eca\u306e\u5185\u5bb9\u3092\u305d\u306e\u307e\u307e\u65b0\u3057\u3044\u6bb5\u968e\u306b\u30b3\u30d4\u30fc\u3057\u3001\u30d7\u30eb\u30c0\u30a6\u30f3\u3067\u5207\u308a\u66ff\u3048\u307e\u3059\u3002\u6bb5\u968e\u540d\u306f\u30d7\u30ed\u30b8\u30a7\u30af\u30c8\u306e\u30b5\u30d5\u30a3\u30c3\u30af\u30b9\u3068\u540c\u3058\u8a9e\u5f59\uff08\u30ec\u30a4\u30a2\u30a6\u30c8 / \u539f\u753b / LO\u6f14\u51fa\u4fee\u6b63 / LO\u4f5c\u76e3\u4fee\u6b63 / \u539f\u753b\u6f14\u51fa\u4fee\u6b63 / \u539f\u753b\u4f5c\u76e3\u4fee\u6b63\uff09\u3067\u3001\u30d7\u30eb\u30c0\u30a6\u30f3\u306e\u4e0b\u534a\u5206\u3067\u4eca\u306e\u6bb5\u968e\u306e\u540d\u524d\u3092\u5909\u3048\u3089\u308c\u307e\u3059\u3002", "\u30bf\u30a4\u30df\u30f3\u30b0\u30fb\u30bb\u30ea\u30d5\u30fb\u30ab\u30e1\u30e9\u30fb\u30d8\u30c3\u30c0\u30fc\u306f\u6bb5\u968e\u3054\u3068\u306b\u5225\u3005\u3067\u3059\u3002\u7528\u7d19\u753b\u50cf\u3068\u30da\u30f3\u30e1\u30e2\u306f\u5168\u6bb5\u968e\u5171\u901a\u306e\u307e\u307e\u3067\u3001\u300c\u30ab\u30e1\u30e9\u2192\u30e1\u30e2\u300d\u3067\u4f5c\u3063\u305f\u30e1\u30e2\u306f\u3069\u306e\u6bb5\u968e\u304c\u66f8\u3044\u305f\u304b\u3092\u899a\u3048\u308b\u3088\u3046\u306b\u306a\u3063\u305f\u306e\u3067\u3001\u6bb5\u968e\u3092\u5207\u308a\u66ff\u3048\u3066\u3082\u4ed6\u306e\u6bb5\u968e\u306e\u30e1\u30e2\u304c\u6d88\u3048\u307e\u305b\u3093\u3002", "\u4fdd\u5b58\u5148\u306f\u3053\u308c\u307e\u3067\u3068\u540c\u3058\u8a2d\u5b9a JSON \u4e00\u3064\u3067\u3001\u300c1\u30ab\u30c3\u30c8 = 1\u30d5\u30a1\u30a4\u30eb\u300d\u306f\u5909\u308f\u308a\u307e\u305b\u3093\u3002\u4ee5\u524d\u306b\u4fdd\u5b58\u3057\u305f\u30d5\u30a1\u30a4\u30eb\u306f\u6bb5\u968e1\u3064\u3068\u3057\u3066\u958b\u304d\u307e\u3059\u3002\u5143\u306b\u623b\u3059\u306f\u6bb5\u968e\u3092\u307e\u305f\u304e\u307e\u305b\u3093 \u2014 \u5207\u308a\u66ff\u3048\u306f\u30d7\u30ed\u30b8\u30a7\u30af\u30c8\u8aad\u8fbc\u3068\u540c\u3058\u6271\u3044\u3067\u3059\u3002", "\u5831\u544a\u6b04\u3082\u7c21\u5358\u8aac\u660e\u66f8\u3068\u540c\u3058\u3088\u3046\u306b\u305f\u305f\u3081\u307e\u3057\u305f\u3002"]],
@@ -4184,6 +4195,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver893", "\ub2e8\uacc4 \uc2ac\ub86f\uc5d0 \uc9c1\uc811\uc785\ub825\u00b7\uc6b0\ud074\ub9ad \uc0ad\uc81c\uac00 \uc0dd\uacbc\uace0, \ub450 \ud328\ub110 \ucd5c\uc18c\ud3ed\uc744 \ud55c\uad6d\uc5b4 \uae30\uc900\uc73c\ub85c \ub2e4\uc2dc \uc7c0\uc2b5\ub2c8\ub2e4", ["\ub2e8\uacc4 \ud504\ub9ac\uc14b\uc774 \uc6d0\ud654(\uae30\ubcf8)\uc640 \uadf8 \uc218\uc815 3\uc885\ub9cc \ub0a8\uc558\uc2b5\ub2c8\ub2e4 \u2014 \ub530\ub85c \uc788\ub358 \ub808\uc774\uc544\uc6c3 \uacc4\uc5f4\uc744 \uc5c6\uc560\uc11c \ud504\ub9ac\uc14b \uc2ac\ub86f\uc774 6\uac1c\uc5d0\uc11c 4\uac1c\ub85c \uc904\uc5c8\uc2b5\ub2c8\ub2e4.", "\u300c\uff0b\u300d \uc2ac\ub86f\uc758 \ub4dc\ub86d\ub2e4\uc6b4\uc5d0 \u300c\uc9c1\uc811\uc785\ub825\u2026\u300d\uc774 \ucd94\uac00\ub3fc \uc6d0\ud558\ub294 \uc774\ub984\uc73c\ub85c \ub2e8\uacc4\ub97c \ub9cc\ub4e4 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \uae30\uc874 \uc2ac\ub86f\uc740 \ub354\ube14\ud074\ub9ad\ud558\uba74 \uc774\ub984\uc744 \ubc14\uafc0 \uc218 \uc788\uc2b5\ub2c8\ub2e4(\uace0\uce58\ub294 \uc21c\uac04 \ubb34\uc870\uac74 \uc9c1\uc811\uc785\ub825 \ucde8\uae09\uc774 \ub429\ub2c8\ub2e4). \uc2ac\ub86f\uc744 \uc6b0\ud074\ub9ad\ud558\uba74 \uc0ad\uc81c \uba54\ub274\uac00 \ub739\ub2c8\ub2e4 \u2014 \ub9c8\uc9c0\ub9c9 \ud558\ub098 \ub0a8\uc740 \ub2e8\uacc4\ub294 \uc0ad\uc81c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.", "\ub450 \ud328\ub110\uc758 \ucd5c\uc18c \ub4dc\ub798\uadf8 \ud3ed\uc744 \ub9cc\ub4e4 \ub54c \uc4f4 \uc5b8\uc5b4 \ud558\ub098\uac00 \uc544\ub2c8\ub77c 4\uac1c \uc5b8\uc5b4 \uc804\ubd80\ub85c \ub2e4\uc2dc \uc7c0\uc2b5\ub2c8\ub2e4 \u2014 \ud55c\uad6d\uc5b4 \ub77c\ubca8\uc774 \uc77c\ubcf8\uc5b4\ub098 \uc601\uc5b4\ubcf4\ub2e4 \uae38\uc5b4\uc11c \uae30\uc874 \ucd5c\uc18c\uac12\uc5d0\uc11c\ub294 \uc798\ub9ac\uace0 \uc788\uc5c8\uc2b5\ub2c8\ub2e4. \ub458 \ub2e4 \uc870\uae08 \ub113\ud614\uc2b5\ub2c8\ub2e4.", "\u300cHide non-Cell commands\u300d\uc640 \ub2e8\ucd95\ud0a4 \uc124\uc815 \ud56d\ubaa9 \uc774\ub984(Brush/Color Cycle\u00b7Eraser \ub4f1)\uc774 \uc5b8\uc5b4\ub97c \ubc14\uafd4\ub3c4 \uc601\uc5b4 \uadf8\ub300\ub85c\uc600\uc2b5\ub2c8\ub2e4 \u2014 \ub458 \ub2e4 \uc5b8\uc5b4\ub97c \ub530\ub77c\uac00\uac8c \uace0\ucce4\uc2b5\ub2c8\ub2e4."]],
         ["ver892", "\uc2dc\ud2b8\uc785\ub825\uc774 \uc624\ub978\ucabd \ud328\ub110\ub85c \ud569\ub958\ud558\uace0, \ub2e8\uacc4\ub294 \ud074\ub9ad\ud558\ub294 \uc2ac\ub86f\uc73c\ub85c, \uc881\uc558\ub358 \ub77c\ubca8\uc5d0\ub3c4 \uc5ec\uc720\uac00 \uc0dd\uacbc\uc2b5\ub2c8\ub2e4", ["\uc2dc\ud2b8\uc785\ub825(\ud14d\uc2a4\ud2b8 \ucee4\ub9e8\ub4dc/CSV) \uce78\uc744 \uc67c\ucabd \ud328\ub110\uc5d0\uc11c \uc624\ub978\ucabd \ud328\ub110\ub85c \uc62e\uaca8 \ub300\uc0ac\ub780\u00b7\uce74\uba54\ub77c\ub780\uacfc \ud569\ucce4\uc2b5\ub2c8\ub2e4 \u2014 \uc785\ub825 \uacc4\uc5f4 \uc138 \uce78\uc774 \uc804\ubd80 \uc624\ub978\ucabd\uc5d0 \ubaa8\uc600\uc2b5\ub2c8\ub2e4.", "\ub2e8\uacc4\uac00 \ub4dc\ub86d\ub2e4\uc6b4 \ub300\uc2e0 \uac00\ub85c\ub85c \ub298\uc5b4\uc120 \uc2ac\ub86f\uc774 \ub410\uc2b5\ub2c8\ub2e4. \uc788\ub294 \ub2e8\uacc4\ub294 \ubc84\ud2bc\uc774\ub77c \ub204\ub974\uba74 \uc804\ud658\ub418\uace0, \uc810\uc120 \u300c\uff0b\u300d\ub97c \ub204\ub974\uba74 \ucf54\ub4dc\ub97c \uace0\ub974\ub294 \uc790\ub9ac\uc5d0\uc11c \ubc14\ub85c \uc0c8 \ub2e8\uacc4\uac00 \ub9cc\ub4e4\uc5b4\uc9d1\ub2c8\ub2e4.", "\uc624\ub978\ucabd \ud328\ub110\uc5d0\uc11c \uc881\uc544\uc838\ub3c4 \uce78 \uc81c\ubaa9\uc774 \ub450 \uc904\ub85c \uc548 \uaebe\uc774\uace0, \ud615\uc2dd \uc608\uc2dc\ub294 \u300c\u2026\u300d\ub85c \uc798\ub9ac\ub294 \ub300\uc2e0 \uc904\ubc14\uafc8\uc73c\ub85c \uc804\uccb4\uac00 \ubcf4\uc785\ub2c8\ub2e4. \uce74\uba54\ub77c \uc608\uc2dc \ubaa9\ub85d\uc740 \ub450 \uc5f4\ub85c \ub098\ub780\ud788 \uc815\ub82c\ub3fc \uc124\uba85\uc774 \ub2e4\uc74c \uc904\ub85c \uc548 \ubc00\ub9bd\ub2c8\ub2e4. \uce74\uba54\ub77c \uc904\uc758 \ubc29\ud5a5/OL \uc120\ud0dd\ub3c4 1~2\uae00\uc790\ub9cc \ub098\uc624\ub294 \uac83\uc774\ub77c \uc791\uac8c \uc904\uc600\uc2b5\ub2c8\ub2e4.", "\uc2dc\ud2b8 \ud234\ubc14\uc758 \ucd9c\ub825 \ubc84\ud2bc\uc774 \uc606 \ub450 \ubc84\ud2bc\uacfc \uac19\uc740 \ud3ed \uc608\uc0b0\uc744 \ubc1b\uc2b5\ub2c8\ub2e4 \u2014 \uc774\uc720 \uc5c6\uc774 \uc14b \uc911 \uac00\uc7a5 \uc881\uc558\ub358 \uac83\uc744 \uace0\ucce4\uc2b5\ub2c8\ub2e4.", "\uc624\ub978\ucabd \ud328\ub110\uc740 \uc704 \uc608\uc2dc\ub4e4\uc774 \uc904\ubc14\uafc8\ub418\uae30 \uc2dc\uc791\ud558\ub294 \uc9c0\uc810\ubcf4\ub2e4 \ub354 \uc881\uac8c\ub294 \ubabb \ub04c\uac8c \ud588\uc2b5\ub2c8\ub2e4."]],
         ["ver891", "\uc0ac\uc774\ub4dc\ubc14 \uacbd\uacc4\ub97c \ub4dc\ub798\uadf8\ub85c \uc870\uc808\ud560 \uc218 \uc788\uace0, \ub300\uc0ac\ub780\u00b7\uce74\uba54\ub77c\ub780\uc774 \uc624\ub978\ucabd \uc0c8 \ud328\ub110\ub85c \uc62e\uaca8\uc84c\uc2b5\ub2c8\ub2e4", ["\uc67c\ucabd \ud328\ub110\uacfc \uc2dc\ud2b8 \ud504\ub9ac\ubdf0\uac00 \ub9cc\ub098\ub294 \uacbd\uacc4\uc120\uc744 \ub4dc\ub798\uadf8\ud558\uba74 \ud3ed\uc774 \ubc14\ub01d\ub2c8\ub2e4 \u2014 \uadf8 \ud3ed\uc740 \uae30\uc5b5\ub429\ub2c8\ub2e4. \uc67c\ucabd \ud328\ub110 \uc804\uccb4\ub97c \uc228\uae30\ub294 \ubc84\ud2bc\uc740 \uadf8\ub300\ub85c\uc785\ub2c8\ub2e4.", "\ub300\uc0ac\ub780\uacfc \uce74\uba54\ub77c\ub780\uc744 \uc67c\ucabd \ud328\ub110\uc5d0\uc11c \ub4e4\uc5b4\ub0b4 \uc624\ub978\ucabd\uc5d0 \uc0c8\ub85c \ub9cc\ub4e0 \ud328\ub110\ub85c \uc62e\uacbc\uc2b5\ub2c8\ub2e4. \uc624\ub978\ucabd \ud328\ub110\ub3c4 \uc790\uae30\ub9cc\uc758 \uc228\uae30\uae30 \ubc84\ud2bc\uacfc \ub4dc\ub798\uadf8 \uac00\ub2a5\ud55c \uacbd\uacc4\ub97c \uac00\uc9c0\uace0, \ud3ed\uc740 \uc67c\ucabd\uacfc \ub530\ub85c \uae30\uc5b5\ub429\ub2c8\ub2e4.", "\ucee4\ub9e8\ub4dc \uc785\ub825\uc774\ub098 \ub300\uc0ac\u00b7\uce74\uba54\ub77c \ub0b4\uc6a9 \uc790\uccb4\ub294 \uc544\ubb34\uac83\ub3c4 \uc548 \ubc14\ub00c\uc5c8\uc2b5\ub2c8\ub2e4 \u2014 \uadf8 \ub450 \uce78\uc774 \uc788\ub358 \uc790\ub9ac\ub9cc \ubc14\ub00c\uc5c8\uc2b5\ub2c8\ub2e4."]],
         ["ver890", "\ud55c \ud30c\uc77c\uc5d0 \uc5ec\ub7ec \ub2e8\uacc4(\ub808\uc774\uc544\uc6c3\u00b7\uc6d0\ud654\u00b7\uc5f0\ucd9c\uc218\uc815)\ub97c \ub0a8\uae38 \uc218 \uc788\uc2b5\ub2c8\ub2e4", ["\uac04\ub2e8\uc124\uba85\uc11c \uc704\uc5d0 \uce78\uc774 \uc0dd\uacbc\uc2b5\ub2c8\ub2e4. \u300c\ubcf5\uc81c\u300d\ub97c \ub204\ub974\uba74 \uc9c0\uae08 \ub0b4\uc6a9\uc774 \uadf8\ub300\ub85c \uc0c8 \ub2e8\uacc4\ub85c \ubcf5\uc0ac\ub418\uace0, \ub4dc\ub86d\ub2e4\uc6b4\uc73c\ub85c \uc624\uac11\ub2c8\ub2e4. \ub2e8\uacc4 \uc774\ub984\uc740 \ud504\ub85c\uc81d\ud2b8 \uc11c\ud53d\uc2a4\uc640 \uac19\uc740 \uc5b4\ud718(\u30ec\u30a4\u30a2\u30a6\u30c8 / \u539f\u753b / LO\u6f14\u51fa\u4fee\u6b63 / LO\u4f5c\u76e3\u4fee\u6b63 / \u539f\u753b\u6f14\u51fa\u4fee\u6b63 / \u539f\u753b\u4f5c\u76e3\u4fee\u6b63)\uc774\uace0, \ub4dc\ub86d\ub2e4\uc6b4 \uc544\ub7ab\ubd80\ubd84\uc5d0\uc11c \uc9c0\uae08 \ub2e8\uacc4\uc758 \uc774\ub984\uc744 \ubc14\uafc9\ub2c8\ub2e4.", "\ud0c0\uc774\ubc0d\u00b7\ub300\uc0ac\u00b7\uce74\uba54\ub77c\u00b7\ud5e4\ub354\ub294 \ub2e8\uacc4\ub9c8\ub2e4 \ub530\ub85c\uc785\ub2c8\ub2e4. \uc6a9\uc9c0 \uc774\ubbf8\uc9c0\uc640 \ud39c \uba54\ubaa8\ub294 \uc804 \ub2e8\uacc4 \uacf5\ud1b5\uc774\uace0, \u300c\uce74\uba54\ub77c\u2192\uba54\ubaa8\u300d\ub85c \ub9cc\ub4e0 \uba54\ubaa8\ub294 \uc5b4\ub290 \ub2e8\uacc4\uac00 \uc37c\ub294\uc9c0\ub97c \uae30\uc5b5\ud558\uac8c \ub3fc\uc11c \ub2e8\uacc4\ub97c \ubc14\uafd4\ub3c4 \ub2e4\ub978 \ub2e8\uacc4 \uba54\ubaa8\uac00 \uc9c0\uc6cc\uc9c0\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.", "\uc800\uc7a5\uc740 \uc9c0\uae08\uacfc \uac19\uc740 \uc124\uc815 JSON \ud55c \uac1c\ub77c \u300c1\ucef7 = 1\ud30c\uc77c\u300d\uc740 \uadf8\ub300\ub85c\uc785\ub2c8\ub2e4. \uc774\uc804\uc5d0 \uc800\uc7a5\ud55c \ud30c\uc77c\uc740 \ub2e8\uacc4 1\uac1c\ub85c \uc5f4\ub9bd\ub2c8\ub2e4. \ub418\ub3cc\ub9ac\uae30\ub294 \ub2e8\uacc4 \uacbd\uacc4\ub97c \ub118\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4 \u2014 \uc804\ud658\uc740 \ud504\ub85c\uc81d\ud2b8 \ubd88\ub7ec\uc624\uae30\uc640 \uac19\uc740 \ucde8\uae09\uc785\ub2c8\ub2e4.", "\ubb38\uc758 \uce78\ub3c4 \uac04\ub2e8\uc124\uba85\uc11c\ucc98\ub7fc \uc811\uc5c8\uc2b5\ub2c8\ub2e4."]],
@@ -4226,6 +4238,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver893", "\u9636\u6bb5\u63d2\u69fd\u65b0\u589e\u4e86\u81ea\u5b9a\u4e49\u8f93\u5165\u548c\u53f3\u952e\u5220\u9664\uff0c\u4e24\u4fa7\u9762\u677f\u7684\u6700\u5c0f\u5bbd\u5ea6\u6309\u97e9\u8bed\u91cd\u65b0\u6d4b\u91cf", ["\u9636\u6bb5\u9884\u8bbe\u73b0\u5728\u53ea\u5269\u539f\u753b\uff08\u57fa\u7840\uff09\u548c\u5b83\u7684\u4e09\u79cd\u4fee\u6b63 \u2014 \u539f\u672c\u72ec\u7acb\u7684\u30ec\u30a4\u30a2\u30a6\u30c8\u7cfb\u5217\u5df2\u53d6\u6d88\uff0c\u9884\u8bbe\u63d2\u69fd\u4ece6\u4e2a\u51cf\u5c11\u52304\u4e2a\u3002", "\u300c\uff0b\u300d\u63d2\u69fd\u7684\u4e0b\u62c9\u83dc\u5355\u65b0\u589e\u4e86\u300c\u81ea\u5b9a\u4e49\u2026\u300d\uff0c\u53ef\u4ee5\u8f93\u5165\u81ea\u5df1\u60f3\u8981\u7684\u9636\u6bb5\u540d\u79f0\u3002\u5df2\u6709\u7684\u63d2\u69fd\u53cc\u51fb\u5373\u53ef\u6539\u540d\uff08\u4e00\u65e6\u7f16\u8f91\u5c31\u56fa\u5b9a\u4e3a\u81ea\u5b9a\u4e49\u540d\u79f0\uff09\u3002\u53f3\u952e\u70b9\u51fb\u63d2\u69fd\u4f1a\u51fa\u73b0\u5220\u9664\u83dc\u5355 \u2014 \u6700\u540e\u4e00\u4e2a\u9636\u6bb5\u65e0\u6cd5\u5220\u9664\u3002", "\u4e24\u4fa7\u9762\u677f\u53ef\u62d6\u52a8\u7684\u6700\u5c0f\u5bbd\u5ea6\uff0c\u4e0d\u518d\u53ea\u6309\u5236\u4f5c\u65f6\u7528\u7684\u8bed\u8a00\u6d4b\u91cf\uff0c\u800c\u662f\u7528\u5168\u90e84\u79cd\u8bed\u8a00\u91cd\u65b0\u6d4b\u8fc7 \u2014 \u97e9\u8bed\u6807\u7b7e\u6bd4\u65e5\u8bed\u6216\u82f1\u8bed\u66f4\u957f\uff0c\u5728\u65e7\u7684\u6700\u5c0f\u503c\u4e0b\u4f1a\u88ab\u622a\u65ad\u3002\u4e24\u4fa7\u90fd\u76f8\u5e94\u653e\u5bbd\u4e86\u4e00\u4e9b\u3002", "\u300cHide non-Cell commands\u300d\u548c\u5feb\u6377\u952e\u8bbe\u7f6e\u7684\u9879\u76ee\u540d\u79f0\uff08Brush/Color Cycle\u3001Eraser \u7b49\uff09\u4e4b\u524d\u65e0\u8bba\u5207\u6362\u5230\u54ea\u79cd\u8bed\u8a00\u90fd\u505c\u7559\u5728\u82f1\u6587 \u2014 \u73b0\u5728\u4e24\u8005\u90fd\u4f1a\u8ddf\u968f\u8bed\u8a00\u53d8\u5316\u3002"]],
         ["ver892", "\u8868\u683c\u8f93\u5165\u5e76\u5165\u53f3\u4fa7\u9762\u677f\uff0c\u9636\u6bb5\u53d8\u6210\u53ef\u70b9\u51fb\u7684\u63d2\u69fd\uff0c\u62e5\u6324\u7684\u6807\u7b7e\u4e5f\u6709\u4e86\u4f59\u91cf", ["\u8868\u683c\u8f93\u5165\uff08\u6587\u672c\u547d\u4ee4/CSV\uff09\u4ece\u5de6\u4fa7\u9762\u677f\u79fb\u5230\u4e86\u53f3\u4fa7\uff0c\u4e0e\u5bf9\u767d\u680f\u3001\u6444\u5f71\u673a\u680f\u5408\u5e76 \u2014 \u4e09\u4e2a\u8f93\u5165\u7c7b\u680f\u76ee\u73b0\u5728\u90fd\u5728\u53f3\u4fa7\u3002", "\u9636\u6bb5\u73b0\u5728\u663e\u793a\u4e3a\u4e00\u6392\u63d2\u69fd\u800c\u4e0d\u662f\u4e0b\u62c9\u83dc\u5355\uff1a\u5df2\u6709\u7684\u9636\u6bb5\u662f\u6309\u94ae\uff0c\u70b9\u51fb\u5373\u53ef\u5207\u6362\uff1b\u865a\u7ebf\u300c\uff0b\u300d\u63d2\u69fd\u70b9\u51fb\u540e\u53ef\u4ee5\u5f53\u573a\u9009\u62e9\u4ee3\u7801\u5e76\u521b\u5efa\u65b0\u9636\u6bb5\u3002", "\u5728\u53f3\u4fa7\u9762\u677f\u4e2d\uff0c\u680f\u76ee\u6807\u9898\u53d8\u7a84\u65f6\u4e0d\u518d\u6298\u6210\u4e24\u884c\uff0c\u683c\u5f0f\u793a\u4f8b\u4e5f\u4e0d\u518d\u88ab\u300c\u2026\u300d\u622a\u65ad\uff0c\u800c\u662f\u6362\u884c\u663e\u793a\u5b8c\u6574\u5185\u5bb9\u3002\u6444\u5f71\u673a\u793a\u4f8b\u5217\u8868\u6574\u9f50\u6392\u6210\u4e24\u5217\uff0c\u8bf4\u660e\u6587\u5b57\u4e0d\u518d\u88ab\u6324\u5230\u4e0b\u4e00\u884c\u3002\u6444\u5f71\u673a\u884c\u7684\u65b9\u5411/OL \u9009\u62e9\u5668\u4e5f\u7f29\u5c0f\u4e86\uff0c\u56e0\u4e3a\u5b83\u53ea\u9700\u8981\u663e\u793a1~2\u4e2a\u5b57\u7b26\u3002", "\u5de5\u4f5c\u8868\u5de5\u5177\u680f\u7684\u5bfc\u51fa\u6309\u94ae\u73b0\u5728\u548c\u65c1\u8fb9\u4e24\u4e2a\u6309\u94ae\u62e5\u6709\u76f8\u540c\u7684\u5bbd\u5ea6\u9884\u7b97 \u2014 \u4e4b\u524d\u5b83\u83ab\u540d\u5176\u5999\u662f\u4e09\u8005\u4e2d\u6700\u7a84\u7684\u3002", "\u53f3\u4fa7\u9762\u677f\u4e0d\u80fd\u518d\u62d6\u5f97\u6bd4\u793a\u4f8b\u5f00\u59cb\u6362\u884c\u7684\u5bbd\u5ea6\u66f4\u7a84\u4e86\u3002"]],
         ["ver891", "\u4fa7\u8fb9\u680f\u8fb9\u754c\u53ef\u4ee5\u62d6\u52a8\u8c03\u6574\u4e86\uff0c\u5bf9\u767d\u680f\u548c\u6444\u5f71\u673a\u680f\u79fb\u5230\u4e86\u53f3\u4fa7\u65b0\u9762\u677f", ["\u62d6\u52a8\u5de6\u4fa7\u9762\u677f\u4e0e\u5de5\u4f5c\u8868\u9884\u89c8\u4ea4\u754c\u7684\u90a3\u6761\u7ebf\u53ef\u4ee5\u8c03\u6574\u5bbd\u5ea6 \u2014 \u5bbd\u5ea6\u4f1a\u88ab\u8bb0\u4f4f\u3002\u539f\u6765\u9690\u85cf\u6574\u4e2a\u5de6\u4fa7\u9762\u677f\u7684\u6309\u94ae\u7528\u6cd5\u4e0d\u53d8\u3002", "\u5bf9\u767d\u680f\u548c\u6444\u5f71\u673a\u680f\u4ece\u5de6\u4fa7\u9762\u677f\u79fb\u5230\u4e86\u53f3\u4fa7\u65b0\u5efa\u7684\u9762\u677f\u3002\u53f3\u4fa7\u9762\u677f\u4e5f\u6709\u81ea\u5df1\u7684\u9690\u85cf\u6309\u94ae\u548c\u53ef\u62d6\u52a8\u8fb9\u754c\uff0c\u5bbd\u5ea6\u4e0e\u5de6\u4fa7\u5206\u5f00\u8bb0\u5fc6\u3002", "\u547d\u4ee4\u8f93\u5165\u3001\u5bf9\u767d\u548c\u6444\u5f71\u673a\u7684\u5185\u5bb9\u672c\u8eab\u6ca1\u6709\u4efb\u4f55\u53d8\u5316 \u2014 \u53ea\u662f\u8fd9\u4e24\u4e2a\u680f\u76ee\u6240\u5728\u7684\u4f4d\u7f6e\u53d8\u4e86\u3002"]],
         ["ver890", "\u4e00\u4e2a\u6587\u4ef6\u53ef\u4ee5\u4fdd\u7559\u591a\u4e2a\u9636\u6bb5\uff08\u5e03\u5c40\u30fb\u539f\u753b\u30fb\u6f14\u51fa\u4fee\u6b63\uff09", ["\u7b80\u660e\u8bf4\u660e\u4e0a\u65b9\u65b0\u589e\u4e00\u680f\u3002\u70b9\u300c\u590d\u5236\u300d\u4f1a\u628a\u5f53\u524d\u5185\u5bb9\u539f\u6837\u590d\u5236\u5230\u65b0\u9636\u6bb5\uff0c\u4e0b\u62c9\u83dc\u5355\u7528\u4e8e\u5207\u6362\u3002\u9636\u6bb5\u540d\u79f0\u4f7f\u7528\u4e0e\u9879\u76ee\u540e\u7f00\u76f8\u540c\u7684\u8bcd\u6c47\uff08\u30ec\u30a4\u30a2\u30a6\u30c8 / \u539f\u753b / LO\u6f14\u51fa\u4fee\u6b63 / LO\u4f5c\u76e3\u4fee\u6b63 / \u539f\u753b\u6f14\u51fa\u4fee\u6b63 / \u539f\u753b\u4f5c\u76e3\u4fee\u6b63\uff09\uff0c\u4e0b\u62c9\u83dc\u5355\u4e0b\u534a\u90e8\u5206\u53ef\u91cd\u547d\u540d\u5f53\u524d\u9636\u6bb5\u3002", "\u65f6\u95f4\u30fb\u53f0\u8bcd\u30fb\u6444\u5f71\u30fb\u8868\u5934\u6bcf\u4e2a\u9636\u6bb5\u5404\u81ea\u72ec\u7acb\u3002\u7eb8\u5f20\u56fe\u50cf\u548c\u624b\u5199\u5907\u6ce8\u4ecd\u4e3a\u5168\u9636\u6bb5\u5171\u7528\uff1b\u300c\u6444\u5f71\u2192\u5907\u6ce8\u300d\u751f\u6210\u7684\u5907\u6ce8\u73b0\u5728\u4f1a\u8bb0\u4f4f\u662f\u54ea\u4e2a\u9636\u6bb5\u5199\u7684\uff0c\u56e0\u6b64\u5207\u6362\u9636\u6bb5\u4e0d\u518d\u6e05\u9664\u5176\u4ed6\u9636\u6bb5\u7684\u5907\u6ce8\u3002", "\u4fdd\u5b58\u4ecd\u7136\u662f\u540c\u4e00\u4e2a\u8bbe\u7f6e JSON\uff0c\u300c1\u4e2a\u955c\u5934 = 1\u4e2a\u6587\u4ef6\u300d\u4e0d\u53d8\u3002\u65e7\u6587\u4ef6\u4f1a\u4ee5\u5355\u4e00\u9636\u6bb5\u6253\u5f00\u3002\u64a4\u9500\u4e0d\u4f1a\u8de8\u8d8a\u9636\u6bb5 \u2014 \u5207\u6362\u7684\u5904\u7406\u65b9\u5f0f\u4e0e\u8bfb\u53d6\u9879\u76ee\u76f8\u540c\u3002", "\u53cd\u9988\u680f\u4e5f\u50cf\u7b80\u660e\u8bf4\u660e\u4e00\u6837\u6536\u8d77\u4e86\u3002"]],
@@ -5257,7 +5270,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         title:'ショートカット設定',
         hint:'',
         none:'未設定', pressKey:'キー入力', clear:'解除', clearAll:'すべて解除', suggested:'初期値に戻す',
-        labels:{ brushCycle:'Brush / Color Cycle', eraserToggle:'Eraser', sizeDown:'Brush Size Down', sizeUp:'Brush Size Up', memoOff:'Memo Mode OFF' },
+        labels:{ brushCycle:'ブラシ／色 切替', eraserToggle:'消しゴム', sizeDown:'ブラシサイズ ダウン', sizeUp:'ブラシサイズ アップ', memoOff:'メモモード OFF' },
         desc:{
           brushCycle:'OFF → Memo brush。Brush中は次の色へ。最後の色の次は最初の色へ戻る。',
           eraserToggle:'OFF → Memo eraser。Eraser中はEraserを維持する。',
@@ -5270,7 +5283,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         title:'단축키 설정',
         hint:'',
         none:'미지정', pressKey:'키 입력', clear:'해제', clearAll:'전체 해제', suggested:'기본값으로',
-        labels:{ brushCycle:'Brush / Color Cycle', eraserToggle:'Eraser', sizeDown:'Brush Size Down', sizeUp:'Brush Size Up', memoOff:'Memo Mode OFF' },
+        labels:{ brushCycle:'브러시/색상 전환', eraserToggle:'지우개', sizeDown:'브러시 크기 축소', sizeUp:'브러시 크기 확대', memoOff:'메모 모드 OFF' },
         desc:{
           brushCycle:'OFF → Memo brush. Brush 중에는 다음 색. 마지막 색 다음에는 첫 색으로 돌아간다.',
           eraserToggle:'OFF → Memo eraser. Eraser 중에는 Eraser를 유지한다.',
@@ -5283,7 +5296,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         title:'快捷键设置',
         hint:'',
         none:'未设置', pressKey:'按键', clear:'清除', clearAll:'全部清除', suggested:'恢复默认',
-        labels:{ brushCycle:'Brush / Color Cycle', eraserToggle:'Eraser', sizeDown:'Brush Size Down', sizeUp:'Brush Size Up', memoOff:'Memo Mode OFF' },
+        labels:{ brushCycle:'画笔/颜色切换', eraserToggle:'橡皮擦', sizeDown:'画笔尺寸缩小', sizeUp:'画笔尺寸放大', memoOff:'备注模式 OFF' },
         desc:{
           brushCycle:'OFF → Memo brush。Brush ON 时切换到下一颜色，最后颜色之后回到第一颜色。',
           eraserToggle:'OFF → Memo eraser。Eraser ON 时保持 Eraser。',
@@ -21364,31 +21377,42 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     // 그릇은 되돌리기 스냅샷(getContentSnapshot)을 그대로 쓴다. 담는 경계 — 용지 이미지·펜 메모·尺 을
     // 뺀 것 — 가 「メモや用紙画像は全段階共通」과 같은 선이기 때문이다. 활성 단계의 내용은 DOM 이
     // 정본이라 content 에 담지 않고, 전환·저장 직전에만 찍어 넣는다.
-    // 코드는 소문자로 저장하고 표시는 일본어로 고정한다 — moart 의 프로젝트 서픽스(LO/G/LE/LS/GE/GS)와
-    // 같은 어휘이고, 실무 파일명이 소문자(_lo _le)이기 때문이다. 순서는 공정 순서다.
+    // 코드는 소문자로 저장하고 표시는 일본어로 고정한다 — moart 의 프로젝트 서픽스와 같은 어휘다.
+    // LO/원화 분기는 폐지했다(2026-08-16, 사용자 지시) — 原画 하나만 두고 演出・監督・作監 세
+    // 수정 역할만 얹는다. code:'custom' 은 프리셋 밖 — customLabel 에 손으로 쓴 이름을 담는다.
     const SHEET_STAGE_CODES = [
-      { code:'lo', label:'レイアウト' },
-      { code:'le', label:'LO演出修正' },
-      { code:'ls', label:'LO作監修正' },
       { code:'g',  label:'原画' },
       { code:'ge', label:'原画演出修正' },
+      { code:'gk', label:'原画監督修正' },
       { code:'gs', label:'原画作監修正' }
     ];
+    const SHEET_STAGE_DEFAULT_CODE = 'g';
+    const SHEET_STAGE_CUSTOM_CODE = 'custom';
+    const SHEET_STAGE_NAME_MAX = 24;
 
     function normalizeSheetStageCode(code) {
       const raw = String(code == null ? '' : code).trim().toLowerCase();
-      return SHEET_STAGE_CODES.some(function(item){ return item.code === raw; }) ? raw : 'lo';
+      if (raw === SHEET_STAGE_CUSTOM_CODE) return raw;
+      return SHEET_STAGE_CODES.some(function(item){ return item.code === raw; }) ? raw : SHEET_STAGE_DEFAULT_CODE;
     }
 
-    function getSheetStageLabel(code) {
-      const found = SHEET_STAGE_CODES.find(function(item){ return item.code === code; });
-      return found ? found.label : String(code == null ? '' : code);
+    function getSheetStageLabel(stage) {
+      if (!stage) return '';
+      if (stage.code === SHEET_STAGE_CUSTOM_CODE) return String(stage.customLabel || '');
+      const found = SHEET_STAGE_CODES.find(function(item){ return item.code === stage.code; });
+      return found ? found.label : String(stage.code == null ? '' : stage.code);
     }
 
     function makeSheetStageId() {
       return 'stage-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 7);
     }
 
+    function makeDefaultSheetStage() {
+      return { id:makeSheetStageId(), code:SHEET_STAGE_DEFAULT_CODE, customLabel:'', content:null };
+    }
+
+    // 프리셋은 공정 순서, custom 은 전부 순위 밖(99)이라 뒤로 밀리고 서로는 만든 순서를 지킨다
+    // (Array#sort 는 ES2019+ 로 안정 정렬이 보장된다).
     function sortSheetStages() {
       const rank = new Map(SHEET_STAGE_CODES.map(function(item, index){ return [item.code, index]; }));
       state.stages.sort(function(a, b){
@@ -21400,7 +21424,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     function getSheetStages() {
       if (!Array.isArray(state.stages)) state.stages = [];
       if (!state.stages.length) {
-        state.stages = [{ id:makeSheetStageId(), code:'lo', content:null }];
+        state.stages = [makeDefaultSheetStage()];
         state.activeStageId = state.stages[0].id;
       }
       if (!state.stages.some(function(item){ return item && item.id === state.activeStageId; })) {
@@ -21419,8 +21443,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return SHEET_STAGE_CODES.filter(function(item){ return !used.has(item.code); });
     }
 
-    // 채워진 슬롯(있는 단계, 누르면 전환) + 점선 "+" 슬롯(빈 자리, 누르면 select 로 바뀌어
-    // 코드를 고른다) 을 한 줄에 그린다. 항상 6칸 — 있는 단계 수 + 남은 코드 수 = 6.
+    // 채워진 슬롯(있는 단계 — 클릭=전환, 더블클릭=이름수정, 우클릭=삭제) + 점선 "+" 슬롯(빈 자리,
+    // 클릭하면 select 로 바뀌어 프리셋이나 "직접입력"을 고른다) 을 한 줄에 그린다. "+" 는 남은
+    // 프리셋 수만큼 뜨되, 프리셋이 다 찼어도 최소 1개는 남겨 둔다 — custom 은 개수 제한이 없다.
     function refreshSheetStageUI() {
       if (!stageSlotRowEl) return;
       const doc = uiTexts[state.lang] || uiTexts.en;
@@ -21432,12 +21457,15 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'stage-slot filled' + (active && item.id === active.id ? ' active' : '');
-        btn.textContent = getSheetStageLabel(item.code);
+        btn.textContent = getSheetStageLabel(item);
         btn.setAttribute('aria-pressed', active && item.id === active.id ? 'true' : 'false');
         btn.addEventListener('click', function(){ switchSheetStage(item.id); });
+        btn.addEventListener('dblclick', function(event){ event.preventDefault(); beginRenameStageSlot(btn, item); });
+        btn.addEventListener('contextmenu', function(event){ openStageSlotContextMenu(event, item.id); });
         stageSlotRowEl.appendChild(btn);
       });
-      unused.forEach(function(){
+      const emptyCount = Math.max(1, unused.length);
+      for (let i = 0; i < emptyCount; i++) {
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'stage-slot empty';
@@ -21445,7 +21473,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         btn.setAttribute('aria-label', doc.stageAddSlotLabel || uiTexts.en.stageAddSlotLabel);
         btn.addEventListener('click', function(){ openStageSlotPicker(btn); });
         stageSlotRowEl.appendChild(btn);
-      });
+      }
     }
 
     // 전환은 프로젝트 통째 로드와 같은 취급이다(q2=A) — 히스토리를 새로 잡아 단계를 건너뛰는 undo 를
@@ -21463,16 +21491,16 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       render();
     }
 
-    // "+" 슬롯에서 고른 code 로 새 단계를 만든다 — 내용은 지금 활성 단계의 복제본이다.
-    function createSheetStageWithCode(code) {
+    // 지금 활성 단계를 복제해 새 단계를 만들고 그리로 전환한다 — 프리셋/custom 공용.
+    function pushNewSheetStage(code, customLabel) {
       const list = getSheetStages();
       const active = getActiveSheetStage();
-      const next = normalizeSheetStageCode(code);
-      if (!active || list.some(function(item){ return item.code === next; })) { refreshSheetStageUI(); return; }
+      if (!active) { refreshSheetStageUI(); return; }
       active.content = getContentSnapshot();
       const made = {
         id:makeSheetStageId(),
-        code:next,
+        code:code,
+        customLabel:code === SHEET_STAGE_CUSTOM_CODE ? String(customLabel || '') : '',
         content:JSON.parse(JSON.stringify(active.content))
       };
       list.push(made);
@@ -21484,12 +21512,26 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       render();
     }
 
-    // "+" 슬롯을 그 자리에서 <select> 로 바꿔치기한다 — 고르면 즉시 단계를 만들고,
-    // 아무것도 안 고르고 포커스를 잃으면 refreshSheetStageUI() 가 다시 "+" 로 되돌린다.
+    // "+" 슬롯에서 고른 프리셋 code 로 새 단계를 만든다.
+    function createSheetStageWithCode(code) {
+      const next = normalizeSheetStageCode(code);
+      if (next === SHEET_STAGE_CUSTOM_CODE) { refreshSheetStageUI(); return; } // 직접입력은 별도 경로
+      if (getSheetStages().some(function(item){ return item.code === next; })) { refreshSheetStageUI(); return; }
+      pushNewSheetStage(next, '');
+    }
+
+    function createSheetStageWithCustomLabel(label) {
+      const trimmed = String(label || '').trim().slice(0, SHEET_STAGE_NAME_MAX);
+      if (!trimmed) { refreshSheetStageUI(); return; }
+      pushNewSheetStage(SHEET_STAGE_CUSTOM_CODE, trimmed);
+    }
+
+    // "+" 슬롯을 그 자리에서 <select> 로 바꿔치기한다 — 프리셋을 고르면 즉시 만들고, "직접입력"을
+    // 고르면 텍스트 입력으로 한 번 더 바뀐다. 아무것도 안 고르고 포기하면 "+" 로 되돌아간다.
     function openStageSlotPicker(slotBtn) {
       const doc = uiTexts[state.lang] || uiTexts.en;
       const unused = getUnusedSheetStageCodes();
-      if (!unused.length || !slotBtn || !slotBtn.parentNode) return;
+      if (!slotBtn || !slotBtn.parentNode) return;
       const picker = document.createElement('select');
       picker.className = 'stage-slot-picker';
       picker.setAttribute('aria-label', doc.stageAddSlotLabel || uiTexts.en.stageAddSlotLabel);
@@ -21505,10 +21547,15 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         option.textContent = item.label;
         picker.appendChild(option);
       });
+      const customOption = document.createElement('option');
+      customOption.value = SHEET_STAGE_CUSTOM_CODE;
+      customOption.textContent = doc.stageCustomOption || uiTexts.en.stageCustomOption;
+      picker.appendChild(customOption);
       let settled = false;
       picker.addEventListener('change', function(){
         settled = true;
-        createSheetStageWithCode(picker.value);
+        if (picker.value === SHEET_STAGE_CUSTOM_CODE) beginCreateCustomStage(picker);
+        else createSheetStageWithCode(picker.value);
       });
       picker.addEventListener('blur', function(){
         if (!settled) refreshSheetStageUI(); // 아무것도 안 고르고 포기 — 다시 "+" 로
@@ -21518,6 +21565,117 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (typeof picker.showPicker === 'function') {
         try { picker.showPicker(); } catch (err) {} // 지원 안 하면 클릭/키보드로도 열린다
       }
+    }
+
+    // select 에서 "직접입력"을 고른 뒤 — 그 자리를 다시 텍스트 입력으로 바꾼다.
+    function beginCreateCustomStage(pickerEl) {
+      if (!pickerEl || !pickerEl.parentNode) return;
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'stage-slot-picker';
+      input.maxLength = SHEET_STAGE_NAME_MAX;
+      let settled = false;
+      function commit(){
+        settled = true;
+        createSheetStageWithCustomLabel(input.value);
+      }
+      input.addEventListener('keydown', function(event){
+        if (event.key === 'Enter') { event.preventDefault(); commit(); }
+        else if (event.key === 'Escape') { event.preventDefault(); settled = true; refreshSheetStageUI(); }
+      });
+      input.addEventListener('blur', function(){ if (!settled) commit(); });
+      pickerEl.replaceWith(input);
+      input.focus();
+    }
+
+    // 채워진 슬롯을 더블클릭 — 그 자리가 지금 이름이 채워진 텍스트 입력으로 바뀐다. 확정하면
+    // 무조건 custom 이 된다(타이핑한 문자열이 우연히 프리셋 라벨과 같아도 매칭하지 않는다 —
+    // 라벨이 언어별로 안 달라 문제는 없지만, 예측 가능성이 코드 매칭보다 우선한다).
+    function beginRenameStageSlot(slotBtn, stage) {
+      if (!slotBtn || !slotBtn.parentNode || !stage) return;
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'stage-slot-picker';
+      input.maxLength = SHEET_STAGE_NAME_MAX;
+      input.value = getSheetStageLabel(stage);
+      let settled = false;
+      function commit(){
+        settled = true;
+        const trimmed = input.value.trim().slice(0, SHEET_STAGE_NAME_MAX);
+        if (trimmed) {
+          stage.code = SHEET_STAGE_CUSTOM_CODE;
+          stage.customLabel = trimmed;
+          sortSheetStages();
+        }
+        refreshSheetStageUI();
+      }
+      input.addEventListener('keydown', function(event){
+        if (event.key === 'Enter') { event.preventDefault(); commit(); }
+        else if (event.key === 'Escape') { event.preventDefault(); settled = true; refreshSheetStageUI(); }
+      });
+      input.addEventListener('blur', function(){ if (!settled) commit(); });
+      slotBtn.replaceWith(input);
+      input.focus();
+      input.select();
+    }
+
+    // ── 우클릭 삭제 메뉴 — 뜨는 모양은 text-memo-context-menu 를 그대로 재사용한다 ──────
+    function closeStageSlotContextMenu() {
+      const active = state.stageSlotContextMenu;
+      if (active && active.el && active.el.parentNode) active.el.parentNode.removeChild(active.el);
+      state.stageSlotContextMenu = null;
+    }
+
+    // 마지막 하나 남은 단계는 못 지운다 — getSheetStages() 의 "비면 하나 만든다" 안전망과
+    // 이중으로 막는다(사용자가 실수로 유일한 단계를 지워 콘텐츠가 통째로 빈 채 시작되는 것 방지).
+    function deleteSheetStage(stageId) {
+      const list = getSheetStages();
+      if (list.length <= 1) { refreshSheetStageUI(); return; }
+      const idx = list.findIndex(function(item){ return item.id === stageId; });
+      if (idx === -1) { refreshSheetStageUI(); return; }
+      const wasActive = state.activeStageId === stageId;
+      list.splice(idx, 1);
+      if (wasActive) {
+        const next = list[0];
+        state.activeStageId = next.id;
+        if (next.content) applyContentSnapshot(next.content);
+        initContentHistory();
+      }
+      refreshSheetStageUI();
+      if (wasActive) render();
+    }
+
+    function openStageSlotContextMenu(event, stageId) {
+      if (!event) return;
+      event.preventDefault();
+      event.stopPropagation();
+      closeStageSlotContextMenu();
+      const doc = uiTexts[state.lang] || uiTexts.en;
+      const canDelete = getSheetStages().length > 1;
+      const menu = document.createElement('div');
+      menu.className = 'text-memo-context-menu';
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'danger';
+      btn.textContent = doc.stageDeleteBtn || uiTexts.en.stageDeleteBtn;
+      if (!canDelete) {
+        btn.disabled = true;
+        btn.title = doc.stageDeleteLastHint || uiTexts.en.stageDeleteLastHint;
+      }
+      btn.addEventListener('pointerdown', function(e){ e.preventDefault(); e.stopPropagation(); });
+      btn.addEventListener('click', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        closeStageSlotContextMenu();
+        if (canDelete) deleteSheetStage(stageId);
+      });
+      menu.appendChild(btn);
+      document.body.appendChild(menu);
+      const menuW = menu.offsetWidth || 140;
+      const menuH = menu.offsetHeight || 44;
+      menu.style.left = clampNumber(Number(event.clientX || 0) + 4, 4, Math.max(4, window.innerWidth - menuW - 4)) + 'px';
+      menu.style.top = clampNumber(Number(event.clientY || 0) + 4, 4, Math.max(4, window.innerHeight - menuH - 4)) + 'px';
+      state.stageSlotContextMenu = { el:menu, stageId:stageId };
     }
 
     function collectSheetStagesForSave() {
@@ -21530,6 +21688,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           return {
             id:item.id,
             code:item.code,
+            customLabel:item.code === SHEET_STAGE_CUSTOM_CODE ? String(item.customLabel || '') : '',
             content:item.content ? JSON.parse(JSON.stringify(item.content)) : null
           };
         })
@@ -21542,15 +21701,17 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const raw = payload && payload.stages;
       const rawList = raw && Array.isArray(raw.list) ? raw.list : [];
       if (!rawList.length) {
-        state.stages = [{ id:makeSheetStageId(), code:'lo', content:null }];
+        state.stages = [makeDefaultSheetStage()];
         state.activeStageId = state.stages[0].id;
         refreshSheetStageUI();
         return;
       }
       state.stages = rawList.map(function(item){
+        const code = normalizeSheetStageCode(item && item.code);
         return {
           id:String(item && item.id || makeSheetStageId()),
-          code:normalizeSheetStageCode(item && item.code),
+          code:code,
+          customLabel:code === SHEET_STAGE_CUSTOM_CODE ? String((item && item.customLabel) || '') : '',
           content:item && item.content && typeof item.content === 'object' ? JSON.parse(JSON.stringify(item.content)) : null
         };
       });
@@ -25195,6 +25356,12 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (!active || !active.el) return;
       if (active.el.contains(event.target)) return;
       closeTextMemoContextMenu();
+    }, true);
+    document.addEventListener('pointerdown', function(event){
+      const active = state.stageSlotContextMenu;
+      if (!active || !active.el) return;
+      if (active.el.contains(event.target)) return;
+      closeStageSlotContextMenu();
     }, true);
     document.addEventListener('pointerdown', function(event){
       const active = state.serifuRangeContextMenu;
