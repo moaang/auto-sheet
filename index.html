@@ -2701,6 +2701,8 @@
               <option value="png" selected>PNG</option>
               <option value="jpg">JPG</option>
               <option value="psd">PSD</option>
+              <option value="xdts">XDTS</option>
+              <option value="tdts">TDTS</option>
             </select>
             <button id="chooseExportDirBtn" class="toolbar-btn with-icon" type="button"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3.5 7A1.5 1.5 0 0 1 5 5.5h4l2 2.5h8A1.5 1.5 0 0 1 20.5 9.5V17A1.5 1.5 0 0 1 19 18.5H5A1.5 1.5 0 0 1 3.5 17Z"/></svg><span data-ui-text="chooseExportDirBtn">保存先</span></button>
             <button id="downloadAllBtn" class="toolbar-btn with-icon primary" type="button"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 4v11m0 0 4.5-4.5M12 15 7.5 10.5M5 20h14"/></svg><span data-ui-text="downloadAllBtn">書き出し</span></button>
@@ -2926,7 +2928,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '898';
+    const APP_VERSION = '899';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -4114,6 +4116,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver899", "Export the sheet as XDTS or TDTS, and read TDTS files", ["The export format menu (PNG / JPG / PSD) now also offers XDTS and TDTS. XDTS is CELSYS's open timesheet exchange format that CLIP STUDIO, OpenToonz and Toei's digital timesheet all read; TDTS is the native save file of Toei Animation's Digital Timesheet. The drawing columns are written as one file (timing, holds, empty frames and inbetween dots included). The TDTS writer follows a real production .tdts (version 7) field for field: the dialog column as speaker + line with the continuation marker on every held frame, the camera column as one text per camera work, this sheet's text memos into the direction field, the author into operatorName. Repeat and wavy marks have no vocabulary in either format and are written as empty frames with a status note.", "Dropping a .tdts onto the sheet loads it like an XDTS: drawing columns, plus the dialog and camera columns, episode / cut, author, duration, and the direction memo (placed as a text memo on page 1). Whether Toei's Windows app accepts every file written here has not been verified yet."]],
         ["ver898", "The quick guide now names the actual export button (\u66f8\u304d\u51fa\u3057) instead of a name it no longer has", ["Step 3 of the quick guide still said \u300c\u51fa\u529b\u300d (Output) button \u2014 that button was renamed to \u300c\u66f8\u304d\u51fa\u3057\u300d (Export) a while back, so the guide was pointing at a button that no longer existed under that name. Fixed to match what's actually on screen."]],
         ["ver897", "Stage presets are back to four \u2014 just without \u300c\u539f\u753b\u300d glued to the front of the revision names", ["\u6f14\u51fa\u4fee\u6b63 / \u76e3\u7763\u4fee\u6b63 / \u4f5c\u76e3\u4fee\u6b63 are ready-made choices again in the \u300c\uff0b\u300d menu, alongside \u539f\u753b. Last update dropped them outright; that went further than intended \u2014 the actual problem was only that they were named \u539f\u753b\u6f14\u51fa\u4fee\u6b63 etc., which assumes the base is \u539f\u753b when it could just as easily be \u30ec\u30a4\u30a2\u30a6\u30c8. Dropping the prefix fixes that without losing the shortcuts.", "Menu order is \u539f\u753b \u2192 \u6f14\u51fa\u4fee\u6b63 \u2192 \u76e3\u7763\u4fee\u6b63 \u2192 \u4f5c\u76e3\u4fee\u6b63 \u2192 Custom\u2026, matching the order it was originally shown in."]],
         ["ver896", "Stage presets are down to just \u300c\u539f\u753b\u300d \u2014 everything else is typed", ["The \u300c\uff0b\u300d menu no longer lists \u539f\u753b\u6f14\u51fa\u4fee\u6b63 / \u539f\u753b\u76e3\u7763\u4fee\u6b63 / \u539f\u753b\u4f5c\u76e3\u4fee\u6b63 as ready-made choices. Layout can go through the same three revision passes as \u539f\u753b, so listing them only for one side and not the other was the wrong call \u2014 both now go through \u300cCustom\u2026\u300d instead.", "The menu is just \u539f\u753b and Custom now. Type whatever the stage actually is."]],
@@ -4162,6 +4165,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver899", "シートを XDTS / TDTS で書き出し、TDTS を読み込めるように", ["書き出し形式（PNG / JPG / PSD）に XDTS と TDTS を追加しました。XDTS は CELSYS の公開タイムシート交換形式で、CLIP STUDIO・OpenToonz・東映のデジタルタイムシートが読み込めます。TDTS は東映アニメーション デジタルタイムシート自身の保存ファイルです。原画欄の内容（タイミング・ホールド・空欄・中割の点）を1つのファイルに書き出します。TDTS の書き出しは実際の制作ファイル（version 7）を項目ごとに写しています：台詞欄は話者＋台詞を先頭コマに置き続くコマは継続記号、カメラ欄はカメラワークごとに1つの文字列、シート上のテキストメモは演出指示欄へ、作業者名は operatorName へ。リピートと波線はどちらの形式にも語彙が無いため空欄として書き出し、ステータスに表示します。", ".tdts をシートにドラッグ＆ドロップすると XDTS と同様に読み込みます：原画欄に加えて台詞欄・カメラ欄、話数・カット、作業者、尺、演出指示（1ページ目のテキストメモとして配置）。東映の Windows アプリがここで書いた全ファイルを受け入れるかは未確認です。"]],
         ["ver898", "\u7c21\u5358\u8aac\u660e\u66f8\u304c\u3001\u3082\u3046\u7121\u3044\u540d\u524d\u3067\u306f\u306a\u304f\u5b9f\u969b\u306e\u66f8\u304d\u51fa\u3057\u30dc\u30bf\u30f3\u3092\u6307\u3059\u3088\u3046\u306b\u306a\u308a\u307e\u3057\u305f", ["\u7c21\u5358\u8aac\u660e\u66f8\u306e\u30b9\u30c6\u30c3\u30d73\u304c\u300c\u51fa\u529b\u300d\u30dc\u30bf\u30f3\u306e\u307e\u307e\u3067\u3057\u305f\u304c\u3001\u305d\u306e\u30dc\u30bf\u30f3\u306f\u4ee5\u524d\u300c\u66f8\u304d\u51fa\u3057\u300d\u306b\u540d\u524d\u304c\u5909\u308f\u3063\u3066\u3044\u305f\u305f\u3081\u3001\u3082\u3046\u5b58\u5728\u3057\u306a\u3044\u540d\u524d\u3092\u6848\u5185\u3057\u3066\u3044\u307e\u3057\u305f\u3002\u5b9f\u969b\u306e\u753b\u9762\u3068\u5408\u3046\u3088\u3046\u306b\u76f4\u3057\u307e\u3057\u305f\u3002"]],
         ["ver897", "\u6bb5\u968e\u30d7\u30ea\u30bb\u30c3\u30c8\u304c4\u3064\u306b\u623b\u308a\u307e\u3057\u305f \u2014 \u4fee\u6b63\u306e\u540d\u524d\u304b\u3089\u300c\u539f\u753b\u300d\u3092\u5916\u3057\u305f\u3060\u3051\u3067\u3059", ["\u6f14\u51fa\u4fee\u6b63\u30fb\u76e3\u7763\u4fee\u6b63\u30fb\u4f5c\u76e3\u4fee\u6b63\u304c\u300c\uff0b\u300d\u30e1\u30cb\u30e5\u30fc\u306b\u307e\u305f\u539f\u753b\u3068\u4e26\u3093\u3067\u51fa\u308b\u3088\u3046\u306b\u306a\u308a\u307e\u3057\u305f\u3002\u524d\u56de\u306e\u66f4\u65b0\u3067\u3053\u306e3\u3064\u3054\u3068\u5916\u3057\u305f\u306e\u306f\u3084\u308a\u904e\u304e\u3067\u3001\u5b9f\u969b\u306e\u554f\u984c\u306f\u540d\u524d\u304c\u300c\u539f\u753b\u6f14\u51fa\u4fee\u6b63\u300d\u306a\u3069\u306b\u306a\u3063\u3066\u3044\u3066\u539f\u753b\u524d\u63d0\u306b\u306a\u3063\u3066\u3044\u305f\u3053\u3068\u3067\u3057\u305f\uff08\u30ec\u30a4\u30a2\u30a6\u30c8\u3082\u540c\u3058\u4fee\u6b63\u3092\u901a\u308b\u3053\u3068\u304c\u3042\u308b\uff09\u3002\u63a5\u982d\u8f9e\u3092\u5916\u3059\u3060\u3051\u3067\u76f4\u308a\u307e\u3057\u305f\u3002", "\u30e1\u30cb\u30e5\u30fc\u306e\u4e26\u3073\u306f\u539f\u753b\u2192\u6f14\u51fa\u4fee\u6b63\u2192\u76e3\u7763\u4fee\u6b63\u2192\u4f5c\u76e3\u4fee\u6b63\u2192\u76f4\u63a5\u5165\u529b\u2026\u3067\u3001\u6700\u521d\u306b\u898b\u305b\u3066\u3044\u305f\u3060\u3044\u305f\u9806\u756a\u306e\u3068\u304a\u308a\u3067\u3059\u3002"]],
         ["ver896", "\u6bb5\u968e\u30d7\u30ea\u30bb\u30c3\u30c8\u306f\u300c\u539f\u753b\u300d\u3060\u3051\u306b\u306a\u308a\u307e\u3057\u305f \u2014 \u305d\u308c\u4ee5\u5916\u306f\u76f4\u63a5\u5165\u529b\u3067\u3059", ["\u300c\uff0b\u300d\u306e\u30e1\u30cb\u30e5\u30fc\u304b\u3089\u539f\u753b\u6f14\u51fa\u4fee\u6b63\u30fb\u539f\u753b\u76e3\u7763\u4fee\u6b63\u30fb\u539f\u753b\u4f5c\u76e3\u4fee\u6b63\u3092\u5916\u3057\u307e\u3057\u305f\u3002\u30ec\u30a4\u30a2\u30a6\u30c8\u3082\u539f\u753b\u3068\u540c\u30583\u3064\u306e\u4fee\u6b63\u3092\u901a\u308b\u3053\u3068\u304c\u3042\u308b\u306e\u3067\u3001\u7247\u65b9\u3060\u3051\u30d7\u30ea\u30bb\u30c3\u30c8\u306b\u3059\u308b\u306e\u306f\u7b4b\u304c\u60aa\u3044\u3068\u5224\u65ad\u3057\u3001\u3069\u3061\u3089\u3082\u300c\u76f4\u63a5\u5165\u529b\u2026\u300d\u306b\u5bc4\u305b\u307e\u3057\u305f\u3002", "\u30e1\u30cb\u30e5\u30fc\u306f\u539f\u753b\u3068\u76f4\u63a5\u5165\u529b\u306e2\u3064\u3060\u3051\u3067\u3059\u3002\u5b9f\u969b\u306e\u6bb5\u968e\u540d\u3092\u305d\u306e\u307e\u307e\u5165\u529b\u3057\u3066\u304f\u3060\u3055\u3044\u3002"]],
@@ -4210,6 +4214,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver899", "시트를 XDTS / TDTS로 내보내고, TDTS를 읽을 수 있게 되었습니다", ["내보내기 형식(PNG / JPG / PSD)에 XDTS와 TDTS를 추가했습니다. XDTS는 CELSYS의 공개 타임시트 교환 형식으로 CLIP STUDIO·OpenToonz·토에이 디지털 타임시트가 읽을 수 있고, TDTS는 토에이 애니메이션 디지털 타임시트 자체의 저장 파일입니다. 원화 칸의 내용(타이밍·홀드·빈칸·중간 점)을 한 파일로 내보냅니다. TDTS 쓰기는 실제 제작 파일(version 7)을 항목별로 그대로 따릅니다: 대사란은 화자+대사를 첫 코마에 두고 이어지는 코마는 계속 기호, 카메라란은 카메라 워크마다 문자열 하나, 시트의 텍스트 메모는 연출 지시란으로, 작업자명은 operatorName으로. 리피트와 물결선은 두 형식 모두 표기가 없어 빈칸으로 내보내며 상태 표시줄에 알려줍니다.", ".tdts를 시트에 드래그앤드롭하면 XDTS처럼 읽어옵니다: 원화 칸에 더해 대사란·카메라란, 화수·컷, 작업자, 길이, 연출 지시(1페이지의 텍스트 메모로 배치). 토에이의 Windows 앱이 여기서 쓴 모든 파일을 받아들이는지는 아직 확인하지 않았습니다."]],
         ["ver898", "\uac04\ub2e8 \uc124\uba85\uc11c\uac00 \uc774\uc81c\ub294 \uc5c6\ub294 \uc774\ub984 \ub300\uc2e0 \uc2e4\uc81c \u66f8\u304d\u51fa\u3057(\ub0b4\ubcf4\ub0b4\uae30) \ubc84\ud2bc\uc744 \uac00\ub9ac\ud0b5\ub2c8\ub2e4", ["\uac04\ub2e8 \uc124\uba85\uc11c 3\ub2e8\uacc4\uac00 \u300c\u51fa\u529b\u300d(\ucd9c\ub825) \ubc84\ud2bc\uc774\ub77c\uace0 \uacc4\uc18d \uc548\ub0b4\ud558\uace0 \uc788\uc5c8\ub294\ub370, \uadf8 \ubc84\ud2bc\uc740 \uc608\uc804\uc5d0 \uc774\ubbf8 \u300c\u66f8\u304d\u51fa\u3057\u300d\ub85c \uc774\ub984\uc774 \ubc14\ub00c\uc5b4\uc11c \ub354 \uc774\uc0c1 \uc5c6\ub294 \uc774\ub984\uc744 \uc548\ub0b4\ud558\uace0 \uc788\uc5c8\uc2b5\ub2c8\ub2e4. \uc2e4\uc81c \ud654\uba74\uacfc \ub9de\ub3c4\ub85d \uace0\ucce4\uc2b5\ub2c8\ub2e4."]],
         ["ver897", "\ub2e8\uacc4 \ud504\ub9ac\uc14b\uc774 4\uac1c\ub85c \ub3cc\uc544\uc654\uc2b5\ub2c8\ub2e4 \u2014 \uc218\uc815 \uc774\ub984\uc5d0\uc11c \u300c\uc6d0\ud654\u300d\ub9cc \ube90\uc2b5\ub2c8\ub2e4", ["\u6f14\u51fa\u4fee\u6b63\u00b7\u76e3\u7763\u4fee\u6b63\u00b7\u4f5c\u76e3\u4fee\u6b63\uc774 \u300c+\u300d \uba54\ub274\uc5d0 \uc6d0\ud654\uc640 \ud568\uaed8 \ub2e4\uc2dc \ub098\uc635\ub2c8\ub2e4. \uc9c0\ub09c \uc5c5\ub370\uc774\ud2b8\uc5d0\uc11c \uc774 \uc14b\uc744 \ud1b5\uc9f8\ub85c \ube80 \uac74 \uacfc\ud588\uc2b5\ub2c8\ub2e4 \u2014 \uc2e4\uc81c \ubb38\uc81c\ub294 \uc774\ub984\uc774 \u300c\uc6d0\ud654\u6f14\u51fa\u4fee\u6b63\u300d\ucc98\ub7fc \uc6d0\ud654\ub97c \uc804\uc81c\ub85c \ubd99\uc5b4 \uc788\ub358 \uac83\uc774\uc5c8\uc2b5\ub2c8\ub2e4(\ub808\uc774\uc544\uc6c3\ub3c4 \uac19\uc740 \uc218\uc815\uc744 \uac70\uce60 \uc218 \uc788\uc73c\ub2c8\uae4c\uc694). \uc811\ub450\uc5b4\ub9cc \ub5bc\ub2c8 \ud574\uacb0\ub410\uc2b5\ub2c8\ub2e4.", "\uba54\ub274 \uc21c\uc11c\ub294 \uc6d0\ud654\u2192\u6f14\u51fa\u4fee\u6b63\u2192\u76e3\u7763\u4fee\u6b63\u2192\u4f5c\u76e3\u4fee\u6b63\u2192\uc9c1\uc811\uc785\ub825\u2026\uc73c\ub85c, \ucc98\uc74c \ubcf4\uc5ec\uc8fc\uc2e0 \uc21c\uc11c \uadf8\ub300\ub85c\uc785\ub2c8\ub2e4."]],
         ["ver896", "\ub2e8\uacc4 \ud504\ub9ac\uc14b\uc740 \u300c\uc6d0\ud654\u300d \ud558\ub098\ub9cc \ub0a8\uc558\uc2b5\ub2c8\ub2e4 \u2014 \ub098\uba38\uc9c0\ub294 \uc9c1\uc811\uc785\ub825\uc785\ub2c8\ub2e4", ["\u300c+\u300d \uba54\ub274\uc5d0\uc11c \uc6d0\ud654\u6f14\u51fa\u4fee\u6b63\u00b7\uc6d0\ud654\u76e3\u7763\u4fee\u6b63\u00b7\uc6d0\ud654\u4f5c\u76e3\u4fee\u6b63\uc744 \ube90\uc2b5\ub2c8\ub2e4. \ub808\uc774\uc544\uc6c3\ub3c4 \uc6d0\ud654\uc640 \ub611\uac19\uc774 \uc138 \uac00\uc9c0 \uc218\uc815\uc744 \uac70\uce60 \uc218 \uc788\uc5b4\uc11c, \ud55c\ucabd\ub9cc \ud504\ub9ac\uc14b\uc73c\ub85c \ub9cc\ub4dc\ub294 \uac74 \uc55e\ub4a4\uac00 \uc548 \ub9de\ub2e4\uace0 \ubcf4\uace0 \ub458 \ub2e4 \u300c\uc9c1\uc811\uc785\ub825\u2026\u300d\ucabd\uc73c\ub85c \ubab0\uc558\uc2b5\ub2c8\ub2e4.", "\uba54\ub274\ub294 \uc774\uc81c \uc6d0\ud654\uc640 \uc9c1\uc811\uc785\ub825 \ub450 \uac1c\ubfd0\uc785\ub2c8\ub2e4. \uc2e4\uc81c \ub2e8\uacc4 \uc774\ub984\uc744 \uadf8\ub300\ub85c \uc785\ub825\ud558\uc2dc\uba74 \ub429\ub2c8\ub2e4."]],
@@ -4258,6 +4263,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver899", "可将时间表导出为 XDTS / TDTS，并读取 TDTS 文件", ["导出格式（PNG / JPG / PSD）新增 XDTS 与 TDTS。XDTS 是 CELSYS 公开的时间表交换格式，CLIP STUDIO、OpenToonz 和东映的数字摄影表都能读取；TDTS 是东映动画数字摄影表自身的保存文件。原画列的内容（时序、延续、空格、中割点）会写入同一个文件。TDTS 写出严格按照一份真实制作文件（version 7）逐项对应：台词栏在起始格写说话人+台词、后续格写延续符号；摄影机栏每个运镜写一段文字；表上的文字备注写入演出指示栏；作者写入 operatorName。重复与波浪线在两种格式中都没有对应写法，导出为空格并在状态栏说明。", "把 .tdts 拖放到表上即可像 XDTS 一样读入：除原画列外，还有台词栏、摄影机栏、话数/镜号、作者、时长以及演出指示（作为第 1 页的文字备注放置）。东映的 Windows 应用是否接受这里写出的所有文件尚未验证。"]],
         ["ver898", "\u7b80\u660e\u8bf4\u660e\u4e66\u73b0\u5728\u6307\u5411\u5b9e\u9645\u7684\u5bfc\u51fa\u6309\u94ae\uff08\u66f8\u304d\u51fa\u3057\uff09\uff0c\u800c\u4e0d\u662f\u4e00\u4e2a\u5df2\u7ecf\u4e0d\u5b58\u5728\u7684\u540d\u5b57", ["\u7b80\u660e\u8bf4\u660e\u4e66\u7b2c3\u6b65\u4e00\u76f4\u5199\u7740\u300c\u51fa\u529b\u300d\u6309\u94ae\uff0c\u4f46\u8be5\u6309\u94ae\u65e9\u5df2\u6539\u540d\u4e3a\u300c\u66f8\u304d\u51fa\u3057\u300d\uff0c\u6240\u4ee5\u8bf4\u660e\u4e66\u4e00\u76f4\u6307\u5411\u4e00\u4e2a\u5df2\u7ecf\u4e0d\u5b58\u5728\u7684\u540d\u5b57\u3002\u73b0\u5df2\u4fee\u6b63\u4e3a\u4e0e\u5b9e\u9645\u754c\u9762\u4e00\u81f4\u3002"]],
         ["ver897", "\u9636\u6bb5\u9884\u8bbe\u6062\u590d\u52304\u4e2a \u2014 \u53ea\u662f\u4ece\u4fee\u6b63\u540d\u79f0\u91cc\u53bb\u6389\u4e86\u300c\u539f\u753b\u300d\u524d\u7f00", ["\u6f14\u51fa\u4fee\u6b63\u3001\u76d1\u7763\u4fee\u6b63\u3001\u4f5c\u76d1\u4fee\u6b63\u53c8\u548c\u539f\u753b\u4e00\u8d77\u51fa\u73b0\u5728\u300c\uff0b\u300d\u83dc\u5355\u91cc\u4e86\u3002\u4e0a\u6b21\u66f4\u65b0\u628a\u8fd9\u4e09\u9879\u6574\u4e2a\u53bb\u6389\u662f\u8fc7\u5934\u4e86 \u2014 \u771f\u6b63\u7684\u95ee\u9898\u53ea\u662f\u540d\u79f0\u5199\u6210\u300c\u539f\u753b\u6f14\u51fa\u4fee\u6b63\u300d\u7b49\uff0c\u9ed8\u8ba4\u4e86\u57fa\u7840\u662f\u539f\u753b\uff08\u800c\u30ec\u30a4\u30a2\u30a6\u30c8\u4e5f\u53ef\u4ee5\u7ecf\u5386\u540c\u6837\u7684\u4fee\u6b63\uff09\u3002\u53bb\u6389\u524d\u7f00\u5c31\u89e3\u51b3\u4e86\u3002", "\u83dc\u5355\u987a\u5e8f\u662f\u539f\u753b\u2192\u6f14\u51fa\u4fee\u6b63\u2192\u76d1\u7763\u4fee\u6b63\u2192\u4f5c\u76d1\u4fee\u6b63\u2192\u81ea\u5b9a\u4e49\u2026\uff0c\u548c\u6700\u521d\u5c55\u793a\u7684\u987a\u5e8f\u4e00\u81f4\u3002"]],
         ["ver896", "\u9636\u6bb5\u9884\u8bbe\u53ea\u5269\u300c\u539f\u753b\u300d\u4e00\u4e2a\u4e86 \u2014 \u5176\u4f59\u7684\u90fd\u7528\u81ea\u5b9a\u4e49\u8f93\u5165", ["\u300c\uff0b\u300d\u83dc\u5355\u91cc\u53bb\u6389\u4e86\u539f\u753b\u6f14\u51fa\u4fee\u6b63\u3001\u539f\u753b\u76d1\u7763\u4fee\u6b63\u3001\u539f\u753b\u4f5c\u76d1\u4fee\u6b63\u3002\u30ec\u30a4\u30a2\u30a6\u30c8\uff08\u7248\u9762\uff09\u4e5f\u53ef\u4ee5\u7ecf\u5386\u548c\u539f\u753b\u4e00\u6837\u7684\u4e09\u79cd\u4fee\u6b63\uff0c\u53ea\u7ed9\u4e00\u8fb9\u505a\u9884\u8bbe\u5e76\u4e0d\u5408\u7406\uff0c\u6240\u4ee5\u4e24\u8005\u90fd\u6539\u6210\u7528\u300c\u81ea\u5b9a\u4e49\u2026\u300d\u8f93\u5165\u3002", "\u83dc\u5355\u73b0\u5728\u53ea\u6709\u539f\u753b\u548c\u81ea\u5b9a\u4e49\u4e24\u9879\u3002\u76f4\u63a5\u8f93\u5165\u5b9e\u9645\u7684\u9636\u6bb5\u540d\u79f0\u5373\u53ef\u3002"]],
@@ -24098,7 +24104,16 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     function isXdtsDropFile(file) {
       if (!file) return false;
-      return String(file.name || '').toLowerCase().endsWith('.xdts');
+      const name = String(file.name || '').toLowerCase();
+      // .tdts (Toei Digital Timesheet's own save file) is the same JSON family
+      // wrapped one level deeper (timeSheets[0].timeTables) - see the import
+      // notes below - so it takes the same drop path.
+      return name.endsWith('.xdts') || name.endsWith('.tdts');
+    }
+
+    function isTdtsDropFile(file) {
+      if (!file) return false;
+      return String(file.name || '').toLowerCase().endsWith('.tdts');
     }
 
     async function readDroppedTextFile(file) {
@@ -24316,8 +24331,71 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return tokens;
     }
 
+    // TDTS (toeiDigitalTimeSheet Save Data) is the native save file of Toei
+    // Animation's Digital Timesheet. Read from a real production file
+    // (version 7, 2020) rather than guessed: it is the XDTS document wrapped in
+    // {timeSheets:[{header, timeTables:[...]}], version}, with the same cell
+    // field encoding plus a few paper-form extras (header.episode/cut/scene,
+    // header.workSlip, timeTables[].direction / books / operatorName, and a
+    // fontColorId on every data entry). Dialog (fieldId 3) entries carry
+    // ["speaker","line"] on the start frame and SYMBOL_HYPHEN on every frame
+    // the line continues; camera (fieldId 5) carries a single text value the
+    // same way. Nothing else about those two fields is documented, so only
+    // that observed shape is read/written.
+    function unwrapTimeSheetDocument(json) {
+      if (json && Array.isArray(json.timeSheets) && json.timeSheets.length) {
+        const sheet = json.timeSheets[0] || {};
+        return { timeTable: Array.isArray(sheet.timeTables) ? sheet.timeTables[0] : null, header: sheet.header || null, isTdts: true };
+      }
+      return { timeTable: json && Array.isArray(json.timeTables) ? json.timeTables[0] : null, header: json && json.header || null, isTdts: false };
+    }
+
+    function frameNumberToTimecode(frameNumber) {
+      const n = Math.max(1, Math.round(Number(frameNumber) || 1));
+      return Math.floor(n / FIXED_FPS) + '+' + String(n % FIXED_FPS).padStart(2, '0');
+    }
+
+    // fieldId 3 / 5 tracks -> manual block lines ("0+01 | 1+04 | speaker | line").
+    // A block starts at any entry whose first value is a real string (not a
+    // SYMBOL_*) and runs across the consecutive SYMBOL_HYPHEN frames after it.
+    function tdtsFieldToManualLines(field, duration, isDialog) {
+      const lines = [];
+      if (!field || !Array.isArray(field.tracks)) return lines;
+      field.tracks.forEach(function(track){
+        const frames = (track && Array.isArray(track.frames) ? track.frames.slice() : [])
+          .filter(function(entry){ return entry && Number.isFinite(Number(entry.frame)); })
+          .sort(function(a, b){ return Number(a.frame) - Number(b.frame); });
+        let block = null;
+        function flush() {
+          if (!block) return;
+          const from = frameNumberToTimecode(block.from + 1);
+          const to = frameNumberToTimecode(block.to + 1);
+          if (isDialog) lines.push(from + ' | ' + to + ' | ' + block.values[0] + ' | ' + block.values.slice(1).join(' '));
+          else lines.push(from + ' | ' + to + ' | ' + block.values.join(' '));
+          block = null;
+        }
+        frames.forEach(function(entry){
+          const frameNo = Number(entry.frame);
+          if (frameNo < 0 || (duration > 0 && frameNo >= duration)) return;
+          const data = Array.isArray(entry.data) ? entry.data[0] : null;
+          const values = (data && Array.isArray(data.values) ? data.values : []).map(function(v){ return v == null ? '' : String(v); });
+          const first = values.length ? values[0] : '';
+          if (first === 'SYMBOL_HYPHEN') {
+            if (block && frameNo === block.to + 1) block.to = frameNo;
+            return;
+          }
+          flush();
+          if (!first || /^SYMBOL_/.test(first)) return;
+          if (isDialog && values.length < 2) values.push(''); // speaker-only line: keep the slot
+          block = { from:frameNo, to:frameNo, values:values.map(function(v){ return v.replace(/\|/g, '｜').replace(/\r?\n/g, ' '); }) };
+        });
+        flush();
+      });
+      return lines;
+    }
+
     function buildTextCommandsFromXdts(xdtsJson) {
-      const timeTable = xdtsJson && Array.isArray(xdtsJson.timeTables) ? xdtsJson.timeTables[0] : null;
+      const timeTable = unwrapTimeSheetDocument(xdtsJson).timeTable;
       if (!timeTable) return '';
       const fields = Array.isArray(timeTable.fields) ? timeTable.fields : [];
       const cellField = fields.find(function(f){ return Number(f && f.fieldId) === 0; });
@@ -24360,17 +24438,316 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         if (braceIndex < 0) throw new Error('Not an XDTS file');
         const json = JSON.parse(text.slice(braceIndex));
         const commandText = buildTextCommandsFromXdts(json);
-        if (!commandText) throw new Error('No Cell field found in this XDTS file');
+        const kind = isTdtsDropFile(file) ? 'TDTS' : 'XDTS';
+        if (!commandText) throw new Error('No Cell field found in this ' + kind + ' file');
         const modeSelect = document.getElementById('cellInputMode');
         if (modeSelect) modeSelect.value = 'text';
         setCommandTextValue('text', commandText);
+        // TDTS carries the paper-form extras too; XDTS from CSP does not.
+        const unwrapped = unwrapTimeSheetDocument(json);
+        if (unwrapped.isTdts) applyTdtsExtrasFromDocument(unwrapped);
         updateModeUI();
-        setExportStatus('XDTS loaded: ' + (file.name || 'dropped.xdts'));
+        setExportStatus(kind + ' loaded: ' + (file.name || ('dropped.' + kind.toLowerCase())));
         return true;
       } catch (err) {
-        setExportStatus('XDTS read failed: ' + (err && err.message ? err.message : err));
+        setExportStatus((isTdtsDropFile(file) ? 'TDTS' : 'XDTS') + ' read failed: ' + (err && err.message ? err.message : err));
         return false;
       }
+    }
+
+    function applyTdtsExtrasFromDocument(unwrapped) {
+      const timeTable = unwrapped && unwrapped.timeTable;
+      const header = unwrapped && unwrapped.header;
+      if (!timeTable) return;
+      const duration = Number(timeTable.duration) || 0;
+      const fields = Array.isArray(timeTable.fields) ? timeTable.fields : [];
+      const dialogField = fields.find(function(f){ return Number(f && f.fieldId) === 3; });
+      const cameraField = fields.find(function(f){ return Number(f && f.fieldId) === 5; });
+      const dialogLines = tdtsFieldToManualLines(dialogField, duration, true);
+      const cameraLines = tdtsFieldToManualLines(cameraField, duration, false);
+      const dialogEl = document.getElementById('dialogManual');
+      const cameraEl = document.getElementById('cameraManual');
+      if (dialogEl && dialogLines.length) dialogEl.value = dialogLines.join('\n');
+      if (cameraEl && cameraLines.length) cameraEl.value = cameraLines.join('\n');
+      if (header) {
+        const cutEl = document.getElementById('cutNo');
+        const episodeEl = document.getElementById('episode');
+        if (cutEl && header.cut != null && String(header.cut).trim()) cutEl.value = String(header.cut).trim();
+        if (episodeEl && header.episode != null && String(header.episode).trim()) episodeEl.value = String(header.episode).trim();
+      }
+      const operator = timeTable.operatorName != null ? String(timeTable.operatorName).trim() : '';
+      const authorEl = document.getElementById('author');
+      if (authorEl && operator) authorEl.value = operator;
+      if (duration > 0) {
+        const secondsEl = document.getElementById('seconds');
+        const framesEl = document.getElementById('frames');
+        if (secondsEl) secondsEl.value = String(Math.floor(duration / FIXED_FPS));
+        if (framesEl) framesEl.value = String(duration % FIXED_FPS);
+      }
+      // 演出指示 (timeTables[].direction) becomes a text memo on page 1 so it
+      // stays on the sheet, which is where this app keeps notes.
+      const direction = timeTable.direction != null ? String(timeTable.direction).trim() : '';
+      if (direction) {
+        const list = getTextMemoPageData(0);
+        const already = list.some(function(memo){ return memo && String(memo.text || '').trim() === direction; });
+        if (!already) createDefaultTextMemo(0, null, null, { text:direction });
+      }
+    }
+
+    // -----------------------------------------------------------------------
+    // XDTS (exchangeDigitalTimeSheet) export.
+    //
+    // Writes the minimal "version 5" document CLIP STUDIO itself exports
+    // (verified against a real CSP Mac export), because that is the shape
+    // the rest of the ecosystem demonstrably accepts: top level is
+    // header/timeTables/version only, frames are 0-based change points with
+    // implicit holds, empty frames are SYMBOL_NULL_CELL. The dialog (3) and
+    // camera (5) fields are written present-but-empty like CSP does for a
+    // plain drawing project - their "values" schema is undocumented and even
+    // OpenToonz never reads them (see the import comment above), so nothing
+    // is fabricated for them even when this sheet has dialog/camera rows.
+    //   - An inbetween dot becomes SYMBOL_TICK_1. A tick marks a frame
+    //     without changing the held value, so every tick gets its own entry
+    //     (two ticks in a row are two entries) and the held cell is NOT
+    //     re-emitted after a tick - the hold just continues, which is
+    //     exactly how the importer above reads it back ("1 n dot n").
+    //   - CSP also writes a terminator entry at frame == duration; readers
+    //     (including this app's importer) treat it as a sentinel, so it is
+    //     deliberately not written.
+    //   - Repeat and wavy marks have no XDTS vocabulary at all; those frames
+    //     export as whatever the cell column holds there (usually empty),
+    //     and the export status says so instead of dropping them silently.
+    function xdtsExportCellValues(layer, duration) {
+      const cells = new Array(duration).fill(null);
+      (layer && layer.segments || []).forEach(function(seg){
+        if (!seg || seg.kind === 'cross') return; // × is an empty frame in XDTS
+        const label = String(seg.label || '').replace(/\s+/g, '');
+        if (!label) return;
+        const from = Math.max(1, Math.round(Number(seg.from) || 1));
+        const to = Math.min(duration, Math.max(from, Math.round(Number(seg.to) || from)));
+        for (let frame = from; frame <= to; frame++) cells[frame - 1] = label;
+      });
+      (layer && layer.marks || []).forEach(function(mark){
+        if (!mark || mark.type !== 'dot') return;
+        const frame = Math.round(Number(mark.frame) || 0);
+        if (frame >= 1 && frame <= duration) cells[frame - 1] = 'SYMBOL_TICK_1';
+      });
+      return cells;
+    }
+
+    function xdtsCellValuesToFrames(cells) {
+      const frames = [];
+      let held; // undefined so the very first non-tick frame always writes an entry
+      cells.forEach(function(value, index){
+        if (value === 'SYMBOL_TICK_1') {
+          frames.push({ data:[{ id:0, values:['SYMBOL_TICK_1'] }], frame:index });
+          return;
+        }
+        const written = value === null ? 'SYMBOL_NULL_CELL' : String(value);
+        if (frames.length && written === held) return;
+        frames.push({ data:[{ id:0, values:[written] }], frame:index });
+        held = written;
+      });
+      if (!frames.length) frames.push({ data:[{ id:0, values:['SYMBOL_NULL_CELL'] }], frame:0 });
+      return frames;
+    }
+
+    function getXdtsExportDuration(model) {
+      return Math.max(1,
+        Math.round(Number(getDurationFrameCount()) || 0),
+        Math.round(Number(model && model.contentMaxFrame) || 0));
+    }
+
+    function buildXdtsExportDocument(model) {
+      const layers = (model && model.layers) || [];
+      const duration = getXdtsExportDuration(model);
+      const cutNo = String(document.getElementById('cutNo').value || '').trim();
+      return {
+        timeTables: [{
+          duration: duration,
+          fields: [
+            { tracks: layers.map(function(layer, index){
+                return { trackNo:index, frames:xdtsCellValuesToFrames(xdtsExportCellValues(layer, duration)) };
+              }), fieldId:0 },
+            { tracks: [{ trackNo:0, frames:[] }, { trackNo:1, frames:[] }], fieldId:3 },
+            { tracks: [{ trackNo:0, frames:[] }, { trackNo:1, frames:[] }], fieldId:5 }
+          ],
+          name: cutNo || 'sheet1',
+          timeTableHeaders: [
+            { names: layers.map(function(layer, index){
+                return String(layer && layer.name || '').trim() || String.fromCharCode(65 + (index % 26));
+              }), fieldId:0 },
+            { names: ['S1', 'S2'], fieldId:3 },
+            { names: ['CAM1', 'CAM2'], fieldId:5 }
+          ]
+        }],
+        version: 5,
+        header: { cut: cutNo || '0', scene: '0' }
+      };
+    }
+
+    function buildXdtsExportText(model) {
+      return 'exchangeDigitalTimeSheet Save Data\n' + JSON.stringify(buildXdtsExportDocument(model));
+    }
+
+    function getXdtsExportNotice(model) {
+      const skipped = [];
+      const layers = (model && model.layers) || [];
+      function hasMark(type) {
+        return layers.some(function(layer){
+          return (layer.marks || []).some(function(mark){ return mark && mark.type === type; });
+        });
+      }
+      if (hasMark('repeat')) skipped.push('repeat');
+      if (hasMark('wavy')) skipped.push('wavy');
+      if (!skipped.length) return '';
+      return 'Note: ' + skipped.join(' / ') + ' marks have no XDTS equivalent and were written as empty frames.';
+    }
+
+    // -----------------------------------------------------------------------
+    // TDTS (toeiDigitalTimeSheet Save Data) export.
+    //
+    // Mirrors a real Toei Digital Timesheet save (version 7) field for field -
+    // see the import notes above for what was observed. Compared to the XDTS
+    // writer: the document is wrapped in timeSheets[], every data entry has
+    // fontColorId 0, a track that runs to the end gets the SYMBOL_NULL_CELL
+    // terminator at frame == duration exactly like DTS writes it, and the
+    // dialog / camera fields are populated from this sheet's dialog and camera
+    // rows in the only shape seen in the wild (start value + SYMBOL_HYPHEN per
+    // continued frame). Everything DTS keeps that this app has no notion of
+    // (work slip, books, font colour palette) is written as the empty/default
+    // structure so the file has the shape DTS expects. Whether DTS tolerates
+    // any missing field has NOT been verified against the Windows app.
+    const TDTS_FONT_COLORS = [[0,0,0],[224,0,0],[32,128,32],[32,32,192],[192,32,192],[255,128,32]];
+
+    function tdtsEntry(values, frame) {
+      return { data:[{ fontColorId:0, id:0, values:values }], frame:frame };
+    }
+
+    function tdtsCellValuesToFrames(cells, duration) {
+      const frames = [];
+      let held;
+      cells.forEach(function(value, index){
+        if (value === 'SYMBOL_TICK_1') { frames.push(tdtsEntry(['SYMBOL_TICK_1'], index)); return; }
+        const written = value === null ? 'SYMBOL_NULL_CELL' : String(value);
+        if (frames.length && written === held) return;
+        frames.push(tdtsEntry([written], index));
+        held = written;
+      });
+      if (!frames.length) frames.push(tdtsEntry(['SYMBOL_NULL_CELL'], 0));
+      if (held !== undefined && held !== 'SYMBOL_NULL_CELL') frames.push(tdtsEntry(['SYMBOL_NULL_CELL'], duration));
+      return frames;
+    }
+
+    // Manual blocks (dialog / camera) -> one track per lane. The block's start
+    // frame carries the values, every following frame up to "to" carries
+    // SYMBOL_HYPHEN; frames outside any block get no entry at all (observed).
+    function tdtsBlocksToTracks(blocks, duration, makeValues) {
+      const byLane = {};
+      (blocks || []).forEach(function(block){
+        if (!block) return;
+        const lane = Math.max(0, Math.round(Number(block.lane) || 0));
+        if (!byLane[lane]) byLane[lane] = [];
+        byLane[lane].push(block);
+      });
+      const laneNos = Object.keys(byLane).map(Number).sort(function(a, b){ return a - b; });
+      if (!laneNos.length) return [{ frames:[], trackNo:0 }];
+      return laneNos.map(function(lane){
+        const frames = [];
+        byLane[lane].slice().sort(function(a, b){ return a.from - b.from; }).forEach(function(block){
+          const from = Math.max(1, Math.round(Number(block.from) || 1));
+          const to = Math.min(duration, Math.max(from, Math.round(Number(block.to) || from)));
+          const values = makeValues(block);
+          if (!values) return;
+          frames.push(tdtsEntry(values, from - 1));
+          for (let f = from + 1; f <= to; f++) frames.push(tdtsEntry(['SYMBOL_HYPHEN'], f - 1));
+        });
+        return { frames:frames, trackNo:lane };
+      });
+    }
+
+    function tdtsClean(text) {
+      return String(text == null ? '' : text).replace(/\r?\n/g, ' ').trim();
+    }
+
+    function buildTdtsExportDocument(model) {
+      const layers = (model && model.layers) || [];
+      const duration = getXdtsExportDuration(model);
+      const cutNo = tdtsClean(document.getElementById('cutNo').value);
+      const episode = tdtsClean(document.getElementById('episode').value);
+      const author = tdtsClean(document.getElementById('author').value);
+      const layerNames = layers.map(function(layer, index){
+        return String(layer && layer.name || '').trim() || String.fromCharCode(65 + (index % 26));
+      });
+      const dialogTracks = tdtsBlocksToTracks(model && model.dialogBlocks, duration, function(block){
+        const speaker = tdtsClean(block.label);
+        const line = tdtsClean(block.text);
+        if (!speaker && !line) return null;
+        return [speaker, line];
+      });
+      const cameraTracks = tdtsBlocksToTracks(model && model.cameraBlocks, duration, function(block){
+        const text = [tdtsClean(block.label), tdtsClean(block.text), tdtsClean(block.endLabel)].filter(Boolean).join(' ');
+        return text ? [text] : null;
+      });
+      const directionParts = [];
+      Object.keys(state.textMemoPages || {}).sort(function(a, b){ return Number(a) - Number(b); }).forEach(function(key){
+        (state.textMemoPages[key] || []).forEach(function(memo){
+          const text = String(memo && memo.text || '').trim();
+          if (text) directionParts.push(text);
+        });
+      });
+      const emptyProcess = function(){ return { assistant:'', chief:'', director:'', free:'', freeRole:'' }; };
+      const emptyWork = function(){ return { enable:false, tracks:[0,1,2,3,4,5,6].map(function(){ return { artist:'', numberOfSheets:0 }; }) }; };
+      return {
+        timeSheets: [{
+          header: {
+            cut: cutNo,
+            episode: episode,
+            scene: '',
+            showHeaderDummy: false,
+            timeTableFontColors: TDTS_FONT_COLORS.map(function(c){ return c.slice(); }),
+            workSlip: { memo:'', processes:[emptyProcess(), emptyProcess(), emptyProcess()], works:[emptyWork(), emptyWork()] }
+          },
+          timeTables: [{
+            books: [{ fieldId:0, tracks:[] }],
+            color: 0,
+            direction: directionParts.join('\n'),
+            duration: duration,
+            fields: [
+              // DTS leaves a column that has nothing in it out of the track list
+              // (the header still names it) - observed in the reference file,
+              // and it also keeps a re-import from turning that column into a
+              // leading-gap "x" instead of plain blanks.
+              { fieldId:0, tracks: layers.map(function(layer, index){
+                  const cells = xdtsExportCellValues(layer, duration);
+                  if (!cells.some(function(v){ return v !== null; })) return null;
+                  return { frames:tdtsCellValuesToFrames(cells, duration), trackNo:index };
+                }).filter(Boolean) },
+              { fieldId:3, tracks: dialogTracks },
+              { fieldId:5, tracks: cameraTracks }
+            ],
+            name: cutNo || 'sheet1',
+            operatorName: author,
+            timeTableHeaders: [
+              { fieldId:0, names: layerNames },
+              { fieldId:1, names: [''] },
+              { fieldId:2, names: [''] },
+              { fieldId:3, names: ['S1', 'S2'] },
+              { fieldId:4, names: [] },
+              { fieldId:5, names: ['1', '2'] }
+            ]
+          }]
+        }],
+        version: 7
+      };
+    }
+
+    function buildTdtsExportText(model) {
+      return 'toeiDigitalTimeSheet Save Data\n' + JSON.stringify(buildTdtsExportDocument(model), null, 2);
+    }
+
+    function getTdtsExportNotice(model) {
+      return getXdtsExportNotice(model).replace('XDTS', 'TDTS');
     }
 
     function handlePreviewFileDragOver(event) {
@@ -25180,6 +25557,25 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       updatePreviewControls(model.totalPages);
       setExportStatus('Preparing ' + model.totalPages + ' page(s)' + (exportSize.usesSourcePixels ? (' at source pixels ' + exportSize.width + '×' + exportSize.height) : '') + '...');
       try {
+        if (format === 'xdts') {
+          // One timesheet = one XDTS file, however many printed pages it spans.
+          const xdtsFilename = resolveExportFilenameBase(0) + '.xdts';
+          const xdtsBlob = new Blob([buildXdtsExportText(model)], { type:'application/octet-stream' });
+          const xdtsSaveMode = await saveExportBlob(xdtsBlob, xdtsFilename);
+          const xdtsNotice = getXdtsExportNotice(model);
+          setExportStatus((xdtsSaveMode === 'folder' ? 'Saved ' : 'Downloaded ') + xdtsFilename + (xdtsNotice ? ' — ' + xdtsNotice : ''));
+          trackEvent('export', { format:format, pageCount:1 });
+          return;
+        }
+        if (format === 'tdts') {
+          const tdtsFilename = resolveExportFilenameBase(0) + '.tdts';
+          const tdtsBlob = new Blob([buildTdtsExportText(model)], { type:'application/octet-stream' });
+          const tdtsSaveMode = await saveExportBlob(tdtsBlob, tdtsFilename);
+          const tdtsNotice = getTdtsExportNotice(model);
+          setExportStatus((tdtsSaveMode === 'folder' ? 'Saved ' : 'Downloaded ') + tdtsFilename + (tdtsNotice ? ' — ' + tdtsNotice : ''));
+          trackEvent('export', { format:format, pageCount:1 });
+          return;
+        }
         for (let pageIndex = 0; pageIndex < model.totalPages; pageIndex++) {
           let blob;
           let filename;
