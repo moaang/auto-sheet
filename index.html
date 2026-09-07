@@ -113,8 +113,9 @@
     .floating-bars {
       position: absolute;
       top: 12px;
-      left: 26px;
-      right: 16px;
+      /* 20px panel handles + 8px clear space on both sides. */
+      left: 28px;
+      right: 28px;
       z-index: 40;
       display: flex;
       flex-direction: column;
@@ -138,19 +139,19 @@
        the divider) and reads as one piece with the border line, not a floating circle. */
     .sidebar-toggle-btn {
       position: fixed;
-      top: 8px;
+      top: 17px;
       left: var(--sidebar-w); /* 사이드바 그리드 트랙 폭과 항상 같다 — 드래그·접기에 자동으로 따라온다 */
       transform: none;
       z-index: 10020;
       width: 20px;
-      height: 48px;
+      height: 28px;
       padding: 0;
       display: flex;
       align-items: center;
       justify-content: center;
       border: 1px solid var(--soft);
       border-left: 0;               /* merges with the divider line */
-      border-radius: 0 9px 9px 0;   /* tab pointing right, into main */
+      border-radius: 0 6px 6px 0;   /* compact tab pointing into main */
       background: var(--panel);
       color: var(--muted);
       cursor: pointer;
@@ -164,13 +165,13 @@
       right: var(--rightpanel-w);
       border-left: 1px solid var(--soft);
       border-right: 0;
-      border-radius: 9px 0 0 9px;   /* tab pointing left, into main */
+      border-radius: 6px 0 0 6px;   /* compact tab pointing into main */
       box-shadow: -2px 1px 4px rgba(28,30,34,.06);
     }
     .rightpanel-toggle-btn:hover { background: #fff; color: var(--text); }
     .app.rightpanel-collapsed .rightpanel-toggle-btn { right: 0; }
     /* Collapsed: the sidebar is gone, so the same tab attaches to the screen's left edge. */
-    .app.sidebar-collapsed .sidebar-toggle-btn {
+    .app.sidebar-collapsed #sidebarToggleBtn {
       left: 0;
     }
     /* 드래그로 폭을 바꾸는 손잡이. 사이드바·오른쪽 탭이 같은 클래스를 쓰고 위치만 변수로 갈린다. */
@@ -198,8 +199,8 @@
        font and platform and never sit pixel-centered in a flex box. An SVG path centered
        on its own viewBox always centers exactly, on every OS/browser. */
     .sidebar-toggle-icon {
-      width: 9px;
-      height: 14px;
+      width: 8px;
+      height: 12px;
       display: block;
       background: transparent;
       pointer-events: none;
@@ -2337,7 +2338,7 @@
       /* Stacked layout: floating bars would cover half the short pane, so fall back to the
          normal in-flow arrangement (bars above the canvas card). */
       .main { position: static; height: auto; min-height: 55vh; padding: 14px; overflow: visible; }
-      .floating-bars { position: static; pointer-events: auto; }
+      .floating-bars { position: static; pointer-events: auto; padding-inline:22px; }
       .preview-wrap {
         position: relative;
         inset: auto;
@@ -2355,14 +2356,14 @@
         right: 8px;
         top: 8px;
         transform: none;
-        width: 26px;
-        height: 26px;
+        width: 20px;
+        height: 28px;
         border-radius: var(--r-ctl);
         border-left: 1px solid var(--soft);
       }
       .app.sidebar-collapsed { grid-template-columns: minmax(0, 1fr); height: 100vh; overflow: hidden; }
       .app.sidebar-collapsed .main { grid-column: 1 / -1; width: 100vw; max-width: 100vw; height: 100vh; min-height: 0; }
-      .app.sidebar-collapsed .sidebar-toggle-btn { left: 10px; right: auto; border-radius: var(--r-ctl); }
+      .app.sidebar-collapsed #sidebarToggleBtn { left: 10px; right: auto; border-radius: var(--r-ctl); }
       /* 오른쪽 탭 토글은 같은 클래스(.sidebar-toggle-btn)를 쓰므로 위 규칙을 그대로 물려받아
          사이드바 토글과 완전히 겹친다 — top 을 내려서 둘째 줄에 놓는다. */
       .rightpanel-toggle-btn { top: 42px; }
@@ -3035,7 +3036,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '904';
+    const APP_VERSION = '905';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -4234,6 +4235,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver905", "Compact panel handles", ["Left and right panel handles are smaller and have their own clear space beside the output toolbar. Collapsing the left panel no longer moves the right handle to the left edge."]],
         ["ver904", "One output window", ["Single and multiple work files now share the same preview and output screen. Select a work in the list to preview it and use its checkbox to include or exclude it.", "Changed output options apply to all targets. Mixed values are identified, and unchanged options keep each work’s saved settings."]],
         ["ver903", "Work library and batch export", ["Work save/open buttons now align evenly. Folder tools, search and selected work live in one library.", "Export all pages of selected JSON work files with their own saved settings while keeping the editing document. Review counts, duplicate names and errors before starting. Folder output uses a new run folder; browser downloads use one ZIP.", "Completion notices dismiss automatically. Output location is shown inside its button, and the main button is now simply Export."]],
         ["ver902", "Find saved work in a searchable list", ["Search filenames and folders, then open a file with a click or Enter. The currently opened work is marked with a check.", "Long filenames wrap within the list, and the list stays inside the screen. Escape closes it without changing your work.", "Keyboard focus stays inside grouped buttons and remains visible when a tool is active."]],
@@ -4288,6 +4290,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver905", "パネル開閉ボタンをコンパクトに", ["左右のパネル開閉ボタンを小さくし、出力ツールバーとの間隔を確保しました。左パネルを閉じたとき、右の開閉ボタンが左端に重なる問題を修正しました。"]],
         ["ver904", "出力画面を統合", ["単体と複数の作業を同じ画面で確認・書き出しできます。一覧の作業名でプレビューを切り替え、チェックで出力対象を選べます。", "変更した出力設定は全対象に適用します。異なる値は「混在」と表示し、変更しない項目は各作業の保存設定を保ちます。"]],
         ["ver903", "作業一覧と一括書き出し", ["作業の保存・開くボタンを均等に配置し、フォルダー操作・検索・選択を作業一覧にまとめました。", "選択したJSONの設定で全ページを一括書き出しできます。編集中の作業を保持し、開始前に件数・同名・エラーを確認できます。フォルダー出力は実行ごとの新規フォルダー、通常ダウンロードはZIPにまとめます。", "完了通知は自動で消えます。出力先はボタン内に表示し、書き出しボタンの名前を簡潔にしました。"]],
         ["ver902", "\u4fdd\u5b58\u3057\u305f\u4f5c\u696d\u3092\u691c\u7d22\u3057\u3066\u958b\u3051\u308b\u3088\u3046\u306b\u306a\u308a\u307e\u3057\u305f", ["\u30d5\u30a1\u30a4\u30eb\u540d\u3084\u30d5\u30a9\u30eb\u30c0\u30fc\u3067\u691c\u7d22\u3057\u3001\u30af\u30ea\u30c3\u30af\u307e\u305f\u306fEnter\u3067\u958b\u3051\u307e\u3059\u3002\u73fe\u5728\u958b\u3044\u3066\u3044\u308b\u4f5c\u696d\u306b\u306f\u30c1\u30a7\u30c3\u30af\u304c\u4ed8\u304d\u307e\u3059\u3002", "\u9577\u3044\u540d\u524d\u3082\u4e00\u89a7\u306e\u4e2d\u3067\u6298\u308a\u8fd4\u3057\u3001\u753b\u9762\u304b\u3089\u306f\u307f\u51fa\u3055\u306a\u3044\u3088\u3046\u306b\u3057\u307e\u3057\u305f\u3002Escape\u3067\u306f\u4f5c\u696d\u3092\u5909\u3048\u305a\u306b\u9589\u3058\u307e\u3059\u3002", "\u30dc\u30bf\u30f3\u306e\u9078\u629e\u67a0\u304c\u30b0\u30eb\u30fc\u30d7\u304b\u3089\u306f\u307f\u51fa\u3055\u305a\u3001\u4f7f\u7528\u4e2d\u306e\u30c4\u30fc\u30eb\u3067\u3082\u30ad\u30fc\u30dc\u30fc\u30c9\u306e\u9078\u629e\u4f4d\u7f6e\u304c\u308f\u304b\u308a\u307e\u3059\u3002"]],
@@ -4342,6 +4345,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver905", "패널 접기 버튼 정리", ["좌우 패널 접기 버튼을 작게 줄이고 출력 툴바와 여백으로 분리했습니다. 왼쪽 패널을 접을 때 오른쪽 접기 버튼까지 왼쪽으로 이동해 겹치는 문제를 수정했습니다."]],
         ["ver904", "출력 화면 통합", ["단일·여러 작업의 미리보기와 출력을 같은 화면에서 처리합니다. 목록의 작업 이름을 누르면 미리보기가 바뀌고, 체크로 출력 대상을 조정합니다.", "변경한 출력 옵션은 모든 대상에 적용합니다. 서로 다른 값은 혼합으로 표시하며, 바꾸지 않은 항목은 각 작업의 저장 설정을 유지합니다."]],
         ["ver903", "작업 목록과 일괄 출력", ["작업 저장·열기를 같은 폭으로 정렬하고, 폴더 조작·검색·선택을 작업 목록에 모았습니다.", "선택한 JSON별 저장 설정으로 모든 페이지를 일괄 출력합니다. 편집 중인 작업을 유지하며, 시작 전에 페이지 수·같은 파일명·오류를 확인할 수 있습니다. 폴더 출력은 실행별 새 폴더에, 기본 다운로드는 ZIP 하나로 받습니다.", "완료 안내는 자동으로 사라지고 출력 위치는 버튼 안에 표시합니다. 출력 버튼 이름을 간단히 줄였습니다."]],
         ["ver902", "\uc800\uc7a5\ud55c \uc791\uc5c5\uc744 \uac80\uc0c9\ud574\uc11c \uc5f4 \uc218 \uc788\uc2b5\ub2c8\ub2e4", ["\ud30c\uc77c\uba85\uc774\ub098 \ud3f4\ub354\ub85c \uac80\uc0c9\ud55c \ub4a4 \ud074\ub9ad \ub610\ub294 Enter\ub85c \uc5fd\ub2c8\ub2e4. \ud604\uc7ac \uc5f4\ub9b0 \uc791\uc5c5\uc5d0\ub294 \uccb4\ud06c\uac00 \ud45c\uc2dc\ub429\ub2c8\ub2e4.", "\uae34 \uc774\ub984\ub3c4 \ubaa9\ub85d \uc548\uc5d0\uc11c \uc904\ubc14\uafc8\ud558\uace0, \ubaa9\ub85d\uc774 \ud654\uba74 \ubc16\uc73c\ub85c \ub098\uac00\uc9c0 \uc54a\ub3c4\ub85d \ud588\uc2b5\ub2c8\ub2e4. Escape\ub85c \ub2eb\uc73c\uba74 \ud604\uc7ac \uc791\uc5c5\uc740 \uadf8\ub300\ub85c\uc785\ub2c8\ub2e4.", "\ubc84\ud2bc \ubb36\uc74c\uc758 \uc120\ud0dd \ud14c\ub450\ub9ac\uac00 \ubc16\uc73c\ub85c \ud280\uc5b4\ub098\uc624\uc9c0 \uc54a\uace0, \uc0ac\uc6a9 \uc911\uc778 \ub3c4\uad6c\uc5d0\uc11c\ub3c4 \ud0a4\ubcf4\ub4dc \uc120\ud0dd \uc704\uce58\ub97c \ud655\uc778\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4."]],
@@ -4396,6 +4400,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver905", "更紧凑的面板按钮", ["缩小左右面板折叠按钮，并与导出工具栏留出独立间距。修复折叠左面板时右侧按钮移动到左侧重叠的问题。"]],
         ["ver904", "统一导出界面", ["单个与多个工作共用预览和导出界面。点击工作名称切换预览，勾选框控制是否导出。", "修改的导出设置应用到全部目标。不同值显示为混合，未修改的选项保留各工作的保存设置。"]],
         ["ver903", "工作列表与批量导出", ["保存与打开按钮改为等宽，文件夹工具、搜索和选择整合到工作列表。", "按所选JSON各自保存的设置导出全部页面，保留当前编辑工作。开始前可检查数量、同名和错误。文件夹导出创建新文件夹，浏览器下载合并为ZIP。", "完成通知自动消失，输出位置显示在按钮内，导出按钮名称更简洁。"]],
         ["ver902", "\u53ef\u4ee5\u641c\u7d22\u5e76\u6253\u5f00\u5df2\u4fdd\u5b58\u7684\u5de5\u4f5c", ["\u6309\u6587\u4ef6\u540d\u6216\u6587\u4ef6\u5939\u641c\u7d22\uff0c\u70b9\u51fb\u6216\u6309Enter\u6253\u5f00\u3002\u5f53\u524d\u6253\u5f00\u7684\u5de5\u4f5c\u4f1a\u663e\u793a\u52fe\u53f7\u3002", "\u957f\u540d\u79f0\u5728\u5217\u8868\u5185\u6362\u884c\uff0c\u5217\u8868\u4fdd\u6301\u5728\u5c4f\u5e55\u8303\u56f4\u5185\u3002\u6309Escape\u5173\u95ed\u4e0d\u4f1a\u66f4\u6539\u5f53\u524d\u5de5\u4f5c\u3002", "\u7ec4\u5408\u6309\u94ae\u7684\u7126\u70b9\u6846\u4e0d\u518d\u5411\u5916\u7a81\u51fa\uff0c\u5de5\u5177\u542f\u7528\u65f6\u4ecd\u80fd\u770b\u5230\u952e\u76d8\u7126\u70b9\u3002"]],
