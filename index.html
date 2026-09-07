@@ -348,17 +348,6 @@
     }
     .settings-mini-btn:hover { background: rgba(28,30,34,.05); }
     .settings-mini-btn .ic-svg { width: 13px; height: 13px; flex: none; }
-    .settings-folder-button {
-      display:flex; align-items:center; justify-content:space-between; gap:6px;
-      min-width:0; width:100%; border:0; border-radius:0;
-      background:transparent; color:var(--text); padding:0 8px; font:inherit;
-      font-size:11px; font-weight:600; text-align:left; cursor:pointer;
-    }
-    .work-file-trigger-label { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-    .work-file-trigger-arrow { width:12px; height:12px; flex:none; }
-    .settings-folder-button[aria-expanded="true"] { background:rgba(28,30,34,.06); }
-    .settings-folder-button[aria-expanded="true"] .work-file-trigger-arrow { transform:rotate(180deg); }
-    .settings-folder-button:disabled { opacity:.58; cursor:not-allowed; }
     /* Hairline dividers between segments — declared after the segment rules so the
        buttons' border reset doesn't clobber it (same specificity, later source order). */
     .settings-io-wrap > * + * { border-left: 1px solid var(--soft); }
@@ -1393,21 +1382,6 @@
     .preview-wrap.space-pan-ready.panning * {
       cursor: grabbing !important;
       user-select: none;
-    }
-    .export-status {
-      font-size: 12px;
-      color: var(--muted);
-      text-align: right;
-      pointer-events: none;
-      align-self: flex-end;
-    }
-    .export-status:empty { display: none; }
-    .export-status:not(:empty) {
-      background: rgba(255,255,255,.92);
-      border: 1px solid var(--soft);
-      border-radius: var(--r-ctl);
-      padding: 3px 9px;
-      box-shadow: 0 8px 20px rgba(0,0,0,.12);
     }
     /* 상단 고정 경고 배너 — 공용 UI 규칙(2026-08-02). 원인이 없어지기 전까진 계속 뜨고 닫기 버튼이 없다
        (.sheet-side-notice 는 한 번 닫으면 끝나는 온보딩 안내라 용도가 다르다). :empty 로 자동 숨김 —
@@ -2464,16 +2438,54 @@
 
 
     /* Output review: a temporary view; the editing pane sizes and position remain untouched. */
-    .settings-io-wrap { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr) 32px; height:auto; white-space:normal; }
-    .settings-io-wrap #currentSettingsExportBtn { grid-column:1; }
-    .settings-io-wrap #currentSettingsFileBtn { grid-column:2 / 4; }
-    .settings-io-wrap #currentSettingsImportBtn { grid-column:1; grid-row:2; }
-    .settings-io-wrap #currentSettingsFolderBtn { grid-column:2; grid-row:2; width:100%; }
-    .settings-io-wrap #currentSettingsRefreshBtn { grid-column:3; grid-row:2; }
-    .settings-io-wrap .settings-mini-btn { min-height:34px; white-space:normal; overflow:visible; }
-    .settings-io-wrap > * { border:0; }
-    .settings-io-wrap #currentSettingsImportBtn, .settings-io-wrap #currentSettingsFolderBtn, .settings-io-wrap #currentSettingsRefreshBtn { border-top:1px solid var(--soft); }
+    .settings-io-wrap { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); height:auto; white-space:normal; }
+    .settings-io-wrap .settings-mini-btn { min-height:38px; white-space:normal; }
     .work-save-hint { order:4; flex:1 1 100%; color:var(--muted); font-size:11px; line-height:1.45; }
+    .work-library { padding:14px; display:flex; flex-direction:column; gap:10px; min-width:0; }
+    .work-library-head { display:grid; grid-template-columns:minmax(0,1fr) 30px; align-items:center; gap:8px; }
+    .work-library-head h3 { margin:0; font-size:13px; }
+    .work-library-actions { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px; }
+    .work-library-actions button { width:100%; min-width:0; min-height:34px; justify-content:center; white-space:normal; }
+    .work-library-source, .work-library-count, .work-library-empty { font-size:11px; color:var(--muted); line-height:1.5; overflow-wrap:anywhere; }
+    .work-library-source:empty { display:none; }
+    .work-library-search { width:100%; min-width:0; min-height:34px; font-size:12px; }
+    .work-library-selection { display:flex; align-items:center; flex-wrap:wrap; gap:5px; }
+    .work-library-selection button { font-size:10px; padding:4px 6px; }
+    .work-library-count { flex:1; text-align:right; }
+    .work-library-list { max-height:min(300px,36dvh); overflow:auto; overscroll-behavior:contain; scrollbar-gutter:stable; }
+    .work-library-row { display:grid; grid-template-columns:26px minmax(0,1fr); align-items:center; border-radius:7px; padding:2px 4px; border:1px solid transparent; }
+    .work-library-row:hover { background:#f5f6f7; }
+    .work-library-row[data-current="true"] { background:#f1f3f4; border-color:var(--soft); }
+    .work-library-row input { width:15px; height:15px; margin:0; justify-self:center; accent-color:var(--text); }
+    .work-library-open { display:grid; grid-template-columns:minmax(0,1fr) 14px; gap:5px; align-items:center; text-align:left; padding:8px 5px; border:0; background:transparent; width:100%; min-width:0; border-radius:5px; color:var(--text); }
+    .work-library-name { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; font-size:11px; font-weight:600; overflow-wrap:anywhere; line-height:1.5; }
+    .work-library-path { display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-size:10px; color:var(--muted); overflow-wrap:anywhere; line-height:1.4; }
+    .work-library-current { font-size:11px; }
+    #workLibraryExportBtn { width:100%; min-height:36px; font-size:12px; white-space:normal; }
+    .work-library button:focus-visible { outline:2px solid var(--text); outline-offset:-2px; }
+    .output-location-control { display:flex; align-items:center; gap:3px; min-width:0; }
+    .output-location-control .hidden { display:none; }
+    #chooseExportDirBtn { max-width:190px; }
+    #chooseExportDirBtn span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .io-notice { position:fixed; top:70px; right:24px; z-index:11500; max-width:min(440px,calc(100vw - 32px)); display:flex; gap:12px; align-items:center; padding:10px 12px; border:1px solid var(--soft-strong); border-radius:10px; background:var(--panel); box-shadow:0 6px 22px #0002; font-size:12px; line-height:1.5; }
+    .io-notice[hidden] { display:none; }
+    .io-notice[data-level="error"] { border-color:#b85a4b; }
+    .io-notice-message { min-width:0; overflow-wrap:anywhere; }
+    .io-notice button { flex:none; width:24px; height:24px; padding:0; border:0; background:transparent; border-radius:4px; }
+    .batch-dialog { width:min(880px,calc(100vw - 24px)); max-height:calc(100dvh - 24px); display:flex; flex-direction:column; padding:0; overflow:hidden; background:var(--panel); }
+    .batch-body { padding:16px; overflow:auto; display:flex; flex-direction:column; gap:12px; }
+    .batch-options { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+    .batch-options label { font-size:12px; display:flex; gap:8px; align-items:center; }
+    .batch-options select { min-height:32px; width:auto; }
+    .batch-options label { flex:none; white-space:nowrap; }
+    .batch-dialog [hidden] { display:none; }
+    .batch-summary, .batch-note { font-size:12px; line-height:1.6; overflow-wrap:anywhere; }
+    .batch-note { color:var(--muted); }
+    .batch-list { margin:0; padding:0; list-style:none; }
+    .batch-row { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:8px; padding:10px 0; border-top:1px solid var(--soft); font-size:12px; }
+    .batch-row-detail { font-size:11px; color:var(--muted); overflow-wrap:anywhere; line-height:1.5; }
+    .batch-row[data-error="true"] .batch-row-detail { color:#a33326; }
+    .batch-progress { width:100%; }
     .export-actions { grid-template-columns:64px max-content minmax(0,1fr); width:auto; max-width:100%; }
     #downloadAllBtn, #chooseExportDirBtn { width:auto; min-width:0; white-space:normal; height:auto; min-height:30px; }
     #downloadAllBtn { font-size:12px; padding:5px 9px; }
@@ -2530,26 +2542,6 @@
     .global-history button:focus-visible, .zoom-controls button:focus-visible {
       outline:2px solid var(--text); outline-offset:-4px;
     }
-    .work-file-picker { position:fixed; z-index:11000; display:flex; flex-direction:column;
-      min-height:0; padding:10px; border:1px solid var(--soft-strong); border-radius:12px;
-      background:var(--panel); color:var(--text); box-shadow:0 10px 30px #0003; overflow:hidden; }
-    .work-file-picker-head { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:8px; flex-shrink:0; }
-    .work-file-picker-head h3 { margin:0; font-size:12px; font-weight:700; }
-    .work-file-picker-head button { flex:none; }
-    .work-file-picker input { min-height:34px; padding:7px 9px; font-size:12px; margin:0 0 8px; flex-shrink:0; }
-    .work-file-picker-count { font-size:11px; color:var(--muted); margin:0 2px 6px; flex-shrink:0; }
-    .work-file-list { min-height:0; overflow:auto; overscroll-behavior:contain; scrollbar-gutter:stable; }
-    .work-file-option { display:flex; gap:8px; padding:9px 8px; margin:2px 0; border-radius:7px; cursor:pointer; min-width:0; }
-    .work-file-option:hover { background:rgba(28,30,34,.04); }
-    .work-file-option[aria-selected="true"] { background:var(--ink-active); color:#fff; }
-    .work-file-option-text { min-width:0; flex:1; }
-    .work-file-option-name { display:block; font-size:12px; font-weight:600; overflow-wrap:anywhere; }
-    .work-file-option-path { display:block; font-size:10px; opacity:.7; margin-top:3px; overflow-wrap:anywhere; }
-    .work-file-option-check { width:14px; flex:none; font-size:12px; }
-    .work-file-picker-empty, .work-file-picker-error { font-size:12px; line-height:1.5; padding:10px 2px; overflow-wrap:anywhere; }
-    .work-file-picker-error { color:var(--red); flex-shrink:0; }
-    .work-file-picker-error:empty { display:none; }
-
   </style>
 </head>
 <body>
@@ -2576,13 +2568,23 @@
         <div class="settings-io-wrap" role="group" data-ui-title="settingsExportBtn" aria-describedby="workSaveHint">
           <button id="currentSettingsExportBtn" class="settings-mini-btn" type="button"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 4v10m0 0 4-4m-4 4-4-4M4 17v1.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V17"/></svg><span data-ui-text="settingsExportBtn">保存</span></button>
           <button id="currentSettingsFileBtn" class="settings-mini-btn" type="button"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 14V4m0 0 4 4m-4-4-4 4M4 17v1.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V17"/></svg><span data-ui-text="settingsFileBtn">読込</span></button>
-          <button id="currentSettingsImportBtn" class="settings-mini-btn" type="button"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3.5 7A1.5 1.5 0 0 1 5 5.5h4l2 2.5h8A1.5 1.5 0 0 1 20.5 9.5V17A1.5 1.5 0 0 1 19 18.5H5A1.5 1.5 0 0 1 3.5 17Z"/></svg><span data-ui-text="settingsImportBtn">読込先</span></button>
-          <button id="currentSettingsRefreshBtn" class="settings-mini-btn settings-refresh-btn" type="button" data-ui-title="settingsRefreshBtn" title="Reload" aria-label="Reload"><svg class="ic-svg" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false"><path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3M19.5 4.5v3.9h-3.9"/></svg></button>
-          <button id="currentSettingsFolderBtn" class="settings-folder-button" type="button" aria-haspopup="dialog" aria-expanded="false" disabled><span class="work-file-trigger-label"></span><svg class="work-file-trigger-arrow" viewBox="0 0 12 12" aria-hidden="true"><path d="m3 4.5 3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
           <input id="currentSettingsInput" class="settings-file-input-hidden" type="file" accept=".json,.autosheet-settings.json,application/json" />
         </div>
         <div id="workSaveHint" class="work-save-hint" data-ui-text="workSaveHint"></div>
       </div>
+
+      <section class="card work-library" id="workLibrary" aria-labelledby="workLibraryTitle">
+        <div class="work-library-head"><h3 id="workLibraryTitle" data-ui-text="libraryTitle"></h3><button id="currentSettingsRefreshBtn" class="toolbar-btn icon-only" type="button" data-ui-title="settingsRefreshBtn" title="Reload" aria-label="Reload"><svg class="ic-svg" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false"><path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3M19.5 4.5v3.9h-3.9"/></svg></button></div>
+        <div class="work-library-actions"><button id="currentSettingsImportBtn" class="toolbar-btn with-icon" type="button"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3.5 7A1.5 1.5 0 0 1 5 5.5h4l2 2.5h8A1.5 1.5 0 0 1 20.5 9.5V17A1.5 1.5 0 0 1 19 18.5H5A1.5 1.5 0 0 1 3.5 17Z"/></svg><span data-ui-text="settingsImportBtn">読込先</span></button><button class="toolbar-btn" id="workLibraryAddBtn" type="button" data-ui-text="libraryAdd"></button></div>
+        <div class="work-library-source" id="workLibrarySource"></div>
+        <input id="workLibrarySearch" class="work-library-search" type="search" autocomplete="off" spellcheck="false" />
+        <div class="work-library-selection"><button class="toolbar-btn" id="workLibrarySelectBtn" type="button" data-ui-text="librarySelect"></button><button class="toolbar-btn" id="workLibraryClearBtn" type="button" data-ui-text="libraryClear"></button><span id="workLibraryCount" class="work-library-count" role="status"></span></div>
+        <div id="workLibraryList" class="work-library-list" role="list"></div>
+        <div id="workLibraryEmpty" class="work-library-empty"></div>
+        <button id="workLibraryExportBtn" class="toolbar-btn primary" type="button" disabled></button>
+        <input id="workLibraryFilesInput" class="settings-file-input-hidden" type="file" accept=".json,application/json" multiple />
+        <input id="workLibraryDirectoryInput" class="settings-file-input-hidden" type="file" webkitdirectory multiple />
+      </section>
 
       <div class="card stage-card">
         <h3><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.5 12 4l8 3.5-8 3.5z"/><path d="M4 12.5 12 16l8-3.5"/><path d="M4 17 12 20.5 20 17"/></svg><span data-ui-text="stageHeading">Stage</span></h3>
@@ -2786,15 +2788,13 @@
               <option value="jpg">JPG</option>
               <option value="psd">PSD</option>
             </select>
-            <button id="chooseExportDirBtn" class="toolbar-btn with-icon" type="button"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3.5 7A1.5 1.5 0 0 1 5 5.5h4l2 2.5h8A1.5 1.5 0 0 1 20.5 9.5V17A1.5 1.5 0 0 1 19 18.5H5A1.5 1.5 0 0 1 3.5 17Z"/></svg><span data-ui-text="chooseExportDirBtn">保存先</span></button>
+            <div class="output-location-control"><button id="chooseExportDirBtn" class="toolbar-btn with-icon" type="button"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3.5 7A1.5 1.5 0 0 1 5 5.5h4l2 2.5h8A1.5 1.5 0 0 1 20.5 9.5V17A1.5 1.5 0 0 1 19 18.5H5A1.5 1.5 0 0 1 3.5 17Z"/></svg><span data-ui-text="chooseExportDirBtn">保存先</span></button><button id="clearExportDirBtn" class="toolbar-btn icon-only hidden" type="button">×</button></div>
             <button id="downloadAllBtn" class="toolbar-btn with-icon primary" type="button"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 4v11m0 0 4.5-4.5M12 15 7.5 10.5M5 20h14"/></svg><span data-ui-text="downloadAllBtn">書き出し</span></button>
           </div>
         </div>
       </div>
       <div id="persistentWarningBanner" class="persistent-warning-banner" role="alert" aria-live="assertive"></div>
-      <div id="exportDestination" class="export-status" aria-live="polite"></div>
-      <button id="clearExportDirBtn" class="toolbar-btn hidden" type="button"></button>
-      <div id="exportStatus" class="export-status" role="status" aria-live="polite"></div>
+      <div id="exportStatus" class="io-notice" hidden><span class="io-notice-message" role="status" aria-live="polite" data-io-message></span><button id="dismissIoStatusBtn" type="button" data-ui-title="noticeClose">×</button></div>
       <div class="memo-controls-wrap">
         <div class="memo-controls">
           <button id="memoModeBtn" class="memo-btn" type="button"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 20l1-4.5L15.5 5a2.12 2.12 0 0 1 3 0l.5.5a2.12 2.12 0 0 1 0 3L8.5 19 4 20ZM13.5 7 17 10.5"/></svg><span data-ui-text="memoModeBtn">Memo Mode</span></button>
@@ -3013,7 +3013,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '902';
+    const APP_VERSION = '903';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3117,7 +3117,6 @@
     const currentSettingsFileBtn = document.getElementById('currentSettingsFileBtn');
     const currentSettingsImportBtn = document.getElementById('currentSettingsImportBtn');
     const currentSettingsRefreshBtn = document.getElementById('currentSettingsRefreshBtn');
-    const currentSettingsFolderBtn = document.getElementById('currentSettingsFolderBtn');
     const currentSettingsInputEl = document.getElementById('currentSettingsInput');
     const feedbackMessageEl = document.getElementById('feedbackMessage');
     const feedbackHintEl = document.getElementById('feedbackHint');
@@ -3211,7 +3210,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     let directoryWriteQueue = Promise.resolve();
     let activeSheetSnapshot = null;
     let exportPreflightSession = null;
-    let workFilePicker = null;
+    const workLibrarySelection = new Set();
+    let batchExportSession = null;
+    let exportStatusTimer = null;
     let loadedSettingsSelectedId = '';
 
     let currentSvgTarget = svg;
@@ -3427,6 +3428,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       memoPointerId: null,
       memoCurrentStroke: null
     };
+    const settingsDocumentDefaults = captureSheetSnapshot();
 
     // ══ 문서·i18n 블록 A — i18n 사전 · 업데이트로그 목차 · UI 텍스트 ══════════════════════════════════════════════════
     const i18n = {
@@ -3525,8 +3527,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         textCommandsLabel:'Text Commands', csvFileLabel:'CSV File', csvCommandEditLabel:'Editable Commands from CSV',
         dialogBlocksTitle:'Dialog Area', dialogFormatLabel:'Ex: 0+01 | 1+00 | speaker | line  (start | end | who | what)', cameraBlocksTitle:'Camera Area', cameraFormatLabel:'Ex: 0+01 | 1+00 | A | PAN | B  (start | end | from | move | to)', cameraExamplesTitle:'Examples',
         cameraExPan:'pan (A → B)', cameraExTu:'track up / push in', cameraExFi:'fade in', cameraExOl:'overlap (switch)',
-        sheetPreviewTitle:'Sheet Preview', chooseExportDirBtn:"Output folder", downloadAllBtn:"Export image / PSD", memoModeBtn:'Memo Mode', cameraToMemoBtn:'Camera→Memo', memoUndoBtn:"Undo memo strokes", memoRedoBtn:"Redo memo strokes", memoPenLabel:'Pen', memoEraserLabel:'Eraser', memoRightClickNoticeL1:'Right-click the memo area', memoRightClickNoticeL2:'to create / edit a text box', cellReadabilityNotice:'← Enlarge the genga numbers (cell digits)',
-        stageHeading:'Stage', stageAddSlotLabel:'Add a stage', stageCustomOption:'Custom…', stageRenameBtn:'Rename', stageDeleteBtn:'Delete', stageDeleteLastHint:'Cannot delete the last remaining stage', hideNonCellCommandsLabel:'Hide non-Cell commands', hideRightPanelBtn:'Hide Dialog/Camera', showRightPanelBtn:'Show Dialog/Camera', createdByLabel:'Created by', settingsExportBtn:"Save work", settingsFileBtn:"Open work", settingsImportBtn:"Work folder", settingsRefreshBtn:'Reload', settingsSelectPlaceholder:"Saved work", settingsSelectEmpty:"Choose work", settingsSelectNoSettings:"No saved work", textMemoApplyBtn:'Apply', textMemoMenuAdd:'Add text box', textMemoMenuDelete:'Delete text box', textMemoMenuEditMode:'Text box position edit', textMemoMenuEditDone:'Finish text box edit', textMemoMenuAutoArrange:'Auto arrange text boxes', textMemoInitialHint:'Right-click to add or edit text boxes.', clearSheetDataBtn:'Reset All', hideSidebarBtn:'Hide UI', showSidebarBtn:'Show UI', feedbackHeading:'Feedback', feedbackFormLink:'Form', feedbackPlaceholder:'Bug report or request', feedbackHint:'Write anything you know: symptom, reproduction steps, CSV/PSD/image format, expected result, actual result, browser/OS.', feedbackSendBtn:'Send', feedbackEmpty:'Write a message first.', feedbackSending:'Sending...', feedbackSent:'Sent.', feedbackRequested:'Submission requested. Keep this text until receipt is confirmed.', feedbackFailed:'Could not send. Open the form link.', shortcutSummaryTopHint:'', workPickerCurrent:"Currently opened", workPickerOpened:"Opened work: {name}", workPickerClose:"Close work list", workPickerNoMatch:"No matching work files.", workPickerCount:"{shown} of {total} files", workPickerSearch:"Search filename or folder", workPickerTitle:"Open saved work", outputPixels:"Output {width} × {height} px", lastOutputFile:"Last file", firstOutputFile:"First file", outputComposition:"The visible paper image, sheet content and memos are included.", psdLayers:"PSD layers: Memo / Text Output / Template / Paper Image / Background", reviewCaption:"Final appearance · view scale does not change image size", reviewRetry:"Retry preview", reviewFailed:"Preview failed: {error}", reviewLoading:"Preparing preview…", showOutputSettings:"Show output settings", focusPreview:"Expand preview", fitWidth:"Fit width", fitPage:"Fit page", reviewNext:"Next page", reviewPrev:"Previous page", reviewPage:"Page {page} / {count}", outputAction:"Export {count} page(s)", outputFiles:"{count} file(s) · one per page", outputSize:"Image size", outputLocation:"Output location", outputFormat:"File format", outputCellLabel:"Cel labels", outputDuration:"Duration “+”", outputHeader:"Header", outputTemplate:"Template lines", outputContents:"Include in the output", backToEdit:"Back to editing", reviewTitle:"Review and export", memoHistory:"Memo", globalRedo:"Redo sheet changes", globalUndo:"Undo sheet changes", sheetHistory:"Sheet", outputReview:"Review output", workSaveHint:"Save a file to continue editing later."
+        sheetPreviewTitle:'Sheet Preview', chooseExportDirBtn:"Output folder", downloadAllBtn:"Export", memoModeBtn:'Memo Mode', cameraToMemoBtn:'Camera→Memo', memoUndoBtn:"Undo memo strokes", memoRedoBtn:"Redo memo strokes", memoPenLabel:'Pen', memoEraserLabel:'Eraser', memoRightClickNoticeL1:'Right-click the memo area', memoRightClickNoticeL2:'to create / edit a text box', cellReadabilityNotice:'← Enlarge the genga numbers (cell digits)',
+        stageHeading:'Stage', stageAddSlotLabel:'Add a stage', stageCustomOption:'Custom…', stageRenameBtn:'Rename', stageDeleteBtn:'Delete', stageDeleteLastHint:'Cannot delete the last remaining stage', hideNonCellCommandsLabel:'Hide non-Cell commands', hideRightPanelBtn:'Hide Dialog/Camera', showRightPanelBtn:'Show Dialog/Camera', createdByLabel:'Created by', settingsExportBtn:"Save work", settingsFileBtn:"Open work", settingsImportBtn:"Work folder", settingsRefreshBtn:'Reload', settingsSelectPlaceholder:"Saved work", settingsSelectEmpty:"Choose work", settingsSelectNoSettings:"No saved work", textMemoApplyBtn:'Apply', textMemoMenuAdd:'Add text box', textMemoMenuDelete:'Delete text box', textMemoMenuEditMode:'Text box position edit', textMemoMenuEditDone:'Finish text box edit', textMemoMenuAutoArrange:'Auto arrange text boxes', textMemoInitialHint:'Right-click to add or edit text boxes.', clearSheetDataBtn:'Reset All', hideSidebarBtn:'Hide UI', showSidebarBtn:'Show UI', feedbackHeading:'Feedback', feedbackFormLink:'Form', feedbackPlaceholder:'Bug report or request', feedbackHint:'Write anything you know: symptom, reproduction steps, CSV/PSD/image format, expected result, actual result, browser/OS.', feedbackSendBtn:'Send', feedbackEmpty:'Write a message first.', feedbackSending:'Sending...', feedbackSent:'Sent.', feedbackRequested:'Submission requested. Keep this text until receipt is confirmed.', feedbackFailed:'Could not send. Open the form link.', shortcutSummaryTopHint:'', workPickerCurrent:"Currently opened", workPickerOpened:"Opened work: {name}", workPickerClose:"Close work list", workPickerNoMatch:"No matching work files.", workPickerCount:"{shown} of {total} files", workPickerSearch:"Search filename or folder", workPickerTitle:"Open saved work", outputPixels:"Output {width} × {height} px", lastOutputFile:"Last file", firstOutputFile:"First file", outputComposition:"The visible paper image, sheet content and memos are included.", psdLayers:"PSD layers: Memo / Text Output / Template / Paper Image / Background", reviewCaption:"Final appearance · view scale does not change image size", reviewRetry:"Retry preview", reviewFailed:"Preview failed: {error}", reviewLoading:"Preparing preview…", showOutputSettings:"Show output settings", focusPreview:"Expand preview", fitWidth:"Fit width", fitPage:"Fit page", reviewNext:"Next page", reviewPrev:"Previous page", reviewPage:"Page {page} / {count}", outputAction:"Export {count} page(s)", outputFiles:"{count} file(s) · one per page", outputSize:"Image size", outputLocation:"Output location", outputFormat:"File format", outputCellLabel:"Cel labels", outputDuration:"Duration “+”", outputHeader:"Header", outputTemplate:"Template lines", outputContents:"Include in the output", backToEdit:"Back to editing", reviewTitle:"Review and export", memoHistory:"Memo", globalRedo:"Redo sheet changes", globalUndo:"Undo sheet changes", sheetHistory:"Sheet", outputReview:"Review output", workSaveHint:"Save a file to continue editing later.", libraryTitle:"Work library", libraryAdd:"Add JSON files", librarySelect:"Select results", libraryClear:"Clear", librarySelected:"{count}/{total} selected", librarySelectFile:"Select for export: {name}", libraryOpenFile:"Open: {name}", libraryEmpty:"Choose a work folder or add JSON files. Open a name to edit; check files to export together.", libraryExport:"Export selected work ({count})", noticeClose:"Dismiss notification", batchTitle:"Export selected work", batchScope:"Each JSON uses its saved active stage, paper, content and memos. All pages of that stage are exported. The current editing work stays open.", batchSavedFormat:"Saved file format", batchZip:"Download ZIP", batchDestinationHint:"Folder output creates a new run folder. ZIP contains completed files even if stopped. Files with preparation errors are excluded from the ready count.", batchReady:"{count} ready work files · {pages} pages · {failed} errors", batchRenamed:"{count} duplicate names numbered", batchPreparing:"Checking work {done}/{total}…", batchStart:"Export {count} ready work files", batchFinished:"Folder: {folder} files · ZIP download requested: {archive} files · Errors: {failed}", batchProgress:"Processed {done}/{total} files", batchStop:"Stop after this file", batchStopping:"Stopping…", batchPages:"pages", batchState_pending:"Checking", batchState_ready:"Ready", batchState_running:"Exporting", batchState_done:"Complete", batchState_error:"Error", batchState_stopped:"Stopped", batchMissingPaper:"The paper image or memo backup referenced by this JSON is unavailable. Open and save the work with its paper image included.", batchChanged:"Page count changed after preparation.", batchFolderCollision:"Could not create a new output folder.", batchPartial:"{count} files already processed", batchArchiveFailed:"ZIP download failed: {error}", batchZipLimit:"This ZIP exceeds the ZIP32 size or file-count limit. Export to a folder or select fewer work files."
       },
       ja: {
         languageLabel:'言語', headerCardTitle:'ヘッダー', episodeLabel:'話数', titleLabel:'タイトル', cutNoLabel:'カット番号', secondsLabel:'尺 秒', framesLabel:'尺 コマ', authorLabel:'名前', pageLabel:'ページ',
@@ -3534,8 +3536,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         textCommandsLabel:'テキストコマンド', csvFileLabel:'CSVファイル', csvCommandEditLabel:'CSVから生成された編集可能コマンド',
         dialogBlocksTitle:'セリフ欄', dialogFormatLabel:'例: 0+01 | 1+00 | 話者 | セリフ（始まり｜終わり｜だれ｜なに）', cameraBlocksTitle:'カメラ欄', cameraFormatLabel:'例: 0+01 | 1+00 | A | PAN | B（始まり｜終わり｜前｜動き｜後）', cameraExamplesTitle:'例',
         cameraExPan:'流し（A→B）', cameraExTu:'寄り（トラックアップ）', cameraExFi:'フェードイン', cameraExOl:'オーバーラップ（切替）',
-        sheetPreviewTitle:'シートプレビュー', chooseExportDirBtn:"出力先", downloadAllBtn:"画像・PSD書き出し", memoModeBtn:'メモモード', cameraToMemoBtn:'カメラ→メモ', memoUndoBtn:"メモの線を取り消す", memoRedoBtn:"メモの線をやり直す", memoPenLabel:'ペン', memoEraserLabel:'消しゴム', memoRightClickNoticeL1:'メモ欄で右クリック', memoRightClickNoticeL2:'：テキスト枠の作成・編集', cellReadabilityNotice:'←原画番号（セルの数字）を大きく表示',
-        stageHeading:'段階', stageAddSlotLabel:'段階を追加', stageCustomOption:'直接入力…', stageRenameBtn:'名前を変える', stageDeleteBtn:'削除', stageDeleteLastHint:'最後の1段階は削除できません', hideNonCellCommandsLabel:'Cell以外のコマンドを隠す', hideRightPanelBtn:'セリフ/カメラを隠す', showRightPanelBtn:'セリフ/カメラを表示', createdByLabel:'作成', settingsExportBtn:"作業を保存", settingsFileBtn:"作業を開く", settingsImportBtn:"作業フォルダー", settingsRefreshBtn:'再読込', settingsSelectPlaceholder:"保存した作業", settingsSelectEmpty:"作業を選ぶ", settingsSelectNoSettings:"作業ファイルなし", textMemoApplyBtn:'適用', textMemoMenuAdd:'テキスト枠を追加', textMemoMenuDelete:'テキスト枠を削除', textMemoMenuEditMode:'テキスト枠位置編集', textMemoMenuEditDone:'テキスト枠編集終了', textMemoMenuAutoArrange:'テキスト枠を自動整列', textMemoInitialHint:'右クリックでテキスト枠を追加・編集できます。', clearSheetDataBtn:'全体初期化', hideSidebarBtn:'UIを隠す', showSidebarBtn:'UIを表示', feedbackHeading:'報告', feedbackFormLink:'Form', feedbackPlaceholder:'不具合や要望を書く', feedbackHint:'わかる範囲で記入してください: 症状、再現手順、使用したCSV/PSD/画像形式、期待した結果、実際の結果、ブラウザ/OS。', feedbackSendBtn:'送信', feedbackEmpty:'内容を書いてください。', feedbackSending:'送信中...', feedbackSent:'送信しました。', feedbackRequested:'送信を依頼しました。受付が確認できるまで本文を残します。', feedbackFailed:'送信できません。Formリンクから送ってください。', shortcutSummaryTopHint:'', workPickerCurrent:"現在開いている作業", workPickerOpened:"作業を開きました：{name}", workPickerClose:"作業一覧を閉じる", workPickerNoMatch:"一致する作業ファイルがありません。", workPickerCount:"{total}件中{shown}件", workPickerSearch:"ファイル名・フォルダーを検索", workPickerTitle:"保存した作業を開く", outputPixels:"出力 {width} × {height} px", lastOutputFile:"最後のファイル", firstOutputFile:"最初のファイル", outputComposition:"表示中の用紙画像・シートの内容・メモも含まれます。", psdLayers:"PSDレイヤー：メモ / 文字 / 用紙の罫線 / 用紙画像 / 背景", reviewCaption:"仕上がり表示・表示倍率は画像サイズに影響しません", reviewRetry:"再表示", reviewFailed:"プレビューを表示できません：{error}", reviewLoading:"プレビューを準備中…", showOutputSettings:"出力設定を表示", focusPreview:"大きく確認", fitWidth:"幅に合わせる", fitPage:"ページ全体", reviewNext:"次のページ", reviewPrev:"前のページ", reviewPage:"{page} / {count}ページ", outputAction:"{count}ページを書き出す", outputFiles:"{count}ファイル・1ページに1ファイル", outputSize:"画像サイズ", outputLocation:"出力先", outputFormat:"ファイル形式", outputCellLabel:"セルの見出し", outputDuration:"尺の「＋」", outputHeader:"ヘッダー", outputTemplate:"用紙の罫線", outputContents:"書き出す内容", backToEdit:"編集に戻る", reviewTitle:"仕上がりと書き出し", memoHistory:"メモ", globalRedo:"シートの変更をやり直す", globalUndo:"シートの変更を取り消す", sheetHistory:"シート", outputReview:"仕上がりを確認", workSaveHint:"あとで編集を続けるためのファイルを保存します。"
+        sheetPreviewTitle:'シートプレビュー', chooseExportDirBtn:"出力先", downloadAllBtn:"書き出し", memoModeBtn:'メモモード', cameraToMemoBtn:'カメラ→メモ', memoUndoBtn:"メモの線を取り消す", memoRedoBtn:"メモの線をやり直す", memoPenLabel:'ペン', memoEraserLabel:'消しゴム', memoRightClickNoticeL1:'メモ欄で右クリック', memoRightClickNoticeL2:'：テキスト枠の作成・編集', cellReadabilityNotice:'←原画番号（セルの数字）を大きく表示',
+        stageHeading:'段階', stageAddSlotLabel:'段階を追加', stageCustomOption:'直接入力…', stageRenameBtn:'名前を変える', stageDeleteBtn:'削除', stageDeleteLastHint:'最後の1段階は削除できません', hideNonCellCommandsLabel:'Cell以外のコマンドを隠す', hideRightPanelBtn:'セリフ/カメラを隠す', showRightPanelBtn:'セリフ/カメラを表示', createdByLabel:'作成', settingsExportBtn:"作業を保存", settingsFileBtn:"作業を開く", settingsImportBtn:"作業フォルダー", settingsRefreshBtn:'再読込', settingsSelectPlaceholder:"保存した作業", settingsSelectEmpty:"作業を選ぶ", settingsSelectNoSettings:"作業ファイルなし", textMemoApplyBtn:'適用', textMemoMenuAdd:'テキスト枠を追加', textMemoMenuDelete:'テキスト枠を削除', textMemoMenuEditMode:'テキスト枠位置編集', textMemoMenuEditDone:'テキスト枠編集終了', textMemoMenuAutoArrange:'テキスト枠を自動整列', textMemoInitialHint:'右クリックでテキスト枠を追加・編集できます。', clearSheetDataBtn:'全体初期化', hideSidebarBtn:'UIを隠す', showSidebarBtn:'UIを表示', feedbackHeading:'報告', feedbackFormLink:'Form', feedbackPlaceholder:'不具合や要望を書く', feedbackHint:'わかる範囲で記入してください: 症状、再現手順、使用したCSV/PSD/画像形式、期待した結果、実際の結果、ブラウザ/OS。', feedbackSendBtn:'送信', feedbackEmpty:'内容を書いてください。', feedbackSending:'送信中...', feedbackSent:'送信しました。', feedbackRequested:'送信を依頼しました。受付が確認できるまで本文を残します。', feedbackFailed:'送信できません。Formリンクから送ってください。', shortcutSummaryTopHint:'', workPickerCurrent:"現在開いている作業", workPickerOpened:"作業を開きました：{name}", workPickerClose:"作業一覧を閉じる", workPickerNoMatch:"一致する作業ファイルがありません。", workPickerCount:"{total}件中{shown}件", workPickerSearch:"ファイル名・フォルダーを検索", workPickerTitle:"保存した作業を開く", outputPixels:"出力 {width} × {height} px", lastOutputFile:"最後のファイル", firstOutputFile:"最初のファイル", outputComposition:"表示中の用紙画像・シートの内容・メモも含まれます。", psdLayers:"PSDレイヤー：メモ / 文字 / 用紙の罫線 / 用紙画像 / 背景", reviewCaption:"仕上がり表示・表示倍率は画像サイズに影響しません", reviewRetry:"再表示", reviewFailed:"プレビューを表示できません：{error}", reviewLoading:"プレビューを準備中…", showOutputSettings:"出力設定を表示", focusPreview:"大きく確認", fitWidth:"幅に合わせる", fitPage:"ページ全体", reviewNext:"次のページ", reviewPrev:"前のページ", reviewPage:"{page} / {count}ページ", outputAction:"{count}ページを書き出す", outputFiles:"{count}ファイル・1ページに1ファイル", outputSize:"画像サイズ", outputLocation:"出力先", outputFormat:"ファイル形式", outputCellLabel:"セルの見出し", outputDuration:"尺の「＋」", outputHeader:"ヘッダー", outputTemplate:"用紙の罫線", outputContents:"書き出す内容", backToEdit:"編集に戻る", reviewTitle:"仕上がりと書き出し", memoHistory:"メモ", globalRedo:"シートの変更をやり直す", globalUndo:"シートの変更を取り消す", sheetHistory:"シート", outputReview:"仕上がりを確認", workSaveHint:"あとで編集を続けるためのファイルを保存します。", libraryTitle:"作業一覧", libraryAdd:"JSONを追加", librarySelect:"検索結果を選択", libraryClear:"選択を解除", librarySelected:"{total}件中{count}件選択", librarySelectFile:"書き出す作業：{name}", libraryOpenFile:"開く：{name}", libraryEmpty:"作業フォルダーを選ぶか、JSONを追加します。名前で開き、チェックで一括書き出しの対象を選びます。", libraryExport:"選択した作業を書き出す（{count}件）", noticeClose:"通知を閉じる", batchTitle:"選択した作業の書き出し", batchScope:"JSONに保存された有効な段階・用紙・内容・メモで、その段階の全ページを書き出します。編集中の作業は保持します。", batchSavedFormat:"保存された形式", batchZip:"ZIPダウンロード", batchDestinationHint:"フォルダー出力は実行ごとに新しいフォルダーを作ります。中止しても完了分をZIPにまとめます。準備エラーの作業は出力対象から除外します。", batchReady:"準備完了{count}件・{pages}ページ・エラー{failed}件", batchRenamed:"同名{count}ファイルに連番を追加", batchPreparing:"作業を確認中 {done}/{total}…", batchStart:"準備できた{count}件を書き出す", batchFinished:"フォルダー保存{folder}ファイル・ZIP依頼{archive}ファイル・エラー{failed}件", batchProgress:"処理 {done}/{total}ファイル", batchStop:"このファイルの後に中止", batchStopping:"中止しています…", batchPages:"ページ", batchState_pending:"確認中", batchState_ready:"準備完了", batchState_running:"出力中", batchState_done:"完了", batchState_error:"エラー", batchState_stopped:"中止", batchMissingPaper:"このJSONが参照する用紙画像・メモの記憶がありません。用紙画像を含めて作業を保存し直してください。", batchChanged:"準備後にページ数が変わりました。", batchFolderCollision:"新しい出力フォルダーを作成できませんでした。", batchPartial:"{count}ファイル処理済み", batchArchiveFailed:"ZIPダウンロード失敗：{error}", batchZipLimit:"ZIP32の容量またはファイル数の上限を超えます。フォルダーに出力するか対象を減らしてください。"
       },
       ko: {
         languageLabel:'언어', headerCardTitle:'헤더', episodeLabel:'화수', titleLabel:'제목', cutNoLabel:'컷 번호', secondsLabel:'길이 초', framesLabel:'길이 프레임', authorLabel:'이름', pageLabel:'페이지',
@@ -3543,8 +3545,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         textCommandsLabel:'텍스트 커맨드', csvFileLabel:'CSV 파일', csvCommandEditLabel:'CSV에서 생성된 편집 가능 커맨드',
         dialogBlocksTitle:'대사란', dialogFormatLabel:'예: 0+01 | 1+00 | 화자 | 대사（시작｜끝｜누가｜무엇）', cameraBlocksTitle:'카메라란', cameraFormatLabel:'예: 0+01 | 1+00 | A | PAN | B（시작｜끝｜이전｜움직임｜이후）', cameraExamplesTitle:'예시',
         cameraExPan:'팬 이동（A→B）', cameraExTu:'당김（트랙업）', cameraExFi:'페이드 인', cameraExOl:'오버랩（전환）',
-        sheetPreviewTitle:'시트 프리뷰', chooseExportDirBtn:"출력 위치", downloadAllBtn:"이미지·PSD 출력", memoModeBtn:'메모 모드', cameraToMemoBtn:'카메라→메모', memoUndoBtn:"메모 선 되돌리기", memoRedoBtn:"메모 선 다시 실행", memoPenLabel:'펜', memoEraserLabel:'지우개', memoRightClickNoticeL1:'메모 영역 우클릭', memoRightClickNoticeL2:'텍스트 박스 생성·편집', cellReadabilityNotice:'← 원화 번호(셀 숫자)를 크게 표시',
-        stageHeading:'단계', stageAddSlotLabel:'단계 추가', stageCustomOption:'직접입력…', stageRenameBtn:'이름 변경', stageDeleteBtn:'삭제', stageDeleteLastHint:'마지막 단계는 삭제할 수 없습니다', hideNonCellCommandsLabel:'Cell 외 커맨드 숨기기', hideRightPanelBtn:'대사/카메라 숨기기', showRightPanelBtn:'대사/카메라 보이기', createdByLabel:'제작', settingsExportBtn:"작업 저장", settingsFileBtn:"작업 열기", settingsImportBtn:"작업 폴더", settingsRefreshBtn:'다시 불러오기', settingsSelectPlaceholder:"저장한 작업", settingsSelectEmpty:"작업 선택", settingsSelectNoSettings:"작업 파일 없음", textMemoApplyBtn:'적용', textMemoMenuAdd:'텍스트 박스 추가', textMemoMenuDelete:'텍스트 박스 삭제', textMemoMenuEditMode:'텍스트 박스 위치 편집', textMemoMenuEditDone:'텍스트 박스 편집 종료', textMemoMenuAutoArrange:'텍스트 박스 자동 정렬', textMemoInitialHint:'우클릭으로 텍스트 박스를 추가하거나 편집할 수 있습니다.', clearSheetDataBtn:'전체 초기화', hideSidebarBtn:'UI 숨기기', showSidebarBtn:'UI 펼치기', feedbackHeading:'문의', feedbackFormLink:'Form', feedbackPlaceholder:'버그 내용이나 개선 요청', feedbackHint:'가능하면 아는 것만 적어주세요: 증상, 재현 순서, 사용한 CSV/PSD/이미지 형식, 기대한 결과, 실제 결과, 브라우저/OS.', feedbackSendBtn:'보내기', feedbackEmpty:'내용을 먼저 입력하세요.', feedbackSending:'전송 중...', feedbackSent:'전송했습니다.', feedbackRequested:'전송을 요청했습니다. 접수 확인 전까지 원문을 남깁니다.', feedbackFailed:'전송하지 못했습니다. Form 링크로 보내주세요.', shortcutSummaryTopHint:'', workPickerCurrent:"현재 열린 작업", workPickerOpened:"작업을 열었습니다: {name}", workPickerClose:"작업 목록 닫기", workPickerNoMatch:"일치하는 작업 파일이 없습니다.", workPickerCount:"{total}개 중 {shown}개", workPickerSearch:"파일명 또는 폴더 검색", workPickerTitle:"저장한 작업 열기", outputPixels:"출력 {width} × {height} px", lastOutputFile:"마지막 파일", firstOutputFile:"첫 파일", outputComposition:"현재 표시된 용지 이미지·시트 내용·메모도 함께 포함됩니다.", psdLayers:"PSD 레이어: 메모 / 문자 / 용지 틀 / 용지 이미지 / 배경", reviewCaption:"완성본 미리보기 · 화면 배율은 이미지 크기에 영향을 주지 않습니다", reviewRetry:"다시 표시", reviewFailed:"미리보기를 표시하지 못했습니다: {error}", reviewLoading:"미리보기 준비 중…", showOutputSettings:"출력 설정 보기", focusPreview:"크게 확인", fitWidth:"폭에 맞춤", fitPage:"페이지 전체", reviewNext:"다음 페이지", reviewPrev:"이전 페이지", reviewPage:"{page} / {count}페이지", outputAction:"{count}페이지 출력", outputFiles:"파일 {count}개 · 페이지마다 한 파일", outputSize:"이미지 크기", outputLocation:"출력 위치", outputFormat:"파일 형식", outputCellLabel:"셀 머리글", outputDuration:"길이 표시의 ＋", outputHeader:"헤더", outputTemplate:"용지의 틀 선", outputContents:"출력에 포함할 내용", backToEdit:"편집으로 돌아가기", reviewTitle:"완성본 확인 및 출력", memoHistory:"메모", globalRedo:"시트 변경 다시 실행", globalUndo:"시트 변경 되돌리기", sheetHistory:"시트", outputReview:"완성본 확인", workSaveHint:"나중에 이어서 편집할 수 있도록 파일로 저장합니다."
+        sheetPreviewTitle:'시트 프리뷰', chooseExportDirBtn:"출력 위치", downloadAllBtn:"출력", memoModeBtn:'메모 모드', cameraToMemoBtn:'카메라→메모', memoUndoBtn:"메모 선 되돌리기", memoRedoBtn:"메모 선 다시 실행", memoPenLabel:'펜', memoEraserLabel:'지우개', memoRightClickNoticeL1:'메모 영역 우클릭', memoRightClickNoticeL2:'텍스트 박스 생성·편집', cellReadabilityNotice:'← 원화 번호(셀 숫자)를 크게 표시',
+        stageHeading:'단계', stageAddSlotLabel:'단계 추가', stageCustomOption:'직접입력…', stageRenameBtn:'이름 변경', stageDeleteBtn:'삭제', stageDeleteLastHint:'마지막 단계는 삭제할 수 없습니다', hideNonCellCommandsLabel:'Cell 외 커맨드 숨기기', hideRightPanelBtn:'대사/카메라 숨기기', showRightPanelBtn:'대사/카메라 보이기', createdByLabel:'제작', settingsExportBtn:"작업 저장", settingsFileBtn:"작업 열기", settingsImportBtn:"작업 폴더", settingsRefreshBtn:'다시 불러오기', settingsSelectPlaceholder:"저장한 작업", settingsSelectEmpty:"작업 선택", settingsSelectNoSettings:"작업 파일 없음", textMemoApplyBtn:'적용', textMemoMenuAdd:'텍스트 박스 추가', textMemoMenuDelete:'텍스트 박스 삭제', textMemoMenuEditMode:'텍스트 박스 위치 편집', textMemoMenuEditDone:'텍스트 박스 편집 종료', textMemoMenuAutoArrange:'텍스트 박스 자동 정렬', textMemoInitialHint:'우클릭으로 텍스트 박스를 추가하거나 편집할 수 있습니다.', clearSheetDataBtn:'전체 초기화', hideSidebarBtn:'UI 숨기기', showSidebarBtn:'UI 펼치기', feedbackHeading:'문의', feedbackFormLink:'Form', feedbackPlaceholder:'버그 내용이나 개선 요청', feedbackHint:'가능하면 아는 것만 적어주세요: 증상, 재현 순서, 사용한 CSV/PSD/이미지 형식, 기대한 결과, 실제 결과, 브라우저/OS.', feedbackSendBtn:'보내기', feedbackEmpty:'내용을 먼저 입력하세요.', feedbackSending:'전송 중...', feedbackSent:'전송했습니다.', feedbackRequested:'전송을 요청했습니다. 접수 확인 전까지 원문을 남깁니다.', feedbackFailed:'전송하지 못했습니다. Form 링크로 보내주세요.', shortcutSummaryTopHint:'', workPickerCurrent:"현재 열린 작업", workPickerOpened:"작업을 열었습니다: {name}", workPickerClose:"작업 목록 닫기", workPickerNoMatch:"일치하는 작업 파일이 없습니다.", workPickerCount:"{total}개 중 {shown}개", workPickerSearch:"파일명 또는 폴더 검색", workPickerTitle:"저장한 작업 열기", outputPixels:"출력 {width} × {height} px", lastOutputFile:"마지막 파일", firstOutputFile:"첫 파일", outputComposition:"현재 표시된 용지 이미지·시트 내용·메모도 함께 포함됩니다.", psdLayers:"PSD 레이어: 메모 / 문자 / 용지 틀 / 용지 이미지 / 배경", reviewCaption:"완성본 미리보기 · 화면 배율은 이미지 크기에 영향을 주지 않습니다", reviewRetry:"다시 표시", reviewFailed:"미리보기를 표시하지 못했습니다: {error}", reviewLoading:"미리보기 준비 중…", showOutputSettings:"출력 설정 보기", focusPreview:"크게 확인", fitWidth:"폭에 맞춤", fitPage:"페이지 전체", reviewNext:"다음 페이지", reviewPrev:"이전 페이지", reviewPage:"{page} / {count}페이지", outputAction:"{count}페이지 출력", outputFiles:"파일 {count}개 · 페이지마다 한 파일", outputSize:"이미지 크기", outputLocation:"출력 위치", outputFormat:"파일 형식", outputCellLabel:"셀 머리글", outputDuration:"길이 표시의 ＋", outputHeader:"헤더", outputTemplate:"용지의 틀 선", outputContents:"출력에 포함할 내용", backToEdit:"편집으로 돌아가기", reviewTitle:"완성본 확인 및 출력", memoHistory:"메모", globalRedo:"시트 변경 다시 실행", globalUndo:"시트 변경 되돌리기", sheetHistory:"시트", outputReview:"완성본 확인", workSaveHint:"나중에 이어서 편집할 수 있도록 파일로 저장합니다.", libraryTitle:"작업 목록", libraryAdd:"JSON 추가", librarySelect:"검색 결과 선택", libraryClear:"선택 해제", librarySelected:"{count}/{total}개 선택", librarySelectFile:"출력 대상으로 선택: {name}", libraryOpenFile:"열기: {name}", libraryEmpty:"작업 폴더를 선택하거나 JSON을 추가하세요. 파일명으로 열고, 체크하면 일괄 출력 대상으로 선택됩니다.", libraryExport:"선택한 작업 출력 ({count}개)", noticeClose:"안내 닫기", batchTitle:"선택한 작업 일괄 출력", batchScope:"각 JSON에 저장된 활성 단계·용지·내용·메모를 적용해 해당 단계의 모든 페이지를 출력합니다. 편집 중인 작업은 유지됩니다.", batchSavedFormat:"저장된 형식", batchZip:"ZIP 다운로드", batchDestinationHint:"폴더 출력은 실행마다 새 폴더를 만듭니다. 중지해도 완료된 파일은 ZIP으로 받습니다. 준비 오류가 있는 작업은 출력 대상에서 제외됩니다.", batchReady:"준비된 작업 {count}개 · {pages}페이지 · 오류 {failed}개", batchRenamed:"동일한 파일명 {count}개에 번호 추가", batchPreparing:"작업 확인 중 {done}/{total}…", batchStart:"준비된 작업 {count}개 출력", batchFinished:"폴더 저장 {folder}파일 · ZIP 다운로드 요청 {archive}파일 · 오류 {failed}개", batchProgress:"처리 {done}/{total}파일", batchStop:"현재 파일 후 중지", batchStopping:"중지 중…", batchPages:"페이지", batchState_pending:"확인 중", batchState_ready:"준비 완료", batchState_running:"출력 중", batchState_done:"완료", batchState_error:"오류", batchState_stopped:"중지", batchMissingPaper:"이 JSON이 참조하는 용지 이미지·메모를 찾을 수 없습니다. 용지 이미지를 포함해 작업을 다시 저장하세요.", batchChanged:"준비 후 페이지 수가 달라졌습니다.", batchFolderCollision:"새 출력 폴더를 만들지 못했습니다.", batchPartial:"{count}파일 처리 완료", batchArchiveFailed:"ZIP 다운로드 실패: {error}", batchZipLimit:"ZIP32의 용량 또는 파일 수 한도를 넘습니다. 폴더로 출력하거나 작업을 나눠 선택하세요."
       },
       zh: {
         languageLabel:'语言', headerCardTitle:'页眉', episodeLabel:'集数', titleLabel:'标题', cutNoLabel:'镜头编号', secondsLabel:'时长 秒', framesLabel:'时长 帧', authorLabel:'姓名', pageLabel:'页码',
@@ -3552,8 +3554,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         textCommandsLabel:'文本命令', csvFileLabel:'CSV 文件', csvCommandEditLabel:'从 CSV 生成的可编辑命令',
         dialogBlocksTitle:'对白栏', dialogFormatLabel:'例: 0+01 | 1+00 | 说话人 | 台词（起始｜结束｜谁｜内容）', cameraBlocksTitle:'摄影机栏', cameraFormatLabel:'例: 0+01 | 1+00 | A | PAN | B（起始｜结束｜之前｜运动｜之后）', cameraExamplesTitle:'示例',
         cameraExPan:'摇镜（A→B）', cameraExTu:'推近（Track Up）', cameraExFi:'淡入', cameraExOl:'叠化（切换）',
-        sheetPreviewTitle:'Sheet 预览', chooseExportDirBtn:"输出位置", downloadAllBtn:"导出图像·PSD", memoModeBtn:'备注模式', cameraToMemoBtn:'摄影→备注', memoUndoBtn:"撤销备注笔画", memoRedoBtn:"重做备注笔画", memoPenLabel:'笔', memoEraserLabel:'橡皮', memoRightClickNoticeL1:'在备注区右键', memoRightClickNoticeL2:'创建/编辑文本框', cellReadabilityNotice:'← 放大原画编号（单元格数字）',
-        stageHeading:'阶段', stageAddSlotLabel:'添加阶段', stageCustomOption:'自定义…', stageRenameBtn:'重命名', stageDeleteBtn:'删除', stageDeleteLastHint:'无法删除最后一个阶段', hideNonCellCommandsLabel:'隐藏非 Cell 命令', hideRightPanelBtn:'隐藏对白/摄影', showRightPanelBtn:'显示对白/摄影', createdByLabel:'制作', settingsExportBtn:"保存工作", settingsFileBtn:"打开工作", settingsImportBtn:"工作文件夹", settingsRefreshBtn:'重新读取', settingsSelectPlaceholder:"已保存的工作", settingsSelectEmpty:"选择工作", settingsSelectNoSettings:"没有工作文件", textMemoApplyBtn:'应用', textMemoMenuAdd:'添加文字框', textMemoMenuDelete:'删除文字框', textMemoMenuEditMode:'文字框位置编辑', textMemoMenuEditDone:'结束文字框编辑', textMemoMenuAutoArrange:'自动排列文字框', textMemoInitialHint:'可通过右键添加或编辑文字框。', clearSheetDataBtn:'全部重置', hideSidebarBtn:'隐藏 UI', showSidebarBtn:'显示 UI', feedbackHeading:'反馈', feedbackFormLink:'Form', feedbackPlaceholder:'错误报告或改进建议', feedbackHint:'请尽量填写已知信息: 症状、复现步骤、使用的 CSV/PSD/图片格式、期望结果、实际结果、浏览器/OS。', feedbackSendBtn:'发送', feedbackEmpty:'请先输入内容。', feedbackSending:'发送中...', feedbackSent:'已发送。', feedbackRequested:'已请求发送。确认收件前保留原文。', feedbackFailed:'发送失败。请使用 Form 链接。', shortcutSummaryTopHint:'', workPickerCurrent:"当前打开的工作", workPickerOpened:"已打开工作：{name}", workPickerClose:"关闭工作列表", workPickerNoMatch:"没有匹配的工作文件。", workPickerCount:"共{total}个，显示{shown}个", workPickerSearch:"搜索文件名或文件夹", workPickerTitle:"打开已保存的工作", outputPixels:"输出 {width} × {height} px", lastOutputFile:"最后一个文件", firstOutputFile:"第一个文件", outputComposition:"当前显示的纸张图像、工作表内容和备注也会包含在内。", psdLayers:"PSD图层：备注 / 文字 / 纸张格线 / 纸张图像 / 背景", reviewCaption:"成品预览・显示缩放不影响图像尺寸", reviewRetry:"重新显示", reviewFailed:"无法显示预览：{error}", reviewLoading:"正在准备预览…", showOutputSettings:"显示导出设置", focusPreview:"放大查看", fitWidth:"适合宽度", fitPage:"适合整页", reviewNext:"下一页", reviewPrev:"上一页", reviewPage:"第{page} / {count}页", outputAction:"导出{count}页", outputFiles:"{count}个文件・每页一个文件", outputSize:"图像尺寸", outputLocation:"输出位置", outputFormat:"文件格式", outputCellLabel:"单元格标题", outputDuration:"时长的＋号", outputHeader:"表头", outputTemplate:"纸张格线", outputContents:"导出内容", backToEdit:"返回编辑", reviewTitle:"查看成品并导出", memoHistory:"备注", globalRedo:"重做工作表更改", globalUndo:"撤销工作表更改", sheetHistory:"工作表", outputReview:"查看成品", workSaveHint:"保存为文件，之后可继续编辑。"
+        sheetPreviewTitle:'Sheet 预览', chooseExportDirBtn:"输出位置", downloadAllBtn:"导出", memoModeBtn:'备注模式', cameraToMemoBtn:'摄影→备注', memoUndoBtn:"撤销备注笔画", memoRedoBtn:"重做备注笔画", memoPenLabel:'笔', memoEraserLabel:'橡皮', memoRightClickNoticeL1:'在备注区右键', memoRightClickNoticeL2:'创建/编辑文本框', cellReadabilityNotice:'← 放大原画编号（单元格数字）',
+        stageHeading:'阶段', stageAddSlotLabel:'添加阶段', stageCustomOption:'自定义…', stageRenameBtn:'重命名', stageDeleteBtn:'删除', stageDeleteLastHint:'无法删除最后一个阶段', hideNonCellCommandsLabel:'隐藏非 Cell 命令', hideRightPanelBtn:'隐藏对白/摄影', showRightPanelBtn:'显示对白/摄影', createdByLabel:'制作', settingsExportBtn:"保存工作", settingsFileBtn:"打开工作", settingsImportBtn:"工作文件夹", settingsRefreshBtn:'重新读取', settingsSelectPlaceholder:"已保存的工作", settingsSelectEmpty:"选择工作", settingsSelectNoSettings:"没有工作文件", textMemoApplyBtn:'应用', textMemoMenuAdd:'添加文字框', textMemoMenuDelete:'删除文字框', textMemoMenuEditMode:'文字框位置编辑', textMemoMenuEditDone:'结束文字框编辑', textMemoMenuAutoArrange:'自动排列文字框', textMemoInitialHint:'可通过右键添加或编辑文字框。', clearSheetDataBtn:'全部重置', hideSidebarBtn:'隐藏 UI', showSidebarBtn:'显示 UI', feedbackHeading:'反馈', feedbackFormLink:'Form', feedbackPlaceholder:'错误报告或改进建议', feedbackHint:'请尽量填写已知信息: 症状、复现步骤、使用的 CSV/PSD/图片格式、期望结果、实际结果、浏览器/OS。', feedbackSendBtn:'发送', feedbackEmpty:'请先输入内容。', feedbackSending:'发送中...', feedbackSent:'已发送。', feedbackRequested:'已请求发送。确认收件前保留原文。', feedbackFailed:'发送失败。请使用 Form 链接。', shortcutSummaryTopHint:'', workPickerCurrent:"当前打开的工作", workPickerOpened:"已打开工作：{name}", workPickerClose:"关闭工作列表", workPickerNoMatch:"没有匹配的工作文件。", workPickerCount:"共{total}个，显示{shown}个", workPickerSearch:"搜索文件名或文件夹", workPickerTitle:"打开已保存的工作", outputPixels:"输出 {width} × {height} px", lastOutputFile:"最后一个文件", firstOutputFile:"第一个文件", outputComposition:"当前显示的纸张图像、工作表内容和备注也会包含在内。", psdLayers:"PSD图层：备注 / 文字 / 纸张格线 / 纸张图像 / 背景", reviewCaption:"成品预览・显示缩放不影响图像尺寸", reviewRetry:"重新显示", reviewFailed:"无法显示预览：{error}", reviewLoading:"正在准备预览…", showOutputSettings:"显示导出设置", focusPreview:"放大查看", fitWidth:"适合宽度", fitPage:"适合整页", reviewNext:"下一页", reviewPrev:"上一页", reviewPage:"第{page} / {count}页", outputAction:"导出{count}页", outputFiles:"{count}个文件・每页一个文件", outputSize:"图像尺寸", outputLocation:"输出位置", outputFormat:"文件格式", outputCellLabel:"单元格标题", outputDuration:"时长的＋号", outputHeader:"表头", outputTemplate:"纸张格线", outputContents:"导出内容", backToEdit:"返回编辑", reviewTitle:"查看成品并导出", memoHistory:"备注", globalRedo:"重做工作表更改", globalUndo:"撤销工作表更改", sheetHistory:"工作表", outputReview:"查看成品", workSaveHint:"保存为文件，之后可继续编辑。", libraryTitle:"工作列表", libraryAdd:"添加JSON", librarySelect:"选择搜索结果", libraryClear:"清除选择", librarySelected:"已选{count}/{total}个", librarySelectFile:"选择导出：{name}", libraryOpenFile:"打开：{name}", libraryEmpty:"选择工作文件夹或添加JSON。点击名称打开，勾选后可批量导出。", libraryExport:"导出所选工作（{count}个）", noticeClose:"关闭通知", batchTitle:"批量导出所选工作", batchScope:"使用每个JSON保存的活动阶段、纸张、内容和备注，导出该阶段的全部页面。保留当前编辑中的工作。", batchSavedFormat:"保存的格式", batchZip:"下载ZIP", batchDestinationHint:"文件夹导出每次创建新文件夹。停止时仍可下载已完成文件的ZIP。准备失败的工作不计入可导出数量。", batchReady:"已准备{count}个工作・{pages}页・{failed}个错误", batchRenamed:"已为{count}个同名文件添加编号", batchPreparing:"正在检查 {done}/{total}…", batchStart:"导出已准备的{count}个工作", batchFinished:"文件夹{folder}个文件・已请求ZIP下载{archive}个文件・错误{failed}个", batchProgress:"已处理{done}/{total}个文件", batchStop:"当前文件后停止", batchStopping:"正在停止…", batchPages:"页", batchState_pending:"检查中", batchState_ready:"就绪", batchState_running:"导出中", batchState_done:"完成", batchState_error:"错误", batchState_stopped:"已停止", batchMissingPaper:"找不到此JSON引用的纸张图像或备注。请包含纸张图像重新保存工作。", batchChanged:"准备后页数发生变化。", batchFolderCollision:"无法创建新的导出文件夹。", batchPartial:"已处理{count}个文件", batchArchiveFailed:"ZIP下载失败：{error}", batchZipLimit:"超过ZIP32的大小或文件数限制。请导出到文件夹或减少所选工作。"
       }
     };
 
@@ -4211,6 +4213,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver903", "Work library and batch export", ["Work save/open buttons now align evenly. Folder tools, search and selected work live in one library.", "Export all pages of selected JSON work files with their own saved settings while keeping the editing document. Review counts, duplicate names and errors before starting. Folder output uses a new run folder; browser downloads use one ZIP.", "Completion notices dismiss automatically. Output location is shown inside its button, and the main button is now simply Export."]],
         ["ver902", "Find saved work in a searchable list", ["Search filenames and folders, then open a file with a click or Enter. The currently opened work is marked with a check.", "Long filenames wrap within the list, and the list stays inside the screen. Escape closes it without changing your work.", "Keyboard focus stays inside grouped buttons and remains visible when a tool is active."]],
         ["ver901", "Save work and image export are easier to tell apart", ["Save work keeps a file for later editing. Image / PSD export creates the finished pages.", "Review the final appearance, filenames, number of files and output location together. Included items update the preview immediately.", "Expand the preview, move between pages, or fit it to the page or width. Returning to editing keeps your view; canceling leaves the output choices unchanged."]],
         ["ver900", "File recovery preserves your work and exports use a consistent snapshot", ["Failed imports keep the current sheet. Late folder and paper restores no longer replace newer choices.", "Unavailable output folders disconnect and remaining pages use downloads. Permission problems offer a download or a new folder, and the destination is always shown.", "Export errors release the buttons. Camera series names survive saving, loading and undo. Feedback text stays available until receipt is confirmed."]],
@@ -4263,6 +4266,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver903", "作業一覧と一括書き出し", ["作業の保存・開くボタンを均等に配置し、フォルダー操作・検索・選択を作業一覧にまとめました。", "選択したJSONの設定で全ページを一括書き出しできます。編集中の作業を保持し、開始前に件数・同名・エラーを確認できます。フォルダー出力は実行ごとの新規フォルダー、通常ダウンロードはZIPにまとめます。", "完了通知は自動で消えます。出力先はボタン内に表示し、書き出しボタンの名前を簡潔にしました。"]],
         ["ver902", "\u4fdd\u5b58\u3057\u305f\u4f5c\u696d\u3092\u691c\u7d22\u3057\u3066\u958b\u3051\u308b\u3088\u3046\u306b\u306a\u308a\u307e\u3057\u305f", ["\u30d5\u30a1\u30a4\u30eb\u540d\u3084\u30d5\u30a9\u30eb\u30c0\u30fc\u3067\u691c\u7d22\u3057\u3001\u30af\u30ea\u30c3\u30af\u307e\u305f\u306fEnter\u3067\u958b\u3051\u307e\u3059\u3002\u73fe\u5728\u958b\u3044\u3066\u3044\u308b\u4f5c\u696d\u306b\u306f\u30c1\u30a7\u30c3\u30af\u304c\u4ed8\u304d\u307e\u3059\u3002", "\u9577\u3044\u540d\u524d\u3082\u4e00\u89a7\u306e\u4e2d\u3067\u6298\u308a\u8fd4\u3057\u3001\u753b\u9762\u304b\u3089\u306f\u307f\u51fa\u3055\u306a\u3044\u3088\u3046\u306b\u3057\u307e\u3057\u305f\u3002Escape\u3067\u306f\u4f5c\u696d\u3092\u5909\u3048\u305a\u306b\u9589\u3058\u307e\u3059\u3002", "\u30dc\u30bf\u30f3\u306e\u9078\u629e\u67a0\u304c\u30b0\u30eb\u30fc\u30d7\u304b\u3089\u306f\u307f\u51fa\u3055\u305a\u3001\u4f7f\u7528\u4e2d\u306e\u30c4\u30fc\u30eb\u3067\u3082\u30ad\u30fc\u30dc\u30fc\u30c9\u306e\u9078\u629e\u4f4d\u7f6e\u304c\u308f\u304b\u308a\u307e\u3059\u3002"]],
         ["ver901", "\u4f5c\u696d\u306e\u4fdd\u5b58\u3068\u753b\u50cf\u306e\u66f8\u304d\u51fa\u3057\u304c\u308f\u304b\u308a\u3084\u3059\u304f\u306a\u308a\u307e\u3057\u305f", ["\u300c\u4f5c\u696d\u3092\u4fdd\u5b58\u300d\u306f\u3042\u3068\u3067\u7de8\u96c6\u3059\u308b\u305f\u3081\u306e\u30d5\u30a1\u30a4\u30eb\u3001\u300c\u753b\u50cf\u30fbPSD\u66f8\u304d\u51fa\u3057\u300d\u306f\u4ed5\u4e0a\u304c\u3063\u305f\u30da\u30fc\u30b8\u3092\u3064\u304f\u308a\u307e\u3059\u3002", "\u4ed5\u4e0a\u304c\u308a\u3001\u30d5\u30a1\u30a4\u30eb\u540d\u3001\u30d5\u30a1\u30a4\u30eb\u6570\u3001\u51fa\u529b\u5148\u3092\u4e00\u7dd2\u306b\u78ba\u8a8d\u3067\u304d\u307e\u3059\u3002\u66f8\u304d\u51fa\u3059\u5185\u5bb9\u306e\u30c1\u30a7\u30c3\u30af\u3092\u5909\u3048\u308b\u3068\u30d7\u30ec\u30d3\u30e5\u30fc\u306b\u3059\u3050\u53cd\u6620\u3057\u307e\u3059\u3002", "\u30d7\u30ec\u30d3\u30e5\u30fc\u3092\u5927\u304d\u304f\u3057\u3066\u3001\u30da\u30fc\u30b8\u9001\u308a\u3084\u30da\u30fc\u30b8\u5168\u4f53\u30fb\u5e45\u5408\u308f\u305b\u3067\u78ba\u8a8d\u3067\u304d\u307e\u3059\u3002\u7de8\u96c6\u306b\u623b\u308b\u3068\u5143\u306e\u8868\u793a\u306b\u623b\u308a\u3001\u30ad\u30e3\u30f3\u30bb\u30eb\u306a\u3089\u51fa\u529b\u306e\u9078\u629e\u3082\u5909\u66f4\u3057\u307e\u305b\u3093\u3002"]],
         ["ver900", "\u8aad\u8fbc\u5931\u6557\u6642\u306b\u4f5c\u696d\u3092\u4fdd\u6301\u3057\u3001\u66f8\u304d\u51fa\u3057\u5185\u5bb9\u3092\u958b\u59cb\u6642\u70b9\u3067\u56fa\u5b9a", ["\u8aad\u8fbc\u306b\u5931\u6557\u3057\u3066\u3082\u73fe\u5728\u306e\u30b7\u30fc\u30c8\u3092\u4fdd\u6301\u3057\u307e\u3059\u3002\u9045\u308c\u3066\u7d42\u308f\u3063\u305f\u30d5\u30a9\u30eb\u30c0\u30fc\u3084\u7528\u7d19\u306e\u5fa9\u5143\u304c\u3001\u65b0\u3057\u3044\u9078\u629e\u3092\u4e0a\u66f8\u304d\u3057\u306a\u304f\u306a\u308a\u307e\u3057\u305f\u3002", "\u4fdd\u5b58\u5148\u3092\u4f7f\u7528\u3067\u304d\u306a\u304f\u306a\u3063\u305f\u5834\u5408\u306f\u89e3\u9664\u3057\u3001\u6b8b\u308a\u3092\u901a\u5e38\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9\u3057\u307e\u3059\u3002\u6a29\u9650\u306e\u554f\u984c\u3067\u306f\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9\u307e\u305f\u306f\u518d\u9078\u629e\u3092\u9078\u3079\u307e\u3059\u3002\u73fe\u5728\u306e\u4fdd\u5b58\u5148\u3082\u5e38\u6642\u8868\u793a\u3057\u307e\u3059\u3002", "\u66f8\u304d\u51fa\u3057\u30a8\u30e9\u30fc\u5f8c\u3082\u30dc\u30bf\u30f3\u3092\u4f7f\u3048\u307e\u3059\u3002\u30ab\u30e1\u30e9\u306e\u7cfb\u5217\u540d\u3092\u4fdd\u5b58\u30fb\u8aad\u8fbc\u30fb\u53d6\u308a\u6d88\u3057\u3067\u4fdd\u6301\u3057\u3001\u5831\u544a\u306e\u672c\u6587\u306f\u53d7\u4ed8\u78ba\u8a8d\u307e\u3067\u6b8b\u3057\u307e\u3059\u3002"]],
@@ -4315,6 +4319,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver903", "작업 목록과 일괄 출력", ["작업 저장·열기를 같은 폭으로 정렬하고, 폴더 조작·검색·선택을 작업 목록에 모았습니다.", "선택한 JSON별 저장 설정으로 모든 페이지를 일괄 출력합니다. 편집 중인 작업을 유지하며, 시작 전에 페이지 수·같은 파일명·오류를 확인할 수 있습니다. 폴더 출력은 실행별 새 폴더에, 기본 다운로드는 ZIP 하나로 받습니다.", "완료 안내는 자동으로 사라지고 출력 위치는 버튼 안에 표시합니다. 출력 버튼 이름을 간단히 줄였습니다."]],
         ["ver902", "\uc800\uc7a5\ud55c \uc791\uc5c5\uc744 \uac80\uc0c9\ud574\uc11c \uc5f4 \uc218 \uc788\uc2b5\ub2c8\ub2e4", ["\ud30c\uc77c\uba85\uc774\ub098 \ud3f4\ub354\ub85c \uac80\uc0c9\ud55c \ub4a4 \ud074\ub9ad \ub610\ub294 Enter\ub85c \uc5fd\ub2c8\ub2e4. \ud604\uc7ac \uc5f4\ub9b0 \uc791\uc5c5\uc5d0\ub294 \uccb4\ud06c\uac00 \ud45c\uc2dc\ub429\ub2c8\ub2e4.", "\uae34 \uc774\ub984\ub3c4 \ubaa9\ub85d \uc548\uc5d0\uc11c \uc904\ubc14\uafc8\ud558\uace0, \ubaa9\ub85d\uc774 \ud654\uba74 \ubc16\uc73c\ub85c \ub098\uac00\uc9c0 \uc54a\ub3c4\ub85d \ud588\uc2b5\ub2c8\ub2e4. Escape\ub85c \ub2eb\uc73c\uba74 \ud604\uc7ac \uc791\uc5c5\uc740 \uadf8\ub300\ub85c\uc785\ub2c8\ub2e4.", "\ubc84\ud2bc \ubb36\uc74c\uc758 \uc120\ud0dd \ud14c\ub450\ub9ac\uac00 \ubc16\uc73c\ub85c \ud280\uc5b4\ub098\uc624\uc9c0 \uc54a\uace0, \uc0ac\uc6a9 \uc911\uc778 \ub3c4\uad6c\uc5d0\uc11c\ub3c4 \ud0a4\ubcf4\ub4dc \uc120\ud0dd \uc704\uce58\ub97c \ud655\uc778\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4."]],
         ["ver901", "\uc791\uc5c5 \uc800\uc7a5\uacfc \uc774\ubbf8\uc9c0 \ucd9c\ub825\uc744 \uad6c\ubd84\ud558\uae30 \uc26c\uc6cc\uc84c\uc2b5\ub2c8\ub2e4", ["\uc791\uc5c5 \uc800\uc7a5\uc740 \ub098\uc911\uc5d0 \ud3b8\uc9d1\ud560 \ud30c\uc77c\uc744 \ub9cc\ub4e4\uace0, \uc774\ubbf8\uc9c0\u00b7PSD \ucd9c\ub825\uc740 \uc644\uc131\ub41c \ud398\uc774\uc9c0\ub97c \ub9cc\ub4ed\ub2c8\ub2e4.", "\uc644\uc131\ubcf8\uacfc \ud30c\uc77c\uba85, \ud30c\uc77c \uc218, \ucd9c\ub825 \uc704\uce58\ub97c \ud568\uaed8 \ud655\uc778\ud569\ub2c8\ub2e4. \ud3ec\ud568 \ud56d\ubaa9\uc744 \ubc14\uafb8\uba74 \ubbf8\ub9ac\ubcf4\uae30\uc5d0 \uc989\uc2dc \ubc18\uc601\ub429\ub2c8\ub2e4.", "\ubbf8\ub9ac\ubcf4\uae30\ub97c \ud06c\uac8c \ud3bc\uccd0 \ud398\uc774\uc9c0\ub97c \ub118\uae30\uac70\ub098 \ud398\uc774\uc9c0 \uc804\uccb4\u00b7\ud3ed \ub9de\ucda4\uc73c\ub85c \ud655\uc778\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \ud3b8\uc9d1\uc73c\ub85c \ub3cc\uc544\uac00\uba74 \uc6d0\ub798 \ud654\uba74\uc744 \uc720\uc9c0\ud558\uace0, \ucde8\uc18c\ud558\uba74 \ucd9c\ub825 \uc124\uc815\ub3c4 \ubc14\uafb8\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."]],
         ["ver900", "\uc77d\uae30 \uc2e4\ud328 \uc2dc \uc791\uc5c5\uc744 \uc9c0\ud0a4\uace0 \ucd9c\ub825 \ub0b4\uc6a9\uc744 \uc2dc\uc791 \uc2dc\uc810\uc73c\ub85c \uace0\uc815", ["\ud30c\uc77c\uc744 \uc77d\uc9c0 \ubabb\ud574\ub3c4 \ud604\uc7ac \uc2dc\ud2b8\ub97c \uc720\uc9c0\ud569\ub2c8\ub2e4. \ub2a6\uac8c \ub05d\ub09c \ud3f4\ub354\u00b7\uc6a9\uc9c0 \ubcf5\uc6d0\uc774 \uc0c8 \uc120\ud0dd\uc744 \ub36e\uc5b4\uc4f0\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.", "\uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc5b4\uc9c4 \uc800\uc7a5 \ud3f4\ub354\ub294 \ud574\uc81c\ud558\uace0 \ub0a8\uc740 \ud398\uc774\uc9c0\ub97c \uae30\ubcf8 \ub2e4\uc6b4\ub85c\ub4dc\ub85c \ubcf4\ub0c5\ub2c8\ub2e4. \uad8c\ud55c \ubb38\uc81c\uc5d0\uc11c\ub294 \ub2e4\uc6b4\ub85c\ub4dc \ub610\ub294 \uc7ac\uc120\ud0dd\uc744 \uace0\ub97c \uc218 \uc788\uace0 \uc800\uc7a5 \uc704\uce58\ub97c \ud56d\uc0c1 \ud45c\uc2dc\ud569\ub2c8\ub2e4.", "\ucd9c\ub825 \uc624\ub958 \ub4a4\uc5d0\ub3c4 \ubc84\ud2bc\uc744 \ub2e4\uc2dc \uc4f8 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \uce74\uba54\ub77c \ubb36\uc74c \uc774\ub984\uc744 \uc800\uc7a5\u00b7\ubd88\ub7ec\uc624\uae30\u00b7\ub418\ub3cc\ub9ac\uae30\uc5d0\uc11c \ubcf4\uc874\ud558\uace0 \ubb38\uc758 \uc6d0\ubb38\uc740 \uc811\uc218 \ud655\uc778 \uc804\uae4c\uc9c0 \ub0a8\uae41\ub2c8\ub2e4."]],
@@ -4367,6 +4372,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver903", "工作列表与批量导出", ["保存与打开按钮改为等宽，文件夹工具、搜索和选择整合到工作列表。", "按所选JSON各自保存的设置导出全部页面，保留当前编辑工作。开始前可检查数量、同名和错误。文件夹导出创建新文件夹，浏览器下载合并为ZIP。", "完成通知自动消失，输出位置显示在按钮内，导出按钮名称更简洁。"]],
         ["ver902", "\u53ef\u4ee5\u641c\u7d22\u5e76\u6253\u5f00\u5df2\u4fdd\u5b58\u7684\u5de5\u4f5c", ["\u6309\u6587\u4ef6\u540d\u6216\u6587\u4ef6\u5939\u641c\u7d22\uff0c\u70b9\u51fb\u6216\u6309Enter\u6253\u5f00\u3002\u5f53\u524d\u6253\u5f00\u7684\u5de5\u4f5c\u4f1a\u663e\u793a\u52fe\u53f7\u3002", "\u957f\u540d\u79f0\u5728\u5217\u8868\u5185\u6362\u884c\uff0c\u5217\u8868\u4fdd\u6301\u5728\u5c4f\u5e55\u8303\u56f4\u5185\u3002\u6309Escape\u5173\u95ed\u4e0d\u4f1a\u66f4\u6539\u5f53\u524d\u5de5\u4f5c\u3002", "\u7ec4\u5408\u6309\u94ae\u7684\u7126\u70b9\u6846\u4e0d\u518d\u5411\u5916\u7a81\u51fa\uff0c\u5de5\u5177\u542f\u7528\u65f6\u4ecd\u80fd\u770b\u5230\u952e\u76d8\u7126\u70b9\u3002"]],
         ["ver901", "\u66f4\u5bb9\u6613\u533a\u5206\u5de5\u4f5c\u4fdd\u5b58\u4e0e\u56fe\u50cf\u5bfc\u51fa", ["\u4fdd\u5b58\u5de5\u4f5c\u4f1a\u751f\u6210\u4e4b\u540e\u53ef\u4ee5\u7f16\u8f91\u7684\u6587\u4ef6\uff0c\u5bfc\u51fa\u56fe\u50cf\u00b7PSD\u4f1a\u751f\u6210\u5b8c\u6210\u7684\u9875\u9762\u3002", "\u53ef\u540c\u65f6\u786e\u8ba4\u6210\u54c1\u3001\u6587\u4ef6\u540d\u3001\u6587\u4ef6\u6570\u91cf\u548c\u8f93\u51fa\u4f4d\u7f6e\u3002\u66f4\u6539\u5305\u542b\u9879\u76ee\u540e\u4f1a\u7acb\u5373\u66f4\u65b0\u9884\u89c8\u3002", "\u53ef\u4ee5\u653e\u5927\u9884\u89c8\u3001\u7ffb\u9875\u3001\u9002\u5408\u6574\u9875\u6216\u5bbd\u5ea6\u3002\u8fd4\u56de\u7f16\u8f91\u4fdd\u7559\u539f\u6765\u7684\u89c6\u56fe\uff0c\u53d6\u6d88\u4e5f\u4e0d\u4f1a\u66f4\u6539\u8f93\u51fa\u9009\u9879\u3002"]],
         ["ver900", "\u8bfb\u53d6\u5931\u8d25\u65f6\u4fdd\u7559\u5de5\u4f5c\uff0c\u5e76\u56fa\u5b9a\u5bfc\u51fa\u5f00\u59cb\u65f6\u7684\u5185\u5bb9", ["\u8bfb\u53d6\u5931\u8d25\u4e0d\u4f1a\u6e05\u7a7a\u5f53\u524d\u5de5\u4f5c\u8868\u3002\u8f83\u65e9\u7684\u6587\u4ef6\u5939\u6216\u7eb8\u5f20\u6062\u590d\u4e0d\u4f1a\u8986\u76d6\u65b0\u7684\u9009\u62e9\u3002", "\u4fdd\u5b58\u6587\u4ef6\u5939\u4e0d\u53ef\u7528\u65f6\u89e3\u9664\u8be5\u6587\u4ef6\u5939\uff0c\u5269\u4f59\u9875\u9762\u4f7f\u7528\u9ed8\u8ba4\u4e0b\u8f7d\u3002\u6743\u9650\u95ee\u9898\u53ef\u9009\u62e9\u4e0b\u8f7d\u6216\u91cd\u65b0\u9009\u62e9\u6587\u4ef6\u5939\uff0c\u5e76\u59cb\u7ec8\u663e\u793a\u4fdd\u5b58\u4f4d\u7f6e\u3002", "\u5bfc\u51fa\u5931\u8d25\u540e\u6309\u94ae\u4ecd\u53ef\u4f7f\u7528\u3002\u4fdd\u5b58\u3001\u8bfb\u53d6\u53ca\u64a4\u9500\u65f6\u4fdd\u7559\u6444\u5f71\u7cfb\u5217\u540d\u79f0\uff1b\u786e\u8ba4\u6536\u4ef6\u524d\u4fdd\u7559\u53cd\u9988\u539f\u6587\u3002"]],
@@ -19715,7 +19721,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     function writeCameraLinesToMemo() {
-      const cameraEl = document.getElementById('cameraManual');
+      const cameraEl = getSheetInputNode('cameraManual');
       if (!cameraEl) return;
       const pageIndex = Math.max(0, Number(state.currentPreviewPage || 0));
       const list = getTextMemoPageData(pageIndex);
@@ -19763,7 +19769,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         if (list[i] && !list[i].edited && isCameraMemoOfStage(list[i], stageId) && !wanted.has(srcKey)) list.splice(i, 1);
       }
       layoutAutoTextMemos(pageIndex); // ver844: order + size them as a list instead of a nearest-free-slot blob
-      render();
+      if (!activeSheetSnapshot) render();
     }
 
     function closeTextMemoContextMenu() {
@@ -21127,9 +21133,12 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     function captureSheetSnapshot() {
-      const inputs = {};
-      document.querySelectorAll('input[id],textarea[id],select[id]').forEach(function(node){ inputs[node.id] = node.value; });
-      return { state:cloneSheetData(state), inputs:inputs };
+      const inputs = activeSheetSnapshot ? cloneSheetData(activeSheetSnapshot.inputs) : {};
+      if (!activeSheetSnapshot) document.querySelectorAll('input[id],textarea[id],select[id]').forEach(function(node){ inputs[node.id] = node.value; });
+      // The library is application state, not sheet content; never clone every loaded JSON per page/job.
+      const copy = cloneSheetData(Object.assign({},state,{ loadedSettingsFiles:[] }));
+      copy.loadedSettingsFiles = state.loadedSettingsFiles;
+      return { state:copy, inputs:inputs };
     }
 
     function withSheetSnapshot(snapshot, callback) {
@@ -21203,10 +21212,15 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       document.getElementById('outputReviewBtn').disabled = state.isExporting;
       exportFormatSelectEl.disabled = state.isExporting;
       updateExportDirectoryButton();
+      refreshWorkLibrarySelection();
     }
 
-    function setExportStatus(message) {
-      exportStatusEl.textContent = message || '';
+    function setExportStatus(message, options) {
+      clearTimeout(exportStatusTimer); exportStatusTimer = null;
+      const opts = options || {}, level = opts.level || 'success';
+      exportStatusEl.querySelector('[data-io-message]').textContent = message || '';
+      exportStatusEl.hidden = !message; exportStatusEl.dataset.level = level;
+      if (message && level === 'success') exportStatusTimer = setTimeout(function(){ setExportStatus(''); },5000);
     }
 
     // ══ 시트 렌더 ⑩ 파이프라인 render→renderPage→renderBlock — 렌더 큐 상태 선언이라 본 영역과 떨어져 있다 ══════════════════════
@@ -21662,7 +21676,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     // 자체는 그대로 있으므로 슬롯 줄이 레이아웃을 다시 잡지 않는다) 을 한 줄에 그린다. "+" 는
     // 남은 프리셋 수만큼 뜨되, 프리셋이 다 찼어도 최소 1개는 남겨 둔다 — custom 은 개수 제한이 없다.
     function refreshSheetStageUI() {
-      if (!stageSlotRowEl) return;
+      if (activeSheetSnapshot || !stageSlotRowEl) return;
       const doc = uiTexts[state.lang] || uiTexts.en;
       const list = getSheetStages();
       const active = getActiveSheetStage();
@@ -23751,7 +23765,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         } catch (err) {
           if (backedUp) await removePaperMemoryRecord(memoryId);
           sendClientErrorEvent('paper_memory_save', err);
-          setExportStatus(ioText('memoryFailed'));
+          setExportStatus(ioText('memoryFailed'), { level:'error' });
           return false;
         }
       });
@@ -24114,7 +24128,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           try { downloadBlob(blob, filename); setExportStatus(ioText('downloadedSettings', { name:filename })); return; }
           catch (downloadErr) { err = downloadErr; }
         }
-        setExportStatus(ioText('settingsFailed', { error:err.message || err }));
+        setExportStatus(ioText('settingsFailed', { error:err.message || err }), { level:'error' });
       }
     }
 
@@ -24246,6 +24260,41 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return { snapshot:snapshot, paperRestore:paperRestore, keys:["cameraEndpointFr", "cameraPreviewStyles", "cameraSeries", "cellColumnCount", "cellDisplayOrder", "cellReadabilityLarge", "csvColumnOrder", "csvColumnRoles", "csvColumns", "csvDataStartRow", "csvDurationAutofillPending", "csvFileBuffer", "csvFrameIndex", "csvLoadError", "csvLoadedMode", "csvOriginalEncoding", "csvOriginalRows", "csvOriginalText", "csvRawRows", "currentPreviewPage", "dotOverrides", "dougaSheetData", "dougaSheetEnabled", "inbetweenColumnCount", "layerNameTags", "layoutBoxBaseRects", "layoutBoxes", "markerOverrides", "memoColor", "memoEraserSize", "memoMode", "memoPages", "memoPenSize", "memoTool", "paperImageDataUrl", "paperImageMemoDataUrl", "paperImageMemoLayerCount", "paperImageMeta", "paperImageName", "paperImagePixelInfo", "paperImageSourceHeight", "paperImageSourceWidth", "previewSpacePanKey", "serifuSheetGuides", "shakuFlash", "shakuMode", "shakuRedoStack", "shakuSelection", "shakuUndoStack", "sheetZoom", "shortcuts", "showCellLabelOutput", "showDurationPlusOutput", "showHeaderOutput", "showPsdMemo", "showTemplate", "textMemoEditMode", "textMemoPages", "tvpaintCellSourceColumns"] };
     }
 
+    function prepareLoadedTextMemos(payload) {
+      // An imported payload may carry text memos with TEXT but no geometry (conte writes its held-FX notes that
+      // way on purpose, because the free-space maths belongs to this app's live layout). Place those here, using
+      // the same resolver a hand-made memo goes through, so they land in the gap instead of at 0,0 with no size.
+      Object.keys(state.textMemoPages || {}).forEach(function(pageKey){
+        const pageList = state.textMemoPages[pageKey];
+        if (!Array.isArray(pageList)) return;
+        pageList.forEach(function(memo){
+          if (!memo || (Number(memo.w) > 0 && Number(memo.h) > 0)) return;
+          const placed = resolveTextMemoRectForPlacement({
+            id: memo.id || makeTextMemoId(),
+            x: Number(memo.x) || 0, y: Number(memo.y) || 0,
+            w: Math.min(TEXT_MEMO_DEFAULT_W, Math.max(TEXT_MEMO_MIN_W, getTextMemoGapRect().w)),
+            h: TEXT_MEMO_DEFAULT_H
+          }, Math.max(0, Number(pageKey) || 0), memo.id);
+          if (placed) { memo.x = placed.x; memo.y = placed.y; memo.w = placed.w; memo.h = placed.h; }
+        });
+      });
+      // 최상위 키가 곧 활성 단계의 내용이므로(a3 미러링) 여기서는 목록과 활성 id 만 세운다.
+      // writeCameraLinesToMemo 보다 먼저여야 한다 — 그쪽이 메모에 찍을 단계 id 를 여기서 얻는다.
+      applySheetStagesFromPayload(payload);
+      // The camera-directive selects are rebuilt from an INPUT event, and assigning .value above fires none —
+      // so without this they keep the PREVIOUS payload's selects: stale marks (the built-in sample's line 2 is an
+      // OL, which is where the phantom "OL" came from) and a stale COUNT, leaving extra lines with no mark at all.
+      if (!activeSheetSnapshot && typeof updateCameraDirectiveCompleter === 'function') updateCameraDirectiveCompleter();
+      // Load with the camera memo already written, instead of making the user press カメラ→メモ every time.
+      // writeCameraLinesToMemo is keyed by srcKey, so re-running it is idempotent for already-placed memos.
+      if (typeof writeCameraLinesToMemo === 'function') writeCameraLinesToMemo();
+      // ver844: writeCameraLinesToMemo only lays out the page it is looking at — an imported payload can carry
+      // conte's held-FX notes on any page, so tidy them all.
+      Object.keys(state.textMemoPages || {}).forEach(function(pageKey){
+        layoutAutoTextMemos(Math.max(0, Number(pageKey) || 0));
+      });
+    }
+
     function applyCurrentSettingsPayload(payload) {
       payload = validateCurrentSettingsPayload(payload);
       const candidate = prepareCurrentSettingsPayload(payload);
@@ -24275,38 +24324,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       }
       updateLanguage({ render:false });
       applySheetZoom();
-      // An imported payload may carry text memos with TEXT but no geometry (conte writes its held-FX notes that
-      // way on purpose, because the free-space maths belongs to this app's live layout). Place those here, using
-      // the same resolver a hand-made memo goes through, so they land in the gap instead of at 0,0 with no size.
-      Object.keys(state.textMemoPages || {}).forEach(function(pageKey){
-        const pageList = state.textMemoPages[pageKey];
-        if (!Array.isArray(pageList)) return;
-        pageList.forEach(function(memo){
-          if (!memo || (Number(memo.w) > 0 && Number(memo.h) > 0)) return;
-          const placed = resolveTextMemoRectForPlacement({
-            id: memo.id || makeTextMemoId(),
-            x: Number(memo.x) || 0, y: Number(memo.y) || 0,
-            w: Math.min(TEXT_MEMO_DEFAULT_W, Math.max(TEXT_MEMO_MIN_W, getTextMemoGapRect().w)),
-            h: TEXT_MEMO_DEFAULT_H
-          }, Math.max(0, Number(pageKey) || 0), memo.id);
-          if (placed) { memo.x = placed.x; memo.y = placed.y; memo.w = placed.w; memo.h = placed.h; }
-        });
-      });
-      // 최상위 키가 곧 활성 단계의 내용이므로(a3 미러링) 여기서는 목록과 활성 id 만 세운다.
-      // writeCameraLinesToMemo 보다 먼저여야 한다 — 그쪽이 메모에 찍을 단계 id 를 여기서 얻는다.
-      applySheetStagesFromPayload(payload);
-      // The camera-directive selects are rebuilt from an INPUT event, and assigning .value above fires none —
-      // so without this they keep the PREVIOUS payload's selects: stale marks (the built-in sample's line 2 is an
-      // OL, which is where the phantom "OL" came from) and a stale COUNT, leaving extra lines with no mark at all.
-      if (typeof updateCameraDirectiveCompleter === 'function') updateCameraDirectiveCompleter();
-      // Load with the camera memo already written, instead of making the user press カメラ→メモ every time.
-      // writeCameraLinesToMemo is keyed by srcKey, so re-running it is idempotent for already-placed memos.
-      if (typeof writeCameraLinesToMemo === 'function') writeCameraLinesToMemo();
-      // ver844: writeCameraLinesToMemo only lays out the page it is looking at — an imported payload can carry
-      // conte's held-FX notes on any page, so tidy them all.
-      Object.keys(state.textMemoPages || {}).forEach(function(pageKey){
-        layoutAutoTextMemos(Math.max(0, Number(pageKey) || 0));
-      });
+      prepareLoadedTextMemos(payload);
       render();
       // A full project load is a fresh baseline — start global undo/redo over so it can't bridge
       // back into the previous project's content.
@@ -24381,7 +24399,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         setExportStatus('Settings loaded: ' + (file.name || 'settings.json'));
         return true;
       } catch (err) {
-        if (generation === documentLoadGeneration) setExportStatus(ioText('loadFailed', { error:err.message || err }));
+        if (generation === documentLoadGeneration) setExportStatus(ioText('loadFailed', { error:err.message || err }), { level:'error' });
         return false;
       }
     }
@@ -24509,7 +24527,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         trackEvent('csv_import', { bytes:buffer.byteLength });
         return true;
       } catch (err) {
-        if (generation === documentLoadGeneration) setExportStatus(ioText('loadFailed', { error:err.message || err }));
+        if (generation === documentLoadGeneration) setExportStatus(ioText('loadFailed', { error:err.message || err }), { level:'error' });
         return false;
       }
     }
@@ -24660,7 +24678,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         setExportStatus('XDTS loaded: ' + (file.name || 'dropped.xdts'));
         return true;
       } catch (err) {
-        if (generation === documentLoadGeneration) setExportStatus(ioText('loadFailed', { error:err.message || err }));
+        if (generation === documentLoadGeneration) setExportStatus(ioText('loadFailed', { error:err.message || err }), { level:'error' });
         return false;
       }
     }
@@ -24854,7 +24872,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       state.loadedSettingsDirectoryUnavailable = true;
       refreshLoadedSettingsSelect();
       if (error && isMissingExportDirectoryError(error)) storeSettingsDirectoryHandle(null);
-      setExportStatus(ioText('folderFailed', { error:error && (error.message || error) || '' }));
+      setExportStatus(ioText('folderFailed', { error:error && (error.message || error) || '' }), { level:'error' });
     }
 
     async function restoreSettingsDirectoryOnStartup() {
@@ -24883,183 +24901,93 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
 
     function makeLoadedFolderJsonId(prefix, filename, index) {
-      return String(prefix || 'json') + '-' + String(index || 0) + '-' + String(filename || '').replace(/[^A-Za-z0-9_-]+/g, '-').slice(0, 48);
+      return String(prefix || 'json') + ':' + String(filename || index || 0);
     }
 
     // ══ [왕복] 저장한 작업 목록 — 검색·키보드 선택·현재 작업 표시 ═════════════════════════════════════════════
+    function replaceWorkLibraryItems(items) {
+      const existing = new Map((state.loadedSettingsFiles || []).map(function(item){ return [item.filename,item.id]; }));
+      state.loadedSettingsFiles = items.map(function(item,index){
+        return Object.assign({},item,{ id:existing.get(item.filename) || makeLoadedFolderJsonId('settings',item.filename,index) });
+      });
+    }
+
+    function getVisibleWorkLibraryItems() {
+      const terms = document.getElementById('workLibrarySearch').value.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
+      return (state.loadedSettingsFiles || []).filter(function(item){
+        const name = (String(item.filename || '') + ' ' + String(item.label || '')).toLocaleLowerCase();
+        return terms.every(function(term){ return name.includes(term); });
+      });
+    }
+
+    function refreshWorkLibrarySelection() {
+      const count = workLibrarySelection.size;
+      document.getElementById('workLibraryCount').textContent = exportUiText('librarySelected',{ count:count,total:(state.loadedSettingsFiles || []).length });
+      document.getElementById('workLibraryClearBtn').disabled = !count;
+      const button = document.getElementById('workLibraryExportBtn');
+      button.textContent = exportUiText('libraryExport',{ count:count });
+      button.disabled = !count || state.isExporting;
+    }
+
     function refreshLoadedSettingsSelect() {
-      if (!currentSettingsFolderBtn) return;
-      const list = Array.isArray(state.loadedSettingsFiles) ? state.loadedSettingsFiles : [];
-      const doc = uiTexts[state.lang] || uiTexts.en;
-      const selected = list.find(function(item){ return item.id === loadedSettingsSelectedId; });
-      if (!selected) loadedSettingsSelectedId = '';
-      const placeholder = !list.length && state.loadedSettingsDirectoryScanned ? doc.settingsSelectNoSettings : doc.settingsSelectPlaceholder;
-      const name = selected ? (selected.filename || selected.label || 'settings.json') : placeholder;
-      currentSettingsFolderBtn.querySelector('.work-file-trigger-label').textContent = name;
-      currentSettingsFolderBtn.disabled = !list.length;
-      const fullName = selected ? (selected.label || selected.filename || name) : placeholder;
-      const label = exportUiText('workPickerTitle') + ': ' + fullName + (state.loadedSettingsDirectoryUnavailable ? ' · ' + ioText('cache') : '');
-      currentSettingsFolderBtn.title = label;
-      currentSettingsFolderBtn.setAttribute('aria-label', label);
-      if (!list.length) closeWorkFilePicker(false);
-      else if (workFilePicker) renderWorkFilePicker();
-    }
-
-    function closeWorkFilePicker(restoreFocus) {
-      const picker = workFilePicker;
-      if (!picker) return;
-      workFilePicker = null;
-      picker.root.remove();
-      if (picker.observer) picker.observer.disconnect();
-      document.removeEventListener('pointerdown', handleWorkFilePickerOutside, true);
-      document.removeEventListener('focusin', handleWorkFilePickerOutside, true);
-      document.removeEventListener('scroll', positionWorkFilePicker, true);
-      window.removeEventListener('resize', positionWorkFilePicker);
-      if (window.visualViewport) {
-        window.visualViewport.removeEventListener('resize', positionWorkFilePicker);
-        window.visualViewport.removeEventListener('scroll', positionWorkFilePicker);
-      }
-      currentSettingsFolderBtn.setAttribute('aria-expanded','false');
-      currentSettingsFolderBtn.removeAttribute('aria-controls');
-      if (restoreFocus !== false && !currentSettingsFolderBtn.disabled) currentSettingsFolderBtn.focus({ preventScroll:true });
-    }
-
-    function handleWorkFilePickerOutside(event) {
-      if (workFilePicker && !workFilePicker.root.contains(event.target) && !currentSettingsFolderBtn.contains(event.target)) closeWorkFilePicker(false);
-    }
-
-    function positionWorkFilePicker(event) {
-      const picker = workFilePicker;
-      if (!picker || (event && event.type === 'scroll' && event.target instanceof Node && picker.root.contains(event.target))) return;
-      const anchor = currentSettingsFolderBtn.getBoundingClientRect();
-      const group = currentSettingsFolderBtn.closest('.settings-io-wrap').getBoundingClientRect();
-      const viewport = window.visualViewport;
-      const x = viewport ? viewport.offsetLeft : 0, y = viewport ? viewport.offsetTop : 0;
-      const width = viewport ? viewport.width : window.innerWidth, height = viewport ? viewport.height : window.innerHeight;
-      const widthPx = Math.min(480, Math.max(300,group.width), width - 16);
-      picker.root.style.width = widthPx + 'px';
-      picker.root.style.left = Math.max(x + 8,Math.min(group.left,x + width - widthPx - 8)) + 'px';
-      const belowTop = Math.max(y + 8,Math.min(anchor.bottom + 6,y + height - 8));
-      const aboveBottom = Math.max(y + 8,Math.min(anchor.top - 6,y + height - 8));
-      const below = y + height - 8 - belowTop, above = aboveBottom - y - 8;
-      const openAbove = below < 240 && above > below;
-      picker.root.style.maxHeight = Math.max(80,Math.min(440,openAbove ? above : below)) + 'px';
-      const popupHeight = picker.root.getBoundingClientRect().height;
-      picker.root.style.top = Math.max(y + 8,Math.min(openAbove ? aboveBottom - popupHeight : belowTop,y + height - popupHeight - 8)) + 'px';
-    }
-
-    function setWorkFilePickerActive(index, scroll) {
-      const picker = workFilePicker;
-      if (!picker) return;
-      picker.active = Math.max(-1,Math.min(picker.items.length - 1,index));
-      const rows = picker.list.querySelectorAll('[role="option"]');
-      rows.forEach(function(row,i){ row.setAttribute('aria-selected',i === picker.active ? 'true' : 'false'); });
-      const row = rows[picker.active];
-      if (row) {
-        picker.search.setAttribute('aria-activedescendant',row.id);
-        if (scroll) {
-          const bounds = row.getBoundingClientRect(), listBounds = picker.list.getBoundingClientRect();
-          if (bounds.top < listBounds.top) picker.list.scrollTop -= listBounds.top - bounds.top;
-          else if (bounds.bottom > listBounds.bottom) picker.list.scrollTop += bounds.bottom - listBounds.bottom;
-        }
-      } else picker.search.removeAttribute('aria-activedescendant');
-    }
-
-    function renderWorkFilePicker() {
-      const picker = workFilePicker;
-      if (!picker) return;
-      const previous = picker.items[picker.active];
-      const terms = picker.search.value.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
-      const list = Array.isArray(state.loadedSettingsFiles) ? state.loadedSettingsFiles : [];
-      picker.items = list.filter(function(item){
-        const text = String(item.label || '') + ' ' + String(item.filename || '');
-        return terms.every(function(term){ return text.toLocaleLowerCase().includes(term); });
-      });
-      picker.root.querySelector('[data-work-picker-heading]').textContent = exportUiText('workPickerTitle');
-      picker.search.placeholder = exportUiText('workPickerSearch');
-      picker.search.setAttribute('aria-label',exportUiText('workPickerSearch'));
-      picker.root.querySelector('[data-work-picker-close]').setAttribute('aria-label',exportUiText('workPickerClose'));
-      picker.root.querySelector('[data-work-picker-count]').textContent = exportUiText('workPickerCount',{ shown:picker.items.length,total:list.length });
-      picker.empty.textContent = exportUiText('workPickerNoMatch');
-      picker.empty.hidden = !!picker.items.length;
-      picker.error.textContent = '';
-      picker.list.replaceChildren();
+      const list = state.loadedSettingsFiles || [], ids = new Set(list.map(function(item){ return item.id; }));
+      if (!ids.has(loadedSettingsSelectedId)) loadedSettingsSelectedId = '';
+      workLibrarySelection.forEach(function(id){ if (!ids.has(id)) workLibrarySelection.delete(id); });
+      const search = document.getElementById('workLibrarySearch');
+      search.placeholder = exportUiText('workPickerSearch'); search.setAttribute('aria-label',search.placeholder);
+      document.getElementById('workLibrarySource').textContent = (state.loadedSettingsDirectoryName || '') + (state.loadedSettingsDirectoryUnavailable ? ' · ' + ioText('cache') : '');
+      const visible = getVisibleWorkLibraryItems(), container = document.getElementById('workLibraryList');
+      const focused = container.contains(document.activeElement) ? { id:document.activeElement.dataset.workId, check:document.activeElement.type === 'checkbox' } : null;
+      const scroll = container.scrollTop;
       const fragment = document.createDocumentFragment();
-      picker.items.forEach(function(item,index){
-        const row = document.createElement('div'); row.className = 'work-file-option';
-        row.id = 'workFileOption-' + index; row.setAttribute('role','option');
-        const text = document.createElement('div'); text.className = 'work-file-option-text';
-        const name = document.createElement('span'); name.className = 'work-file-option-name'; name.textContent = item.filename || item.label || 'settings.json'; text.appendChild(name);
-        if (item.label && item.label !== name.textContent) { const path = document.createElement('span'); path.className = 'work-file-option-path'; path.textContent = item.label; text.appendChild(path); }
-        const check = document.createElement('span'); check.className = 'work-file-option-check'; check.setAttribute('aria-hidden','true');
-        if (item.id === loadedSettingsSelectedId) { check.textContent = '✓'; row.setAttribute('aria-current','true'); row.setAttribute('aria-label',(item.label || item.filename) + ', ' + exportUiText('workPickerCurrent')); }
-        row.appendChild(text); row.appendChild(check);
-        row.addEventListener('pointerdown',function(event){ if (event.pointerType !== 'touch') event.preventDefault(); });
-        row.addEventListener('click',function(){ chooseWorkFilePickerItem(item.id); });
-        fragment.appendChild(row);
+      visible.forEach(function(item){
+        const row = document.createElement('div'); row.className = 'work-library-row'; row.setAttribute('role','listitem');
+        const path = String(item.filename || item.label || 'settings.json'), parts = path.split('/'), name = parts.pop();
+        const check = document.createElement('input'); check.type = 'checkbox'; check.checked = workLibrarySelection.has(item.id); check.dataset.workId = item.id;
+        check.setAttribute('aria-label',exportUiText('librarySelectFile',{ name:path }));
+        check.addEventListener('change',function(){ if (check.checked) workLibrarySelection.add(item.id); else workLibrarySelection.delete(item.id); refreshWorkLibrarySelection(); });
+        const open = document.createElement('button'); open.type = 'button'; open.className = 'work-library-open'; open.dataset.workId = item.id;
+        const text = document.createElement('span'), label = document.createElement('span'); label.className = 'work-library-name'; label.textContent = name; text.appendChild(label);
+        if (parts.length) { const parent = document.createElement('span'); parent.className = 'work-library-path'; parent.textContent = parts.join('/'); text.appendChild(parent); }
+        const marker = document.createElement('span'); marker.className = 'work-library-current'; marker.setAttribute('aria-hidden','true');
+        const current = item.id === loadedSettingsSelectedId; row.dataset.current = String(current); marker.textContent = current ? '●' : '';
+        open.title = path; open.setAttribute('aria-label',exportUiText('libraryOpenFile',{ name:path }) + (current ? ' · ' + exportUiText('workPickerCurrent') : ''));
+        if (current) open.setAttribute('aria-current','true');
+        open.append(text,marker); open.addEventListener('click',function(){ applyLoadedSettingsJsonById(item.id); });
+        row.append(check,open); fragment.appendChild(row);
       });
-      picker.list.appendChild(fragment);
-      let active = picker.items.findIndex(function(item){ return item.id === (previous ? previous.id : loadedSettingsSelectedId); });
-      if (active < 0 && picker.items.length) active = 0;
-      positionWorkFilePicker();
-      setWorkFilePickerActive(active,true);
+      container.replaceChildren(fragment); container.scrollTop = scroll;
+      if (focused) { const node = Array.from(container.querySelectorAll('[data-work-id]')).find(function(el){ return el.dataset.workId === focused.id && (el.type === 'checkbox') === focused.check; }); if (node) node.focus({ preventScroll:true }); }
+      const empty = document.getElementById('workLibraryEmpty'); empty.hidden = !!visible.length;
+      empty.textContent = exportUiText(list.length ? 'workPickerNoMatch' : 'libraryEmpty');
+      document.getElementById('workLibrarySelectBtn').disabled = !visible.length;
+      refreshWorkLibrarySelection();
     }
 
-    function chooseWorkFilePickerItem(id) {
-      if (!workFilePicker) return;
-      if (applyLoadedSettingsJsonById(id)) closeWorkFilePicker();
-      else if (workFilePicker) workFilePicker.error.textContent = exportStatusEl.textContent;
-    }
-
-    function handleWorkFilePickerKeydown(event) {
-      const picker = workFilePicker;
-      if (!picker) return;
-      event.stopPropagation();
-      if (event.isComposing || event.keyCode === 229) return;
-      if (event.key === 'Escape') { event.preventDefault(); closeWorkFilePicker(); return; }
-      if (event.key === 'Tab') {
-        const close = picker.root.querySelector('[data-work-picker-close]');
-        if ((!event.shiftKey && event.target === picker.search) || (event.shiftKey && event.target === close)) {
-          const controls = Array.from(document.querySelectorAll('button:not(:disabled),input:not(:disabled),select:not(:disabled),textarea:not(:disabled),a[href],[tabindex="0"]')).filter(function(node){ return !picker.root.contains(node) && !node.closest('[inert]') && node.tabIndex >= 0 && node.getClientRects().length && getComputedStyle(node).visibility !== 'hidden'; });
-          const index = controls.indexOf(currentSettingsFolderBtn), next = controls[index + (event.shiftKey ? -1 : 1)];
-          event.preventDefault(); closeWorkFilePicker(false);
-          (next || currentSettingsFolderBtn).focus({ preventScroll:true });
+    async function importWorkLibraryFiles(files, replace) {
+      const generation = ++settingsDirectoryGeneration, incoming = [], errors = [];
+      for (const file of Array.from(files || [])) {
+        if (!/\.json$/i.test(file.name)) continue;
+        try {
+          const payload = JSON.parse(await file.text());
+          if (!isCurrentSettingsPayload(payload)) continue;
+          const name = file.webkitRelativePath || file.name;
+          incoming.push({ id:makeLoadedFolderJsonId('settings',name,0), filename:name, label:name, payload:validateCurrentSettingsPayload(payload) });
+        } catch (err) { errors.push(err); }
+        if (generation !== settingsDirectoryGeneration) return;
+      }
+      if (incoming.length) {
+        const merged = new Map((replace ? [] : state.loadedSettingsFiles || []).map(function(item){ return [item.filename,item]; }));
+        incoming.forEach(function(item){ merged.set(item.filename,item); });
+        replaceWorkLibraryItems(Array.from(merged.values())); state.loadedSettingsDirectoryScanned = true;
+        if (replace) {
+          state.loadedSettingsDirectoryHandle = null; state.loadedSettingsDirectoryUnavailable = false;
+          state.loadedSettingsDirectoryName = String(incoming[0].filename).split('/').slice(0,-1).join('/');
+          storeSettingsDirectoryHandle(null);
         }
-        return;
+        refreshLoadedSettingsSelect(); saveSettingsJsonFolderCache();
       }
-      if (event.target !== picker.search || event.ctrlKey || event.metaKey) return;
-      if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-        event.preventDefault();
-        setWorkFilePickerActive(Math.max(0,picker.active + (event.key === 'ArrowDown' ? 1 : -1)),true);
-      } else if (event.key === 'Enter' && picker.items[picker.active]) {
-        event.preventDefault(); chooseWorkFilePickerItem(picker.items[picker.active].id);
-      }
-    }
-
-    function openWorkFilePicker() {
-      if (!currentSettingsFolderBtn || currentSettingsFolderBtn.disabled || workFilePicker) return;
-      const root = document.createElement('div'); root.className = 'work-file-picker'; root.id = 'workFilePicker';
-      root.setAttribute('role','dialog'); root.setAttribute('aria-labelledby','workFilePickerHeading');
-      root.innerHTML = '<div class="work-file-picker-head"><h3 id="workFilePickerHeading" data-work-picker-heading></h3><button class="toolbar-btn icon-only" type="button" data-work-picker-close>×</button></div>' +
-        '<input type="text" role="combobox" aria-autocomplete="list" aria-expanded="true" aria-controls="workFileList" autocomplete="off" spellcheck="false" data-work-picker-search />' +
-        '<div class="work-file-picker-count" data-work-picker-count role="status" aria-live="polite"></div><div id="workFileList" class="work-file-list" role="listbox"></div><div class="work-file-picker-empty" data-work-picker-empty></div><div class="work-file-picker-error" role="alert" data-work-picker-error></div>';
-      const picker = { root:root,search:root.querySelector('[data-work-picker-search]'),list:root.querySelector('[role="listbox"]'),empty:root.querySelector('[data-work-picker-empty]'),error:root.querySelector('[data-work-picker-error]'),items:[],active:-1 };
-      workFilePicker = picker;
-      picker.list.setAttribute('aria-label',exportUiText('workPickerTitle'));
-      picker.search.addEventListener('input',renderWorkFilePicker);
-      root.querySelector('[data-work-picker-close]').addEventListener('click',function(){ closeWorkFilePicker(); });
-      root.addEventListener('keydown',handleWorkFilePickerKeydown);
-      root.addEventListener('keyup',function(event){ event.stopPropagation(); });
-      document.body.appendChild(root);
-      currentSettingsFolderBtn.setAttribute('aria-expanded','true'); currentSettingsFolderBtn.setAttribute('aria-controls',root.id);
-      renderWorkFilePicker();
-      document.addEventListener('pointerdown',handleWorkFilePickerOutside,true);
-      document.addEventListener('focusin',handleWorkFilePickerOutside,true);
-      document.addEventListener('scroll',positionWorkFilePicker,true);
-      window.addEventListener('resize',positionWorkFilePicker);
-      if (window.visualViewport) { window.visualViewport.addEventListener('resize',positionWorkFilePicker); window.visualViewport.addEventListener('scroll',positionWorkFilePicker); }
-      picker.observer = new ResizeObserver(positionWorkFilePicker); picker.observer.observe(currentSettingsFolderBtn.closest('.settings-io-wrap'));
-      picker.search.focus({ preventScroll:true });
+      setExportStatus(ioText('partial',{ count:incoming.length,skipped:errors.length }),{ level:errors.length || !incoming.length ? 'error' : 'success' });
     }
 
     function applyLoadedSettingsJsonById(id) {
@@ -25072,7 +25000,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         setExportStatus(exportUiText('workPickerOpened',{ name:item.label || item.filename || 'settings.json' }));
         return true;
       } catch (err) {
-        setExportStatus(ioText('loadFailed',{ error:err && err.message ? err.message : err }));
+        setExportStatus(ioText('loadFailed',{ error:err && err.message ? err.message : err }), { level:'error' });
         return false;
       }
     }
@@ -25121,11 +25049,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         } catch (err) { errors.push({ path:found.path, error:err.name || 'Error' }); }
       }
       if (generation !== settingsDirectoryGeneration) return false;
-      state.loadedSettingsFiles = settingsItems; state.loadedSettingsDirectoryScanned = true;
+      replaceWorkLibraryItems(settingsItems); state.loadedSettingsDirectoryScanned = true;
       state.loadedSettingsDirectoryHandle = handle; state.loadedSettingsDirectoryName = handle.name || '';
       state.loadedSettingsDirectoryUnavailable = false;
       refreshLoadedSettingsSelect(); saveSettingsJsonFolderCache();
-      if (!opts.silent || errors.length) setExportStatus(ioText('partial', { count:settingsItems.length, skipped:errors.length }));
+      if (!opts.silent || errors.length) setExportStatus(ioText('partial', { count:settingsItems.length, skipped:errors.length }), { level:errors.length ? 'error' : 'success' });
       return true;
     }
 
@@ -25144,7 +25072,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     async function chooseCurrentSettingsDirectory() {
-      if (!isDirectoryPickerSupported()) { if (currentSettingsInputEl) currentSettingsInputEl.click(); return; }
+      if (!isDirectoryPickerSupported()) { document.getElementById('workLibraryDirectoryInput').click(); return; }
       const generation = ++settingsDirectoryGeneration;
       try {
         const handle = await showAppDirectoryPicker({ mode:'read' }, SETTINGS_DIRECTORY_PICKER_ID, state.loadedSettingsDirectoryHandle);
@@ -25153,7 +25081,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         if (generation !== settingsDirectoryGeneration) return;
         if (await loadJsonFilesFromSettingsDirectory(handle, { generation:generation })) storeSettingsDirectoryHandle(handle);
       } catch (err) {
-        if (generation === settingsDirectoryGeneration) setExportStatus(err.name === 'AbortError' ? ioText('canceled') : ioText('selectFailed', { error:err.message || err }));
+        if (generation === settingsDirectoryGeneration) setExportStatus(err.name === 'AbortError' ? ioText('canceled') : ioText('selectFailed', { error:err.message || err }), { level:err.name === 'AbortError' ? 'success' : 'error' });
       }
     }
 
@@ -25167,12 +25095,14 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const supported = isDirectoryPickerSupported();
       chooseExportDirBtn.disabled = !!state.isExporting || !supported;
       chooseExportDirBtn.classList.toggle('export-dir-selected', !!state.exportDirectoryHandle);
-      chooseExportDirBtn.textContent = (doc.chooseExportDirBtn || 'Folder') + (state.exportDirectoryHandle ? '✓' : '');
+      chooseExportDirBtn.replaceChildren();
+      const label = document.createElement('span'); label.textContent = state.exportDirectoryHandle ? state.exportDirectoryName || doc.chooseExportDirBtn : ioText('normal');
+      chooseExportDirBtn.appendChild(label);
       const description = !supported ? ioText('unsupported') : state.exportDirectoryHandle ? ioText('selected', { name:state.exportDirectoryName }) : ioText('normal');
       chooseExportDirBtn.title = description;
-      const hint = document.getElementById('exportDestination'); if (hint) hint.textContent = description;
+      chooseExportDirBtn.setAttribute('aria-label',(doc.chooseExportDirBtn || 'Folder') + ': ' + description);
       const clear = document.getElementById('clearExportDirBtn');
-      if (clear) { clear.textContent = ioText('normal'); clear.disabled = !!state.isExporting; clear.classList.toggle('hidden', !state.exportDirectoryHandle); }
+      if (clear) { clear.title = ioText('normal'); clear.setAttribute('aria-label',ioText('normal')); clear.disabled = !!state.isExporting; clear.classList.toggle('hidden', !state.exportDirectoryHandle); }
     }
 
     function getExportDirectoryStartHandle() {
@@ -25188,11 +25118,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         state.exportDirectoryHandle = handle; state.exportDirectoryName = handle.name || '';
         updateExportDirectoryButton(); setExportStatus(ioText('selected', { name:state.exportDirectoryName }));
         storeExportDirectoryHandle(handle).then(function(ok){
-          if (!ok && generation === exportDirectoryGeneration) setExportStatus(ioText('notRemembered'));
+          if (!ok && generation === exportDirectoryGeneration) setExportStatus(ioText('notRemembered'), { level:'error' });
         });
         return handle;
       } catch (err) {
-        if (generation === exportDirectoryGeneration) setExportStatus(err && err.name === 'AbortError' ? ioText('canceled') : ioText('selectFailed',{error:err.message || err}));
+        if (generation === exportDirectoryGeneration) setExportStatus(err && err.name === 'AbortError' ? ioText('canceled') : ioText('selectFailed',{error:err.message || err}), { level:err && err.name === 'AbortError' ? 'success' : 'error' });
         return null;
       }
     }
@@ -25234,7 +25164,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       state.exportDirectoryHandle = null; state.exportDirectoryName = '';
       updateExportDirectoryButton();
       return storeExportDirectoryHandle(null).then(function(ok){
-        if (!ok && generation === exportDirectoryGeneration) setExportStatus(ioText('forgetFailed'));
+        if (!ok && generation === exportDirectoryGeneration) setExportStatus(ioText('forgetFailed'), { level:'error' });
         return ok;
       });
     }
@@ -25247,16 +25177,17 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         catch (err) {
           if (isMissingExportDirectoryError(err)) {
             target.handle = null; target.disconnected = true;
-            target.memoryClear = forgetExportDirectory(handle);
-            setExportStatus(ioText('missing'));
+            target.memoryClear = forgetExportDirectory(target.rootHandle || handle);
+            setExportStatus(ioText('missing'), { level:'error' });
             break;
           }
           if (!err || (err.name !== 'NotAllowedError' && err.name !== 'SecurityError')) throw err;
           const choice = await chooseExportRecovery();
           if (!choice) throw new DOMException('Canceled', 'AbortError');
-          target.handle = choice.handle;
+          target.handle = choice.handle && target.prepareHandle ? await target.prepareHandle(choice.handle) : choice.handle;
         }
       }
+      if (target.download) { await target.download(blob,filename); return 'archive'; }
       downloadBlob(blob, filename); return 'download';
     }
 
@@ -25656,7 +25587,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       closeExportPreflightModal();
       let snapshot;
       try { snapshot = captureExportSnapshot(); }
-      catch (err) { setExportStatus(ioText('failed', { page:1, error:err.message || err })); return; }
+      catch (err) { setExportStatus(ioText('failed', { page:1, error:err.message || err }), { level:'error' }); return; }
       const text = function(key, values){ return escapeStatusHtml(exportUiText(key, values)); };
       const rows = [
         { key:'showTemplate', label:'outputTemplate' },
@@ -25726,6 +25657,292 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       backdrop.querySelector('[data-preflight-cancel]').focus({ preventScroll:true });
     }
 
+    // ══ [출력] 여러 작업 일괄 출력 — 문서 격리·사전 검사·순차 저장 ═══════════════════════════════════════════
+    function createBatchDocumentSnapshot() {
+      const snapshot = cloneSheetData(settingsDocumentDefaults);
+      ['episode','title','cutNo','author','page','timelineCommandInput','csvCommandEdit','dialogManual','cameraManual'].forEach(function(id){ snapshot.inputs[id] = ''; });
+      snapshot.inputs.seconds = '1'; snapshot.inputs.frames = '0';
+      return snapshot;
+    }
+
+    async function hydrateBatchWorkPayload(source) {
+      const payload = validateCurrentSettingsPayload(source), paper = payload.paper || {};
+      const image = paper.imageStoredInDb && !paper.imageDataUrl, memo = paper.memoStoredInDb && !paper.memoDataUrl;
+      if (image || memo) {
+        const record = await loadPaperImageMemoryRecord(paper.memoryId);
+        if (!record || (paper.memoryId || record.memoryId || '') && paper.memoryId !== record.memoryId || image && !record.imageDataUrl || memo && !record.memoDataUrl) throw new Error(exportUiText('batchMissingPaper'));
+        if (image) paper.imageDataUrl = record.imageDataUrl;
+        if (memo) paper.memoDataUrl = record.memoDataUrl;
+      }
+      return payload;
+    }
+
+    function prepareBatchWorkSnapshot(payload, format) {
+      const base = createBatchDocumentSnapshot();
+      const candidate = withSheetSnapshot(base,function(){ return prepareCurrentSettingsPayload(payload); });
+      const snapshot = candidate.snapshot;
+      withSheetSnapshot(snapshot,function(){
+        state.lang = normalizeLanguageCode(snapshot.inputs.languageSelect || 'ja');
+        state.positionMode = false; state.textMemoEditMode = false; state.pastedImages = {}; state.paperAutoAlignOverlay = null;
+        state.currentPreviewPage = Math.min(getSyncedRenderModel().totalPages - 1,state.currentPreviewPage);
+        prepareLoadedTextMemos(payload);
+        snapshot.model = cloneSheetData(getSyncedRenderModel());
+        snapshot.size = getExportPixelSize();
+        snapshot.format = format === 'saved' ? snapshot.inputs.exportFormatSelect || 'png' : format;
+        if (!['png','jpg','psd'].includes(snapshot.format)) snapshot.format = 'png';
+        state.exportFilenameOverride = '';
+      });
+      refreshExportSnapshotNames(snapshot);
+      return snapshot;
+    }
+
+    function reserveBatchNames(names, format, used) {
+      let renamed = 0;
+      const files = names.map(function(base){
+        let name = base + '.' + format, index = 2;
+        while (used.has(name.toLocaleLowerCase())) name = base + '_' + index++ + '.' + format;
+        used.add(name.toLocaleLowerCase());
+        if (index > 2) renamed++;
+        return name;
+      });
+      return { files:files, renamed:renamed };
+    }
+
+    function closeBatchExport() {
+      const session = batchExportSession;
+      if (!session) return;
+      if (session.running) { session.cancelled = true; updateBatchExportView(session); return; }
+      batchExportSession = null; session.revision++; session.archive = null;
+      session.root.remove(); session.app.inert = session.previousInert;
+      document.removeEventListener('keydown',handleBatchExportKeydown,true);
+      if (session.returnFocus && session.returnFocus.isConnected) session.returnFocus.focus({ preventScroll:true });
+    }
+
+    function handleBatchExportKeydown(event) {
+      const session = batchExportSession;
+      if (!session) return;
+      const otherDialog = event.target instanceof Element ? event.target.closest('.serifu-sheet-modal-backdrop') : null;
+      if (otherDialog && otherDialog !== session.root) return;
+      event.stopImmediatePropagation();
+      if (event.key === 'Escape') { event.preventDefault(); closeBatchExport(); return; }
+      if (event.key !== 'Tab') return;
+      const controls = Array.from(session.root.querySelectorAll('button:not(:disabled),select:not(:disabled)')).filter(function(node){ return node.getClientRects().length; });
+      const first = controls[0], last = controls[controls.length - 1];
+      if (!session.root.contains(document.activeElement)) { event.preventDefault(); (event.shiftKey ? last : first).focus(); return; }
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    }
+
+    function updateBatchExportView(session) {
+      if (session !== batchExportSession) return;
+      const root = session.root, ready = session.jobs.filter(function(job){ return job.status === 'ready'; });
+      const failed = session.jobs.filter(function(job){ return job.status === 'error'; }).length;
+      const pages = session.jobs.reduce(function(total,job){ return total + (job.files ? job.files.length : 0); },0);
+      const close = root.querySelector('[data-batch-close]');
+      close.textContent = exportUiText(session.running ? session.cancelled ? 'batchStopping' : 'batchStop' : 'backToEdit');
+      close.disabled = session.running && session.cancelled;
+      const confirm = root.querySelector('[data-batch-start]');
+      confirm.textContent = session.running ? exportUiText('batchState_running') : exportUiText('batchStart',{ count:ready.length });
+      confirm.disabled = session.preparing || session.running || session.finished || !ready.length;
+      confirm.hidden = !!session.finished;
+      root.querySelector('[data-batch-format]').disabled = session.running || session.finished;
+      root.querySelector('[data-batch-folder]').disabled = session.running || session.finished;
+      root.querySelector('[data-batch-download]').disabled = session.running || session.finished;
+      const location = session.handle ? ioText('selected',{ name:session.handle.name || session.folderName }) + ' / ' + session.runName : exportUiText('batchZip');
+      root.querySelector('[data-batch-location]').textContent = location;
+      let summary;
+      if (session.finished) summary = exportUiText('batchFinished',{ folder:session.folderCount,archive:session.archiveCount,failed:failed }) + (session.cancelled ? ' · ' + ioText('canceled') : '') + (session.archiveError ? ' · ' + session.archiveError : '') + (session.disconnected ? ' · ' + ioText('missing') : '');
+      else if (session.running) summary = exportUiText('batchProgress',{ done:session.done,total:pages });
+      else if (session.preparing) summary = exportUiText('batchPreparing',{ done:session.prepared,total:session.sources.length });
+      else summary = exportUiText('batchReady',{ count:ready.length,pages:pages,failed:failed }) + (session.renamed ? ' · ' + exportUiText('batchRenamed',{ count:session.renamed }) : '');
+      root.querySelector('[data-batch-summary]').textContent = summary;
+      const progress = root.querySelector('[data-batch-progress]'); progress.max = Math.max(1,session.preparing ? session.sources.length : pages); progress.value = session.preparing ? session.prepared : session.done;
+      const list = root.querySelector('[data-batch-list]');
+      session.jobs.forEach(function(job){
+        if (!job.row) {
+          const row = document.createElement('li'); row.className = 'batch-row';
+          const text = document.createElement('div'), name = document.createElement('strong'), detail = document.createElement('div'), status = document.createElement('span');
+          name.textContent = job.name; name.style.overflowWrap = 'anywhere'; detail.className = 'batch-row-detail'; text.append(name,detail); row.append(text,status); list.appendChild(row);
+          job.row = row; job.detail = detail; job.statusEl = status;
+        }
+        job.row.dataset.error = String(job.status === 'error');
+        job.statusEl.textContent = exportUiText('batchState_' + job.status);
+        job.detail.textContent = job.error || (job.files ? job.files.length + ' ' + exportUiText('batchPages') + ' · ' + job.format.toUpperCase() + ' · ' + job.size.width + ' × ' + job.size.height + ' px · ' + job.files[0] + (job.files.length > 1 ? ' … ' + job.files[job.files.length - 1] : '') : '');
+      });
+    }
+
+    async function prepareBatchExport(session) {
+      const revision = ++session.revision, used = new Set();
+      session.jobs = []; session.preparing = true; session.prepared = 0; session.renamed = 0;
+      session.root.querySelector('[data-batch-list]').replaceChildren();
+      const format = session.root.querySelector('[data-batch-format]').value;
+      updateBatchExportView(session);
+      for (const item of session.sources) {
+        const job = { name:item.filename || item.label || 'settings.json',status:'pending' };
+        try {
+          const payload = await hydrateBatchWorkPayload(item.payload);
+          if (session !== batchExportSession || revision !== session.revision) return;
+          const snapshot = prepareBatchWorkSnapshot(payload,format), names = reserveBatchNames(snapshot.names,snapshot.format,used);
+          job.payload = payload; job.format = snapshot.format; job.size = snapshot.size; job.files = names.files; job.status = 'ready'; session.renamed += names.renamed;
+        } catch (err) { job.status = 'error'; job.error = err.message || String(err); }
+        if (session !== batchExportSession || revision !== session.revision) return;
+        session.jobs.push(job); session.prepared++; updateBatchExportView(session);
+        await wait(0);
+      }
+      session.preparing = false; updateBatchExportView(session);
+    }
+
+    function openBatchExport() {
+      if (state.isExporting || batchExportSession) return;
+      const sources = (state.loadedSettingsFiles || []).filter(function(item){ return workLibrarySelection.has(item.id); });
+      if (!sources.length) return;
+      const text = function(key){ return escapeStatusHtml(exportUiText(key)); };
+      const root = document.createElement('div'); root.className = 'serifu-sheet-modal-backdrop export-preflight-modal-backdrop';
+      root.innerHTML = '<section class="serifu-sheet-modal batch-dialog" role="dialog" aria-modal="true" aria-labelledby="batchExportTitle">' +
+        '<header class="export-review-header"><h3 id="batchExportTitle">' + text('batchTitle') + '</h3><button class="toolbar-btn" type="button" data-batch-close></button></header>' +
+        '<div class="batch-body"><div class="batch-note">' + text('batchScope') + '</div><div class="batch-options"><label>' + text('outputFormat') + '<select data-batch-format><option value="saved">' + text('batchSavedFormat') + '</option><option value="png">PNG</option><option value="jpg">JPG</option><option value="psd">PSD</option></select></label>' +
+        '<button class="toolbar-btn" type="button" data-batch-folder>' + text('chooseExportDirBtn') + '</button><button class="toolbar-btn" type="button" data-batch-download>' + text('batchZip') + '</button></div>' +
+        '<div class="batch-note" data-batch-location></div><div class="batch-summary" role="status" aria-live="polite" data-batch-summary></div><progress class="batch-progress" data-batch-progress></progress><ul class="batch-list" data-batch-list></ul></div>' +
+        '<footer class="export-review-footer"><div class="batch-note">' + text('batchDestinationHint') + '</div><button class="toolbar-btn primary" type="button" data-batch-start disabled></button></footer></section>';
+      const app = document.querySelector('.app'), now = new Date();
+      const stamp = now.getFullYear() + String(now.getMonth() + 1).padStart(2,'0') + String(now.getDate()).padStart(2,'0') + '_' + [now.getHours(),now.getMinutes(),now.getSeconds()].map(function(n){ return String(n).padStart(2,'0'); }).join('');
+      const session = { root:root,app:app,previousInert:app.inert,returnFocus:document.activeElement,sources:sources,jobs:[],revision:0,prepared:0,done:0,folderCount:0,archiveCount:0,runName:'AutoSheet_' + stamp,handle:state.exportDirectoryHandle,folderName:state.exportDirectoryName,renamed:0 };
+      batchExportSession = session;
+      root.querySelector('[data-batch-close]').addEventListener('click',closeBatchExport);
+      root.querySelector('[data-batch-format]').addEventListener('change',function(){ prepareBatchExport(session); });
+      root.querySelector('[data-batch-folder]').addEventListener('click',async function(){ const handle = await chooseExportDirectory(); if (handle && session === batchExportSession) { session.handle = handle; session.folderName = handle.name; updateBatchExportView(session); } });
+      root.querySelector('[data-batch-download]').addEventListener('click',function(){ session.handle = null; updateBatchExportView(session); });
+      root.querySelector('[data-batch-start]').addEventListener('click',function(){ runBatchExport(session); });
+      document.body.appendChild(root); app.inert = true;
+      document.addEventListener('keydown',handleBatchExportKeydown,true);
+      updateBatchExportView(session); root.querySelector('[data-batch-close]').focus({ preventScroll:true });
+      prepareBatchExport(session);
+    }
+
+    async function createBatchOutputDirectory(handle, session) {
+      const base = session.runName;
+      for (let index = 0; index < 100; index++) {
+        const name = base + (index ? '_' + (index + 1) : '');
+        try { await handle.getDirectoryHandle(name); }
+        catch (err) {
+          if (err.name !== 'NotFoundError') throw err;
+          const directory = await handle.getDirectoryHandle(name,{ create:true }); session.runName = name; return directory;
+        }
+      }
+      throw new Error(exportUiText('batchFolderCollision'));
+    }
+
+    async function renderExportPageBlob(snapshot, page) {
+      if (snapshot.format === 'psd') return renderPageToPsdBlob(page,snapshot.model,snapshot.size,snapshot);
+      const target = document.createElementNS('http://www.w3.org/2000/svg','svg');
+      renderPage(target,page,snapshot.model,false,{ snapshot:snapshot });
+      return svgStringToBlob(serializeSvg(target),snapshot.format,page,snapshot.size,snapshot);
+    }
+
+    async function runBatchExport(session) {
+      if (session !== batchExportSession || session.preparing || session.running || session.finished || state.isExporting) return;
+      const jobs = session.jobs.filter(function(job){ return job.status === 'ready'; });
+      if (!jobs.length) return;
+      session.running = true; state.isExporting = true; updatePreviewControls(state.totalPages);
+      session.archive = { parts:[],central:[],size:0,count:0 };
+      const target = { handle:null,rootHandle:session.handle,download:async function(blob,name){ await appendBatchArchiveFile(session.archive,blob,name); } };
+      target.prepareHandle = async function(handle){
+        target.rootHandle = handle; session.handle = handle;
+        try { return await createBatchOutputDirectory(handle,session); }
+        catch (err) { if (!isMissingExportDirectoryError(err)) throw err; target.disconnected = true; session.handle = null; session.disconnected = true; forgetExportDirectory(handle); return null; }
+      };
+      try {
+        // Ask for permission in the confirming click, before asynchronous rendering.
+        const permission = session.handle ? ensureExportDirectoryPermission(session.handle) : Promise.resolve(true);
+        updateBatchExportView(session);
+        session.root.querySelector('[data-batch-close]').focus({ preventScroll:true });
+        let permitted;
+        try { permitted = await permission; }
+        catch (err) { if (isMissingExportDirectoryError(err)) { target.disconnected = true; forgetExportDirectory(session.handle); session.handle = null; permitted = true; } else if (err.name === 'NotAllowedError' || err.name === 'SecurityError') permitted = false; else throw err; }
+        if (!permitted) {
+          const choice = await chooseExportRecovery();
+          if (!choice) throw new DOMException('Canceled','AbortError');
+          session.handle = choice.handle;
+        }
+        if (session.handle && !session.cancelled) target.handle = await target.prepareHandle(session.handle);
+        updateBatchExportView(session);
+        for (const job of jobs) {
+          if (session.cancelled) break;
+          let writing = false;
+          try {
+            const snapshot = prepareBatchWorkSnapshot(job.payload,job.format);
+            if (snapshot.model.totalPages !== job.files.length) throw new Error(exportUiText('batchChanged'));
+            job.status = 'running'; job.done = 0; updateBatchExportView(session);
+            for (let page = 0; page < job.files.length && !session.cancelled; page++) {
+              const blob = await renderExportPageBlob(snapshot,page);
+              if (session.cancelled) break;
+              writing = true;
+              const mode = await saveExportBlob(blob,job.files[page],target);
+              writing = false;
+              if (mode === 'folder') session.folderCount++; else session.archiveCount++;
+              job.done++; session.done++; session.disconnected = !!target.disconnected;
+              session.handle = target.handle ? target.rootHandle : null;
+              updateBatchExportView(session); await wait(0);
+            }
+            job.status = job.done === job.files.length ? 'done' : 'stopped';
+          } catch (err) {
+            if (err.name === 'AbortError') { session.cancelled = true; job.status = 'stopped'; }
+            else { job.status = 'error'; job.error = (job.done ? exportUiText('batchPartial',{ count:job.done }) + ' · ' : '') + (err.message || String(err)); }
+            if (writing) break;
+          }
+          updateBatchExportView(session);
+        }
+      } catch (err) {
+        if (err.name === 'AbortError') session.cancelled = true;
+        else { const job = jobs.find(function(item){ return item.status === 'ready'; }); if (job) { job.status = 'error'; job.error = err.message || String(err); } }
+      } finally {
+        try {
+          if (session.archive.count) downloadBlob(finishBatchArchive(session.archive),session.runName + (session.cancelled ? '_partial' : '') + '.zip');
+        } catch (err) { session.archiveError = exportUiText('batchArchiveFailed',{ error:err.message || err }); session.archiveCount = 0; }
+        session.archive = null; session.running = false; session.finished = true;
+        session.jobs.forEach(function(job){ if (job.status === 'ready') job.status = 'stopped'; job.payload = null; }); session.sources = [];
+        state.isExporting = false; updatePreviewControls(state.totalPages); updateBatchExportView(session);
+        session.root.querySelector('[data-batch-close]').focus({ preventScroll:true });
+      }
+    }
+
+    // ══ [출력] 다운로드용 ZIP — 원본 Blob을 유지하는 무압축 ZIP32 ═══════════════════════════════════════════
+    const batchZipCrcTable = Uint32Array.from({ length:256 },function(_,value){
+      let crc = value;
+      for (let bit = 0; bit < 8; bit++) crc = (crc >>> 1) ^ (crc & 1 ? 0xedb88320 : 0);
+      return crc >>> 0;
+    });
+
+    async function appendBatchArchiveFile(archive, blob, name) {
+      const filename = new TextEncoder().encode(name), size = blob.size;
+      if (archive.count >= 65535 || filename.length > 65535 || size > 0xffffffff || archive.size + size + filename.length + 30 > 0xffffffff) throw new Error(exportUiText('batchZipLimit'));
+      let crc = 0xffffffff;
+      const reader = blob.stream().getReader();
+      try {
+        for (;;) {
+          const chunk = await reader.read(); if (chunk.done) break;
+          for (const byte of chunk.value) crc = (crc >>> 8) ^ batchZipCrcTable[(crc ^ byte) & 255];
+        }
+      } finally { reader.releaseLock(); }
+      crc = (crc ^ 0xffffffff) >>> 0;
+      const local = new Uint8Array(30 + filename.length), view = new DataView(local.buffer);
+      view.setUint32(0,0x04034b50,true); view.setUint16(4,20,true); view.setUint16(6,0x800,true); view.setUint16(12,33,true); view.setUint32(14,crc,true);
+      view.setUint32(18,size,true); view.setUint32(22,size,true); view.setUint16(26,filename.length,true); local.set(filename,30);
+      const central = new Uint8Array(46 + filename.length), entry = new DataView(central.buffer);
+      entry.setUint32(0,0x02014b50,true); entry.setUint16(4,20,true); entry.setUint16(6,20,true); entry.setUint16(8,0x800,true); entry.setUint16(14,33,true); entry.setUint32(16,crc,true);
+      entry.setUint32(20,size,true); entry.setUint32(24,size,true); entry.setUint16(28,filename.length,true); entry.setUint32(42,archive.size,true); central.set(filename,46);
+      archive.parts.push(local,blob); archive.central.push(central); archive.size += local.length + size; archive.count++;
+    }
+
+    function finishBatchArchive(archive) {
+      const centralSize = archive.central.reduce(function(total,entry){ return total + entry.length; },0);
+      if (archive.size + centralSize + 22 > 0xffffffff) throw new Error(exportUiText('batchZipLimit'));
+      const end = new Uint8Array(22), view = new DataView(end.buffer);
+      view.setUint32(0,0x06054b50,true); view.setUint16(8,archive.count,true); view.setUint16(10,archive.count,true);
+      view.setUint32(12,centralSize,true); view.setUint32(16,archive.size,true);
+      return new Blob(archive.parts.concat(archive.central,[end]),{ type:'application/zip' });
+    }
+
     async function downloadAllPages(preparedSnapshot) {
       if (state.isExporting) return;
       state.isExporting = true;
@@ -25746,25 +25963,19 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           if (!choice) throw new DOMException('Canceled', 'AbortError');
           destination.handle = choice.handle;
         }
-        setExportStatus(ioText('preparing', { count:model.totalPages }));
+        setExportStatus(ioText('preparing', { count:model.totalPages }), { level:'progress' });
         for (; pageIndex < model.totalPages; pageIndex++) {
-          let blob;
-          if (snapshot.format === 'psd') blob = await renderPageToPsdBlob(pageIndex, snapshot.model, snapshot.size, snapshot);
-          else {
-            const tempSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-            renderPage(tempSvg, pageIndex, snapshot.model, false, { snapshot:snapshot });
-            blob = await svgStringToBlob(serializeSvg(tempSvg), snapshot.format, pageIndex, snapshot.size, snapshot);
-          }
+          const blob = await renderExportPageBlob(snapshot,pageIndex);
           const mode = await saveExportBlob(blob, snapshot.names[pageIndex] + '.' + snapshot.format, destination);
           if (mode === 'folder') folderCount++; else downloadCount++;
-          setExportStatus(ioText('progress', { done:pageIndex + 1, count:model.totalPages, folder:folderCount, download:downloadCount }) + (destination.disconnected ? ' · ' + ioText('missing') : ''));
+          setExportStatus(ioText('progress', { done:pageIndex + 1, count:model.totalPages, folder:folderCount, download:downloadCount }) + (destination.disconnected ? ' · ' + ioText('missing') : ''), { level:'progress' });
           await wait(mode === 'folder' ? 40 : 120);
         }
-        setExportStatus(ioText('complete', { folder:folderCount, download:downloadCount }) + (destination.disconnected ? ' · ' + ioText('missing') : ''));
-        if (destination.memoryClear) destination.memoryClear.then(function(ok){ if (!ok) setExportStatus(ioText('forgetFailed')); });
+        setExportStatus(ioText('complete', { folder:folderCount, download:downloadCount }) + (destination.disconnected ? ' · ' + ioText('missing') : ''), { level:destination.disconnected ? 'error' : 'success' });
+        if (destination.memoryClear) destination.memoryClear.then(function(ok){ if (!ok) setExportStatus(ioText('forgetFailed'), { level:'error' }); });
         trackEvent('export', { format:snapshot.format, pageCount:model.totalPages });
       } catch (err) {
-        setExportStatus((err && err.name === 'AbortError' ? ioText('canceled') : ioText('failed', { page:pageIndex + 1, error:err.message || err })) + ' · ' + ioText('complete', { folder:folderCount, download:downloadCount }));
+        setExportStatus((err && err.name === 'AbortError' ? ioText('canceled') : ioText('failed', { page:pageIndex + 1, error:err.message || err })) + ' · ' + ioText('complete', { folder:folderCount, download:downloadCount }), { level:err && err.name === 'AbortError' ? 'success' : 'error' });
       } finally {
         state.isExporting = false;
         updatePreviewControls(state.totalPages);
@@ -25784,7 +25995,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         try {
           loadCsvFromCurrentBuffer({ render:shouldRender });
         } catch (err) {
-          setExportStatus(ioText('loadFailed', { error:err.message || err }));
+          setExportStatus(ioText('loadFailed', { error:err.message || err }), { level:'error' });
         }
       } else if (shouldRender) render();
     }
@@ -25904,10 +26115,15 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     if (currentSettingsFileBtn) currentSettingsFileBtn.addEventListener('click', chooseCurrentSettingsFile);
     if (currentSettingsImportBtn) currentSettingsImportBtn.addEventListener('click', function(){ trackEvent('project_load'); chooseCurrentSettingsDirectory(); });
     if (currentSettingsRefreshBtn) currentSettingsRefreshBtn.addEventListener('click', refreshCurrentSettingsDirectory);
-    if (currentSettingsFolderBtn) {
-      currentSettingsFolderBtn.addEventListener('click', function(){ if (workFilePicker) closeWorkFilePicker(); else openWorkFilePicker(); });
-      currentSettingsFolderBtn.addEventListener('keydown', function(event){ if (event.key === 'ArrowDown' || event.key === 'ArrowUp') { event.preventDefault(); openWorkFilePicker(); } });
-    }
+    document.getElementById('workLibrarySearch').addEventListener('input',refreshLoadedSettingsSelect);
+    document.getElementById('workLibrarySelectBtn').addEventListener('click',function(){ getVisibleWorkLibraryItems().forEach(function(item){ workLibrarySelection.add(item.id); }); refreshLoadedSettingsSelect(); });
+    document.getElementById('workLibraryClearBtn').addEventListener('click',function(){ workLibrarySelection.clear(); refreshLoadedSettingsSelect(); });
+    document.getElementById('workLibraryAddBtn').addEventListener('click',function(){ document.getElementById('workLibraryFilesInput').click(); });
+    document.getElementById('workLibraryFilesInput').addEventListener('change',function(event){ const files = Array.from(event.target.files || []); event.target.value = ''; importWorkLibraryFiles(files,false); });
+    document.getElementById('workLibraryDirectoryInput').addEventListener('change',function(event){ const files = Array.from(event.target.files || []); event.target.value = ''; importWorkLibraryFiles(files,true); });
+    document.getElementById('workLibraryExportBtn').addEventListener('click',openBatchExport);
+    document.getElementById('workLibrary').addEventListener('keydown',function(event){ event.stopPropagation(); });
+    document.getElementById('dismissIoStatusBtn').addEventListener('click',function(){ setExportStatus(''); });
     if (currentSettingsInputEl) currentSettingsInputEl.addEventListener('change', function(){ const file = currentSettingsInputEl.files && currentSettingsInputEl.files[0]; currentSettingsInputEl.value = ''; loadCurrentSettingsFile(file); });
     if (previewWrapEl) {
       previewWrapEl.addEventListener('wheel', handlePreviewWheelZoom, { passive:false });
