@@ -2883,9 +2883,9 @@
       <div class="memo-controls-wrap">
         <div class="memo-controls">
           <button id="memoModeBtn" class="memo-btn" type="button"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 20l1-4.5L15.5 5a2.12 2.12 0 0 1 3 0l.5.5a2.12 2.12 0 0 1 0 3L8.5 19 4 20ZM13.5 7 17 10.5"/></svg><span data-ui-text="memoModeBtn">Memo Mode</span></button>
-          <span class="history-scope" data-ui-text="memoHistory"></span>
-          <button id="memoUndoBtn" class="memo-btn ghost icon-only" type="button" aria-label="Undo memo" data-ui-title="memoUndoBtn"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 6 4.5 9.5 8 13M4.5 9.5H15a4.75 4.75 0 0 1 0 9.5h-5"/></svg></button>
-          <button id="memoRedoBtn" class="memo-btn ghost icon-only" type="button" aria-label="Redo memo" data-ui-title="memoRedoBtn"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m16 6 3.5 3.5L16 13M19.5 9.5H9a4.75 4.75 0 0 0 0 9.5h5"/></svg></button>
+          <span class="history-scope" data-ui-text="sheetHistory"></span>
+          <button id="memoUndoBtn" class="memo-btn ghost icon-only" type="button" aria-label="Undo memo" data-ui-title="globalUndo"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 6 4.5 9.5 8 13M4.5 9.5H15a4.75 4.75 0 0 1 0 9.5h-5"/></svg></button>
+          <button id="memoRedoBtn" class="memo-btn ghost icon-only" type="button" aria-label="Redo memo" data-ui-title="globalRedo"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m16 6 3.5 3.5L16 13M19.5 9.5H9a4.75 4.75 0 0 0 0 9.5h5"/></svg></button>
           <div class="memo-row-break" aria-hidden="true"></div>
           <div class="memo-toolbar-divider" aria-hidden="true"></div>
           <div class="memo-tool-pair">
@@ -3004,8 +3004,8 @@
         </div>
         <div class="shaku-edit-row">
           <button id="shakuEditBtn" class="shaku-edit-btn" type="button" data-ui-text="shakuEditBtn">尺編集</button>
-          <button id="shakuUndoBtn" class="shaku-edit-btn shaku-history-btn" type="button" aria-label="Undo" data-ui-title="shakuUndoBtn"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 6 4.5 9.5 8 13M4.5 9.5H15a4.75 4.75 0 0 1 0 9.5h-5"/></svg></button>
-          <button id="shakuRedoBtn" class="shaku-edit-btn shaku-history-btn" type="button" aria-label="Redo" data-ui-title="shakuRedoBtn"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m16 6 3.5 3.5L16 13M19.5 9.5H9a4.75 4.75 0 0 0 0 9.5h5"/></svg></button>
+          <button id="shakuUndoBtn" class="shaku-edit-btn shaku-history-btn" type="button" aria-label="Undo" data-ui-title="globalUndo"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 6 4.5 9.5 8 13M4.5 9.5H15a4.75 4.75 0 0 1 0 9.5h-5"/></svg></button>
+          <button id="shakuRedoBtn" class="shaku-edit-btn shaku-history-btn" type="button" aria-label="Redo" data-ui-title="globalRedo"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m16 6 3.5 3.5L16 13M19.5 9.5H9a4.75 4.75 0 0 0 0 9.5h5"/></svg></button>
           <span id="shakuEditHint" class="shaku-edit-hint" data-ui-text="shakuEditHint">青い線をドラッグして尺を選択</span>
         </div>
         <div class="sheet-reset-row">
@@ -3102,7 +3102,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '906';
+    const APP_VERSION = '907';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3616,7 +3616,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         dialogBlocksTitle:'Dialog Area', dialogFormatLabel:'Ex: 0+01 | 1+00 | speaker | line  (start | end | who | what)', cameraBlocksTitle:'Camera Area', cameraFormatLabel:'Ex: 0+01 | 1+00 | A | PAN | B  (start | end | from | move | to)', cameraExamplesTitle:'Examples',
         cameraExPan:'pan (A → B)', cameraExTu:'track up / push in', cameraExFi:'fade in', cameraExOl:'overlap (switch)',
         sheetPreviewTitle:'Sheet Preview', chooseExportDirBtn:"Output folder", downloadAllBtn:"Export", memoModeBtn:'Memo Mode', cameraToMemoBtn:'Camera→Memo', memoUndoBtn:"Undo memo strokes", memoRedoBtn:"Redo memo strokes", memoPenLabel:'Pen', memoEraserLabel:'Eraser', memoRightClickNoticeL1:'Right-click the memo area', memoRightClickNoticeL2:'to create / edit a text box', cellReadabilityNotice:'← Enlarge the genga numbers (cell digits)',
-        unifiedCurrentWork:"Current editing work", unifiedSelection:"{count} selected work files", unifiedExcluded:"Excluded from export", unifiedStopped:"{count} stopped", unifiedExportAction:"Export {count} works · {pages} pages", unifiedWorkList:"Work to export", unifiedSelectAll:"Select all", unifiedAllOptions:"Apply to all export targets", unifiedCurrentOptions:"Current work output settings", unifiedSavedDefaults:"Unchanged options keep each work’s saved settings.", unifiedMixed:"Mixed", unifiedResetOptions:"Restore saved settings", stageHeading:'Stage', stageAddSlotLabel:'Add a stage', stageCustomOption:'Custom…', stageRenameBtn:'Rename', stageDeleteBtn:'Delete', stageDeleteLastHint:'Cannot delete the last remaining stage', hideNonCellCommandsLabel:'Hide non-Cell commands', hideRightPanelBtn:'Hide Dialog/Camera', showRightPanelBtn:'Show Dialog/Camera', createdByLabel:'Created by', settingsExportBtn:"Save work", settingsFileBtn:"Open work", settingsImportBtn:"Work folder", settingsRefreshBtn:'Reload', settingsSelectPlaceholder:"Saved work", settingsSelectEmpty:"Choose work", settingsSelectNoSettings:"No saved work", textMemoApplyBtn:'Apply', textMemoMenuAdd:'Add text box', textMemoMenuDelete:'Delete text box', textMemoMenuEditMode:'Text box position edit', textMemoMenuEditDone:'Finish text box edit', textMemoMenuAutoArrange:'Auto arrange text boxes', textMemoInitialHint:'Right-click to add or edit text boxes.', clearSheetDataBtn:'Reset All', hideSidebarBtn:'Hide UI', showSidebarBtn:'Show UI', feedbackHeading:'Feedback', feedbackFormLink:'Form', feedbackPlaceholder:'Bug report or request', feedbackHint:'Write anything you know: symptom, reproduction steps, CSV/PSD/image format, expected result, actual result, browser/OS.', feedbackSendBtn:'Send', feedbackEmpty:'Write a message first.', feedbackSending:'Sending...', feedbackSent:'Sent.', feedbackRequested:'Submission requested. Keep this text until receipt is confirmed.', feedbackFailed:'Could not send. Open the form link.', shortcutSummaryTopHint:'', workPickerCurrent:"Currently opened", workPickerOpened:"Opened work: {name}", workPickerClose:"Close work list", workPickerNoMatch:"No matching work files.", workPickerCount:"{shown} of {total} files", workPickerSearch:"Search filename or folder", workPickerTitle:"Open saved work", outputPixels:"Output {width} × {height} px", lastOutputFile:"Last file", firstOutputFile:"First file", outputComposition:"The visible paper image, sheet content and memos are included.", psdLayers:"PSD layers: Memo / Text Output / Template / Paper Image / Background", reviewCaption:"Final appearance · view scale does not change image size", reviewRetry:"Retry preview", reviewFailed:"Preview failed: {error}", reviewLoading:"Preparing preview…", showOutputSettings:"Show output settings", focusPreview:"Expand preview", fitWidth:"Fit width", fitPage:"Fit page", reviewNext:"Next page", reviewPrev:"Previous page", reviewPage:"Page {page} / {count}", outputAction:"Export {count} page(s)", outputFiles:"{count} file(s) · one per page", outputSize:"Image size", outputLocation:"Output location", outputFormat:"File format", outputCellLabel:"Cel labels", outputDuration:"Duration “+”", outputHeader:"Header", outputTemplate:"Template lines", outputContents:"Include in the output", backToEdit:"Back to editing", reviewTitle:"Review and export", memoHistory:"Memo", globalRedo:"Redo sheet changes", globalUndo:"Undo sheet changes", sheetHistory:"Sheet", outputReview:"Review output", workSaveHint:"Save a file to continue editing later.", libraryTitle:"Work library", libraryAdd:"Add JSON files", librarySelect:"Select results", libraryClear:"Clear", librarySelected:"{count}/{total} selected", librarySelectFile:"Select for export: {name}", libraryOpenFile:"Open: {name}", libraryEmpty:"Choose a work folder or add JSON files. Open a name to edit; check files to export together.", libraryExport:"Export selected work ({count})", noticeClose:"Dismiss notification", batchTitle:"Export selected work", batchScope:"Each JSON uses its saved active stage, paper, content and memos. All pages of that stage are exported. The current editing work stays open.", batchSavedFormat:"Saved file format", batchZip:"Download ZIP", batchDestinationHint:"Folder output creates a new run folder. ZIP contains completed files even if stopped. Files with preparation errors are excluded from the ready count.", batchReady:"{count} ready work files · {pages} pages · {failed} errors", batchRenamed:"{count} duplicate names numbered", batchPreparing:"Checking work {done}/{total}…", batchStart:"Export {count} ready work files", batchFinished:"Folder: {folder} files · ZIP download requested: {archive} files · Errors: {failed}", batchProgress:"Processed {done}/{total} files", batchStop:"Stop after this file", batchStopping:"Stopping…", batchPages:"pages", batchState_pending:"Checking", batchState_ready:"Ready", batchState_running:"Exporting", batchState_done:"Complete", batchState_error:"Error", batchState_stopped:"Stopped", batchMissingPaper:"The paper image or memo backup referenced by this JSON is unavailable. Open and save the work with its paper image included.", batchChanged:"Page count changed after preparation.", batchFolderCollision:"Could not create a new output folder.", batchPartial:"{count} files already processed", batchArchiveFailed:"ZIP download failed: {error}", batchZipLimit:"This ZIP exceeds the ZIP32 size or file-count limit. Export to a folder or select fewer work files."
+        unifiedCurrentWork:"Current editing work", unifiedSelection:"{count} selected work files", unifiedExcluded:"Excluded from export", unifiedStopped:"{count} stopped", unifiedExportAction:"Export {count} works · {pages} pages", unifiedWorkList:"Work to export", unifiedSelectAll:"Select all", unifiedAllOptions:"Apply to all export targets", unifiedCurrentOptions:"Current work output settings", unifiedSavedDefaults:"Unchanged options keep each work’s saved settings.", unifiedMixed:"Mixed", unifiedResetOptions:"Restore saved settings", stageHeading:'Stage', stageAddSlotLabel:'Add a stage', stageCustomOption:'Custom…', stageRenameBtn:'Rename', stageDeleteBtn:'Delete', stageDeleteLastHint:'Cannot delete the last remaining stage', hideNonCellCommandsLabel:'Hide non-Cell commands', hideRightPanelBtn:'Hide Dialog/Camera', showRightPanelBtn:'Show Dialog/Camera', createdByLabel:'Created by', settingsExportBtn:"Save work", settingsFileBtn:"Open work", settingsImportBtn:"Work folder", settingsRefreshBtn:'Reload', settingsSelectPlaceholder:"Saved work", settingsSelectEmpty:"Choose work", settingsSelectNoSettings:"No saved work", textMemoApplyBtn:'Apply', textMemoMenuAdd:'Add text box', textMemoMenuDelete:'Delete text box', textMemoMenuEditMode:'Text box position edit', textMemoMenuEditDone:'Finish text box edit', textMemoMenuAutoArrange:'Auto arrange text boxes', textMemoInitialHint:'Right-click to add or edit text boxes.', clearSheetDataBtn:'Reset All', hideSidebarBtn:'Hide UI', showSidebarBtn:'Show UI', feedbackHeading:'Feedback', feedbackFormLink:'Form', feedbackPlaceholder:'Bug report or request', feedbackHint:'Write anything you know: symptom, reproduction steps, CSV/PSD/image format, expected result, actual result, browser/OS.', feedbackSendBtn:'Send', feedbackEmpty:'Write a message first.', feedbackSending:'Sending...', feedbackSent:'Sent.', feedbackRequested:'Submission requested. Keep this text until receipt is confirmed.', feedbackFailed:'Could not send. Open the form link.', shortcutSummaryTopHint:'', workPickerCurrent:"Currently opened", workPickerOpened:"Opened work: {name}", workPickerClose:"Close work list", workPickerNoMatch:"No matching work files.", workPickerCount:"{shown} of {total} files", workPickerSearch:"Search filename or folder", workPickerTitle:"Open saved work", outputPixels:"Output {width} × {height} px", lastOutputFile:"Last file", firstOutputFile:"First file", outputComposition:"The visible paper image, sheet content and memos are included.", psdLayers:"PSD layers: Memo / Text Output / Template / Paper Image / Background", reviewCaption:"Final appearance · view scale does not change image size", reviewRetry:"Retry preview", reviewFailed:"Preview failed: {error}", reviewLoading:"Preparing preview…", showOutputSettings:"Show output settings", focusPreview:"Expand preview", fitWidth:"Fit width", fitPage:"Fit page", reviewNext:"Next page", reviewPrev:"Previous page", reviewPage:"Page {page} / {count}", outputAction:"Export {count} page(s)", outputFiles:"{count} file(s) · one per page", outputSize:"Image size", outputLocation:"Output location", outputFormat:"File format", outputCellLabel:"Cel labels", outputDuration:"Duration “+”", outputHeader:"Header", outputTemplate:"Template lines", outputContents:"Include in the output", backToEdit:"Back to editing", reviewTitle:"Review and export", memoHistory:"Memo", globalRedo:"Redo (Ctrl/Cmd+Shift+Z / Ctrl/Cmd+Y)", globalUndo:"Undo (Ctrl/Cmd+Z)", sheetHistory:"History", outputReview:"Review output", workSaveHint:"Save a file to continue editing later.", libraryTitle:"Work library", libraryAdd:"Add JSON files", librarySelect:"Select results", libraryClear:"Clear", librarySelected:"{count}/{total} selected", librarySelectFile:"Select for export: {name}", libraryOpenFile:"Open: {name}", libraryEmpty:"Choose a work folder or add JSON files. Open a name to edit; check files to export together.", libraryExport:"Export selected work ({count})", noticeClose:"Dismiss notification", batchTitle:"Export selected work", batchScope:"Each JSON uses its saved active stage, paper, content and memos. All pages of that stage are exported. The current editing work stays open.", batchSavedFormat:"Saved file format", batchZip:"Download ZIP", batchDestinationHint:"Folder output creates a new run folder. ZIP contains completed files even if stopped. Files with preparation errors are excluded from the ready count.", batchReady:"{count} ready work files · {pages} pages · {failed} errors", batchRenamed:"{count} duplicate names numbered", batchPreparing:"Checking work {done}/{total}…", batchStart:"Export {count} ready work files", batchFinished:"Folder: {folder} files · ZIP download requested: {archive} files · Errors: {failed}", batchProgress:"Processed {done}/{total} files", batchStop:"Stop after this file", batchStopping:"Stopping…", batchPages:"pages", batchState_pending:"Checking", batchState_ready:"Ready", batchState_running:"Exporting", batchState_done:"Complete", batchState_error:"Error", batchState_stopped:"Stopped", batchMissingPaper:"The paper image or memo backup referenced by this JSON is unavailable. Open and save the work with its paper image included.", batchChanged:"Page count changed after preparation.", batchFolderCollision:"Could not create a new output folder.", batchPartial:"{count} files already processed", batchArchiveFailed:"ZIP download failed: {error}", batchZipLimit:"This ZIP exceeds the ZIP32 size or file-count limit. Export to a folder or select fewer work files."
       },
       ja: {
         languageLabel:'言語', headerCardTitle:'ヘッダー', episodeLabel:'話数', titleLabel:'タイトル', cutNoLabel:'カット番号', secondsLabel:'尺 秒', framesLabel:'尺 コマ', authorLabel:'名前', pageLabel:'ページ',
@@ -3625,7 +3625,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         dialogBlocksTitle:'セリフ欄', dialogFormatLabel:'例: 0+01 | 1+00 | 話者 | セリフ（始まり｜終わり｜だれ｜なに）', cameraBlocksTitle:'カメラ欄', cameraFormatLabel:'例: 0+01 | 1+00 | A | PAN | B（始まり｜終わり｜前｜動き｜後）', cameraExamplesTitle:'例',
         cameraExPan:'流し（A→B）', cameraExTu:'寄り（トラックアップ）', cameraExFi:'フェードイン', cameraExOl:'オーバーラップ（切替）',
         sheetPreviewTitle:'シートプレビュー', chooseExportDirBtn:"出力先", downloadAllBtn:"書き出し", memoModeBtn:'メモモード', cameraToMemoBtn:'カメラ→メモ', memoUndoBtn:"メモの線を取り消す", memoRedoBtn:"メモの線をやり直す", memoPenLabel:'ペン', memoEraserLabel:'消しゴム', memoRightClickNoticeL1:'メモ欄で右クリック', memoRightClickNoticeL2:'：テキスト枠の作成・編集', cellReadabilityNotice:'←原画番号（セルの数字）を大きく表示',
-        unifiedCurrentWork:"編集中の作業", unifiedSelection:"選択した作業 {count}件", unifiedExcluded:"書き出し対象外", unifiedStopped:"中止 {count}件", unifiedExportAction:"{count}件・全{pages}ページを書き出す", unifiedWorkList:"書き出す作業", unifiedSelectAll:"すべて選択", unifiedAllOptions:"すべての出力対象に適用", unifiedCurrentOptions:"現在の作業の出力設定", unifiedSavedDefaults:"変更しない項目は各作業の保存設定を使用します。", unifiedMixed:"混在", unifiedResetOptions:"保存設定に戻す", stageHeading:'段階', stageAddSlotLabel:'段階を追加', stageCustomOption:'直接入力…', stageRenameBtn:'名前を変える', stageDeleteBtn:'削除', stageDeleteLastHint:'最後の1段階は削除できません', hideNonCellCommandsLabel:'Cell以外のコマンドを隠す', hideRightPanelBtn:'セリフ/カメラを隠す', showRightPanelBtn:'セリフ/カメラを表示', createdByLabel:'作成', settingsExportBtn:"作業を保存", settingsFileBtn:"作業を開く", settingsImportBtn:"作業フォルダー", settingsRefreshBtn:'再読込', settingsSelectPlaceholder:"保存した作業", settingsSelectEmpty:"作業を選ぶ", settingsSelectNoSettings:"作業ファイルなし", textMemoApplyBtn:'適用', textMemoMenuAdd:'テキスト枠を追加', textMemoMenuDelete:'テキスト枠を削除', textMemoMenuEditMode:'テキスト枠位置編集', textMemoMenuEditDone:'テキスト枠編集終了', textMemoMenuAutoArrange:'テキスト枠を自動整列', textMemoInitialHint:'右クリックでテキスト枠を追加・編集できます。', clearSheetDataBtn:'全体初期化', hideSidebarBtn:'UIを隠す', showSidebarBtn:'UIを表示', feedbackHeading:'報告', feedbackFormLink:'Form', feedbackPlaceholder:'不具合や要望を書く', feedbackHint:'わかる範囲で記入してください: 症状、再現手順、使用したCSV/PSD/画像形式、期待した結果、実際の結果、ブラウザ/OS。', feedbackSendBtn:'送信', feedbackEmpty:'内容を書いてください。', feedbackSending:'送信中...', feedbackSent:'送信しました。', feedbackRequested:'送信を依頼しました。受付が確認できるまで本文を残します。', feedbackFailed:'送信できません。Formリンクから送ってください。', shortcutSummaryTopHint:'', workPickerCurrent:"現在開いている作業", workPickerOpened:"作業を開きました：{name}", workPickerClose:"作業一覧を閉じる", workPickerNoMatch:"一致する作業ファイルがありません。", workPickerCount:"{total}件中{shown}件", workPickerSearch:"ファイル名・フォルダーを検索", workPickerTitle:"保存した作業を開く", outputPixels:"出力 {width} × {height} px", lastOutputFile:"最後のファイル", firstOutputFile:"最初のファイル", outputComposition:"表示中の用紙画像・シートの内容・メモも含まれます。", psdLayers:"PSDレイヤー：メモ / 文字 / 用紙の罫線 / 用紙画像 / 背景", reviewCaption:"仕上がり表示・表示倍率は画像サイズに影響しません", reviewRetry:"再表示", reviewFailed:"プレビューを表示できません：{error}", reviewLoading:"プレビューを準備中…", showOutputSettings:"出力設定を表示", focusPreview:"大きく確認", fitWidth:"幅に合わせる", fitPage:"ページ全体", reviewNext:"次のページ", reviewPrev:"前のページ", reviewPage:"{page} / {count}ページ", outputAction:"{count}ページを書き出す", outputFiles:"{count}ファイル・1ページに1ファイル", outputSize:"画像サイズ", outputLocation:"出力先", outputFormat:"ファイル形式", outputCellLabel:"セルの見出し", outputDuration:"尺の「＋」", outputHeader:"ヘッダー", outputTemplate:"用紙の罫線", outputContents:"書き出す内容", backToEdit:"編集に戻る", reviewTitle:"仕上がりと書き出し", memoHistory:"メモ", globalRedo:"シートの変更をやり直す", globalUndo:"シートの変更を取り消す", sheetHistory:"シート", outputReview:"仕上がりを確認", workSaveHint:"あとで編集を続けるためのファイルを保存します。", libraryTitle:"作業一覧", libraryAdd:"JSONを追加", librarySelect:"検索結果を選択", libraryClear:"選択を解除", librarySelected:"{total}件中{count}件選択", librarySelectFile:"書き出す作業：{name}", libraryOpenFile:"開く：{name}", libraryEmpty:"作業フォルダーを選ぶか、JSONを追加します。名前で開き、チェックで一括書き出しの対象を選びます。", libraryExport:"選択した作業を書き出す（{count}件）", noticeClose:"通知を閉じる", batchTitle:"選択した作業の書き出し", batchScope:"JSONに保存された有効な段階・用紙・内容・メモで、その段階の全ページを書き出します。編集中の作業は保持します。", batchSavedFormat:"保存された形式", batchZip:"ZIPダウンロード", batchDestinationHint:"フォルダー出力は実行ごとに新しいフォルダーを作ります。中止しても完了分をZIPにまとめます。準備エラーの作業は出力対象から除外します。", batchReady:"準備完了{count}件・{pages}ページ・エラー{failed}件", batchRenamed:"同名{count}ファイルに連番を追加", batchPreparing:"作業を確認中 {done}/{total}…", batchStart:"準備できた{count}件を書き出す", batchFinished:"フォルダー保存{folder}ファイル・ZIP依頼{archive}ファイル・エラー{failed}件", batchProgress:"処理 {done}/{total}ファイル", batchStop:"このファイルの後に中止", batchStopping:"中止しています…", batchPages:"ページ", batchState_pending:"確認中", batchState_ready:"準備完了", batchState_running:"出力中", batchState_done:"完了", batchState_error:"エラー", batchState_stopped:"中止", batchMissingPaper:"このJSONが参照する用紙画像・メモの記憶がありません。用紙画像を含めて作業を保存し直してください。", batchChanged:"準備後にページ数が変わりました。", batchFolderCollision:"新しい出力フォルダーを作成できませんでした。", batchPartial:"{count}ファイル処理済み", batchArchiveFailed:"ZIPダウンロード失敗：{error}", batchZipLimit:"ZIP32の容量またはファイル数の上限を超えます。フォルダーに出力するか対象を減らしてください。"
+        unifiedCurrentWork:"編集中の作業", unifiedSelection:"選択した作業 {count}件", unifiedExcluded:"書き出し対象外", unifiedStopped:"中止 {count}件", unifiedExportAction:"{count}件・全{pages}ページを書き出す", unifiedWorkList:"書き出す作業", unifiedSelectAll:"すべて選択", unifiedAllOptions:"すべての出力対象に適用", unifiedCurrentOptions:"現在の作業の出力設定", unifiedSavedDefaults:"変更しない項目は各作業の保存設定を使用します。", unifiedMixed:"混在", unifiedResetOptions:"保存設定に戻す", stageHeading:'段階', stageAddSlotLabel:'段階を追加', stageCustomOption:'直接入力…', stageRenameBtn:'名前を変える', stageDeleteBtn:'削除', stageDeleteLastHint:'最後の1段階は削除できません', hideNonCellCommandsLabel:'Cell以外のコマンドを隠す', hideRightPanelBtn:'セリフ/カメラを隠す', showRightPanelBtn:'セリフ/カメラを表示', createdByLabel:'作成', settingsExportBtn:"作業を保存", settingsFileBtn:"作業を開く", settingsImportBtn:"作業フォルダー", settingsRefreshBtn:'再読込', settingsSelectPlaceholder:"保存した作業", settingsSelectEmpty:"作業を選ぶ", settingsSelectNoSettings:"作業ファイルなし", textMemoApplyBtn:'適用', textMemoMenuAdd:'テキスト枠を追加', textMemoMenuDelete:'テキスト枠を削除', textMemoMenuEditMode:'テキスト枠位置編集', textMemoMenuEditDone:'テキスト枠編集終了', textMemoMenuAutoArrange:'テキスト枠を自動整列', textMemoInitialHint:'右クリックでテキスト枠を追加・編集できます。', clearSheetDataBtn:'全体初期化', hideSidebarBtn:'UIを隠す', showSidebarBtn:'UIを表示', feedbackHeading:'報告', feedbackFormLink:'Form', feedbackPlaceholder:'不具合や要望を書く', feedbackHint:'わかる範囲で記入してください: 症状、再現手順、使用したCSV/PSD/画像形式、期待した結果、実際の結果、ブラウザ/OS。', feedbackSendBtn:'送信', feedbackEmpty:'内容を書いてください。', feedbackSending:'送信中...', feedbackSent:'送信しました。', feedbackRequested:'送信を依頼しました。受付が確認できるまで本文を残します。', feedbackFailed:'送信できません。Formリンクから送ってください。', shortcutSummaryTopHint:'', workPickerCurrent:"現在開いている作業", workPickerOpened:"作業を開きました：{name}", workPickerClose:"作業一覧を閉じる", workPickerNoMatch:"一致する作業ファイルがありません。", workPickerCount:"{total}件中{shown}件", workPickerSearch:"ファイル名・フォルダーを検索", workPickerTitle:"保存した作業を開く", outputPixels:"出力 {width} × {height} px", lastOutputFile:"最後のファイル", firstOutputFile:"最初のファイル", outputComposition:"表示中の用紙画像・シートの内容・メモも含まれます。", psdLayers:"PSDレイヤー：メモ / 文字 / 用紙の罫線 / 用紙画像 / 背景", reviewCaption:"仕上がり表示・表示倍率は画像サイズに影響しません", reviewRetry:"再表示", reviewFailed:"プレビューを表示できません：{error}", reviewLoading:"プレビューを準備中…", showOutputSettings:"出力設定を表示", focusPreview:"大きく確認", fitWidth:"幅に合わせる", fitPage:"ページ全体", reviewNext:"次のページ", reviewPrev:"前のページ", reviewPage:"{page} / {count}ページ", outputAction:"{count}ページを書き出す", outputFiles:"{count}ファイル・1ページに1ファイル", outputSize:"画像サイズ", outputLocation:"出力先", outputFormat:"ファイル形式", outputCellLabel:"セルの見出し", outputDuration:"尺の「＋」", outputHeader:"ヘッダー", outputTemplate:"用紙の罫線", outputContents:"書き出す内容", backToEdit:"編集に戻る", reviewTitle:"仕上がりと書き出し", memoHistory:"メモ", globalRedo:"やり直す (Ctrl/Cmd+Shift+Z / Ctrl/Cmd+Y)", globalUndo:"元に戻す (Ctrl/Cmd+Z)", sheetHistory:"履歴", outputReview:"仕上がりを確認", workSaveHint:"あとで編集を続けるためのファイルを保存します。", libraryTitle:"作業一覧", libraryAdd:"JSONを追加", librarySelect:"検索結果を選択", libraryClear:"選択を解除", librarySelected:"{total}件中{count}件選択", librarySelectFile:"書き出す作業：{name}", libraryOpenFile:"開く：{name}", libraryEmpty:"作業フォルダーを選ぶか、JSONを追加します。名前で開き、チェックで一括書き出しの対象を選びます。", libraryExport:"選択した作業を書き出す（{count}件）", noticeClose:"通知を閉じる", batchTitle:"選択した作業の書き出し", batchScope:"JSONに保存された有効な段階・用紙・内容・メモで、その段階の全ページを書き出します。編集中の作業は保持します。", batchSavedFormat:"保存された形式", batchZip:"ZIPダウンロード", batchDestinationHint:"フォルダー出力は実行ごとに新しいフォルダーを作ります。中止しても完了分をZIPにまとめます。準備エラーの作業は出力対象から除外します。", batchReady:"準備完了{count}件・{pages}ページ・エラー{failed}件", batchRenamed:"同名{count}ファイルに連番を追加", batchPreparing:"作業を確認中 {done}/{total}…", batchStart:"準備できた{count}件を書き出す", batchFinished:"フォルダー保存{folder}ファイル・ZIP依頼{archive}ファイル・エラー{failed}件", batchProgress:"処理 {done}/{total}ファイル", batchStop:"このファイルの後に中止", batchStopping:"中止しています…", batchPages:"ページ", batchState_pending:"確認中", batchState_ready:"準備完了", batchState_running:"出力中", batchState_done:"完了", batchState_error:"エラー", batchState_stopped:"中止", batchMissingPaper:"このJSONが参照する用紙画像・メモの記憶がありません。用紙画像を含めて作業を保存し直してください。", batchChanged:"準備後にページ数が変わりました。", batchFolderCollision:"新しい出力フォルダーを作成できませんでした。", batchPartial:"{count}ファイル処理済み", batchArchiveFailed:"ZIPダウンロード失敗：{error}", batchZipLimit:"ZIP32の容量またはファイル数の上限を超えます。フォルダーに出力するか対象を減らしてください。"
       },
       ko: {
         languageLabel:'언어', headerCardTitle:'헤더', episodeLabel:'화수', titleLabel:'제목', cutNoLabel:'컷 번호', secondsLabel:'길이 초', framesLabel:'길이 프레임', authorLabel:'이름', pageLabel:'페이지',
@@ -3634,7 +3634,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         dialogBlocksTitle:'대사란', dialogFormatLabel:'예: 0+01 | 1+00 | 화자 | 대사（시작｜끝｜누가｜무엇）', cameraBlocksTitle:'카메라란', cameraFormatLabel:'예: 0+01 | 1+00 | A | PAN | B（시작｜끝｜이전｜움직임｜이후）', cameraExamplesTitle:'예시',
         cameraExPan:'팬 이동（A→B）', cameraExTu:'당김（트랙업）', cameraExFi:'페이드 인', cameraExOl:'오버랩（전환）',
         sheetPreviewTitle:'시트 프리뷰', chooseExportDirBtn:"출력 위치", downloadAllBtn:"출력", memoModeBtn:'메모 모드', cameraToMemoBtn:'카메라→메모', memoUndoBtn:"메모 선 되돌리기", memoRedoBtn:"메모 선 다시 실행", memoPenLabel:'펜', memoEraserLabel:'지우개', memoRightClickNoticeL1:'메모 영역 우클릭', memoRightClickNoticeL2:'텍스트 박스 생성·편집', cellReadabilityNotice:'← 원화 번호(셀 숫자)를 크게 표시',
-        unifiedCurrentWork:"현재 편집 작업", unifiedSelection:"선택한 작업 {count}개", unifiedExcluded:"출력 제외", unifiedStopped:"중지 {count}개", unifiedExportAction:"작업 {count}개 · 총 {pages}페이지 출력", unifiedWorkList:"출력할 작업", unifiedSelectAll:"전체 선택", unifiedAllOptions:"모든 출력 대상에 적용", unifiedCurrentOptions:"현재 작업의 출력 설정", unifiedSavedDefaults:"변경하지 않은 항목은 각 작업의 저장 설정을 유지합니다.", unifiedMixed:"혼합", unifiedResetOptions:"저장 설정으로 되돌리기", stageHeading:'단계', stageAddSlotLabel:'단계 추가', stageCustomOption:'직접입력…', stageRenameBtn:'이름 변경', stageDeleteBtn:'삭제', stageDeleteLastHint:'마지막 단계는 삭제할 수 없습니다', hideNonCellCommandsLabel:'Cell 외 커맨드 숨기기', hideRightPanelBtn:'대사/카메라 숨기기', showRightPanelBtn:'대사/카메라 보이기', createdByLabel:'제작', settingsExportBtn:"작업 저장", settingsFileBtn:"작업 열기", settingsImportBtn:"작업 폴더", settingsRefreshBtn:'다시 불러오기', settingsSelectPlaceholder:"저장한 작업", settingsSelectEmpty:"작업 선택", settingsSelectNoSettings:"작업 파일 없음", textMemoApplyBtn:'적용', textMemoMenuAdd:'텍스트 박스 추가', textMemoMenuDelete:'텍스트 박스 삭제', textMemoMenuEditMode:'텍스트 박스 위치 편집', textMemoMenuEditDone:'텍스트 박스 편집 종료', textMemoMenuAutoArrange:'텍스트 박스 자동 정렬', textMemoInitialHint:'우클릭으로 텍스트 박스를 추가하거나 편집할 수 있습니다.', clearSheetDataBtn:'전체 초기화', hideSidebarBtn:'UI 숨기기', showSidebarBtn:'UI 펼치기', feedbackHeading:'문의', feedbackFormLink:'Form', feedbackPlaceholder:'버그 내용이나 개선 요청', feedbackHint:'가능하면 아는 것만 적어주세요: 증상, 재현 순서, 사용한 CSV/PSD/이미지 형식, 기대한 결과, 실제 결과, 브라우저/OS.', feedbackSendBtn:'보내기', feedbackEmpty:'내용을 먼저 입력하세요.', feedbackSending:'전송 중...', feedbackSent:'전송했습니다.', feedbackRequested:'전송을 요청했습니다. 접수 확인 전까지 원문을 남깁니다.', feedbackFailed:'전송하지 못했습니다. Form 링크로 보내주세요.', shortcutSummaryTopHint:'', workPickerCurrent:"현재 열린 작업", workPickerOpened:"작업을 열었습니다: {name}", workPickerClose:"작업 목록 닫기", workPickerNoMatch:"일치하는 작업 파일이 없습니다.", workPickerCount:"{total}개 중 {shown}개", workPickerSearch:"파일명 또는 폴더 검색", workPickerTitle:"저장한 작업 열기", outputPixels:"출력 {width} × {height} px", lastOutputFile:"마지막 파일", firstOutputFile:"첫 파일", outputComposition:"현재 표시된 용지 이미지·시트 내용·메모도 함께 포함됩니다.", psdLayers:"PSD 레이어: 메모 / 문자 / 용지 틀 / 용지 이미지 / 배경", reviewCaption:"완성본 미리보기 · 화면 배율은 이미지 크기에 영향을 주지 않습니다", reviewRetry:"다시 표시", reviewFailed:"미리보기를 표시하지 못했습니다: {error}", reviewLoading:"미리보기 준비 중…", showOutputSettings:"출력 설정 보기", focusPreview:"크게 확인", fitWidth:"폭에 맞춤", fitPage:"페이지 전체", reviewNext:"다음 페이지", reviewPrev:"이전 페이지", reviewPage:"{page} / {count}페이지", outputAction:"{count}페이지 출력", outputFiles:"파일 {count}개 · 페이지마다 한 파일", outputSize:"이미지 크기", outputLocation:"출력 위치", outputFormat:"파일 형식", outputCellLabel:"셀 머리글", outputDuration:"길이 표시의 ＋", outputHeader:"헤더", outputTemplate:"용지의 틀 선", outputContents:"출력에 포함할 내용", backToEdit:"편집으로 돌아가기", reviewTitle:"완성본 확인 및 출력", memoHistory:"메모", globalRedo:"시트 변경 다시 실행", globalUndo:"시트 변경 되돌리기", sheetHistory:"시트", outputReview:"완성본 확인", workSaveHint:"나중에 이어서 편집할 수 있도록 파일로 저장합니다.", libraryTitle:"작업 목록", libraryAdd:"JSON 추가", librarySelect:"검색 결과 선택", libraryClear:"선택 해제", librarySelected:"{count}/{total}개 선택", librarySelectFile:"출력 대상으로 선택: {name}", libraryOpenFile:"열기: {name}", libraryEmpty:"작업 폴더를 선택하거나 JSON을 추가하세요. 파일명으로 열고, 체크하면 일괄 출력 대상으로 선택됩니다.", libraryExport:"선택한 작업 출력 ({count}개)", noticeClose:"안내 닫기", batchTitle:"선택한 작업 일괄 출력", batchScope:"각 JSON에 저장된 활성 단계·용지·내용·메모를 적용해 해당 단계의 모든 페이지를 출력합니다. 편집 중인 작업은 유지됩니다.", batchSavedFormat:"저장된 형식", batchZip:"ZIP 다운로드", batchDestinationHint:"폴더 출력은 실행마다 새 폴더를 만듭니다. 중지해도 완료된 파일은 ZIP으로 받습니다. 준비 오류가 있는 작업은 출력 대상에서 제외됩니다.", batchReady:"준비된 작업 {count}개 · {pages}페이지 · 오류 {failed}개", batchRenamed:"동일한 파일명 {count}개에 번호 추가", batchPreparing:"작업 확인 중 {done}/{total}…", batchStart:"준비된 작업 {count}개 출력", batchFinished:"폴더 저장 {folder}파일 · ZIP 다운로드 요청 {archive}파일 · 오류 {failed}개", batchProgress:"처리 {done}/{total}파일", batchStop:"현재 파일 후 중지", batchStopping:"중지 중…", batchPages:"페이지", batchState_pending:"확인 중", batchState_ready:"준비 완료", batchState_running:"출력 중", batchState_done:"완료", batchState_error:"오류", batchState_stopped:"중지", batchMissingPaper:"이 JSON이 참조하는 용지 이미지·메모를 찾을 수 없습니다. 용지 이미지를 포함해 작업을 다시 저장하세요.", batchChanged:"준비 후 페이지 수가 달라졌습니다.", batchFolderCollision:"새 출력 폴더를 만들지 못했습니다.", batchPartial:"{count}파일 처리 완료", batchArchiveFailed:"ZIP 다운로드 실패: {error}", batchZipLimit:"ZIP32의 용량 또는 파일 수 한도를 넘습니다. 폴더로 출력하거나 작업을 나눠 선택하세요."
+        unifiedCurrentWork:"현재 편집 작업", unifiedSelection:"선택한 작업 {count}개", unifiedExcluded:"출력 제외", unifiedStopped:"중지 {count}개", unifiedExportAction:"작업 {count}개 · 총 {pages}페이지 출력", unifiedWorkList:"출력할 작업", unifiedSelectAll:"전체 선택", unifiedAllOptions:"모든 출력 대상에 적용", unifiedCurrentOptions:"현재 작업의 출력 설정", unifiedSavedDefaults:"변경하지 않은 항목은 각 작업의 저장 설정을 유지합니다.", unifiedMixed:"혼합", unifiedResetOptions:"저장 설정으로 되돌리기", stageHeading:'단계', stageAddSlotLabel:'단계 추가', stageCustomOption:'직접입력…', stageRenameBtn:'이름 변경', stageDeleteBtn:'삭제', stageDeleteLastHint:'마지막 단계는 삭제할 수 없습니다', hideNonCellCommandsLabel:'Cell 외 커맨드 숨기기', hideRightPanelBtn:'대사/카메라 숨기기', showRightPanelBtn:'대사/카메라 보이기', createdByLabel:'제작', settingsExportBtn:"작업 저장", settingsFileBtn:"작업 열기", settingsImportBtn:"작업 폴더", settingsRefreshBtn:'다시 불러오기', settingsSelectPlaceholder:"저장한 작업", settingsSelectEmpty:"작업 선택", settingsSelectNoSettings:"작업 파일 없음", textMemoApplyBtn:'적용', textMemoMenuAdd:'텍스트 박스 추가', textMemoMenuDelete:'텍스트 박스 삭제', textMemoMenuEditMode:'텍스트 박스 위치 편집', textMemoMenuEditDone:'텍스트 박스 편집 종료', textMemoMenuAutoArrange:'텍스트 박스 자동 정렬', textMemoInitialHint:'우클릭으로 텍스트 박스를 추가하거나 편집할 수 있습니다.', clearSheetDataBtn:'전체 초기화', hideSidebarBtn:'UI 숨기기', showSidebarBtn:'UI 펼치기', feedbackHeading:'문의', feedbackFormLink:'Form', feedbackPlaceholder:'버그 내용이나 개선 요청', feedbackHint:'가능하면 아는 것만 적어주세요: 증상, 재현 순서, 사용한 CSV/PSD/이미지 형식, 기대한 결과, 실제 결과, 브라우저/OS.', feedbackSendBtn:'보내기', feedbackEmpty:'내용을 먼저 입력하세요.', feedbackSending:'전송 중...', feedbackSent:'전송했습니다.', feedbackRequested:'전송을 요청했습니다. 접수 확인 전까지 원문을 남깁니다.', feedbackFailed:'전송하지 못했습니다. Form 링크로 보내주세요.', shortcutSummaryTopHint:'', workPickerCurrent:"현재 열린 작업", workPickerOpened:"작업을 열었습니다: {name}", workPickerClose:"작업 목록 닫기", workPickerNoMatch:"일치하는 작업 파일이 없습니다.", workPickerCount:"{total}개 중 {shown}개", workPickerSearch:"파일명 또는 폴더 검색", workPickerTitle:"저장한 작업 열기", outputPixels:"출력 {width} × {height} px", lastOutputFile:"마지막 파일", firstOutputFile:"첫 파일", outputComposition:"현재 표시된 용지 이미지·시트 내용·메모도 함께 포함됩니다.", psdLayers:"PSD 레이어: 메모 / 문자 / 용지 틀 / 용지 이미지 / 배경", reviewCaption:"완성본 미리보기 · 화면 배율은 이미지 크기에 영향을 주지 않습니다", reviewRetry:"다시 표시", reviewFailed:"미리보기를 표시하지 못했습니다: {error}", reviewLoading:"미리보기 준비 중…", showOutputSettings:"출력 설정 보기", focusPreview:"크게 확인", fitWidth:"폭에 맞춤", fitPage:"페이지 전체", reviewNext:"다음 페이지", reviewPrev:"이전 페이지", reviewPage:"{page} / {count}페이지", outputAction:"{count}페이지 출력", outputFiles:"파일 {count}개 · 페이지마다 한 파일", outputSize:"이미지 크기", outputLocation:"출력 위치", outputFormat:"파일 형식", outputCellLabel:"셀 머리글", outputDuration:"길이 표시의 ＋", outputHeader:"헤더", outputTemplate:"용지의 틀 선", outputContents:"출력에 포함할 내용", backToEdit:"편집으로 돌아가기", reviewTitle:"완성본 확인 및 출력", memoHistory:"메모", globalRedo:"다시 실행 (Ctrl/Cmd+Shift+Z / Ctrl/Cmd+Y)", globalUndo:"실행취소 (Ctrl/Cmd+Z)", sheetHistory:"편집", outputReview:"완성본 확인", workSaveHint:"나중에 이어서 편집할 수 있도록 파일로 저장합니다.", libraryTitle:"작업 목록", libraryAdd:"JSON 추가", librarySelect:"검색 결과 선택", libraryClear:"선택 해제", librarySelected:"{count}/{total}개 선택", librarySelectFile:"출력 대상으로 선택: {name}", libraryOpenFile:"열기: {name}", libraryEmpty:"작업 폴더를 선택하거나 JSON을 추가하세요. 파일명으로 열고, 체크하면 일괄 출력 대상으로 선택됩니다.", libraryExport:"선택한 작업 출력 ({count}개)", noticeClose:"안내 닫기", batchTitle:"선택한 작업 일괄 출력", batchScope:"각 JSON에 저장된 활성 단계·용지·내용·메모를 적용해 해당 단계의 모든 페이지를 출력합니다. 편집 중인 작업은 유지됩니다.", batchSavedFormat:"저장된 형식", batchZip:"ZIP 다운로드", batchDestinationHint:"폴더 출력은 실행마다 새 폴더를 만듭니다. 중지해도 완료된 파일은 ZIP으로 받습니다. 준비 오류가 있는 작업은 출력 대상에서 제외됩니다.", batchReady:"준비된 작업 {count}개 · {pages}페이지 · 오류 {failed}개", batchRenamed:"동일한 파일명 {count}개에 번호 추가", batchPreparing:"작업 확인 중 {done}/{total}…", batchStart:"준비된 작업 {count}개 출력", batchFinished:"폴더 저장 {folder}파일 · ZIP 다운로드 요청 {archive}파일 · 오류 {failed}개", batchProgress:"처리 {done}/{total}파일", batchStop:"현재 파일 후 중지", batchStopping:"중지 중…", batchPages:"페이지", batchState_pending:"확인 중", batchState_ready:"준비 완료", batchState_running:"출력 중", batchState_done:"완료", batchState_error:"오류", batchState_stopped:"중지", batchMissingPaper:"이 JSON이 참조하는 용지 이미지·메모를 찾을 수 없습니다. 용지 이미지를 포함해 작업을 다시 저장하세요.", batchChanged:"준비 후 페이지 수가 달라졌습니다.", batchFolderCollision:"새 출력 폴더를 만들지 못했습니다.", batchPartial:"{count}파일 처리 완료", batchArchiveFailed:"ZIP 다운로드 실패: {error}", batchZipLimit:"ZIP32의 용량 또는 파일 수 한도를 넘습니다. 폴더로 출력하거나 작업을 나눠 선택하세요."
       },
       zh: {
         languageLabel:'语言', headerCardTitle:'页眉', episodeLabel:'集数', titleLabel:'标题', cutNoLabel:'镜头编号', secondsLabel:'时长 秒', framesLabel:'时长 帧', authorLabel:'姓名', pageLabel:'页码',
@@ -3643,7 +3643,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         dialogBlocksTitle:'对白栏', dialogFormatLabel:'例: 0+01 | 1+00 | 说话人 | 台词（起始｜结束｜谁｜内容）', cameraBlocksTitle:'摄影机栏', cameraFormatLabel:'例: 0+01 | 1+00 | A | PAN | B（起始｜结束｜之前｜运动｜之后）', cameraExamplesTitle:'示例',
         cameraExPan:'摇镜（A→B）', cameraExTu:'推近（Track Up）', cameraExFi:'淡入', cameraExOl:'叠化（切换）',
         sheetPreviewTitle:'Sheet 预览', chooseExportDirBtn:"输出位置", downloadAllBtn:"导出", memoModeBtn:'备注模式', cameraToMemoBtn:'摄影→备注', memoUndoBtn:"撤销备注笔画", memoRedoBtn:"重做备注笔画", memoPenLabel:'笔', memoEraserLabel:'橡皮', memoRightClickNoticeL1:'在备注区右键', memoRightClickNoticeL2:'创建/编辑文本框', cellReadabilityNotice:'← 放大原画编号（单元格数字）',
-        unifiedCurrentWork:"当前编辑工作", unifiedSelection:"已选{count}个工作", unifiedExcluded:"不导出", unifiedStopped:"已停止{count}个", unifiedExportAction:"导出{count}个工作・共{pages}页", unifiedWorkList:"要导出的工作", unifiedSelectAll:"全选", unifiedAllOptions:"应用到全部导出工作", unifiedCurrentOptions:"当前工作的导出设置", unifiedSavedDefaults:"未更改的选项保留各工作的保存设置。", unifiedMixed:"混合", unifiedResetOptions:"恢复保存设置", stageHeading:'阶段', stageAddSlotLabel:'添加阶段', stageCustomOption:'自定义…', stageRenameBtn:'重命名', stageDeleteBtn:'删除', stageDeleteLastHint:'无法删除最后一个阶段', hideNonCellCommandsLabel:'隐藏非 Cell 命令', hideRightPanelBtn:'隐藏对白/摄影', showRightPanelBtn:'显示对白/摄影', createdByLabel:'制作', settingsExportBtn:"保存工作", settingsFileBtn:"打开工作", settingsImportBtn:"工作文件夹", settingsRefreshBtn:'重新读取', settingsSelectPlaceholder:"已保存的工作", settingsSelectEmpty:"选择工作", settingsSelectNoSettings:"没有工作文件", textMemoApplyBtn:'应用', textMemoMenuAdd:'添加文字框', textMemoMenuDelete:'删除文字框', textMemoMenuEditMode:'文字框位置编辑', textMemoMenuEditDone:'结束文字框编辑', textMemoMenuAutoArrange:'自动排列文字框', textMemoInitialHint:'可通过右键添加或编辑文字框。', clearSheetDataBtn:'全部重置', hideSidebarBtn:'隐藏 UI', showSidebarBtn:'显示 UI', feedbackHeading:'反馈', feedbackFormLink:'Form', feedbackPlaceholder:'错误报告或改进建议', feedbackHint:'请尽量填写已知信息: 症状、复现步骤、使用的 CSV/PSD/图片格式、期望结果、实际结果、浏览器/OS。', feedbackSendBtn:'发送', feedbackEmpty:'请先输入内容。', feedbackSending:'发送中...', feedbackSent:'已发送。', feedbackRequested:'已请求发送。确认收件前保留原文。', feedbackFailed:'发送失败。请使用 Form 链接。', shortcutSummaryTopHint:'', workPickerCurrent:"当前打开的工作", workPickerOpened:"已打开工作：{name}", workPickerClose:"关闭工作列表", workPickerNoMatch:"没有匹配的工作文件。", workPickerCount:"共{total}个，显示{shown}个", workPickerSearch:"搜索文件名或文件夹", workPickerTitle:"打开已保存的工作", outputPixels:"输出 {width} × {height} px", lastOutputFile:"最后一个文件", firstOutputFile:"第一个文件", outputComposition:"当前显示的纸张图像、工作表内容和备注也会包含在内。", psdLayers:"PSD图层：备注 / 文字 / 纸张格线 / 纸张图像 / 背景", reviewCaption:"成品预览・显示缩放不影响图像尺寸", reviewRetry:"重新显示", reviewFailed:"无法显示预览：{error}", reviewLoading:"正在准备预览…", showOutputSettings:"显示导出设置", focusPreview:"放大查看", fitWidth:"适合宽度", fitPage:"适合整页", reviewNext:"下一页", reviewPrev:"上一页", reviewPage:"第{page} / {count}页", outputAction:"导出{count}页", outputFiles:"{count}个文件・每页一个文件", outputSize:"图像尺寸", outputLocation:"输出位置", outputFormat:"文件格式", outputCellLabel:"单元格标题", outputDuration:"时长的＋号", outputHeader:"表头", outputTemplate:"纸张格线", outputContents:"导出内容", backToEdit:"返回编辑", reviewTitle:"查看成品并导出", memoHistory:"备注", globalRedo:"重做工作表更改", globalUndo:"撤销工作表更改", sheetHistory:"工作表", outputReview:"查看成品", workSaveHint:"保存为文件，之后可继续编辑。", libraryTitle:"工作列表", libraryAdd:"添加JSON", librarySelect:"选择搜索结果", libraryClear:"清除选择", librarySelected:"已选{count}/{total}个", librarySelectFile:"选择导出：{name}", libraryOpenFile:"打开：{name}", libraryEmpty:"选择工作文件夹或添加JSON。点击名称打开，勾选后可批量导出。", libraryExport:"导出所选工作（{count}个）", noticeClose:"关闭通知", batchTitle:"批量导出所选工作", batchScope:"使用每个JSON保存的活动阶段、纸张、内容和备注，导出该阶段的全部页面。保留当前编辑中的工作。", batchSavedFormat:"保存的格式", batchZip:"下载ZIP", batchDestinationHint:"文件夹导出每次创建新文件夹。停止时仍可下载已完成文件的ZIP。准备失败的工作不计入可导出数量。", batchReady:"已准备{count}个工作・{pages}页・{failed}个错误", batchRenamed:"已为{count}个同名文件添加编号", batchPreparing:"正在检查 {done}/{total}…", batchStart:"导出已准备的{count}个工作", batchFinished:"文件夹{folder}个文件・已请求ZIP下载{archive}个文件・错误{failed}个", batchProgress:"已处理{done}/{total}个文件", batchStop:"当前文件后停止", batchStopping:"正在停止…", batchPages:"页", batchState_pending:"检查中", batchState_ready:"就绪", batchState_running:"导出中", batchState_done:"完成", batchState_error:"错误", batchState_stopped:"已停止", batchMissingPaper:"找不到此JSON引用的纸张图像或备注。请包含纸张图像重新保存工作。", batchChanged:"准备后页数发生变化。", batchFolderCollision:"无法创建新的导出文件夹。", batchPartial:"已处理{count}个文件", batchArchiveFailed:"ZIP下载失败：{error}", batchZipLimit:"超过ZIP32的大小或文件数限制。请导出到文件夹或减少所选工作。"
+        unifiedCurrentWork:"当前编辑工作", unifiedSelection:"已选{count}个工作", unifiedExcluded:"不导出", unifiedStopped:"已停止{count}个", unifiedExportAction:"导出{count}个工作・共{pages}页", unifiedWorkList:"要导出的工作", unifiedSelectAll:"全选", unifiedAllOptions:"应用到全部导出工作", unifiedCurrentOptions:"当前工作的导出设置", unifiedSavedDefaults:"未更改的选项保留各工作的保存设置。", unifiedMixed:"混合", unifiedResetOptions:"恢复保存设置", stageHeading:'阶段', stageAddSlotLabel:'添加阶段', stageCustomOption:'自定义…', stageRenameBtn:'重命名', stageDeleteBtn:'删除', stageDeleteLastHint:'无法删除最后一个阶段', hideNonCellCommandsLabel:'隐藏非 Cell 命令', hideRightPanelBtn:'隐藏对白/摄影', showRightPanelBtn:'显示对白/摄影', createdByLabel:'制作', settingsExportBtn:"保存工作", settingsFileBtn:"打开工作", settingsImportBtn:"工作文件夹", settingsRefreshBtn:'重新读取', settingsSelectPlaceholder:"已保存的工作", settingsSelectEmpty:"选择工作", settingsSelectNoSettings:"没有工作文件", textMemoApplyBtn:'应用', textMemoMenuAdd:'添加文字框', textMemoMenuDelete:'删除文字框', textMemoMenuEditMode:'文字框位置编辑', textMemoMenuEditDone:'结束文字框编辑', textMemoMenuAutoArrange:'自动排列文字框', textMemoInitialHint:'可通过右键添加或编辑文字框。', clearSheetDataBtn:'全部重置', hideSidebarBtn:'隐藏 UI', showSidebarBtn:'显示 UI', feedbackHeading:'反馈', feedbackFormLink:'Form', feedbackPlaceholder:'错误报告或改进建议', feedbackHint:'请尽量填写已知信息: 症状、复现步骤、使用的 CSV/PSD/图片格式、期望结果、实际结果、浏览器/OS。', feedbackSendBtn:'发送', feedbackEmpty:'请先输入内容。', feedbackSending:'发送中...', feedbackSent:'已发送。', feedbackRequested:'已请求发送。确认收件前保留原文。', feedbackFailed:'发送失败。请使用 Form 链接。', shortcutSummaryTopHint:'', workPickerCurrent:"当前打开的工作", workPickerOpened:"已打开工作：{name}", workPickerClose:"关闭工作列表", workPickerNoMatch:"没有匹配的工作文件。", workPickerCount:"共{total}个，显示{shown}个", workPickerSearch:"搜索文件名或文件夹", workPickerTitle:"打开已保存的工作", outputPixels:"输出 {width} × {height} px", lastOutputFile:"最后一个文件", firstOutputFile:"第一个文件", outputComposition:"当前显示的纸张图像、工作表内容和备注也会包含在内。", psdLayers:"PSD图层：备注 / 文字 / 纸张格线 / 纸张图像 / 背景", reviewCaption:"成品预览・显示缩放不影响图像尺寸", reviewRetry:"重新显示", reviewFailed:"无法显示预览：{error}", reviewLoading:"正在准备预览…", showOutputSettings:"显示导出设置", focusPreview:"放大查看", fitWidth:"适合宽度", fitPage:"适合整页", reviewNext:"下一页", reviewPrev:"上一页", reviewPage:"第{page} / {count}页", outputAction:"导出{count}页", outputFiles:"{count}个文件・每页一个文件", outputSize:"图像尺寸", outputLocation:"输出位置", outputFormat:"文件格式", outputCellLabel:"单元格标题", outputDuration:"时长的＋号", outputHeader:"表头", outputTemplate:"纸张格线", outputContents:"导出内容", backToEdit:"返回编辑", reviewTitle:"查看成品并导出", memoHistory:"备注", globalRedo:"重做 (Ctrl/Cmd+Shift+Z / Ctrl/Cmd+Y)", globalUndo:"撤销 (Ctrl/Cmd+Z)", sheetHistory:"历史", outputReview:"查看成品", workSaveHint:"保存为文件，之后可继续编辑。", libraryTitle:"工作列表", libraryAdd:"添加JSON", librarySelect:"选择搜索结果", libraryClear:"清除选择", librarySelected:"已选{count}/{total}个", librarySelectFile:"选择导出：{name}", libraryOpenFile:"打开：{name}", libraryEmpty:"选择工作文件夹或添加JSON。点击名称打开，勾选后可批量导出。", libraryExport:"导出所选工作（{count}个）", noticeClose:"关闭通知", batchTitle:"批量导出所选工作", batchScope:"使用每个JSON保存的活动阶段、纸张、内容和备注，导出该阶段的全部页面。保留当前编辑中的工作。", batchSavedFormat:"保存的格式", batchZip:"下载ZIP", batchDestinationHint:"文件夹导出每次创建新文件夹。停止时仍可下载已完成文件的ZIP。准备失败的工作不计入可导出数量。", batchReady:"已准备{count}个工作・{pages}页・{failed}个错误", batchRenamed:"已为{count}个同名文件添加编号", batchPreparing:"正在检查 {done}/{total}…", batchStart:"导出已准备的{count}个工作", batchFinished:"文件夹{folder}个文件・已请求ZIP下载{archive}个文件・错误{failed}个", batchProgress:"已处理{done}/{total}个文件", batchStop:"当前文件后停止", batchStopping:"正在停止…", batchPages:"页", batchState_pending:"检查中", batchState_ready:"就绪", batchState_running:"导出中", batchState_done:"完成", batchState_error:"错误", batchState_stopped:"已停止", batchMissingPaper:"找不到此JSON引用的纸张图像或备注。请包含纸张图像重新保存工作。", batchChanged:"准备后页数发生变化。", batchFolderCollision:"无法创建新的导出文件夹。", batchPartial:"已处理{count}个文件", batchArchiveFailed:"ZIP下载失败：{error}", batchZipLimit:"超过ZIP32的大小或文件数限制。请导出到文件夹或减少所选工作。"
       }
     };
 
@@ -4301,6 +4301,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver907", "Undo throughout the editor", ["Sheet edits, pen and text memos, paper positions and stage changes now share one undo history. Checkbox and select controls no longer block Ctrl/Cmd+Z. Text fields keep native undo, including memo line breaks."]],
         ["ver906", "Compact top and memo toolbars", ["Top controls are smaller, and the memo toolbar uses less padding and more compact tools. Control text alignment is consistent; pen and eraser size controls stay beside their tools."]],
         ["ver905", "Compact panel handles", ["Left and right panel handles are smaller and have their own clear space beside the output toolbar. Collapsing the left panel no longer moves the right handle to the left edge."]],
         ["ver904", "One output window", ["Single and multiple work files now share the same preview and output screen. Select a work in the list to preview it and use its checkbox to include or exclude it.", "Changed output options apply to all targets. Mixed values are identified, and unchanged options keep each work’s saved settings."]],
@@ -4357,6 +4358,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver907", "編集全体で元に戻す", ["シート編集・ペンと文字のメモ・用紙の位置・段階の変更を同じ履歴で取り消せます。チェックボックスや選択メニューの後もCtrl/Cmd+Zが使えます。入力中の文字とメモの改行は入力欄の履歴で戻せます。"]],
         ["ver906", "上部・メモツールバーをコンパクトに", ["上部ボタンを小さくし、メモバーの余白と道具をコンパクトにしました。文字の配置を統一し、ペン・消しゴムとサイズ選択が離れないようにしました。"]],
         ["ver905", "パネル開閉ボタンをコンパクトに", ["左右のパネル開閉ボタンを小さくし、出力ツールバーとの間隔を確保しました。左パネルを閉じたとき、右の開閉ボタンが左端に重なる問題を修正しました。"]],
         ["ver904", "出力画面を統合", ["単体と複数の作業を同じ画面で確認・書き出しできます。一覧の作業名でプレビューを切り替え、チェックで出力対象を選べます。", "変更した出力設定は全対象に適用します。異なる値は「混在」と表示し、変更しない項目は各作業の保存設定を保ちます。"]],
@@ -4413,6 +4415,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver907", "편집 전반의 실행취소", ["시트 편집·펜과 텍스트 메모·용지 위치·단계 변경을 같은 이력으로 되돌립니다. 체크박스나 선택 메뉴를 조작한 뒤에도 Ctrl/Cmd+Z가 동작합니다. 입력 중인 글자와 메모의 줄바꿈은 입력창 이력으로 되돌립니다."]],
         ["ver906", "상단·메모 바 크기 정리", ["상단 버튼과 메모 도구를 작게 줄이고 바의 여백을 줄였습니다. 버튼 글자 정렬을 통일하고 펜·지우개의 크기 선택이 해당 도구와 함께 배치되도록 했습니다."]],
         ["ver905", "패널 접기 버튼 정리", ["좌우 패널 접기 버튼을 작게 줄이고 출력 툴바와 여백으로 분리했습니다. 왼쪽 패널을 접을 때 오른쪽 접기 버튼까지 왼쪽으로 이동해 겹치는 문제를 수정했습니다."]],
         ["ver904", "출력 화면 통합", ["단일·여러 작업의 미리보기와 출력을 같은 화면에서 처리합니다. 목록의 작업 이름을 누르면 미리보기가 바뀌고, 체크로 출력 대상을 조정합니다.", "변경한 출력 옵션은 모든 대상에 적용합니다. 서로 다른 값은 혼합으로 표시하며, 바꾸지 않은 항목은 각 작업의 저장 설정을 유지합니다."]],
@@ -4469,6 +4472,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver907", "编辑器全局撤销", ["表格编辑、手写和文字备注、纸张位置及阶段变更共用同一撤销历史。操作复选框或选择菜单后也可使用Ctrl/Cmd+Z。输入中的文字与备注换行保留输入框原生撤销。"]],
         ["ver906", "更紧凑的顶部和备注工具栏", ["缩小顶部按钮、备注工具和工具栏间距。统一文字对齐，画笔和橡皮的大小选择与对应工具保持在一起。"]],
         ["ver905", "更紧凑的面板按钮", ["缩小左右面板折叠按钮，并与导出工具栏留出独立间距。修复折叠左面板时右侧按钮移动到左侧重叠的问题。"]],
         ["ver904", "统一导出界面", ["单个与多个工作共用预览和导出界面。点击工作名称切换预览，勾选框控制是否导出。", "修改的导出设置应用到全部目标。不同值显示为混合，未修改的选项保留各工作的保存设置。"]],
@@ -5667,8 +5671,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (paperToolbarResetBtn) paperToolbarResetBtn.disabled = !hasPaper;
       if (paperToolbarClearBtn) paperToolbarClearBtn.disabled = !hasPaper;
       if (autoAlignPaperBtn) autoAlignPaperBtn.disabled = !hasPaper || (state.paperAutoAlignResult && state.paperAutoAlignResult.status === 'working');
-      if (paperUndoBtn) paperUndoBtn.disabled = !state.paperUndoStack.length;
-      if (paperRedoBtn) paperRedoBtn.disabled = !state.paperRedoStack.length;
+      updateGlobalHistoryUI();
     }
 
     // ══ [UI] 용지 패널 ② 자동정렬 상태 패널 — 4언어 판정 라벨 · 단계 목록 ════════════════════════════════════════════════════════════════
@@ -12371,6 +12374,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         updateInlineTextEditorPosition();
       });
       editor.addEventListener('keydown', function(keyEvent){
+        if (keyEvent.isComposing || keyEvent.keyCode === 229) return;
         if (keyEvent.key === 'Escape') {
           keyEvent.preventDefault();
           closeInlineTextEditor({ cancel:true });
@@ -16573,16 +16577,16 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       }
       if (shakuUndoBtn) {
         // Icon-only button: localize the tooltip, keep the SVG (don't overwrite textContent).
-        const undoLabel = getShakuUiText('shakuUndoBtn');
+        const undoLabel = (uiTexts[state.lang] || uiTexts.en).globalUndo;
         shakuUndoBtn.setAttribute('title', undoLabel);
         shakuUndoBtn.setAttribute('aria-label', undoLabel);
-        shakuUndoBtn.disabled = !(state.shakuUndoStack && state.shakuUndoStack.length);
+        shakuUndoBtn.disabled = !(state.contentUndoStack && state.contentUndoStack.length);
       }
       if (shakuRedoBtn) {
-        const redoLabel = getShakuUiText('shakuRedoBtn');
+        const redoLabel = (uiTexts[state.lang] || uiTexts.en).globalRedo;
         shakuRedoBtn.setAttribute('title', redoLabel);
         shakuRedoBtn.setAttribute('aria-label', redoLabel);
-        shakuRedoBtn.disabled = !(state.shakuRedoStack && state.shakuRedoStack.length);
+        shakuRedoBtn.disabled = !(state.contentRedoStack && state.contentRedoStack.length);
       }
       if (shakuEditHintEl) shakuEditHintEl.textContent = getShakuUiText('shakuEditHint');
     }
@@ -16945,79 +16949,17 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     // ══ 尺 편집 ④ 스냅샷 · Undo/Redo · 편집 확정 ═════════════════════════════════════════════════════════════════════════════
-    function cloneShakuData(value) {
-      try { return JSON.parse(JSON.stringify(value)); }
-      catch (err) { console.warn('cloneShakuData failed, undo snapshot may share a live reference', err); return value; }
-    }
 
-    function getShakuEditSnapshot() {
-      return {
-        timeline:document.getElementById('timelineCommandInput') ? getCommandTextValue('text') : '',
-        csvCommand:csvCommandEditEl ? getCommandTextValue('csv') : '',
-        dialog:document.getElementById('dialogManual') ? document.getElementById('dialogManual').value : '',
-        camera:document.getElementById('cameraManual') ? document.getElementById('cameraManual').value : '',
-        seconds:document.getElementById('seconds') ? document.getElementById('seconds').value : '0',
-        frames:document.getElementById('frames') ? document.getElementById('frames').value : '0',
-        markerOverrides:cloneShakuData(state.markerOverrides || {}),
-        dotOverrides:cloneShakuData(state.dotOverrides || {}),
-        cameraPreviewStyles:cloneShakuData(state.cameraPreviewStyles || {}),
-        cameraEndpointFr:cloneShakuData(state.cameraEndpointFr || {})
-      };
-    }
+    function shakuUndo() { return contentUndo(); }
 
-    function restoreShakuEditSnapshot(snapshot) {
-      if (!snapshot) return;
-      if (document.getElementById('timelineCommandInput')) setCommandTextValue('text', snapshot.timeline || '');
-      if (csvCommandEditEl) setCommandTextValue('csv', snapshot.csvCommand || '');
-      if (document.getElementById('dialogManual')) document.getElementById('dialogManual').value = snapshot.dialog || '';
-      if (document.getElementById('cameraManual')) document.getElementById('cameraManual').value = snapshot.camera || '';
-      if (document.getElementById('seconds')) document.getElementById('seconds').value = snapshot.seconds == null ? '0' : String(snapshot.seconds);
-      if (document.getElementById('frames')) document.getElementById('frames').value = snapshot.frames == null ? '0' : String(snapshot.frames);
-      normalizeDurationInputs();
-      state.markerOverrides = cloneShakuData(snapshot.markerOverrides || {});
-      state.dotOverrides = cloneShakuData(snapshot.dotOverrides || {});
-      state.cameraPreviewStyles = cloneShakuData(snapshot.cameraPreviewStyles || {});
-      state.cameraEndpointFr = cloneShakuData(snapshot.cameraEndpointFr || {});
-    }
-
-    function pushShakuHistory(operation) {
-      if (!operation) return;
-      if (!state.shakuUndoStack) state.shakuUndoStack = [];
-      if (!state.shakuRedoStack) state.shakuRedoStack = [];
-      state.shakuUndoStack.push(operation);
-      if (state.shakuUndoStack.length > 80) state.shakuUndoStack.shift();
-      state.shakuRedoStack = [];
-      updateShakuEditUI();
-    }
-
-    function shakuUndo() {
-      if (!state.shakuUndoStack || !state.shakuUndoStack.length) return;
-      const op = state.shakuUndoStack.pop();
-      restoreShakuEditSnapshot(op.before);
-      if (!state.shakuRedoStack) state.shakuRedoStack = [];
-      state.shakuRedoStack.push(op);
-      state.shakuSelection = null;
-      updateShakuEditUI();
-      render();
-    }
-
-    function shakuRedo() {
-      if (!state.shakuRedoStack || !state.shakuRedoStack.length) return;
-      const op = state.shakuRedoStack.pop();
-      restoreShakuEditSnapshot(op.after);
-      if (!state.shakuUndoStack) state.shakuUndoStack = [];
-      state.shakuUndoStack.push(op);
-      state.shakuSelection = null;
-      updateShakuEditUI();
-      render();
-    }
+    function shakuRedo() { return contentRedo(); }
 
     function applyShakuEdit(mode) {
       const sel = state.shakuSelection;
       if (!sel || !sel.frameCount) return;
       const fromFrame = Math.max(1, Math.round(sel.fromFrame));
       const frameCount = Math.max(1, Math.round(sel.frameCount));
-      const beforeSnapshot = getShakuEditSnapshot();
+      commitContentHistory();
       applyShakuToCommandText(fromFrame, frameCount, mode);
       applyShakuToManualBlocks('dialog', fromFrame, frameCount, mode);
       applyShakuToManualBlocks('camera', fromFrame, frameCount, mode);
@@ -17028,14 +16970,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       // them reverted every conte-authored camera mark to the default triangle, and the snapshot did not carry
       // them so shakuUndo could not bring them back.
       state.dotOverrides = {};
-      const afterSnapshot = getShakuEditSnapshot();
-      pushShakuHistory({
-        mode:mode,
-        selection:cloneShakuData(sel),
-        before:beforeSnapshot,
-        after:afterSnapshot,
-        createdAt:Date.now()
-      });
       state.shakuFlash = {
         pageIndex:sel.pageIndex,
         blockKey:sel.blockKey,
@@ -20611,17 +20545,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       syncTextMemoEditorValue(active);
     }
 
-    function insertTextMemoLineBreak(editor) {
-      const start = Number(editor.selectionStart || 0);
-      const end = Number(editor.selectionEnd || start);
-      const value = String(editor.value || '');
-      const insertion = '\n';
-      editor.value = value.slice(0, start) + insertion + value.slice(end);
-      const caret = start + insertion.length;
-      try { editor.setSelectionRange(caret, caret); } catch (err) {}
-      handleTextMemoEditorInput({ inputType:'insertLineBreak' });
-    }
-
     function closeTextMemoEditor(options) {
       const active = state.textMemoEditor;
       if (!active) return;
@@ -20816,11 +20739,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       editor.addEventListener('mouseup', function(){ setTimeout(updateTextMemoSelectionToolbar, 0); });
       editor.addEventListener('keyup', function(){ setTimeout(updateTextMemoSelectionToolbar, 0); });
       editor.addEventListener('keydown', function(event){
+        if (event.isComposing || event.keyCode === 229) return;
         if (event.key === 'Escape') { event.preventDefault(); hideTextMemoControls(); return; }
-        if (event.key === 'Enter' && !event.isComposing) {
-          event.preventDefault();
-          insertTextMemoLineBreak(editor);
-        }
+        // Enter stays native, preserving the textarea's undoable line-break operation.
       });
       editor.addEventListener('wheel', handleTextMemoWheel, { passive:false });
       editor.addEventListener('pointerdown', function(event){ event.stopPropagation(); });
@@ -21236,7 +21157,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const inputs = activeSheetSnapshot ? cloneSheetData(activeSheetSnapshot.inputs) : {};
       if (!activeSheetSnapshot) document.querySelectorAll('input[id],textarea[id],select[id]').forEach(function(node){ inputs[node.id] = node.value; });
       // The library is application state, not sheet content; never clone every loaded JSON per page/job.
-      const copy = cloneSheetData(Object.assign({},state,{ loadedSettingsFiles:[] }));
+      const copy = cloneSheetData(Object.assign({},state,{ loadedSettingsFiles:[], contentUndoStack:[], contentRedoStack:[] }));
       return { state:copy, inputs:inputs };
     }
 
@@ -21565,25 +21486,18 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const __renderMs = performance.now() - __renderT0;
       if (__renderMs > 80) maybeReportSlowRender(__renderMs);
       updateSheetSideStackPosition();
+      updateGlobalHistoryUI();
       scheduleContentHistoryCommit();
     }
 
-    // ---- Global content undo/redo -------------------------------------------------------------
-    // A single snapshot-diff history for the SHEET CONTENT (header fields, the timeline / dialog /
-    // camera command text, CSV command edit, cell column counts, cell display order, the douga
-    // sheet — both its data and whether it is on —, the hand-placed layer name tags, and the
-    // marker / camera / dot overrides). CSV column roles and order are deliberately absent: the
-    // CSV command text is their source of truth and syncInputDerivedStateBeforeRender() rebuilds
-    // them from it before every render, so storing them here would be a second copy. It also does
-    // NOT cover the paper image, memo drawing, or shaku edits — those own their separate histories. A commit is scheduled at the
-    // end of every render(), debounced, and only pushes when the snapshot actually changed, so a
-    // burst of typing or a drag coalesces into one undo step and pure re-renders cost nothing.
+    // Runtime document history is separate from the stage/save content schema below.
+    // A focused native text session and a completed pointer gesture each form one edit.
     let contentHistoryReady = false;
     let contentHistoryTimer = null;
     let contentHistoryBaseline = null;
     let contentHistoryRestoring = false;
 
-    // ══ ▲ 시트 렌더 ⑩ 끝 ▲  아래는 전역 되돌리기 — 시트 내용 스냅샷 히스토리 (펜 메모·尺 은 별도 히스토리) ═════════════════════════════════════════════
+    // ══ ▲ 시트 렌더 ⑩ 끝 ▲  단계·파일의 시트 내용 스키마 (실행 이력은 아래 문서 스냅샷) ═════════════════════════════════════════════
     function getContentSnapshot() {
       function val(id){ const n = document.getElementById(id); return n ? String(n.value == null ? '' : n.value) : ''; }
       function clone(o){ try { return JSON.parse(JSON.stringify(o == null ? null : o)); } catch (err) { console.warn('getContentSnapshot: clone failed, this field will be lost from the undo snapshot', err); return null; } }
@@ -21607,12 +21521,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       };
     }
 
-    function contentSnapshotSig(snap) {
-      try { return JSON.stringify(snap); } catch (err) { console.warn('contentSnapshotSig: stringify failed, undo history change-detection may not see this edit', err); return ''; }
-    }
 
     function applyContentSnapshot(snap) {
       if (!snap) return;
+      const previousRestoring = contentHistoryRestoring;
       contentHistoryRestoring = true;
       try {
         const header = snap.header || {};
@@ -21647,25 +21559,93 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         if (typeof scheduleManualSourceRoleSync === 'function') scheduleManualSourceRoleSync();
         render();
       } finally {
-        contentHistoryRestoring = false;
-        contentHistoryBaseline = getContentSnapshot();
+        contentHistoryRestoring = previousRestoring;
       }
     }
 
+    // ══ 문서 실행취소 ① 스냅샷 — 저장 형식과 분리, 변경 없는 가지 공유 ═══════════════════════════════════════════════════
+    const EDITOR_HISTORY_STATE_KEYS = [
+      'csvFileBuffer','csvRawRows','csvOriginalRows','csvOriginalText','csvOriginalEncoding','csvLoadedMode',
+      'tvpaintCellSourceColumns','csvColumns','csvColumnOrder','csvColumnRoles','csvFrameIndex','csvDataStartRow',
+      'csvLoadError','lastCsvGeneratedDialogLines','lastCsvGeneratedCameraLines','serifuSheetGuides','cellReadabilityLarge'
+    ];
+
+    function shareHistoryValue(value, previous) {
+      if (value === previous || value == null || typeof value !== 'object') return value;
+      if (!Array.isArray(value) && Object.getPrototypeOf(value) !== Object.prototype) return value;
+      const keys = Object.keys(value), copy = Array.isArray(value) ? [] : {};
+      let same = !!previous && Array.isArray(value) === Array.isArray(previous) && keys.length === Object.keys(previous).length;
+      keys.forEach(function(key){
+        const child = shareHistoryValue(value[key], previous && previous[key]);
+        if (!previous || !Object.prototype.hasOwnProperty.call(previous,key) || child !== previous[key]) same = false;
+        Object.defineProperty(copy,key,{ value:child, enumerable:true, writable:true, configurable:true });
+      });
+      return same ? previous : copy;
+    }
+
+    function getEditorHistorySnapshot(previous) {
+      const content = getContentSnapshot(), paper = getPaperStateSnapshot(), source = {}, inputs = {}, memo = {}, text = {}, images = {};
+      // Tool mode and generated empty page buckets are navigation, not edits.
+      delete paper.positionMode;
+      delete paper.autoAlignResult; delete paper.autoAlignOverlay;
+      EDITOR_HISTORY_STATE_KEYS.forEach(function(key){ source[key] = state[key]; });
+      ['cellInputMode','exportFormatSelect'].forEach(function(id){ inputs[id] = document.getElementById(id).value; });
+      Object.keys(state.memoPages || {}).forEach(function(key){ const strokes = state.memoPages[key].strokes; if (strokes && strokes.length) memo[key] = { strokes:strokes, redo:[] }; });
+      Object.keys(state.textMemoPages || {}).forEach(function(key){ if (state.textMemoPages[key].length) text[key] = state.textMemoPages[key]; });
+      Object.keys(state.pastedImages || {}).forEach(function(key){ if (state.pastedImages[key].length) images[key] = state.pastedImages[key]; });
+      const stages = getSheetStages().map(function(stage){ return Object.assign({},stage,{ content:stage.id === state.activeStageId ? content : stage.content }); });
+      return shareHistoryValue({ content:content, paper:paper, source:source, inputs:inputs, memo:memo, text:text, images:images, stages:stages, activeStageId:state.activeStageId },previous);
+    }
+
+    function editorHistoryGestureActive() {
+      return !!(state.memoCurrentStroke || state.layoutDrag || state.activeTimelineDrag || state.cellLongPressDrag || state.cellLabelDrag || state.serifuRangeDrag || state.shakuDrag || state.textMemoPointerIntent || state.textMemoResize || state.pastedImageDrag || state.layerNameTagDrag);
+    }
+
+    function applyEditorHistorySnapshot(snapshot, pageIndex) {
+      const previousRestoring = contentHistoryRestoring;
+      contentHistoryRestoring = true;
+      const modes = { memoMode:state.memoMode, positionMode:state.positionMode, textMemoEditMode:state.textMemoEditMode, shakuMode:state.shakuMode };
+      try {
+        documentLoadGeneration++;
+        cancelPendingPaperAutoAlign();
+        resetSheetTransientState();
+        const snap = cloneSheetData(snapshot);
+        EDITOR_HISTORY_STATE_KEYS.forEach(function(key){ state[key] = snap.source[key]; });
+        state.csvDurationAutofillPending = false;
+        Object.keys(snap.inputs).forEach(function(id){ document.getElementById(id).value = snap.inputs[id]; });
+        state.stages = snap.stages; state.activeStageId = snap.activeStageId;
+        state.memoPages = snap.memo; state.textMemoPages = snap.text; state.pastedImages = snap.images;
+        state.currentPreviewPage = pageIndex;
+        restorePaperStateSnapshot(snap.paper, { render:false });
+        Object.assign(state,modes);
+        updateInputModeButtons();
+        document.getElementById('textModeBox').classList.toggle('hidden', getCurrentInputMode() !== 'text');
+        document.getElementById('csvModeBox').classList.toggle('hidden', !isCsvMode(getCurrentInputMode()));
+        refreshCsvColumnPicker(); updateCsvStatusText(); refreshCommandCellViews();
+        applyContentSnapshot(snap.content);
+        refreshSheetStageUI();
+        saveHeaderMemoryNow();
+      } finally {
+        contentHistoryRestoring = previousRestoring;
+      }
+    }
+
+    // ══ 문서 실행취소 ② 공통 이력 — 시트·메모·용지·단계를 한 순서로 ════════════════════════════════════════════════════════
     function initContentHistory() {
-      contentHistoryBaseline = getContentSnapshot();
-      state.contentUndoStack = [];
-      state.contentRedoStack = [];
+      if (contentHistoryTimer) { clearTimeout(contentHistoryTimer); contentHistoryTimer = null; }
+      contentHistoryBaseline = getEditorHistorySnapshot();
+      state.contentUndoStack = []; state.contentRedoStack = [];
       contentHistoryReady = true;
       updateGlobalHistoryUI();
     }
 
     function commitContentHistory() {
       if (contentHistoryTimer) { clearTimeout(contentHistoryTimer); contentHistoryTimer = null; }
-      if (!contentHistoryReady || contentHistoryRestoring) return;
-      const current = getContentSnapshot();
-      if (contentSnapshotSig(current) === contentSnapshotSig(contentHistoryBaseline)) return;
-      state.contentUndoStack.push(contentHistoryBaseline);
+      if (!contentHistoryReady || contentHistoryRestoring || activeSheetSnapshot || editorHistoryGestureActive()) return;
+      flushPendingCommandInputRender(); flushQueuedRender();
+      const current = getEditorHistorySnapshot(contentHistoryBaseline);
+      if (current === contentHistoryBaseline) { updateGlobalHistoryUI(); return; }
+      state.contentUndoStack.push({ snapshot:contentHistoryBaseline, pageIndex:state.currentPreviewPage || 0 });
       if (state.contentUndoStack.length > 120) state.contentUndoStack.shift();
       state.contentRedoStack = [];
       contentHistoryBaseline = current;
@@ -21673,47 +21653,117 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     function scheduleContentHistoryCommit() {
-      if (!contentHistoryReady || contentHistoryRestoring) return;
+      if (!contentHistoryReady || contentHistoryRestoring || activeSheetSnapshot) return;
       if (contentHistoryTimer) clearTimeout(contentHistoryTimer);
-      contentHistoryTimer = window.setTimeout(commitContentHistory, 500);
+      contentHistoryTimer = window.setTimeout(function(){
+        contentHistoryTimer = null;
+        // The browser owns one focused text session, including its native undo/redo.
+        if (!isHistoryTextTarget(document.activeElement)) commitContentHistory();
+      }, 500);
+    }
+
+    function getHistoryChangeLabel(entry) {
+      if (!entry || !contentHistoryBaseline) return '';
+      const next = entry.snapshot, now = contentHistoryBaseline;
+      const labels = {
+        ko:{ stage:'단계', memo:'펜 메모', text:'텍스트 메모', image:'붙여넣은 이미지', paper:'용지·출력 설정', sheet:'시트 편집' },
+        ja:{ stage:'段階', memo:'ペンメモ', text:'テキストメモ', image:'貼り付け画像', paper:'用紙・出力設定', sheet:'シート編集' },
+        en:{ stage:'Stage', memo:'Pen memo', text:'Text memo', image:'Pasted image', paper:'Paper / output settings', sheet:'Sheet edit' },
+        zh:{ stage:'阶段', memo:'手写备注', text:'文字备注', image:'粘贴图片', paper:'纸张 / 输出设置', sheet:'表格编辑' }
+      };
+      const key = next.activeStageId !== now.activeStageId || next.stages.length !== now.stages.length ? 'stage' : next.memo !== now.memo ? 'memo' : next.text !== now.text ? 'text' : next.images !== now.images ? 'image' : next.paper !== now.paper || next.inputs !== now.inputs ? 'paper' : 'sheet';
+      return (labels[state.lang] || labels.en)[key];
     }
 
     function updateGlobalHistoryUI() {
-      if (globalUndoBtn) globalUndoBtn.disabled = !(state.contentUndoStack && state.contentUndoStack.length);
-      if (globalRedoBtn) globalRedoBtn.disabled = !(state.contentRedoStack && state.contentRedoStack.length);
+      const doc = uiTexts[state.lang] || uiTexts.en;
+      [[state.contentUndoStack,[globalUndoBtn,memoUndoBtn,shakuUndoBtn,paperUndoBtn],doc.globalUndo],
+       [state.contentRedoStack,[globalRedoBtn,memoRedoBtn,shakuRedoBtn,paperRedoBtn],doc.globalRedo]].forEach(function(group){
+        const stack = group[0] || [], entry = stack[stack.length - 1];
+        group[1].forEach(function(button){
+          if (!button) return;
+          button.disabled = !entry || !!state.isExporting;
+          const title = group[2] + (entry ? ' · ' + getHistoryChangeLabel(entry) : '');
+          button.title = title; button.setAttribute('aria-label',title);
+        });
+      });
     }
 
-    function contentUndo() {
+    function adoptHistoryPaperMemory() {
+      if (!contentHistoryReady || !contentHistoryBaseline) return;
+      // Lazy IndexedDB hydration completes the opened document; it is not a user edit.
+      const previous = contentHistoryBaseline.paper;
+      const paper = shareHistoryValue(Object.assign({},previous,{ imageDataUrl:state.paperImageDataUrl, memoDataUrl:state.paperImageMemoDataUrl }),previous);
+      function hydrate(snapshot) { return snapshot.paper === previous ? Object.assign({},snapshot,{ paper:paper }) : snapshot; }
+      contentHistoryBaseline = hydrate(contentHistoryBaseline);
+      [state.contentUndoStack,state.contentRedoStack].forEach(function(stack){ stack.forEach(function(entry){ entry.snapshot = hydrate(entry.snapshot); }); });
+    }
+
+    function isEditorHistoryBlocked() {
+      return !!(state.isExporting || activeSheetSnapshot || document.querySelector('.app[inert]') ||
+        Array.from(document.querySelectorAll('[role="dialog"], [aria-modal="true"]')).some(function(node){ return node.getClientRects().length && node.getAttribute('aria-hidden') !== 'true'; }));
+    }
+
+    function runEditorHistory(direction) {
+      if (isEditorHistoryBlocked() || editorHistoryGestureActive()) return false;
       commitContentHistory();
-      if (!state.contentUndoStack || !state.contentUndoStack.length) return false;
-      const prev = state.contentUndoStack.pop();
-      state.contentRedoStack.push(contentHistoryBaseline);
-      applyContentSnapshot(prev);
+      const from = direction === 'undo' ? state.contentUndoStack : state.contentRedoStack;
+      const to = direction === 'undo' ? state.contentRedoStack : state.contentUndoStack;
+      if (!from || !from.length) return false;
+      const entry = from[from.length - 1], current = contentHistoryBaseline;
+      try {
+        applyEditorHistorySnapshot(entry.snapshot,entry.pageIndex);
+      } catch (err) {
+        applyEditorHistorySnapshot(current,state.currentPreviewPage || 0);
+        throw err;
+      }
+      from.pop(); to.push({ snapshot:current, pageIndex:entry.pageIndex });
+      contentHistoryBaseline = getEditorHistorySnapshot(entry.snapshot);
       updateGlobalHistoryUI();
       return true;
     }
 
-    function contentRedo() {
-      commitContentHistory();
-      if (!state.contentRedoStack || !state.contentRedoStack.length) return false;
-      const next = state.contentRedoStack.pop();
-      state.contentUndoStack.push(contentHistoryBaseline);
-      applyContentSnapshot(next);
-      updateGlobalHistoryUI();
-      return true;
+    function contentUndo() { return runEditorHistory('undo'); }
+    function contentRedo() { return runEditorHistory('redo'); }
+
+    // ══ 문서 실행취소 ③ 키보드·입력 경계 — 편집 가능한 텍스트와 조합 입력 보호 ═══════════════════════════════════════════════
+    function isHistoryTextTarget(target) {
+      const node = target && target.nodeType === 1 ? target : document.activeElement;
+      if (!node || node.disabled || node.readOnly) return false;
+      if (node.isContentEditable || node.tagName === 'TEXTAREA') return true;
+      return node.tagName === 'INPUT' && /^(text|search|email|url|tel|password|number|date|datetime-local|month|week|time)$/.test(node.type);
     }
 
-    function inGlobalHistorySpecialMode() {
-      // positionMode 는 빠져 있다 — 다른 셋과 달리 **전용 히스토리가 없다**. 레이아웃 상자 드래그는
-      // 용지 히스토리에 쌓이지 않으므로 Ctrl+Z 가 가로챌 대상이 없고, 막아 두면 자동정렬이
-      // positionMode 를 켜는 탓에 「자동정렬 직후 Ctrl+Z 가 먹통」이 된다(2026-08-08).
-      return !!(state.memoMode || state.shakuMode || state.textMemoEditMode);
+    function handleEditorHistoryKeydown(event) {
+      if (event.defaultPrevented || event.isComposing || event.keyCode === 229 || event.altKey || !(event.ctrlKey || event.metaKey)) return;
+      const key = String(event.key || '').toLowerCase();
+      const z = key === 'z' || event.code === 'KeyZ', y = key === 'y' || event.code === 'KeyY';
+      if (!z && !y) return;
+      if (isHistoryTextTarget(event.target) || (event.target.closest && event.target.closest('[data-shortcut-action], [role="dialog"], [aria-modal="true"]')) || isEditorHistoryBlocked()) return;
+      event.preventDefault(); event.stopImmediatePropagation();
+      if (z && !event.shiftKey) contentUndo(); else contentRedo();
     }
+
+    function bindEditorHistoryEvents() {
+      document.addEventListener('keydown',handleEditorHistoryKeydown,true);
+      document.addEventListener('pointerdown',function(event){
+        if (event.target.closest && event.target.closest('[role="dialog"], [aria-modal="true"]')) return;
+        // Canvas gestures preventDefault; explicitly release a stale editor focus first.
+        const active = document.activeElement;
+        if (isHistoryTextTarget(active) && previewWrapEl.contains(event.target) && !isHistoryTextTarget(event.target) && !isTextMemoUiTarget(event.target)) active.blur();
+        if (!isHistoryTextTarget(event.target) || event.target !== active) commitContentHistory();
+      },true);
+      ['pointerup','pointercancel','click','change','focusout'].forEach(function(type){
+        document.addEventListener(type,function(){ queueMicrotask(commitContentHistory); },true);
+      });
+      document.addEventListener('input',scheduleContentHistoryCommit,true);
+    }
+
 
 
     // ══ 단계(段階) — 한 파일 안에 원화 / 연출수정 을 나눠 담는다 ══════════════════════════════════════════════════════════════════
-    // 그릇은 되돌리기 스냅샷(getContentSnapshot)을 그대로 쓴다. 담는 경계 — 용지 이미지·펜 메모·尺 을
-    // 뺀 것 — 가 「メモや用紙画像は全段階共通」과 같은 선이기 때문이다. 활성 단계의 내용은 DOM 이
+    // 단계의 content는 기존 파일 스키마(getContentSnapshot)를 유지한다. 용지·메모는 단계 공통이고,
+    // 단계 목록과 활성 id까지 포함하는 문서 실행 이력은 그 바깥에 있다. 활성 단계의 내용은 DOM 이
     // 정본이라 content 에 담지 않고, 전환·저장 직전에만 찍어 넣는다.
     // 코드는 소문자로 저장하고 표시는 일본어로 고정한다 — moart 의 프로젝트 서픽스와 같은 어휘다.
     // 演出修正/監督修正/作監修正 라벨에는 「原画」를 붙이지 않는다(2026-08-16, 사용자 지시) —
@@ -21816,17 +21866,16 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       }
     }
 
-    // 전환은 프로젝트 통째 로드와 같은 취급이다(q2=A) — 히스토리를 새로 잡아 단계를 건너뛰는 undo 를
-    // 원천적으로 막는다. applyContentSnapshot 의 contentHistoryRestoring 가드를 반드시 태운다.
+    // Stage navigation and stage data restore together in the document history.
     function switchSheetStage(stageId) {
       const list = getSheetStages();
       const active = getActiveSheetStage();
       const target = list.find(function(item){ return item.id === stageId; });
       if (!target || !active || target.id === active.id) { refreshSheetStageUI(); return; }
+      commitContentHistory();
       active.content = getContentSnapshot();
       state.activeStageId = target.id;
       if (target.content) applyContentSnapshot(target.content);
-      initContentHistory();
       refreshSheetStageUI();
       render();
     }
@@ -21836,6 +21885,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const list = getSheetStages();
       const active = getActiveSheetStage();
       if (!active) { refreshSheetStageUI(); return; }
+      commitContentHistory();
       active.content = getContentSnapshot();
       const made = {
         id:makeSheetStageId(),
@@ -21845,8 +21895,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       };
       list.push(made);
       state.activeStageId = made.id;
-      // 내용이 활성 단계와 같으므로 DOM 을 갈아끼울 필요가 없다. 히스토리만 새로 잡는다.
-      initContentHistory();
+      // The new stage starts with the same content; history retains both stage identities.
       refreshSheetStageUI();
       render();
     }
@@ -21958,6 +22007,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           stage.customLabel = trimmed;
         }
         refreshSheetStageUI();
+        commitContentHistory();
       }
       input.addEventListener('keydown', function(event){
         if (event.key === 'Enter') { event.preventDefault(); commit(); }
@@ -21983,16 +22033,16 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (list.length <= 1) { refreshSheetStageUI(); return; }
       const idx = list.findIndex(function(item){ return item.id === stageId; });
       if (idx === -1) { refreshSheetStageUI(); return; }
+      commitContentHistory();
       const wasActive = state.activeStageId === stageId;
       list.splice(idx, 1);
       if (wasActive) {
         const next = list[0];
         state.activeStageId = next.id;
         if (next.content) applyContentSnapshot(next.content);
-        initContentHistory();
       }
       refreshSheetStageUI();
-      if (wasActive) render();
+      render();
     }
 
     function openStageSlotContextMenu(event, slotBtn, stage) {
@@ -22421,9 +22471,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     function handleConfiguredShortcut(event) {
-      const activeTag = document.activeElement && document.activeElement.tagName ? document.activeElement.tagName.toLowerCase() : '';
-      const typing = activeTag === 'input' || activeTag === 'textarea' || activeTag === 'select';
-      if (typing) return false;
+      if (isTypingLikeTarget(document.activeElement) || event.isComposing) return false;
       const key = normalizeShortcutKeyFromEvent(event);
       if (!key) return false;
       if (state.shortcuts.brushCycle && key === state.shortcuts.brushCycle) {
@@ -22572,9 +22620,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       });
       if (memoPenToolBtn) memoPenToolBtn.classList.toggle('active', state.memoTool === 'pen');
       if (memoEraserToolBtn) memoEraserToolBtn.classList.toggle('active', state.memoTool === 'eraser');
-      const pageData = getMemoPageData(state.currentPreviewPage || 0);
-      memoUndoBtn.disabled = !pageData.strokes.length;
-      memoRedoBtn.disabled = !pageData.redo.length;
+      updateGlobalHistoryUI();
     }
 
     // ══ 프리뷰 스페이스바 팬 키 — 눌린 동안 커서/모드 전환 (섞여 있던 펜 메모·팬 취소는 각자 자리로 옮김) ════════════════════════════════════════════════
@@ -22645,6 +22691,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       }
       if (event.button !== undefined && event.button !== 0) return;
       event.preventDefault();
+      commitContentHistory();
       const resized = updateMemoCanvasSize();
       state.memoPenSize = Number(memoPenSizeSelectEl.value || state.memoPenSize || 2);
       state.memoEraserSize = Number(memoEraserSizeSelectEl.value || state.memoEraserSize || 100);
@@ -22715,24 +22762,13 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       }
       state.memoPointerId = null;
       state.memoCurrentStroke = null;
+      commitContentHistory();
       updateMemoUI();
     }
 
-    function memoUndo() {
-      const pageData = getMemoPageData(state.currentPreviewPage || 0);
-      if (!pageData.strokes.length) return;
-      pageData.redo.push(pageData.strokes.pop());
-      redrawMemoCanvas();
-      updateMemoUI();
-    }
+    function memoUndo() { return contentUndo(); }
 
-    function memoRedo() {
-      const pageData = getMemoPageData(state.currentPreviewPage || 0);
-      if (!pageData.redo.length) return;
-      pageData.strokes.push(pageData.redo.pop());
-      redrawMemoCanvas();
-      updateMemoUI();
-    }
+    function memoRedo() { return contentRedo(); }
 
     // ══ 모드 토글 — セリフ시트 · 펜 메모 (서로 배타) ═══════════════════════════════════════════════════════════════════════════════
     function setMemoModeEnabled(enabled) {
@@ -23704,7 +23740,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       };
     }
 
-    function restorePaperStateSnapshot(snapshot) {
+    function restorePaperStateSnapshot(snapshot, options) {
       paperLoadGeneration++;
       if (!snapshot) return;
       cancelPendingPaperAutoAlign();
@@ -23726,7 +23762,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       // 열 순서가 통째로 초기화된다 — 두 함수를 반드시 같이 고쳐야 하는 이유다.
       state.layoutBoxes = clonePaperData(snapshot.layoutBoxes || {});
       state.layoutBoxBaseRects = clonePaperData(snapshot.layoutBoxBaseRects || {});
-      state.positionMode = !!snapshot.positionMode;
+      if (typeof snapshot.positionMode === 'boolean') state.positionMode = snapshot.positionMode;
       state.textMemoEditMode = false;
       setPaperAutoAlignResult(snapshot.autoAlignResult ? clonePaperData(snapshot.autoAlignResult) : null);
       state.paperAutoAlignOverlay = snapshot.autoAlignOverlay ? clonePaperData(snapshot.autoAlignOverlay) : null;
@@ -23736,41 +23772,16 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       updatePaperImageStatus();
       syncPaperLayoutControls();
       queueSavePaperMemory();
-      render();
+      if (!options || options.render !== false) render();
     }
 
     function pushPaperHistory(before, after) {
-      if (!before || !after) return;
-      let beforeText = '';
-      let afterText = '';
-      try {
-        beforeText = JSON.stringify(before);
-        afterText = JSON.stringify(after);
-      } catch (err) {
-        return;
-      }
-      if (beforeText === afterText) return;
-      state.paperUndoStack.push({ before:before, after:after });
-      if (state.paperUndoStack.length > 60) state.paperUndoStack.shift();
-      state.paperRedoStack = [];
-      syncPaperLayoutControls();
+      if (before && after) scheduleContentHistoryCommit();
     }
 
-    function undoPaperChange() {
-      const op = state.paperUndoStack.pop();
-      if (!op) return;
-      state.paperRedoStack.push(op);
-      restorePaperStateSnapshot(op.before);
-      syncPaperLayoutControls();
-    }
+    function undoPaperChange() { return contentUndo(); }
 
-    function redoPaperChange() {
-      const op = state.paperRedoStack.pop();
-      if (!op) return;
-      state.paperUndoStack.push(op);
-      restorePaperStateSnapshot(op.after);
-      syncPaperLayoutControls();
-    }
+    function redoPaperChange() { return contentRedo(); }
 
     // paper 서브스키마 — 수시 자동저장(collectPaperMemoryPayload)과 "저장" 버튼(collectCurrentSettingsPayload)이
     // 이 부분만은 바이트까지 똑같은 코드를 각자 들고 있었다(2026-08-02 통합, q6-A). 복원 시점(즉시 vs 나머지
@@ -23914,6 +23925,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (opts.image && !state.paperImageDataUrl && record.imageDataUrl) { state.paperImageDataUrl = record.imageDataUrl; changed = true; }
       if (opts.memo && !state.paperImageMemoDataUrl && record.memoDataUrl) { state.paperImageMemoDataUrl = record.memoDataUrl; changed = true; }
       if (!changed) return false;
+      adoptHistoryPaperMemory();
       updatePaperImageStatus(); syncPaperLayoutControls();
       if (opts.renderAfter !== false) render();
       return true;
@@ -26373,27 +26385,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (!state.activeTimelineDrag && !state.shakuDrag && !state.serifuRangeDrag) return;
       event.preventDefault();
     }, { passive:false });
+    bindEditorHistoryEvents();
     document.addEventListener('keydown', function(event){
+      if (event.defaultPrevented || event.isComposing || event.keyCode === 229 || document.querySelector('.app[inert]')) return;
       if (handlePreviewSpacePanKeydown(event)) return;
-      if (handleConfiguredShortcut(event)) return;
-      const activeEl = document.activeElement;
-      const activeTag = activeEl && activeEl.tagName ? activeEl.tagName.toLowerCase() : '';
-      const typing = activeTag === 'input' || activeTag === 'textarea' || activeTag === 'select' || (activeEl && activeEl.isContentEditable);
-      const key = String(event.key || '').toLowerCase();
-      const ctrlOrMeta = event.ctrlKey || event.metaKey;
-      if (state.memoMode) {
-        if (typing || !ctrlOrMeta) return;
-        if (key === 'z' && !event.shiftKey) { event.preventDefault(); memoUndo(); }
-        else if ((key === 'z' && event.shiftKey) || key === 'y') { event.preventDefault(); memoRedo(); }
-        return;
-      }
-      // Global content undo/redo — active outside the special modes (which own their own history)
-      // and while NOT typing in a field (so the browser's per-field native undo still handles text
-      // entry; global history steps kick in once focus leaves the field, covering cell moves,
-      // committed value edits, column changes and overrides).
-      if (inGlobalHistorySpecialMode() || typing || !ctrlOrMeta) return;
-      if (key === 'z' && !event.shiftKey) { event.preventDefault(); contentUndo(); }
-      else if ((key === 'z' && event.shiftKey) || key === 'y') { event.preventDefault(); contentRedo(); }
+      handleConfiguredShortcut(event);
     });
     if (globalUndoBtn) globalUndoBtn.addEventListener('click', function(){ contentUndo(); });
     if (globalRedoBtn) globalRedoBtn.addEventListener('click', function(){ contentRedo(); });
