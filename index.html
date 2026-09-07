@@ -2472,26 +2472,13 @@
     .io-notice[data-level="error"] { border-color:#b85a4b; }
     .io-notice-message { min-width:0; overflow-wrap:anywhere; }
     .io-notice button { flex:none; width:24px; height:24px; padding:0; border:0; background:transparent; border-radius:4px; }
-    .batch-dialog { width:min(880px,calc(100vw - 24px)); max-height:calc(100dvh - 24px); display:flex; flex-direction:column; padding:0; overflow:hidden; background:var(--panel); }
-    .batch-body { padding:16px; overflow:auto; display:flex; flex-direction:column; gap:12px; }
-    .batch-options { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
-    .batch-options label { font-size:12px; display:flex; gap:8px; align-items:center; }
-    .batch-options select { min-height:32px; width:auto; }
-    .batch-options label { flex:none; white-space:nowrap; }
-    .batch-dialog [hidden] { display:none; }
-    .batch-summary, .batch-note { font-size:12px; line-height:1.6; overflow-wrap:anywhere; }
-    .batch-note { color:var(--muted); }
-    .batch-list { margin:0; padding:0; list-style:none; }
-    .batch-row { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:8px; padding:10px 0; border-top:1px solid var(--soft); font-size:12px; }
-    .batch-row-detail { font-size:11px; color:var(--muted); overflow-wrap:anywhere; line-height:1.5; }
-    .batch-row[data-error="true"] .batch-row-detail { color:#a33326; }
-    .batch-progress { width:100%; }
     .export-actions { grid-template-columns:64px max-content minmax(0,1fr); width:auto; max-width:100%; }
     #downloadAllBtn, #chooseExportDirBtn { width:auto; min-width:0; white-space:normal; height:auto; min-height:30px; }
     #downloadAllBtn { font-size:12px; padding:5px 9px; }
     #outputReviewBtn { font-size:12px; background:rgba(255,255,255,.96); }
     .history-scope { font-size:10px; color:var(--muted); padding:0 5px; white-space:nowrap; }
     .export-preflight-modal-backdrop { z-index:11000; }
+    .export-recovery-backdrop { z-index:11010; }
     .export-preflight-dialog { background:#fff; width:min(1180px, calc(100vw - 28px)); height:min(900px, calc(100dvh - 28px)); padding:0; display:flex; flex-direction:column; overflow:hidden; }
     .export-review-header, .export-review-footer { padding:14px 18px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; background:#fff; flex-shrink:0; }
     .export-review-header { border-bottom:1px solid var(--soft); }
@@ -2522,11 +2509,46 @@
     .export-preflight-dialog.is-focused .export-review-body { grid-template-columns:minmax(0,1fr); }
     .export-preflight-dialog.is-focused .export-review-options { display:none; }
     .export-preflight-dialog button:disabled { opacity:.45; cursor:default; }
+    .export-preflight-dialog.has-work-list { width:min(1360px,calc(100vw - 28px)); }
+    .export-preflight-dialog.has-work-list .export-review-body { grid-template-columns:minmax(180px,230px) minmax(0,1fr) 290px; }
+    .export-review-scope { margin-top:4px; color:var(--muted); font-size:12px; }
+    .export-review-jobs { display:flex; flex-direction:column; min-height:0; min-width:0; padding:12px; border-right:1px solid var(--soft); }
+    .export-review-jobs h4 { margin:2px 0 10px; font-size:13px; }
+    .export-review-job-tools { display:flex; gap:6px; margin-bottom:10px; }
+    .export-review-job-tools button { flex:1; min-width:0; white-space:normal; height:auto; min-height:30px; font-size:11px; }
+    .export-review-jobs ul { list-style:none; padding:2px; margin:0; overflow:auto; flex:1; min-height:0; }
+    .export-review-job { display:grid; grid-template-columns:22px minmax(0,1fr); align-items:start; gap:4px; margin-bottom:6px; padding:8px 6px; border:1px solid transparent; border-radius:8px; }
+    .export-review-job[data-active="true"] { background:#f1f4f6; border-color:#b8c2cc; }
+    .export-review-job input { margin:4px 0 0; width:16px; height:16px; accent-color:var(--text); }
+    .export-review-job-button { display:grid; width:100%; min-width:0; gap:4px; padding:0; border:0; background:transparent; text-align:left; font:inherit; cursor:pointer; }
+    .export-review-job-button strong { font-size:12px; overflow-wrap:anywhere; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+    .export-review-job-path { font-size:10px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .export-review-job-detail, .export-review-job-status { font-size:10px; color:var(--muted); overflow-wrap:anywhere; line-height:1.45; }
+    .export-review-job[data-error="true"] .export-review-job-detail { color:#a33326; }
+    .export-review-active-name { padding:9px 12px; background:#f8f9fa; border-bottom:1px solid var(--soft); text-align:center; font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; flex:none; }
+    .export-review-option-scope { border-radius:8px; padding:10px; background:#f3f5f7; font-size:12px; }
+    .export-review-option-scope .hint { margin-top:5px; }
+    .export-preflight-row input { accent-color:var(--text); }
+    .export-review-mixed { font-size:10px; color:var(--muted); background:var(--soft); padding:2px 5px; border-radius:4px; white-space:nowrap; }
+    .export-review-destination { display:flex; flex-wrap:wrap; gap:6px; }
+    .export-review-destination button, .export-review-options [data-review-reset] { height:auto; min-height:30px; font-size:11px; white-space:normal; }
+    .export-review-footer-status { flex:1; min-width:140px; }
+    .export-review-footer progress { width:100%; height:6px; accent-color:var(--text); }
+    .export-preflight-dialog.has-work-list.is-focused .export-review-body { grid-template-columns:230px minmax(0,1fr); }
+    .export-preflight-dialog [hidden] { display:none; }
+    .export-selection-count { font-size:10px; background:#ffffff30; border-radius:4px; padding:1px 4px; }
+    .export-selection-count[hidden] { display:none; }
+    @media (min-width:701px) and (max-width:1000px) {
+      .export-preflight-dialog.has-work-list .export-review-body { grid-template-columns:180px minmax(0,1fr) 250px; }
+      .export-preflight-dialog.has-work-list.is-focused .export-review-body { grid-template-columns:180px minmax(0,1fr); }
+      .export-review-options { padding:12px; }
+    }
     @media (max-width:700px) {
       .export-preflight-modal-backdrop { padding:0; }
-      .export-preflight-dialog, .export-preflight-dialog.is-focused { width:100vw; height:100dvh; max-height:100dvh; border-radius:0; }
+      .export-preflight-dialog, .export-preflight-dialog.has-work-list, .export-preflight-dialog.is-focused { width:100vw; height:100dvh; max-height:100dvh; border-radius:0; }
       .export-review-body { display:flex; flex-direction:column; overflow:auto; }
       .export-review-stage { flex:none; height:48dvh; min-height:270px; }
+      .export-review-jobs { flex:none; height:180px; border-right:0; border-bottom:1px solid var(--soft); }
       .export-review-options { flex:none; overflow:visible; border-left:0; border-top:1px solid var(--soft); padding:14px; }
       .export-preflight-dialog.is-focused .export-review-stage { flex:1; height:auto; min-height:0; }
       .export-review-header, .export-review-footer { padding:10px 12px; gap:8px; }
@@ -2789,7 +2811,7 @@
               <option value="psd">PSD</option>
             </select>
             <div class="output-location-control"><button id="chooseExportDirBtn" class="toolbar-btn with-icon" type="button"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3.5 7A1.5 1.5 0 0 1 5 5.5h4l2 2.5h8A1.5 1.5 0 0 1 20.5 9.5V17A1.5 1.5 0 0 1 19 18.5H5A1.5 1.5 0 0 1 3.5 17Z"/></svg><span data-ui-text="chooseExportDirBtn">保存先</span></button><button id="clearExportDirBtn" class="toolbar-btn icon-only hidden" type="button">×</button></div>
-            <button id="downloadAllBtn" class="toolbar-btn with-icon primary" type="button"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 4v11m0 0 4.5-4.5M12 15 7.5 10.5M5 20h14"/></svg><span data-ui-text="downloadAllBtn">書き出し</span></button>
+            <button id="downloadAllBtn" class="toolbar-btn with-icon primary" type="button"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 4v11m0 0 4.5-4.5M12 15 7.5 10.5M5 20h14"/></svg><span data-ui-text="downloadAllBtn">書き出し</span><span id="exportSelectionCount" class="export-selection-count" hidden></span></button>
           </div>
         </div>
       </div>
@@ -3013,7 +3035,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '903';
+    const APP_VERSION = '904';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3211,7 +3233,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     let activeSheetSnapshot = null;
     let exportPreflightSession = null;
     const workLibrarySelection = new Set();
-    let batchExportSession = null;
     let exportStatusTimer = null;
     let loadedSettingsSelectedId = '';
 
@@ -3528,7 +3549,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         dialogBlocksTitle:'Dialog Area', dialogFormatLabel:'Ex: 0+01 | 1+00 | speaker | line  (start | end | who | what)', cameraBlocksTitle:'Camera Area', cameraFormatLabel:'Ex: 0+01 | 1+00 | A | PAN | B  (start | end | from | move | to)', cameraExamplesTitle:'Examples',
         cameraExPan:'pan (A → B)', cameraExTu:'track up / push in', cameraExFi:'fade in', cameraExOl:'overlap (switch)',
         sheetPreviewTitle:'Sheet Preview', chooseExportDirBtn:"Output folder", downloadAllBtn:"Export", memoModeBtn:'Memo Mode', cameraToMemoBtn:'Camera→Memo', memoUndoBtn:"Undo memo strokes", memoRedoBtn:"Redo memo strokes", memoPenLabel:'Pen', memoEraserLabel:'Eraser', memoRightClickNoticeL1:'Right-click the memo area', memoRightClickNoticeL2:'to create / edit a text box', cellReadabilityNotice:'← Enlarge the genga numbers (cell digits)',
-        stageHeading:'Stage', stageAddSlotLabel:'Add a stage', stageCustomOption:'Custom…', stageRenameBtn:'Rename', stageDeleteBtn:'Delete', stageDeleteLastHint:'Cannot delete the last remaining stage', hideNonCellCommandsLabel:'Hide non-Cell commands', hideRightPanelBtn:'Hide Dialog/Camera', showRightPanelBtn:'Show Dialog/Camera', createdByLabel:'Created by', settingsExportBtn:"Save work", settingsFileBtn:"Open work", settingsImportBtn:"Work folder", settingsRefreshBtn:'Reload', settingsSelectPlaceholder:"Saved work", settingsSelectEmpty:"Choose work", settingsSelectNoSettings:"No saved work", textMemoApplyBtn:'Apply', textMemoMenuAdd:'Add text box', textMemoMenuDelete:'Delete text box', textMemoMenuEditMode:'Text box position edit', textMemoMenuEditDone:'Finish text box edit', textMemoMenuAutoArrange:'Auto arrange text boxes', textMemoInitialHint:'Right-click to add or edit text boxes.', clearSheetDataBtn:'Reset All', hideSidebarBtn:'Hide UI', showSidebarBtn:'Show UI', feedbackHeading:'Feedback', feedbackFormLink:'Form', feedbackPlaceholder:'Bug report or request', feedbackHint:'Write anything you know: symptom, reproduction steps, CSV/PSD/image format, expected result, actual result, browser/OS.', feedbackSendBtn:'Send', feedbackEmpty:'Write a message first.', feedbackSending:'Sending...', feedbackSent:'Sent.', feedbackRequested:'Submission requested. Keep this text until receipt is confirmed.', feedbackFailed:'Could not send. Open the form link.', shortcutSummaryTopHint:'', workPickerCurrent:"Currently opened", workPickerOpened:"Opened work: {name}", workPickerClose:"Close work list", workPickerNoMatch:"No matching work files.", workPickerCount:"{shown} of {total} files", workPickerSearch:"Search filename or folder", workPickerTitle:"Open saved work", outputPixels:"Output {width} × {height} px", lastOutputFile:"Last file", firstOutputFile:"First file", outputComposition:"The visible paper image, sheet content and memos are included.", psdLayers:"PSD layers: Memo / Text Output / Template / Paper Image / Background", reviewCaption:"Final appearance · view scale does not change image size", reviewRetry:"Retry preview", reviewFailed:"Preview failed: {error}", reviewLoading:"Preparing preview…", showOutputSettings:"Show output settings", focusPreview:"Expand preview", fitWidth:"Fit width", fitPage:"Fit page", reviewNext:"Next page", reviewPrev:"Previous page", reviewPage:"Page {page} / {count}", outputAction:"Export {count} page(s)", outputFiles:"{count} file(s) · one per page", outputSize:"Image size", outputLocation:"Output location", outputFormat:"File format", outputCellLabel:"Cel labels", outputDuration:"Duration “+”", outputHeader:"Header", outputTemplate:"Template lines", outputContents:"Include in the output", backToEdit:"Back to editing", reviewTitle:"Review and export", memoHistory:"Memo", globalRedo:"Redo sheet changes", globalUndo:"Undo sheet changes", sheetHistory:"Sheet", outputReview:"Review output", workSaveHint:"Save a file to continue editing later.", libraryTitle:"Work library", libraryAdd:"Add JSON files", librarySelect:"Select results", libraryClear:"Clear", librarySelected:"{count}/{total} selected", librarySelectFile:"Select for export: {name}", libraryOpenFile:"Open: {name}", libraryEmpty:"Choose a work folder or add JSON files. Open a name to edit; check files to export together.", libraryExport:"Export selected work ({count})", noticeClose:"Dismiss notification", batchTitle:"Export selected work", batchScope:"Each JSON uses its saved active stage, paper, content and memos. All pages of that stage are exported. The current editing work stays open.", batchSavedFormat:"Saved file format", batchZip:"Download ZIP", batchDestinationHint:"Folder output creates a new run folder. ZIP contains completed files even if stopped. Files with preparation errors are excluded from the ready count.", batchReady:"{count} ready work files · {pages} pages · {failed} errors", batchRenamed:"{count} duplicate names numbered", batchPreparing:"Checking work {done}/{total}…", batchStart:"Export {count} ready work files", batchFinished:"Folder: {folder} files · ZIP download requested: {archive} files · Errors: {failed}", batchProgress:"Processed {done}/{total} files", batchStop:"Stop after this file", batchStopping:"Stopping…", batchPages:"pages", batchState_pending:"Checking", batchState_ready:"Ready", batchState_running:"Exporting", batchState_done:"Complete", batchState_error:"Error", batchState_stopped:"Stopped", batchMissingPaper:"The paper image or memo backup referenced by this JSON is unavailable. Open and save the work with its paper image included.", batchChanged:"Page count changed after preparation.", batchFolderCollision:"Could not create a new output folder.", batchPartial:"{count} files already processed", batchArchiveFailed:"ZIP download failed: {error}", batchZipLimit:"This ZIP exceeds the ZIP32 size or file-count limit. Export to a folder or select fewer work files."
+        unifiedCurrentWork:"Current editing work", unifiedSelection:"{count} selected work files", unifiedExcluded:"Excluded from export", unifiedStopped:"{count} stopped", unifiedExportAction:"Export {count} works · {pages} pages", unifiedWorkList:"Work to export", unifiedSelectAll:"Select all", unifiedAllOptions:"Apply to all export targets", unifiedCurrentOptions:"Current work output settings", unifiedSavedDefaults:"Unchanged options keep each work’s saved settings.", unifiedMixed:"Mixed", unifiedResetOptions:"Restore saved settings", stageHeading:'Stage', stageAddSlotLabel:'Add a stage', stageCustomOption:'Custom…', stageRenameBtn:'Rename', stageDeleteBtn:'Delete', stageDeleteLastHint:'Cannot delete the last remaining stage', hideNonCellCommandsLabel:'Hide non-Cell commands', hideRightPanelBtn:'Hide Dialog/Camera', showRightPanelBtn:'Show Dialog/Camera', createdByLabel:'Created by', settingsExportBtn:"Save work", settingsFileBtn:"Open work", settingsImportBtn:"Work folder", settingsRefreshBtn:'Reload', settingsSelectPlaceholder:"Saved work", settingsSelectEmpty:"Choose work", settingsSelectNoSettings:"No saved work", textMemoApplyBtn:'Apply', textMemoMenuAdd:'Add text box', textMemoMenuDelete:'Delete text box', textMemoMenuEditMode:'Text box position edit', textMemoMenuEditDone:'Finish text box edit', textMemoMenuAutoArrange:'Auto arrange text boxes', textMemoInitialHint:'Right-click to add or edit text boxes.', clearSheetDataBtn:'Reset All', hideSidebarBtn:'Hide UI', showSidebarBtn:'Show UI', feedbackHeading:'Feedback', feedbackFormLink:'Form', feedbackPlaceholder:'Bug report or request', feedbackHint:'Write anything you know: symptom, reproduction steps, CSV/PSD/image format, expected result, actual result, browser/OS.', feedbackSendBtn:'Send', feedbackEmpty:'Write a message first.', feedbackSending:'Sending...', feedbackSent:'Sent.', feedbackRequested:'Submission requested. Keep this text until receipt is confirmed.', feedbackFailed:'Could not send. Open the form link.', shortcutSummaryTopHint:'', workPickerCurrent:"Currently opened", workPickerOpened:"Opened work: {name}", workPickerClose:"Close work list", workPickerNoMatch:"No matching work files.", workPickerCount:"{shown} of {total} files", workPickerSearch:"Search filename or folder", workPickerTitle:"Open saved work", outputPixels:"Output {width} × {height} px", lastOutputFile:"Last file", firstOutputFile:"First file", outputComposition:"The visible paper image, sheet content and memos are included.", psdLayers:"PSD layers: Memo / Text Output / Template / Paper Image / Background", reviewCaption:"Final appearance · view scale does not change image size", reviewRetry:"Retry preview", reviewFailed:"Preview failed: {error}", reviewLoading:"Preparing preview…", showOutputSettings:"Show output settings", focusPreview:"Expand preview", fitWidth:"Fit width", fitPage:"Fit page", reviewNext:"Next page", reviewPrev:"Previous page", reviewPage:"Page {page} / {count}", outputAction:"Export {count} page(s)", outputFiles:"{count} file(s) · one per page", outputSize:"Image size", outputLocation:"Output location", outputFormat:"File format", outputCellLabel:"Cel labels", outputDuration:"Duration “+”", outputHeader:"Header", outputTemplate:"Template lines", outputContents:"Include in the output", backToEdit:"Back to editing", reviewTitle:"Review and export", memoHistory:"Memo", globalRedo:"Redo sheet changes", globalUndo:"Undo sheet changes", sheetHistory:"Sheet", outputReview:"Review output", workSaveHint:"Save a file to continue editing later.", libraryTitle:"Work library", libraryAdd:"Add JSON files", librarySelect:"Select results", libraryClear:"Clear", librarySelected:"{count}/{total} selected", librarySelectFile:"Select for export: {name}", libraryOpenFile:"Open: {name}", libraryEmpty:"Choose a work folder or add JSON files. Open a name to edit; check files to export together.", libraryExport:"Export selected work ({count})", noticeClose:"Dismiss notification", batchTitle:"Export selected work", batchScope:"Each JSON uses its saved active stage, paper, content and memos. All pages of that stage are exported. The current editing work stays open.", batchSavedFormat:"Saved file format", batchZip:"Download ZIP", batchDestinationHint:"Folder output creates a new run folder. ZIP contains completed files even if stopped. Files with preparation errors are excluded from the ready count.", batchReady:"{count} ready work files · {pages} pages · {failed} errors", batchRenamed:"{count} duplicate names numbered", batchPreparing:"Checking work {done}/{total}…", batchStart:"Export {count} ready work files", batchFinished:"Folder: {folder} files · ZIP download requested: {archive} files · Errors: {failed}", batchProgress:"Processed {done}/{total} files", batchStop:"Stop after this file", batchStopping:"Stopping…", batchPages:"pages", batchState_pending:"Checking", batchState_ready:"Ready", batchState_running:"Exporting", batchState_done:"Complete", batchState_error:"Error", batchState_stopped:"Stopped", batchMissingPaper:"The paper image or memo backup referenced by this JSON is unavailable. Open and save the work with its paper image included.", batchChanged:"Page count changed after preparation.", batchFolderCollision:"Could not create a new output folder.", batchPartial:"{count} files already processed", batchArchiveFailed:"ZIP download failed: {error}", batchZipLimit:"This ZIP exceeds the ZIP32 size or file-count limit. Export to a folder or select fewer work files."
       },
       ja: {
         languageLabel:'言語', headerCardTitle:'ヘッダー', episodeLabel:'話数', titleLabel:'タイトル', cutNoLabel:'カット番号', secondsLabel:'尺 秒', framesLabel:'尺 コマ', authorLabel:'名前', pageLabel:'ページ',
@@ -3537,7 +3558,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         dialogBlocksTitle:'セリフ欄', dialogFormatLabel:'例: 0+01 | 1+00 | 話者 | セリフ（始まり｜終わり｜だれ｜なに）', cameraBlocksTitle:'カメラ欄', cameraFormatLabel:'例: 0+01 | 1+00 | A | PAN | B（始まり｜終わり｜前｜動き｜後）', cameraExamplesTitle:'例',
         cameraExPan:'流し（A→B）', cameraExTu:'寄り（トラックアップ）', cameraExFi:'フェードイン', cameraExOl:'オーバーラップ（切替）',
         sheetPreviewTitle:'シートプレビュー', chooseExportDirBtn:"出力先", downloadAllBtn:"書き出し", memoModeBtn:'メモモード', cameraToMemoBtn:'カメラ→メモ', memoUndoBtn:"メモの線を取り消す", memoRedoBtn:"メモの線をやり直す", memoPenLabel:'ペン', memoEraserLabel:'消しゴム', memoRightClickNoticeL1:'メモ欄で右クリック', memoRightClickNoticeL2:'：テキスト枠の作成・編集', cellReadabilityNotice:'←原画番号（セルの数字）を大きく表示',
-        stageHeading:'段階', stageAddSlotLabel:'段階を追加', stageCustomOption:'直接入力…', stageRenameBtn:'名前を変える', stageDeleteBtn:'削除', stageDeleteLastHint:'最後の1段階は削除できません', hideNonCellCommandsLabel:'Cell以外のコマンドを隠す', hideRightPanelBtn:'セリフ/カメラを隠す', showRightPanelBtn:'セリフ/カメラを表示', createdByLabel:'作成', settingsExportBtn:"作業を保存", settingsFileBtn:"作業を開く", settingsImportBtn:"作業フォルダー", settingsRefreshBtn:'再読込', settingsSelectPlaceholder:"保存した作業", settingsSelectEmpty:"作業を選ぶ", settingsSelectNoSettings:"作業ファイルなし", textMemoApplyBtn:'適用', textMemoMenuAdd:'テキスト枠を追加', textMemoMenuDelete:'テキスト枠を削除', textMemoMenuEditMode:'テキスト枠位置編集', textMemoMenuEditDone:'テキスト枠編集終了', textMemoMenuAutoArrange:'テキスト枠を自動整列', textMemoInitialHint:'右クリックでテキスト枠を追加・編集できます。', clearSheetDataBtn:'全体初期化', hideSidebarBtn:'UIを隠す', showSidebarBtn:'UIを表示', feedbackHeading:'報告', feedbackFormLink:'Form', feedbackPlaceholder:'不具合や要望を書く', feedbackHint:'わかる範囲で記入してください: 症状、再現手順、使用したCSV/PSD/画像形式、期待した結果、実際の結果、ブラウザ/OS。', feedbackSendBtn:'送信', feedbackEmpty:'内容を書いてください。', feedbackSending:'送信中...', feedbackSent:'送信しました。', feedbackRequested:'送信を依頼しました。受付が確認できるまで本文を残します。', feedbackFailed:'送信できません。Formリンクから送ってください。', shortcutSummaryTopHint:'', workPickerCurrent:"現在開いている作業", workPickerOpened:"作業を開きました：{name}", workPickerClose:"作業一覧を閉じる", workPickerNoMatch:"一致する作業ファイルがありません。", workPickerCount:"{total}件中{shown}件", workPickerSearch:"ファイル名・フォルダーを検索", workPickerTitle:"保存した作業を開く", outputPixels:"出力 {width} × {height} px", lastOutputFile:"最後のファイル", firstOutputFile:"最初のファイル", outputComposition:"表示中の用紙画像・シートの内容・メモも含まれます。", psdLayers:"PSDレイヤー：メモ / 文字 / 用紙の罫線 / 用紙画像 / 背景", reviewCaption:"仕上がり表示・表示倍率は画像サイズに影響しません", reviewRetry:"再表示", reviewFailed:"プレビューを表示できません：{error}", reviewLoading:"プレビューを準備中…", showOutputSettings:"出力設定を表示", focusPreview:"大きく確認", fitWidth:"幅に合わせる", fitPage:"ページ全体", reviewNext:"次のページ", reviewPrev:"前のページ", reviewPage:"{page} / {count}ページ", outputAction:"{count}ページを書き出す", outputFiles:"{count}ファイル・1ページに1ファイル", outputSize:"画像サイズ", outputLocation:"出力先", outputFormat:"ファイル形式", outputCellLabel:"セルの見出し", outputDuration:"尺の「＋」", outputHeader:"ヘッダー", outputTemplate:"用紙の罫線", outputContents:"書き出す内容", backToEdit:"編集に戻る", reviewTitle:"仕上がりと書き出し", memoHistory:"メモ", globalRedo:"シートの変更をやり直す", globalUndo:"シートの変更を取り消す", sheetHistory:"シート", outputReview:"仕上がりを確認", workSaveHint:"あとで編集を続けるためのファイルを保存します。", libraryTitle:"作業一覧", libraryAdd:"JSONを追加", librarySelect:"検索結果を選択", libraryClear:"選択を解除", librarySelected:"{total}件中{count}件選択", librarySelectFile:"書き出す作業：{name}", libraryOpenFile:"開く：{name}", libraryEmpty:"作業フォルダーを選ぶか、JSONを追加します。名前で開き、チェックで一括書き出しの対象を選びます。", libraryExport:"選択した作業を書き出す（{count}件）", noticeClose:"通知を閉じる", batchTitle:"選択した作業の書き出し", batchScope:"JSONに保存された有効な段階・用紙・内容・メモで、その段階の全ページを書き出します。編集中の作業は保持します。", batchSavedFormat:"保存された形式", batchZip:"ZIPダウンロード", batchDestinationHint:"フォルダー出力は実行ごとに新しいフォルダーを作ります。中止しても完了分をZIPにまとめます。準備エラーの作業は出力対象から除外します。", batchReady:"準備完了{count}件・{pages}ページ・エラー{failed}件", batchRenamed:"同名{count}ファイルに連番を追加", batchPreparing:"作業を確認中 {done}/{total}…", batchStart:"準備できた{count}件を書き出す", batchFinished:"フォルダー保存{folder}ファイル・ZIP依頼{archive}ファイル・エラー{failed}件", batchProgress:"処理 {done}/{total}ファイル", batchStop:"このファイルの後に中止", batchStopping:"中止しています…", batchPages:"ページ", batchState_pending:"確認中", batchState_ready:"準備完了", batchState_running:"出力中", batchState_done:"完了", batchState_error:"エラー", batchState_stopped:"中止", batchMissingPaper:"このJSONが参照する用紙画像・メモの記憶がありません。用紙画像を含めて作業を保存し直してください。", batchChanged:"準備後にページ数が変わりました。", batchFolderCollision:"新しい出力フォルダーを作成できませんでした。", batchPartial:"{count}ファイル処理済み", batchArchiveFailed:"ZIPダウンロード失敗：{error}", batchZipLimit:"ZIP32の容量またはファイル数の上限を超えます。フォルダーに出力するか対象を減らしてください。"
+        unifiedCurrentWork:"編集中の作業", unifiedSelection:"選択した作業 {count}件", unifiedExcluded:"書き出し対象外", unifiedStopped:"中止 {count}件", unifiedExportAction:"{count}件・全{pages}ページを書き出す", unifiedWorkList:"書き出す作業", unifiedSelectAll:"すべて選択", unifiedAllOptions:"すべての出力対象に適用", unifiedCurrentOptions:"現在の作業の出力設定", unifiedSavedDefaults:"変更しない項目は各作業の保存設定を使用します。", unifiedMixed:"混在", unifiedResetOptions:"保存設定に戻す", stageHeading:'段階', stageAddSlotLabel:'段階を追加', stageCustomOption:'直接入力…', stageRenameBtn:'名前を変える', stageDeleteBtn:'削除', stageDeleteLastHint:'最後の1段階は削除できません', hideNonCellCommandsLabel:'Cell以外のコマンドを隠す', hideRightPanelBtn:'セリフ/カメラを隠す', showRightPanelBtn:'セリフ/カメラを表示', createdByLabel:'作成', settingsExportBtn:"作業を保存", settingsFileBtn:"作業を開く", settingsImportBtn:"作業フォルダー", settingsRefreshBtn:'再読込', settingsSelectPlaceholder:"保存した作業", settingsSelectEmpty:"作業を選ぶ", settingsSelectNoSettings:"作業ファイルなし", textMemoApplyBtn:'適用', textMemoMenuAdd:'テキスト枠を追加', textMemoMenuDelete:'テキスト枠を削除', textMemoMenuEditMode:'テキスト枠位置編集', textMemoMenuEditDone:'テキスト枠編集終了', textMemoMenuAutoArrange:'テキスト枠を自動整列', textMemoInitialHint:'右クリックでテキスト枠を追加・編集できます。', clearSheetDataBtn:'全体初期化', hideSidebarBtn:'UIを隠す', showSidebarBtn:'UIを表示', feedbackHeading:'報告', feedbackFormLink:'Form', feedbackPlaceholder:'不具合や要望を書く', feedbackHint:'わかる範囲で記入してください: 症状、再現手順、使用したCSV/PSD/画像形式、期待した結果、実際の結果、ブラウザ/OS。', feedbackSendBtn:'送信', feedbackEmpty:'内容を書いてください。', feedbackSending:'送信中...', feedbackSent:'送信しました。', feedbackRequested:'送信を依頼しました。受付が確認できるまで本文を残します。', feedbackFailed:'送信できません。Formリンクから送ってください。', shortcutSummaryTopHint:'', workPickerCurrent:"現在開いている作業", workPickerOpened:"作業を開きました：{name}", workPickerClose:"作業一覧を閉じる", workPickerNoMatch:"一致する作業ファイルがありません。", workPickerCount:"{total}件中{shown}件", workPickerSearch:"ファイル名・フォルダーを検索", workPickerTitle:"保存した作業を開く", outputPixels:"出力 {width} × {height} px", lastOutputFile:"最後のファイル", firstOutputFile:"最初のファイル", outputComposition:"表示中の用紙画像・シートの内容・メモも含まれます。", psdLayers:"PSDレイヤー：メモ / 文字 / 用紙の罫線 / 用紙画像 / 背景", reviewCaption:"仕上がり表示・表示倍率は画像サイズに影響しません", reviewRetry:"再表示", reviewFailed:"プレビューを表示できません：{error}", reviewLoading:"プレビューを準備中…", showOutputSettings:"出力設定を表示", focusPreview:"大きく確認", fitWidth:"幅に合わせる", fitPage:"ページ全体", reviewNext:"次のページ", reviewPrev:"前のページ", reviewPage:"{page} / {count}ページ", outputAction:"{count}ページを書き出す", outputFiles:"{count}ファイル・1ページに1ファイル", outputSize:"画像サイズ", outputLocation:"出力先", outputFormat:"ファイル形式", outputCellLabel:"セルの見出し", outputDuration:"尺の「＋」", outputHeader:"ヘッダー", outputTemplate:"用紙の罫線", outputContents:"書き出す内容", backToEdit:"編集に戻る", reviewTitle:"仕上がりと書き出し", memoHistory:"メモ", globalRedo:"シートの変更をやり直す", globalUndo:"シートの変更を取り消す", sheetHistory:"シート", outputReview:"仕上がりを確認", workSaveHint:"あとで編集を続けるためのファイルを保存します。", libraryTitle:"作業一覧", libraryAdd:"JSONを追加", librarySelect:"検索結果を選択", libraryClear:"選択を解除", librarySelected:"{total}件中{count}件選択", librarySelectFile:"書き出す作業：{name}", libraryOpenFile:"開く：{name}", libraryEmpty:"作業フォルダーを選ぶか、JSONを追加します。名前で開き、チェックで一括書き出しの対象を選びます。", libraryExport:"選択した作業を書き出す（{count}件）", noticeClose:"通知を閉じる", batchTitle:"選択した作業の書き出し", batchScope:"JSONに保存された有効な段階・用紙・内容・メモで、その段階の全ページを書き出します。編集中の作業は保持します。", batchSavedFormat:"保存された形式", batchZip:"ZIPダウンロード", batchDestinationHint:"フォルダー出力は実行ごとに新しいフォルダーを作ります。中止しても完了分をZIPにまとめます。準備エラーの作業は出力対象から除外します。", batchReady:"準備完了{count}件・{pages}ページ・エラー{failed}件", batchRenamed:"同名{count}ファイルに連番を追加", batchPreparing:"作業を確認中 {done}/{total}…", batchStart:"準備できた{count}件を書き出す", batchFinished:"フォルダー保存{folder}ファイル・ZIP依頼{archive}ファイル・エラー{failed}件", batchProgress:"処理 {done}/{total}ファイル", batchStop:"このファイルの後に中止", batchStopping:"中止しています…", batchPages:"ページ", batchState_pending:"確認中", batchState_ready:"準備完了", batchState_running:"出力中", batchState_done:"完了", batchState_error:"エラー", batchState_stopped:"中止", batchMissingPaper:"このJSONが参照する用紙画像・メモの記憶がありません。用紙画像を含めて作業を保存し直してください。", batchChanged:"準備後にページ数が変わりました。", batchFolderCollision:"新しい出力フォルダーを作成できませんでした。", batchPartial:"{count}ファイル処理済み", batchArchiveFailed:"ZIPダウンロード失敗：{error}", batchZipLimit:"ZIP32の容量またはファイル数の上限を超えます。フォルダーに出力するか対象を減らしてください。"
       },
       ko: {
         languageLabel:'언어', headerCardTitle:'헤더', episodeLabel:'화수', titleLabel:'제목', cutNoLabel:'컷 번호', secondsLabel:'길이 초', framesLabel:'길이 프레임', authorLabel:'이름', pageLabel:'페이지',
@@ -3546,7 +3567,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         dialogBlocksTitle:'대사란', dialogFormatLabel:'예: 0+01 | 1+00 | 화자 | 대사（시작｜끝｜누가｜무엇）', cameraBlocksTitle:'카메라란', cameraFormatLabel:'예: 0+01 | 1+00 | A | PAN | B（시작｜끝｜이전｜움직임｜이후）', cameraExamplesTitle:'예시',
         cameraExPan:'팬 이동（A→B）', cameraExTu:'당김（트랙업）', cameraExFi:'페이드 인', cameraExOl:'오버랩（전환）',
         sheetPreviewTitle:'시트 프리뷰', chooseExportDirBtn:"출력 위치", downloadAllBtn:"출력", memoModeBtn:'메모 모드', cameraToMemoBtn:'카메라→메모', memoUndoBtn:"메모 선 되돌리기", memoRedoBtn:"메모 선 다시 실행", memoPenLabel:'펜', memoEraserLabel:'지우개', memoRightClickNoticeL1:'메모 영역 우클릭', memoRightClickNoticeL2:'텍스트 박스 생성·편집', cellReadabilityNotice:'← 원화 번호(셀 숫자)를 크게 표시',
-        stageHeading:'단계', stageAddSlotLabel:'단계 추가', stageCustomOption:'직접입력…', stageRenameBtn:'이름 변경', stageDeleteBtn:'삭제', stageDeleteLastHint:'마지막 단계는 삭제할 수 없습니다', hideNonCellCommandsLabel:'Cell 외 커맨드 숨기기', hideRightPanelBtn:'대사/카메라 숨기기', showRightPanelBtn:'대사/카메라 보이기', createdByLabel:'제작', settingsExportBtn:"작업 저장", settingsFileBtn:"작업 열기", settingsImportBtn:"작업 폴더", settingsRefreshBtn:'다시 불러오기', settingsSelectPlaceholder:"저장한 작업", settingsSelectEmpty:"작업 선택", settingsSelectNoSettings:"작업 파일 없음", textMemoApplyBtn:'적용', textMemoMenuAdd:'텍스트 박스 추가', textMemoMenuDelete:'텍스트 박스 삭제', textMemoMenuEditMode:'텍스트 박스 위치 편집', textMemoMenuEditDone:'텍스트 박스 편집 종료', textMemoMenuAutoArrange:'텍스트 박스 자동 정렬', textMemoInitialHint:'우클릭으로 텍스트 박스를 추가하거나 편집할 수 있습니다.', clearSheetDataBtn:'전체 초기화', hideSidebarBtn:'UI 숨기기', showSidebarBtn:'UI 펼치기', feedbackHeading:'문의', feedbackFormLink:'Form', feedbackPlaceholder:'버그 내용이나 개선 요청', feedbackHint:'가능하면 아는 것만 적어주세요: 증상, 재현 순서, 사용한 CSV/PSD/이미지 형식, 기대한 결과, 실제 결과, 브라우저/OS.', feedbackSendBtn:'보내기', feedbackEmpty:'내용을 먼저 입력하세요.', feedbackSending:'전송 중...', feedbackSent:'전송했습니다.', feedbackRequested:'전송을 요청했습니다. 접수 확인 전까지 원문을 남깁니다.', feedbackFailed:'전송하지 못했습니다. Form 링크로 보내주세요.', shortcutSummaryTopHint:'', workPickerCurrent:"현재 열린 작업", workPickerOpened:"작업을 열었습니다: {name}", workPickerClose:"작업 목록 닫기", workPickerNoMatch:"일치하는 작업 파일이 없습니다.", workPickerCount:"{total}개 중 {shown}개", workPickerSearch:"파일명 또는 폴더 검색", workPickerTitle:"저장한 작업 열기", outputPixels:"출력 {width} × {height} px", lastOutputFile:"마지막 파일", firstOutputFile:"첫 파일", outputComposition:"현재 표시된 용지 이미지·시트 내용·메모도 함께 포함됩니다.", psdLayers:"PSD 레이어: 메모 / 문자 / 용지 틀 / 용지 이미지 / 배경", reviewCaption:"완성본 미리보기 · 화면 배율은 이미지 크기에 영향을 주지 않습니다", reviewRetry:"다시 표시", reviewFailed:"미리보기를 표시하지 못했습니다: {error}", reviewLoading:"미리보기 준비 중…", showOutputSettings:"출력 설정 보기", focusPreview:"크게 확인", fitWidth:"폭에 맞춤", fitPage:"페이지 전체", reviewNext:"다음 페이지", reviewPrev:"이전 페이지", reviewPage:"{page} / {count}페이지", outputAction:"{count}페이지 출력", outputFiles:"파일 {count}개 · 페이지마다 한 파일", outputSize:"이미지 크기", outputLocation:"출력 위치", outputFormat:"파일 형식", outputCellLabel:"셀 머리글", outputDuration:"길이 표시의 ＋", outputHeader:"헤더", outputTemplate:"용지의 틀 선", outputContents:"출력에 포함할 내용", backToEdit:"편집으로 돌아가기", reviewTitle:"완성본 확인 및 출력", memoHistory:"메모", globalRedo:"시트 변경 다시 실행", globalUndo:"시트 변경 되돌리기", sheetHistory:"시트", outputReview:"완성본 확인", workSaveHint:"나중에 이어서 편집할 수 있도록 파일로 저장합니다.", libraryTitle:"작업 목록", libraryAdd:"JSON 추가", librarySelect:"검색 결과 선택", libraryClear:"선택 해제", librarySelected:"{count}/{total}개 선택", librarySelectFile:"출력 대상으로 선택: {name}", libraryOpenFile:"열기: {name}", libraryEmpty:"작업 폴더를 선택하거나 JSON을 추가하세요. 파일명으로 열고, 체크하면 일괄 출력 대상으로 선택됩니다.", libraryExport:"선택한 작업 출력 ({count}개)", noticeClose:"안내 닫기", batchTitle:"선택한 작업 일괄 출력", batchScope:"각 JSON에 저장된 활성 단계·용지·내용·메모를 적용해 해당 단계의 모든 페이지를 출력합니다. 편집 중인 작업은 유지됩니다.", batchSavedFormat:"저장된 형식", batchZip:"ZIP 다운로드", batchDestinationHint:"폴더 출력은 실행마다 새 폴더를 만듭니다. 중지해도 완료된 파일은 ZIP으로 받습니다. 준비 오류가 있는 작업은 출력 대상에서 제외됩니다.", batchReady:"준비된 작업 {count}개 · {pages}페이지 · 오류 {failed}개", batchRenamed:"동일한 파일명 {count}개에 번호 추가", batchPreparing:"작업 확인 중 {done}/{total}…", batchStart:"준비된 작업 {count}개 출력", batchFinished:"폴더 저장 {folder}파일 · ZIP 다운로드 요청 {archive}파일 · 오류 {failed}개", batchProgress:"처리 {done}/{total}파일", batchStop:"현재 파일 후 중지", batchStopping:"중지 중…", batchPages:"페이지", batchState_pending:"확인 중", batchState_ready:"준비 완료", batchState_running:"출력 중", batchState_done:"완료", batchState_error:"오류", batchState_stopped:"중지", batchMissingPaper:"이 JSON이 참조하는 용지 이미지·메모를 찾을 수 없습니다. 용지 이미지를 포함해 작업을 다시 저장하세요.", batchChanged:"준비 후 페이지 수가 달라졌습니다.", batchFolderCollision:"새 출력 폴더를 만들지 못했습니다.", batchPartial:"{count}파일 처리 완료", batchArchiveFailed:"ZIP 다운로드 실패: {error}", batchZipLimit:"ZIP32의 용량 또는 파일 수 한도를 넘습니다. 폴더로 출력하거나 작업을 나눠 선택하세요."
+        unifiedCurrentWork:"현재 편집 작업", unifiedSelection:"선택한 작업 {count}개", unifiedExcluded:"출력 제외", unifiedStopped:"중지 {count}개", unifiedExportAction:"작업 {count}개 · 총 {pages}페이지 출력", unifiedWorkList:"출력할 작업", unifiedSelectAll:"전체 선택", unifiedAllOptions:"모든 출력 대상에 적용", unifiedCurrentOptions:"현재 작업의 출력 설정", unifiedSavedDefaults:"변경하지 않은 항목은 각 작업의 저장 설정을 유지합니다.", unifiedMixed:"혼합", unifiedResetOptions:"저장 설정으로 되돌리기", stageHeading:'단계', stageAddSlotLabel:'단계 추가', stageCustomOption:'직접입력…', stageRenameBtn:'이름 변경', stageDeleteBtn:'삭제', stageDeleteLastHint:'마지막 단계는 삭제할 수 없습니다', hideNonCellCommandsLabel:'Cell 외 커맨드 숨기기', hideRightPanelBtn:'대사/카메라 숨기기', showRightPanelBtn:'대사/카메라 보이기', createdByLabel:'제작', settingsExportBtn:"작업 저장", settingsFileBtn:"작업 열기", settingsImportBtn:"작업 폴더", settingsRefreshBtn:'다시 불러오기', settingsSelectPlaceholder:"저장한 작업", settingsSelectEmpty:"작업 선택", settingsSelectNoSettings:"작업 파일 없음", textMemoApplyBtn:'적용', textMemoMenuAdd:'텍스트 박스 추가', textMemoMenuDelete:'텍스트 박스 삭제', textMemoMenuEditMode:'텍스트 박스 위치 편집', textMemoMenuEditDone:'텍스트 박스 편집 종료', textMemoMenuAutoArrange:'텍스트 박스 자동 정렬', textMemoInitialHint:'우클릭으로 텍스트 박스를 추가하거나 편집할 수 있습니다.', clearSheetDataBtn:'전체 초기화', hideSidebarBtn:'UI 숨기기', showSidebarBtn:'UI 펼치기', feedbackHeading:'문의', feedbackFormLink:'Form', feedbackPlaceholder:'버그 내용이나 개선 요청', feedbackHint:'가능하면 아는 것만 적어주세요: 증상, 재현 순서, 사용한 CSV/PSD/이미지 형식, 기대한 결과, 실제 결과, 브라우저/OS.', feedbackSendBtn:'보내기', feedbackEmpty:'내용을 먼저 입력하세요.', feedbackSending:'전송 중...', feedbackSent:'전송했습니다.', feedbackRequested:'전송을 요청했습니다. 접수 확인 전까지 원문을 남깁니다.', feedbackFailed:'전송하지 못했습니다. Form 링크로 보내주세요.', shortcutSummaryTopHint:'', workPickerCurrent:"현재 열린 작업", workPickerOpened:"작업을 열었습니다: {name}", workPickerClose:"작업 목록 닫기", workPickerNoMatch:"일치하는 작업 파일이 없습니다.", workPickerCount:"{total}개 중 {shown}개", workPickerSearch:"파일명 또는 폴더 검색", workPickerTitle:"저장한 작업 열기", outputPixels:"출력 {width} × {height} px", lastOutputFile:"마지막 파일", firstOutputFile:"첫 파일", outputComposition:"현재 표시된 용지 이미지·시트 내용·메모도 함께 포함됩니다.", psdLayers:"PSD 레이어: 메모 / 문자 / 용지 틀 / 용지 이미지 / 배경", reviewCaption:"완성본 미리보기 · 화면 배율은 이미지 크기에 영향을 주지 않습니다", reviewRetry:"다시 표시", reviewFailed:"미리보기를 표시하지 못했습니다: {error}", reviewLoading:"미리보기 준비 중…", showOutputSettings:"출력 설정 보기", focusPreview:"크게 확인", fitWidth:"폭에 맞춤", fitPage:"페이지 전체", reviewNext:"다음 페이지", reviewPrev:"이전 페이지", reviewPage:"{page} / {count}페이지", outputAction:"{count}페이지 출력", outputFiles:"파일 {count}개 · 페이지마다 한 파일", outputSize:"이미지 크기", outputLocation:"출력 위치", outputFormat:"파일 형식", outputCellLabel:"셀 머리글", outputDuration:"길이 표시의 ＋", outputHeader:"헤더", outputTemplate:"용지의 틀 선", outputContents:"출력에 포함할 내용", backToEdit:"편집으로 돌아가기", reviewTitle:"완성본 확인 및 출력", memoHistory:"메모", globalRedo:"시트 변경 다시 실행", globalUndo:"시트 변경 되돌리기", sheetHistory:"시트", outputReview:"완성본 확인", workSaveHint:"나중에 이어서 편집할 수 있도록 파일로 저장합니다.", libraryTitle:"작업 목록", libraryAdd:"JSON 추가", librarySelect:"검색 결과 선택", libraryClear:"선택 해제", librarySelected:"{count}/{total}개 선택", librarySelectFile:"출력 대상으로 선택: {name}", libraryOpenFile:"열기: {name}", libraryEmpty:"작업 폴더를 선택하거나 JSON을 추가하세요. 파일명으로 열고, 체크하면 일괄 출력 대상으로 선택됩니다.", libraryExport:"선택한 작업 출력 ({count}개)", noticeClose:"안내 닫기", batchTitle:"선택한 작업 일괄 출력", batchScope:"각 JSON에 저장된 활성 단계·용지·내용·메모를 적용해 해당 단계의 모든 페이지를 출력합니다. 편집 중인 작업은 유지됩니다.", batchSavedFormat:"저장된 형식", batchZip:"ZIP 다운로드", batchDestinationHint:"폴더 출력은 실행마다 새 폴더를 만듭니다. 중지해도 완료된 파일은 ZIP으로 받습니다. 준비 오류가 있는 작업은 출력 대상에서 제외됩니다.", batchReady:"준비된 작업 {count}개 · {pages}페이지 · 오류 {failed}개", batchRenamed:"동일한 파일명 {count}개에 번호 추가", batchPreparing:"작업 확인 중 {done}/{total}…", batchStart:"준비된 작업 {count}개 출력", batchFinished:"폴더 저장 {folder}파일 · ZIP 다운로드 요청 {archive}파일 · 오류 {failed}개", batchProgress:"처리 {done}/{total}파일", batchStop:"현재 파일 후 중지", batchStopping:"중지 중…", batchPages:"페이지", batchState_pending:"확인 중", batchState_ready:"준비 완료", batchState_running:"출력 중", batchState_done:"완료", batchState_error:"오류", batchState_stopped:"중지", batchMissingPaper:"이 JSON이 참조하는 용지 이미지·메모를 찾을 수 없습니다. 용지 이미지를 포함해 작업을 다시 저장하세요.", batchChanged:"준비 후 페이지 수가 달라졌습니다.", batchFolderCollision:"새 출력 폴더를 만들지 못했습니다.", batchPartial:"{count}파일 처리 완료", batchArchiveFailed:"ZIP 다운로드 실패: {error}", batchZipLimit:"ZIP32의 용량 또는 파일 수 한도를 넘습니다. 폴더로 출력하거나 작업을 나눠 선택하세요."
       },
       zh: {
         languageLabel:'语言', headerCardTitle:'页眉', episodeLabel:'集数', titleLabel:'标题', cutNoLabel:'镜头编号', secondsLabel:'时长 秒', framesLabel:'时长 帧', authorLabel:'姓名', pageLabel:'页码',
@@ -3555,7 +3576,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         dialogBlocksTitle:'对白栏', dialogFormatLabel:'例: 0+01 | 1+00 | 说话人 | 台词（起始｜结束｜谁｜内容）', cameraBlocksTitle:'摄影机栏', cameraFormatLabel:'例: 0+01 | 1+00 | A | PAN | B（起始｜结束｜之前｜运动｜之后）', cameraExamplesTitle:'示例',
         cameraExPan:'摇镜（A→B）', cameraExTu:'推近（Track Up）', cameraExFi:'淡入', cameraExOl:'叠化（切换）',
         sheetPreviewTitle:'Sheet 预览', chooseExportDirBtn:"输出位置", downloadAllBtn:"导出", memoModeBtn:'备注模式', cameraToMemoBtn:'摄影→备注', memoUndoBtn:"撤销备注笔画", memoRedoBtn:"重做备注笔画", memoPenLabel:'笔', memoEraserLabel:'橡皮', memoRightClickNoticeL1:'在备注区右键', memoRightClickNoticeL2:'创建/编辑文本框', cellReadabilityNotice:'← 放大原画编号（单元格数字）',
-        stageHeading:'阶段', stageAddSlotLabel:'添加阶段', stageCustomOption:'自定义…', stageRenameBtn:'重命名', stageDeleteBtn:'删除', stageDeleteLastHint:'无法删除最后一个阶段', hideNonCellCommandsLabel:'隐藏非 Cell 命令', hideRightPanelBtn:'隐藏对白/摄影', showRightPanelBtn:'显示对白/摄影', createdByLabel:'制作', settingsExportBtn:"保存工作", settingsFileBtn:"打开工作", settingsImportBtn:"工作文件夹", settingsRefreshBtn:'重新读取', settingsSelectPlaceholder:"已保存的工作", settingsSelectEmpty:"选择工作", settingsSelectNoSettings:"没有工作文件", textMemoApplyBtn:'应用', textMemoMenuAdd:'添加文字框', textMemoMenuDelete:'删除文字框', textMemoMenuEditMode:'文字框位置编辑', textMemoMenuEditDone:'结束文字框编辑', textMemoMenuAutoArrange:'自动排列文字框', textMemoInitialHint:'可通过右键添加或编辑文字框。', clearSheetDataBtn:'全部重置', hideSidebarBtn:'隐藏 UI', showSidebarBtn:'显示 UI', feedbackHeading:'反馈', feedbackFormLink:'Form', feedbackPlaceholder:'错误报告或改进建议', feedbackHint:'请尽量填写已知信息: 症状、复现步骤、使用的 CSV/PSD/图片格式、期望结果、实际结果、浏览器/OS。', feedbackSendBtn:'发送', feedbackEmpty:'请先输入内容。', feedbackSending:'发送中...', feedbackSent:'已发送。', feedbackRequested:'已请求发送。确认收件前保留原文。', feedbackFailed:'发送失败。请使用 Form 链接。', shortcutSummaryTopHint:'', workPickerCurrent:"当前打开的工作", workPickerOpened:"已打开工作：{name}", workPickerClose:"关闭工作列表", workPickerNoMatch:"没有匹配的工作文件。", workPickerCount:"共{total}个，显示{shown}个", workPickerSearch:"搜索文件名或文件夹", workPickerTitle:"打开已保存的工作", outputPixels:"输出 {width} × {height} px", lastOutputFile:"最后一个文件", firstOutputFile:"第一个文件", outputComposition:"当前显示的纸张图像、工作表内容和备注也会包含在内。", psdLayers:"PSD图层：备注 / 文字 / 纸张格线 / 纸张图像 / 背景", reviewCaption:"成品预览・显示缩放不影响图像尺寸", reviewRetry:"重新显示", reviewFailed:"无法显示预览：{error}", reviewLoading:"正在准备预览…", showOutputSettings:"显示导出设置", focusPreview:"放大查看", fitWidth:"适合宽度", fitPage:"适合整页", reviewNext:"下一页", reviewPrev:"上一页", reviewPage:"第{page} / {count}页", outputAction:"导出{count}页", outputFiles:"{count}个文件・每页一个文件", outputSize:"图像尺寸", outputLocation:"输出位置", outputFormat:"文件格式", outputCellLabel:"单元格标题", outputDuration:"时长的＋号", outputHeader:"表头", outputTemplate:"纸张格线", outputContents:"导出内容", backToEdit:"返回编辑", reviewTitle:"查看成品并导出", memoHistory:"备注", globalRedo:"重做工作表更改", globalUndo:"撤销工作表更改", sheetHistory:"工作表", outputReview:"查看成品", workSaveHint:"保存为文件，之后可继续编辑。", libraryTitle:"工作列表", libraryAdd:"添加JSON", librarySelect:"选择搜索结果", libraryClear:"清除选择", librarySelected:"已选{count}/{total}个", librarySelectFile:"选择导出：{name}", libraryOpenFile:"打开：{name}", libraryEmpty:"选择工作文件夹或添加JSON。点击名称打开，勾选后可批量导出。", libraryExport:"导出所选工作（{count}个）", noticeClose:"关闭通知", batchTitle:"批量导出所选工作", batchScope:"使用每个JSON保存的活动阶段、纸张、内容和备注，导出该阶段的全部页面。保留当前编辑中的工作。", batchSavedFormat:"保存的格式", batchZip:"下载ZIP", batchDestinationHint:"文件夹导出每次创建新文件夹。停止时仍可下载已完成文件的ZIP。准备失败的工作不计入可导出数量。", batchReady:"已准备{count}个工作・{pages}页・{failed}个错误", batchRenamed:"已为{count}个同名文件添加编号", batchPreparing:"正在检查 {done}/{total}…", batchStart:"导出已准备的{count}个工作", batchFinished:"文件夹{folder}个文件・已请求ZIP下载{archive}个文件・错误{failed}个", batchProgress:"已处理{done}/{total}个文件", batchStop:"当前文件后停止", batchStopping:"正在停止…", batchPages:"页", batchState_pending:"检查中", batchState_ready:"就绪", batchState_running:"导出中", batchState_done:"完成", batchState_error:"错误", batchState_stopped:"已停止", batchMissingPaper:"找不到此JSON引用的纸张图像或备注。请包含纸张图像重新保存工作。", batchChanged:"准备后页数发生变化。", batchFolderCollision:"无法创建新的导出文件夹。", batchPartial:"已处理{count}个文件", batchArchiveFailed:"ZIP下载失败：{error}", batchZipLimit:"超过ZIP32的大小或文件数限制。请导出到文件夹或减少所选工作。"
+        unifiedCurrentWork:"当前编辑工作", unifiedSelection:"已选{count}个工作", unifiedExcluded:"不导出", unifiedStopped:"已停止{count}个", unifiedExportAction:"导出{count}个工作・共{pages}页", unifiedWorkList:"要导出的工作", unifiedSelectAll:"全选", unifiedAllOptions:"应用到全部导出工作", unifiedCurrentOptions:"当前工作的导出设置", unifiedSavedDefaults:"未更改的选项保留各工作的保存设置。", unifiedMixed:"混合", unifiedResetOptions:"恢复保存设置", stageHeading:'阶段', stageAddSlotLabel:'添加阶段', stageCustomOption:'自定义…', stageRenameBtn:'重命名', stageDeleteBtn:'删除', stageDeleteLastHint:'无法删除最后一个阶段', hideNonCellCommandsLabel:'隐藏非 Cell 命令', hideRightPanelBtn:'隐藏对白/摄影', showRightPanelBtn:'显示对白/摄影', createdByLabel:'制作', settingsExportBtn:"保存工作", settingsFileBtn:"打开工作", settingsImportBtn:"工作文件夹", settingsRefreshBtn:'重新读取', settingsSelectPlaceholder:"已保存的工作", settingsSelectEmpty:"选择工作", settingsSelectNoSettings:"没有工作文件", textMemoApplyBtn:'应用', textMemoMenuAdd:'添加文字框', textMemoMenuDelete:'删除文字框', textMemoMenuEditMode:'文字框位置编辑', textMemoMenuEditDone:'结束文字框编辑', textMemoMenuAutoArrange:'自动排列文字框', textMemoInitialHint:'可通过右键添加或编辑文字框。', clearSheetDataBtn:'全部重置', hideSidebarBtn:'隐藏 UI', showSidebarBtn:'显示 UI', feedbackHeading:'反馈', feedbackFormLink:'Form', feedbackPlaceholder:'错误报告或改进建议', feedbackHint:'请尽量填写已知信息: 症状、复现步骤、使用的 CSV/PSD/图片格式、期望结果、实际结果、浏览器/OS。', feedbackSendBtn:'发送', feedbackEmpty:'请先输入内容。', feedbackSending:'发送中...', feedbackSent:'已发送。', feedbackRequested:'已请求发送。确认收件前保留原文。', feedbackFailed:'发送失败。请使用 Form 链接。', shortcutSummaryTopHint:'', workPickerCurrent:"当前打开的工作", workPickerOpened:"已打开工作：{name}", workPickerClose:"关闭工作列表", workPickerNoMatch:"没有匹配的工作文件。", workPickerCount:"共{total}个，显示{shown}个", workPickerSearch:"搜索文件名或文件夹", workPickerTitle:"打开已保存的工作", outputPixels:"输出 {width} × {height} px", lastOutputFile:"最后一个文件", firstOutputFile:"第一个文件", outputComposition:"当前显示的纸张图像、工作表内容和备注也会包含在内。", psdLayers:"PSD图层：备注 / 文字 / 纸张格线 / 纸张图像 / 背景", reviewCaption:"成品预览・显示缩放不影响图像尺寸", reviewRetry:"重新显示", reviewFailed:"无法显示预览：{error}", reviewLoading:"正在准备预览…", showOutputSettings:"显示导出设置", focusPreview:"放大查看", fitWidth:"适合宽度", fitPage:"适合整页", reviewNext:"下一页", reviewPrev:"上一页", reviewPage:"第{page} / {count}页", outputAction:"导出{count}页", outputFiles:"{count}个文件・每页一个文件", outputSize:"图像尺寸", outputLocation:"输出位置", outputFormat:"文件格式", outputCellLabel:"单元格标题", outputDuration:"时长的＋号", outputHeader:"表头", outputTemplate:"纸张格线", outputContents:"导出内容", backToEdit:"返回编辑", reviewTitle:"查看成品并导出", memoHistory:"备注", globalRedo:"重做工作表更改", globalUndo:"撤销工作表更改", sheetHistory:"工作表", outputReview:"查看成品", workSaveHint:"保存为文件，之后可继续编辑。", libraryTitle:"工作列表", libraryAdd:"添加JSON", librarySelect:"选择搜索结果", libraryClear:"清除选择", librarySelected:"已选{count}/{total}个", librarySelectFile:"选择导出：{name}", libraryOpenFile:"打开：{name}", libraryEmpty:"选择工作文件夹或添加JSON。点击名称打开，勾选后可批量导出。", libraryExport:"导出所选工作（{count}个）", noticeClose:"关闭通知", batchTitle:"批量导出所选工作", batchScope:"使用每个JSON保存的活动阶段、纸张、内容和备注，导出该阶段的全部页面。保留当前编辑中的工作。", batchSavedFormat:"保存的格式", batchZip:"下载ZIP", batchDestinationHint:"文件夹导出每次创建新文件夹。停止时仍可下载已完成文件的ZIP。准备失败的工作不计入可导出数量。", batchReady:"已准备{count}个工作・{pages}页・{failed}个错误", batchRenamed:"已为{count}个同名文件添加编号", batchPreparing:"正在检查 {done}/{total}…", batchStart:"导出已准备的{count}个工作", batchFinished:"文件夹{folder}个文件・已请求ZIP下载{archive}个文件・错误{failed}个", batchProgress:"已处理{done}/{total}个文件", batchStop:"当前文件后停止", batchStopping:"正在停止…", batchPages:"页", batchState_pending:"检查中", batchState_ready:"就绪", batchState_running:"导出中", batchState_done:"完成", batchState_error:"错误", batchState_stopped:"已停止", batchMissingPaper:"找不到此JSON引用的纸张图像或备注。请包含纸张图像重新保存工作。", batchChanged:"准备后页数发生变化。", batchFolderCollision:"无法创建新的导出文件夹。", batchPartial:"已处理{count}个文件", batchArchiveFailed:"ZIP下载失败：{error}", batchZipLimit:"超过ZIP32的大小或文件数限制。请导出到文件夹或减少所选工作。"
       }
     };
 
@@ -4213,6 +4234,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver904", "One output window", ["Single and multiple work files now share the same preview and output screen. Select a work in the list to preview it and use its checkbox to include or exclude it.", "Changed output options apply to all targets. Mixed values are identified, and unchanged options keep each work’s saved settings."]],
         ["ver903", "Work library and batch export", ["Work save/open buttons now align evenly. Folder tools, search and selected work live in one library.", "Export all pages of selected JSON work files with their own saved settings while keeping the editing document. Review counts, duplicate names and errors before starting. Folder output uses a new run folder; browser downloads use one ZIP.", "Completion notices dismiss automatically. Output location is shown inside its button, and the main button is now simply Export."]],
         ["ver902", "Find saved work in a searchable list", ["Search filenames and folders, then open a file with a click or Enter. The currently opened work is marked with a check.", "Long filenames wrap within the list, and the list stays inside the screen. Escape closes it without changing your work.", "Keyboard focus stays inside grouped buttons and remains visible when a tool is active."]],
         ["ver901", "Save work and image export are easier to tell apart", ["Save work keeps a file for later editing. Image / PSD export creates the finished pages.", "Review the final appearance, filenames, number of files and output location together. Included items update the preview immediately.", "Expand the preview, move between pages, or fit it to the page or width. Returning to editing keeps your view; canceling leaves the output choices unchanged."]],
@@ -4266,6 +4288,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver904", "出力画面を統合", ["単体と複数の作業を同じ画面で確認・書き出しできます。一覧の作業名でプレビューを切り替え、チェックで出力対象を選べます。", "変更した出力設定は全対象に適用します。異なる値は「混在」と表示し、変更しない項目は各作業の保存設定を保ちます。"]],
         ["ver903", "作業一覧と一括書き出し", ["作業の保存・開くボタンを均等に配置し、フォルダー操作・検索・選択を作業一覧にまとめました。", "選択したJSONの設定で全ページを一括書き出しできます。編集中の作業を保持し、開始前に件数・同名・エラーを確認できます。フォルダー出力は実行ごとの新規フォルダー、通常ダウンロードはZIPにまとめます。", "完了通知は自動で消えます。出力先はボタン内に表示し、書き出しボタンの名前を簡潔にしました。"]],
         ["ver902", "\u4fdd\u5b58\u3057\u305f\u4f5c\u696d\u3092\u691c\u7d22\u3057\u3066\u958b\u3051\u308b\u3088\u3046\u306b\u306a\u308a\u307e\u3057\u305f", ["\u30d5\u30a1\u30a4\u30eb\u540d\u3084\u30d5\u30a9\u30eb\u30c0\u30fc\u3067\u691c\u7d22\u3057\u3001\u30af\u30ea\u30c3\u30af\u307e\u305f\u306fEnter\u3067\u958b\u3051\u307e\u3059\u3002\u73fe\u5728\u958b\u3044\u3066\u3044\u308b\u4f5c\u696d\u306b\u306f\u30c1\u30a7\u30c3\u30af\u304c\u4ed8\u304d\u307e\u3059\u3002", "\u9577\u3044\u540d\u524d\u3082\u4e00\u89a7\u306e\u4e2d\u3067\u6298\u308a\u8fd4\u3057\u3001\u753b\u9762\u304b\u3089\u306f\u307f\u51fa\u3055\u306a\u3044\u3088\u3046\u306b\u3057\u307e\u3057\u305f\u3002Escape\u3067\u306f\u4f5c\u696d\u3092\u5909\u3048\u305a\u306b\u9589\u3058\u307e\u3059\u3002", "\u30dc\u30bf\u30f3\u306e\u9078\u629e\u67a0\u304c\u30b0\u30eb\u30fc\u30d7\u304b\u3089\u306f\u307f\u51fa\u3055\u305a\u3001\u4f7f\u7528\u4e2d\u306e\u30c4\u30fc\u30eb\u3067\u3082\u30ad\u30fc\u30dc\u30fc\u30c9\u306e\u9078\u629e\u4f4d\u7f6e\u304c\u308f\u304b\u308a\u307e\u3059\u3002"]],
         ["ver901", "\u4f5c\u696d\u306e\u4fdd\u5b58\u3068\u753b\u50cf\u306e\u66f8\u304d\u51fa\u3057\u304c\u308f\u304b\u308a\u3084\u3059\u304f\u306a\u308a\u307e\u3057\u305f", ["\u300c\u4f5c\u696d\u3092\u4fdd\u5b58\u300d\u306f\u3042\u3068\u3067\u7de8\u96c6\u3059\u308b\u305f\u3081\u306e\u30d5\u30a1\u30a4\u30eb\u3001\u300c\u753b\u50cf\u30fbPSD\u66f8\u304d\u51fa\u3057\u300d\u306f\u4ed5\u4e0a\u304c\u3063\u305f\u30da\u30fc\u30b8\u3092\u3064\u304f\u308a\u307e\u3059\u3002", "\u4ed5\u4e0a\u304c\u308a\u3001\u30d5\u30a1\u30a4\u30eb\u540d\u3001\u30d5\u30a1\u30a4\u30eb\u6570\u3001\u51fa\u529b\u5148\u3092\u4e00\u7dd2\u306b\u78ba\u8a8d\u3067\u304d\u307e\u3059\u3002\u66f8\u304d\u51fa\u3059\u5185\u5bb9\u306e\u30c1\u30a7\u30c3\u30af\u3092\u5909\u3048\u308b\u3068\u30d7\u30ec\u30d3\u30e5\u30fc\u306b\u3059\u3050\u53cd\u6620\u3057\u307e\u3059\u3002", "\u30d7\u30ec\u30d3\u30e5\u30fc\u3092\u5927\u304d\u304f\u3057\u3066\u3001\u30da\u30fc\u30b8\u9001\u308a\u3084\u30da\u30fc\u30b8\u5168\u4f53\u30fb\u5e45\u5408\u308f\u305b\u3067\u78ba\u8a8d\u3067\u304d\u307e\u3059\u3002\u7de8\u96c6\u306b\u623b\u308b\u3068\u5143\u306e\u8868\u793a\u306b\u623b\u308a\u3001\u30ad\u30e3\u30f3\u30bb\u30eb\u306a\u3089\u51fa\u529b\u306e\u9078\u629e\u3082\u5909\u66f4\u3057\u307e\u305b\u3093\u3002"]],
@@ -4319,6 +4342,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver904", "출력 화면 통합", ["단일·여러 작업의 미리보기와 출력을 같은 화면에서 처리합니다. 목록의 작업 이름을 누르면 미리보기가 바뀌고, 체크로 출력 대상을 조정합니다.", "변경한 출력 옵션은 모든 대상에 적용합니다. 서로 다른 값은 혼합으로 표시하며, 바꾸지 않은 항목은 각 작업의 저장 설정을 유지합니다."]],
         ["ver903", "작업 목록과 일괄 출력", ["작업 저장·열기를 같은 폭으로 정렬하고, 폴더 조작·검색·선택을 작업 목록에 모았습니다.", "선택한 JSON별 저장 설정으로 모든 페이지를 일괄 출력합니다. 편집 중인 작업을 유지하며, 시작 전에 페이지 수·같은 파일명·오류를 확인할 수 있습니다. 폴더 출력은 실행별 새 폴더에, 기본 다운로드는 ZIP 하나로 받습니다.", "완료 안내는 자동으로 사라지고 출력 위치는 버튼 안에 표시합니다. 출력 버튼 이름을 간단히 줄였습니다."]],
         ["ver902", "\uc800\uc7a5\ud55c \uc791\uc5c5\uc744 \uac80\uc0c9\ud574\uc11c \uc5f4 \uc218 \uc788\uc2b5\ub2c8\ub2e4", ["\ud30c\uc77c\uba85\uc774\ub098 \ud3f4\ub354\ub85c \uac80\uc0c9\ud55c \ub4a4 \ud074\ub9ad \ub610\ub294 Enter\ub85c \uc5fd\ub2c8\ub2e4. \ud604\uc7ac \uc5f4\ub9b0 \uc791\uc5c5\uc5d0\ub294 \uccb4\ud06c\uac00 \ud45c\uc2dc\ub429\ub2c8\ub2e4.", "\uae34 \uc774\ub984\ub3c4 \ubaa9\ub85d \uc548\uc5d0\uc11c \uc904\ubc14\uafc8\ud558\uace0, \ubaa9\ub85d\uc774 \ud654\uba74 \ubc16\uc73c\ub85c \ub098\uac00\uc9c0 \uc54a\ub3c4\ub85d \ud588\uc2b5\ub2c8\ub2e4. Escape\ub85c \ub2eb\uc73c\uba74 \ud604\uc7ac \uc791\uc5c5\uc740 \uadf8\ub300\ub85c\uc785\ub2c8\ub2e4.", "\ubc84\ud2bc \ubb36\uc74c\uc758 \uc120\ud0dd \ud14c\ub450\ub9ac\uac00 \ubc16\uc73c\ub85c \ud280\uc5b4\ub098\uc624\uc9c0 \uc54a\uace0, \uc0ac\uc6a9 \uc911\uc778 \ub3c4\uad6c\uc5d0\uc11c\ub3c4 \ud0a4\ubcf4\ub4dc \uc120\ud0dd \uc704\uce58\ub97c \ud655\uc778\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4."]],
         ["ver901", "\uc791\uc5c5 \uc800\uc7a5\uacfc \uc774\ubbf8\uc9c0 \ucd9c\ub825\uc744 \uad6c\ubd84\ud558\uae30 \uc26c\uc6cc\uc84c\uc2b5\ub2c8\ub2e4", ["\uc791\uc5c5 \uc800\uc7a5\uc740 \ub098\uc911\uc5d0 \ud3b8\uc9d1\ud560 \ud30c\uc77c\uc744 \ub9cc\ub4e4\uace0, \uc774\ubbf8\uc9c0\u00b7PSD \ucd9c\ub825\uc740 \uc644\uc131\ub41c \ud398\uc774\uc9c0\ub97c \ub9cc\ub4ed\ub2c8\ub2e4.", "\uc644\uc131\ubcf8\uacfc \ud30c\uc77c\uba85, \ud30c\uc77c \uc218, \ucd9c\ub825 \uc704\uce58\ub97c \ud568\uaed8 \ud655\uc778\ud569\ub2c8\ub2e4. \ud3ec\ud568 \ud56d\ubaa9\uc744 \ubc14\uafb8\uba74 \ubbf8\ub9ac\ubcf4\uae30\uc5d0 \uc989\uc2dc \ubc18\uc601\ub429\ub2c8\ub2e4.", "\ubbf8\ub9ac\ubcf4\uae30\ub97c \ud06c\uac8c \ud3bc\uccd0 \ud398\uc774\uc9c0\ub97c \ub118\uae30\uac70\ub098 \ud398\uc774\uc9c0 \uc804\uccb4\u00b7\ud3ed \ub9de\ucda4\uc73c\ub85c \ud655\uc778\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \ud3b8\uc9d1\uc73c\ub85c \ub3cc\uc544\uac00\uba74 \uc6d0\ub798 \ud654\uba74\uc744 \uc720\uc9c0\ud558\uace0, \ucde8\uc18c\ud558\uba74 \ucd9c\ub825 \uc124\uc815\ub3c4 \ubc14\uafb8\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."]],
@@ -4372,6 +4396,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver904", "统一导出界面", ["单个与多个工作共用预览和导出界面。点击工作名称切换预览，勾选框控制是否导出。", "修改的导出设置应用到全部目标。不同值显示为混合，未修改的选项保留各工作的保存设置。"]],
         ["ver903", "工作列表与批量导出", ["保存与打开按钮改为等宽，文件夹工具、搜索和选择整合到工作列表。", "按所选JSON各自保存的设置导出全部页面，保留当前编辑工作。开始前可检查数量、同名和错误。文件夹导出创建新文件夹，浏览器下载合并为ZIP。", "完成通知自动消失，输出位置显示在按钮内，导出按钮名称更简洁。"]],
         ["ver902", "\u53ef\u4ee5\u641c\u7d22\u5e76\u6253\u5f00\u5df2\u4fdd\u5b58\u7684\u5de5\u4f5c", ["\u6309\u6587\u4ef6\u540d\u6216\u6587\u4ef6\u5939\u641c\u7d22\uff0c\u70b9\u51fb\u6216\u6309Enter\u6253\u5f00\u3002\u5f53\u524d\u6253\u5f00\u7684\u5de5\u4f5c\u4f1a\u663e\u793a\u52fe\u53f7\u3002", "\u957f\u540d\u79f0\u5728\u5217\u8868\u5185\u6362\u884c\uff0c\u5217\u8868\u4fdd\u6301\u5728\u5c4f\u5e55\u8303\u56f4\u5185\u3002\u6309Escape\u5173\u95ed\u4e0d\u4f1a\u66f4\u6539\u5f53\u524d\u5de5\u4f5c\u3002", "\u7ec4\u5408\u6309\u94ae\u7684\u7126\u70b9\u6846\u4e0d\u518d\u5411\u5916\u7a81\u51fa\uff0c\u5de5\u5177\u542f\u7528\u65f6\u4ecd\u80fd\u770b\u5230\u952e\u76d8\u7126\u70b9\u3002"]],
         ["ver901", "\u66f4\u5bb9\u6613\u533a\u5206\u5de5\u4f5c\u4fdd\u5b58\u4e0e\u56fe\u50cf\u5bfc\u51fa", ["\u4fdd\u5b58\u5de5\u4f5c\u4f1a\u751f\u6210\u4e4b\u540e\u53ef\u4ee5\u7f16\u8f91\u7684\u6587\u4ef6\uff0c\u5bfc\u51fa\u56fe\u50cf\u00b7PSD\u4f1a\u751f\u6210\u5b8c\u6210\u7684\u9875\u9762\u3002", "\u53ef\u540c\u65f6\u786e\u8ba4\u6210\u54c1\u3001\u6587\u4ef6\u540d\u3001\u6587\u4ef6\u6570\u91cf\u548c\u8f93\u51fa\u4f4d\u7f6e\u3002\u66f4\u6539\u5305\u542b\u9879\u76ee\u540e\u4f1a\u7acb\u5373\u66f4\u65b0\u9884\u89c8\u3002", "\u53ef\u4ee5\u653e\u5927\u9884\u89c8\u3001\u7ffb\u9875\u3001\u9002\u5408\u6574\u9875\u6216\u5bbd\u5ea6\u3002\u8fd4\u56de\u7f16\u8f91\u4fdd\u7559\u539f\u6765\u7684\u89c6\u56fe\uff0c\u53d6\u6d88\u4e5f\u4e0d\u4f1a\u66f4\u6539\u8f93\u51fa\u9009\u9879\u3002"]],
@@ -21137,7 +21162,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (!activeSheetSnapshot) document.querySelectorAll('input[id],textarea[id],select[id]').forEach(function(node){ inputs[node.id] = node.value; });
       // The library is application state, not sheet content; never clone every loaded JSON per page/job.
       const copy = cloneSheetData(Object.assign({},state,{ loadedSettingsFiles:[] }));
-      copy.loadedSettingsFiles = state.loadedSettingsFiles;
       return { state:copy, inputs:inputs };
     }
 
@@ -21175,16 +21199,28 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     function chooseExportRecovery() {
       return new Promise(function(resolve){
         const backdrop = document.createElement('div');
-        backdrop.className = 'serifu-sheet-modal-backdrop';
+        backdrop.className = 'serifu-sheet-modal-backdrop export-recovery-backdrop';
+        const background = exportPreflightSession ? exportPreflightSession.backdrop : document.querySelector('.app');
+        const previousInert = background.inert, returnFocus = document.activeElement; background.inert = true;
         const box = document.createElement('div'); box.className = 'serifu-sheet-modal';
-        box.setAttribute('role','dialog'); box.setAttribute('aria-modal','true');
+        box.setAttribute('role','dialog'); box.setAttribute('aria-modal','true'); box.setAttribute('aria-label',ioText('permission'));
         const message = document.createElement('p'); message.textContent = ioText('permission'); box.appendChild(message);
         let settled = false;
         function finish(value) {
           if (settled) return; settled = true;
-          backdrop.remove(); document.removeEventListener('keydown', onKey, true); resolve(value);
+          backdrop.remove(); background.inert = previousInert; document.removeEventListener('keydown', onKey, true);
+          if (returnFocus && returnFocus.isConnected) returnFocus.focus({ preventScroll:true });
+          resolve(value);
         }
-        function onKey(event) { if (event.key === 'Escape') { event.preventDefault(); finish(null); } }
+        function onKey(event) {
+          event.stopImmediatePropagation();
+          if (event.key === 'Escape') { event.preventDefault(); finish(null); return; }
+          if (event.key !== 'Tab') return;
+          const buttons = Array.from(actions.querySelectorAll('button:not(:disabled)')), first = buttons[0], last = buttons[buttons.length - 1];
+          if (!backdrop.contains(document.activeElement)) { event.preventDefault(); (event.shiftKey ? last : first).focus(); }
+          else if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+          else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+        }
         const actions = document.createElement('div'); actions.className = 'serifu-sheet-actions';
         ['downloadOnce','choose','cancel'].forEach(function(key){
           const button = document.createElement('button'); button.type = 'button'; button.textContent = ioText(key);
@@ -24922,6 +24958,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     function refreshWorkLibrarySelection() {
       const count = workLibrarySelection.size;
+      const badge = document.getElementById('exportSelectionCount'); badge.textContent = String(count); badge.hidden = !count;
+      document.getElementById('downloadAllBtn').title = exportUiText(count ? 'unifiedSelection' : 'unifiedCurrentWork',{ count:count });
       document.getElementById('workLibraryCount').textContent = exportUiText('librarySelected',{ count:count,total:(state.loadedSettingsFiles || []).length });
       document.getElementById('workLibraryClearBtn').disabled = !count;
       const button = document.getElementById('workLibraryExportBtn');
@@ -25467,55 +25505,261 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return snapshot;
     }
 
+    const EXPORT_REVIEW_FIELDS = [
+      { key:'showTemplate',label:'outputTemplate' }, { key:'showHeaderOutput',label:'outputHeader' },
+      { key:'showDurationPlusOutput',label:'outputDuration' }, { key:'showCellLabelOutput',label:'outputCellLabel' }
+    ];
+
     function closeExportPreflightModal() {
       const session = exportPreflightSession;
       if (!session) return;
-      exportPreflightSession = null;
-      session.revision++;
+      if (session.running) { session.cancelled = true; updateExportReviewSummary(session); return; }
+      exportPreflightSession = null; session.revision++; session.prepareRevision++;
       if (session.frame) cancelAnimationFrame(session.frame);
       if (session.resizeObserver) session.resizeObserver.disconnect();
       if (session.previewUrl) URL.revokeObjectURL(session.previewUrl);
-      session.backdrop.remove();
-      session.app.inert = session.previousInert;
-      document.removeEventListener('keydown', handleExportPreflightModalKeydown, true);
+      session.backdrop.remove(); session.app.inert = session.previousInert;
+      session.archive = null; session.snapshot = null; session.jobs = []; session.sources = [];
+      document.removeEventListener('keydown',handleExportPreflightModalKeydown,true);
       if (session.returnFocus && session.returnFocus.isConnected) session.returnFocus.focus({ preventScroll:true });
     }
 
     function handleExportPreflightModalKeydown(event) {
       const session = exportPreflightSession;
-      if (!session) return;
-      // Editing shortcuts belong to the sheet behind this modal; preserve native field editing.
+      if (!session || session.backdrop.inert) return;
+      const other = event.target instanceof Element ? event.target.closest('.serifu-sheet-modal-backdrop') : null;
+      if (other && other !== session.backdrop) return;
       event.stopImmediatePropagation();
       if (event.key === 'Escape') { event.preventDefault(); closeExportPreflightModal(); return; }
       if (event.key !== 'Tab') return;
       const controls = Array.from(session.backdrop.querySelectorAll('button:not(:disabled),input:not(:disabled),select:not(:disabled)')).filter(function(node){ return node.getClientRects().length; });
       const first = controls[0], last = controls[controls.length - 1];
-      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      if (!session.backdrop.contains(document.activeElement)) { event.preventDefault(); (event.shiftKey ? last : first).focus(); }
+      else if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
       else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
     }
 
-    function updateExportReviewSummary(session) {
-      const root = session.backdrop, snapshot = session.snapshot;
-      snapshot.state.exportFilenameOverride = root.querySelector('[data-preflight-filename]').value;
-      snapshot.format = root.querySelector('[data-preflight-format]').value;
-      refreshExportSnapshotNames(snapshot);
-      const count = snapshot.model.totalPages;
-      const location = snapshot.state.exportDirectoryHandle ? ioText('selected', { name:snapshot.state.exportDirectoryName || snapshot.state.exportDirectoryHandle.name }) : ioText('normal');
-      root.querySelector('[data-review-summary]').textContent = snapshot.format.toUpperCase() + ' · ' + exportUiText('outputFiles', { count:count }) + ' · ' + location;
-      root.querySelector('[data-review-size]').textContent = snapshot.size.width + ' × ' + snapshot.size.height + ' px';
-      root.querySelector('[data-review-location]').textContent = location;
-      root.querySelector('[data-review-first]').textContent = snapshot.names[0] + '.' + snapshot.format;
-      root.querySelector('[data-review-last]').textContent = snapshot.names[count - 1] + '.' + snapshot.format;
-      root.querySelector('[data-review-last-row]').hidden = count < 2;
-      root.querySelector('[data-review-psd]').hidden = snapshot.format !== 'psd';
-      root.querySelector('[data-preflight-confirm]').textContent = exportUiText('outputAction', { count:count });
-      root.querySelector('[data-review-page]').textContent = exportUiText('reviewPage', { page:session.page + 1, count:count });
-      root.querySelector('[data-review-prev]').disabled = session.page <= 0;
-      root.querySelector('[data-review-next]').disabled = session.page >= count - 1;
+    function setExportReviewJobData(job, snapshot) {
+      job.savedFormat = snapshot.format; job.size = snapshot.size; job.baseNames = snapshot.names.slice();
+      job.savedOptions = {};
+      EXPORT_REVIEW_FIELDS.forEach(function(field){ job.savedOptions[field.key] = !!snapshot.state[field.key]; });
+      job.status = 'ready';
     }
 
-    function fitExportReviewImage(session) {
+    function reconcileExportReviewJobs(session) {
+      const used = new Set(); session.renamed = 0;
+      session.jobs.forEach(function(job){
+        if (!job.baseNames) return;
+        job.format = session.format === 'saved' ? job.savedFormat : session.format;
+        job.options = Object.assign({},job.savedOptions,session.outputOverrides);
+        const filename = session.kind === 'current' ? sanitizeFilenameBase(session.filename) : '';
+        const names = filename ? job.baseNames.map(function(_,index){ return offsetFilenameSequence(filename,index); }) : job.baseNames;
+        const reserved = reserveBatchNames(names,job.format,job.included && job.status !== 'error' ? used : new Set());
+        job.files = reserved.files;
+        if (job.included && job.status !== 'error') session.renamed += reserved.renamed;
+      });
+    }
+
+    function getExportReviewJobSnapshot(session, job) {
+      const snapshot = session.kind === 'current' ? cloneSheetData(session.currentSnapshot) : prepareBatchWorkSnapshot(job.payload,job.format);
+      Object.assign(snapshot.state,job.options);
+      snapshot.state.exportDirectoryHandle = session.handle; snapshot.state.exportDirectoryName = session.folderName || '';
+      snapshot.state.exportFilenameOverride = session.kind === 'current' ? sanitizeFilenameBase(session.filename) : '';
+      snapshot.format = job.format;
+      snapshot.names = job.files.map(function(name){ return name.slice(0,-job.format.length - 1); });
+      return snapshot;
+    }
+
+    function updateExportReviewSummary(session) {
       if (session !== exportPreflightSession) return;
+      const root = session.backdrop, active = session.jobs[session.activeIndex];
+      const included = session.jobs.filter(function(job){ return job.included && job.baseNames && job.status !== 'error'; });
+      const ready = included.filter(function(job){ return job.status === 'ready'; });
+      const pages = included.reduce(function(total,job){ return total + job.files.length; },0);
+      const failed = session.jobs.filter(function(job){ return job.status === 'error'; }).length;
+      const locked = session.running || session.finished;
+      const location = session.handle ? ioText('selected',{ name:session.folderName || session.handle.name }) + (session.kind === 'library' ? ' / ' + session.runName : '') : session.kind === 'library' ? exportUiText('batchZip') : ioText('normal');
+      root.querySelector('[data-review-location]').textContent = location;
+      root.querySelector('[data-review-scope]').textContent = session.kind === 'current' ? exportUiText('unifiedCurrentWork') : exportUiText('unifiedSelection',{ count:session.sources.length });
+      root.querySelector('[data-review-active-name]').textContent = active ? active.name.split(/[\\/]/).pop() + (!active.included ? ' · ' + exportUiText('unifiedExcluded') : '') : '';
+      root.querySelector('[data-review-active-name]').title = active ? active.name : '';
+      root.querySelector('[data-preflight-format]').disabled = locked || session.preparing;
+      root.querySelector('[data-preflight-filename]').disabled = locked;
+      root.querySelector('[data-review-reset]').disabled = locked || session.preparing;
+      root.querySelector('[data-review-folder]').disabled = locked;
+      root.querySelector('[data-review-download]').disabled = locked;
+      root.querySelectorAll('[data-review-include-all]').forEach(function(button){ button.disabled = locked || session.preparing; });
+      EXPORT_REVIEW_FIELDS.forEach(function(field){
+        const input = root.querySelector('[data-preflight-field="' + field.key + '"]');
+        const values = included.map(function(job){ return job.options[field.key]; });
+        input.indeterminate = values.some(Boolean) && values.some(function(value){ return !value; });
+        input.checked = values.length > 0 && values.every(Boolean); input.disabled = locked || session.preparing || !values.length;
+        root.querySelector('[data-review-mixed="' + field.key + '"]').hidden = !input.indeterminate;
+      });
+      let summary;
+      if (session.finished) {
+        const stopped = session.jobs.filter(function(job){ return job.included && job.status === 'stopped'; }).length;
+        summary = exportUiText('batchFinished',{ folder:session.folderCount,archive:session.archiveCount,failed:failed }) + (stopped ? ' · ' + exportUiText('unifiedStopped',{ count:stopped }) : '') + (session.archiveError ? ' · ' + session.archiveError : '') + (session.disconnected ? ' · ' + ioText('missing') : '');
+      } else if (session.running) summary = exportUiText('batchProgress',{ done:session.done,total:session.plannedFiles });
+      else if (session.preparing) summary = exportUiText('batchPreparing',{ done:session.prepared,total:session.sources.length });
+      else summary = exportUiText('batchReady',{ count:ready.length,pages:pages,failed:failed }) + (session.renamed ? ' · ' + exportUiText('batchRenamed',{ count:session.renamed }) : '');
+      root.querySelector('[data-review-summary]').textContent = summary;
+      const progress = root.querySelector('[data-review-progress]'); progress.hidden = !(session.preparing || session.running || session.finished);
+      progress.max = Math.max(1,session.preparing ? session.sources.length : session.plannedFiles || pages); progress.value = session.preparing ? session.prepared : session.done;
+      const confirm = root.querySelector('[data-preflight-confirm]');
+      confirm.textContent = session.running ? exportUiText('batchState_running') : session.kind === 'current' ? exportUiText('outputAction',{ count:pages }) : exportUiText('unifiedExportAction',{ count:ready.length,pages:pages });
+      confirm.hidden = !!session.finished;
+      confirm.disabled = locked || session.preparing || !ready.length || (active && active.included && active.status !== 'error' && !session.previewReady);
+      const close = root.querySelector('[data-preflight-cancel]');
+      close.textContent = exportUiText(session.running ? session.cancelled ? 'batchStopping' : 'batchStop' : 'backToEdit'); close.disabled = session.running && session.cancelled;
+      const hasPages = !!(active && active.files);
+      root.querySelector('[data-review-size]').textContent = hasPages ? active.size.width + ' × ' + active.size.height + ' px' : '—';
+      root.querySelector('[data-review-first]').textContent = hasPages ? active.files[0] : '—';
+      root.querySelector('[data-review-last]').textContent = hasPages ? active.files[active.files.length - 1] : '—';
+      root.querySelector('[data-review-last-row]').hidden = !hasPages || active.files.length < 2;
+      root.querySelector('[data-review-psd]').hidden = !hasPages || active.format !== 'psd';
+      root.querySelector('[data-review-page]').textContent = hasPages ? exportUiText('reviewPage',{ page:session.page + 1,count:active.files.length }) : '—';
+      root.querySelector('[data-review-prev]').disabled = !hasPages || session.page <= 0;
+      root.querySelector('[data-review-next]').disabled = !hasPages || session.page >= active.files.length - 1;
+      session.jobs.forEach(function(job,index){
+        if (!job.row) {
+          const row = document.createElement('li'); row.className = 'export-review-job';
+          const check = document.createElement('input'); check.type = 'checkbox'; check.dataset.reviewInclude = String(index);
+          check.setAttribute('aria-label',exportUiText('librarySelectFile',{ name:job.name }));
+          check.addEventListener('change',function(){ job.included = check.checked; reconcileExportReviewJobs(session); selectExportReviewJob(session,session.activeIndex); });
+          const button = document.createElement('button'); button.type = 'button'; button.className = 'export-review-job-button'; button.dataset.reviewJob = String(index); button.title = job.name;
+          const name = document.createElement('strong'), detail = document.createElement('span'), status = document.createElement('span');
+          const parts = job.name.split(/[\\/]/), filename = parts.pop();
+          name.textContent = filename; button.setAttribute('aria-label',job.name);
+          const folder = document.createElement('span'); folder.className = 'export-review-job-path'; folder.textContent = parts.join('/'); folder.hidden = !parts.length;
+          detail.className = 'export-review-job-detail'; status.className = 'export-review-job-status';
+          button.append(name,folder,detail,status); button.addEventListener('click',function(){ selectExportReviewJob(session,index); }); row.append(check,button);
+          root.querySelector('[data-review-job-list]').appendChild(row);
+          job.row = row; job.check = check; job.button = button; job.detail = detail; job.statusEl = status;
+        }
+        job.row.dataset.active = String(index === session.activeIndex); job.row.dataset.error = String(job.status === 'error');
+        job.button.setAttribute('aria-pressed',String(index === session.activeIndex));
+        job.check.checked = job.included && job.status !== 'error'; job.check.disabled = locked || session.preparing || job.status === 'error';
+        job.statusEl.textContent = exportUiText(job.included || job.status === 'error' ? 'batchState_' + job.status : 'unifiedExcluded');
+        job.detail.textContent = job.error || (job.files ? job.files.length + ' ' + exportUiText('batchPages') + ' · ' + job.format.toUpperCase() + ' · ' + job.size.width + ' × ' + job.size.height : '');
+      });
+    }
+
+    function selectExportReviewJob(session, index) {
+      if (session !== exportPreflightSession || !session.jobs[index]) return;
+      session.activeIndex = index; session.previewReady = false; session.previewError = '';
+      const job = session.jobs[index];
+      session.snapshot = null; session.page = Math.max(0,Math.min((job.files || []).length - 1,job.page || 0));
+      try { if (job.baseNames) session.snapshot = getExportReviewJobSnapshot(session,job); }
+      catch (err) { session.previewError = err.message || String(err); }
+      updateExportReviewSummary(session);
+      if (session.snapshot) { queueExportReview(session); return; }
+      session.revision++;
+      if (session.frame) cancelAnimationFrame(session.frame); session.frame = null;
+      const root = session.backdrop;
+      root.querySelector('[data-review-image]').hidden = true;
+      root.querySelector('[data-review-message]').hidden = false;
+      root.querySelector('[data-review-retry]').hidden = !job.baseNames;
+      root.querySelector('[data-review-message-text]').textContent = job.error || session.previewError || exportUiText('reviewLoading');
+      root.querySelector('[data-review-viewport]').setAttribute('aria-busy',String(job.status === 'pending'));
+    }
+
+    async function prepareExportReviewJobs(session) {
+      const revision = ++session.prepareRevision;
+      session.preparing = true; session.prepared = 0; updateExportReviewSummary(session);
+      for (let index = 0; index < session.sources.length; index++) {
+        const item = session.sources[index], job = session.jobs[index];
+        try {
+          const payload = await hydrateBatchWorkPayload(item.payload);
+          if (session !== exportPreflightSession || revision !== session.prepareRevision) return;
+          job.payload = payload;
+          setExportReviewJobData(job,prepareBatchWorkSnapshot(payload,'saved'));
+        } catch (err) { job.status = 'error'; job.error = err.message || String(err); job.included = false; }
+        if (session !== exportPreflightSession || revision !== session.prepareRevision) return;
+        session.prepared++; reconcileExportReviewJobs(session);
+        if (session.activeIndex === index) selectExportReviewJob(session,index);
+        else updateExportReviewSummary(session);
+        await wait(0);
+      }
+      session.preparing = false; updateExportReviewSummary(session);
+    }
+
+    function applyExportReviewControls(session) {
+      if (session !== exportPreflightSession || session.running || session.finished) return;
+      reconcileExportReviewJobs(session); selectExportReviewJob(session,session.activeIndex);
+    }
+
+    function confirmExportReview(session) {
+      if (session !== exportPreflightSession || session.backdrop.querySelector('[data-preflight-confirm]').disabled) return;
+      if (session.kind === 'library') { runBatchExport(session); return; }
+      const snapshot = getExportReviewJobSnapshot(session,session.jobs[0]);
+      EXPORT_REVIEW_FIELDS.forEach(function(field){ state[field.key] = snapshot.state[field.key]; });
+      state.exportFilenameOverride = snapshot.state.exportFilenameOverride; exportFormatSelectEl.value = snapshot.format;
+      syncPaperLayoutControls(); queueSavePaperMemory(); closeExportPreflightModal(); downloadAllPages(snapshot);
+    }
+
+    function openExportPreflightModal(options) {
+      if (state.isExporting) return;
+      closeExportPreflightModal();
+      const sources = (state.loadedSettingsFiles || []).filter(function(item){ return workLibrarySelection.has(item.id); });
+      const kind = sources.length ? 'library' : 'current';
+      let current = null;
+      try { if (kind === 'current') current = captureExportSnapshot(); }
+      catch (err) { setExportStatus(ioText('failed',{ page:1,error:err.message || err }),{ level:'error' }); return; }
+      const text = function(key){ return escapeStatusHtml(exportUiText(key)); };
+      const backdrop = document.createElement('div'); backdrop.className = 'serifu-sheet-modal-backdrop export-preflight-modal-backdrop';
+      backdrop.innerHTML = '<div class="serifu-sheet-modal export-preflight-dialog' + (sources.length > 1 ? ' has-work-list' : '') + '" role="dialog" aria-modal="true" aria-labelledby="exportReviewTitle">' +
+        '<header class="export-review-header"><div><h3 id="exportReviewTitle">' + text('reviewTitle') + '</h3><div class="export-review-scope" data-review-scope></div></div><button class="toolbar-btn" type="button" data-preflight-cancel></button></header>' +
+        '<div class="export-review-body"><section class="export-review-jobs"' + (sources.length > 1 ? '' : ' hidden') + '><h4>' + text('unifiedWorkList') + '</h4><div class="export-review-job-tools"><button class="toolbar-btn" type="button" data-review-include-all="yes">' + text('unifiedSelectAll') + '</button><button class="toolbar-btn" type="button" data-review-include-all="no">' + text('libraryClear') + '</button></div><ul data-review-job-list></ul></section>' +
+        '<section class="export-review-stage"><div class="export-review-active-name" data-review-active-name></div><nav class="export-review-nav" aria-label="' + text('outputReview') + '">' +
+          '<button class="toolbar-btn" type="button" data-review-prev aria-label="' + text('reviewPrev') + '">‹</button><span class="export-review-page" data-review-page></span><button class="toolbar-btn" type="button" data-review-next aria-label="' + text('reviewNext') + '">›</button>' +
+          '<button class="toolbar-btn" type="button" data-review-fit="page">' + text('fitPage') + '</button><button class="toolbar-btn" type="button" data-review-fit="width">' + text('fitWidth') + '</button><button class="toolbar-btn" type="button" data-review-focus aria-pressed="false">' + text('focusPreview') + '</button></nav>' +
+          '<div class="export-review-viewport" data-review-viewport aria-busy="true"><img class="export-review-image" data-review-image alt="" hidden /><div class="export-review-message" data-review-message role="status"><div data-review-message-text></div><button class="toolbar-btn" type="button" data-review-retry hidden>' + text('reviewRetry') + '</button></div></div><div class="export-review-caption">' + text('reviewCaption') + '</div></section>' +
+        '<section class="export-review-options"><div class="export-review-option-scope"><strong>' + text(kind === 'library' ? 'unifiedAllOptions' : 'unifiedCurrentOptions') + '</strong><div class="hint">' + text(kind === 'library' ? 'unifiedSavedDefaults' : 'outputComposition') + '</div></div>' +
+          '<div class="serifu-sheet-field full"' + (kind === 'library' ? ' hidden' : '') + '><label for="exportPreflightFilenameInput">' + escapeStatusHtml(t('exportPreflightFilenameLabel')) + '</label><input type="text" id="exportPreflightFilenameInput" data-preflight-filename /><div class="hint">' + escapeStatusHtml(t('exportPreflightFilenameHint')) + '</div></div>' +
+          '<div class="serifu-sheet-field full"><label for="exportReviewFormat">' + text('outputFormat') + '</label><select id="exportReviewFormat" data-preflight-format>' + (kind === 'library' ? '<option value="saved">' + text('batchSavedFormat') + '</option>' : '') + '<option value="png">PNG</option><option value="jpg">JPG</option><option value="psd">PSD</option></select></div>' +
+          '<div><h4>' + text('outputContents') + '</h4>' + EXPORT_REVIEW_FIELDS.map(function(field){ return '<label class="export-preflight-row"><input type="checkbox" data-preflight-field="' + field.key + '" /><span>' + text(field.label) + '</span><small class="export-review-mixed" data-review-mixed="' + field.key + '" hidden>' + text('unifiedMixed') + '</small></label>'; }).join('') + '<button class="toolbar-btn" type="button" data-review-reset>' + text('unifiedResetOptions') + '</button><div class="hint" data-review-psd hidden>' + text('psdLayers') + '</div></div>' +
+          '<div><h4>' + text('outputLocation') + '</h4><div class="export-review-destination"><button class="toolbar-btn" type="button" data-review-folder>' + escapeStatusHtml(ioText('choose')) + '</button><button class="toolbar-btn" type="button" data-review-download>' + (kind === 'library' ? text('batchZip') : escapeStatusHtml(ioText('normal'))) + '</button></div><div class="hint" data-review-location></div></div>' +
+          '<dl><dt>' + text('outputSize') + '</dt><dd data-review-size></dd><dt>' + text('firstOutputFile') + '</dt><dd data-review-first></dd><div data-review-last-row><dt>' + text('lastOutputFile') + '</dt><dd data-review-last></dd></div></dl></section></div>' +
+        '<footer class="export-review-footer"><div class="export-review-footer-status"><div class="export-review-summary" role="status" aria-live="polite" data-review-summary></div><progress data-review-progress hidden></progress></div><button class="toolbar-btn primary" type="button" data-preflight-confirm disabled></button></footer></div>';
+      const app = document.querySelector('.app'), now = new Date();
+      const stamp = now.getFullYear() + String(now.getMonth() + 1).padStart(2,'0') + String(now.getDate()).padStart(2,'0') + '_' + [now.getHours(),now.getMinutes(),now.getSeconds()].map(function(value){ return String(value).padStart(2,'0'); }).join('');
+      const session = { backdrop:backdrop,app:app,previousInert:app.inert,returnFocus:document.activeElement,kind:kind,sources:sources,jobs:[],activeIndex:0,snapshot:null,currentSnapshot:current,page:0,fit:'page',revision:0,prepareRevision:0,prepared:0,done:0,folderCount:0,archiveCount:0,previewReady:false,previewUrl:'',outputOverrides:{},format:current ? current.format : 'saved',filename:current ? current.names[0] : '',runName:'AutoSheet_' + stamp,handle:state.exportDirectoryHandle,folderName:state.exportDirectoryName,renamed:0,preparing:kind === 'library' };
+      session.jobs = sources.map(function(item){ return { name:item.filename || item.label || 'settings.json',status:'pending',included:true,page:0 }; });
+      if (current) { const job = { name:exportUiText('unifiedCurrentWork'),included:true,page:state.currentPreviewPage || 0 }; setExportReviewJobData(job,current); session.jobs = [job]; }
+      exportPreflightSession = session;
+      const format = backdrop.querySelector('[data-preflight-format]'); format.value = session.format;
+      const filename = backdrop.querySelector('[data-preflight-filename]'); filename.value = session.filename;
+      const box = backdrop.querySelector('.export-preflight-dialog');
+      function setFocused(focused) {
+        box.classList.toggle('is-focused',focused); const button = backdrop.querySelector('[data-review-focus]');
+        button.textContent = exportUiText(focused ? 'showOutputSettings' : 'focusPreview'); button.setAttribute('aria-pressed',String(focused)); fitExportReviewImage(session);
+      }
+      backdrop.querySelector('[data-review-focus]').addEventListener('click',function(){ setFocused(!box.classList.contains('is-focused')); });
+      backdrop.querySelector('[data-preflight-cancel]').addEventListener('click',closeExportPreflightModal);
+      filename.addEventListener('input',function(){ session.filename = filename.value; reconcileExportReviewJobs(session); updateExportReviewSummary(session); });
+      format.addEventListener('change',function(){ session.format = format.value; applyExportReviewControls(session); });
+      backdrop.querySelectorAll('[data-preflight-field]').forEach(function(input){ input.addEventListener('change',function(){ session.outputOverrides[input.dataset.preflightField] = input.checked; applyExportReviewControls(session); }); });
+      backdrop.querySelector('[data-review-reset]').addEventListener('click',function(){ session.outputOverrides = {}; session.format = current ? current.format : 'saved'; format.value = session.format; applyExportReviewControls(session); });
+      backdrop.querySelectorAll('[data-review-fit]').forEach(function(button){ button.addEventListener('click',function(){ session.fit = button.dataset.reviewFit; backdrop.querySelector('[data-review-viewport]').scrollTop = 0; fitExportReviewImage(session); }); });
+      [-1,1].forEach(function(delta){ backdrop.querySelector(delta < 0 ? '[data-review-prev]' : '[data-review-next]').addEventListener('click',function(){ const job = session.jobs[session.activeIndex]; if (!job || !job.files) return; job.page = Math.max(0,Math.min(job.files.length - 1,session.page + delta)); session.page = job.page; updateExportReviewSummary(session); backdrop.querySelector('[data-review-viewport]').scrollTop = 0; queueExportReview(session); }); });
+      backdrop.querySelector('[data-review-retry]').addEventListener('click',function(){ selectExportReviewJob(session,session.activeIndex); });
+      backdrop.querySelector('[data-review-folder]').addEventListener('click',async function(){ const handle = await chooseExportDirectory(); if (handle && session === exportPreflightSession) { session.handle = handle; session.folderName = handle.name; updateExportReviewSummary(session); } });
+      backdrop.querySelector('[data-review-download]').addEventListener('click',function(){ session.handle = null; updateExportReviewSummary(session); });
+      backdrop.querySelectorAll('[data-review-include-all]').forEach(function(button){ button.addEventListener('click',function(){ session.jobs.forEach(function(job){ if (job.status !== 'error') job.included = button.dataset.reviewIncludeAll === 'yes'; }); applyExportReviewControls(session); }); });
+      backdrop.querySelector('[data-preflight-confirm]').addEventListener('click',function(){ confirmExportReview(session); });
+      backdrop.addEventListener('pointerdown',function(event){ if (event.target === backdrop && !session.running) closeExportPreflightModal(); });
+      document.body.appendChild(backdrop); app.inert = true;
+      document.addEventListener('keydown',handleExportPreflightModalKeydown,true);
+      session.resizeObserver = new ResizeObserver(function(){ fitExportReviewImage(session); }); session.resizeObserver.observe(backdrop.querySelector('[data-review-viewport]'));
+      setFocused(!!(options && options.focus)); reconcileExportReviewJobs(session); selectExportReviewJob(session,0);
+      if (kind === 'library') prepareExportReviewJobs(session);
+      backdrop.querySelector('[data-preflight-cancel]').focus({ preventScroll:true });
+    }
+
+
+    function fitExportReviewImage(session) {
+      if (session !== exportPreflightSession || !session.snapshot) return;
       const viewport = session.backdrop.querySelector('[data-review-viewport]');
       const img = session.backdrop.querySelector('[data-review-image]');
       const size = session.snapshot.size;
@@ -25527,7 +25771,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     async function renderExportReview(session, revision) {
-      if (session !== exportPreflightSession || revision !== session.revision) return;
+      if (session !== exportPreflightSession || revision !== session.revision || !session.snapshot) return;
       const root = session.backdrop;
       const snapshot = cloneSheetData(session.snapshot);
       const page = session.page;
@@ -25547,114 +25791,40 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           renderPage(target, page, snapshot.model, false, { snapshot:snapshot });
           blob = await svgStringToBlob(serializeSvg(target), snapshot.format, page, previewSize, snapshot);
         }
-        if (session !== exportPreflightSession || revision !== session.revision) return;
+        if (session !== exportPreflightSession || revision !== session.revision || !session.snapshot) return;
         newUrl = URL.createObjectURL(blob);
         await loadPaperAutoAlignImage(newUrl);
-        if (session !== exportPreflightSession || revision !== session.revision) return;
+        if (session !== exportPreflightSession || revision !== session.revision || !session.snapshot) return;
         const img = root.querySelector('[data-review-image]');
         img.src = newUrl;
-        img.alt = exportUiText('reviewPage', { page:page + 1, count:snapshot.model.totalPages });
+        img.alt = session.jobs[session.activeIndex].name + ' · ' + exportUiText('reviewPage', { page:page + 1, count:snapshot.model.totalPages });
         if (session.previewUrl) URL.revokeObjectURL(session.previewUrl);
         session.previewUrl = newUrl; newUrl = '';
         img.hidden = false;
         root.querySelector('[data-review-message]').hidden = true;
-        root.querySelector('[data-preflight-confirm]').disabled = false;
+        session.previewReady = true; session.previewError = ''; updateExportReviewSummary(session);
         root.querySelector('[data-review-viewport]').setAttribute('aria-busy','false');
         fitExportReviewImage(session);
       } catch (err) {
-        if (session !== exportPreflightSession || revision !== session.revision) return;
-        root.querySelector('[data-review-message-text]').textContent = exportUiText('reviewFailed', { error:err.message || err });
+        if (session !== exportPreflightSession || revision !== session.revision || !session.snapshot) return;
+        session.previewReady = false; session.previewError = err.message || String(err); updateExportReviewSummary(session);
+        root.querySelector('[data-review-message-text]').textContent = exportUiText('reviewFailed', { error:session.previewError });
         root.querySelector('[data-review-retry]').hidden = false;
         root.querySelector('[data-review-viewport]').setAttribute('aria-busy','false');
       } finally { if (newUrl) URL.revokeObjectURL(newUrl); }
     }
 
     function queueExportReview(session) {
-      if (session !== exportPreflightSession) return;
+      if (session !== exportPreflightSession || !session.snapshot) return;
       const revision = ++session.revision, root = session.backdrop;
       if (session.frame) cancelAnimationFrame(session.frame);
-      root.querySelector('[data-preflight-confirm]').disabled = true;
+      session.previewReady = false; updateExportReviewSummary(session);
       root.querySelector('[data-review-image]').hidden = true;
       root.querySelector('[data-review-message]').hidden = false;
       root.querySelector('[data-review-retry]').hidden = true;
       root.querySelector('[data-review-message-text]').textContent = exportUiText('reviewLoading');
       root.querySelector('[data-review-viewport]').setAttribute('aria-busy','true');
       session.frame = requestAnimationFrame(function(){ session.frame = null; renderExportReview(session, revision); });
-    }
-
-    function openExportPreflightModal(options) {
-      if (state.isExporting) return;
-      closeExportPreflightModal();
-      let snapshot;
-      try { snapshot = captureExportSnapshot(); }
-      catch (err) { setExportStatus(ioText('failed', { page:1, error:err.message || err }), { level:'error' }); return; }
-      const text = function(key, values){ return escapeStatusHtml(exportUiText(key, values)); };
-      const rows = [
-        { key:'showTemplate', label:'outputTemplate' },
-        { key:'showHeaderOutput', label:'outputHeader' },
-        { key:'showDurationPlusOutput', label:'outputDuration' },
-        { key:'showCellLabelOutput', label:'outputCellLabel' }
-      ];
-      const defaultFilename = withSheetSnapshot(snapshot, function(){ return makeFilenameBase(1); });
-      const backdrop = document.createElement('div');
-      backdrop.className = 'serifu-sheet-modal-backdrop export-preflight-modal-backdrop';
-      backdrop.innerHTML =
-        '<div class="serifu-sheet-modal export-preflight-dialog" role="dialog" aria-modal="true" aria-labelledby="exportReviewTitle">' +
-          '<header class="export-review-header"><h3 id="exportReviewTitle">' + text('reviewTitle') + '</h3><button class="toolbar-btn" type="button" data-preflight-cancel>' + text('backToEdit') + '</button></header>' +
-          '<div class="export-review-body"><section class="export-review-stage">' +
-            '<nav class="export-review-nav" aria-label="' + text('outputReview') + '">' +
-              '<button class="toolbar-btn" type="button" data-review-prev aria-label="' + text('reviewPrev') + '">‹</button><span class="export-review-page" data-review-page></span><button class="toolbar-btn" type="button" data-review-next aria-label="' + text('reviewNext') + '">›</button>' +
-              '<button class="toolbar-btn" type="button" data-review-fit="page">' + text('fitPage') + '</button><button class="toolbar-btn" type="button" data-review-fit="width">' + text('fitWidth') + '</button>' +
-              '<button class="toolbar-btn" type="button" data-review-focus aria-pressed="false">' + text('focusPreview') + '</button>' +
-            '</nav><div class="export-review-viewport" data-review-viewport aria-busy="true"><img class="export-review-image" data-review-image alt="" hidden />' +
-              '<div class="export-review-message" data-review-message role="status"><div data-review-message-text></div><button class="toolbar-btn" type="button" data-review-retry hidden>' + text('reviewRetry') + '</button></div>' +
-            '</div><div class="export-review-caption">' + text('reviewCaption') + '</div>' +
-          '</section><section class="export-review-options">' +
-            '<div class="serifu-sheet-field full"><label for="exportPreflightFilenameInput">' + escapeStatusHtml(t('exportPreflightFilenameLabel')) + '</label><input type="text" id="exportPreflightFilenameInput" data-preflight-filename value="' + escapeStatusHtml(defaultFilename) + '" /><div class="hint">' + escapeStatusHtml(t('exportPreflightFilenameHint')) + '</div></div>' +
-            '<div class="serifu-sheet-field full"><label for="exportReviewFormat">' + text('outputFormat') + '</label><select id="exportReviewFormat" data-preflight-format><option value="png">PNG</option><option value="jpg">JPG</option><option value="psd">PSD</option></select></div>' +
-            '<div><h4>' + text('outputContents') + '</h4>' + rows.map(function(row){ return '<label class="export-preflight-row"><input type="checkbox" data-preflight-field="' + row.key + '"' + (snapshot.state[row.key] !== false ? ' checked' : '') + ' /><span>' + text(row.label) + '</span></label>'; }).join('') +
-              '<div class="hint">' + text('outputComposition') + '</div><div class="hint" data-review-psd hidden>' + text('psdLayers') + '</div></div>' +
-            '<dl><dt>' + text('outputLocation') + '</dt><dd data-review-location></dd><dt>' + text('outputSize') + '</dt><dd data-review-size></dd><dt>' + text('firstOutputFile') + '</dt><dd data-review-first></dd><div data-review-last-row><dt>' + text('lastOutputFile') + '</dt><dd data-review-last></dd></div></dl>' +
-          '</section></div>' +
-          '<footer class="export-review-footer"><div class="export-review-summary" data-review-summary></div><div class="serifu-sheet-actions"><button type="button" class="primary" data-preflight-confirm disabled></button></div></footer>' +
-        '</div>';
-      const app = document.querySelector('.app');
-      const session = { backdrop:backdrop, snapshot:snapshot, page:Math.min(snapshot.model.totalPages - 1, Math.max(0,state.currentPreviewPage || 0)), fit:'page', revision:0, previewUrl:'', returnFocus:document.activeElement, app:app, previousInert:app.inert };
-      exportPreflightSession = session;
-      backdrop.querySelector('[data-preflight-format]').value = snapshot.format;
-      const box = backdrop.querySelector('.export-preflight-dialog');
-      function setFocused(focused) {
-        box.classList.toggle('is-focused', focused);
-        const button = backdrop.querySelector('[data-review-focus]');
-        button.textContent = exportUiText(focused ? 'showOutputSettings' : 'focusPreview');
-        button.setAttribute('aria-pressed', focused ? 'true' : 'false');
-        fitExportReviewImage(session);
-      }
-      backdrop.querySelector('[data-review-focus]').addEventListener('click', function(){ setFocused(!box.classList.contains('is-focused')); });
-      backdrop.querySelector('[data-preflight-cancel]').addEventListener('click', closeExportPreflightModal);
-      backdrop.querySelector('[data-preflight-filename]').addEventListener('input', function(){ updateExportReviewSummary(session); });
-      backdrop.querySelector('[data-preflight-format]').addEventListener('change', function(){ updateExportReviewSummary(session); queueExportReview(session); });
-      backdrop.querySelectorAll('[data-preflight-field]').forEach(function(input){ input.addEventListener('change', function(){ snapshot.state[input.dataset.preflightField] = input.checked; queueExportReview(session); }); });
-      backdrop.querySelectorAll('[data-review-fit]').forEach(function(button){ button.addEventListener('click', function(){ session.fit = button.dataset.reviewFit; backdrop.querySelector('[data-review-viewport]').scrollTop = 0; fitExportReviewImage(session); }); });
-      [-1,1].forEach(function(delta){ backdrop.querySelector(delta < 0 ? '[data-review-prev]' : '[data-review-next]').addEventListener('click', function(){ session.page = Math.max(0,Math.min(snapshot.model.totalPages - 1,session.page + delta)); updateExportReviewSummary(session); backdrop.querySelector('[data-review-viewport]').scrollTop = 0; queueExportReview(session); }); });
-      backdrop.querySelector('[data-review-retry]').addEventListener('click', function(){ queueExportReview(session); });
-      backdrop.querySelector('[data-preflight-confirm]').addEventListener('click', function(){
-        updateExportReviewSummary(session);
-        rows.forEach(function(row){ state[row.key] = snapshot.state[row.key]; });
-        state.exportFilenameOverride = snapshot.state.exportFilenameOverride;
-        exportFormatSelectEl.value = snapshot.format;
-        syncPaperLayoutControls(); queueSavePaperMemory();
-        closeExportPreflightModal();
-        downloadAllPages(snapshot);
-      });
-      backdrop.addEventListener('pointerdown', function(event){ if (event.target === backdrop) closeExportPreflightModal(); });
-      document.body.appendChild(backdrop); app.inert = true;
-      document.addEventListener('keydown', handleExportPreflightModalKeydown, true);
-      session.resizeObserver = new ResizeObserver(function(){ fitExportReviewImage(session); });
-      session.resizeObserver.observe(backdrop.querySelector('[data-review-viewport]'));
-      setFocused(!!(options && options.focus));
-      updateExportReviewSummary(session); queueExportReview(session);
-      backdrop.querySelector('[data-preflight-cancel]').focus({ preventScroll:true });
     }
 
     // ══ [출력] 여러 작업 일괄 출력 — 문서 격리·사전 검사·순차 저장 ═══════════════════════════════════════════
@@ -25708,117 +25878,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return { files:files, renamed:renamed };
     }
 
-    function closeBatchExport() {
-      const session = batchExportSession;
-      if (!session) return;
-      if (session.running) { session.cancelled = true; updateBatchExportView(session); return; }
-      batchExportSession = null; session.revision++; session.archive = null;
-      session.root.remove(); session.app.inert = session.previousInert;
-      document.removeEventListener('keydown',handleBatchExportKeydown,true);
-      if (session.returnFocus && session.returnFocus.isConnected) session.returnFocus.focus({ preventScroll:true });
-    }
-
-    function handleBatchExportKeydown(event) {
-      const session = batchExportSession;
-      if (!session) return;
-      const otherDialog = event.target instanceof Element ? event.target.closest('.serifu-sheet-modal-backdrop') : null;
-      if (otherDialog && otherDialog !== session.root) return;
-      event.stopImmediatePropagation();
-      if (event.key === 'Escape') { event.preventDefault(); closeBatchExport(); return; }
-      if (event.key !== 'Tab') return;
-      const controls = Array.from(session.root.querySelectorAll('button:not(:disabled),select:not(:disabled)')).filter(function(node){ return node.getClientRects().length; });
-      const first = controls[0], last = controls[controls.length - 1];
-      if (!session.root.contains(document.activeElement)) { event.preventDefault(); (event.shiftKey ? last : first).focus(); return; }
-      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
-      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
-    }
-
-    function updateBatchExportView(session) {
-      if (session !== batchExportSession) return;
-      const root = session.root, ready = session.jobs.filter(function(job){ return job.status === 'ready'; });
-      const failed = session.jobs.filter(function(job){ return job.status === 'error'; }).length;
-      const pages = session.jobs.reduce(function(total,job){ return total + (job.files ? job.files.length : 0); },0);
-      const close = root.querySelector('[data-batch-close]');
-      close.textContent = exportUiText(session.running ? session.cancelled ? 'batchStopping' : 'batchStop' : 'backToEdit');
-      close.disabled = session.running && session.cancelled;
-      const confirm = root.querySelector('[data-batch-start]');
-      confirm.textContent = session.running ? exportUiText('batchState_running') : exportUiText('batchStart',{ count:ready.length });
-      confirm.disabled = session.preparing || session.running || session.finished || !ready.length;
-      confirm.hidden = !!session.finished;
-      root.querySelector('[data-batch-format]').disabled = session.running || session.finished;
-      root.querySelector('[data-batch-folder]').disabled = session.running || session.finished;
-      root.querySelector('[data-batch-download]').disabled = session.running || session.finished;
-      const location = session.handle ? ioText('selected',{ name:session.handle.name || session.folderName }) + ' / ' + session.runName : exportUiText('batchZip');
-      root.querySelector('[data-batch-location]').textContent = location;
-      let summary;
-      if (session.finished) summary = exportUiText('batchFinished',{ folder:session.folderCount,archive:session.archiveCount,failed:failed }) + (session.cancelled ? ' · ' + ioText('canceled') : '') + (session.archiveError ? ' · ' + session.archiveError : '') + (session.disconnected ? ' · ' + ioText('missing') : '');
-      else if (session.running) summary = exportUiText('batchProgress',{ done:session.done,total:pages });
-      else if (session.preparing) summary = exportUiText('batchPreparing',{ done:session.prepared,total:session.sources.length });
-      else summary = exportUiText('batchReady',{ count:ready.length,pages:pages,failed:failed }) + (session.renamed ? ' · ' + exportUiText('batchRenamed',{ count:session.renamed }) : '');
-      root.querySelector('[data-batch-summary]').textContent = summary;
-      const progress = root.querySelector('[data-batch-progress]'); progress.max = Math.max(1,session.preparing ? session.sources.length : pages); progress.value = session.preparing ? session.prepared : session.done;
-      const list = root.querySelector('[data-batch-list]');
-      session.jobs.forEach(function(job){
-        if (!job.row) {
-          const row = document.createElement('li'); row.className = 'batch-row';
-          const text = document.createElement('div'), name = document.createElement('strong'), detail = document.createElement('div'), status = document.createElement('span');
-          name.textContent = job.name; name.style.overflowWrap = 'anywhere'; detail.className = 'batch-row-detail'; text.append(name,detail); row.append(text,status); list.appendChild(row);
-          job.row = row; job.detail = detail; job.statusEl = status;
-        }
-        job.row.dataset.error = String(job.status === 'error');
-        job.statusEl.textContent = exportUiText('batchState_' + job.status);
-        job.detail.textContent = job.error || (job.files ? job.files.length + ' ' + exportUiText('batchPages') + ' · ' + job.format.toUpperCase() + ' · ' + job.size.width + ' × ' + job.size.height + ' px · ' + job.files[0] + (job.files.length > 1 ? ' … ' + job.files[job.files.length - 1] : '') : '');
-      });
-    }
-
-    async function prepareBatchExport(session) {
-      const revision = ++session.revision, used = new Set();
-      session.jobs = []; session.preparing = true; session.prepared = 0; session.renamed = 0;
-      session.root.querySelector('[data-batch-list]').replaceChildren();
-      const format = session.root.querySelector('[data-batch-format]').value;
-      updateBatchExportView(session);
-      for (const item of session.sources) {
-        const job = { name:item.filename || item.label || 'settings.json',status:'pending' };
-        try {
-          const payload = await hydrateBatchWorkPayload(item.payload);
-          if (session !== batchExportSession || revision !== session.revision) return;
-          const snapshot = prepareBatchWorkSnapshot(payload,format), names = reserveBatchNames(snapshot.names,snapshot.format,used);
-          job.payload = payload; job.format = snapshot.format; job.size = snapshot.size; job.files = names.files; job.status = 'ready'; session.renamed += names.renamed;
-        } catch (err) { job.status = 'error'; job.error = err.message || String(err); }
-        if (session !== batchExportSession || revision !== session.revision) return;
-        session.jobs.push(job); session.prepared++; updateBatchExportView(session);
-        await wait(0);
-      }
-      session.preparing = false; updateBatchExportView(session);
-    }
-
-    function openBatchExport() {
-      if (state.isExporting || batchExportSession) return;
-      const sources = (state.loadedSettingsFiles || []).filter(function(item){ return workLibrarySelection.has(item.id); });
-      if (!sources.length) return;
-      const text = function(key){ return escapeStatusHtml(exportUiText(key)); };
-      const root = document.createElement('div'); root.className = 'serifu-sheet-modal-backdrop export-preflight-modal-backdrop';
-      root.innerHTML = '<section class="serifu-sheet-modal batch-dialog" role="dialog" aria-modal="true" aria-labelledby="batchExportTitle">' +
-        '<header class="export-review-header"><h3 id="batchExportTitle">' + text('batchTitle') + '</h3><button class="toolbar-btn" type="button" data-batch-close></button></header>' +
-        '<div class="batch-body"><div class="batch-note">' + text('batchScope') + '</div><div class="batch-options"><label>' + text('outputFormat') + '<select data-batch-format><option value="saved">' + text('batchSavedFormat') + '</option><option value="png">PNG</option><option value="jpg">JPG</option><option value="psd">PSD</option></select></label>' +
-        '<button class="toolbar-btn" type="button" data-batch-folder>' + text('chooseExportDirBtn') + '</button><button class="toolbar-btn" type="button" data-batch-download>' + text('batchZip') + '</button></div>' +
-        '<div class="batch-note" data-batch-location></div><div class="batch-summary" role="status" aria-live="polite" data-batch-summary></div><progress class="batch-progress" data-batch-progress></progress><ul class="batch-list" data-batch-list></ul></div>' +
-        '<footer class="export-review-footer"><div class="batch-note">' + text('batchDestinationHint') + '</div><button class="toolbar-btn primary" type="button" data-batch-start disabled></button></footer></section>';
-      const app = document.querySelector('.app'), now = new Date();
-      const stamp = now.getFullYear() + String(now.getMonth() + 1).padStart(2,'0') + String(now.getDate()).padStart(2,'0') + '_' + [now.getHours(),now.getMinutes(),now.getSeconds()].map(function(n){ return String(n).padStart(2,'0'); }).join('');
-      const session = { root:root,app:app,previousInert:app.inert,returnFocus:document.activeElement,sources:sources,jobs:[],revision:0,prepared:0,done:0,folderCount:0,archiveCount:0,runName:'AutoSheet_' + stamp,handle:state.exportDirectoryHandle,folderName:state.exportDirectoryName,renamed:0 };
-      batchExportSession = session;
-      root.querySelector('[data-batch-close]').addEventListener('click',closeBatchExport);
-      root.querySelector('[data-batch-format]').addEventListener('change',function(){ prepareBatchExport(session); });
-      root.querySelector('[data-batch-folder]').addEventListener('click',async function(){ const handle = await chooseExportDirectory(); if (handle && session === batchExportSession) { session.handle = handle; session.folderName = handle.name; updateBatchExportView(session); } });
-      root.querySelector('[data-batch-download]').addEventListener('click',function(){ session.handle = null; updateBatchExportView(session); });
-      root.querySelector('[data-batch-start]').addEventListener('click',function(){ runBatchExport(session); });
-      document.body.appendChild(root); app.inert = true;
-      document.addEventListener('keydown',handleBatchExportKeydown,true);
-      updateBatchExportView(session); root.querySelector('[data-batch-close]').focus({ preventScroll:true });
-      prepareBatchExport(session);
-    }
-
     async function createBatchOutputDirectory(handle, session) {
       const base = session.runName;
       for (let index = 0; index < 100; index++) {
@@ -25840,9 +25899,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     async function runBatchExport(session) {
-      if (session !== batchExportSession || session.preparing || session.running || session.finished || state.isExporting) return;
-      const jobs = session.jobs.filter(function(job){ return job.status === 'ready'; });
+      if (session !== exportPreflightSession || session.preparing || session.running || session.finished || state.isExporting) return;
+      const jobs = session.jobs.filter(function(job){ return job.included && job.status === 'ready'; });
       if (!jobs.length) return;
+      session.plannedFiles = jobs.reduce(function(total,job){ return total + job.files.length; },0);
       session.running = true; state.isExporting = true; updatePreviewControls(state.totalPages);
       session.archive = { parts:[],central:[],size:0,count:0 };
       const target = { handle:null,rootHandle:session.handle,download:async function(blob,name){ await appendBatchArchiveFile(session.archive,blob,name); } };
@@ -25854,8 +25914,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       try {
         // Ask for permission in the confirming click, before asynchronous rendering.
         const permission = session.handle ? ensureExportDirectoryPermission(session.handle) : Promise.resolve(true);
-        updateBatchExportView(session);
-        session.root.querySelector('[data-batch-close]').focus({ preventScroll:true });
+        updateExportReviewSummary(session);
+        session.backdrop.querySelector('[data-preflight-cancel]').focus({ preventScroll:true });
         let permitted;
         try { permitted = await permission; }
         catch (err) { if (isMissingExportDirectoryError(err)) { target.disconnected = true; forgetExportDirectory(session.handle); session.handle = null; permitted = true; } else if (err.name === 'NotAllowedError' || err.name === 'SecurityError') permitted = false; else throw err; }
@@ -25865,14 +25925,14 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           session.handle = choice.handle;
         }
         if (session.handle && !session.cancelled) target.handle = await target.prepareHandle(session.handle);
-        updateBatchExportView(session);
+        updateExportReviewSummary(session);
         for (const job of jobs) {
           if (session.cancelled) break;
           let writing = false;
           try {
-            const snapshot = prepareBatchWorkSnapshot(job.payload,job.format);
+            const snapshot = getExportReviewJobSnapshot(session,job);
             if (snapshot.model.totalPages !== job.files.length) throw new Error(exportUiText('batchChanged'));
-            job.status = 'running'; job.done = 0; updateBatchExportView(session);
+            job.status = 'running'; job.done = 0; updateExportReviewSummary(session);
             for (let page = 0; page < job.files.length && !session.cancelled; page++) {
               const blob = await renderExportPageBlob(snapshot,page);
               if (session.cancelled) break;
@@ -25882,7 +25942,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
               if (mode === 'folder') session.folderCount++; else session.archiveCount++;
               job.done++; session.done++; session.disconnected = !!target.disconnected;
               session.handle = target.handle ? target.rootHandle : null;
-              updateBatchExportView(session); await wait(0);
+              updateExportReviewSummary(session); await wait(0);
             }
             job.status = job.done === job.files.length ? 'done' : 'stopped';
           } catch (err) {
@@ -25890,19 +25950,19 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
             else { job.status = 'error'; job.error = (job.done ? exportUiText('batchPartial',{ count:job.done }) + ' · ' : '') + (err.message || String(err)); }
             if (writing) break;
           }
-          updateBatchExportView(session);
+          updateExportReviewSummary(session);
         }
       } catch (err) {
         if (err.name === 'AbortError') session.cancelled = true;
         else { const job = jobs.find(function(item){ return item.status === 'ready'; }); if (job) { job.status = 'error'; job.error = err.message || String(err); } }
       } finally {
         try {
-          if (session.archive.count) downloadBlob(finishBatchArchive(session.archive),session.runName + (session.cancelled ? '_partial' : '') + '.zip');
+          if (session.archive.count) await downloadBlob(finishBatchArchive(session.archive),session.runName + (session.cancelled ? '_partial' : '') + '.zip');
         } catch (err) { session.archiveError = exportUiText('batchArchiveFailed',{ error:err.message || err }); session.archiveCount = 0; }
         session.archive = null; session.running = false; session.finished = true;
-        session.jobs.forEach(function(job){ if (job.status === 'ready') job.status = 'stopped'; job.payload = null; }); session.sources = [];
-        state.isExporting = false; updatePreviewControls(state.totalPages); updateBatchExportView(session);
-        session.root.querySelector('[data-batch-close]').focus({ preventScroll:true });
+        session.jobs.forEach(function(job){ if (job.included && job.status === 'ready') job.status = 'stopped'; });
+        state.isExporting = false; updatePreviewControls(state.totalPages); updateExportReviewSummary(session);
+        session.backdrop.querySelector('[data-preflight-cancel]').focus({ preventScroll:true });
       }
     }
 
@@ -26121,7 +26181,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     document.getElementById('workLibraryAddBtn').addEventListener('click',function(){ document.getElementById('workLibraryFilesInput').click(); });
     document.getElementById('workLibraryFilesInput').addEventListener('change',function(event){ const files = Array.from(event.target.files || []); event.target.value = ''; importWorkLibraryFiles(files,false); });
     document.getElementById('workLibraryDirectoryInput').addEventListener('change',function(event){ const files = Array.from(event.target.files || []); event.target.value = ''; importWorkLibraryFiles(files,true); });
-    document.getElementById('workLibraryExportBtn').addEventListener('click',openBatchExport);
+    document.getElementById('workLibraryExportBtn').addEventListener('click',function(){ openExportPreflightModal(); });
     document.getElementById('workLibrary').addEventListener('keydown',function(event){ event.stopPropagation(); });
     document.getElementById('dismissIoStatusBtn').addEventListener('click',function(){ setExportStatus(''); });
     if (currentSettingsInputEl) currentSettingsInputEl.addEventListener('change', function(){ const file = currentSettingsInputEl.files && currentSettingsInputEl.files[0]; currentSettingsInputEl.value = ''; loadCurrentSettingsFile(file); });
