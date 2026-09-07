@@ -2559,6 +2559,68 @@
     }
 
 
+    /* Preview toolbar density: one size contract for these two rows only. */
+    .floating-bars {
+      --top-control-h:22px;
+      --memo-control-h:24px;
+      --toolbar-font-size:12px;
+      --toolbar-gap:6px;
+      gap:var(--toolbar-gap);
+    }
+    .floating-bars .toolbar-actions { gap:var(--toolbar-gap); }
+    .floating-bars .toolbar-btn, .floating-bars .export-select {
+      height:var(--top-control-h); min-height:var(--top-control-h);
+      padding:0 6px; font-size:var(--toolbar-font-size); line-height:1;
+      border-radius:5px;
+    }
+    .floating-bars button { display:inline-flex; align-items:center; justify-content:center; }
+    .floating-bars button > span { line-height:1; }
+    .floating-bars .toolbar-btn.icon-only { width:24px; min-width:24px; padding:0; }
+    .floating-bars .toolbar-btn.with-icon { gap:4px; }
+    .floating-bars .toolbar-btn.with-icon .ic-svg { width:12px; height:12px; }
+    .floating-bars .global-history, .floating-bars .export-actions, .floating-bars .paper-toolbar-group {
+      padding:2px 3px; gap:3px; min-height:28px; border-radius:7px;
+      box-shadow:0 4px 12px rgba(0,0,0,.10);
+    }
+    .floating-bars .export-actions { grid-template-columns:58px minmax(0,max-content) minmax(0,max-content); width:auto; }
+    .floating-bars .paper-toolbar-group { height:auto; flex-wrap:wrap; }
+    .floating-bars .paper-toolbar-btn { font-size:11px; }
+    .floating-bars #paperToolbarPositionBtn, .floating-bars #paperToolbarResetBtn, .floating-bars #paperToolbarClearBtn { width:auto; }
+    .floating-bars .page-nav { height:28px; align-items:center; border-radius:7px; box-shadow:0 4px 12px rgba(0,0,0,.10); }
+    .floating-bars .page-nav .toolbar-btn.icon-only { border:0; border-radius:0; }
+    .floating-bars .page-indicator { min-width:48px; height:100%; padding:0 7px; line-height:1; }
+    .floating-bars #downloadAllBtn, .floating-bars #chooseExportDirBtn {
+      height:var(--top-control-h); min-height:var(--top-control-h); padding:0 6px; white-space:nowrap;
+    }
+    .floating-bars #chooseExportDirBtn { max-width:180px; }
+    .floating-bars #chooseExportDirBtn > span { min-width:0; overflow:hidden; text-overflow:ellipsis; }
+    .floating-bars .export-selection-count { padding:1px 3px; }
+    .floating-bars .history-scope { font-size:11px; padding:0 3px; line-height:1; }
+    .floating-bars .memo-controls { gap:6px; padding:4px 8px; border-radius:8px; box-shadow:0 6px 18px rgba(0,0,0,.10); }
+    .floating-bars .memo-btn, .floating-bars .memo-size-select {
+      height:var(--memo-control-h); min-height:var(--memo-control-h);
+      padding:0 6px; font-size:var(--toolbar-font-size); line-height:1; border-radius:5px;
+    }
+    .floating-bars .memo-btn { gap:4px; }
+    .floating-bars .memo-btn.icon-only, .floating-bars .readability-btn { width:24px; min-width:24px; padding:0; }
+    .floating-bars .memo-size-select { width:64px; }
+    .memo-tool-pair { display:inline-flex; align-items:center; gap:4px; flex:none; }
+    .floating-bars .memo-toolbar-divider { margin:2px 0; }
+    .floating-bars .memo-color-group { gap:4px; padding:2px; flex-wrap:nowrap; }
+    .floating-bars .memo-color-btn { width:20px; height:20px; border-width:1px; flex:none; }
+    .floating-bars .memo-color-btn.active { box-shadow:0 0 0 1px white,0 0 0 2px var(--text); }
+    .floating-bars .memo-color-btn .swatch { inset:2px; }
+    .floating-bars .zoom-controls { padding:0; gap:0; border-radius:6px; }
+    .floating-bars .zoom-controls .memo-btn { height:22px; min-height:22px; }
+    .floating-bars .zoom-btn { width:24px; min-width:24px; padding:0; }
+    .floating-bars .zoom-reset-btn { min-width:44px; padding:0 5px; }
+    .floating-bars .toolbar-notice { padding:2px 5px; font-size:11px; min-width:0; white-space:normal; }
+    .floating-bars .toolbar-notice .side-notice-close { flex:none; }
+    /* Font line boxes are centered, but visible labels sit slightly low. A shared 1px
+       bottom inset lifts text-control contents by half a pixel without moving their hit boxes. */
+    .floating-bars :is(#downloadAllBtn,#chooseExportDirBtn,.toolbar-btn:not(.icon-only),.memo-btn:not(.icon-only):not(.readability-btn):not(.zoom-btn),.page-indicator,.export-select,.memo-size-select) { padding-block:0 1px; }
+
+
     /* Focus stays visible within segmented controls; active buttons retain keyboard focus. */
     button.active:focus-visible { outline:2px solid var(--text); outline-offset:2px; }
     .settings-io-wrap button:focus-visible, .page-nav button:focus-visible,
@@ -2826,10 +2888,14 @@
           <button id="memoRedoBtn" class="memo-btn ghost icon-only" type="button" aria-label="Redo memo" data-ui-title="memoRedoBtn"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m16 6 3.5 3.5L16 13M19.5 9.5H9a4.75 4.75 0 0 0 0 9.5h5"/></svg></button>
           <div class="memo-row-break" aria-hidden="true"></div>
           <div class="memo-toolbar-divider" aria-hidden="true"></div>
+          <div class="memo-tool-pair">
           <button id="memoPenToolBtn" class="memo-btn icon-only" type="button" aria-label="Pen tool" data-ui-title="memoPenLabel"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 20l1-4.5L15.5 5a2.12 2.12 0 0 1 3 0l.5.5a2.12 2.12 0 0 1 0 3L8.5 19 4 20ZM13.5 7 17 10.5"/></svg></button>
           <select id="memoPenSizeSelect" class="memo-size-select" aria-label="Memo pen size" data-ui-title="memoPenLabel"></select>
+          </div>
+          <div class="memo-tool-pair">
           <button id="memoEraserToolBtn" class="memo-btn icon-only" type="button" aria-label="Eraser tool" data-ui-title="memoEraserLabel"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8.5 19.5 3.9 14.9a1.5 1.5 0 0 1 0-2.1l8.5-8.5a1.5 1.5 0 0 1 2.1 0l5.2 5.2a1.5 1.5 0 0 1 0 2.1l-8.4 8.4M8.5 19.5H20M6.5 11.5l6 6"/></svg></button>
           <select id="memoEraserSizeSelect" class="memo-size-select" aria-label="Memo eraser size" data-ui-title="memoEraserLabel"></select>
+          </div>
           <div class="memo-toolbar-divider" aria-hidden="true"></div>
           <div class="memo-color-group" aria-label="Memo colors">
             <button class="memo-color-btn active" type="button" data-tool="pen" data-color="#111111" aria-label="Black"><span class="swatch" style="background:#111111"></span></button>
@@ -3036,7 +3102,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '905';
+    const APP_VERSION = '906';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -4235,6 +4301,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver906", "Compact top and memo toolbars", ["Top controls are smaller, and the memo toolbar uses less padding and more compact tools. Control text alignment is consistent; pen and eraser size controls stay beside their tools."]],
         ["ver905", "Compact panel handles", ["Left and right panel handles are smaller and have their own clear space beside the output toolbar. Collapsing the left panel no longer moves the right handle to the left edge."]],
         ["ver904", "One output window", ["Single and multiple work files now share the same preview and output screen. Select a work in the list to preview it and use its checkbox to include or exclude it.", "Changed output options apply to all targets. Mixed values are identified, and unchanged options keep each work’s saved settings."]],
         ["ver903", "Work library and batch export", ["Work save/open buttons now align evenly. Folder tools, search and selected work live in one library.", "Export all pages of selected JSON work files with their own saved settings while keeping the editing document. Review counts, duplicate names and errors before starting. Folder output uses a new run folder; browser downloads use one ZIP.", "Completion notices dismiss automatically. Output location is shown inside its button, and the main button is now simply Export."]],
@@ -4290,6 +4357,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver906", "上部・メモツールバーをコンパクトに", ["上部ボタンを小さくし、メモバーの余白と道具をコンパクトにしました。文字の配置を統一し、ペン・消しゴムとサイズ選択が離れないようにしました。"]],
         ["ver905", "パネル開閉ボタンをコンパクトに", ["左右のパネル開閉ボタンを小さくし、出力ツールバーとの間隔を確保しました。左パネルを閉じたとき、右の開閉ボタンが左端に重なる問題を修正しました。"]],
         ["ver904", "出力画面を統合", ["単体と複数の作業を同じ画面で確認・書き出しできます。一覧の作業名でプレビューを切り替え、チェックで出力対象を選べます。", "変更した出力設定は全対象に適用します。異なる値は「混在」と表示し、変更しない項目は各作業の保存設定を保ちます。"]],
         ["ver903", "作業一覧と一括書き出し", ["作業の保存・開くボタンを均等に配置し、フォルダー操作・検索・選択を作業一覧にまとめました。", "選択したJSONの設定で全ページを一括書き出しできます。編集中の作業を保持し、開始前に件数・同名・エラーを確認できます。フォルダー出力は実行ごとの新規フォルダー、通常ダウンロードはZIPにまとめます。", "完了通知は自動で消えます。出力先はボタン内に表示し、書き出しボタンの名前を簡潔にしました。"]],
@@ -4345,6 +4413,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver906", "상단·메모 바 크기 정리", ["상단 버튼과 메모 도구를 작게 줄이고 바의 여백을 줄였습니다. 버튼 글자 정렬을 통일하고 펜·지우개의 크기 선택이 해당 도구와 함께 배치되도록 했습니다."]],
         ["ver905", "패널 접기 버튼 정리", ["좌우 패널 접기 버튼을 작게 줄이고 출력 툴바와 여백으로 분리했습니다. 왼쪽 패널을 접을 때 오른쪽 접기 버튼까지 왼쪽으로 이동해 겹치는 문제를 수정했습니다."]],
         ["ver904", "출력 화면 통합", ["단일·여러 작업의 미리보기와 출력을 같은 화면에서 처리합니다. 목록의 작업 이름을 누르면 미리보기가 바뀌고, 체크로 출력 대상을 조정합니다.", "변경한 출력 옵션은 모든 대상에 적용합니다. 서로 다른 값은 혼합으로 표시하며, 바꾸지 않은 항목은 각 작업의 저장 설정을 유지합니다."]],
         ["ver903", "작업 목록과 일괄 출력", ["작업 저장·열기를 같은 폭으로 정렬하고, 폴더 조작·검색·선택을 작업 목록에 모았습니다.", "선택한 JSON별 저장 설정으로 모든 페이지를 일괄 출력합니다. 편집 중인 작업을 유지하며, 시작 전에 페이지 수·같은 파일명·오류를 확인할 수 있습니다. 폴더 출력은 실행별 새 폴더에, 기본 다운로드는 ZIP 하나로 받습니다.", "완료 안내는 자동으로 사라지고 출력 위치는 버튼 안에 표시합니다. 출력 버튼 이름을 간단히 줄였습니다."]],
@@ -4400,6 +4469,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver906", "更紧凑的顶部和备注工具栏", ["缩小顶部按钮、备注工具和工具栏间距。统一文字对齐，画笔和橡皮的大小选择与对应工具保持在一起。"]],
         ["ver905", "更紧凑的面板按钮", ["缩小左右面板折叠按钮，并与导出工具栏留出独立间距。修复折叠左面板时右侧按钮移动到左侧重叠的问题。"]],
         ["ver904", "统一导出界面", ["单个与多个工作共用预览和导出界面。点击工作名称切换预览，勾选框控制是否导出。", "修改的导出设置应用到全部目标。不同值显示为混合，未修改的选项保留各工作的保存设置。"]],
         ["ver903", "工作列表与批量导出", ["保存与打开按钮改为等宽，文件夹工具、搜索和选择整合到工作列表。", "按所选JSON各自保存的设置导出全部页面，保留当前编辑工作。开始前可检查数量、同名和错误。文件夹导出创建新文件夹，浏览器下载合并为ZIP。", "完成通知自动消失，输出位置显示在按钮内，导出按钮名称更简洁。"]],
