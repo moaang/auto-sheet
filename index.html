@@ -2491,7 +2491,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '909';
+    const APP_VERSION = '910';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -2762,31 +2762,137 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       finally { currentDrawLayer = previousDrawLayer; }
     }
 
-    let state = {
+    // ══ 문서 데이터 범위 — 상태 필드와 입력의 정본, 저장 형식은 각 진입점에서 변환 ═══════════════════════════════
+    const CSV_SETTINGS_FIELDS = {
+      rawRows:["csvRawRows",[]],
+      originalRows:["csvOriginalRows",[]],
+      originalText:["csvOriginalText",""],
+      originalEncoding:["csvOriginalEncoding","utf-8"],
+      loadedMode:["csvLoadedMode",""],
+      tvpaintCellSourceColumns:["tvpaintCellSourceColumns",[]],
+      columns:["csvColumns",[]],
+      columnOrder:["csvColumnOrder",[]],
+      columnRoles:["csvColumnRoles",{}],
+      frameIndex:["csvFrameIndex",0],
+      dataStartRow:["csvDataStartRow",1],
+      loadError:["csvLoadError",""]
+    };
+    const SHEET_STATE_GROUPS = {
+      csv:Object.values(CSV_SETTINGS_FIELDS).map(function(field){ return field[0]; }),
+      csvBuffer:["csvFileBuffer"],
+      csvPending:["csvDurationAutofillPending"],
+      csvGenerated:["lastCsvGeneratedDialogLines","lastCsvGeneratedCameraLines"],
+      guides:["serifuSheetGuides"],
+      readability:["cellReadabilityLarge"],
+      columns:["cellColumnCount","inbetweenColumnCount"],
+      columnOrder:["cellDisplayOrder"],
+      douga:["dougaSheetEnabled","dougaSheetData"],
+      overrides:["markerOverrides","cameraPreviewStyles","cameraEndpointFr","cameraSeries","dotOverrides","layerNameTags"],
+      paperImage:["paperImageDataUrl","paperImageMemoDataUrl","paperImageMemoLayerCount","paperImageName","paperImageMeta","paperImagePixelInfo","paperImageSourceWidth","paperImageSourceHeight"],
+      paperOutput:["showTemplate","showHeaderOutput","showDurationPlusOutput","showCellLabelOutput","showPsdMemo"],
+      paperLayout:["layoutBoxes","layoutBoxBaseRects"],
+      memo:["memoPages","textMemoPages"],
+      pastedImages:["pastedImages"],
+      stages:["stages","activeStageId"],
+      workPreferences:["memoMode","memoTool","memoColor","memoPenSize","memoEraserSize","shortcuts","sheetZoom","currentPreviewPage"],
+      renderContext:["lang","totalPages","exportFilenameOverride"],
+      loadReset:["previewSpacePanKey","shakuFlash","shakuMode","shakuSelection","textMemoEditMode"]
+    };
+    const SHEET_STATE_SCOPES = {
+      settings:["csv","csvBuffer","csvPending","guides","readability","columns","columnOrder","douga","overrides","paperImage","paperOutput","paperLayout","memo","workPreferences","loadReset"],
+      csv:["csv","csvBuffer","csvPending","csvGenerated","columnOrder","douga","guides","overrides"],
+      historySource:["csv","csvBuffer","csvGenerated","guides","readability"],
+      content:["columns","columnOrder","douga","overrides"],
+      snapshot:["csv","csvBuffer","csvPending","csvGenerated","guides","readability","columns","columnOrder","douga","overrides","paperImage","paperOutput","paperLayout","memo","pastedImages","stages","workPreferences","renderContext"]
+    };
+    const SHEET_HEADER_INPUTS = ['episode','title','cutNo','seconds','frames','author','page'];
+    const SHEET_COMMAND_INPUTS = { timeline:'timelineCommandInput', csv:'csvCommandEdit', dialog:'dialogManual', camera:'cameraManual' };
+    const SHEET_MODE_INPUTS = ['cellInputMode','exportFormatSelect'];
+    const SHEET_WORK_INPUTS = SHEET_HEADER_INPUTS.concat(Object.values(SHEET_COMMAND_INPUTS), SHEET_MODE_INPUTS, ['languageSelect']);
+
+    function createSheetTransientState() {
+      return {
+        activeTimelineDrag: null,
+        commandCellViewSyncing: false,
+        paperAutoAlignToken: 0,
+        paperAutoAlignResult: null,
+        paperAutoAlignOverlay: null,
+        paperTemplateMatch: null,
+        activePanelResize: null,
+        stageSlotContextMenu: null,
+        stageAddMenu: null,
+        viewPanX: 0,
+        viewPanY: 0,
+        previewSpacePanKey: false,
+        gestureStartZoom: 1,
+        cellLabelDrag: null,
+        positionMode: false,
+        inlineTextEditor: null,
+        speakerSuffixMenu: null,
+        serifuMode: false,
+        serifuRangeAnchor: null,
+        serifuRangeDrag: null,
+        serifuRangeSelection: null,
+        serifuRangeContextMenu: null,
+        serifuSheetModal: null,
+        durationStepperOverlay: null,
+        layoutDrag: null,
+        layoutDragPreviewGroup: null,
+        layoutDragPreviewNodes: null,
+        layoutDragHtmlNodes: null,
+        layoutDragPreviewFrame: null,
+        layoutDragPreviewPendingDrag: null,
+        layoutDragMoveFrame: null,
+        layoutDragPreviewMuted: false,
+        commandInputRenderTimer: null,
+        commandInputRenderNeedsCommandSync: false,
+        pendingCsvCommandInputSync: false,
+        pendingTextCommandNormalize: false,
+        pendingCsvCommandNormalize: false,
+        previewPan: null,
+        suppressNextClick: false,
+        cellLongPressDrag: null,
+        dragPreviewBox: null,
+        shakuMode: false,
+        shakuDrag: null,
+        shakuSelection: null,
+        shakuFlash: null,
+        shakuFlashTimer: null,
+        activeTextMemo: null,
+        textMemoResize: null,
+        textMemoPointerIntent: null,
+        textMemoEditMode: false,
+        textMemoContextMenu: null,
+        textMemoEditor: null,
+        textMemoHint: null,
+        textMemoHintTimer: null,
+        textMemoHintFadeTimer: null,
+        textMemoHintFrame: null,
+        textMemoSelectionToolbar: null,
+        textMemoLastSelection: null,
+        gestureStartTextMemoFontSize: 18,
+        activePastedImage: null,
+        pastedImageDrag: null,
+        activeLayerNameTagTarget: null,
+        activeLayerNameTag: null,
+        layerNameTagDrag: null,
+        memoPointerId: null,
+        memoCurrentStroke: null,
+        manualSourceSyncTimer: null
+      };
+    }
+
+    let state = Object.assign({
       lang: 'ja',
-      csvRawRows: [],
-      csvColumns: [],
-      csvColumnOrder: [],
-      csvColumnRoles: {},
       csvDurationAutofillPending: false,
-      activeTimelineDrag: null,
       lastCsvGeneratedDialogLines: [],
       lastCsvGeneratedCameraLines: [],
-      csvFrameIndex: 0,
-      csvDataStartRow: 1,
       markerOverrides: {},
       cameraPreviewStyles: {},
       cameraEndpointFr: {},   // ver839: label -> '60Fr', supplied by conte; annotates the endpoint rings (no manual authoring here)
       cameraSeries: [],       // ver872: [{group,name,lines[]}] — which camera-manual LINES form one work, and its name. Supplied by conte; see drawCameraSeriesBows.
       dotOverrides: {},
       csvFileBuffer: null,
-      csvOriginalRows: [],
-      csvOriginalText: '',
-      csvOriginalEncoding: 'utf-8',
-      csvLoadedMode: '',
-      tvpaintCellSourceColumns: [],
-      csvLoadError: '',
-      commandCellViewSyncing: false,
       currentPreviewPage: 0,
       totalPages: 1,
       isExporting: false,
@@ -2797,30 +2903,17 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       loadedSettingsDirectoryName: '',
       loadedSettingsDirectoryScanned: false,
       loadedSettingsDirectoryHandle: null,
-      paperAutoAlignToken: 0,
-      paperAutoAlignResult: null,
-      paperAutoAlignOverlay: null,
-      paperTemplateMatch: null,
-      paperUndoStack: [],
-      paperRedoStack: [],
       memoMode: false,
       sidebarCollapsed: false,
       rightPanelCollapsed: false,
       sidebarWidth: 500,
       rightPanelWidth: 420,
-      activePanelResize: null,
-      stageSlotContextMenu: null,
-      stageAddMenu: null,
       memoTool: 'pen',
       memoColor: '#111111',
       memoPenSize: 2,
       memoEraserSize: 100,
       shortcuts: { brushCycle:'b', eraserToggle:'e', sizeDown:'[', sizeUp:']', memoOff:'backspace' },
       sheetZoom: 1,
-      viewPanX: 0,
-      viewPanY: 0,
-      previewSpacePanKey: false,
-      gestureStartZoom: 1,
       paperImageDataUrl: '',
       paperImageMemoDataUrl: '',
       paperImageMemoLayerCount: 0,
@@ -2842,69 +2935,14 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       cellColumnCount: 8,
       inbetweenColumnCount: 0,
       cellDisplayOrder: [],
-      cellLabelDrag: null,
-      positionMode: false,
-      inlineTextEditor: null,
-      speakerSuffixMenu: null,
-      serifuMode: false,
-      serifuRangeAnchor: null,
-      serifuRangeDrag: null,
-      serifuRangeSelection: null,
-      serifuRangeContextMenu: null,
-      serifuSheetModal: null,
       serifuSheetGuides: [],
-      durationStepperOverlay: null,
-      layoutDrag: null,
-      layoutDragPreviewGroup: null,
-      layoutDragPreviewNodes: null,
-      layoutDragHtmlNodes: null,
-      layoutDragPreviewFrame: null,
-      layoutDragPreviewPendingDrag: null,
-      layoutDragMoveFrame: null,
-      layoutDragPreviewMuted: false,
       layoutBoxes: {},
       layoutBoxBaseRects: {},
-      commandInputRenderTimer: null,
-      commandInputRenderNeedsCommandSync: false,
-      pendingCsvCommandInputSync: false,
-      pendingTextCommandNormalize: false,
-      pendingCsvCommandNormalize: false,
-      previewPan: null,
-      suppressNextClick: false,
-      cellLongPressDrag: null,
-      dragPreviewBox: null,
-      shakuMode: false,
-      shakuDrag: null,
-      shakuSelection: null,
-      shakuFlash: null,
-      shakuFlashTimer: null,
-      shakuUndoStack: [],
-      shakuRedoStack: [],
       textMemoPages: {},
-      activeTextMemo: null,
-      textMemoResize: null,
-      textMemoPointerIntent: null,
-      textMemoEditMode: false,
-      textMemoContextMenu: null,
-      textMemoEditor: null,
-      textMemoHint: null,
-      textMemoHintTimer: null,
-      textMemoHintFadeTimer: null,
-      textMemoHintFrame: null,
-      textMemoSelectionToolbar: null,
-      textMemoLastSelection: null,
-      gestureStartTextMemoFontSize: 18,
       pastedImages: {},
-      activePastedImage: null,
-      pastedImageDrag: null,
       layerNameTags: [],
-      activeLayerNameTagTarget: null,
-      activeLayerNameTag: null,
-      layerNameTagDrag: null,
-      memoPages: {},
-      memoPointerId: null,
-      memoCurrentStroke: null
-    };
+      memoPages: {}
+    }, createCsvState(), createSheetTransientState());
     const settingsDocumentDefaults = captureSheetSnapshot();
 
     // ══ 문서·i18n 블록 A — i18n 사전 · 업데이트로그 목차 · UI 텍스트 ══════════════════════════════════════════════════
@@ -20645,12 +20683,67 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return copy;
     }
 
+    function createCsvState() {
+      return Object.fromEntries(Object.values(CSV_SETTINGS_FIELDS).map(function(field){ return [field[0],cloneSheetData(field[1])]; }));
+    }
+
+    function collectCsvSettings() {
+      const values = {};
+      Object.entries(CSV_SETTINGS_FIELDS).forEach(function(entry){
+        const field = entry[1]; values[entry[0]] = state[field[0]] || field[1];
+      });
+      return cloneSheetData(values);
+    }
+
+    function applyCsvSettings(csv) {
+      const values = {};
+      Object.entries(CSV_SETTINGS_FIELDS).forEach(function(entry){
+        const key = entry[0], fallback = entry[1][1];
+        values[key] = Array.isArray(fallback) ? (Array.isArray(csv[key]) ? csv[key] : []) : (csv[key] || fallback);
+      });
+      values.loadedMode = normalizeCsvSourceMode(values.loadedMode);
+      if (!values.loadedMode && values.rawRows.length) values.loadedMode = values.tvpaintCellSourceColumns.length ? 'tvpaint' : 'clip';
+      if (!Array.isArray(csv.columnOrder)) values.columnOrder = values.columns.slice().sort(compareCsvSourceColumnOrder).map(function(col){ return col.index; });
+      values.columnRoles = migrateCsvColumnRoles(values.columns, csv.columnRoles, csv.selectedColumns);
+      values.frameIndex = Number(csv.frameIndex) || 0;
+      values.dataStartRow = Number(csv.dataStartRow) || 1;
+      Object.entries(CSV_SETTINGS_FIELDS).forEach(function(entry){ state[entry[1][0]] = cloneSheetData(values[entry[0]]); });
+      state.csvFileBuffer = null;
+      state.csvDurationAutofillPending = false;
+    }
+
+    function getSheetStateKeys(scope) {
+      return SHEET_STATE_SCOPES[scope].flatMap(function(group){ return SHEET_STATE_GROUPS[group]; });
+    }
+
+    function readSheetState(scope, source) {
+      const values = {}, from = source || state;
+      getSheetStateKeys(scope).forEach(function(key){ values[key] = from[key]; });
+      return values;
+    }
+
+    // The caller transfers an owned candidate (history clones its snapshot before this call).
+    function applySheetState(scope, source) {
+      Object.assign(state, readSheetState(scope, source));
+    }
+
+    function readSheetInputs(ids) {
+      const values = {};
+      ids.forEach(function(id){ const value = getSheetInputValue(id); values[id] = String(value == null ? '' : value); });
+      return values;
+    }
+
+    function applySheetInputs(values, ids) {
+      (ids || Object.keys(values)).forEach(function(id){
+        const node = getSheetInputNode(id);
+        if (node && values[id] !== undefined) node.value = values[id];
+      });
+    }
+
     function captureSheetSnapshot() {
-      const inputs = activeSheetSnapshot ? cloneSheetData(activeSheetSnapshot.inputs) : {};
-      if (!activeSheetSnapshot) document.querySelectorAll('input[id],textarea[id],select[id]').forEach(function(node){ inputs[node.id] = node.value; });
-      // The library is application state, not sheet content; never clone every loaded JSON per page/job.
-      const copy = cloneSheetData(Object.assign({},state,{ loadedSettingsFiles:[], contentUndoStack:[], contentRedoStack:[] }));
-      return { state:copy, inputs:inputs };
+      // Candidates own document data. Interaction state starts idle; application resources stay live-only.
+      const copy = Object.assign(createSheetTransientState(), cloneSheetData(readSheetState('snapshot')));
+      return { state:copy, inputs:readSheetInputs(SHEET_WORK_INPUTS) };
     }
 
     function withSheetSnapshot(snapshot, callback) {
@@ -20663,12 +20756,13 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     function getSheetInputNode(id) {
       if (!activeSheetSnapshot) return document.getElementById(id);
-      return { id:id, get value(){ return activeSheetSnapshot.inputs[id] || ''; }, set value(value){ activeSheetSnapshot.inputs[id] = String(value == null ? '' : value); } };
+      const inputs = activeSheetSnapshot.inputs;
+      if (!Object.prototype.hasOwnProperty.call(inputs, id)) throw new Error('Missing document input: ' + id);
+      return { id:id, get value(){ return inputs[id] || ''; }, set value(value){ inputs[id] = String(value == null ? '' : value); } };
     }
 
     function getSheetInputValue(id) {
-      if (activeSheetSnapshot && Object.prototype.hasOwnProperty.call(activeSheetSnapshot.inputs, id)) return activeSheetSnapshot.inputs[id];
-      const node = document.getElementById(id);
+      const node = getSheetInputNode(id);
       return node ? node.value : '';
     }
 
@@ -20979,65 +21073,69 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     let contentHistoryRestoring = false;
 
     // ══ ▲ 시트 렌더 ⑩ 끝 ▲  단계·파일의 시트 내용 스키마 (실행 이력은 아래 문서 스냅샷) ═════════════════════════════════════════════
-    function getContentSnapshot() {
-      function val(id){ const n = document.getElementById(id); return n ? String(n.value == null ? '' : n.value) : ''; }
-      function clone(o){ try { return JSON.parse(JSON.stringify(o == null ? null : o)); } catch (err) { console.warn('getContentSnapshot: clone failed, this field will be lost from the undo snapshot', err); return null; } }
+    function readContentColumns() {
       return {
-        header:{ episode:val('episode'), title:val('title'), cutNo:val('cutNo'), seconds:val('seconds'), frames:val('frames'), author:val('author'), page:val('page') },
-        timeline:getCommandTextValue('text'),
-        csv:csvCommandEditEl ? getCommandTextValue('csv') : '',
-        dialog:val('dialogManual'),
-        camera:val('cameraManual'),
-        cellDisplayOrder:clone(state.cellDisplayOrder || []),
+        cellDisplayOrder:cloneSheetData(state.cellDisplayOrder || []),
         cellColumnCount:getCellColumnCount(),
-        inbetweenColumnCount:clampInbetweenColumnCount(state.inbetweenColumnCount || 0),
-        dougaSheetData:clone(state.dougaSheetData || null),
-        dougaSheetEnabled:!!state.dougaSheetEnabled,
-        layerNameTags:clone(getManualLayerNameTags()),
-        markerOverrides:clone(state.markerOverrides || {}),
-        cameraPreviewStyles:clone(state.cameraPreviewStyles || {}),
-        cameraEndpointFr:clone(state.cameraEndpointFr || {}),
-        cameraSeries:clone(state.cameraSeries || []),
-        dotOverrides:clone(state.dotOverrides || {})
+        inbetweenColumnCount:clampInbetweenColumnCount(state.inbetweenColumnCount || 0)
       };
     }
 
+    function getContentSnapshot() {
+      return {
+        header:readSheetInputs(SHEET_HEADER_INPUTS),
+        timeline:getCommandTextValue('text'),
+        csv:csvCommandEditEl ? getCommandTextValue('csv') : '',
+        dialog:getSheetInputValue('dialogManual'),
+        camera:getSheetInputValue('cameraManual'),
+        ...readContentColumns(),
+        dougaSheetData:cloneSheetData(state.dougaSheetData || null),
+        dougaSheetEnabled:!!state.dougaSheetEnabled,
+        layerNameTags:cloneSheetData(getManualLayerNameTags()),
+        markerOverrides:cloneSheetData(state.markerOverrides || {}),
+        cameraPreviewStyles:cloneSheetData(state.cameraPreviewStyles || {}),
+        cameraEndpointFr:cloneSheetData(state.cameraEndpointFr || {}),
+        cameraSeries:cloneSheetData(state.cameraSeries || []),
+        dotOverrides:cloneSheetData(state.dotOverrides || {})
+      };
+    }
+
+
+    function applyContentInputs(snap) {
+      applySheetInputs(snap.header || {}, SHEET_HEADER_INPUTS);
+      Object.keys(SHEET_COMMAND_INPUTS).forEach(function(key){
+        if (snap[key] === undefined) return;
+        if (key === 'timeline' || key === 'csv') setCommandTextValue(key === 'timeline' ? 'text' : 'csv', snap[key]);
+        else applySheetInputs({ [SHEET_COMMAND_INPUTS[key]]:snap[key] });
+      });
+      normalizeDurationInputs();
+    }
+
+    function applyContentState(snap) {
+      state.cellDisplayOrder = Array.isArray(snap.cellDisplayOrder) ? cloneSheetData(snap.cellDisplayOrder) : [];
+      state.cellColumnCount = clampCellColumnCount(snap.cellColumnCount);
+      state.inbetweenColumnCount = clampInbetweenColumnCount(snap.inbetweenColumnCount);
+      state.dougaSheetData = snap.dougaSheetData && typeof snap.dougaSheetData === 'object' ? cloneSheetData(snap.dougaSheetData) : null;
+      state.dougaSheetEnabled = !!snap.dougaSheetEnabled;
+      state.layerNameTags = Array.isArray(snap.layerNameTags) ? cloneSheetData(snap.layerNameTags) : [];
+      state.markerOverrides = snap.markerOverrides && typeof snap.markerOverrides === 'object' ? cloneSheetData(snap.markerOverrides) : {};
+      state.cameraPreviewStyles = snap.cameraPreviewStyles && typeof snap.cameraPreviewStyles === 'object' ? cloneSheetData(snap.cameraPreviewStyles) : {};
+      state.cameraEndpointFr = snap.cameraEndpointFr && typeof snap.cameraEndpointFr === 'object' ? cloneSheetData(snap.cameraEndpointFr) : {};
+      state.cameraSeries = Array.isArray(snap.cameraSeries) ? cloneSheetData(snap.cameraSeries) : [];
+      state.dotOverrides = snap.dotOverrides && typeof snap.dotOverrides === 'object' ? cloneSheetData(snap.dotOverrides) : {};
+    }
 
     function applyContentSnapshot(snap) {
       if (!snap) return;
       const previousRestoring = contentHistoryRestoring;
       contentHistoryRestoring = true;
       try {
-        const header = snap.header || {};
-        ['episode','title','cutNo','seconds','frames','author','page'].forEach(function(id){
-          const node = document.getElementById(id);
-          if (node && header[id] !== undefined) node.value = header[id];
-        });
-        if (snap.timeline !== undefined) setCommandTextValue('text', snap.timeline);
-        if (snap.csv !== undefined && csvCommandEditEl) setCommandTextValue('csv', snap.csv);
-        const dialogNode = document.getElementById('dialogManual');
-        if (dialogNode && snap.dialog !== undefined) dialogNode.value = snap.dialog;
-        const cameraNode = document.getElementById('cameraManual');
-        if (cameraNode && snap.camera !== undefined) cameraNode.value = snap.camera;
-        state.cellDisplayOrder = Array.isArray(snap.cellDisplayOrder) ? JSON.parse(JSON.stringify(snap.cellDisplayOrder)) : [];
-        state.cellColumnCount = clampCellColumnCount(snap.cellColumnCount);
-        state.inbetweenColumnCount = clampInbetweenColumnCount(snap.inbetweenColumnCount);
-        state.dougaSheetData = snap.dougaSheetData && typeof snap.dougaSheetData === 'object' ? JSON.parse(JSON.stringify(snap.dougaSheetData)) : null;
-        // 데이터와 켜짐 상태는 한 짝이다. 켜짐만 남으면 버튼은 「동화 갱신」인데 데이터가 없는 상태가 된다.
-        state.dougaSheetEnabled = !!snap.dougaSheetEnabled;
-        state.layerNameTags = Array.isArray(snap.layerNameTags) ? JSON.parse(JSON.stringify(snap.layerNameTags)) : [];
+        applyContentInputs(snap);
+        applyContentState(snap);
+        if (activeSheetSnapshot) return;
         pruneActiveLayerNameTag();
-        state.markerOverrides = snap.markerOverrides && typeof snap.markerOverrides === 'object' ? JSON.parse(JSON.stringify(snap.markerOverrides)) : {};
-        state.cameraPreviewStyles = snap.cameraPreviewStyles && typeof snap.cameraPreviewStyles === 'object' ? JSON.parse(JSON.stringify(snap.cameraPreviewStyles)) : {};
-        // getContentSnapshot 이 담는 값은 전부 여기서 되돌려야 한다. 이 한 줄이 빠져 있어서
-        // 「undo 스택에는 쌓이는데 Ctrl+Z 로 Fr/% 표기만 안 돌아오는」 상태였다(conte 공급값이라
-        // 재생성 경로가 없어 _settei.json 재로드 말고는 복구 수단이 없었다).
-        state.cameraEndpointFr = snap.cameraEndpointFr && typeof snap.cameraEndpointFr === 'object' ? JSON.parse(JSON.stringify(snap.cameraEndpointFr)) : {};
-        state.cameraSeries = Array.isArray(snap.cameraSeries) ? JSON.parse(JSON.stringify(snap.cameraSeries)) : [];
-      state.dotOverrides = snap.dotOverrides && typeof snap.dotOverrides === 'object' ? JSON.parse(JSON.stringify(snap.dotOverrides)) : {};
-        normalizeDurationInputs();
         syncPaperLayoutControls();
-        if (typeof scheduleManualSourceRoleSync === 'function') scheduleManualSourceRoleSync();
+        scheduleManualSourceRoleSync();
         render();
       } finally {
         contentHistoryRestoring = previousRestoring;
@@ -21045,11 +21143,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     // ══ 문서 실행취소 ① 스냅샷 — 저장 형식과 분리, 변경 없는 가지 공유 ═══════════════════════════════════════════════════
-    const EDITOR_HISTORY_STATE_KEYS = [
-      'csvFileBuffer','csvRawRows','csvOriginalRows','csvOriginalText','csvOriginalEncoding','csvLoadedMode',
-      'tvpaintCellSourceColumns','csvColumns','csvColumnOrder','csvColumnRoles','csvFrameIndex','csvDataStartRow',
-      'csvLoadError','lastCsvGeneratedDialogLines','lastCsvGeneratedCameraLines','serifuSheetGuides','cellReadabilityLarge'
-    ];
 
     function shareHistoryValue(value, previous) {
       if (value === previous || value == null || typeof value !== 'object') return value;
@@ -21065,12 +21158,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     function getEditorHistorySnapshot(previous) {
-      const content = getContentSnapshot(), paper = getPaperStateSnapshot(), source = {}, inputs = {}, memo = {}, text = {}, images = {};
+      const content = getContentSnapshot(), paper = getPaperStateSnapshot(), source = readSheetState('historySource'), inputs = readSheetInputs(SHEET_MODE_INPUTS), memo = {}, text = {}, images = {};
       // Tool mode and generated empty page buckets are navigation, not edits.
       delete paper.positionMode;
       delete paper.autoAlignResult; delete paper.autoAlignOverlay;
-      EDITOR_HISTORY_STATE_KEYS.forEach(function(key){ source[key] = state[key]; });
-      ['cellInputMode','exportFormatSelect'].forEach(function(id){ inputs[id] = document.getElementById(id).value; });
       Object.keys(state.memoPages || {}).forEach(function(key){ const strokes = state.memoPages[key].strokes; if (strokes && strokes.length) memo[key] = { strokes:strokes, redo:[] }; });
       Object.keys(state.textMemoPages || {}).forEach(function(key){ if (state.textMemoPages[key].length) text[key] = state.textMemoPages[key]; });
       Object.keys(state.pastedImages || {}).forEach(function(key){ if (state.pastedImages[key].length) images[key] = state.pastedImages[key]; });
@@ -21091,9 +21182,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         cancelPendingPaperAutoAlign();
         resetSheetTransientState();
         const snap = cloneSheetData(snapshot);
-        EDITOR_HISTORY_STATE_KEYS.forEach(function(key){ state[key] = snap.source[key]; });
+        applySheetState('historySource', snap.source);
         state.csvDurationAutofillPending = false;
-        Object.keys(snap.inputs).forEach(function(id){ document.getElementById(id).value = snap.inputs[id]; });
+        applySheetInputs(snap.inputs);
         state.stages = snap.stages; state.activeStageId = snap.activeStageId;
         state.memoPages = snap.memo; state.textMemoPages = snap.text; state.pastedImages = snap.images;
         state.currentPreviewPage = pageIndex;
@@ -21573,10 +21664,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       state.stageSlotContextMenu = { el:menu, stageId:stageId };
     }
 
-    function collectSheetStagesForSave() {
+    function collectSheetStagesForSave(content) {
       const list = getSheetStages();
       const active = getActiveSheetStage();
-      if (active) active.content = getContentSnapshot();
+      if (active) active.content = content || getContentSnapshot();
       return {
         active:active ? active.id : '',
         list:list.map(function(item){
@@ -23126,13 +23217,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return loadRasterBlobToDataUrl(preview.blob, function(w, h){ return getPaperLayoutTexts().clipMeta(w || preview.width, h || preview.height); });
     }
 
-    // ══ [영속] 용지 이미지: IndexedDB 이미지 + localStorage 메타 + undo/redo ═════════════════════════════════════
-    function clonePaperData(value) {
-      if (value == null) return value;
-      try { return JSON.parse(JSON.stringify(value || {})); }
-      catch (err) { console.warn('clonePaperData failed, returning empty object', err); return {}; }
-    }
-
     // ══ [영속] 저장소 연결·트랜잭션 수명 — 실패/중단도 반드시 종료한다 ═════════════════════════════════════
     function openSheetMemoryDb(name, storeName) {
       return new Promise(function(resolve, reject){
@@ -23195,7 +23279,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       } catch (err) { return null; }
     }
 
-    function getPaperStateSnapshot() {
+    function readPaperData() {
       return {
         imageDataUrl:state.paperImageDataUrl || '',
         memoDataUrl:state.paperImageMemoDataUrl || '',
@@ -23210,43 +23294,47 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         showDurationPlusOutput:state.showDurationPlusOutput !== false,
         showCellLabelOutput:!!state.showCellLabelOutput,
         showPsdMemo:!!state.showPsdMemo,
-        // 칸 수·열 순서는 여기 담지 않는다 — 내용 히스토리(getContentSnapshot)가 이미 담고
-        // applyContentSnapshot 이 복원한다. 두 벌을 들고 있었을 때, 자동정렬 뒤 사용자가 입력칸으로
-        // 고친 칸 수를 용지 Undo 가 옛 값으로 덮어써 조용히 사라뜨렸다(2026-08-08).
-        layoutBoxes:clonePaperData(state.layoutBoxes || {}),
-        layoutBoxBaseRects:clonePaperData(state.layoutBoxBaseRects || {}),
-        positionMode:!!state.positionMode,
-        autoAlignResult:clonePaperData(state.paperAutoAlignResult || null),
-        autoAlignOverlay:clonePaperData(state.paperAutoAlignOverlay || null)
+        layoutBoxes:cloneSheetData(state.layoutBoxes || {}),
+        layoutBoxBaseRects:cloneSheetData(state.layoutBoxBaseRects || {})
       };
+    }
+
+    // Column counts/order belong to content history; paper restore must not overwrite them.
+    function getPaperStateSnapshot() {
+      return Object.assign(readPaperData(), {
+        positionMode:!!state.positionMode,
+        autoAlignResult:cloneSheetData(state.paperAutoAlignResult || null),
+        autoAlignOverlay:cloneSheetData(state.paperAutoAlignOverlay || null)
+      });
+    }
+
+    function applyPaperData(paper, flagDefaults) {
+      state.paperImageDataUrl = paper.imageDataUrl || '';
+      state.paperImageMemoDataUrl = paper.memoDataUrl || '';
+      state.paperImageMemoLayerCount = Number(paper.memoLayerCount) || 0;
+      state.paperImageName = paper.imageName || '';
+      state.paperImageMeta = paper.imageMeta || '';
+      state.paperImagePixelInfo = paper.imagePixelInfo || '';
+      state.paperImageSourceWidth = Number(paper.sourceWidth) || 0;
+      state.paperImageSourceHeight = Number(paper.sourceHeight) || 0;
+      SHEET_STATE_GROUPS.paperOutput.forEach(function(key){
+        state[key] = typeof paper[key] === 'boolean' ? paper[key] : flagDefaults[key];
+      });
+      state.layoutBoxes = cloneSheetData(paper.layoutBoxes || {});
+      state.layoutBoxBaseRects = cloneSheetData(paper.layoutBoxBaseRects || {});
     }
 
     function restorePaperStateSnapshot(snapshot, options) {
       paperLoadGeneration++;
       if (!snapshot) return;
       cancelPendingPaperAutoAlign();
-      state.paperImageDataUrl = snapshot.imageDataUrl || '';
-      state.paperImageMemoDataUrl = snapshot.memoDataUrl || '';
-      state.paperImageMemoLayerCount = Number(snapshot.memoLayerCount) || 0;
-      state.paperImageName = snapshot.imageName || '';
-      state.paperImageMeta = snapshot.imageMeta || '';
-      state.paperImagePixelInfo = snapshot.imagePixelInfo || '';
-      state.paperImageSourceWidth = Number(snapshot.sourceWidth) || 0;
-      state.paperImageSourceHeight = Number(snapshot.sourceHeight) || 0;
-      state.showTemplate = !!snapshot.showTemplate;
-      state.showHeaderOutput = typeof snapshot.showHeaderOutput === 'boolean' ? snapshot.showHeaderOutput : true;
-      state.showDurationPlusOutput = typeof snapshot.showDurationPlusOutput === 'boolean' ? snapshot.showDurationPlusOutput : true;
-      state.showCellLabelOutput = typeof snapshot.showCellLabelOutput === 'boolean' ? snapshot.showCellLabelOutput : true;
-      state.showPsdMemo = typeof snapshot.showPsdMemo === 'boolean' ? snapshot.showPsdMemo : true;
-      // 칸 수·열 순서는 되돌리지 않는다(위 getPaperStateSnapshot 주석 참조). 특히
-      // cellDisplayOrder 는 무조건 대입이었어서, 키만 빼고 이 줄을 남기면 용지 Undo 마다
-      // 열 순서가 통째로 초기화된다 — 두 함수를 반드시 같이 고쳐야 하는 이유다.
-      state.layoutBoxes = clonePaperData(snapshot.layoutBoxes || {});
-      state.layoutBoxBaseRects = clonePaperData(snapshot.layoutBoxBaseRects || {});
+      applyPaperData(Object.assign({}, snapshot, { showTemplate:!!snapshot.showTemplate }), {
+        showHeaderOutput:true, showDurationPlusOutput:true, showCellLabelOutput:true, showPsdMemo:true
+      });
       if (typeof snapshot.positionMode === 'boolean') state.positionMode = snapshot.positionMode;
       state.textMemoEditMode = false;
-      setPaperAutoAlignResult(snapshot.autoAlignResult ? clonePaperData(snapshot.autoAlignResult) : null);
-      state.paperAutoAlignOverlay = snapshot.autoAlignOverlay ? clonePaperData(snapshot.autoAlignOverlay) : null;
+      setPaperAutoAlignResult(snapshot.autoAlignResult ? cloneSheetData(snapshot.autoAlignResult) : null);
+      state.paperAutoAlignOverlay = snapshot.autoAlignOverlay ? cloneSheetData(snapshot.autoAlignOverlay) : null;
       state.layoutDrag = null;
       clearLayoutDragPreview();
       document.documentElement.classList.remove('position-edit-dragging');
@@ -23267,57 +23355,29 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     // paper 서브스키마 — 수시 자동저장(collectPaperMemoryPayload)과 "저장" 버튼(collectCurrentSettingsPayload)이
     // 이 부분만은 바이트까지 똑같은 코드를 각자 들고 있었다(2026-08-02 통합, q6-A). 복원 시점(즉시 vs 나머지
     // state를 다 채운 뒤)은 호출부마다 달라 shouldRestore*FromDb 판단만 반환하고 실행은 각자 한다.
-    function collectPaperSubschema() {
-      return {
-        imageDataUrl:state.paperImageDataUrl || '',
-        memoDataUrl:state.paperImageMemoDataUrl || '',
-        imageStoredInDb:!!state.paperImageDataUrl,
-        memoStoredInDb:!!state.paperImageMemoDataUrl,
-        memoLayerCount:state.paperImageMemoLayerCount || 0,
-        imageName:state.paperImageName || '',
-        imageMeta:state.paperImageMeta || '',
-        imagePixelInfo:state.paperImagePixelInfo || '',
-        sourceWidth:state.paperImageSourceWidth || 0,
-        sourceHeight:state.paperImageSourceHeight || 0,
-        showTemplate:!!state.showTemplate,
-        showHeaderOutput:!!state.showHeaderOutput,
-        showDurationPlusOutput:state.showDurationPlusOutput !== false,
-        showCellLabelOutput:!!state.showCellLabelOutput,
-        showPsdMemo:!!state.showPsdMemo,
-        cellColumnCount:getCellColumnCount(),
-        // 델타(-1|0)로 저장한다. 예전에는 getInbetweenColumnCount() 의 절대값을 썼는데, 그러면
-        // 읽는 쪽이 cellColumnCount 를 먼저 적용해야만 환산이 맞는 순서 의존이 생기고, 저장 순간
-        // 용지 이미지가 없으면 델타가 0 으로 격하됐다. 구 절대값은 clampInbetweenColumnCount 가
-        // 계속 마이그레이션하므로 기존 파일은 그대로 열린다.
-        inbetweenColumnCount:clampInbetweenColumnCount(state.inbetweenColumnCount || 0),
-        cellDisplayOrder:JSON.parse(JSON.stringify(state.cellDisplayOrder || [])),
-        layoutBoxes:JSON.parse(JSON.stringify(state.layoutBoxes || {}))
-      };
+    function collectPaperSubschema(content) {
+      const paper = readPaperData(), columns = content || readContentColumns();
+      delete paper.layoutBoxBaseRects;
+      return Object.assign(paper, {
+        imageStoredInDb:!!paper.imageDataUrl,
+        memoStoredInDb:!!paper.memoDataUrl,
+        cellColumnCount:columns.cellColumnCount,
+        inbetweenColumnCount:columns.inbetweenColumnCount,
+        cellDisplayOrder:cloneSheetData(columns.cellDisplayOrder)
+      });
     }
 
     function applyPaperSubschema(paper) {
       if (!activeSheetSnapshot) paperLoadGeneration++;
       paper = paper || {};
-      state.paperImageDataUrl = paper.imageDataUrl || '';
-      state.paperImageMemoDataUrl = paper.memoDataUrl || '';
-      state.paperImageMemoLayerCount = Number(paper.memoLayerCount) || 0;
-      state.paperImageName = paper.imageName || '';
-      state.paperImageMeta = paper.imageMeta || '';
-      state.paperImagePixelInfo = paper.imagePixelInfo || '';
-      state.paperImageSourceWidth = Number(paper.sourceWidth) || 0;
-      state.paperImageSourceHeight = Number(paper.sourceHeight) || 0;
+      const flags = {};
+      SHEET_STATE_GROUPS.paperOutput.forEach(function(key){ flags[key] = state[key]; });
+      applyPaperData(Object.assign({}, paper, { layoutBoxBaseRects:{} }), flags);
       const shouldRestoreImageFromDb = !!paper.imageStoredInDb && !state.paperImageDataUrl;
       const shouldRestoreMemoFromDb = !!paper.memoStoredInDb && !state.paperImageMemoDataUrl;
-      state.showTemplate = typeof paper.showTemplate === 'boolean' ? paper.showTemplate : state.showTemplate;
-      state.showHeaderOutput = typeof paper.showHeaderOutput === 'boolean' ? paper.showHeaderOutput : state.showHeaderOutput;
-      state.showDurationPlusOutput = typeof paper.showDurationPlusOutput === 'boolean' ? paper.showDurationPlusOutput : state.showDurationPlusOutput;
-      state.showCellLabelOutput = typeof paper.showCellLabelOutput === 'boolean' ? paper.showCellLabelOutput : state.showCellLabelOutput;
-      state.showPsdMemo = typeof paper.showPsdMemo === 'boolean' ? paper.showPsdMemo : state.showPsdMemo;
       state.cellColumnCount = paper.cellColumnCount !== undefined ? clampCellColumnCount(paper.cellColumnCount) : state.cellColumnCount;
       state.inbetweenColumnCount = paper.inbetweenColumnCount !== undefined ? clampInbetweenColumnCount(paper.inbetweenColumnCount) : state.inbetweenColumnCount;
       state.cellDisplayOrder = Array.isArray(paper.cellDisplayOrder) ? paper.cellDisplayOrder : [];
-      state.layoutBoxes = paper.layoutBoxes && typeof paper.layoutBoxes === 'object' ? paper.layoutBoxes : {};
-      state.layoutBoxBaseRects = {};
       return { shouldRestoreImageFromDb:shouldRestoreImageFromDb, shouldRestoreMemoFromDb:shouldRestoreMemoFromDb };
     }
 
@@ -23590,20 +23650,13 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     // 보존 안 됨(왕복 상대·상세 사정은 #hub/timesheet/rules.md) ═══
     function collectCurrentSettingsPayload() {
       materializeDotOverridesIntoCommandText();
+      const content = getContentSnapshot();
       return {
         schema:'auto-sheet-current-settings',
         version:1,
         app:'Auto Sheet Prototype',
         createdAt:new Date().toISOString(),
-        header:{
-          episode:document.getElementById('episode').value,
-          title:document.getElementById('title').value,
-          cutNo:document.getElementById('cutNo').value,
-          seconds:document.getElementById('seconds').value,
-          frames:document.getElementById('frames').value,
-          author:document.getElementById('author').value,
-          page:document.getElementById('page').value
-        },
+        header:content.header,
         ui:{
           lang:state.lang,
           inputMode:getCurrentInputMode(),
@@ -23613,48 +23666,28 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           sheetZoom:state.sheetZoom || 1,
           cellReadabilityLarge:!!state.cellReadabilityLarge,
           dougaSheetEnabled:!!state.dougaSheetEnabled,
-          dougaSheetData:JSON.parse(JSON.stringify(state.dougaSheetData || null))
+          dougaSheetData:content.dougaSheetData
         },
         input:{
-          timelineCommand:getCommandTextValue('text'),
-          csvCommandEdit:csvCommandEditEl ? getCommandTextValue('csv') : '',
-          dialogManual:document.getElementById('dialogManual').value,
-          cameraManual:document.getElementById('cameraManual').value
+          timelineCommand:content.timeline,
+          csvCommandEdit:content.csv,
+          dialogManual:content.dialog,
+          cameraManual:content.camera
         },
-        csv:{
-          rawRows:state.csvRawRows || [],
-          originalRows:state.csvOriginalRows || [],
-          originalText:state.csvOriginalText || '',
-          originalEncoding:state.csvOriginalEncoding || 'utf-8',
-          loadedMode:state.csvLoadedMode || '',
-          tvpaintCellSourceColumns:state.tvpaintCellSourceColumns || [],
-          columns:state.csvColumns || [],
-          columnOrder:state.csvColumnOrder || [],
-          columnRoles:state.csvColumnRoles || {},
-          frameIndex:state.csvFrameIndex || 0,
-          dataStartRow:state.csvDataStartRow || 1,
-          loadError:state.csvLoadError || ''
-        },
-        stages:collectSheetStagesForSave(),
-        paper:collectPaperSubschema(),
-        overrides:{
-          markerOverrides:JSON.parse(JSON.stringify(state.markerOverrides || {})),
-          cameraPreviewStyles:JSON.parse(JSON.stringify(state.cameraPreviewStyles || {})),
-          cameraEndpointFr:JSON.parse(JSON.stringify(state.cameraEndpointFr || {})),
-          cameraSeries:JSON.parse(JSON.stringify(state.cameraSeries || [])),
-          dotOverrides:JSON.parse(JSON.stringify(state.dotOverrides || {})),
-          layerNameTags:getManualLayerNameTags().map(function(tag){ return JSON.parse(JSON.stringify(tag)); })
-        },
+        csv:collectCsvSettings(),
+        stages:collectSheetStagesForSave(content),
+        paper:collectPaperSubschema(content),
+        overrides:Object.fromEntries(SHEET_STATE_GROUPS.overrides.map(function(key){ return [key,content[key]]; })),
         memo:{
           mode:!!state.memoMode,
           tool:state.memoTool,
           color:state.memoColor,
           penSize:state.memoPenSize,
           eraserSize:state.memoEraserSize,
-          pages:JSON.parse(JSON.stringify(state.memoPages || {})),
-          textPages:JSON.parse(JSON.stringify(state.textMemoPages || {}))
+          pages:cloneSheetData(state.memoPages || {}),
+          textPages:cloneSheetData(state.textMemoPages || {})
         },
-        shortcuts:JSON.parse(JSON.stringify(state.shortcuts || {}))
+        shortcuts:cloneSheetData(state.shortcuts || {})
       };
     }
 
@@ -23789,11 +23822,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     function prepareCurrentSettingsPayload(payload) {
       const snapshot = captureSheetSnapshot();
       const paperRestore = withSheetSnapshot(snapshot, function(){
-        const header = payload.header || {};
-        ['episode','title','cutNo','seconds','frames','author','page'].forEach(function(id){
-          const elNode = getSheetInputNode(id);
-          if (elNode && header[id] !== undefined) elNode.value = header[id];
-        });
         const ui = payload.ui || {};
         if (ui.lang && getSheetInputNode('languageSelect')) getSheetInputNode('languageSelect').value = ui.lang;
         if (ui.inputMode && getSheetInputNode('cellInputMode')) getSheetInputNode('cellInputMode').value = normalizeInputModeValue(ui.inputMode);
@@ -23803,42 +23831,17 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         state.dougaSheetEnabled = !!ui.dougaSheetEnabled;
         state.dougaSheetData = ui.dougaSheetData && typeof ui.dougaSheetData === 'object' ? ui.dougaSheetData : null;
         state.serifuSheetGuides = [];
-        normalizeDurationInputs();
         state.shakuMode = false;
         state.shakuSelection = null;
-        state.shakuUndoStack = [];
-        state.shakuRedoStack = [];
         state.shakuFlash = null;
         state.currentPreviewPage = Math.max(0, Number(ui.currentPreviewPage) || 0);
         const input = payload.input || {};
-        if (getSheetInputNode('timelineCommandInput') && input.timelineCommand !== undefined) setCommandTextValue('text', input.timelineCommand);
-        if (csvCommandEditEl && input.csvCommandEdit !== undefined) setCommandTextValue('csv', input.csvCommandEdit);
-        if (getSheetInputNode('dialogManual') && input.dialogManual !== undefined) getSheetInputNode('dialogManual').value = input.dialogManual;
-        if (getSheetInputNode('cameraManual') && input.cameraManual !== undefined) getSheetInputNode('cameraManual').value = input.cameraManual;
-        const csv = payload.csv || {};
-        state.csvFileBuffer = null;
-        state.csvDurationAutofillPending = false;
-        state.csvRawRows = Array.isArray(csv.rawRows) ? csv.rawRows : [];
-        state.csvOriginalRows = Array.isArray(csv.originalRows) ? csv.originalRows : [];
-        state.csvOriginalText = csv.originalText || '';
-        state.csvOriginalEncoding = csv.originalEncoding || 'utf-8';
-        state.csvLoadedMode = normalizeCsvSourceMode(csv.loadedMode);
-        state.tvpaintCellSourceColumns = Array.isArray(csv.tvpaintCellSourceColumns) ? csv.tvpaintCellSourceColumns : [];
-        if (!state.csvLoadedMode && state.csvRawRows.length) state.csvLoadedMode = state.tvpaintCellSourceColumns.length ? 'tvpaint' : 'clip';
-        state.csvColumns = Array.isArray(csv.columns) ? csv.columns : [];
-        state.csvColumnOrder = Array.isArray(csv.columnOrder) ? csv.columnOrder : state.csvColumns.slice().sort(compareCsvSourceColumnOrder).map(function(col){ return col.index; });
-        state.csvColumnRoles = migrateCsvColumnRoles(state.csvColumns, csv.columnRoles, csv.selectedColumns);
-        state.csvFrameIndex = Number(csv.frameIndex) || 0;
-        state.csvDataStartRow = Number(csv.dataStartRow) || 1;
-        state.csvLoadError = csv.loadError || '';
+        applyContentInputs({ header:payload.header, timeline:input.timelineCommand, csv:input.csvCommandEdit, dialog:input.dialogManual, camera:input.cameraManual });
+        applyCsvSettings(payload.csv || {});
         const paperRestore = applyPaperSubschema(payload.paper);
-        const overrides = payload.overrides || {};
-        state.markerOverrides = overrides.markerOverrides && typeof overrides.markerOverrides === 'object' ? overrides.markerOverrides : {};
-        state.cameraPreviewStyles = overrides.cameraPreviewStyles && typeof overrides.cameraPreviewStyles === 'object' ? overrides.cameraPreviewStyles : {};
-        state.cameraEndpointFr = overrides.cameraEndpointFr && typeof overrides.cameraEndpointFr === 'object' ? overrides.cameraEndpointFr : {};
-        state.cameraSeries = Array.isArray(overrides.cameraSeries) ? JSON.parse(JSON.stringify(overrides.cameraSeries)) : [];   // ver872
-        state.dotOverrides = overrides.dotOverrides && typeof overrides.dotOverrides === 'object' ? overrides.dotOverrides : {};
-        state.layerNameTags = Array.isArray(overrides.layerNameTags) ? JSON.parse(JSON.stringify(overrides.layerNameTags)) : [];
+        const content = readSheetState('content');
+        SHEET_STATE_GROUPS.overrides.forEach(function(key){ content[key] = (payload.overrides || {})[key]; });
+        applyContentState(content);
         const memo = payload.memo || {};
         // Pasted images are transient overlays; settings load/reset clears them instead of storing large data URLs.
         state.memoMode = !!memo.mode;
@@ -23861,7 +23864,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         finally { state.positionMode = positionMode; }
         return paperRestore;
       });
-      return { snapshot:snapshot, paperRestore:paperRestore, keys:["cameraEndpointFr", "cameraPreviewStyles", "cameraSeries", "cellColumnCount", "cellDisplayOrder", "cellReadabilityLarge", "csvColumnOrder", "csvColumnRoles", "csvColumns", "csvDataStartRow", "csvDurationAutofillPending", "csvFileBuffer", "csvFrameIndex", "csvLoadError", "csvLoadedMode", "csvOriginalEncoding", "csvOriginalRows", "csvOriginalText", "csvRawRows", "currentPreviewPage", "dotOverrides", "dougaSheetData", "dougaSheetEnabled", "inbetweenColumnCount", "layerNameTags", "layoutBoxBaseRects", "layoutBoxes", "markerOverrides", "memoColor", "memoEraserSize", "memoMode", "memoPages", "memoPenSize", "memoTool", "paperImageDataUrl", "paperImageMemoDataUrl", "paperImageMemoLayerCount", "paperImageMeta", "paperImageName", "paperImagePixelInfo", "paperImageSourceHeight", "paperImageSourceWidth", "previewSpacePanKey", "serifuSheetGuides", "shakuFlash", "shakuMode", "shakuRedoStack", "shakuSelection", "shakuUndoStack", "sheetZoom", "shortcuts", "showCellLabelOutput", "showDurationPlusOutput", "showHeaderOutput", "showPsdMemo", "showTemplate", "textMemoEditMode", "textMemoPages", "tvpaintCellSourceColumns"] };
+      return { snapshot:snapshot, paperRestore:paperRestore, scope:'settings' };
     }
 
     function prepareLoadedTextMemos(payload) {
@@ -23906,10 +23909,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       loadedSettingsSelectedId = '';
       cancelPendingPaperAutoAlign();
       resetSheetTransientState({ clearPastedImages:true });
-      candidate.keys.forEach(function(key){ state[key] = candidate.snapshot.state[key]; });
-      ['episode','title','cutNo','seconds','frames','author','page','languageSelect','cellInputMode','exportFormatSelect','timelineCommandInput','csvCommandEdit','dialogManual','cameraManual'].forEach(function(id){
-        const node = document.getElementById(id); if (node && candidate.snapshot.inputs[id] !== undefined) node.value = candidate.snapshot.inputs[id];
-      });
+      applySheetState(candidate.scope, candidate.snapshot.state);
+      applySheetInputs(candidate.snapshot.inputs, SHEET_WORK_INPUTS);
       const paperRestore = candidate.paperRestore;
       materializeDotOverridesIntoCommandText();
       updateShakuEditUI();
@@ -24109,9 +24110,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     function commitCsvImport(snapshot, shouldRender) {
-      const keys = ['csvFileBuffer','csvRawRows','csvOriginalRows','csvOriginalText','csvOriginalEncoding','csvLoadedMode','tvpaintCellSourceColumns','csvColumns','csvColumnOrder','csvColumnRoles','csvFrameIndex','csvDataStartRow','csvDurationAutofillPending','csvLoadError','cellDisplayOrder','dougaSheetEnabled','dougaSheetData','serifuSheetGuides','markerOverrides','cameraPreviewStyles','cameraEndpointFr','cameraSeries','dotOverrides','layerNameTags','lastCsvGeneratedDialogLines','lastCsvGeneratedCameraLines'];
-      keys.forEach(function(key){ state[key] = snapshot.state[key]; });
-      ['cellInputMode','csvCommandEdit','dialogManual','cameraManual','seconds','frames'].forEach(function(id){ const node=document.getElementById(id); if(node) node.value=snapshot.inputs[id]; });
+      applySheetState('csv', snapshot.state);
+      applySheetInputs(snapshot.inputs, ['cellInputMode','csvCommandEdit','dialogManual','cameraManual','seconds','frames']);
       refreshCsvColumnPicker(); updateCsvStatusText(); updateInputModeButtons(); refreshCommandCellViews();
       document.getElementById('textModeBox').classList.toggle('hidden', true);
       document.getElementById('csvModeBox').classList.toggle('hidden', false);
@@ -24365,8 +24365,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       state.shakuDrag = null;
       state.shakuSelection = null;
       state.shakuFlash = null;
-      state.shakuUndoStack = [];
-      state.shakuRedoStack = [];
       state.activeTextMemo = null;
       state.textMemoResize = null;
       state.textMemoPointerIntent = null;
@@ -25384,7 +25382,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     // ══ [출력] 여러 작업 일괄 출력 — 문서 격리·사전 검사·순차 저장 ═══════════════════════════════════════════
     function createBatchDocumentSnapshot() {
       const snapshot = cloneSheetData(settingsDocumentDefaults);
-      ['episode','title','cutNo','author','page','timelineCommandInput','csvCommandEdit','dialogManual','cameraManual'].forEach(function(id){ snapshot.inputs[id] = ''; });
+      SHEET_HEADER_INPUTS.concat(Object.values(SHEET_COMMAND_INPUTS)).forEach(function(id){ snapshot.inputs[id] = ''; });
       snapshot.inputs.seconds = '1'; snapshot.inputs.frames = '0';
       return snapshot;
     }
