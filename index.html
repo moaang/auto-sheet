@@ -43,7 +43,29 @@
       --red: #c7402d;
       --ink-active: #23262b;
       --focus-ring: rgba(28, 30, 34, .32);
-      --r-ctl: 8px;
+      /* UI contract: role sizes only. Sheet SVG and direct-edit handles keep their own units. */
+      --ui-h-toolbar: 22px;
+      --ui-h-memo: 24px;
+      --ui-h-control: 30px;
+      --ui-h-action: 36px;
+      --ui-fs-help: 11px;
+      --ui-fs-body: 12px;
+      --ui-fs-heading: 14px;
+      --ui-fs-title: 16px;
+      --ui-gap-sm: 4px;
+      --ui-gap: 8px;
+      --ui-gap-lg: 12px;
+      --ui-pad-control: 10px;
+      --ui-pad-compact: 6px;
+      --ui-pad-dialog: 16px;
+      --ui-icon-sm: 12px;
+      --ui-icon: 14px;
+      --ui-icon-lg: 15px;
+      --ui-disabled: .45;
+      --ui-hover: rgba(28,30,34,.05);
+      --ui-dialog-shadow: 0 18px 44px rgba(28,30,34,.24);
+      --ui-toolbar-shadow: 0 4px 12px rgba(0,0,0,.10);
+      --r-ctl: 5px;
       --r-grp: 11px;
       --r-card: 14px;
       --sh-card: 0 1px 2px rgba(28, 30, 34, .05);
@@ -110,18 +132,7 @@
       min-height: 0;
       overflow: hidden;
     }
-    .floating-bars {
-      position: absolute;
-      top: 12px;
-      /* 20px panel handles + 8px clear space on both sides. */
-      left: 28px;
-      right: 28px;
-      z-index: 40;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      pointer-events: none;
-    }
+    .floating-bars { position:absolute; top:12px; left:28px; right:28px; z-index:40; display:flex; flex-direction:column; gap:6px; pointer-events:none; }
     .floating-bars > * { pointer-events: auto; }
     .app.sidebar-collapsed .sidebar {
       display: none;
@@ -208,6 +219,74 @@
     }
     .app.sidebar-collapsed #sidebarToggleBtn .sidebar-toggle-icon { transform: scaleX(-1); }
     .app.rightpanel-collapsed #rightPanelToggleBtn .sidebar-toggle-icon { transform: scaleX(-1); }
+
+    /* Shared UI control base. Layout rules may set role variables, not repeat geometry. */
+    button { font-family:inherit; }
+    :is(.toolbar-btn,.memo-btn,.paper-mini-btn,.section-mini-btn,.shaku-edit-btn,
+        .settings-mini-btn,.stage-slot,.shortcut-mini-btn,.csv-settings-btn,
+        .sheet-reset-btn,.input-mode-btn,.update-log-close,:where(.app-dialog-actions) button,
+        .export-select,.memo-size-select,.stage-slot-picker) {
+      height:var(--control-h,var(--ui-h-control));
+      min-height:var(--control-h,var(--ui-h-control));
+      padding:0 var(--control-pad,var(--ui-pad-control)) 1px;
+      border:1px solid var(--soft); border-radius:var(--r-ctl);
+      background:var(--panel); color:var(--text);
+      font-family:inherit; font-size:var(--control-font,var(--ui-fs-body)); font-weight:700; line-height:1.2;
+      text-align:center; cursor:pointer;
+      transition:background .12s ease,border-color .12s ease,color .12s ease;
+    }
+    :is(.toolbar-btn,.memo-btn,.paper-mini-btn,.section-mini-btn,.shaku-edit-btn,
+        .settings-mini-btn,.stage-slot,.shortcut-mini-btn,.csv-settings-btn,
+        .sheet-reset-btn,.input-mode-btn,.update-log-close,:where(.app-dialog-actions) button) {
+      display:inline-flex; align-items:center; justify-content:center; gap:var(--ui-gap-sm);
+    }
+    :is(.toolbar-btn,.memo-btn,.paper-mini-btn,.section-mini-btn,.shaku-edit-btn,
+        .settings-mini-btn,.stage-slot,.shortcut-mini-btn,.csv-settings-btn,
+        .sheet-reset-btn,.input-mode-btn,.update-log-close,:where(.app-dialog-actions) button):enabled:hover {
+      background:var(--ui-hover); border-color:var(--soft-strong);
+    }
+    :is(.toolbar-btn,.memo-btn,.paper-mini-btn,.section-mini-btn,.shaku-edit-btn,
+        .stage-slot,.input-mode-btn).active,
+    .toolbar-btn[aria-pressed="true"], .toolbar-btn.primary, .paper-auto-align-btn, .app-dialog-actions button.primary {
+      background:var(--ink-active); border-color:var(--ink-active); color:white;
+    }
+    :is(.toolbar-btn,.memo-btn,.paper-mini-btn,.section-mini-btn,.shaku-edit-btn,
+        .stage-slot,.input-mode-btn).active:enabled:hover,
+    .toolbar-btn[aria-pressed="true"]:enabled:hover, .toolbar-btn.primary:enabled:hover,
+    .paper-auto-align-btn:enabled:hover, .app-dialog-actions button.primary:enabled:hover {
+      background:var(--text-2); border-color:var(--text-2); color:white;
+    }
+    .memo-btn.ghost, .shaku-history-btn { background:transparent; border-color:transparent; }
+    .sheet-reset-btn, #clearPaperImageBtn, #paperToolbarClearBtn { color:var(--red); background:transparent; border-color:transparent; }
+    .sheet-reset-btn:enabled:hover, #clearPaperImageBtn:enabled:hover, #paperToolbarClearBtn:enabled:hover { background:rgba(199,64,45,.08); border-color:transparent; }
+    :is(.toolbar-btn,.memo-btn,.paper-mini-btn,.section-mini-btn,.shaku-edit-btn,
+        .settings-mini-btn,.stage-slot,.shortcut-mini-btn,.csv-settings-btn,
+        .sheet-reset-btn,.input-mode-btn,.update-log-close,:where(.app-dialog-actions) button,
+        .export-select,.memo-size-select,.stage-slot-picker):disabled { opacity:var(--ui-disabled); cursor:default; }
+    :is(.sidebar,.rightpanel,.app-dialog) :is(input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="hidden"]),select) {
+      min-height:var(--ui-h-control); height:var(--ui-h-control); padding-block:0 1px;
+    }
+    .toolbar-actions .toolbar-btn.icon-only { width:var(--ui-h-memo); min-width:var(--ui-h-memo); }
+    .page-nav, .global-history, .export-actions, .paper-toolbar-group {
+      border:1px solid var(--soft); border-radius:var(--r-ctl);
+      background:rgba(255,255,255,.92); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+      box-shadow:var(--ui-toolbar-shadow);
+    }
+    .global-history, .export-actions, .paper-toolbar-group { padding:2px 3px; gap:3px; min-height:28px; align-items:center; }
+    .memo-tool-pair { display:inline-flex; align-items:center; gap:var(--ui-gap-sm); flex:none; }
+    .floating-bars .toolbar-notice { padding:2px 5px; font-size:var(--ui-fs-help); min-width:0; white-space:normal; }
+    .floating-bars .toolbar-notice .side-notice-close { flex:none; }
+    .app-dialog-header { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:var(--ui-gap-lg); margin-bottom:var(--ui-gap-lg); }
+    .app-dialog-header > :first-child { min-width:0; }
+    .app-dialog-header button { flex:none; }
+    .app-dialog-body { min-width:0; }
+    .export-review-footer > button.primary { --control-h:var(--ui-h-action); }
+    .ui-setting-row { display:grid; grid-template-columns:minmax(0,1fr) minmax(64px,96px); align-items:center; gap:var(--ui-gap); min-width:0; }
+    .ui-setting-row > :is(input,select) { width:100%; min-width:0; }
+    .ui-check-row { display:grid; grid-template-columns:16px minmax(0,1fr) auto; align-items:center; gap:var(--ui-gap); margin-bottom:0; min-height:var(--ui-h-control); font-size:var(--ui-fs-body); font-weight:700; }
+    .ui-check-row input[type="checkbox"] { width:16px; height:16px; margin:0; padding:0; accent-color:var(--text); }
+    .ui-check-row > span { min-width:0; overflow-wrap:anywhere; }
+
     .sheet-reset-row {
       display: flex;
       justify-content: flex-end;
@@ -216,20 +295,7 @@
       border-top: 1px solid var(--soft);
     }
     /* Danger (destructive) actions per the proposal: red ghost — quiet until hovered. */
-    .sheet-reset-btn {
-      height: 30px;
-      border: 1px solid transparent;
-      border-radius: var(--r-ctl);
-      background: transparent;
-      color: var(--red);
-      font: inherit;
-      font-size: 12px;
-      font-weight: 700;
-      padding: 0 12px;
-      cursor: pointer;
-      transition: background .12s ease, border-color .12s ease;
-    }
-    .sheet-reset-btn:hover { background: rgba(199,64,45,.08); }
+
     .topbar {
       display: flex;
       align-items: center;
@@ -297,9 +363,9 @@
     }
     .lang-wrap select {
       width: auto;
-      height: 26px;
+      height:var(--ui-h-control);
       padding: 0 2px;
-      font-size: 11px;
+      font-size:var(--ui-fs-help);
       font-weight: 700;
       color: var(--text);
       border: 0;
@@ -310,45 +376,10 @@
     /* Project save/load as one segmented pill (per the redesign proposal): the group itself
        is the container; buttons are borderless segments split by hairline dividers. It takes
        its own full-width row so it never squeezes or overflows at any width. */
-    .settings-io-wrap {
-      order: 3;
-      display: flex;
-      align-items: stretch;
-      flex: 1 1 100%;
-      max-width: 100%;
-      min-width: 0;
-      height: 32px;
-      margin-left: 0;
-      padding: 0;
-      border: 1px solid var(--soft);
-      border-radius: var(--r-grp);
-      background: var(--panel);
-      overflow: hidden;
-      white-space: nowrap;
-    }
-    .settings-mini-btn {
-      border: 0;
-      border-radius: 0;
-      background: transparent;
-      color: var(--text);
-      padding: 0 8px;
-      font: inherit;
-      font-size: 11px;
-      font-weight: 700;
-      cursor: pointer;
-      flex: 1 1 auto;
-      min-width: 0;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      transition: background .12s ease;
-    }
-    .settings-mini-btn:hover { background: rgba(28,30,34,.05); }
-    .settings-mini-btn .ic-svg { width: 13px; height: 13px; flex: none; }
+    .settings-io-wrap { order:3; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); align-items:stretch; flex:1 1 100%; max-width:100%; min-width:0; margin-left:0; padding:0; border:1px solid var(--soft); border-radius:var(--r-grp); background:var(--panel); overflow:hidden; }
+    .settings-mini-btn { --control-h:var(--ui-h-action); height:auto; border:0; border-radius:0; min-width:0; white-space:normal; }
+
+    .settings-mini-btn .ic-svg { width:var(--ui-icon); height:var(--ui-icon); flex:none; }
     /* Hairline dividers between segments — declared after the segment rules so the
        buttons' border reset doesn't clobber it (same specificity, later source order). */
     .settings-io-wrap > * + * { border-left: 1px solid var(--soft); }
@@ -361,7 +392,7 @@
       margin-bottom: 12px;
       box-shadow: var(--sh-card);
     }
-    .card h3 { margin: 0 0 10px; font-size: 13px; font-weight: 800; letter-spacing: -.005em; display: flex; align-items: center; gap: 7px; min-width: 0; flex-wrap: wrap; row-gap: 3px; }
+    .card h3 { margin: 0 0 10px; font-size:var(--ui-fs-heading); font-weight: 800; letter-spacing: -.005em; display: flex; align-items: center; gap: 7px; min-width: 0; flex-wrap: wrap; row-gap: 3px; }
     .card h3 svg { width: 15px; height: 15px; color: var(--muted); flex: none; }
     /* 제목은 절대 줄바꿈·축소되지 않는다 — 좁아지면 형식 힌트 쪽이 밀려서 다음 줄로 접힌다. */
     .card h3 > span:first-of-type { white-space: nowrap; flex-shrink: 0; }
@@ -369,7 +400,7 @@
        "..." 로 잘리는 대신 줄바꿈으로 전체 문구가 보이게 한다(2026-08-16). */
     .card h3 .card-h-hint {
       margin-left: auto;
-      font-size: 10.5px;
+      font-size:var(--ui-fs-help);
       font-weight: 500;
       color: var(--muted);
       min-width: 0;
@@ -384,24 +415,8 @@
       margin: 0 0 10px;
     }
     .card .section-title-row h3 { margin: 0; }
-    .section-mini-btn {
-      height: 30px;
-      min-width: 92px;
-      border: 1px solid var(--soft);
-      border-radius: var(--r-ctl);
-      background: var(--panel);
-      color: var(--text);
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background .12s ease, border-color .12s ease;
-    }
-    .section-mini-btn:hover { background: rgba(28,30,34,.05); border-color: var(--soft-strong); }
-    .section-mini-btn.active {
-      background: var(--text);
-      border-color: var(--text);
-      color: #fff;
-    }
+    .section-mini-btn { min-width: 92px; }
+
     .feedback-card textarea {
       min-height: 76px;
       font-family: inherit;
@@ -409,7 +424,7 @@
     }
     .feedback-hint {
       margin-top: 6px;
-      font-size: 11px;
+      font-size:var(--ui-fs-help);
       line-height: 1.45;
     }
     .feedback-actions {
@@ -425,7 +440,7 @@
     }
     .feedback-form-link {
       color: var(--muted);
-      font-size: 11px;
+      font-size:var(--ui-fs-help);
       font-weight: 800;
       text-decoration: none;
     }
@@ -440,7 +455,7 @@
     }
     .subtitle, .hint, .status {
       color: var(--muted);
-      font-size: 12px;
+      font-size:var(--ui-fs-body);
       line-height: 1.6;
       white-space: pre-wrap;
     }
@@ -469,44 +484,12 @@
    고르는 select 로 바뀐다)이 한 줄에 나란히 흐른다. 6개를 넘지 않아 폭이 좁아도 줄바꿈이면
    충분하고 가로 스크롤은 필요 없다. */
 .stage-slot-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
-.stage-slot {
-  /* flex:1 1 auto — 내용 폭을 기준(basis)으로 삼되 줄 안에서 남는 폭을 비례해서 나눠 갖는다.
-     min-width 만 있던 예전엔 버튼이 내용 크기로만 커서 줄 끝에 빈 칸이 남았다(2026-08-16). */
-  flex: 1 1 auto;
-  height: 30px;
-  min-width: 44px;
-  padding: 0 10px;
-  border-radius: var(--r-ctl);
-  font: inherit;
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: background .12s ease, border-color .12s ease, color .12s ease;
-}
-.stage-slot.filled { border: 1px solid var(--soft); background: var(--panel); color: var(--text); }
-.stage-slot.filled:hover { background: rgba(28,30,34,.05); border-color: var(--soft-strong); }
-.stage-slot.filled.active { background: var(--text); border-color: var(--text); color: #fff; }
-.stage-slot.empty {
-  border: 1px dashed var(--soft-strong);
-  background: transparent;
-  color: var(--muted);
-  font-weight: 900;
-}
-.stage-slot.empty:hover { background: rgba(28,30,34,.04); color: var(--text); border-color: var(--text); }
+    .stage-slot { flex:1 1 auto; min-width:44px; white-space:nowrap; }
+
+    .stage-slot.empty { border-style:dashed; border-color:var(--soft-strong); background:transparent; color:var(--muted); }
+
 /* "+" 를 누르면 같은 자리에 이 select 가 대신 뜬다 — 고르면 그 코드로 단계가 만들어진다. */
-.stage-slot-picker {
-  height: 30px;
-  min-width: 84px;
-  padding: 0 8px;
-  border: 1px solid var(--text);
-  border-radius: var(--r-ctl);
-  background: var(--panel);
-  color: var(--text);
-  font: inherit;
-  font-size: 12px;
-  font-weight: 700;
-}
+    .stage-slot-picker { min-width:84px; }
     .manual-summary-main {
       display: flex;
       flex-direction: column;
@@ -514,12 +497,12 @@
       min-width: 0;
     }
     .manual-summary-title {
-      font-size: 14px;
+      font-size:var(--ui-fs-heading);
       font-weight: 800;
       color: var(--text);
     }
     .manual-summary-hint {
-      font-size: 12px;
+      font-size:var(--ui-fs-body);
       line-height: 1.4;
       color: var(--muted);
     }
@@ -544,7 +527,7 @@
     .manual-content {
       border-top: 1px solid var(--soft);
       padding: 14px;
-      font-size: 12px;
+      font-size:var(--ui-fs-body);
       line-height: 1.65;
       color: var(--text);
       max-height: 440px;
@@ -553,12 +536,12 @@
     }
     .manual-content h4 {
       margin: 0 0 8px;
-      font-size: 14px;
+      font-size:var(--ui-fs-heading);
       font-weight: 800;
     }
     .manual-content h5 {
       margin: 14px 0 5px;
-      font-size: 12px;
+      font-size:var(--ui-fs-body);
       font-weight: 800;
     }
     .manual-content p { margin: 0 0 8px; }
@@ -575,7 +558,7 @@
       border-radius: 6px;
       background: white;
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 11px;
+      font-size:var(--ui-fs-help);
     }
     /* Quick-guide beginner layout: big numbered steps, one tip box, bold key words. */
     .manual-step {
@@ -583,7 +566,7 @@
       align-items: center;
       gap: 8px;
       margin: 14px 0 6px;
-      font-size: 13px;
+      font-size:var(--ui-fs-body);
       font-weight: 800;
     }
     .manual-content .manual-step:first-child { margin-top: 0; }
@@ -594,7 +577,7 @@
       border-radius: 50%;
       background: var(--ink-active);
       color: #fff;
-      font-size: 12px;
+      font-size:var(--ui-fs-body);
       font-weight: 800;
       display: inline-flex;
       align-items: center;
@@ -607,7 +590,7 @@
       border: 1px solid var(--soft);
       border-radius: var(--r-ctl);
       background: #f4f6f4;
-      font-size: 11.5px;
+      font-size:var(--ui-fs-help);
       line-height: 1.6;
     }
     .manual-tvp {
@@ -616,7 +599,7 @@
       border: 1px solid var(--soft);
       border-radius: var(--r-ctl);
       background: #f4f6f4;
-      font-size: 11.5px;
+      font-size:var(--ui-fs-help);
       line-height: 1.6;
     }
     .manual-tvp-title {
@@ -655,7 +638,7 @@
     .shortcut-content {
       border-top: 1px solid var(--soft);
       padding: 14px;
-      font-size: 12px;
+      font-size:var(--ui-fs-body);
       line-height: 1.5;
       background: #fcfcfc;
     }
@@ -673,14 +656,14 @@
     .shortcut-label {
       color: var(--text);
       font-weight: 700;
-      font-size: 12px;
+      font-size:var(--ui-fs-body);
     }
     .shortcut-desc {
       display: block;
       margin-top: 2px;
       color: var(--muted);
       font-weight: 500;
-      font-size: 11px;
+      font-size:var(--ui-fs-help);
     }
     .shortcut-input {
       height: 30px;
@@ -694,19 +677,7 @@
       border-color: var(--text);
       box-shadow: 0 0 0 2px rgba(28,30,34,.08);
     }
-    .shortcut-mini-btn {
-      height: 30px;
-      border: 1px solid var(--soft);
-      border-radius: var(--r-ctl);
-      background: var(--panel);
-      color: var(--text);
-      font: inherit;
-      font-size: 11px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background .12s ease, border-color .12s ease;
-    }
-    .shortcut-mini-btn:hover { background: rgba(28,30,34,.05); border-color: var(--soft-strong); }
+
     .shortcut-actions {
       display: flex;
       gap: 8px;
@@ -718,21 +689,13 @@
       width: auto;
     }
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 5px; }
-    input, textarea, select {
-      width: 100%;
-      background: var(--panel-2);
-      border: 1px solid var(--soft);
-      color: var(--text);
-      border-radius: 10px;
-      padding: 9px 10px;
-      font: inherit;
-    }
+    label { display: block; font-size:var(--ui-fs-body); color: var(--muted); margin-bottom: 5px; }
+    input, textarea, select { width:100%; background:var(--panel-2); border:1px solid var(--soft); color:var(--text); border-radius:var(--r-ctl); padding:6px var(--ui-pad-control); font:inherit; font-size:var(--ui-fs-body); }
     textarea {
       min-height: 130px;
       resize: vertical;
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 12px;
+      font-size:var(--ui-fs-body);
       line-height: 1.55;
     }
     .command-filter-toggle {
@@ -740,7 +703,7 @@
       align-items: center;
       gap: 7px;
       margin: 8px 0 6px;
-      font-size: 12px;
+      font-size:var(--ui-fs-body);
       color: var(--muted);
       user-select: none;
     }
@@ -772,35 +735,8 @@
       margin-top: 6px;
       align-items: stretch;
     }
-    .input-mode-btn {
-      min-height: 38px;
-      border: 1px solid var(--soft);
-      border-radius: var(--r-ctl);
-      background: white;
-      color: var(--text);
-      font: inherit;
-      font-size: 10.5px;
-      line-height: 1.12;
-      font-weight: 900;
-      letter-spacing: -0.035em;
-      cursor: pointer;
-      text-align: center;
-      padding: 3px 4px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      white-space: nowrap;
-      word-break: keep-all;
-      overflow: hidden;
-      text-overflow: clip;
-      font-stretch: condensed;
-    }
-    html[lang="ja"] .input-mode-btn {
-      font-size: 10px;
-      letter-spacing: -0.055em;
-      transform: scaleX(0.96);
-      transform-origin: center center;
-    }
+    .input-mode-btn { --control-h:var(--ui-h-action); min-width:0; height:auto; white-space:normal; overflow-wrap:anywhere; letter-spacing:0; }
+
     .tvp-download-chip {
       display: flex;
       align-items: center;
@@ -812,7 +748,7 @@
       border-radius: 999px;
       background: transparent;
       color: var(--muted);
-      font-size: 10.5px;
+      font-size:var(--ui-fs-help);
       font-weight: 700;
       text-decoration: none;
       cursor: pointer;
@@ -830,13 +766,7 @@
       color: var(--text);
       border-color: var(--muted);
     }
-    .input-mode-btn.active {
-      background: var(--ink-active);
-      border-color: var(--ink-active);
-      color: white;
-      box-shadow: none;
-      outline: none;
-    }
+
     .hidden { display: none; }
     .checkbox-list {
       display: grid;
@@ -852,20 +782,20 @@
       border-radius: 10px;
       padding: 8px 10px;
       background: white;
-      font-size: 13px;
+      font-size:var(--ui-fs-body);
     }
     .check-item input[type="checkbox"] { width: auto; }
     .check-item .col-name-input {
       flex: 1;
       min-width: 0;
       padding: 6px 8px;
-      font-size: 12px;
+      font-size:var(--ui-fs-body);
     }
     .check-item .col-role-select {
       width: 96px;
       min-width: 96px;
       padding: 6px 8px;
-      font-size: 11px;
+      font-size:var(--ui-fs-help);
     }
     .paper-layout-card { padding: 0; overflow: hidden; }
     .paper-layout-card details { width: 100%; }
@@ -882,6 +812,7 @@
     .paper-layout-card summary::-webkit-details-marker { display: none; }
     .paper-layout-card details[open] .manual-chevron { transform: rotate(180deg); }
     .paper-layout-content {
+      container-type:inline-size;
       border-top: 1px solid var(--soft);
       padding: 14px;
       background: #fcfcfc;
@@ -894,65 +825,24 @@
       margin-bottom: 12px;
       align-items: center;
     }
-    .paper-primary-actions .paper-mini-btn { height: 36px; font-size: 12.5px; }
+    .paper-primary-actions .paper-mini-btn { --control-h:var(--ui-h-action); }
     /* Position Edit is a mode TOGGLE: secondary at rest, ink-filled while the mode is on.
        Auto Align keeps the card's single always-filled primary. */
-    .paper-primary-actions .position-edit-main-btn {
-      font-size: 13px;
-      letter-spacing: .02em;
-      font-weight: 800;
-    }
-    .paper-primary-actions .position-edit-main-btn.active {
-      background: var(--ink-active);
-      border-color: var(--ink-active);
-      color: white;
-      box-shadow: none;
-      outline: none;
-    }
-    .paper-mini-btn {
-      height: 30px; border: 1px solid var(--soft); border-radius: var(--r-ctl); background: var(--panel); color: var(--text);
-      font: inherit; font-size: 12px; font-weight: 700; padding: 0 10px; cursor: pointer;
-      transition: background .12s ease, border-color .12s ease;
-    }
-    .paper-mini-btn:hover { background: rgba(28,30,34,.05); border-color: var(--soft-strong); }
-    .paper-mini-btn:disabled { opacity: 0.45; cursor: default; }
-    .paper-mini-btn:disabled:hover { background: var(--panel); border-color: var(--soft); }
-    .paper-mini-btn.active { background: var(--text); color: white; border-color: var(--text); }
+
     /* Destructive paper actions: red ghost like the other danger buttons. */
-    #clearPaperImageBtn, #paperToolbarClearBtn {
-      color: var(--red);
-      border-color: transparent;
-      background: transparent;
-    }
-    #clearPaperImageBtn:hover, #paperToolbarClearBtn:hover {
-      background: rgba(199,64,45,.08);
-      border-color: transparent;
-    }
-    .paper-auto-align-btn {
-      min-width: 86px;
-      background: var(--text);
-      border-color: var(--text);
-      color: #fff;
-      font-weight: 800;
-    }
-    .paper-auto-align-btn:hover { background: var(--ink-active); border-color: var(--ink-active); }
-    .paper-auto-align-btn:disabled {
-      opacity: .55;
-      cursor: default;
-    }
-    .paper-check-row {
-      display: flex; align-items: center; gap: 8px; margin-top: 8px; padding: 8px 10px;
-      border: 1px solid var(--soft); border-radius: 10px; background: white; font-size: 12px; font-weight: 700;
-    }
-    .paper-check-row input { width: auto; }
+
+    .paper-auto-align-btn { min-width:86px; }
+
+    .paper-check-row { margin-top:var(--ui-gap); padding:var(--ui-gap); border:1px solid var(--soft); border-radius:var(--r-ctl); background:var(--panel); }
+
     /* This row never reliably fits its checkbox label + two number controls on one line
        (even in the 500px sidebar), so lay it out predictably at every width: the label
        gets its own row, the two controls share the row below and stack only when too tight. */
-    .paper-cell-label-row { flex-wrap: wrap; gap: 8px 12px; }
+    .paper-cell-label-row { grid-template-columns:repeat(2,minmax(0,1fr)); }
     .paper-psd-memo-row[aria-disabled="true"] { opacity: 0.45; }
-    .paper-check-left { display: inline-flex; align-items: center; gap: 8px; flex: 1 1 100%; }
-    .paper-inline-control { display: inline-flex; align-items: center; gap: 6px; flex: 1 1 auto; justify-content: space-between; white-space: nowrap; color: var(--text); font-size: 12px; font-weight: 800; }
-    .paper-inline-control input { width: 64px; height: 30px; padding: 4px 6px; text-align: center; font-weight: 800; flex: none; }
+    .paper-check-left { display:grid; grid-template-columns:16px minmax(0,1fr); align-items:center; gap:var(--ui-gap); grid-column:1 / -1; }
+    .paper-inline-control { margin:0; color:var(--text); font-weight:700; }
+    .paper-inline-control input { text-align:center; }
     .paper-pixel-info {
       margin-top: 6px;
       padding: 8px 10px;
@@ -960,7 +850,7 @@
       border-radius: 10px;
       background: white;
       color: var(--muted);
-      font-size: 12px;
+      font-size:var(--ui-fs-body);
       line-height: 1.45;
       min-height: 32px;
     }
@@ -973,14 +863,14 @@
       border-radius: var(--r-ctl);
       background: var(--panel-2);
       color: var(--muted);
-      font-size: 10px;
+      font-size:var(--ui-fs-help);
       line-height: 1.4;
     }
     .paper-auto-align-status.active { display: block; }
     .paper-auto-align-status strong {
       display: block;
       color: var(--text);
-      font-size: 10.5px;
+      font-size:var(--ui-fs-help);
       margin-bottom: 3px;
     }
     .paper-auto-align-status ol {
@@ -1072,51 +962,16 @@
       padding-top: 10px;
       border-top: 1px solid var(--soft);
     }
-    .shaku-edit-btn {
-      height: 32px;
-      border: 1px solid var(--soft);
-      border-radius: 9px;
-      background: white;
-      color: var(--text);
-      font: inherit;
-      font-size: 12px;
-      font-weight: 800;
-      padding: 0 10px;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-    .shaku-edit-btn.active {
-      background: var(--ink-active);
-      border-color: var(--ink-active);
-      color: white;
-      box-shadow: none;
-      outline: none;
-    }
+    .shaku-edit-btn { white-space: nowrap; }
+
     /* Undo/Redo as icon-only ghost buttons, matching the memo toolbar for consistency. */
-    .shaku-history-btn {
-      width: 32px;
-      min-width: 32px;
-      padding: 0;
-      flex: none;
-      border-color: transparent;
-      background: transparent;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text);
-      transition: background .12s ease;
-    }
-    .shaku-history-btn .ic-svg { width: 15px; height: 15px; }
-    .shaku-history-btn:hover { background: rgba(28,30,34,.06); border-color: transparent; }
-    .shaku-history-btn[disabled] {
-      opacity: .42;
-      cursor: not-allowed;
-    }
-    .shaku-history-btn[disabled]:hover { background: transparent; }
+    .shaku-history-btn { width:var(--ui-h-control); min-width:var(--ui-h-control); padding:0; flex:none; }
+    .shaku-history-btn .ic-svg { width:15px; height:15px; }
+
     .shaku-edit-hint {
       min-width: 0;
       color: var(--muted);
-      font-size: 11px;
+      font-size:var(--ui-fs-help);
       line-height: 1.35;
       white-space: nowrap;
       overflow: hidden;
@@ -1159,95 +1014,22 @@
       pointer-events: none;
     }
     .preview-toolbar > * { pointer-events: auto; }
-    .preview-toolbar > div:first-child {
-      pointer-events: none; /* the title is a fixed floating label, not a control */
-      text-shadow: 0 1px 0 rgba(255,255,255,.9), 0 0 8px rgba(255,255,255,.9);
-    }
-    .preview-title { font-size: 14px; font-weight: 800; letter-spacing: -.005em; }
-    .preview-toolbar > div:first-child { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
-    .preview-meta { display: block; color: var(--muted); font-size: 11px; font-weight: 500; font-variant-numeric: tabular-nums; white-space: nowrap; }
-    .toolbar-actions {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-left: auto;
-    }
-    .page-nav {
-      display: flex;
-      align-items: stretch;
-      min-width: 0;
-      border: 1px solid var(--soft);
-      border-radius: var(--r-grp);
-      background: rgba(255,255,255,.92);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      box-shadow: 0 10px 26px rgba(0,0,0,.16);
-      overflow: hidden;
-    }
-    .page-nav .toolbar-btn.icon-only {
-      width: 30px;
-      border: 0;
-      border-radius: 0;
-      background: transparent;
-    }
-    .page-nav .page-indicator {
-      border-left: 1px solid var(--soft-strong);
-      border-right: 1px solid var(--soft-strong);
-      padding: 0 10px;
-    }
-    .export-actions {
-      display: grid;
-      /* PNG 선택은 3글자뿐이라 여유를 줄이고, 経路指定/書き出し 두 버튼은 "Folder"/"Export" 같은
-         6글자 영문 라벨을 똑같이 감당해야 하는데 書き出し 쪽이 더 좁았다 — 둘을 동일 예산으로. */
-      grid-template-columns: minmax(60px, 68px) minmax(58px, 79px) minmax(58px, 79px);
-      align-items: center;
-      gap: 6px;
-      width: 226px;
-      max-width: 226px;
-      min-width: 0;
-      padding: 3px 4px;
-      border: 1px solid var(--soft);
-      border-radius: var(--r-grp);
-      background: rgba(255,255,255,.92);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      box-shadow: 0 10px 26px rgba(0,0,0,.16);
-    }
-    .global-history {
-      display: inline-flex;
-      align-items: center;
-      gap: 2px;
-      flex: 0 0 auto;
-      padding: 3px 4px;
-      border: 1px solid var(--soft);
-      border-radius: var(--r-grp);
-      background: rgba(255,255,255,.92);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      box-shadow: 0 10px 26px rgba(0,0,0,.16);
-    }
-    .global-history .toolbar-btn:disabled { opacity: .4; cursor: default; }
-    .paper-toolbar-group {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      height: 36px;
-      padding: 3px 6px;
-      border: 1px solid var(--soft);
-      border-radius: 10px;
-      background: rgba(255,255,255,.92);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      box-shadow: 0 10px 26px rgba(0,0,0,.16);
-      box-sizing: border-box;
-      flex: 0 0 auto;
-    }
+    .preview-toolbar > div:first-child { pointer-events:none; text-shadow:0 1px 0 rgba(255,255,255,.9),0 0 8px rgba(255,255,255,.9); display:flex; align-items:baseline; gap:8px; min-width:0; }
+    .preview-title { font-size:var(--ui-fs-heading); font-weight: 800; letter-spacing: -.005em; }
+
+    .preview-meta { display: block; color: var(--muted); font-size:var(--ui-fs-help); font-weight: 500; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .toolbar-actions { --control-h:var(--ui-h-toolbar); --control-pad:var(--ui-pad-compact); display:flex; align-items:center; justify-content:flex-end; gap:6px; flex-wrap:wrap; margin-left:auto; }
+    .page-nav { display:flex; align-items:center; min-width:0; height:28px; overflow:hidden; }
+    .page-nav .toolbar-btn.icon-only { border:0; border-radius:0; background:transparent; }
+    .page-nav .page-indicator { border-left:1px solid var(--soft-strong); border-right:1px solid var(--soft-strong); padding:0 7px 1px; }
+    .export-actions { display:grid; grid-template-columns:58px minmax(0,max-content) minmax(0,max-content); width:auto; max-width:100%; min-width:0; }
+    .global-history { display:inline-flex; flex:0 0 auto; }
+
+    .paper-toolbar-group { display:inline-flex; flex-wrap:wrap; flex:0 0 auto; }
     .paper-toolbar-group.hidden { display: none; }
     .paper-toolbar-title {
       color: var(--muted);
-      font-size: 11px;
+      font-size:var(--ui-fs-help);
       font-weight: 900;
       line-height: 1;
       white-space: nowrap;
@@ -1261,101 +1043,28 @@
       align-items: center;
     }
     .paper-toolbar-title:hover { color: var(--text); }
-    .paper-toolbar-btn {
-      height: 30px;
-      min-width: 0;
-      padding: 0 7px;
-      border-radius: 8px;
-      font-size: 11px;
-      font-weight: 900;
-      flex: 0 0 auto;
-    }
-    .paper-toolbar-btn.active {
-      background: var(--ink-active);
-      border-color: var(--ink-active);
-      color: white;
-      box-shadow: none;
-      outline: none;
-    }
-    .toolbar-btn, .export-select {
-      height: 30px;
-      border: 1px solid var(--soft);
-      border-radius: var(--r-ctl);
-      background: var(--panel);
-      color: var(--text);
-      padding: 0 10px;
-      font: inherit;
-      max-width: 100%;
-      transition: background .12s ease, border-color .12s ease;
-    }
-    .toolbar-btn {
-      cursor: pointer;
-      min-width: 30px;
-      font-weight: 700;
-      font-size: 12px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .toolbar-btn:hover { background: rgba(28,30,34,.05); border-color: var(--soft-strong); }
-    .toolbar-btn.icon-only { width: 30px; min-width: 30px; padding: 0; display: inline-flex; align-items: center; justify-content: center; }
-    .toolbar-btn.with-icon { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
-    .toolbar-btn.with-icon .ic-svg { width: 14px; height: 14px; flex: none; }
+    .paper-toolbar-btn { min-width:0; flex:0 0 auto; }
+
+    .toolbar-btn, .export-select { max-width: 100%; }
+    .toolbar-btn { min-width: 30px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .toolbar-btn.icon-only { width:var(--control-h,var(--ui-h-control)); min-width:var(--control-h,var(--ui-h-control)); padding:0; }
+
+    .toolbar-btn.with-icon .ic-svg { width:var(--ui-icon-sm); height:var(--ui-icon-sm); flex:none; }
     /* The one primary (ink-filled) action per toolbar — reserved for the final,
        confirming step (書き出し), so it stays meaningful instead of decorative. */
-    .toolbar-btn.primary {
-      background: var(--text);
-      border-color: var(--text);
-      color: #fff;
-      font-weight: 700;
-    }
-    .toolbar-btn.primary:hover { background: var(--ink-active); border-color: var(--ink-active); }
-    .toolbar-btn.paper-toolbar-btn {
-      height: 28px;
-      padding: 0 6px;
-      border-radius: 8px;
-      font-size: 11px;
-      font-weight: 900;
-      flex: 0 0 auto;
-      overflow: visible;
-      text-overflow: clip;
-    }
-    #paperToolbarPositionBtn { width: 62px; }
-    #paperToolbarResetBtn { width: 72px; }
-    #paperToolbarClearBtn { width: 46px; }
-    .export-select {
-      width: 100%;
-      min-width: 0;
-      padding: 0 6px;
-      font-size: 12px;
-    }
+
+    .toolbar-btn.paper-toolbar-btn { --control-font:var(--ui-fs-help); overflow:visible; text-overflow:clip; }
+
+    .export-select { width:100%; min-width:0; }
     #downloadAllBtn,
-    #chooseExportDirBtn {
-      width: 100%;
-      min-width: 0;
-      padding: 0 6px;
-      font-size: 12px;
-      text-align: center;
-    }
+    #chooseExportDirBtn { width:auto; min-width:0; white-space:nowrap; }
     #chooseExportDirBtn.export-dir-selected {
       border-color: var(--text);
       box-shadow: 0 0 0 2px rgba(0,0,0,.06);
     }
-    .toolbar-btn[disabled] {
-      opacity: .45;
-      cursor: not-allowed;
-    }
-    .page-indicator {
-      min-width: 56px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--text);
-      font-variant-numeric: tabular-nums;
-    }
+
+    .page-indicator { min-width:48px; height:100%; display:flex; align-items:center; justify-content:center; text-align:center; font-size:var(--ui-fs-body); line-height:1; font-weight:700; color:var(--text); font-variant-numeric:tabular-nums; }
     .preview-wrap.file-drop-active {
       outline: 2px solid var(--focus-ring);
       outline-offset: -7px;
@@ -1477,7 +1186,7 @@
       background: transparent;
       color: var(--text);
       font: inherit;
-      font-size: 12px;
+      font-size:var(--ui-fs-body);
       font-weight: 800;
       text-align: left;
       cursor: pointer;
@@ -1567,7 +1276,7 @@
       background: #edf6ef;
       color: #1f6b41;
       font-weight: 700;
-      font-size: 11.5px;
+      font-size:var(--ui-fs-help);
       white-space: nowrap;
     }
     .toolbar-notice.hidden { display: none; }
@@ -1596,7 +1305,7 @@
       background: transparent;
       color: var(--text);
       font: inherit;
-      font-size: 12px;
+      font-size:var(--ui-fs-body);
       font-weight: 900;
       text-align: left;
       cursor: pointer;
@@ -1606,71 +1315,19 @@
       background: rgba(28, 30, 34, .07);
       color: var(--text);
     }
-    .serifu-sheet-modal-backdrop {
-      position: fixed;
-      inset: 0;
-      z-index: 10007;
-      background: rgba(15, 23, 42, .24);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 14px;
-      pointer-events: auto;
-    }
-    .serifu-sheet-modal {
-      width: min(560px, calc(100vw - 28px));
-      max-height: calc(100vh - 28px);
-      overflow: auto;
-      box-sizing: border-box;
-      padding: 14px;
-      border: 1px solid rgba(30, 41, 59, .18);
-      border-radius: 10px;
-      background: rgba(255,255,255,.98);
-      box-shadow: 0 18px 44px rgba(15, 23, 42, .28);
-      color: var(--text);
-      font-family: Arial, Helvetica, sans-serif;
-    }
-    .serifu-sheet-modal h3 {
-      margin: 0 0 10px;
-      font-size: 16px;
-      line-height: 1.2;
-      font-weight: 900;
-    }
-    .serifu-sheet-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 9px 10px;
-    }
-    .serifu-sheet-field {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      min-width: 0;
-    }
-    .serifu-sheet-field.full {
+    .app-dialog-backdrop { position:fixed; inset:0; z-index:var(--dialog-layer,11000); background:rgba(28,30,34,.28); display:flex; align-items:center; justify-content:center; padding:14px; pointer-events:auto; }
+    .app-dialog { width:min(560px,100%); max-height:calc(100dvh - 28px); overflow:auto; padding:var(--ui-pad-dialog); border:1px solid var(--soft); border-radius:var(--r-card); background:var(--panel); box-shadow:var(--ui-dialog-shadow); color:var(--text); font-family:inherit; font-size:var(--ui-fs-body); }
+    .app-dialog h3 { margin:0; font-size:var(--ui-fs-title); line-height:1.3; font-weight:800; }
+    .serifu-sheet-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:var(--ui-gap-lg); }
+    .ui-field { display:grid; align-content:start; gap:var(--ui-gap-sm); min-width:0; }
+    .ui-field.full {
       grid-column: 1 / -1;
     }
-    .serifu-sheet-field label {
-      font-size: 11px;
-      font-weight: 900;
-      color: var(--muted);
-    }
-    .serifu-sheet-field input,
-    .serifu-sheet-field select,
-    .serifu-sheet-field textarea {
-      width: 100%;
-      box-sizing: border-box;
-      min-height: 30px;
-      padding: 5px 7px;
-      border: 1px solid var(--soft);
-      border-radius: 7px;
-      background: #fff;
-      color: var(--text);
-      font: inherit;
-      font-size: 13px;
-      font-weight: 700;
-    }
-    .serifu-sheet-field textarea {
+    .ui-field label { margin:0; font-size:var(--ui-fs-body); font-weight:700; color:var(--muted); }
+    .ui-field input,
+    .ui-field select,
+    .ui-field textarea { min-width:0; }
+    .ui-field textarea {
       min-height: 86px;
       resize: vertical;
       font-family: Consolas, "Courier New", monospace;
@@ -1687,7 +1344,7 @@
       background: var(--panel-2);
       color: var(--text);
       font-family: Consolas, "Courier New", monospace;
-      font-size: 12px;
+      font-size:var(--ui-fs-body);
       line-height: 1.35;
       white-space: pre-wrap;
     }
@@ -1704,69 +1361,23 @@
     }
     .serifu-mouth-row-number {
       color: var(--muted);
-      font-size: 12px;
+      font-size:var(--ui-fs-body);
       font-weight: 900;
       text-align: right;
     }
     .serifu-mouth-row input,
-    .serifu-mouth-row select {
-      min-height: 28px;
-      padding: 4px 6px;
-      border: 1px solid var(--soft);
-      border-radius: 7px;
-      background: #fff;
-      color: var(--text);
-      font: inherit;
-      font-size: 12px;
-      font-weight: 800;
-      box-sizing: border-box;
-      width: 100%;
-    }
+    .serifu-mouth-row select { min-width:0; }
     .serifu-sheet-warning {
       min-height: 18px;
       color: var(--red);
-      font-size: 12px;
+      font-size:var(--ui-fs-body);
       font-weight: 800;
       line-height: 1.35;
     }
-    .serifu-sheet-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-      margin-top: 12px;
-    }
-    .serifu-sheet-actions button {
-      min-height: 30px;
-      padding: 5px 12px;
-      border: 1px solid var(--soft);
-      border-radius: 7px;
-      background: #fff;
-      color: var(--text);
-      font: inherit;
-      font-size: 12px;
-      font-weight: 900;
-      cursor: pointer;
-    }
-    .serifu-sheet-actions button.primary {
-      border-color: var(--ink-active);
-      background: var(--ink-active);
-      color: #fff;
-    }
-    .export-preflight-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 7px 2px;
-      font-size: 13px;
-      font-weight: 700;
-    }
+    .app-dialog-actions { display:flex; align-items:center; justify-content:flex-end; flex-wrap:wrap; gap:var(--ui-gap); margin-top:var(--ui-gap-lg); }
+
     .export-preflight-row + .export-preflight-row {
       border-top: 1px solid var(--soft);
-    }
-    .export-preflight-row input[type="checkbox"] {
-      width: 16px;
-      height: 16px;
-      flex: none;
     }
 
     .text-memo-apply-fixed {
@@ -1866,7 +1477,7 @@
       background: #fff;
       color: var(--text);
       font-family: Arial, Helvetica, sans-serif;
-      font-size: 12px;
+      font-size:var(--ui-fs-body);
       font-weight: 900;
       line-height: 1;
       cursor: pointer;
@@ -1966,27 +1577,12 @@
       gap: 6px;
       margin-top: 8px;
     }
-    .csv-settings-btn {
-      height: 32px;
-      border: 1px solid var(--soft);
-      border-radius: 9px;
-      background: white;
-      color: var(--text);
-      font: inherit;
-      font-size: 11px;
-      font-weight: 800;
-      cursor: pointer;
-      min-width: 0;
-      padding: 0 6px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .csv-settings-btn:hover { background: #f5f5f5; }
+    .csv-settings-btn { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
     .csv-source-info {
       min-height: 16px;
       margin-top: 6px;
-      font-size: 11px;
+      font-size:var(--ui-fs-help);
       line-height: 1.35;
       font-weight: 900;
       color: var(--text);
@@ -2043,101 +1639,22 @@
     .memo-controls-wrap {
       margin-bottom: 0;
     }
-    .memo-controls {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-      width: 100%;
-      padding: 8px 10px;
-      border: 1px solid var(--soft);
-      border-radius: var(--r-grp);
-      background: rgba(255,255,255,.92);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      box-shadow: 0 14px 34px rgba(0,0,0,.16);
-    }
-    .memo-btn, .memo-size-select {
-      height: 30px;
-      border: 1px solid var(--soft);
-      border-radius: var(--r-ctl);
-      background: var(--panel);
-      color: var(--text);
-      font: inherit;
-      transition: background .12s ease, border-color .12s ease;
-    }
-    .memo-btn {
-      cursor: pointer;
-      padding: 0 10px;
-      font-size: 12px;
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .memo-btn .ic-svg { width: 14px; height: 14px; flex: none; }
-    .memo-btn:hover { background: rgba(28,30,34,.05); border-color: var(--soft-strong); }
-    .memo-btn.icon-only { width: 30px; padding: 0; justify-content: center; }
-    .memo-btn.ghost { border-color: transparent; background: transparent; }
-    .memo-btn.ghost:hover { background: rgba(28,30,34,.06); }
-    .memo-toolbar-divider { width: 1px; align-self: stretch; margin: 3px 2px; background: var(--soft); flex: none; }
-    .memo-btn[disabled] {
-      opacity: .45;
-      cursor: not-allowed;
-    }
-    .memo-btn[disabled]:hover { background: var(--panel); border-color: var(--soft); }
-    .memo-btn.active {
-      background: var(--ink-active);
-      color: white;
-      border-color: var(--ink-active);
-      box-shadow: none;
-      outline: none;
-    }
-    .memo-size-select {
-      width: 72px;
-      padding: 0 8px;
-      font-size: 12px;
-    }
+    .memo-controls { --control-h:var(--ui-h-memo); --control-pad:var(--ui-pad-compact); display:flex; align-items:center; gap:6px; flex-wrap:wrap; width:100%; padding:4px 8px; border:1px solid var(--soft); border-radius:var(--r-ctl); background:rgba(255,255,255,.92); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); box-shadow:0 6px 18px rgba(0,0,0,.10); }
+
+    .memo-btn .ic-svg { width:var(--ui-icon); height:var(--ui-icon); flex:none; }
+
+    .memo-btn.icon-only { width:var(--ui-h-memo); min-width:var(--ui-h-memo); padding:0; }
+
+    .memo-toolbar-divider { width:1px; align-self:stretch; margin:2px 0; background:var(--soft); flex:none; }
+
+    .memo-size-select { width:64px; }
     /* Seamless segmented zoom pill: inner controls are borderless ghosts. */
-    .zoom-controls {
-      display: inline-flex;
-      align-items: center;
-      gap: 2px;
-      margin-left: auto;
-      padding: 2px;
-      border: 1px solid var(--soft);
-      border-radius: var(--r-grp);
-      background: var(--panel);
-    }
-    .zoom-controls .memo-btn {
-      border: 0;
-      background: transparent;
-      height: 26px;
-      border-radius: 7px;
-    }
-    .zoom-controls .memo-btn:hover { background: rgba(28,30,34,.06); border: 0; }
-    .zoom-btn {
-      width: 28px;
-      min-width: 28px;
-      padding: 0;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .zoom-reset-btn {
-      min-width: 50px;
-      padding: 0 8px;
-      font-variant-numeric: tabular-nums;
-      font-weight: 700;
-    }
-    .readability-btn {
-      width: 30px;
-      min-width: 30px;
-      padding: 0;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
+    .zoom-controls { --control-h:var(--ui-h-toolbar); display:inline-flex; align-items:center; gap:0; margin-left:auto; padding:0; border:1px solid var(--soft); border-radius:var(--r-ctl); background:var(--panel); }
+    .zoom-controls .memo-btn { border:0; background:transparent; }
+
+    .zoom-btn { width:var(--ui-h-memo); min-width:var(--ui-h-memo); padding:0; }
+    .zoom-reset-btn { min-width:44px; padding-inline:5px; font-variant-numeric:tabular-nums; }
+    .readability-btn { width:var(--ui-h-memo); min-width:var(--ui-h-memo); padding:0; }
     .readability-btn svg { width: 18px; height: 18px; display: block; background: transparent; }
     /* Active = keep the SAME magnifier icon; only show "on" with a soft tint + accent
        border (no full-color fill / icon inversion, which read as a different icon). */
@@ -2148,31 +1665,10 @@
       box-shadow: none;
       outline: none;
     }
-    .memo-color-group {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-    .memo-color-btn {
-      width: 28px;
-      height: 28px;
-      padding: 0;
-      border-radius: 999px;
-      border: 2px solid rgba(0,0,0,.14);
-      cursor: pointer;
-      background: white;
-      position: relative;
-    }
-    .memo-color-btn.active {
-      box-shadow: 0 0 0 2px white, 0 0 0 4px var(--text);
-    }
-    .memo-color-btn .swatch {
-      position: absolute;
-      inset: 4px;
-      border-radius: 999px;
-      border: 1px solid rgba(0,0,0,.1);
-    }
+    .memo-color-group { display:flex; align-items:center; gap:4px; padding:2px; flex-wrap:nowrap; }
+    .memo-color-btn { width:20px; height:20px; padding:0; border-radius:50%; border:1px solid rgba(0,0,0,.14); cursor:pointer; background:white; position:relative; flex:none; }
+    .memo-color-btn.active { box-shadow:0 0 0 1px white,0 0 0 2px var(--text); }
+    .memo-color-btn .swatch { position:absolute; inset:2px; border-radius:50%; border:1px solid rgba(0,0,0,.1); }
     .memo-overlay-canvas {
       position: absolute;
       inset: 0;
@@ -2196,93 +1692,47 @@
     .sidebar-credit {
       margin-top: 18px;
       padding-top: 12px;
-      font-size: 12px;
+      font-size:var(--ui-fs-body);
       color: var(--muted);
       text-align: left;
     }
     .sidebar-credit .credit-label {
       display: block;
-      font-size: 11px;
+      font-size:var(--ui-fs-help);
       letter-spacing: .08em;
       text-transform: uppercase;
       margin-bottom: 3px;
     }
     .sidebar-credit .credit-name {
       display: block;
-      font-size: 13px;
+      font-size:var(--ui-fs-body);
       color: var(--text);
       font-weight: 700;
       text-decoration: none;
     }
     .sidebar-credit .credit-name:hover { text-decoration: underline; }
 
-    .update-log-modal {
-      position: fixed;
-      inset: 0;
-      z-index: 12000;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 18px;
-      background: rgba(0,0,0,.36);
-      backdrop-filter: blur(2px);
-    }
+    .update-log-modal { display:none; }
     .update-log-modal.open { display: flex; }
-    .update-log-panel {
-      width: min(760px, calc(100vw - 28px));
-      max-height: min(82vh, 760px);
-      overflow: auto;
-      background: rgba(255,255,255,.98);
-      color: var(--text);
-      border: 1px solid var(--soft);
-      border-radius: 18px;
-      box-shadow: 0 18px 50px rgba(0,0,0,.24);
-      padding: 18px;
-    }
-    .update-log-head {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-    .update-log-title {
-      margin: 0;
-      font-size: 20px;
-      line-height: 1.25;
-      font-weight: 900;
-      letter-spacing: -0.02em;
-    }
+    .update-log-panel { width:min(760px,100%); max-height:min(82dvh,760px); }
+
+    .update-log-title { margin:0; font-size:var(--ui-fs-title); line-height:1.3; font-weight:800; }
     .update-log-subtitle {
       margin: 4px 0 0;
       color: var(--muted);
-      font-size: 12px;
+      font-size:var(--ui-fs-body);
       line-height: 1.5;
     }
-    .update-log-close {
-      width: 30px;
-      height: 30px;
-      border: 1px solid var(--soft);
-      border-radius: 999px;
-      background: var(--panel);
-      color: var(--text);
-      font: inherit;
-      cursor: pointer;
-      flex: 0 0 auto;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .12s ease, border-color .12s ease;
-    }
-    .update-log-close:hover { background: rgba(28,30,34,.06); border-color: var(--soft-strong); }
-    .update-log-close svg { width: 15px; height: 15px; }
+    .update-log-close { width:var(--ui-h-control); padding:0; flex:0 0 auto; }
+
+    .update-log-close svg { width:var(--ui-icon-lg); height:var(--ui-icon-lg); }
     .update-log-content {
-      font-size: 13px;
+      font-size:var(--ui-fs-body);
       line-height: 1.65;
     }
     .update-log-content h4 {
       margin: 14px 0 7px;
-      font-size: 14px;
+      font-size:var(--ui-fs-heading);
       font-weight: 900;
     }
     .update-log-content p { margin: 0 0 8px; }
@@ -2293,7 +1743,7 @@
       border: 1px solid var(--soft);
       border-radius: 6px;
       background: #fafafa;
-      font-size: 12px;
+      font-size:var(--ui-fs-body);
     }
     .update-log-content details {
       border: 1px solid var(--soft);
@@ -2320,7 +1770,7 @@
       border-radius: 999px;
       background: #111;
       color: white;
-      font-size: 10px;
+      font-size:var(--ui-fs-help);
       font-weight: 900;
       vertical-align: 1px;
     }
@@ -2374,7 +1824,7 @@
     .duration-boundary-hit { cursor: ns-resize; pointer-events: all; touch-action: none; -webkit-user-select: none; user-select: none; }
     .layer-tag-action-btn, .pasted-image-action-btn { cursor: pointer; pointer-events: all; -webkit-user-select: none; user-select: none; }
     .text-memo-selection-toolbar { position: fixed; z-index: 10003; display: none; gap: 4px; padding: 4px; border: 1px solid var(--soft); border-radius: 8px; background: rgba(255,255,255,.98); box-shadow: 0 6px 16px rgba(0,0,0,.18); pointer-events: auto; }
-    .text-memo-selection-toolbar button { height: 24px; min-width: 42px; border: 1px solid var(--soft); border-radius: 6px; background: white; color: var(--text); font: inherit; font-size: 11px; font-weight: 900; cursor: pointer; }
+    .text-memo-selection-toolbar button { height: 24px; min-width: 42px; border: 1px solid var(--soft); border-radius: 6px; background: white; color: var(--text); font: inherit; font-size:var(--ui-fs-help); font-weight: 900; cursor: pointer; }
     .pasted-image-transform-outline { pointer-events: all; cursor: move; touch-action: none; }
     .pasted-image-transform-grip { pointer-events: all; cursor: nwse-resize; touch-action: none; }
     html.pasted-image-dragging, html.pasted-image-dragging body, html.layer-tag-dragging, html.layer-tag-dragging body { overscroll-behavior: none; -webkit-user-select: none; user-select: none; }
@@ -2400,7 +1850,7 @@
     }
     .camera-examples-title {
       grid-column: 1 / -1;
-      font-size: 10px;
+      font-size:var(--ui-fs-help);
       font-weight: 800;
       color: var(--muted);
       letter-spacing: .05em;
@@ -2409,7 +1859,7 @@
     .camera-ex { display: contents; }
     .camera-examples code {
       font-family: 'SFMono-Regular', ui-monospace, Consolas, monospace;
-      font-size: 11px;
+      font-size:var(--ui-fs-help);
       font-weight: 600;
       color: var(--text);
       background: transparent;
@@ -2417,7 +1867,7 @@
       line-height: 1.35;
     }
     .camera-ex-note {
-      font-size: 10px;
+      font-size:var(--ui-fs-help);
       color: var(--muted);
     }
 
@@ -2434,24 +1884,22 @@
       .serifu-side-btn { padding: 6px 2px; font-size: 8px; letter-spacing: .5px; }
 
       /* On phones the two number controls stack (each full-width, label left / input right). */
-      .paper-cell-label-row .paper-inline-control { flex: 1 1 100%; }
+    .paper-cell-label-row .paper-inline-control { grid-column:1 / -1; }
     }
 
-
     /* Output review: a temporary view; the editing pane sizes and position remain untouched. */
-    .settings-io-wrap { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); height:auto; white-space:normal; }
-    .settings-io-wrap .settings-mini-btn { min-height:38px; white-space:normal; }
-    .work-save-hint { order:4; flex:1 1 100%; color:var(--muted); font-size:11px; line-height:1.45; }
+
+    .work-save-hint { order:4; flex:1 1 100%; color:var(--muted); font-size:var(--ui-fs-help); line-height:1.45; }
     .work-library { padding:14px; display:flex; flex-direction:column; gap:10px; min-width:0; }
     .work-library-head { display:grid; grid-template-columns:minmax(0,1fr) 30px; align-items:center; gap:8px; }
-    .work-library-head h3 { margin:0; font-size:13px; }
+    .work-library-head h3 { margin:0; font-size:var(--ui-fs-heading); }
     .work-library-actions { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px; }
-    .work-library-actions button { width:100%; min-width:0; min-height:34px; justify-content:center; white-space:normal; }
-    .work-library-source, .work-library-count, .work-library-empty { font-size:11px; color:var(--muted); line-height:1.5; overflow-wrap:anywhere; }
+    .work-library-actions button { width:100%; min-width:0; height:auto; white-space:normal; }
+    .work-library-source, .work-library-count, .work-library-empty { font-size:var(--ui-fs-help); color:var(--muted); line-height:1.5; overflow-wrap:anywhere; }
     .work-library-source:empty { display:none; }
-    .work-library-search { width:100%; min-width:0; min-height:34px; font-size:12px; }
+    .work-library-search { width:100%; min-width:0; }
     .work-library-selection { display:flex; align-items:center; flex-wrap:wrap; gap:5px; }
-    .work-library-selection button { font-size:10px; padding:4px 6px; }
+    .work-library-selection button { --control-pad:var(--ui-pad-compact); }
     .work-library-count { flex:1; text-align:right; }
     .work-library-list { max-height:min(300px,36dvh); overflow:auto; overscroll-behavior:contain; scrollbar-gutter:stable; }
     .work-library-row { display:grid; grid-template-columns:26px minmax(0,1fr); align-items:center; border-radius:7px; padding:2px 4px; border:1px solid transparent; }
@@ -2459,85 +1907,82 @@
     .work-library-row[data-current="true"] { background:#f1f3f4; border-color:var(--soft); }
     .work-library-row input { width:15px; height:15px; margin:0; justify-self:center; accent-color:var(--text); }
     .work-library-open { display:grid; grid-template-columns:minmax(0,1fr) 14px; gap:5px; align-items:center; text-align:left; padding:8px 5px; border:0; background:transparent; width:100%; min-width:0; border-radius:5px; color:var(--text); }
-    .work-library-name { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; font-size:11px; font-weight:600; overflow-wrap:anywhere; line-height:1.5; }
-    .work-library-path { display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-size:10px; color:var(--muted); overflow-wrap:anywhere; line-height:1.4; }
-    .work-library-current { font-size:11px; }
-    #workLibraryExportBtn { width:100%; min-height:36px; font-size:12px; white-space:normal; }
+    .work-library-name { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; font-size:var(--ui-fs-help); font-weight:600; overflow-wrap:anywhere; line-height:1.5; }
+    .work-library-path { display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-size:var(--ui-fs-help); color:var(--muted); overflow-wrap:anywhere; line-height:1.4; }
+    .work-library-current { font-size:var(--ui-fs-help); }
+    #workLibraryExportBtn { --control-h:var(--ui-h-action); width:100%; height:auto; white-space:normal; }
     .work-library button:focus-visible { outline:2px solid var(--text); outline-offset:-2px; }
     .output-location-control { display:flex; align-items:center; gap:3px; min-width:0; }
     .output-location-control .hidden { display:none; }
-    #chooseExportDirBtn { max-width:190px; }
-    #chooseExportDirBtn span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-    .io-notice { position:fixed; top:70px; right:24px; z-index:11500; max-width:min(440px,calc(100vw - 32px)); display:flex; gap:12px; align-items:center; padding:10px 12px; border:1px solid var(--soft-strong); border-radius:10px; background:var(--panel); box-shadow:0 6px 22px #0002; font-size:12px; line-height:1.5; }
+    #chooseExportDirBtn { max-width:180px; }
+    #chooseExportDirBtn span { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .io-notice { position:fixed; top:70px; right:24px; z-index:11500; max-width:min(440px,calc(100vw - 32px)); display:flex; gap:12px; align-items:center; padding:10px 12px; border:1px solid var(--soft-strong); border-radius:10px; background:var(--panel); box-shadow:0 6px 22px #0002; font-size:var(--ui-fs-body); line-height:1.5; }
     .io-notice[hidden] { display:none; }
     .io-notice[data-level="error"] { border-color:#b85a4b; }
     .io-notice-message { min-width:0; overflow-wrap:anywhere; }
     .io-notice button { flex:none; width:24px; height:24px; padding:0; border:0; background:transparent; border-radius:4px; }
-    .export-actions { grid-template-columns:64px max-content minmax(0,1fr); width:auto; max-width:100%; }
-    #downloadAllBtn, #chooseExportDirBtn { width:auto; min-width:0; white-space:normal; height:auto; min-height:30px; }
-    #downloadAllBtn { font-size:12px; padding:5px 9px; }
-    #outputReviewBtn { font-size:12px; background:rgba(255,255,255,.96); }
-    .history-scope { font-size:10px; color:var(--muted); padding:0 5px; white-space:nowrap; }
-    .export-preflight-modal-backdrop { z-index:11000; }
-    .export-recovery-backdrop { z-index:11010; }
+
+    #outputReviewBtn { font-size:var(--ui-fs-body); background:rgba(255,255,255,.96); }
+    .history-scope { font-size:var(--ui-fs-help); color:var(--muted); padding:0 3px; white-space:nowrap; line-height:1; }
+
     .export-preflight-dialog { background:#fff; width:min(1180px, calc(100vw - 28px)); height:min(900px, calc(100dvh - 28px)); padding:0; display:flex; flex-direction:column; overflow:hidden; }
-    .export-review-header, .export-review-footer { padding:14px 18px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; background:#fff; flex-shrink:0; }
-    .export-review-header { border-bottom:1px solid var(--soft); }
-    .export-review-header h3 { margin:0; }
-    .export-review-footer { border-top:1px solid var(--soft); }
-    .export-review-footer .serifu-sheet-actions { margin:0; }
-    .export-review-summary { font-size:12px; color:var(--muted); line-height:1.5; overflow-wrap:anywhere; }
+    .export-review-header, .export-review-footer { padding:var(--ui-gap-lg) var(--ui-pad-dialog); background:var(--panel); flex-shrink:0; }
+    .export-review-header { margin:0; border-bottom:1px solid var(--soft); }
+
+    .export-review-footer { margin:0; justify-content:space-between; border-top:1px solid var(--soft); }
+
+    .export-review-summary { font-size:var(--ui-fs-body); color:var(--muted); line-height:1.5; overflow-wrap:anywhere; }
     .export-review-body { display:grid; grid-template-columns:minmax(0,1fr) 330px; min-height:0; flex:1; }
-    .export-review-options { padding:18px; overflow:auto; border-left:1px solid var(--soft); display:flex; flex-direction:column; gap:16px; }
-    .export-review-options h4 { font-size:13px; margin:0 0 6px; }
+    .export-review-options { padding:var(--ui-pad-dialog); overflow:auto; border-left:1px solid var(--soft); display:flex; flex-direction:column; gap:var(--ui-pad-dialog); }
+    .export-review-options h4 { font-size:var(--ui-fs-heading); margin:0 0 6px; }
     .export-review-options .hint { line-height:1.55; }
-    .export-review-options label { font-size:12px; }
-    .export-review-options input[type="text"], .export-review-options select { width:100%; box-sizing:border-box; min-height:34px; }
-    .export-review-options dl { margin:0; font-size:12px; line-height:1.5; }
+    .export-review-options label { font-size:var(--ui-fs-body); }
+
+    .export-review-options dl { margin:0; font-size:var(--ui-fs-body); line-height:1.5; }
     .export-review-options dt { color:var(--muted); margin-top:10px; }
     .export-review-options dd { margin:2px 0 0; overflow-wrap:anywhere; font-weight:600; }
     .export-review-stage { display:flex; flex-direction:column; min-width:0; min-height:0; background:#eef0f2; }
     .export-review-nav { display:flex; justify-content:center; align-items:center; flex-wrap:wrap; gap:6px; padding:10px; background:#f8f9fa; flex-shrink:0; }
-    .export-review-nav button { padding:4px 8px; font-size:11px; }
-    .export-review-nav button[aria-pressed="true"] { background:var(--ink-active); color:white; }
-    .export-review-page { font-size:12px; min-width:76px; text-align:center; }
+    .export-review-nav button { --control-pad:var(--ui-pad-compact); }
+
+    .export-review-page { font-size:var(--ui-fs-body); min-width:76px; text-align:center; }
     .export-review-viewport { flex:1; min-height:0; overflow:auto; padding:18px; display:flex; flex-direction:column; align-items:center; position:relative; }
     .export-review-image { display:block; background:white; box-shadow:0 3px 14px #0002; flex-shrink:0; object-fit:contain; }
     .export-review-viewport [hidden] { display:none; }
-    .export-review-message { margin:auto; font-size:13px; text-align:center; line-height:1.6; }
-    .export-review-caption { padding:8px 14px; color:var(--muted); font-size:10px; text-align:center; flex-shrink:0; }
+    .export-review-message { margin:auto; font-size:var(--ui-fs-body); text-align:center; line-height:1.6; }
+    .export-review-caption { padding:8px 14px; color:var(--muted); font-size:var(--ui-fs-help); text-align:center; flex-shrink:0; }
     .export-preflight-dialog.is-focused { width:calc(100vw - 28px); height:calc(100dvh - 28px); }
     .export-preflight-dialog.is-focused .export-review-body { grid-template-columns:minmax(0,1fr); }
     .export-preflight-dialog.is-focused .export-review-options { display:none; }
-    .export-preflight-dialog button:disabled { opacity:.45; cursor:default; }
+
     .export-preflight-dialog.has-work-list { width:min(1360px,calc(100vw - 28px)); }
     .export-preflight-dialog.has-work-list .export-review-body { grid-template-columns:minmax(180px,230px) minmax(0,1fr) 290px; }
-    .export-review-scope { margin-top:4px; color:var(--muted); font-size:12px; }
+    .export-review-scope { margin-top:4px; color:var(--muted); font-size:var(--ui-fs-body); }
     .export-review-jobs { display:flex; flex-direction:column; min-height:0; min-width:0; padding:12px; border-right:1px solid var(--soft); }
-    .export-review-jobs h4 { margin:2px 0 10px; font-size:13px; }
+    .export-review-jobs h4 { margin:2px 0 10px; font-size:var(--ui-fs-heading); }
     .export-review-job-tools { display:flex; gap:6px; margin-bottom:10px; }
-    .export-review-job-tools button { flex:1; min-width:0; white-space:normal; height:auto; min-height:30px; font-size:11px; }
+    .export-review-job-tools button { flex:1; min-width:0; white-space:normal; height:auto; }
     .export-review-jobs ul { list-style:none; padding:2px; margin:0; overflow:auto; flex:1; min-height:0; }
     .export-review-job { display:grid; grid-template-columns:22px minmax(0,1fr); align-items:start; gap:4px; margin-bottom:6px; padding:8px 6px; border:1px solid transparent; border-radius:8px; }
     .export-review-job[data-active="true"] { background:#f1f4f6; border-color:#b8c2cc; }
     .export-review-job input { margin:4px 0 0; width:16px; height:16px; accent-color:var(--text); }
     .export-review-job-button { display:grid; width:100%; min-width:0; gap:4px; padding:0; border:0; background:transparent; text-align:left; font:inherit; cursor:pointer; }
-    .export-review-job-button strong { font-size:12px; overflow-wrap:anywhere; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-    .export-review-job-path { font-size:10px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .export-review-job-detail, .export-review-job-status { font-size:10px; color:var(--muted); overflow-wrap:anywhere; line-height:1.45; }
+    .export-review-job-button strong { font-size:var(--ui-fs-body); overflow-wrap:anywhere; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+    .export-review-job-path { font-size:var(--ui-fs-help); color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .export-review-job-detail, .export-review-job-status { font-size:var(--ui-fs-help); color:var(--muted); overflow-wrap:anywhere; line-height:1.45; }
     .export-review-job[data-error="true"] .export-review-job-detail { color:#a33326; }
-    .export-review-active-name { padding:9px 12px; background:#f8f9fa; border-bottom:1px solid var(--soft); text-align:center; font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; flex:none; }
-    .export-review-option-scope { border-radius:8px; padding:10px; background:#f3f5f7; font-size:12px; }
+    .export-review-active-name { padding:9px 12px; background:#f8f9fa; border-bottom:1px solid var(--soft); text-align:center; font-size:var(--ui-fs-body); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; flex:none; }
+    .export-review-option-scope { border-radius:8px; padding:10px; background:#f3f5f7; font-size:var(--ui-fs-body); }
     .export-review-option-scope .hint { margin-top:5px; }
     .export-preflight-row input { accent-color:var(--text); }
-    .export-review-mixed { font-size:10px; color:var(--muted); background:var(--soft); padding:2px 5px; border-radius:4px; white-space:nowrap; }
+    .export-review-mixed { font-size:var(--ui-fs-help); color:var(--muted); background:var(--soft); padding:2px 5px; border-radius:4px; white-space:nowrap; }
     .export-review-destination { display:flex; flex-wrap:wrap; gap:6px; }
-    .export-review-destination button, .export-review-options [data-review-reset] { height:auto; min-height:30px; font-size:11px; white-space:normal; }
+    .export-review-destination button, .export-review-options [data-review-reset] { height:auto; white-space:normal; }
     .export-review-footer-status { flex:1; min-width:140px; }
     .export-review-footer progress { width:100%; height:6px; accent-color:var(--text); }
     .export-preflight-dialog.has-work-list.is-focused .export-review-body { grid-template-columns:230px minmax(0,1fr); }
     .export-preflight-dialog [hidden] { display:none; }
-    .export-selection-count { font-size:10px; background:#ffffff30; border-radius:4px; padding:1px 4px; }
+    .export-selection-count { font-size:var(--ui-fs-help); background:#ffffff30; border-radius:var(--r-ctl); padding:1px 3px; }
     .export-selection-count[hidden] { display:none; }
     @media (min-width:701px) and (max-width:1000px) {
       .export-preflight-dialog.has-work-list .export-review-body { grid-template-columns:180px minmax(0,1fr) 250px; }
@@ -2553,73 +1998,16 @@
       .export-review-options { flex:none; overflow:visible; border-left:0; border-top:1px solid var(--soft); padding:14px; }
       .export-preflight-dialog.is-focused .export-review-stage { flex:1; height:auto; min-height:0; }
       .export-review-header, .export-review-footer { padding:10px 12px; gap:8px; }
-      .export-review-footer .serifu-sheet-actions { width:100%; justify-content:flex-end; flex-wrap:wrap; }
-      .export-review-header h3 { font-size:15px; }
       .export-actions { max-width:100%; }
     }
 
-
-    /* Preview toolbar density: one size contract for these two rows only. */
-    .floating-bars {
-      --top-control-h:22px;
-      --memo-control-h:24px;
-      --toolbar-font-size:12px;
-      --toolbar-gap:6px;
-      gap:var(--toolbar-gap);
+    @container (max-width:300px) {
+      .paper-cell-label-row { grid-template-columns:minmax(0,1fr); }
+      .paper-cell-label-row .ui-setting-row { grid-column:1; }
+      .paper-primary-actions { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .paper-primary-actions > :first-child { grid-column:1 / -1; }
+      .paper-primary-actions .paper-mini-btn { min-width:0; height:auto; white-space:normal; }
     }
-    .floating-bars .toolbar-actions { gap:var(--toolbar-gap); }
-    .floating-bars .toolbar-btn, .floating-bars .export-select {
-      height:var(--top-control-h); min-height:var(--top-control-h);
-      padding:0 6px; font-size:var(--toolbar-font-size); line-height:1;
-      border-radius:5px;
-    }
-    .floating-bars button { display:inline-flex; align-items:center; justify-content:center; }
-    .floating-bars button > span { line-height:1; }
-    .floating-bars .toolbar-btn.icon-only { width:24px; min-width:24px; padding:0; }
-    .floating-bars .toolbar-btn.with-icon { gap:4px; }
-    .floating-bars .toolbar-btn.with-icon .ic-svg { width:12px; height:12px; }
-    .floating-bars .global-history, .floating-bars .export-actions, .floating-bars .paper-toolbar-group {
-      padding:2px 3px; gap:3px; min-height:28px; border-radius:7px;
-      box-shadow:0 4px 12px rgba(0,0,0,.10);
-    }
-    .floating-bars .export-actions { grid-template-columns:58px minmax(0,max-content) minmax(0,max-content); width:auto; }
-    .floating-bars .paper-toolbar-group { height:auto; flex-wrap:wrap; }
-    .floating-bars .paper-toolbar-btn { font-size:11px; }
-    .floating-bars #paperToolbarPositionBtn, .floating-bars #paperToolbarResetBtn, .floating-bars #paperToolbarClearBtn { width:auto; }
-    .floating-bars .page-nav { height:28px; align-items:center; border-radius:7px; box-shadow:0 4px 12px rgba(0,0,0,.10); }
-    .floating-bars .page-nav .toolbar-btn.icon-only { border:0; border-radius:0; }
-    .floating-bars .page-indicator { min-width:48px; height:100%; padding:0 7px; line-height:1; }
-    .floating-bars #downloadAllBtn, .floating-bars #chooseExportDirBtn {
-      height:var(--top-control-h); min-height:var(--top-control-h); padding:0 6px; white-space:nowrap;
-    }
-    .floating-bars #chooseExportDirBtn { max-width:180px; }
-    .floating-bars #chooseExportDirBtn > span { min-width:0; overflow:hidden; text-overflow:ellipsis; }
-    .floating-bars .export-selection-count { padding:1px 3px; }
-    .floating-bars .history-scope { font-size:11px; padding:0 3px; line-height:1; }
-    .floating-bars .memo-controls { gap:6px; padding:4px 8px; border-radius:8px; box-shadow:0 6px 18px rgba(0,0,0,.10); }
-    .floating-bars .memo-btn, .floating-bars .memo-size-select {
-      height:var(--memo-control-h); min-height:var(--memo-control-h);
-      padding:0 6px; font-size:var(--toolbar-font-size); line-height:1; border-radius:5px;
-    }
-    .floating-bars .memo-btn { gap:4px; }
-    .floating-bars .memo-btn.icon-only, .floating-bars .readability-btn { width:24px; min-width:24px; padding:0; }
-    .floating-bars .memo-size-select { width:64px; }
-    .memo-tool-pair { display:inline-flex; align-items:center; gap:4px; flex:none; }
-    .floating-bars .memo-toolbar-divider { margin:2px 0; }
-    .floating-bars .memo-color-group { gap:4px; padding:2px; flex-wrap:nowrap; }
-    .floating-bars .memo-color-btn { width:20px; height:20px; border-width:1px; flex:none; }
-    .floating-bars .memo-color-btn.active { box-shadow:0 0 0 1px white,0 0 0 2px var(--text); }
-    .floating-bars .memo-color-btn .swatch { inset:2px; }
-    .floating-bars .zoom-controls { padding:0; gap:0; border-radius:6px; }
-    .floating-bars .zoom-controls .memo-btn { height:22px; min-height:22px; }
-    .floating-bars .zoom-btn { width:24px; min-width:24px; padding:0; }
-    .floating-bars .zoom-reset-btn { min-width:44px; padding:0 5px; }
-    .floating-bars .toolbar-notice { padding:2px 5px; font-size:11px; min-width:0; white-space:normal; }
-    .floating-bars .toolbar-notice .side-notice-close { flex:none; }
-    /* Font line boxes are centered, but visible labels sit slightly low. A shared 1px
-       bottom inset lifts text-control contents by half a pixel without moving their hit boxes. */
-    .floating-bars :is(#downloadAllBtn,#chooseExportDirBtn,.toolbar-btn:not(.icon-only),.memo-btn:not(.icon-only):not(.readability-btn):not(.zoom-btn),.page-indicator,.export-select,.memo-size-select) { padding-block:0 1px; }
-
 
     /* Focus stays visible within segmented controls; active buttons retain keyboard focus. */
     button.active:focus-visible { outline:2px solid var(--text); outline-offset:2px; }
@@ -2775,16 +2163,16 @@
               <button id="paperRedoBtn" class="paper-mini-btn" type="button" disabled>Redo</button>
               <button id="clearPaperImageBtn" class="paper-mini-btn" type="button">Clear Paper</button>
             </div>
-            <label class="paper-check-row paper-psd-memo-row" id="showPsdMemoRow" aria-disabled="true"><input id="showPsdMemoToggle" type="checkbox" checked disabled /> <span id="showPsdMemoText">Show separated PSD memo</span></label>
+            <label class="ui-check-row paper-check-row paper-psd-memo-row" id="showPsdMemoRow" aria-disabled="true"><input id="showPsdMemoToggle" type="checkbox" checked disabled /> <span id="showPsdMemoText">Show separated PSD memo</span></label>
 
-            <label class="paper-check-row"><input id="showTemplateToggle" type="checkbox" checked /> <span id="showTemplateText">Show built-in sheet template</span></label>
-            <label class="paper-check-row"><input id="showHeaderOutputToggle" type="checkbox" checked /> <span id="showHeaderOutputText">Show header output</span></label>
-            <label class="paper-check-row"><input id="showDurationPlusOutputToggle" type="checkbox" checked /> <span id="showDurationPlusOutputText">Show Duration + mark</span></label>
-            <label class="paper-check-row paper-cell-label-row">
-              <span class="paper-check-left"><input id="showCellLabelOutputToggle" type="checkbox" checked /> <span id="showCellLabelOutputText">Show cell label output</span></span>
-              <span class="paper-inline-control"><span id="cellColumnCountLabel">Cell columns</span><input id="cellColumnCountInput" type="number" min="1" max="32" step="1" value="8" /></span>
-              <span class="paper-inline-control"><span id="inbetweenColumnCountLabel">動画列数</span><input id="inbetweenColumnCountInput" type="number" min="-1" max="0" step="1" value="0" title="0 = Cell columns と同じ / -1 = Cell columns − 1" /></span>
-            </label>
+            <label class="ui-check-row paper-check-row"><input id="showTemplateToggle" type="checkbox" checked /> <span id="showTemplateText">Show built-in sheet template</span></label>
+            <label class="ui-check-row paper-check-row"><input id="showHeaderOutputToggle" type="checkbox" checked /> <span id="showHeaderOutputText">Show header output</span></label>
+            <label class="ui-check-row paper-check-row"><input id="showDurationPlusOutputToggle" type="checkbox" checked /> <span id="showDurationPlusOutputText">Show Duration + mark</span></label>
+            <div class="ui-check-row paper-check-row paper-cell-label-row">
+              <label class="paper-check-left"><input id="showCellLabelOutputToggle" type="checkbox" checked /> <span id="showCellLabelOutputText">Show cell label output</span></label>
+              <label class="ui-setting-row paper-inline-control"><span id="cellColumnCountLabel">Cell columns</span><input id="cellColumnCountInput" type="number" min="1" max="32" step="1" value="8" /></label>
+              <label class="ui-setting-row paper-inline-control"><span id="inbetweenColumnCountLabel">動画列数</span><input id="inbetweenColumnCountInput" type="number" min="-1" max="0" step="1" value="0" title="0 = Cell columns と同じ / -1 = Cell columns − 1" /></label>
+            </div>
             <div id="paperLayoutHint" class="hint" style="margin-top:10px;"></div>
             <div id="paperAutoAlignStatus" class="paper-auto-align-status" aria-live="polite"></div>
           </div>
@@ -3038,16 +2426,16 @@
     </aside>
   </div>
 
-  <div id="updateLogModal" class="update-log-modal" role="dialog" aria-modal="true" aria-labelledby="updateLogTitle" aria-hidden="true">
-    <div class="update-log-panel">
-      <div class="update-log-head">
+  <div id="updateLogModal" class="app-dialog-backdrop update-log-modal" role="dialog" aria-modal="true" aria-labelledby="updateLogTitle" aria-hidden="true">
+    <div class="app-dialog update-log-panel">
+      <div class="app-dialog-header">
         <div>
           <h2 id="updateLogTitle" class="update-log-title">Update History</h2>
           <p id="updateLogSubtitle" class="update-log-subtitle"></p>
         </div>
         <button id="updateLogCloseBtn" class="update-log-close" type="button" aria-label="Close"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6.5 6.5 11 11M17.5 6.5l-11 11"/></svg></button>
       </div>
-      <div id="updateLogContent" class="update-log-content"></div>
+      <div id="updateLogContent" class="app-dialog-body update-log-content"></div>
     </div>
   </div>
 
@@ -3102,7 +2490,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '907';
+    const APP_VERSION = '908';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -4301,6 +3689,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver908", "Consistent controls and dialogs", ["Buttons and fields now use consistent sizes, text and spacing for each role. Related settings align in rows, and number-field labels focus their own input.", "Tab stays inside update, dialog-sheet, output and recovery windows. Closing a window returns focus to the previous control."]],
         ["ver907", "Undo throughout the editor", ["Sheet edits, pen and text memos, paper positions and stage changes now share one undo history. Checkbox and select controls no longer block Ctrl/Cmd+Z. Text fields keep native undo, including memo line breaks."]],
         ["ver906", "Compact top and memo toolbars", ["Top controls are smaller, and the memo toolbar uses less padding and more compact tools. Control text alignment is consistent; pen and eraser size controls stay beside their tools."]],
         ["ver905", "Compact panel handles", ["Left and right panel handles are smaller and have their own clear space beside the output toolbar. Collapsing the left panel no longer moves the right handle to the left edge."]],
@@ -4358,6 +3747,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver908", "ボタン・設定・ウィンドウの表示を統一", ["ボタンと入力欄の大きさ、文字、余白を用途ごとに揃えました。関連する設定を行ごとに整列し、数値設定の名前を押すと対応する入力欄に移動します。", "更新履歴・セリフシート・書き出し・復旧のウィンドウで、Tabの移動先がウィンドウ内に収まります。閉じると直前のボタンに戻ります。"]],
         ["ver907", "編集全体で元に戻す", ["シート編集・ペンと文字のメモ・用紙の位置・段階の変更を同じ履歴で取り消せます。チェックボックスや選択メニューの後もCtrl/Cmd+Zが使えます。入力中の文字とメモの改行は入力欄の履歴で戻せます。"]],
         ["ver906", "上部・メモツールバーをコンパクトに", ["上部ボタンを小さくし、メモバーの余白と道具をコンパクトにしました。文字の配置を統一し、ペン・消しゴムとサイズ選択が離れないようにしました。"]],
         ["ver905", "パネル開閉ボタンをコンパクトに", ["左右のパネル開閉ボタンを小さくし、出力ツールバーとの間隔を確保しました。左パネルを閉じたとき、右の開閉ボタンが左端に重なる問題を修正しました。"]],
@@ -4415,6 +3805,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver908", "버튼·설정·창의 규격 정리", ["버튼과 입력칸의 크기·글자·여백을 용도별로 맞췄습니다. 관련 설정의 행을 정렬하고, 숫자 설정의 이름을 누르면 해당 입력칸에 초점이 갑니다.", "업데이트·세리후 시트·출력·복구 창에서 Tab으로 이동해도 창 밖으로 빠지지 않습니다. 창을 닫으면 이전 버튼으로 돌아갑니다."]],
         ["ver907", "편집 전반의 실행취소", ["시트 편집·펜과 텍스트 메모·용지 위치·단계 변경을 같은 이력으로 되돌립니다. 체크박스나 선택 메뉴를 조작한 뒤에도 Ctrl/Cmd+Z가 동작합니다. 입력 중인 글자와 메모의 줄바꿈은 입력창 이력으로 되돌립니다."]],
         ["ver906", "상단·메모 바 크기 정리", ["상단 버튼과 메모 도구를 작게 줄이고 바의 여백을 줄였습니다. 버튼 글자 정렬을 통일하고 펜·지우개의 크기 선택이 해당 도구와 함께 배치되도록 했습니다."]],
         ["ver905", "패널 접기 버튼 정리", ["좌우 패널 접기 버튼을 작게 줄이고 출력 툴바와 여백으로 분리했습니다. 왼쪽 패널을 접을 때 오른쪽 접기 버튼까지 왼쪽으로 이동해 겹치는 문제를 수정했습니다."]],
@@ -4472,6 +3863,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver908", "统一按钮、设置和窗口的样式", ["按用途统一了按钮和输入框的大小、文字与间距。相关设置按行对齐，点击数字设置的名称即可聚焦对应输入框。", "在更新记录、台词表、导出和恢复窗口中，Tab键的焦点保持在窗口内。关闭窗口后，焦点返回之前的控件。"]],
         ["ver907", "编辑器全局撤销", ["表格编辑、手写和文字备注、纸张位置及阶段变更共用同一撤销历史。操作复选框或选择菜单后也可使用Ctrl/Cmd+Z。输入中的文字与备注换行保留输入框原生撤销。"]],
         ["ver906", "更紧凑的顶部和备注工具栏", ["缩小顶部按钮、备注工具和工具栏间距。统一文字对齐，画笔和橡皮的大小选择与对应工具保持在一起。"]],
         ["ver905", "更紧凑的面板按钮", ["缩小左右面板折叠按钮，并与导出工具栏留出独立间距。修复折叠左面板时右侧按钮移动到左侧重叠的问题。"]],
@@ -5203,19 +4595,110 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       }
     }
 
+    // ══ [UI] 공통 창 — 겹침 순서·배경 비활성화·키보드·포커스 복귀 ════════════════════════════════
+    const appDialogStack = [];
+    const appDialogBackground = new Map();
+
+    function getAppDialogControls(backdrop) {
+      return Array.from(backdrop.querySelectorAll('button,input,select,textarea,a[href],summary,[tabindex],[contenteditable="true"]')).filter(function(node){
+        return node.tabIndex >= 0 && !node.matches(':disabled') && !node.closest('[inert]') && node.getClientRects().length && getComputedStyle(node).visibility !== 'hidden';
+      }).sort(function(a,b){ return (a.tabIndex || Infinity) - (b.tabIndex || Infinity); });
+    }
+
+    function focusAppDialog(dialog, preferred) {
+      const target = preferred && preferred.isConnected && !preferred.closest('[inert]') && !preferred.matches(':disabled') && preferred.getClientRects().length ? preferred : getAppDialogControls(dialog.backdrop)[0] || dialog.box;
+      target.focus({ preventScroll:true });
+    }
+
+    function syncAppDialogBackground() {
+      const top = appDialogStack[appDialogStack.length - 1];
+      if (!top) {
+        appDialogBackground.forEach(function(inert,node){ node.inert = inert; });
+        appDialogBackground.clear();
+        return;
+      }
+      Array.from(document.body.children).forEach(function(node){
+        if (!(node instanceof HTMLElement) || /^(SCRIPT|STYLE|LINK)$/.test(node.tagName)) return;
+        if (!appDialogBackground.has(node)) appDialogBackground.set(node,node.inert);
+        node.inert = node !== top.backdrop;
+      });
+      appDialogStack.forEach(function(dialog,index){ dialog.backdrop.style.setProperty('--dialog-layer',String(12000 + index * 10)); });
+    }
+
+    function handleAppDialogKeydown(event) {
+      const dialog = appDialogStack[appDialogStack.length - 1];
+      if (!dialog || event.isComposing || event.keyCode === 229) return;
+      if (event.key === 'Escape') {
+        event.preventDefault(); event.stopImmediatePropagation();
+        dialog.onRequestClose();
+      } else if (event.key === 'Tab') {
+        const controls = getAppDialogControls(dialog.backdrop), index = controls.indexOf(document.activeElement);
+        const next = index < 0 ? (event.shiftKey ? controls.length - 1 : 0) : (index + (event.shiftKey ? -1 : 1) + controls.length) % controls.length;
+        event.preventDefault(); event.stopImmediatePropagation();
+        focusAppDialog(dialog,controls[next]);
+      }
+    }
+
+    function handleAppDialogFocus(event) {
+      const dialog = appDialogStack[appDialogStack.length - 1];
+      if (dialog && !dialog.backdrop.contains(event.target)) focusAppDialog(dialog);
+    }
+
+    function stopAppDialogKeyPropagation(event) {
+      // Keep native text editing and feature handlers; stop editor shortcuts at the boundary.
+      event.stopPropagation();
+    }
+
+    function mountAppDialog(backdrop, options) {
+      if (appDialogStack.some(function(dialog){ return dialog.backdrop === backdrop; })) return;
+      const box = backdrop.querySelector('[role="dialog"]') || backdrop;
+      if (!box.hasAttribute('tabindex')) box.tabIndex = -1;
+      const dialog = { backdrop:backdrop,box:box,onRequestClose:options.onRequestClose,returnFocus:document.activeElement };
+      appDialogStack.push(dialog);
+      syncAppDialogBackground();
+      backdrop.addEventListener('keydown',stopAppDialogKeyPropagation);
+      backdrop.addEventListener('keyup',stopAppDialogKeyPropagation);
+      if (appDialogStack.length === 1) {
+        window.addEventListener('keydown',handleAppDialogKeydown,true);
+        window.addEventListener('focusin',handleAppDialogFocus,true);
+      }
+      focusAppDialog(dialog,options.initialFocus);
+    }
+
+    function unmountAppDialog(backdrop) {
+      const index = appDialogStack.findIndex(function(dialog){ return dialog.backdrop === backdrop; });
+      if (index < 0) return;
+      const wasTop = index === appDialogStack.length - 1, dialog = appDialogStack.splice(index,1)[0];
+      backdrop.removeEventListener('keydown',stopAppDialogKeyPropagation);
+      backdrop.removeEventListener('keyup',stopAppDialogKeyPropagation);
+      backdrop.style.removeProperty('--dialog-layer');
+      syncAppDialogBackground();
+      const top = appDialogStack[appDialogStack.length - 1];
+      if (!top) {
+        window.removeEventListener('keydown',handleAppDialogKeydown,true);
+        window.removeEventListener('focusin',handleAppDialogFocus,true);
+      }
+      if (!wasTop) return;
+      const target = dialog.returnFocus;
+      if (top) focusAppDialog(top,top.backdrop.contains(target) ? target : null);
+      else if (target && target.isConnected && !target.closest('[inert]') && !target.matches(':disabled') && target.getClientRects().length) target.focus({ preventScroll:true });
+      else if (appTitleEl) appTitleEl.focus({ preventScroll:true });
+    }
+
+    // ══ [UI] 업데이트 기록 창 ════════════════════════════════════════════════════════════════════
     function openUpdateLog() {
+      if (!updateLogModalEl || updateLogModalEl.classList.contains('open')) return;
       renderUpdateLog();
-      if (!updateLogModalEl) return;
       updateLogModalEl.classList.add('open');
-      updateLogModalEl.setAttribute('aria-hidden', 'false');
-      if (updateLogCloseBtn) updateLogCloseBtn.focus({ preventScroll: true });
+      updateLogModalEl.setAttribute('aria-hidden','false');
+      mountAppDialog(updateLogModalEl,{ onRequestClose:closeUpdateLog,initialFocus:updateLogCloseBtn });
     }
 
     function closeUpdateLog() {
-      if (!updateLogModalEl) return;
+      if (!updateLogModalEl || !updateLogModalEl.classList.contains('open')) return;
       updateLogModalEl.classList.remove('open');
-      updateLogModalEl.setAttribute('aria-hidden', 'true');
-      if (appTitleEl) appTitleEl.focus({ preventScroll: true });
+      unmountAppDialog(updateLogModalEl);
+      updateLogModalEl.setAttribute('aria-hidden','true');
     }
 
     const manualDocs = {
@@ -15194,15 +14677,12 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     function closeSerifuSheetModal() {
       const modal = state.serifuSheetModal;
       state.serifuSheetModal = null;
-      if (modal && modal.el && modal.el.parentNode) modal.el.parentNode.removeChild(modal.el);
-      document.removeEventListener('keydown', handleSerifuSheetModalKeydown, true);
+      if (!modal) return;
+      modal.el.remove();
+      unmountAppDialog(modal.el);
     }
 
-    function handleSerifuSheetModalKeydown(event) {
-      if (event.key === 'Escape') {
-        closeSerifuSheetModal();
-      }
-    }
+
 
     function openSerifuRangeContextMenu(event) {
       const texts = getSerifuSheetTexts();
@@ -15504,22 +14984,22 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       trackEvent('serifu_sheet_open');
       closeSerifuSheetModal();
       const backdrop = document.createElement('div');
-      backdrop.className = 'serifu-sheet-modal-backdrop';
+      backdrop.className = 'app-dialog-backdrop';
       const selectedUid = selection.uid;
       backdrop.innerHTML =
-        '<div class="serifu-sheet-modal" role="dialog" aria-modal="true">' +
-          '<h3>' + escapeStatusHtml(texts.title) + '</h3>' +
-          '<div class="serifu-sheet-grid">' +
-            '<div class="serifu-sheet-field"><label>' + escapeStatusHtml(texts.mode) + '</label><select data-serifu-field="mode"><option value="composite">' + escapeStatusHtml(texts.composite) + '</option><option value="cover">' + escapeStatusHtml(texts.cover) + '</option></select></div>' +
-            '<div class="serifu-sheet-field"><label>' + escapeStatusHtml(texts.target) + '</label><select data-serifu-field="target">' + getOriginalEntryOptionsHtml(selectedUid) + '</select></div>' +
-            '<div class="serifu-sheet-field"><label>' + escapeStatusHtml(texts.count) + '</label><input data-serifu-field="count" type="number" min="1" max="12" step="1" value="3" /></div>' +
-            '<div class="serifu-sheet-field"><label>' + escapeStatusHtml(texts.distribute) + '</label><select data-serifu-field="distribution"><option value="provisional">' + escapeStatusHtml(texts.provisional) + '</option><option value="random">' + escapeStatusHtml(texts.random) + '</option></select></div>' +
-            '<div class="serifu-sheet-field full"><label>' + escapeStatusHtml(texts.mouthValues) + '</label><div class="serifu-mouth-list" data-serifu-mouth-rows></div></div>' +
-            '<div class="serifu-sheet-field full"><label>' + escapeStatusHtml(texts.preview) + '</label><div class="serifu-sheet-preview" data-serifu-preview></div><div class="serifu-sheet-warning" data-serifu-warning></div></div>' +
+        '<div class="app-dialog" role="dialog" aria-modal="true" aria-labelledby="serifuModalTitle">' +
+          '<header class="app-dialog-header"><h3 id="serifuModalTitle">' + escapeStatusHtml(texts.title) + '</h3></header>' +
+          '<div class="app-dialog-body serifu-sheet-grid">' +
+            '<div class="ui-field"><label>' + escapeStatusHtml(texts.mode) + '</label><select data-serifu-field="mode"><option value="composite">' + escapeStatusHtml(texts.composite) + '</option><option value="cover">' + escapeStatusHtml(texts.cover) + '</option></select></div>' +
+            '<div class="ui-field"><label>' + escapeStatusHtml(texts.target) + '</label><select data-serifu-field="target">' + getOriginalEntryOptionsHtml(selectedUid) + '</select></div>' +
+            '<div class="ui-field"><label>' + escapeStatusHtml(texts.count) + '</label><input data-serifu-field="count" type="number" min="1" max="12" step="1" value="3" /></div>' +
+            '<div class="ui-field"><label>' + escapeStatusHtml(texts.distribute) + '</label><select data-serifu-field="distribution"><option value="provisional">' + escapeStatusHtml(texts.provisional) + '</option><option value="random">' + escapeStatusHtml(texts.random) + '</option></select></div>' +
+            '<div class="ui-field full"><label>' + escapeStatusHtml(texts.mouthValues) + '</label><div class="serifu-mouth-list" data-serifu-mouth-rows></div></div>' +
+            '<div class="ui-field full"><label>' + escapeStatusHtml(texts.preview) + '</label><div class="serifu-sheet-preview" data-serifu-preview></div><div class="serifu-sheet-warning" data-serifu-warning></div></div>' +
           '</div>' +
-          '<div class="serifu-sheet-actions"><button type="button" data-serifu-cancel>' + escapeStatusHtml(texts.cancel) + '</button><button type="button" class="primary" data-serifu-apply>' + escapeStatusHtml(texts.apply) + '</button></div>' +
+          '<div class="app-dialog-actions"><button type="button" data-serifu-cancel>' + escapeStatusHtml(texts.cancel) + '</button><button type="button" class="primary" data-serifu-apply>' + escapeStatusHtml(texts.apply) + '</button></div>' +
         '</div>';
-      const box = backdrop.querySelector('.serifu-sheet-modal');
+      const box = backdrop.querySelector('.app-dialog');
       const modal = {
         el:backdrop,
         box:box,
@@ -15561,8 +15041,12 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       document.body.appendChild(backdrop);
       state.serifuSheetModal = modal;
       refreshSerifuSheetModalPreview();
-      document.addEventListener('keydown', handleSerifuSheetModalKeydown, true);
-      setTimeout(function(){ if (modal.count) modal.count.focus(); }, 0);
+      backdrop.querySelectorAll('.ui-field > label').forEach(function(label){
+        const control = label.nextElementSibling;
+        if (!control || !control.matches('input,select,textarea')) return;
+        control.id = 'serifuModal-' + control.dataset.serifuField; label.htmlFor = control.id;
+      });
+      mountAppDialog(backdrop,{ onRequestClose:closeSerifuSheetModal,initialFocus:modal.count });
     }
 
     // ══ 세리후 시트 ④ 선택 범위 오버레이 렌더 ═════════════════════════════════════════════════════════════════════════════════════
@@ -21195,41 +20679,30 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     function chooseExportRecovery() {
       return new Promise(function(resolve){
         const backdrop = document.createElement('div');
-        backdrop.className = 'serifu-sheet-modal-backdrop export-recovery-backdrop';
-        const background = exportPreflightSession ? exportPreflightSession.backdrop : document.querySelector('.app');
-        const previousInert = background.inert, returnFocus = document.activeElement; background.inert = true;
-        const box = document.createElement('div'); box.className = 'serifu-sheet-modal';
+        backdrop.className = 'app-dialog-backdrop export-recovery-backdrop';
+        const box = document.createElement('div'); box.className = 'app-dialog';
         box.setAttribute('role','dialog'); box.setAttribute('aria-modal','true'); box.setAttribute('aria-label',ioText('permission'));
-        const message = document.createElement('p'); message.textContent = ioText('permission'); box.appendChild(message);
+        const message = document.createElement('p'); message.className = 'app-dialog-body'; message.textContent = ioText('permission'); box.appendChild(message);
         let settled = false;
         function finish(value) {
           if (settled) return; settled = true;
-          backdrop.remove(); background.inert = previousInert; document.removeEventListener('keydown', onKey, true);
-          if (returnFocus && returnFocus.isConnected) returnFocus.focus({ preventScroll:true });
+          backdrop.remove(); unmountAppDialog(backdrop);
           resolve(value);
         }
-        function onKey(event) {
-          event.stopImmediatePropagation();
-          if (event.key === 'Escape') { event.preventDefault(); finish(null); return; }
-          if (event.key !== 'Tab') return;
-          const buttons = Array.from(actions.querySelectorAll('button:not(:disabled)')), first = buttons[0], last = buttons[buttons.length - 1];
-          if (!backdrop.contains(document.activeElement)) { event.preventDefault(); (event.shiftKey ? last : first).focus(); }
-          else if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
-          else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
-        }
-        const actions = document.createElement('div'); actions.className = 'serifu-sheet-actions';
+        const actions = document.createElement('div'); actions.className = 'app-dialog-actions';
         ['downloadOnce','choose','cancel'].forEach(function(key){
           const button = document.createElement('button'); button.type = 'button'; button.textContent = ioText(key);
           button.addEventListener('click', async function(){
             if (key !== 'choose') { finish(key === 'downloadOnce' ? { handle:null } : null); return; }
             button.disabled = true;
-            const handle = await chooseExportDirectory();
-            button.disabled = false;
-            if (handle) finish({ handle:handle });
+            try {
+              const handle = await chooseExportDirectory();
+              if (!settled && handle) finish({ handle:handle });
+            } finally { button.disabled = false; }
           }); actions.appendChild(button);
         });
         box.appendChild(actions); backdrop.appendChild(box); document.body.appendChild(backdrop);
-        document.addEventListener('keydown', onKey, true); actions.firstChild.focus();
+        mountAppDialog(backdrop,{ onRequestClose:function(){ finish(null); },initialFocus:actions.firstChild });
       });
     }
 
@@ -25605,26 +25078,12 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (session.frame) cancelAnimationFrame(session.frame);
       if (session.resizeObserver) session.resizeObserver.disconnect();
       if (session.previewUrl) URL.revokeObjectURL(session.previewUrl);
-      session.backdrop.remove(); session.app.inert = session.previousInert;
+      session.backdrop.remove(); unmountAppDialog(session.backdrop);
       session.archive = null; session.snapshot = null; session.jobs = []; session.sources = [];
-      document.removeEventListener('keydown',handleExportPreflightModalKeydown,true);
-      if (session.returnFocus && session.returnFocus.isConnected) session.returnFocus.focus({ preventScroll:true });
+
     }
 
-    function handleExportPreflightModalKeydown(event) {
-      const session = exportPreflightSession;
-      if (!session || session.backdrop.inert) return;
-      const other = event.target instanceof Element ? event.target.closest('.serifu-sheet-modal-backdrop') : null;
-      if (other && other !== session.backdrop) return;
-      event.stopImmediatePropagation();
-      if (event.key === 'Escape') { event.preventDefault(); closeExportPreflightModal(); return; }
-      if (event.key !== 'Tab') return;
-      const controls = Array.from(session.backdrop.querySelectorAll('button:not(:disabled),input:not(:disabled),select:not(:disabled)')).filter(function(node){ return node.getClientRects().length; });
-      const first = controls[0], last = controls[controls.length - 1];
-      if (!session.backdrop.contains(document.activeElement)) { event.preventDefault(); (event.shiftKey ? last : first).focus(); }
-      else if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
-      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
-    }
+
 
     function setExportReviewJobData(job, snapshot) {
       job.savedFormat = snapshot.format; job.size = snapshot.size; job.baseNames = snapshot.names.slice();
@@ -25794,24 +25253,24 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       try { if (kind === 'current') current = captureExportSnapshot(); }
       catch (err) { setExportStatus(ioText('failed',{ page:1,error:err.message || err }),{ level:'error' }); return; }
       const text = function(key){ return escapeStatusHtml(exportUiText(key)); };
-      const backdrop = document.createElement('div'); backdrop.className = 'serifu-sheet-modal-backdrop export-preflight-modal-backdrop';
-      backdrop.innerHTML = '<div class="serifu-sheet-modal export-preflight-dialog' + (sources.length > 1 ? ' has-work-list' : '') + '" role="dialog" aria-modal="true" aria-labelledby="exportReviewTitle">' +
-        '<header class="export-review-header"><div><h3 id="exportReviewTitle">' + text('reviewTitle') + '</h3><div class="export-review-scope" data-review-scope></div></div><button class="toolbar-btn" type="button" data-preflight-cancel></button></header>' +
-        '<div class="export-review-body"><section class="export-review-jobs"' + (sources.length > 1 ? '' : ' hidden') + '><h4>' + text('unifiedWorkList') + '</h4><div class="export-review-job-tools"><button class="toolbar-btn" type="button" data-review-include-all="yes">' + text('unifiedSelectAll') + '</button><button class="toolbar-btn" type="button" data-review-include-all="no">' + text('libraryClear') + '</button></div><ul data-review-job-list></ul></section>' +
+      const backdrop = document.createElement('div'); backdrop.className = 'app-dialog-backdrop export-preflight-modal-backdrop';
+      backdrop.innerHTML = '<div class="app-dialog export-preflight-dialog' + (sources.length > 1 ? ' has-work-list' : '') + '" role="dialog" aria-modal="true" aria-labelledby="exportReviewTitle">' +
+        '<header class="app-dialog-header export-review-header"><div><h3 id="exportReviewTitle">' + text('reviewTitle') + '</h3><div class="export-review-scope" data-review-scope></div></div><button class="toolbar-btn" type="button" data-preflight-cancel></button></header>' +
+        '<div class="app-dialog-body export-review-body"><section class="export-review-jobs"' + (sources.length > 1 ? '' : ' hidden') + '><h4>' + text('unifiedWorkList') + '</h4><div class="export-review-job-tools"><button class="toolbar-btn" type="button" data-review-include-all="yes">' + text('unifiedSelectAll') + '</button><button class="toolbar-btn" type="button" data-review-include-all="no">' + text('libraryClear') + '</button></div><ul data-review-job-list></ul></section>' +
         '<section class="export-review-stage"><div class="export-review-active-name" data-review-active-name></div><nav class="export-review-nav" aria-label="' + text('outputReview') + '">' +
           '<button class="toolbar-btn" type="button" data-review-prev aria-label="' + text('reviewPrev') + '">‹</button><span class="export-review-page" data-review-page></span><button class="toolbar-btn" type="button" data-review-next aria-label="' + text('reviewNext') + '">›</button>' +
           '<button class="toolbar-btn" type="button" data-review-fit="page">' + text('fitPage') + '</button><button class="toolbar-btn" type="button" data-review-fit="width">' + text('fitWidth') + '</button><button class="toolbar-btn" type="button" data-review-focus aria-pressed="false">' + text('focusPreview') + '</button></nav>' +
           '<div class="export-review-viewport" data-review-viewport aria-busy="true"><img class="export-review-image" data-review-image alt="" hidden /><div class="export-review-message" data-review-message role="status"><div data-review-message-text></div><button class="toolbar-btn" type="button" data-review-retry hidden>' + text('reviewRetry') + '</button></div></div><div class="export-review-caption">' + text('reviewCaption') + '</div></section>' +
         '<section class="export-review-options"><div class="export-review-option-scope"><strong>' + text(kind === 'library' ? 'unifiedAllOptions' : 'unifiedCurrentOptions') + '</strong><div class="hint">' + text(kind === 'library' ? 'unifiedSavedDefaults' : 'outputComposition') + '</div></div>' +
-          '<div class="serifu-sheet-field full"' + (kind === 'library' ? ' hidden' : '') + '><label for="exportPreflightFilenameInput">' + escapeStatusHtml(t('exportPreflightFilenameLabel')) + '</label><input type="text" id="exportPreflightFilenameInput" data-preflight-filename /><div class="hint">' + escapeStatusHtml(t('exportPreflightFilenameHint')) + '</div></div>' +
-          '<div class="serifu-sheet-field full"><label for="exportReviewFormat">' + text('outputFormat') + '</label><select id="exportReviewFormat" data-preflight-format>' + (kind === 'library' ? '<option value="saved">' + text('batchSavedFormat') + '</option>' : '') + '<option value="png">PNG</option><option value="jpg">JPG</option><option value="psd">PSD</option></select></div>' +
-          '<div><h4>' + text('outputContents') + '</h4>' + EXPORT_REVIEW_FIELDS.map(function(field){ return '<label class="export-preflight-row"><input type="checkbox" data-preflight-field="' + field.key + '" /><span>' + text(field.label) + '</span><small class="export-review-mixed" data-review-mixed="' + field.key + '" hidden>' + text('unifiedMixed') + '</small></label>'; }).join('') + '<button class="toolbar-btn" type="button" data-review-reset>' + text('unifiedResetOptions') + '</button><div class="hint" data-review-psd hidden>' + text('psdLayers') + '</div></div>' +
+          '<div class="ui-field full"' + (kind === 'library' ? ' hidden' : '') + '><label for="exportPreflightFilenameInput">' + escapeStatusHtml(t('exportPreflightFilenameLabel')) + '</label><input type="text" id="exportPreflightFilenameInput" data-preflight-filename /><div class="hint">' + escapeStatusHtml(t('exportPreflightFilenameHint')) + '</div></div>' +
+          '<div class="ui-field full"><label for="exportReviewFormat">' + text('outputFormat') + '</label><select id="exportReviewFormat" data-preflight-format>' + (kind === 'library' ? '<option value="saved">' + text('batchSavedFormat') + '</option>' : '') + '<option value="png">PNG</option><option value="jpg">JPG</option><option value="psd">PSD</option></select></div>' +
+          '<div><h4>' + text('outputContents') + '</h4>' + EXPORT_REVIEW_FIELDS.map(function(field){ return '<label class="ui-check-row export-preflight-row"><input type="checkbox" data-preflight-field="' + field.key + '" /><span>' + text(field.label) + '</span><small class="export-review-mixed" data-review-mixed="' + field.key + '" hidden>' + text('unifiedMixed') + '</small></label>'; }).join('') + '<button class="toolbar-btn" type="button" data-review-reset>' + text('unifiedResetOptions') + '</button><div class="hint" data-review-psd hidden>' + text('psdLayers') + '</div></div>' +
           '<div><h4>' + text('outputLocation') + '</h4><div class="export-review-destination"><button class="toolbar-btn" type="button" data-review-folder>' + escapeStatusHtml(ioText('choose')) + '</button><button class="toolbar-btn" type="button" data-review-download>' + (kind === 'library' ? text('batchZip') : escapeStatusHtml(ioText('normal'))) + '</button></div><div class="hint" data-review-location></div></div>' +
           '<dl><dt>' + text('outputSize') + '</dt><dd data-review-size></dd><dt>' + text('firstOutputFile') + '</dt><dd data-review-first></dd><div data-review-last-row><dt>' + text('lastOutputFile') + '</dt><dd data-review-last></dd></div></dl></section></div>' +
-        '<footer class="export-review-footer"><div class="export-review-footer-status"><div class="export-review-summary" role="status" aria-live="polite" data-review-summary></div><progress data-review-progress hidden></progress></div><button class="toolbar-btn primary" type="button" data-preflight-confirm disabled></button></footer></div>';
-      const app = document.querySelector('.app'), now = new Date();
+        '<footer class="app-dialog-actions export-review-footer"><div class="export-review-footer-status"><div class="export-review-summary" role="status" aria-live="polite" data-review-summary></div><progress data-review-progress hidden></progress></div><button class="toolbar-btn primary" type="button" data-preflight-confirm disabled></button></footer></div>';
+      const now = new Date();
       const stamp = now.getFullYear() + String(now.getMonth() + 1).padStart(2,'0') + String(now.getDate()).padStart(2,'0') + '_' + [now.getHours(),now.getMinutes(),now.getSeconds()].map(function(value){ return String(value).padStart(2,'0'); }).join('');
-      const session = { backdrop:backdrop,app:app,previousInert:app.inert,returnFocus:document.activeElement,kind:kind,sources:sources,jobs:[],activeIndex:0,snapshot:null,currentSnapshot:current,page:0,fit:'page',revision:0,prepareRevision:0,prepared:0,done:0,folderCount:0,archiveCount:0,previewReady:false,previewUrl:'',outputOverrides:{},format:current ? current.format : 'saved',filename:current ? current.names[0] : '',runName:'AutoSheet_' + stamp,handle:state.exportDirectoryHandle,folderName:state.exportDirectoryName,renamed:0,preparing:kind === 'library' };
+      const session = { backdrop:backdrop,kind:kind,sources:sources,jobs:[],activeIndex:0,snapshot:null,currentSnapshot:current,page:0,fit:'page',revision:0,prepareRevision:0,prepared:0,done:0,folderCount:0,archiveCount:0,previewReady:false,previewUrl:'',outputOverrides:{},format:current ? current.format : 'saved',filename:current ? current.names[0] : '',runName:'AutoSheet_' + stamp,handle:state.exportDirectoryHandle,folderName:state.exportDirectoryName,renamed:0,preparing:kind === 'library' };
       session.jobs = sources.map(function(item){ return { name:item.filename || item.label || 'settings.json',status:'pending',included:true,page:0 }; });
       if (current) { const job = { name:exportUiText('unifiedCurrentWork'),included:true,page:state.currentPreviewPage || 0 }; setExportReviewJobData(job,current); session.jobs = [job]; }
       exportPreflightSession = session;
@@ -25836,12 +25295,12 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       backdrop.querySelectorAll('[data-review-include-all]').forEach(function(button){ button.addEventListener('click',function(){ session.jobs.forEach(function(job){ if (job.status !== 'error') job.included = button.dataset.reviewIncludeAll === 'yes'; }); applyExportReviewControls(session); }); });
       backdrop.querySelector('[data-preflight-confirm]').addEventListener('click',function(){ confirmExportReview(session); });
       backdrop.addEventListener('pointerdown',function(event){ if (event.target === backdrop && !session.running) closeExportPreflightModal(); });
-      document.body.appendChild(backdrop); app.inert = true;
-      document.addEventListener('keydown',handleExportPreflightModalKeydown,true);
+      document.body.appendChild(backdrop);
+      mountAppDialog(backdrop,{ onRequestClose:closeExportPreflightModal,initialFocus:backdrop.querySelector('[data-preflight-cancel]') });
       session.resizeObserver = new ResizeObserver(function(){ fitExportReviewImage(session); }); session.resizeObserver.observe(backdrop.querySelector('[data-review-viewport]'));
       setFocused(!!(options && options.focus)); reconcileExportReviewJobs(session); selectExportReviewJob(session,0);
       if (kind === 'library') prepareExportReviewJobs(session);
-      backdrop.querySelector('[data-preflight-cancel]').focus({ preventScroll:true });
+
     }
 
 
@@ -26251,7 +25710,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       });
     }
     document.addEventListener('keydown', function(event){
-      if (event.key === 'Escape' && updateLogModalEl && updateLogModalEl.classList.contains('open')) closeUpdateLog();
       if (event.key === 'Escape') {
         closeTextMemoContextMenu();
         if (state.textMemoEditMode && !state.textMemoResize && !state.textMemoPointerIntent) setTextMemoEditMode(false);
