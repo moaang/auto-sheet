@@ -48,6 +48,7 @@
       --ui-h-memo: 24px;
       --ui-h-control: 30px;
       --ui-h-action: 36px;
+      --ui-h-line-control: 20px; /* maximum for a control attached to a text line */
       --ui-fs-help: 11px;
       --ui-fs-body: 12px;
       --ui-fs-heading: 14px;
@@ -264,7 +265,7 @@
         .sheet-reset-btn,.input-mode-btn,.update-log-close,:where(.app-dialog-actions) button,
         .export-select,.memo-size-select,.stage-slot-picker):disabled { opacity:var(--ui-disabled); cursor:default; }
     :is(.sidebar,.rightpanel,.app-dialog) :is(input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="hidden"]),select) {
-      min-height:var(--ui-h-control); height:var(--ui-h-control); padding-block:0 1px;
+      min-height:var(--control-h,var(--ui-h-control)); height:var(--control-h,var(--ui-h-control)); padding-block:0 1px;
     }
     .toolbar-actions .toolbar-btn.icon-only { width:var(--ui-h-memo); min-width:var(--ui-h-memo); }
     .page-nav, .global-history, .export-actions, .paper-toolbar-group {
@@ -1509,7 +1510,7 @@
       position: absolute;
       right: 7px;
       z-index: 3;
-      height: 20px;
+      height:var(--control-h,var(--ui-h-line-control));
       width: auto; /* the global `select { width:100% }` rule must not stretch these */
       /* 옵션은 ▲/-/FI/FO/OL 뿐이라(최대 2글자) 64~96px 는 과했다 — 실제로 필요한 폭만큼만. */
       min-width: 40px;
@@ -2490,7 +2491,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '908';
+    const APP_VERSION = '909';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3689,6 +3690,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver909", "Camera marker controls fit their text lines", ["Fixed oversized marker selectors on the right of the camera input. Each control now follows its text line with a gap from the next control."]],
         ["ver908", "Consistent controls and dialogs", ["Buttons and fields now use consistent sizes, text and spacing for each role. Related settings align in rows, and number-field labels focus their own input.", "Tab stays inside update, dialog-sheet, output and recovery windows. Closing a window returns focus to the previous control."]],
         ["ver907", "Undo throughout the editor", ["Sheet edits, pen and text memos, paper positions and stage changes now share one undo history. Checkbox and select controls no longer block Ctrl/Cmd+Z. Text fields keep native undo, including memo line breaks."]],
         ["ver906", "Compact top and memo toolbars", ["Top controls are smaller, and the memo toolbar uses less padding and more compact tools. Control text alignment is consistent; pen and eraser size controls stay beside their tools."]],
@@ -3747,6 +3749,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver909", "カメラ表示方式の選択欄の大きさを修正", ["カメラ入力欄の右側の選択欄が大きくなり、重なる問題を修正しました。各行に合う小さな大きさで表示し、次の行の選択欄との間隔を確保します。"]],
         ["ver908", "ボタン・設定・ウィンドウの表示を統一", ["ボタンと入力欄の大きさ、文字、余白を用途ごとに揃えました。関連する設定を行ごとに整列し、数値設定の名前を押すと対応する入力欄に移動します。", "更新履歴・セリフシート・書き出し・復旧のウィンドウで、Tabの移動先がウィンドウ内に収まります。閉じると直前のボタンに戻ります。"]],
         ["ver907", "編集全体で元に戻す", ["シート編集・ペンと文字のメモ・用紙の位置・段階の変更を同じ履歴で取り消せます。チェックボックスや選択メニューの後もCtrl/Cmd+Zが使えます。入力中の文字とメモの改行は入力欄の履歴で戻せます。"]],
         ["ver906", "上部・メモツールバーをコンパクトに", ["上部ボタンを小さくし、メモバーの余白と道具をコンパクトにしました。文字の配置を統一し、ペン・消しゴムとサイズ選択が離れないようにしました。"]],
@@ -3805,6 +3808,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver909", "카메라 표시방식 선택칸 크기 수정", ["카메라 입력란 오른쪽 선택칸이 커져 서로 겹치던 문제를 고쳤습니다. 각 텍스트 줄에 맞는 작은 크기로 표시하며, 다음 줄의 선택칸과 간격을 둡니다."]],
         ["ver908", "버튼·설정·창의 규격 정리", ["버튼과 입력칸의 크기·글자·여백을 용도별로 맞췄습니다. 관련 설정의 행을 정렬하고, 숫자 설정의 이름을 누르면 해당 입력칸에 초점이 갑니다.", "업데이트·세리후 시트·출력·복구 창에서 Tab으로 이동해도 창 밖으로 빠지지 않습니다. 창을 닫으면 이전 버튼으로 돌아갑니다."]],
         ["ver907", "편집 전반의 실행취소", ["시트 편집·펜과 텍스트 메모·용지 위치·단계 변경을 같은 이력으로 되돌립니다. 체크박스나 선택 메뉴를 조작한 뒤에도 Ctrl/Cmd+Z가 동작합니다. 입력 중인 글자와 메모의 줄바꿈은 입력창 이력으로 되돌립니다."]],
         ["ver906", "상단·메모 바 크기 정리", ["상단 버튼과 메모 도구를 작게 줄이고 바의 여백을 줄였습니다. 버튼 글자 정렬을 통일하고 펜·지우개의 크기 선택이 해당 도구와 함께 배치되도록 했습니다."]],
@@ -3863,6 +3867,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver909", "修复摄影标记选择框的大小", ["修复了摄影输入区右侧选择框变大并相互重叠的问题。选择框现在按文本行调整大小，并与下一行的选择框保留间距。"]],
         ["ver908", "统一按钮、设置和窗口的样式", ["按用途统一了按钮和输入框的大小、文字与间距。相关设置按行对齐，点击数字设置的名称即可聚焦对应输入框。", "在更新记录、台词表、导出和恢复窗口中，Tab键的焦点保持在窗口内。关闭窗口后，焦点返回之前的控件。"]],
         ["ver907", "编辑器全局撤销", ["表格编辑、手写和文字备注、纸张位置及阶段变更共用同一撤销历史。操作复选框或选择菜单后也可使用Ctrl/Cmd+Z。输入中的文字与备注换行保留输入框原生撤销。"]],
         ["ver906", "更紧凑的顶部和备注工具栏", ["缩小顶部按钮、备注工具和工具栏间距。统一文字对齐，画笔和橡皮的大小选择与对应工具保持在一起。"]],
@@ -12254,12 +12259,15 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const lineHeightValue = style ? parseFloat(style.lineHeight) : NaN;
       const lineHeight = Number.isFinite(lineHeightValue) ? lineHeightValue : fontSize * 1.35;
       const paddingTop = style ? (parseFloat(style.paddingTop) || 0) : 0;
-      const controlH = 20;
+      // One measured size drives both CSS and placement. Leave a gap between adjacent lines.
+      const maxControlH = style ? parseFloat(style.getPropertyValue('--ui-h-line-control')) : NaN;
+      const controlH = Math.max(1, Math.min(Number.isFinite(maxControlH) ? maxControlH : lineHeight, lineHeight - 2));
+      cameraDirectiveCompleterEl.style.setProperty('--control-h', controlH + 'px');
       cameraDirectiveCompleterEl.classList.remove('hidden');
       infos.forEach(function(info){
         const select = createCameraDirectiveSelect(info, groupedLineIndexes);
-        // Center the 20px control on its text line, relative to the wrapper (textarea offset included).
-        const y = textarea.offsetTop + paddingTop + info.lineIndex * lineHeight + (lineHeight - controlH) / 2;
+        // Center the measured control on its text line (textarea offset included).
+        const y = textarea.offsetTop + textarea.clientTop + paddingTop + info.lineIndex * lineHeight + (lineHeight - controlH) / 2;
         select.style.top = Math.round(y) + 'px';
         cameraDirectiveCompleterEl.appendChild(select);
       });
