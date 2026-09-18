@@ -2515,7 +2515,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '911';
+    const APP_VERSION = '912';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3752,6 +3752,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver912", "Fixes to reading a .clip: the end-of-cel mark, and layouts that were not verified", ["Where a cel stops, ver911 wrote a wavy mark. That glyph means something else on this sheet (it belongs to dialogue placement), so it now writes the cross that means \u300cno drawing from here\u300d \u2014 the same thing CLIP STUDIO itself writes in its timesheet export.", "A timeline that does not start at frame 0 can no longer be picked. Where its cel positions sit has never been verified, and guessing would shift or clip the sheet silently. The reason is shown on that timeline's row.", "If a timeline you ticked has no rows picked, the Load button now stays off and each row shows how many are picked \u2014 before, it let you confirm and then stopped everything with a message.", "If anything fails while loading, the sheet and its stages go back to how they were."]],
         ["ver911", "A .clip file dropped on the sheet is read directly \u2014 no timesheet export needed", ["Drag a CLIP STUDIO .clip file onto the sheet and it reads the sheet straight out of the file. You no longer have to go through File \u2192 Export animation \u2192 Timesheet information first.", "A window opens first so you can see what will come in. Tick the rows you want, rename them, and set each one's role (Cell / Hide / Book / Dialog / Camera).", "Layers outside the animation folders \u2014 a BOOK sitting between two cel columns, for instance \u2014 can be picked here. A timesheet CSV or .xdts never carried them, so this is the only way they arrive.", "Several timelines can be taken at once, and each one you pick becomes its own stage. Rows that could not be read are shown with the reason instead of coming in as empty cels."]],
         ["ver909", "Camera marker controls fit their text lines", ["Fixed oversized marker selectors on the right of the camera input. Each control now follows its text line with a gap from the next control."]],
         ["ver908", "Consistent controls and dialogs", ["Buttons and fields now use consistent sizes, text and spacing for each role. Related settings align in rows, and number-field labels focus their own input.", "Tab stays inside update, dialog-sheet, output and recovery windows. Closing a window returns focus to the previous control."]],
@@ -3812,6 +3813,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver912", ".clip \u8aad\u307f\u8fbc\u307f\u306e\u4fee\u6b63\uff1a\u30bb\u30eb\u306e\u7d42\u308f\u308a\u8a18\u53f7\u3068\u3001\u672a\u78ba\u8a8d\u306e\u4e26\u3073", ["\u30bb\u30eb\u304c\u7d42\u308f\u308b\u4f4d\u7f6e\u306b ver911 \u306f\u6ce2\u5f62\u306e\u8a18\u53f7\u3092\u66f8\u3044\u3066\u3044\u307e\u3057\u305f\u3002\u3053\u306e\u8a18\u53f7\u306f\u3053\u306e\u30b7\u30fc\u30c8\u3067\u306f\u5225\u306e\u610f\u5473\uff08\u30bb\u30ea\u30d5\u306e\u4eee\u7f6e\u304d\uff09\u306a\u306e\u3067\u3001\u300c\u3053\u3053\u304b\u3089\u7d75\u304c\u306a\u3044\u300d\u3092\u8868\u3059 \u00d7 \u306b\u76f4\u3057\u307e\u3057\u305f\u3002CLIP STUDIO \u81ea\u8eab\u304c\u30bf\u30a4\u30e0\u30b7\u30fc\u30c8\u66f8\u304d\u51fa\u3057\u3067\u66f8\u304f\u3082\u306e\u3068\u540c\u3058\u3067\u3059\u3002", "0\u30d5\u30ec\u30fc\u30e0\u304b\u3089\u59cb\u307e\u3089\u306a\u3044\u30bf\u30a4\u30e0\u30e9\u30a4\u30f3\u306f\u9078\u3079\u306a\u304f\u306a\u308a\u307e\u3057\u305f\u3002\u305d\u306e\u30b3\u30de\u4f4d\u7f6e\u304c\u3069\u3053\u3092\u6307\u3059\u306e\u304b\u78ba\u8a8d\u3067\u304d\u3066\u3044\u306a\u3044\u305f\u3081\u3001\u63a8\u6e2c\u3059\u308b\u3068\u6c17\u3065\u304b\u306a\u3044\u307e\u307e\u30b7\u30fc\u30c8\u304c\u305a\u308c\u305f\u308a\u5207\u308c\u305f\u308a\u3057\u307e\u3059\u3002\u7406\u7531\u306f\u305d\u306e\u884c\u306b\u8868\u793a\u3055\u308c\u307e\u3059\u3002", "\u30c1\u30a7\u30c3\u30af\u3057\u305f\u30bf\u30a4\u30e0\u30e9\u30a4\u30f3\u306e\u884c\u30921\u3064\u3082\u9078\u3093\u3067\u3044\u306a\u3044\u3068\u3001\u8aad\u307f\u8fbc\u307f\u30dc\u30bf\u30f3\u304c\u62bc\u305b\u306a\u304f\u306a\u308a\u3001\u5404\u884c\u306b\u9078\u629e\u6570\u304c\u51fa\u307e\u3059\u3002\u3053\u308c\u307e\u3067\u306f\u78ba\u5b9a\u3067\u304d\u3066\u3057\u307e\u3044\u3001\u305d\u306e\u5f8c\u3067\u5168\u4f53\u304c\u6b62\u307e\u3063\u3066\u3044\u307e\u3057\u305f\u3002", "\u8aad\u307f\u8fbc\u307f\u4e2d\u306b\u5931\u6557\u3057\u305f\u5834\u5408\u306f\u3001\u30b7\u30fc\u30c8\u3068\u6bb5\u968e\u304c\u5143\u306e\u72b6\u614b\u306b\u623b\u308a\u307e\u3059\u3002"]],
         ["ver911", ".clip \u3092\u30b7\u30fc\u30c8\u306b\u30c9\u30ed\u30c3\u30d7\u3059\u308b\u3068\u3001\u305d\u306e\u307e\u307e\u8aad\u307f\u8fbc\u307e\u308c\u307e\u3059\uff08\u30bf\u30a4\u30e0\u30b7\u30fc\u30c8\u66f8\u304d\u51fa\u3057\u4e0d\u8981\uff09", ["CLIP STUDIO \u306e .clip \u30d5\u30a1\u30a4\u30eb\u3092\u30b7\u30fc\u30c8\u306b\u30c9\u30e9\u30c3\u30b0\u3059\u308b\u3068\u3001\u30d5\u30a1\u30a4\u30eb\u304b\u3089\u76f4\u63a5\u30b7\u30fc\u30c8\u3092\u8aad\u307f\u53d6\u308a\u307e\u3059\u3002\u30d5\u30a1\u30a4\u30eb \u2192 \u30a2\u30cb\u30e1\u30fc\u30b7\u30e7\u30f3\u66f8\u304d\u51fa\u3057 \u2192 \u30bf\u30a4\u30e0\u30b7\u30fc\u30c8\u60c5\u5831 \u3092\u5148\u306b\u884c\u3046\u5fc5\u8981\u306f\u3042\u308a\u307e\u305b\u3093\u3002", "\u5148\u306b\u78ba\u8a8d\u7528\u306e\u7a93\u304c\u958b\u304d\u307e\u3059\u3002\u8aad\u307f\u8fbc\u3080\u884c\u306b\u30c1\u30a7\u30c3\u30af\u3092\u5165\u308c\u3001\u540d\u524d\u3092\u76f4\u3057\u3001\u5f79\u5272\uff08Cell / Hide / Book / Dialog / Camera\uff09\u3092\u6c7a\u3081\u3089\u308c\u307e\u3059\u3002", "\u30a2\u30cb\u30e1\u30fc\u30b7\u30e7\u30f3\u30d5\u30a9\u30eb\u30c0\u30fc\u306e\u5916\u306b\u3042\u308b\u30ec\u30a4\u30e4\u30fc\uff08\u30bb\u30eb\u306e\u9593\u306b\u631f\u307e\u3063\u305f\u30d6\u30c3\u30af\u306a\u3069\uff09\u3082\u3053\u3053\u3067\u9078\u3079\u307e\u3059\u3002\u30bf\u30a4\u30e0\u30b7\u30fc\u30c8CSV\u3084 .xdts \u306b\u306f\u5143\u3005\u8f09\u3089\u306a\u3044\u305f\u3081\u3001\u3053\u308c\u304c\u552f\u4e00\u306e\u7d4c\u8def\u3067\u3059\u3002", "\u30bf\u30a4\u30e0\u30e9\u30a4\u30f3\u306f\u8907\u6570\u307e\u3068\u3081\u3066\u53d6\u308a\u8fbc\u3081\u307e\u3059\u3002\u9078\u3093\u3060\u5206\u3060\u3051\u6bb5\u968e\u304c\u4f5c\u3089\u308c\u307e\u3059\u3002\u8aad\u307f\u53d6\u308c\u306a\u304b\u3063\u305f\u884c\u306f\u7a7a\u306e\u30bb\u30eb\u3068\u3057\u3066\u5165\u3089\u305a\u3001\u7406\u7531\u304c\u8868\u793a\u3055\u308c\u307e\u3059\u3002"]],
         ["ver909", "カメラ表示方式の選択欄の大きさを修正", ["カメラ入力欄の右側の選択欄が大きくなり、重なる問題を修正しました。各行に合う小さな大きさで表示し、次の行の選択欄との間隔を確保します。"]],
         ["ver908", "ボタン・設定・ウィンドウの表示を統一", ["ボタンと入力欄の大きさ、文字、余白を用途ごとに揃えました。関連する設定を行ごとに整列し、数値設定の名前を押すと対応する入力欄に移動します。", "更新履歴・セリフシート・書き出し・復旧のウィンドウで、Tabの移動先がウィンドウ内に収まります。閉じると直前のボタンに戻ります。"]],
@@ -3872,6 +3874,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver912", ".clip \uc77d\uae30 \uc218\uc815: \uc140\uc774 \ub05d\ub098\ub294 \ud45c\uc2dc\uc640, \ud655\uc778\ub418\uc9c0 \uc54a\uc740 \ubc30\uce58", ["\uc140\uc774 \ub05d\ub098\ub294 \uc790\ub9ac\uc5d0 ver911\uc740 \ubb3c\uacb0 \ud45c\uc2dc\ub97c \uc801\uc5c8\uc2b5\ub2c8\ub2e4. \uc774 \uae00\ub9ac\ud504\ub294 \uc774 \uc2dc\ud2b8\uc5d0\uc11c \ub2e4\ub978 \ub73b(\ub300\uc0ac \uac00\ubc30\uce58)\uc774\ub77c, \u300c\uc5ec\uae30\ubd80\ud130 \uadf8\ub9bc \uc5c6\uc74c\u300d\uc744 \ub73b\ud558\ub294 \u00d7\ub85c \uace0\ucce4\uc2b5\ub2c8\ub2e4. CLIP STUDIO \uc790\uc2e0\uc774 \ud0c0\uc784\uc2dc\ud2b8 \ub0b4\ubcf4\ub0b4\uae30\uc5d0 \uc801\ub294 \uac83\uacfc \uac19\uc2b5\ub2c8\ub2e4.", "0\ud504\ub808\uc784\uc5d0\uc11c \uc2dc\uc791\ud558\uc9c0 \uc54a\ub294 \ud0c0\uc784\ub77c\uc778\uc740 \uc774\uc81c \uace0\ub97c \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uadf8 \ucf54\ub9c8 \uc704\uce58\uac00 \uc5b4\ub514\ub97c \uac00\ub9ac\ud0a4\ub294\uc9c0 \ud655\uc778\ub41c \uc801\uc774 \uc5c6\uc5b4, \uc9d0\uc791\ud558\uba74 \uc2dc\ud2b8\uac00 \uc870\uc6a9\ud788 \ubc00\ub9ac\uac70\ub098 \uc798\ub9bd\ub2c8\ub2e4. \uc774\uc720\ub294 \uadf8 \ud0c0\uc784\ub77c\uc778 \uc904\uc5d0 \ud45c\uc2dc\ub429\ub2c8\ub2e4.", "\uccb4\ud06c\ud55c \ud0c0\uc784\ub77c\uc778\uc5d0\uc11c \ud589\uc744 \ud558\ub098\ub3c4 \uace0\ub974\uc9c0 \uc54a\uc73c\uba74 \ubd88\ub7ec\uc624\uae30 \ubc84\ud2bc\uc774 \ub20c\ub9ac\uc9c0 \uc54a\uace0, \uc904\ub9c8\ub2e4 \uace0\ub978 \uc218\uac00 \ubcf4\uc785\ub2c8\ub2e4. \uc804\uc5d0\ub294 \ud655\uc815\uc774 \ub418\uace0 \ub098\uc11c \uc804\uccb4\uac00 \uba48\ucdc4\uc2b5\ub2c8\ub2e4.", "\uc77d\ub294 \ub3c4\uc911 \uc2e4\ud328\ud558\uba74 \uc2dc\ud2b8\uc640 \ub2e8\uacc4\uac00 \uc6d0\ub798 \uc0c1\ud0dc\ub85c \ub3cc\uc544\uac11\ub2c8\ub2e4."]],
         ["ver911", ".clip \uc744 \uc2dc\ud2b8\uc5d0 \ub4dc\ub86d\ud558\uba74 \uadf8\ub300\ub85c \uc77d\uc2b5\ub2c8\ub2e4 (\ud0c0\uc784\uc2dc\ud2b8 \ub0b4\ubcf4\ub0b4\uae30 \ubd88\ud544\uc694)", ["CLIP STUDIO \uc758 .clip \ud30c\uc77c\uc744 \uc2dc\ud2b8 \uc704\ub85c \ub04c\uc5b4\ub2e4 \ub193\uc73c\uba74 \ud30c\uc77c\uc5d0\uc11c \uc2dc\ud2b8\ub97c \ubc14\ub85c \uc77d\uc2b5\ub2c8\ub2e4. \ud30c\uc77c \u2192 \uc560\ub2c8\uba54\uc774\uc158 \ub0b4\ubcf4\ub0b4\uae30 \u2192 \ud0c0\uc784\uc2dc\ud2b8 \uc815\ubcf4\ub97c \uba3c\uc800 \uac70\uce60 \ud544\uc694\uac00 \uc5c6\uc2b5\ub2c8\ub2e4.", "\ud655\uc778 \ucc3d\uc774 \uba3c\uc800 \uc5f4\ub9bd\ub2c8\ub2e4. \uac00\uc838\uc62c \ud589\uc5d0 \uccb4\ud06c\ud558\uace0 \uc774\ub984\uc744 \uace0\uce58\uace0 \uc5ed\ud560(Cell / Hide / Book / Dialog / Camera)\uc744 \uc815\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.", "\uc560\ub2c8\uba54\uc774\uc158 \ud3f4\ub354 \ubc16\uc5d0 \uc788\ub294 \ub808\uc774\uc5b4(\uc140 \uc0ac\uc774\uc5d0 \ub080 \ubd81 \ub4f1)\ub3c4 \uc5ec\uae30\uc11c \uace0\ub97c \uc218 \uc788\uc2b5\ub2c8\ub2e4. \ud0c0\uc784\uc2dc\ud2b8 CSV \ub098 .xdts \uc5d0\ub294 \uc560\ucd08\uc5d0 \uc2e4\ub9ac\uc9c0 \uc54a\uc544 \uc774 \uae38\ub9cc \uadf8\uac83\uc744 \uac00\uc838\uc635\ub2c8\ub2e4.", "\ud0c0\uc784\ub77c\uc778\uc740 \uc5ec\ub7ec \ubc8c\uc744 \ud55c \ubc88\uc5d0 \uac00\uc838\uc62c \uc218 \uc788\uace0 \uace0\ub978 \uac83\ub9c8\ub2e4 \ub2e8\uacc4\uac00 \ud558\ub098\uc529 \ub9cc\ub4e4\uc5b4\uc9d1\ub2c8\ub2e4. \uc77d\uc9c0 \ubabb\ud55c \ud589\uc740 \ube48 \uc140\ub85c \ub4e4\uc5b4\uac00\uc9c0 \uc54a\uace0 \uc774\uc720\uac00 \ud45c\uc2dc\ub429\ub2c8\ub2e4."]],
         ["ver909", "카메라 표시방식 선택칸 크기 수정", ["카메라 입력란 오른쪽 선택칸이 커져 서로 겹치던 문제를 고쳤습니다. 각 텍스트 줄에 맞는 작은 크기로 표시하며, 다음 줄의 선택칸과 간격을 둡니다."]],
         ["ver908", "버튼·설정·창의 규격 정리", ["버튼과 입력칸의 크기·글자·여백을 용도별로 맞췄습니다. 관련 설정의 행을 정렬하고, 숫자 설정의 이름을 누르면 해당 입력칸에 초점이 갑니다.", "업데이트·세리후 시트·출력·복구 창에서 Tab으로 이동해도 창 밖으로 빠지지 않습니다. 창을 닫으면 이전 버튼으로 돌아갑니다."]],
@@ -3932,6 +3935,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver912", ".clip \u8bfb\u53d6\u4fee\u6b63\uff1a\u8d5b\u7490\u7490\u7ed3\u675f\u6807\u8bb0\u4e0e\u672a\u9a8c\u8bc1\u7684\u6392\u5217", ["ver911 \u5728\u8d5b\u7490\u7490\u7ed3\u675f\u7684\u4f4d\u7f6e\u5199\u7684\u662f\u6ce2\u6d6a\u6807\u8bb0\u3002\u8be5\u5b57\u5f62\u5728\u672c\u8868\u4e2d\u53e6\u6709\u542b\u4e49\uff08\u5bf9\u767d\u4e34\u65f6\u6446\u653e\uff09\uff0c\u56e0\u6b64\u6539\u4e3a\u8868\u793a\u300c\u4ece\u6b64\u5904\u8d77\u6ca1\u6709\u753b\u300d\u7684 \u00d7\uff0c\u4e0e CLIP STUDIO \u81ea\u8eab\u5728\u65f6\u95f4\u8868\u5bfc\u51fa\u4e2d\u6240\u5199\u7684\u76f8\u540c\u3002", "\u4e0d\u662f\u4ece\u7b2c 0 \u5e27\u5f00\u59cb\u7684\u65f6\u95f4\u8f74\u73b0\u5728\u65e0\u6cd5\u9009\u62e9\u3002\u5176\u683c\u5b50\u4f4d\u7f6e\u6307\u5411\u4f55\u5904\u4ece\u672a\u9a8c\u8bc1\uff0c\u82e5\u9760\u731c\u6d4b\u4f1a\u8ba9\u8868\u6084\u6084\u9519\u4f4d\u6216\u88ab\u622a\u65ad\u3002\u539f\u56e0\u4f1a\u663e\u793a\u5728\u8be5\u65f6\u95f4\u8f74\u884c\u4e0a\u3002", "\u82e5\u52fe\u9009\u7684\u65f6\u95f4\u8f74\u4e00\u884c\u90fd\u6ca1\u9009\uff0c\u8bfb\u53d6\u6309\u94ae\u5c06\u65e0\u6cd5\u6309\u4e0b\uff0c\u5e76\u5728\u6bcf\u884c\u663e\u793a\u5df2\u9009\u6570\u91cf\u3002\u6b64\u524d\u53ef\u4ee5\u786e\u8ba4\uff0c\u7136\u540e\u6574\u4f53\u624d\u505c\u6b62\u3002", "\u8bfb\u53d6\u8fc7\u7a0b\u4e2d\u82e5\u5931\u8d25\uff0c\u5de5\u4f5c\u8868\u4e0e\u9636\u6bb5\u4f1a\u6062\u590d\u539f\u72b6\u3002"]],
         ["ver911", "\u628a .clip \u62d6\u5230\u8868\u4e0a\u5373\u53ef\u76f4\u63a5\u8bfb\u53d6\uff08\u65e0\u9700\u5bfc\u51fa\u65f6\u95f4\u8868\uff09", ["\u5c06 CLIP STUDIO \u7684 .clip \u6587\u4ef6\u62d6\u5230\u5de5\u4f5c\u8868\u4e0a\uff0c\u5c31\u4f1a\u76f4\u63a5\u4ece\u6587\u4ef6\u4e2d\u8bfb\u53d6\u8868\u3002\u4e0d\u5fc5\u5148\u6267\u884c \u6587\u4ef6 \u2192 \u5bfc\u51fa\u52a8\u753b \u2192 \u65f6\u95f4\u8868\u4fe1\u606f\u3002", "\u4f1a\u5148\u6253\u5f00\u4e00\u4e2a\u786e\u8ba4\u7a97\u53e3\u3002\u52fe\u9009\u8981\u8bfb\u53d6\u7684\u884c\u3001\u4fee\u6539\u540d\u79f0\uff0c\u5e76\u8bbe\u7f6e\u5404\u81ea\u7684\u89d2\u8272\uff08Cell / Hide / Book / Dialog / Camera\uff09\u3002", "\u52a8\u753b\u6587\u4ef6\u5939\u4e4b\u5916\u7684\u56fe\u5c42\uff08\u4f8b\u5982\u5939\u5728\u8d5b\u7490\u7490\u4e4b\u95f4\u7684 BOOK\uff09\u4e5f\u53ef\u4ee5\u5728\u8fd9\u91cc\u9009\u62e9\u3002\u65f6\u95f4\u8868 CSV \u548c .xdts \u672c\u6765\u5c31\u4e0d\u5305\u542b\u5b83\u4eec\uff0c\u6240\u4ee5\u8fd9\u662f\u552f\u4e00\u7684\u9014\u5f84\u3002", "\u53ef\u4ee5\u4e00\u6b21\u5bfc\u5165\u591a\u6761\u65f6\u95f4\u8f74\uff0c\u6bcf\u9009\u4e00\u6761\u5c31\u4f1a\u751f\u6210\u4e00\u4e2a\u9636\u6bb5\u3002\u65e0\u6cd5\u8bfb\u53d6\u7684\u884c\u4e0d\u4f1a\u4f5c\u4e3a\u7a7a\u8d5b\u7490\u7490\u8fdb\u5165\uff0c\u800c\u662f\u663e\u793a\u539f\u56e0\u3002"]],
         ["ver909", "修复摄影标记选择框的大小", ["修复了摄影输入区右侧选择框变大并相互重叠的问题。选择框现在按文本行调整大小，并与下一行的选择框保留间距。"]],
         ["ver908", "统一按钮、设置和窗口的样式", ["按用途统一了按钮和输入框的大小、文字与间距。相关设置按行对齐，点击数字设置的名称即可聚焦对应输入框。", "在更新记录、台词表、导出和恢复窗口中，Tab键的焦点保持在窗口内。关闭窗口后，焦点返回之前的控件。"]],
@@ -12642,7 +12646,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     // 두 입구가 같은 시트를 서로 다르게 적으면 그때부터 갈라진다.
     //   kind 'value' 그 칸에 그림이 선다 · 'empty' 확실히 빈 칸(쥔 값도 놓는다)
     //        'hold'  앞의 것을 이어간다   · 'tick'  값을 바꾸지 않는 중간점
-    //        'close' 그 칸에서 구간이 끝난다(위 isCommandWavyToken 의 ~)
+    //        'close' 그 칸부터 그림이 없다 — 이 앱의 명시적 빈칸 x 다(구간을 닫고 크로스를 긋는다).
+    //                `~` 글리프는 대사 가배치의 물결이라 다른 표시이니 여기 쓰지 않는다.
     // 첫 그림 이전의 빈 칸은 맨 앞이면 x, 그 뒤는 n 으로 적는다 — 이 앱이 「의도한 선두 공백」을
     // 적는 방식(normalizeLeadingCrossGapTokens)과 같게 두려는 것이다. 그림이 한 번 선 뒤의 빈 칸은 _ 다.
     function sheetSparseEntriesToTokens(entries, duration) {
@@ -12666,7 +12671,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         fillTo(frame);
         // 같은 칸이 겹치면 뒤엣것이 다음 칸으로 밀린다 — 종전 XDTS 취입의 동작을 그대로 둔다.
         if (entry.kind === 'tick') tokens.push('dot');
-        else if (entry.kind === 'close') { tokens.push('~'); held = null; }
+        else if (entry.kind === 'close') { tokens.push('x'); held = null; }
         else if (entry.kind === 'empty') { pushEmpty(); held = null; }
         else if (entry.kind === 'hold') pushHold();
         else {
@@ -23597,8 +23602,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     // 노출 키 → 공용 토큰 생성기가 아는 종류. 줄을 펴는 일은 sheetSparseEntriesToTokens 가 맡는다.
     //   · 키의 komaName 이 그 칸의 그림이다
-    //   · endFrame 을 넘긴 자리는 그 셀이 끝난 것이다 — 이 앱의 ~(isCommandWavyToken, 구간 닫기)로 적는다.
-    //     CSP 가 낸 타임시트 CSV 도 같은 자리에 물결을 적으므로 두 경로가 같은 시트를 말한다.
+    //   · endFrame 을 넘긴 자리부터는 그 셀의 그림이 없다 — 이 앱의 명시적 빈칸 `x` 로 적는다.
+    //     CSP 가 낸 타임시트 CSV 도 같은 자리에 `×`(cp932 0x81 0x7E)를 적는다. 둘이 같은 말이다.
+    //     `~` 글리프는 대사 가배치의 물결이라 다른 표시다(#hub/timesheet/rules.md).
     //   · 음수 프레임은 CSP 내보내기의 알려진 이상치이지 실제 칸이 아니다(XDTS 쪽과 같은 판단)
     function clipSheetKeysToEntries(keys, duration) {
       const total = Math.max(0, Math.round(Number(duration) || 0));
@@ -23656,7 +23662,18 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           item.failure = String((err && err.message) || err);
         }
       }
-      return { timeline: timeline, items: items, duration: duration, fps: fps };
+      // 노출 키의 프레임이 타임라인 0 기준인지 절대 프레임인지는 시작이 0 인 표본만으로 가릴 수 없다.
+      // 표본 29 파일 30 타임라인이 전부 StartFrame=0 이라 그 밖의 좌표를 확인한 적이 없다 —
+      // 확인하지 못한 것을 그대로 넣으면 앞이 밀리거나 뒤가 잘린 시트가 조용히 들어온다. 막는다.
+      const startFrame = Math.round(Number(timeline.StartFrame) || 0);
+      return {
+        timeline: timeline,
+        items: items,
+        duration: duration,
+        fps: fps,
+        blocked: startFrame !== 0 ? 'startFrame' : '',
+        startFrame: startFrame
+      };
     }
 
     // 고른 항목을 커맨드 텍스트로 적는다. 역할 접미사는 기존 setTextCommandLineRole 이 붙인다 —
@@ -24739,10 +24756,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     function clipSheetText(key, values) {
       const docs = {
-        en:{ noExposure:'no exposure in this timeline', failed:'could not be read: {error}', emptyPick:'Nothing is checked in \"{name}\", so the sheet was left as it is.', oddTiming:'{count} timeline(s) are not 24fps (read as {fps}fps) or do not start at frame 0 — the frames were copied as they are.', title:'Read a sheet from CLIP', timelines:'Timelines', timelineHint:'Each timeline you pick becomes one stage.', rows:'Rows to load', name:'Name', role:'Role', confirm:'Load', cancel:'Cancel', cel:'cel', other:'layer', hidden:'hidden in CLIP', empty:'No timeline with cels was found in this file.', reading:'Reading the CLIP file…', loaded:'CLIP loaded: {name} · {stages} stage(s)', noPick:'Nothing was selected, so the sheet was left as it is.' },
-        ja:{ noExposure:'このタイムラインに露出なし', failed:'読み取れませんでした：{error}', emptyPick:'「{name}」で何も選ばれていないため、シートはそのままです。', oddTiming:'24fps でない、または0フレーム開始でないタイムラインが {count} 件あります（{fps}fps）。コマはそのまま移しました。', title:'CLIP からシートを読む', timelines:'タイムライン', timelineHint:'選んだタイムラインごとに段階が1つ作られます。', rows:'読み込む行', name:'名前', role:'役割', confirm:'読み込む', cancel:'キャンセル', cel:'セル', other:'レイヤー', hidden:'CLIP で非表示', empty:'このファイルにセルのあるタイムラインが見つかりませんでした。', reading:'CLIP を読み込み中…', loaded:'CLIP を読み込みました：{name} · 段階 {stages}個', noPick:'何も選ばれなかったため、シートはそのままです。' },
-        ko:{ noExposure:'이 타임라인에 노출 없음', failed:'읽지 못했습니다: {error}', emptyPick:'「{name}」에서 아무것도 고르지 않아 시트를 그대로 두었습니다.', oddTiming:'24fps가 아니거나 0프레임에서 시작하지 않는 타임라인이 {count}개 있습니다({fps}fps). 칸은 그대로 옮겼습니다.', title:'CLIP에서 시트 읽기', timelines:'타임라인', timelineHint:'고른 타임라인마다 단계가 하나씩 만들어집니다.', rows:'가져올 행', name:'이름', role:'역할', confirm:'불러오기', cancel:'취소', cel:'셀', other:'레이어', hidden:'CLIP에서 숨김', empty:'이 파일에서 셀이 있는 타임라인을 찾지 못했습니다.', reading:'CLIP을 읽는 중…', loaded:'CLIP을 읽었습니다: {name} · 단계 {stages}개', noPick:'아무것도 고르지 않아 시트를 그대로 두었습니다.' },
-        zh:{ noExposure:'此时间轴没有曝光', failed:'无法读取：{error}', emptyPick:'「{name}」中未选择任何内容，工作表保持不变。', oddTiming:'有 {count} 条时间轴不是 24fps 或不从第 0 帧开始（{fps}fps）。格子按原样移入。', title:'从 CLIP 读取表', timelines:'时间轴', timelineHint:'所选的每条时间轴都会生成一个阶段。', rows:'要读取的行', name:'名称', role:'角色', confirm:'读取', cancel:'取消', cel:'赛璐璐', other:'图层', hidden:'在 CLIP 中隐藏', empty:'在此文件中未找到含赛璐璐的时间轴。', reading:'正在读取 CLIP…', loaded:'已读取 CLIP：{name} · {stages} 个阶段', noPick:'未选择任何内容，工作表保持不变。' }
+        en:{ pickedRows:'{count} picked', blockedStart:'starts at frame {start} — not supported yet', allBlocked:'Every timeline in this file starts at a frame other than 0. That layout has not been verified, so nothing was loaded.', noExposure:'no exposure in this timeline', failed:'could not be read: {error}', emptyPick:'Nothing is checked in \"{name}\", so the sheet was left as it is.', oddTiming:'{count} timeline(s) are not 24fps (read as {fps}fps) — the frames were copied as they are.', title:'Read a sheet from CLIP', timelines:'Timelines', timelineHint:'Each timeline you pick becomes one stage.', rows:'Rows to load', name:'Name', role:'Role', confirm:'Load', cancel:'Cancel', cel:'cel', other:'layer', hidden:'hidden in CLIP', empty:'No timeline with cels was found in this file.', reading:'Reading the CLIP file…', loaded:'CLIP loaded: {name} · {stages} stage(s)', noPick:'Nothing was selected, so the sheet was left as it is.' },
+        ja:{ pickedRows:'選択 {count}', blockedStart:'{start} フレーム開始 — 未対応', allBlocked:'このファイルのタイムラインはすべて0フレーム以外から始まります。未確認の並びのため読み込みませんでした。', noExposure:'このタイムラインに露出なし', failed:'読み取れませんでした：{error}', emptyPick:'「{name}」で何も選ばれていないため、シートはそのままです。', oddTiming:'24fps でないタイムラインが {count} 件あります（{fps}fps）。コマ数はそのまま移しました。', title:'CLIP からシートを読む', timelines:'タイムライン', timelineHint:'選んだタイムラインごとに段階が1つ作られます。', rows:'読み込む行', name:'名前', role:'役割', confirm:'読み込む', cancel:'キャンセル', cel:'セル', other:'レイヤー', hidden:'CLIP で非表示', empty:'このファイルにセルのあるタイムラインが見つかりませんでした。', reading:'CLIP を読み込み中…', loaded:'CLIP を読み込みました：{name} · 段階 {stages}個', noPick:'何も選ばれなかったため、シートはそのままです。' },
+        ko:{ pickedRows:'고른 행 {count}', blockedStart:'{start} 프레임에서 시작 — 아직 지원하지 않음', allBlocked:'이 파일의 타임라인이 전부 0프레임이 아닌 자리에서 시작합니다. 확인되지 않은 배치라 아무것도 읽지 않았습니다.', noExposure:'이 타임라인에 노출 없음', failed:'읽지 못했습니다: {error}', emptyPick:'「{name}」에서 아무것도 고르지 않아 시트를 그대로 두었습니다.', oddTiming:'24fps가 아닌 타임라인이 {count}개 있습니다({fps}fps). 칸 수는 그대로 옮겼습니다.', title:'CLIP에서 시트 읽기', timelines:'타임라인', timelineHint:'고른 타임라인마다 단계가 하나씩 만들어집니다.', rows:'가져올 행', name:'이름', role:'역할', confirm:'불러오기', cancel:'취소', cel:'셀', other:'레이어', hidden:'CLIP에서 숨김', empty:'이 파일에서 셀이 있는 타임라인을 찾지 못했습니다.', reading:'CLIP을 읽는 중…', loaded:'CLIP을 읽었습니다: {name} · 단계 {stages}개', noPick:'아무것도 고르지 않아 시트를 그대로 두었습니다.' },
+        zh:{ pickedRows:'已选 {count}', blockedStart:'从第 {start} 帧开始 — 尚不支持', allBlocked:'此文件的时间轴都不是从第 0 帧开始。该排列尚未验证，因此未读取任何内容。', noExposure:'此时间轴没有曝光', failed:'无法读取：{error}', emptyPick:'「{name}」中未选择任何内容，工作表保持不变。', oddTiming:'有 {count} 条时间轴不是 24fps（{fps}fps）。格子数按原样移入。', title:'从 CLIP 读取表', timelines:'时间轴', timelineHint:'所选的每条时间轴都会生成一个阶段。', rows:'要读取的行', name:'名称', role:'角色', confirm:'读取', cancel:'取消', cel:'赛璐璐', other:'图层', hidden:'在 CLIP 中隐藏', empty:'在此文件中未找到含赛璐璐的时间轴。', reading:'正在读取 CLIP…', loaded:'已读取 CLIP：{name} · {stages} 个阶段', noPick:'未选择任何内容，工作表保持不变。' }
       };
       const doc = docs[state.lang] || docs.en;
       return String(doc[key] || docs.en[key] || key).replace(/\{(\w+)\}/g, function(_, name){ return values && values[name] != null ? String(values[name]) : ''; });
@@ -24756,7 +24773,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const chosen = {};     // timelineId → 가져올지
         reads.forEach(function(read, index) {
           const key = String(read.timeline.MainId);
-          chosen[key] = index === 0;
+          chosen[key] = index === 0 && !read.blocked;
           const map = {};
           read.items.forEach(function(item) {
             // 셀은 기본 체크, 그 밖 레이어는 기본 해제다(확정 사항). CLIP 에서 숨긴 것은 셀이어도 꺼 둔다.
@@ -24840,6 +24857,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
             const check = document.createElement('input');
             check.type = 'checkbox';
             check.checked = Boolean(chosen[key]);
+            check.disabled = Boolean(read.blocked);
             check.addEventListener('change', function() {
               chosen[key] = check.checked;
               if (check.checked) { viewing = key; renderTimelines(); renderRows(); }
@@ -24848,7 +24866,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
             const label = document.createElement('span');
             label.textContent = (String(read.timeline.TimeLineName || '') || clipSheetText('timelines'))
               + ' · ' + read.duration + 'F · ' + (Number(read.timeline.FrameRate) || 24) + 'fps · '
-              + clipSheetText('cel') + ' ' + celCount;
+              + clipSheetText('cel') + ' ' + celCount
+              + ' · ' + clipSheetText('pickedRows', { count:pickedCount(key) })
+              + (read.blocked === 'startFrame' ? ' · ' + clipSheetText('blockedStart', { start:read.startFrame }) : '');
+            if (read.blocked) label.classList.add('clip-import-failed');
             // 체크와 무관하게 이름 쪽을 누르면 그 타임라인의 행 목록을 본다.
             label.addEventListener('click', function(event) {
               event.preventDefault();
@@ -24876,7 +24897,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
             const check = document.createElement('input');
             check.type = 'checkbox';
             check.checked = Boolean(pick.checked);
-            check.addEventListener('change', function() { pick.checked = check.checked; });
+            check.addEventListener('change', function() {
+              pick.checked = check.checked;
+              renderTimelines();
+              syncOk();
+            });
             row.appendChild(check);
 
             const name = document.createElement('input');
@@ -24911,8 +24936,15 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           });
         }
 
+        function pickedCount(key) {
+          const map = picks[key] || {};
+          return Object.keys(map).filter(function(id) { return map[id].checked; }).length;
+        }
+
+        // 켠 타임라인에 고른 행이 하나도 없으면 확정 순간 전체가 멈춘다 — 그 전에 막고 줄에 수를 보인다.
         function syncOk() {
-          okBtn.disabled = !Object.keys(chosen).some(function(key) { return chosen[key]; });
+          const on = Object.keys(chosen).filter(function(key) { return chosen[key]; });
+          okBtn.disabled = !on.length || on.some(function(key) { return pickedCount(key) === 0; });
         }
 
         let settled = false;
@@ -24926,7 +24958,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         }
         cancelBtn.addEventListener('click', function() { finish(null); });
         okBtn.addEventListener('click', function() {
-          finish({ order: reads.filter(function(read) { return chosen[String(read.timeline.MainId)]; }), picks: picks });
+          finish({ order: reads.filter(function(read) { return chosen[String(read.timeline.MainId)] && !read.blocked; }), picks: picks });
         });
         backdrop.addEventListener('pointerdown', function(event) { if (event.target === backdrop) finish(null); });
 
@@ -24958,16 +24990,35 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     // 다 만들어 둔 것을 싣는다. 첫 벌은 지금 단계에 넣고, 나머지는 단계를 만들어 옮긴다.
     // 시트 길이는 타임라인 길이로 맞춘다 — 커맨드만 바꾸면 앞서 쓰던 길이가 그대로 남는다.
+    // **중간에 실패하면 손대기 전으로 되돌린다.** 문자열을 미리 만들어 두는 것만으로는 적용 도중의
+    // 실패를 막지 못한다 — 단계 일부만 바뀐 채로 「현재 시트는 유지했습니다」를 띄우면 거짓말이 된다.
     function applyClipSheetStages(stages) {
       const modeSelect = document.getElementById('cellInputMode');
-      stages.forEach(function(entry, index) {
-        if (index > 0) pushNewSheetStage(SHEET_STAGE_CUSTOM_CODE, entry.label);
-        if (modeSelect) modeSelect.value = 'text';
-        setCommandTextValue('text', entry.text);
-        applyClipSheetDuration(entry.read.duration);
+      const backup = {
+        stages: JSON.parse(JSON.stringify(getSheetStages())),
+        activeStageId: state.activeStageId,
+        content: getContentSnapshot(),
+        mode: modeSelect ? modeSelect.value : ''
+      };
+      try {
+        stages.forEach(function(entry, index) {
+          if (index > 0) pushNewSheetStage(SHEET_STAGE_CUSTOM_CODE, entry.label);
+          if (modeSelect) modeSelect.value = 'text';
+          setCommandTextValue('text', entry.text);
+          applyClipSheetDuration(entry.read.duration);
+          updateModeUI();
+        });
+        return stages.length;
+      } catch (err) {
+        state.stages = backup.stages;
+        state.activeStageId = backup.activeStageId;
+        if (modeSelect) modeSelect.value = backup.mode;
+        applyContentSnapshot(backup.content);
+        refreshSheetStageUI();
         updateModeUI();
-      });
-      return stages.length;
+        render();
+        throw err;
+      }
     }
 
     // 자동시트는 24fps 고정이라 초+코마로 적는다. CLIP 쪽 fps 가 다르면 칸 수를 임의로 환산하지 않고
@@ -24995,6 +25046,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           if (read.items.some(function(item) { return item.kind === 'cel'; })) reads.push(read);
         }
         if (!reads.length) { setExportStatus(clipSheetText('empty'), { level:'error' }); return false; }
+        if (reads.every(function(read) { return read.blocked; })) {
+          setExportStatus(clipSheetText('allBlocked'), { level:'error' });
+          return false;
+        }
         // 저장된 현재 타임라인이 맨 앞에 오게 한다 — 창에서 기본으로 켜지는 것이 그것이다.
         const activeId = String(ctx.timelines.active && ctx.timelines.active.MainId);
         reads.sort(function(a, b) {
@@ -25006,11 +25061,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const plan = prepareClipSheetStages(result);
         if (plan.error) { setExportStatus(plan.error, { level:'error' }); return false; }
         const made = applyClipSheetStages(plan.stages);
-        // 24fps 가 아니거나 0 프레임에서 시작하지 않는 타임라인은 칸을 그대로 옮긴다. 실측한 표본이
-        // 전부 24fps·0 시작이라 그 밖의 처리는 확인되지 않았다 — 조용히 넘기지 않고 알린다.
-        const odd = plan.stages.filter(function(entry) {
-          return Number(entry.read.fps) !== FIXED_FPS || Number(entry.read.timeline.StartFrame) !== 0;
-        });
+        // 24fps 가 아닌 타임라인은 칸 수를 그대로 옮긴다 — 환산하면 코마 배치가 뭉개진다.
+        // 초 표기만 달라지므로 칸은 어긋나지 않는다(0 이 아닌 시작은 아예 막았다. clipSheetReadTimeline 참조).
+        const odd = plan.stages.filter(function(entry) { return Number(entry.read.fps) !== FIXED_FPS; });
         setExportStatus(clipSheetText('loaded', { name:file.name || 'clip', stages:made })
           + (odd.length ? ' · ' + clipSheetText('oddTiming', { count:odd.length, fps:Number(odd[0].read.fps) }) : ''));
         return true;
