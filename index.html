@@ -1339,6 +1339,13 @@
     .clip-import-row input[type="text"] { min-width:0; }
     .clip-import-failed { color:var(--red); }
     /* 접어 둔 줄 — 숨김·노출 없음·참고 레이어. 펼쳐서 찾을 수는 있어야 하므로 지우지 않는다. */
+    /* 첫 실행 안내 — 글자를 키워 한눈에 읽히게 한다. 바깥을 눌러도 닫힌다. */
+    .clip-intro-dialog { width:min(460px,100%); display:grid; gap:var(--ui-gap-lg); }
+    /* 본문 토큰은 12px 이라 배수로 키워도 읽기 작다. 안내는 한 번만 보는 창이니 제목 토큰(16px)을
+       기준으로 잡는다 — 제목은 그보다 한 단 더 크게. */
+    .clip-intro-dialog h3 { font-size:calc(var(--ui-fs-title) * 1.35); line-height:1.35; }
+    .clip-intro-body { margin:0; font-size:calc(var(--ui-fs-title) * 1.05); line-height:1.65; }
+    .clip-intro-note { margin:0; font-size:var(--ui-fs-title); color:var(--muted); }
     .clip-import-side { grid-column:1 / -1; }
     .clip-import-side > summary { cursor:pointer; color:var(--muted); padding:2px 0; }
     .clip-import-side .clip-import-row { margin-top:var(--ui-gap-sm); }
@@ -2519,7 +2526,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '914';
+    const APP_VERSION = '915';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -2688,6 +2695,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     const PAPER_IMAGE_STORE_NAME = 'paperImages';
     const PAPER_IMAGE_MEMORY_KEY = 'latest-paper-image';
     const SETTINGS_JSON_CACHE_STORAGE_KEY = 'autoSheetSettingsJsonFolderCache.v1';
+    // 한 번 닫으면 다시 안 뜨는 안내의 기억. 옆 알림과 첫 실행 안내 창이 같은 저장소를 쓴다.
+    const NOTICE_STORAGE_KEY = 'autoSheetNoticeDismissed';
     const DIRECTORY_HANDLE_DB_NAME = 'autoSheetDirectoryHandleDb.v1';
     const DIRECTORY_HANDLE_STORE_NAME = 'handles';
     const SETTINGS_DIRECTORY_HANDLE_KEY = 'settings-json-directory';
@@ -3756,6 +3765,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver915", "A first-run notice about dropping .clip files, and the quick guide now says so too", ["Opening the app shows a short notice that CLIP STUDIO files can be dropped straight onto the sheet. Click anywhere outside it or press the button to close; \u300cDo not show again\u300d keeps it from coming back.", "The quick guide used to describe only the old route (export a timesheet CSV or .xdts first). It now leads with dropping the .clip itself, and keeps the exported-timesheet route below it \u2014 both still work."]],
         ["ver914", "Reading a .clip: sane default roles, a folded side list, and tidier cel numbers", ["Rows that are not cel folders used to default to \u300cBook\u300d \u2014 so the paper, the title block and the frame guide all came in as Book. Roles now come from the same name rules this app already uses for CSV (BOOK/BGBOOK \u2192 Book, bg/background \u2192 Hide, camera/\u64ae\u5f71 \u2192 Camera), and anything else is a Cell.", "Reference layers (\u539f\u56f3, \u30b3\u30f3\u30c6, rulers, the paper itself) are no longer ticked by default, even when CLIP made them animation folders \u2014 in the sample files \u539f\u56f3 was an animation folder in 33 of them.", "Hidden rows, rows with no exposure in this timeline, and reference layers are folded into one group so they stop burying what you actually pick. Open it to find and tick them.", "Cel numbers written as A01/A02 come in as 1/2, and leading zeros go. Numbers that mean something are left alone \u2014 4a, 3a, 1.5, kana, and instructions stay exactly as written, and so does an A01 sitting in another cel's row. Turn it off in the window if you want the file's own text."]],
         ["ver913", "Undo history survives a failed .clip load", ["When loading a .clip failed part way, the sheet and its stages went back but undo/redo did not. A later Ctrl+Z could pull up a half-finished import, and anything you had to redo was gone. The history now goes back with everything else."]],
         ["ver912", "Fixes to reading a .clip: the end-of-cel mark, and layouts that were not verified", ["Where a cel stops, ver911 wrote a wavy mark. That glyph means something else on this sheet (it belongs to dialogue placement), so it now writes the cross that means \u300cno drawing from here\u300d \u2014 the same thing CLIP STUDIO itself writes in its timesheet export.", "A timeline that does not start at frame 0 can no longer be picked. Where its cel positions sit has never been verified, and guessing would shift or clip the sheet silently. The reason is shown on that timeline's row.", "If a timeline you ticked has no rows picked, the Load button now stays off and each row shows how many are picked \u2014 before, it let you confirm and then stopped everything with a message.", "If anything fails while loading, the sheet and its stages go back to how they were."]],
@@ -3819,6 +3829,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver915", "\u8d77\u52d5\u6642\u306b .clip \u30c9\u30ed\u30c3\u30d7\u306e\u304a\u77e5\u3089\u305b\u3092\u8868\u793a\u3001\u7c21\u5358\u8aac\u660e\u66f8\u3082\u66f4\u65b0", ["\u30a2\u30d7\u30ea\u3092\u958b\u304f\u3068\u3001CLIP STUDIO \u306e\u30d5\u30a1\u30a4\u30eb\u3092\u305d\u306e\u307e\u307e\u30b7\u30fc\u30c8\u306b\u30c9\u30ed\u30c3\u30d7\u3067\u304d\u308b\u3053\u3068\u3092\u77ed\u304f\u304a\u77e5\u3089\u305b\u3057\u307e\u3059\u3002\u5916\u5074\u3092\u30af\u30ea\u30c3\u30af\u3059\u308b\u304b\u30dc\u30bf\u30f3\u3067\u9589\u3058\u3089\u308c\u3001\u300c\u4eca\u5f8c\u8868\u793a\u3057\u306a\u3044\u300d\u3092\u62bc\u3059\u3068\u51fa\u306a\u304f\u306a\u308a\u307e\u3059\u3002", "\u7c21\u5358\u8aac\u660e\u66f8\u306f\u4ee5\u524d\u306e\u624b\u9806\uff08\u5148\u306b\u30bf\u30a4\u30e0\u30b7\u30fc\u30c8\u3092 CSV \u304b .xdts \u306b\u66f8\u304d\u51fa\u3059\uff09\u3060\u3051\u3092\u66f8\u3044\u3066\u3044\u307e\u3057\u305f\u3002\u4eca\u306f .clip \u3092\u305d\u306e\u307e\u307e\u30c9\u30ed\u30c3\u30d7\u3059\u308b\u65b9\u6cd5\u3092\u5148\u306b\u66f8\u304d\u3001\u66f8\u304d\u51fa\u3057\u305f\u30bf\u30a4\u30e0\u30b7\u30fc\u30c8\u306e\u624b\u9806\u3082\u305d\u306e\u4e0b\u306b\u6b8b\u3057\u3066\u3044\u307e\u3059 \u2014 \u3069\u3061\u3089\u3082\u4f7f\u3048\u307e\u3059\u3002"]],
         ["ver914", ".clip \u8aad\u307f\u8fbc\u307f\uff1a\u5f79\u5272\u306e\u65e2\u5b9a\u30fb\u4e0d\u8981\u306a\u884c\u306e\u6298\u308a\u305f\u305f\u307f\u30fb\u30bb\u30eb\u756a\u53f7\u306e\u6574\u7406", ["\u30bb\u30eb\u30d5\u30a9\u30eb\u30c0\u30fc\u3067\u306a\u3044\u884c\u306f\u65e2\u5b9a\u304c\u300cBook\u300d\u3067\u3057\u305f\u3002\u7528\u7d19\u3082\u30bf\u30a4\u30c8\u30eb\u6b04\u3082\u30d5\u30ec\u30fc\u30e0\u6848\u5185\u3082 Book \u3067\u5165\u3063\u3066\u3044\u307e\u3057\u305f\u3002\u5f79\u5272\u306f\u3053\u306e\u30a2\u30d7\u30ea\u304c CSV \u53d6\u308a\u8fbc\u307f\u3067\u4f7f\u3063\u3066\u3044\u308b\u540d\u524d\u306e\u898f\u5247\u3092\u305d\u306e\u307e\u307e\u4f7f\u3044\u307e\u3059\uff08BOOK/BGBOOK \u2192 Book\u3001bg/background \u2192 Hide\u3001camera/\u64ae\u5f71 \u2192 Camera\uff09\u3002\u3069\u308c\u306b\u3082\u5f53\u305f\u3089\u306a\u3051\u308c\u3070\u30bb\u30eb\u3067\u3059\u3002", "\u53c2\u8003\u7528\u306e\u30ec\u30a4\u30e4\u30fc\uff08\u539f\u56f3\u30fb\u30b3\u30f3\u30c6\u30fb\u5b9a\u898f\u30fb\u7528\u7d19\uff09\u306f\u3001CLIP \u3067\u30a2\u30cb\u30e1\u30fc\u30b7\u30e7\u30f3\u30d5\u30a9\u30eb\u30c0\u30fc\u306b\u306a\u3063\u3066\u3044\u3066\u3082\u65e2\u5b9a\u3067\u306f\u30c1\u30a7\u30c3\u30af\u3057\u307e\u305b\u3093\u3002\u30b5\u30f3\u30d7\u30eb\u3067\u306f\u539f\u56f3\u304c 33 \u30d5\u30a1\u30a4\u30eb\u3067\u30a2\u30cb\u30e1\u30fc\u30b7\u30e7\u30f3\u30d5\u30a9\u30eb\u30c0\u30fc\u3067\u3057\u305f\u3002", "\u975e\u8868\u793a\u306e\u884c\u3001\u3053\u306e\u30bf\u30a4\u30e0\u30e9\u30a4\u30f3\u306b\u9732\u51fa\u304c\u306a\u3044\u884c\u3001\u53c2\u8003\u30ec\u30a4\u30e4\u30fc\u306f\u3072\u3068\u3064\u306b\u307e\u3068\u3081\u3066\u6298\u308a\u305f\u305f\u307f\u307e\u3059\u3002\u958b\u3051\u3070\u63a2\u3057\u3066\u9078\u3079\u307e\u3059\u3002", "A01/A02 \u3068\u66f8\u304b\u308c\u305f\u30bb\u30eb\u756a\u53f7\u306f 1/2 \u3067\u5165\u308a\u3001\u5148\u982d\u306e 0 \u3082\u53d6\u308c\u307e\u3059\u3002\u610f\u5473\u306e\u3042\u308b\u756a\u53f7\u306f\u305d\u306e\u307e\u307e\u3067\u3059 \u2014 4a\u30fb3a\u30fb1.5\u30fb\u304b\u306a\u30fb\u6307\u793a\u3001\u305d\u3057\u3066\u5225\u306e\u30bb\u30eb\u306e\u884c\u306b\u3042\u308b A01 \u3082\u89e6\u308a\u307e\u305b\u3093\u3002\u5143\u306e\u8868\u8a18\u306e\u307e\u307e\u5165\u308c\u305f\u3044\u3068\u304d\u306f\u7a93\u3067\u5207\u308c\u307e\u3059\u3002"]],
         ["ver913", ".clip \u8aad\u307f\u8fbc\u307f\u304c\u5931\u6557\u3057\u3066\u3082\u53d6\u308a\u6d88\u3057\u5c65\u6b74\u304c\u6b8b\u308a\u307e\u3059", [".clip \u306e\u8aad\u307f\u8fbc\u307f\u304c\u9014\u4e2d\u3067\u5931\u6557\u3057\u305f\u3068\u304d\u3001\u30b7\u30fc\u30c8\u3068\u6bb5\u968e\u306f\u5143\u306b\u623b\u3063\u3066\u3082\u53d6\u308a\u6d88\u3057\u30fb\u3084\u308a\u76f4\u3057\u306e\u5c65\u6b74\u306f\u623b\u308a\u307e\u305b\u3093\u3067\u3057\u305f\u3002\u305d\u306e\u5f8c\u306e Ctrl+Z \u3067\u4e2d\u9014\u534a\u7aef\u306a\u8aad\u307f\u8fbc\u307f\u72b6\u614b\u304c\u51fa\u305f\u308a\u3001\u3084\u308a\u76f4\u305b\u305f\u306f\u305a\u306e\u3082\u306e\u304c\u6d88\u3048\u305f\u308a\u3057\u3066\u3044\u307e\u3057\u305f\u3002\u5c65\u6b74\u3082\u4e00\u7dd2\u306b\u623b\u308a\u307e\u3059\u3002"]],
         ["ver912", ".clip \u8aad\u307f\u8fbc\u307f\u306e\u4fee\u6b63\uff1a\u30bb\u30eb\u306e\u7d42\u308f\u308a\u8a18\u53f7\u3068\u3001\u672a\u78ba\u8a8d\u306e\u4e26\u3073", ["\u30bb\u30eb\u304c\u7d42\u308f\u308b\u4f4d\u7f6e\u306b ver911 \u306f\u6ce2\u5f62\u306e\u8a18\u53f7\u3092\u66f8\u3044\u3066\u3044\u307e\u3057\u305f\u3002\u3053\u306e\u8a18\u53f7\u306f\u3053\u306e\u30b7\u30fc\u30c8\u3067\u306f\u5225\u306e\u610f\u5473\uff08\u30bb\u30ea\u30d5\u306e\u4eee\u7f6e\u304d\uff09\u306a\u306e\u3067\u3001\u300c\u3053\u3053\u304b\u3089\u7d75\u304c\u306a\u3044\u300d\u3092\u8868\u3059 \u00d7 \u306b\u76f4\u3057\u307e\u3057\u305f\u3002CLIP STUDIO \u81ea\u8eab\u304c\u30bf\u30a4\u30e0\u30b7\u30fc\u30c8\u66f8\u304d\u51fa\u3057\u3067\u66f8\u304f\u3082\u306e\u3068\u540c\u3058\u3067\u3059\u3002", "0\u30d5\u30ec\u30fc\u30e0\u304b\u3089\u59cb\u307e\u3089\u306a\u3044\u30bf\u30a4\u30e0\u30e9\u30a4\u30f3\u306f\u9078\u3079\u306a\u304f\u306a\u308a\u307e\u3057\u305f\u3002\u305d\u306e\u30b3\u30de\u4f4d\u7f6e\u304c\u3069\u3053\u3092\u6307\u3059\u306e\u304b\u78ba\u8a8d\u3067\u304d\u3066\u3044\u306a\u3044\u305f\u3081\u3001\u63a8\u6e2c\u3059\u308b\u3068\u6c17\u3065\u304b\u306a\u3044\u307e\u307e\u30b7\u30fc\u30c8\u304c\u305a\u308c\u305f\u308a\u5207\u308c\u305f\u308a\u3057\u307e\u3059\u3002\u7406\u7531\u306f\u305d\u306e\u884c\u306b\u8868\u793a\u3055\u308c\u307e\u3059\u3002", "\u30c1\u30a7\u30c3\u30af\u3057\u305f\u30bf\u30a4\u30e0\u30e9\u30a4\u30f3\u306e\u884c\u30921\u3064\u3082\u9078\u3093\u3067\u3044\u306a\u3044\u3068\u3001\u8aad\u307f\u8fbc\u307f\u30dc\u30bf\u30f3\u304c\u62bc\u305b\u306a\u304f\u306a\u308a\u3001\u5404\u884c\u306b\u9078\u629e\u6570\u304c\u51fa\u307e\u3059\u3002\u3053\u308c\u307e\u3067\u306f\u78ba\u5b9a\u3067\u304d\u3066\u3057\u307e\u3044\u3001\u305d\u306e\u5f8c\u3067\u5168\u4f53\u304c\u6b62\u307e\u3063\u3066\u3044\u307e\u3057\u305f\u3002", "\u8aad\u307f\u8fbc\u307f\u4e2d\u306b\u5931\u6557\u3057\u305f\u5834\u5408\u306f\u3001\u30b7\u30fc\u30c8\u3068\u6bb5\u968e\u304c\u5143\u306e\u72b6\u614b\u306b\u623b\u308a\u307e\u3059\u3002"]],
@@ -3882,6 +3893,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver915", "\uccab \uc2e4\ud589\uc5d0 .clip \ub4dc\ub86d \uc548\ub0b4\ub97c \ub744\uc6b0\uace0, \uac04\ub2e8 \uc124\uba85\uc11c\ub3c4 \uac31\uc2e0", ["\uc571\uc744 \uc5f4\uba74 CLIP STUDIO \ud30c\uc77c\uc744 \uc2dc\ud2b8\uc5d0 \uadf8\ub300\ub85c \ub4dc\ub86d\ud560 \uc218 \uc788\ub2e4\ub294 \uc548\ub0b4\uac00 \uc9e7\uac8c \ub739\ub2c8\ub2e4. \ubc14\uae65\uc744 \ud074\ub9ad\ud558\uac70\ub098 \ubc84\ud2bc\uc73c\ub85c \ub2eb\uc744 \uc218 \uc788\uace0, \u300c\ub2e4\uc2dc \ubcf4\uc9c0 \uc54a\uae30\u300d\ub97c \ub204\ub974\uba74 \ub354 \ub728\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.", "\uac04\ub2e8 \uc124\uba85\uc11c\uac00 \uc608\uc804 \ubc29\ubc95(\ud0c0\uc784\uc2dc\ud2b8\ub97c CSV\ub098 .xdts\ub85c \uba3c\uc800 \ub0b4\ubcf4\ub0b4\uae30)\ub9cc \uc801\uace0 \uc788\uc5c8\uc2b5\ub2c8\ub2e4. \uc774\uc81c .clip\uc744 \uadf8\ub300\ub85c \ub4dc\ub86d\ud558\ub294 \ubc29\ubc95\uc744 \uba3c\uc800 \uc801\uace0, \ub0b4\ubcf4\ub0b8 \ud0c0\uc784\uc2dc\ud2b8 \ubc29\ubc95\ub3c4 \uadf8 \uc544\ub798 \ub0a8\uacbc\uc2b5\ub2c8\ub2e4 \u2014 \ub458 \ub2e4 \ub429\ub2c8\ub2e4."]],
         ["ver914", ".clip \uc77d\uae30: \uc5ed\ud560 \uae30\ubcf8\uac12 \u00b7 \uc548 \uc4f8 \ud589 \uc811\uae30 \u00b7 \uc140 \ubc88\ud638 \uc815\ub9ac", ["\uc140 \ud3f4\ub354\uac00 \uc544\ub2cc \ud589\uc740 \uae30\ubcf8\uac12\uc774 \u300cBook\u300d\uc774\uc5c8\uc2b5\ub2c8\ub2e4. \uadf8\ub798\uc11c \uc6a9\uc9c0\ub3c4 \uc791\ud488\uc815\ubcf4\ub3c4 \ud504\ub808\uc784 \uc548\ub0b4\ub3c4 Book\uc73c\ub85c \ub4e4\uc5b4\uc654\uc2b5\ub2c8\ub2e4. \uc5ed\ud560\uc740 \uc774 \uc571\uc774 CSV \ucde8\uc785\uc5d0\uc11c \uc774\ubbf8 \uc4f0\ub294 \uc774\ub984 \uaddc\uce59\uc744 \uadf8\ub300\ub85c \uc501\ub2c8\ub2e4(BOOK/BGBOOK \u2192 Book, bg/background \u2192 Hide, camera/\u64ae\u5f71 \u2192 Camera). \uc544\ubb34\uac83\ub3c4 \uc548 \uac78\ub9ac\uba74 \uc140\uc785\ub2c8\ub2e4.", "\ucc38\uace0\ub85c \uae54\uc544 \ub454 \ub808\uc774\uc5b4(\u539f\u56f3\u00b7\ucf58\ud2f0\u00b7\uc790\u00b7\uc6a9\uc9c0)\ub294 CLIP\uc5d0\uc11c \uc560\ub2c8\uba54\uc774\uc158 \ud3f4\ub354\ub85c \ub418\uc5b4 \uc788\uc5b4\ub3c4 \uae30\ubcf8\uc73c\ub85c \uccb4\ud06c\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ud45c\ubcf8\uc5d0\uc11c\ub294 \u539f\u56f3\uac00 33\uac1c \ud30c\uc77c\uc5d0\uc11c \uc560\ub2c8\uba54\uc774\uc158 \ud3f4\ub354\uc600\uc2b5\ub2c8\ub2e4.", "\uc228\uae34 \ud589, \uc774 \ud0c0\uc784\ub77c\uc778\uc5d0 \ub178\ucd9c\uc774 \uc5c6\ub294 \ud589, \ucc38\uace0 \ub808\uc774\uc5b4\ub294 \ud55c \ubb36\uc74c\uc73c\ub85c \uc811\ud799\ub2c8\ub2e4. \ud3bc\uce58\uba74 \ucc3e\uc544\uc11c \ucf24 \uc218 \uc788\uc2b5\ub2c8\ub2e4.", "A01/A02\ub85c \uc801\ud78c \uc140 \ubc88\ud638\ub294 1/2\ub85c \ub4e4\uc5b4\uc624\uace0 \uc55e\uc758 0\ub3c4 \uc5c6\uc5b4\uc9d1\ub2c8\ub2e4. \ub73b\uc774 \uc788\ub294 \ubc88\ud638\ub294 \uadf8\ub300\ub85c\uc785\ub2c8\ub2e4 \u2014 4a\u00b73a\u00b71.5\u00b7\uac00\ub098\u00b7\uc9c0\uc2dc\ubb38, \uadf8\ub9ac\uace0 \ub2e4\ub978 \uc140\uc758 \ud589\uc5d0 \uc788\ub294 A01\ub3c4 \uac74\ub4dc\ub9ac\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc6d0\ubcf8 \ud45c\uae30 \uadf8\ub300\ub85c \ubc1b\uace0 \uc2f6\uc73c\uba74 \ucc3d\uc5d0\uc11c \ub044\uba74 \ub429\ub2c8\ub2e4."]],
         ["ver913", ".clip \uc77d\uae30\uac00 \uc2e4\ud328\ud574\ub3c4 \uc2e4\ud589\ucde8\uc18c \uc774\ub825\uc774 \ub0a8\uc2b5\ub2c8\ub2e4", [".clip \uc77d\uae30\uac00 \ub3c4\uc911\uc5d0 \uc2e4\ud328\ud558\uba74 \uc2dc\ud2b8\uc640 \ub2e8\uacc4\ub294 \ub3cc\uc544\uc654\uc9c0\ub9cc \uc2e4\ud589\ucde8\uc18c\u00b7\ub2e4\uc2dc\uc2e4\ud589 \uc774\ub825\uc740 \ub3cc\uc544\uc624\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4. \uc774\ud6c4 Ctrl+Z\uc5d0\uc11c \ub35c \ub05d\ub09c \uac00\uc838\uc624\uae30 \uc0c1\ud0dc\uac00 \ub098\uc624\uac70\ub098, \ub2e4\uc2dc\uc2e4\ud589\ud560 \uc218 \uc788\ub358 \uac83\uc774 \uc0ac\ub77c\uc84c\uc2b5\ub2c8\ub2e4. \uc774\uc81c \uc774\ub825\ub3c4 \ud568\uaed8 \ub3cc\uc544\uc635\ub2c8\ub2e4."]],
         ["ver912", ".clip \uc77d\uae30 \uc218\uc815: \uc140\uc774 \ub05d\ub098\ub294 \ud45c\uc2dc\uc640, \ud655\uc778\ub418\uc9c0 \uc54a\uc740 \ubc30\uce58", ["\uc140\uc774 \ub05d\ub098\ub294 \uc790\ub9ac\uc5d0 ver911\uc740 \ubb3c\uacb0 \ud45c\uc2dc\ub97c \uc801\uc5c8\uc2b5\ub2c8\ub2e4. \uc774 \uae00\ub9ac\ud504\ub294 \uc774 \uc2dc\ud2b8\uc5d0\uc11c \ub2e4\ub978 \ub73b(\ub300\uc0ac \uac00\ubc30\uce58)\uc774\ub77c, \u300c\uc5ec\uae30\ubd80\ud130 \uadf8\ub9bc \uc5c6\uc74c\u300d\uc744 \ub73b\ud558\ub294 \u00d7\ub85c \uace0\ucce4\uc2b5\ub2c8\ub2e4. CLIP STUDIO \uc790\uc2e0\uc774 \ud0c0\uc784\uc2dc\ud2b8 \ub0b4\ubcf4\ub0b4\uae30\uc5d0 \uc801\ub294 \uac83\uacfc \uac19\uc2b5\ub2c8\ub2e4.", "0\ud504\ub808\uc784\uc5d0\uc11c \uc2dc\uc791\ud558\uc9c0 \uc54a\ub294 \ud0c0\uc784\ub77c\uc778\uc740 \uc774\uc81c \uace0\ub97c \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uadf8 \ucf54\ub9c8 \uc704\uce58\uac00 \uc5b4\ub514\ub97c \uac00\ub9ac\ud0a4\ub294\uc9c0 \ud655\uc778\ub41c \uc801\uc774 \uc5c6\uc5b4, \uc9d0\uc791\ud558\uba74 \uc2dc\ud2b8\uac00 \uc870\uc6a9\ud788 \ubc00\ub9ac\uac70\ub098 \uc798\ub9bd\ub2c8\ub2e4. \uc774\uc720\ub294 \uadf8 \ud0c0\uc784\ub77c\uc778 \uc904\uc5d0 \ud45c\uc2dc\ub429\ub2c8\ub2e4.", "\uccb4\ud06c\ud55c \ud0c0\uc784\ub77c\uc778\uc5d0\uc11c \ud589\uc744 \ud558\ub098\ub3c4 \uace0\ub974\uc9c0 \uc54a\uc73c\uba74 \ubd88\ub7ec\uc624\uae30 \ubc84\ud2bc\uc774 \ub20c\ub9ac\uc9c0 \uc54a\uace0, \uc904\ub9c8\ub2e4 \uace0\ub978 \uc218\uac00 \ubcf4\uc785\ub2c8\ub2e4. \uc804\uc5d0\ub294 \ud655\uc815\uc774 \ub418\uace0 \ub098\uc11c \uc804\uccb4\uac00 \uba48\ucdc4\uc2b5\ub2c8\ub2e4.", "\uc77d\ub294 \ub3c4\uc911 \uc2e4\ud328\ud558\uba74 \uc2dc\ud2b8\uc640 \ub2e8\uacc4\uac00 \uc6d0\ub798 \uc0c1\ud0dc\ub85c \ub3cc\uc544\uac11\ub2c8\ub2e4."]],
@@ -3945,6 +3957,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver915", "\u542f\u52a8\u65f6\u663e\u793a .clip \u62d6\u653e\u63d0\u793a\uff0c\u7b80\u660e\u8bf4\u660e\u4e66\u4e5f\u5df2\u66f4\u65b0", ["\u6253\u5f00\u5e94\u7528\u4f1a\u7b80\u77ed\u63d0\u793a\uff1aCLIP STUDIO \u6587\u4ef6\u53ef\u4ee5\u76f4\u63a5\u62d6\u5230\u8868\u4e0a\u3002\u70b9\u51fb\u5916\u4fa7\u6216\u6309\u94ae\u5373\u53ef\u5173\u95ed\uff0c\u6309\u300c\u4e0d\u518d\u663e\u793a\u300d\u5219\u4e0d\u4f1a\u518d\u51fa\u73b0\u3002", "\u7b80\u660e\u8bf4\u660e\u4e66\u6b64\u524d\u53ea\u5199\u4e86\u65e7\u6d41\u7a0b\uff08\u5148\u628a\u65f6\u95f4\u8868\u5bfc\u51fa\u4e3a CSV \u6216 .xdts\uff09\u3002\u73b0\u5728\u5148\u5199\u76f4\u63a5\u62d6\u653e .clip \u7684\u65b9\u6cd5\uff0c\u5e76\u5728\u5176\u4e0b\u4fdd\u7559\u5bfc\u51fa\u65f6\u95f4\u8868\u7684\u6d41\u7a0b \u2014 \u4e24\u79cd\u90fd\u53ef\u7528\u3002"]],
         ["ver914", ".clip \u8bfb\u53d6\uff1a\u89d2\u8272\u9ed8\u8ba4\u503c\u3001\u6298\u53e0\u6b21\u8981\u884c\u3001\u6574\u7406\u8d5b\u7490\u7490\u7f16\u53f7", ["\u975e\u8d5b\u7490\u7490\u6587\u4ef6\u5939\u7684\u884c\u4ee5\u524d\u9ed8\u8ba4\u4e3a\u300cBook\u300d\uff0c\u4e8e\u662f\u753b\u7eb8\u3001\u4f5c\u54c1\u4fe1\u606f\u3001\u753b\u6846\u8bf4\u660e\u90fd\u4ee5 Book \u5bfc\u5165\u3002\u89d2\u8272\u73b0\u5728\u6cbf\u7528\u672c\u5e94\u7528\u5728 CSV \u5bfc\u5165\u4e2d\u5df2\u6709\u7684\u540d\u79f0\u89c4\u5219\uff08BOOK/BGBOOK \u2192 Book\uff0cbg/background \u2192 Hide\uff0ccamera/\u64ae\u5f71 \u2192 Camera\uff09\uff0c\u90fd\u4e0d\u5339\u914d\u5219\u4e3a\u8d5b\u7490\u7490\u3002", "\u53c2\u8003\u7528\u56fe\u5c42\uff08\u539f\u56f3\u3001\u5206\u955c\u3001\u5c3a\u3001\u753b\u7eb8\uff09\u5373\u4f7f\u5728 CLIP \u4e2d\u662f\u52a8\u753b\u6587\u4ef6\u5939\uff0c\u4e5f\u4e0d\u518d\u9ed8\u8ba4\u52fe\u9009\u3002\u6837\u672c\u4e2d\u539f\u56f3\u5728 33 \u4e2a\u6587\u4ef6\u91cc\u662f\u52a8\u753b\u6587\u4ef6\u5939\u3002", "\u9690\u85cf\u7684\u884c\u3001\u672c\u65f6\u95f4\u8f74\u65e0\u66dd\u5149\u7684\u884c\u3001\u53c2\u8003\u56fe\u5c42\u4f1a\u6298\u53e0\u6210\u4e00\u7ec4\uff0c\u4e0d\u518d\u6df9\u6ca1\u771f\u6b63\u8981\u9009\u7684\u884c\u3002\u5c55\u5f00\u5373\u53ef\u67e5\u627e\u5e76\u52fe\u9009\u3002", "\u5199\u6210 A01/A02 \u7684\u8d5b\u7490\u7490\u7f16\u53f7\u4f1a\u4ee5 1/2 \u5bfc\u5165\uff0c\u524d\u5bfc\u96f6\u4e5f\u4f1a\u53bb\u6389\u3002\u6709\u610f\u4e49\u7684\u7f16\u53f7\u4fdd\u6301\u539f\u6837 \u2014 4a\u30013a\u30011.5\u3001\u5047\u540d\u3001\u6307\u793a\uff0c\u4ee5\u53ca\u4f4d\u4e8e\u5176\u4ed6\u8d5b\u7490\u7490\u884c\u4e2d\u7684 A01 \u90fd\u4e0d\u6539\u52a8\u3002\u60f3\u6309\u539f\u6587\u5bfc\u5165\u53ef\u5728\u7a97\u53e3\u4e2d\u5173\u95ed\u3002"]],
         ["ver913", "\u5373\u4f7f .clip \u8bfb\u53d6\u5931\u8d25\uff0c\u64a4\u9500\u8bb0\u5f55\u4e5f\u4f1a\u4fdd\u7559", [".clip \u8bfb\u53d6\u4e2d\u9014\u5931\u8d25\u65f6\uff0c\u5de5\u4f5c\u8868\u4e0e\u9636\u6bb5\u4f1a\u6062\u590d\uff0c\u4f46\u64a4\u9500/\u91cd\u505a\u8bb0\u5f55\u4e0d\u4f1a\u3002\u4e4b\u540e\u6309 Ctrl+Z \u53ef\u80fd\u51fa\u73b0\u672a\u5b8c\u6210\u7684\u5bfc\u5165\u72b6\u6001\uff0c\u539f\u672c\u53ef\u4ee5\u91cd\u505a\u7684\u5185\u5bb9\u4e5f\u4f1a\u6d88\u5931\u3002\u73b0\u5728\u8bb0\u5f55\u4e5f\u4f1a\u4e00\u5e76\u6062\u590d\u3002"]],
         ["ver912", ".clip \u8bfb\u53d6\u4fee\u6b63\uff1a\u8d5b\u7490\u7490\u7ed3\u675f\u6807\u8bb0\u4e0e\u672a\u9a8c\u8bc1\u7684\u6392\u5217", ["ver911 \u5728\u8d5b\u7490\u7490\u7ed3\u675f\u7684\u4f4d\u7f6e\u5199\u7684\u662f\u6ce2\u6d6a\u6807\u8bb0\u3002\u8be5\u5b57\u5f62\u5728\u672c\u8868\u4e2d\u53e6\u6709\u542b\u4e49\uff08\u5bf9\u767d\u4e34\u65f6\u6446\u653e\uff09\uff0c\u56e0\u6b64\u6539\u4e3a\u8868\u793a\u300c\u4ece\u6b64\u5904\u8d77\u6ca1\u6709\u753b\u300d\u7684 \u00d7\uff0c\u4e0e CLIP STUDIO \u81ea\u8eab\u5728\u65f6\u95f4\u8868\u5bfc\u51fa\u4e2d\u6240\u5199\u7684\u76f8\u540c\u3002", "\u4e0d\u662f\u4ece\u7b2c 0 \u5e27\u5f00\u59cb\u7684\u65f6\u95f4\u8f74\u73b0\u5728\u65e0\u6cd5\u9009\u62e9\u3002\u5176\u683c\u5b50\u4f4d\u7f6e\u6307\u5411\u4f55\u5904\u4ece\u672a\u9a8c\u8bc1\uff0c\u82e5\u9760\u731c\u6d4b\u4f1a\u8ba9\u8868\u6084\u6084\u9519\u4f4d\u6216\u88ab\u622a\u65ad\u3002\u539f\u56e0\u4f1a\u663e\u793a\u5728\u8be5\u65f6\u95f4\u8f74\u884c\u4e0a\u3002", "\u82e5\u52fe\u9009\u7684\u65f6\u95f4\u8f74\u4e00\u884c\u90fd\u6ca1\u9009\uff0c\u8bfb\u53d6\u6309\u94ae\u5c06\u65e0\u6cd5\u6309\u4e0b\uff0c\u5e76\u5728\u6bcf\u884c\u663e\u793a\u5df2\u9009\u6570\u91cf\u3002\u6b64\u524d\u53ef\u4ee5\u786e\u8ba4\uff0c\u7136\u540e\u6574\u4f53\u624d\u505c\u6b62\u3002", "\u8bfb\u53d6\u8fc7\u7a0b\u4e2d\u82e5\u5931\u8d25\uff0c\u5de5\u4f5c\u8868\u4e0e\u9636\u6bb5\u4f1a\u6062\u590d\u539f\u72b6\u3002"]],
@@ -4773,6 +4786,104 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     // ══ [UI] 업데이트 기록 창 ════════════════════════════════════════════════════════════════════
+    function readDismissedNotices() {
+      try {
+        return JSON.parse(localStorage.getItem(NOTICE_STORAGE_KEY) || '{}') || {};
+      } catch (err) {
+        console.warn('readDismissedNotices failed', err);
+        return {};
+      }
+    }
+
+    function dismissNotice(key) {
+      try {
+        const flags = readDismissedNotices();
+        flags[key] = true;
+        localStorage.setItem(NOTICE_STORAGE_KEY, JSON.stringify(flags));
+      } catch (err) {
+        console.warn('dismissNotice: could not save dismissed state for "' + key + '"', err);
+      }
+    }
+
+    function clipIntroText(key) {
+      const docs = {
+        en:{ title:'Drop a .clip straight onto the sheet',
+             body:'CLIP STUDIO files now load by themselves. You no longer have to export a timesheet CSV first — drag the .clip onto the sheet and pick what comes in.',
+             note:'A CSV or .xdts still works exactly as before.',
+             close:'Got it', never:'Do not show again' },
+        ja:{ title:'.clip をそのままシートにドロップ',
+             body:'CLIP STUDIO のファイルをそのまま読み込めるようになりました。タイムシートを CSV に書き出す手間はもう要りません — .clip をシートにドラッグして、入れるものを選ぶだけです。',
+             note:'CSV や .xdts もこれまで通り使えます。',
+             close:'わかりました', never:'今後表示しない' },
+        ko:{ title:'.clip 을 시트에 그대로 드롭',
+             body:'CLIP STUDIO 파일이 그대로 읽힙니다. 타임시트를 CSV 로 먼저 내보낼 필요가 없습니다 — .clip 을 시트 위로 끌어다 놓고 가져올 것을 고르면 됩니다.',
+             note:'CSV 와 .xdts 도 전과 똑같이 됩니다.',
+             close:'알겠습니다', never:'다시 보지 않기' },
+        zh:{ title:'把 .clip 直接拖到表上',
+             body:'CLIP STUDIO 文件现在可以直接读取，不必先导出时间表 CSV — 把 .clip 拖到表上，选择要导入的内容即可。',
+             note:'CSV 和 .xdts 依然照常可用。',
+             close:'知道了', never:'不再显示' }
+      };
+      const doc = docs[state.lang] || docs.en;
+      return doc[key] || docs.en[key] || key;
+    }
+
+    // 처음 열었을 때 한 번만 뜨는 안내. 바깥을 눌러도, 닫기를 눌러도 닫히고,
+    // 「다시 보지 않기」를 누른 뒤에만 기억한다 — 그냥 닫으면 다음에 또 보인다.
+    function openClipIntroNotice() {
+      if (readDismissedNotices().clipIntro) return;
+      const backdrop = document.createElement('div');
+      backdrop.className = 'app-dialog-backdrop clip-intro-backdrop';
+      const box = document.createElement('div');
+      box.className = 'app-dialog clip-intro-dialog';
+      box.setAttribute('role', 'dialog');
+      box.setAttribute('aria-modal', 'true');
+      box.setAttribute('aria-label', clipIntroText('title'));
+
+      const heading = document.createElement('h3');
+      heading.textContent = clipIntroText('title');
+      const body = document.createElement('p');
+      body.className = 'clip-intro-body';
+      body.textContent = clipIntroText('body');
+      const note = document.createElement('p');
+      note.className = 'clip-intro-note';
+      note.textContent = clipIntroText('note');
+
+      const actions = document.createElement('div');
+      actions.className = 'app-dialog-actions';
+      const never = document.createElement('button');
+      never.type = 'button';
+      never.className = 'toolbar-btn';
+      never.textContent = clipIntroText('never');
+      const close = document.createElement('button');
+      close.type = 'button';
+      close.className = 'toolbar-btn primary';
+      close.textContent = clipIntroText('close');
+      actions.appendChild(never);
+      actions.appendChild(close);
+
+      box.appendChild(heading);
+      box.appendChild(body);
+      box.appendChild(note);
+      box.appendChild(actions);
+      backdrop.appendChild(box);
+
+      let settled = false;
+      function finish(remember) {
+        if (settled) return;
+        settled = true;
+        if (remember) dismissNotice('clipIntro');
+        unmountAppDialog(backdrop);
+        if (backdrop.parentNode) backdrop.parentNode.removeChild(backdrop);
+      }
+      close.addEventListener('click', function() { finish(false); });
+      never.addEventListener('click', function() { finish(true); });
+      backdrop.addEventListener('pointerdown', function(event) { if (event.target === backdrop) finish(false); });
+
+      document.body.appendChild(backdrop);
+      mountAppDialog(backdrop, { onRequestClose:function() { finish(false); }, initialFocus:close });
+    }
+
     function openUpdateLog() {
       if (!updateLogModalEl || updateLogModalEl.classList.contains('open')) return;
       renderUpdateLog();
@@ -4796,7 +4907,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           <h4>Make a timesheet in 3 steps</h4>
           <div class="manual-step"><span class="manual-step-no">1</span>Put something on the sheet</div>
           <ul>
-            <li><strong>From CLIP STUDIO:</strong> <code>File</code> → <code>Export animation</code> → <code>Timesheet information</code> to save a CSV or an <code>.xdts</code>, then <strong>drag that file onto the sheet</strong> — either one loads itself.</li>
+            <li><strong>From CLIP STUDIO:</strong> <strong>drag the <code>.clip</code> itself onto the sheet</strong> — a window opens so you can pick what comes in. No timesheet export needed.</li>
+            <li><strong>Or an exported timesheet:</strong> <code>File</code> → <code>Export animation</code> → <code>Timesheet information</code> saves a CSV or an <code>.xdts</code>; dropping either one works too.</li>
             <li><strong>Or type it yourself:</strong> write <code>A: 1 2 3</code> in Text Commands and cel A shows 1, 2, 3. Use <code>n</code> to hold the same drawing (e.g. <code>A: 1 n n 2</code>).</li>
             <li><strong>Dialog:</strong> <code>0+01 | 1+00 | speaker | line</code> (start | end | who | what).</li>
             <li><strong>Camera:</strong> <code>0+01 | 1+00 | A | PAN | B</code> (examples sit right under the box).</li>
@@ -4833,7 +4945,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           <h4>3ステップでタイムシートができます</h4>
           <div class="manual-step"><span class="manual-step-no">1</span>中身を入れる</div>
           <ul>
-            <li><strong>CLIP STUDIOから：</strong><code>ファイル</code> → <code>アニメーション書き出し</code> → <code>タイムシート情報</code> でCSVか<code>.xdts</code>を保存 → その<strong>ファイルをシートにドラッグ＆ドロップ</strong>するだけ。どちらも自動で読み込まれます。</li>
+            <li><strong>CLIP STUDIOから：</strong><code>.clip</code>を<strong>そのままシートにドラッグ＆ドロップ</strong>。窓が開くので入れるものを選びます。タイムシートの書き出しは要りません。</li>
+            <li><strong>書き出したタイムシートでも：</strong><code>ファイル</code> → <code>アニメーション書き出し</code> → <code>タイムシート情報</code> でCSVか<code>.xdts</code>を保存 → それをドロップしても読み込まれます。</li>
             <li><strong>手で書くなら：</strong>テキストコマンドに <code>A: 1 2 3</code> と書くと、Aセルに 1・2・3 が並びます。同じ絵を続けたいコマは <code>n</code>（例：<code>A: 1 n n 2</code>）。</li>
             <li><strong>セリフ：</strong><code>0+01 | 1+00 | 話者 | セリフ</code>（始まり | 終わり | だれ | なに）。</li>
             <li><strong>カメラ：</strong><code>0+01 | 1+00 | A | PAN | B</code>（欄のすぐ下に例があります）。</li>
@@ -4870,7 +4983,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           <h4>3단계면 타임시트가 완성됩니다</h4>
           <div class="manual-step"><span class="manual-step-no">1</span>내용 넣기</div>
           <ul>
-            <li><strong>CLIP STUDIO에서:</strong> <code>파일</code> → <code>애니메이션 내보내기</code> → <code>타임시트 정보</code>로 CSV나 <code>.xdts</code> 저장 → 그 <strong>파일을 시트 위로 드래그앤드롭</strong>하세요. 둘 다 알아서 불러옵니다.</li>
+            <li><strong>CLIP STUDIO에서:</strong> <code>.clip</code>을 <strong>그대로 시트 위로 드래그앤드롭</strong>하세요. 창이 열리면 가져올 것을 고르면 됩니다. 타임시트 내보내기는 필요 없습니다.</li>
+            <li><strong>내보낸 타임시트도:</strong> <code>파일</code> → <code>애니메이션 내보내기</code> → <code>타임시트 정보</code>로 CSV나 <code>.xdts</code>를 저장해 떨어뜨려도 됩니다.</li>
             <li><strong>직접 쓰려면:</strong> 텍스트 커맨드에 <code>A: 1 2 3</code>이라고 쓰면 A셀에 1·2·3이 나란히 들어갑니다. 같은 그림을 유지할 칸은 <code>n</code> (예: <code>A: 1 n n 2</code>).</li>
             <li><strong>대사:</strong> <code>0+01 | 1+00 | 화자 | 대사</code> (시작 | 끝 | 누가 | 뭐라고).</li>
             <li><strong>카메라:</strong> <code>0+01 | 1+00 | A | PAN | B</code> (입력칸 바로 아래에 예시가 있습니다).</li>
@@ -4907,7 +5021,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           <h4>3 步做出时间表</h4>
           <div class="manual-step"><span class="manual-step-no">1</span>放入内容</div>
           <ul>
-            <li><strong>从 CLIP STUDIO：</strong><code>文件</code> → <code>导出动画</code> → <code>时间表信息</code> 保存 CSV 或 <code>.xdts</code>，然后把那个 <strong>文件拖放到表上</strong>即可，两种都会自动读取。</li>
+            <li><strong>从 CLIP STUDIO：</strong>把 <code>.clip</code> <strong>直接拖放到表上</strong>，会打开窗口让你选择要导入的内容。无需导出时间表。</li>
+            <li><strong>导出的时间表也可以：</strong><code>文件</code> → <code>导出动画</code> → <code>时间表信息</code> 保存 CSV 或 <code>.xdts</code>，拖放同样可读取。</li>
             <li><strong>想手写的话：</strong>在文本命令里写 <code>A: 1 2 3</code>，A 栏就会依次出现 1、2、3。想保持同一张画的格子写 <code>n</code>（例：<code>A: 1 n n 2</code>）。</li>
             <li><strong>台词：</strong><code>0+01 | 1+00 | 说话人 | 台词</code>（开始 | 结束 | 谁 | 说什么）。</li>
             <li><strong>摄影：</strong><code>0+01 | 1+00 | A | PAN | B</code>（输入框正下方有示例）。</li>
@@ -26891,10 +27006,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     normalizeDurationInputs();
     updateShakuEditUI();
     // Dismissible onboarding notices (dismissal persists per browser).
-    const NOTICE_STORAGE_KEY = 'autoSheetNoticeDismissed';
-    function readDismissedNotices() {
-      try { return JSON.parse(localStorage.getItem(NOTICE_STORAGE_KEY) || '{}') || {}; } catch (err) { console.warn('readDismissedNotices failed', err); return {}; }
-    }
     function setupDismissibleNotice(id, key) {
       const box = document.getElementById(id);
       if (!box) return;
@@ -26902,17 +27013,12 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const close = box.querySelector('.side-notice-close');
       if (close) close.addEventListener('click', function(){
         box.classList.add('hidden');
-        try {
-          const flags = readDismissedNotices();
-          flags[key] = true;
-          localStorage.setItem(NOTICE_STORAGE_KEY, JSON.stringify(flags));
-        } catch (err) {
-          console.warn('setupDismissibleNotice: could not save dismissed state for "' + key + '"', err);
-        }
+        dismissNotice(key);
       });
     }
     setupDismissibleNotice('memoRightClickNotice', 'memoRightClick');
     setupDismissibleNotice('cellReadabilityNotice', 'cellReadability');
+    openClipIntroNotice();
     // Pre-fill Camera→Memo on the pristine default sample so the memo text boxes are discoverable.
     if (document.getElementById('cameraManual').value === DEFAULT_CAMERA_SAMPLE_LINE && !getTextMemoPageData(0).length) {
       writeCameraLinesToMemo();
