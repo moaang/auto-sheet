@@ -2526,7 +2526,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '915';
+    const APP_VERSION = '916';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3765,6 +3765,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver916", "TVPaint files can be dropped straight onto the sheet too", ["Drag a .tvpp onto the sheet and it reads the sheet out of the file \u2014 no timesheet export. Each layer becomes a column, and the same window as .clip lets you tick what comes in, rename it and set its role.", "Drawings are numbered 1, 2, 3 in the order they appear on that layer, because TVPaint does not store a name for them. Holds, gaps and the cross at the end come out as they are.", "Rows whose role is not Cel \u2014 backgrounds, camera layers, books, frame guides \u2014 are no longer ticked by default. This also applies to .clip, where a bg folder used to come in ticked."]],
         ["ver915", "A first-run notice about dropping .clip files, and the quick guide now says so too", ["Opening the app shows a short notice that CLIP STUDIO files can be dropped straight onto the sheet. Click anywhere outside it or press the button to close; \u300cDo not show again\u300d keeps it from coming back.", "The quick guide used to describe only the old route (export a timesheet CSV or .xdts first). It now leads with dropping the .clip itself, and keeps the exported-timesheet route below it \u2014 both still work."]],
         ["ver914", "Reading a .clip: sane default roles, a folded side list, and tidier cel numbers", ["Rows that are not cel folders used to default to \u300cBook\u300d \u2014 so the paper, the title block and the frame guide all came in as Book. Roles now come from the same name rules this app already uses for CSV (BOOK/BGBOOK \u2192 Book, bg/background \u2192 Hide, camera/\u64ae\u5f71 \u2192 Camera), and anything else is a Cell.", "Reference layers (\u539f\u56f3, \u30b3\u30f3\u30c6, rulers, the paper itself) are no longer ticked by default, even when CLIP made them animation folders \u2014 in the sample files \u539f\u56f3 was an animation folder in 33 of them.", "Hidden rows, rows with no exposure in this timeline, and reference layers are folded into one group so they stop burying what you actually pick. Open it to find and tick them.", "Cel numbers written as A01/A02 come in as 1/2, and leading zeros go. Numbers that mean something are left alone \u2014 4a, 3a, 1.5, kana, and instructions stay exactly as written, and so does an A01 sitting in another cel's row. Turn it off in the window if you want the file's own text."]],
         ["ver913", "Undo history survives a failed .clip load", ["When loading a .clip failed part way, the sheet and its stages went back but undo/redo did not. A later Ctrl+Z could pull up a half-finished import, and anything you had to redo was gone. The history now goes back with everything else."]],
@@ -3829,6 +3830,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver916", "TVPaint \u306e\u30d5\u30a1\u30a4\u30eb\u3082\u305d\u306e\u307e\u307e\u30b7\u30fc\u30c8\u306b\u30c9\u30ed\u30c3\u30d7\u3067\u304d\u307e\u3059", [".tvpp \u3092\u30b7\u30fc\u30c8\u306b\u30c9\u30e9\u30c3\u30b0\u3059\u308b\u3068\u3001\u30d5\u30a1\u30a4\u30eb\u304b\u3089\u30b7\u30fc\u30c8\u3092\u8aad\u307f\u53d6\u308a\u307e\u3059\uff08\u30bf\u30a4\u30e0\u30b7\u30fc\u30c8\u306e\u66f8\u304d\u51fa\u3057\u306f\u4e0d\u8981\uff09\u3002\u30ec\u30a4\u30e4\u30fc\u304c\u5217\u306b\u306a\u308a\u3001.clip \u3068\u540c\u3058\u7a93\u3067\u5165\u308c\u308b\u3082\u306e\u3092\u9078\u3073\u3001\u540d\u524d\u3068\u5f79\u5272\u3092\u6c7a\u3081\u3089\u308c\u307e\u3059\u3002", "TVPaint \u306f\u7d75\u306e\u540d\u524d\u3092\u4fdd\u5b58\u3057\u306a\u3044\u305f\u3081\u3001\u305d\u306e\u30ec\u30a4\u30e4\u30fc\u3067\u51fa\u3066\u304f\u308b\u9806\u306b1\u30fb2\u30fb3\u3068\u756a\u53f7\u3092\u4ed8\u3051\u307e\u3059\u3002\u540c\u3058\u7d75\u306e\u4f38\u3070\u3057\u3001\u7a7a\u304d\u30b3\u30de\u3001\u7d42\u308f\u308a\u306e\u00d7\u306f\u305d\u306e\u307e\u307e\u51fa\u307e\u3059\u3002", "\u5f79\u5272\u304c\u30bb\u30eb\u3067\u306a\u3044\u884c\uff08\u80cc\u666f\u30fb\u30ab\u30e1\u30e9\u30fb\u30d6\u30c3\u30af\u30fb\u30d5\u30ec\u30fc\u30e0\u6848\u5185\uff09\u306f\u65e2\u5b9a\u3067\u30c1\u30a7\u30c3\u30af\u3057\u307e\u305b\u3093\u3002.clip \u3067\u3082\u540c\u3058\u3067\u3001\u30bb\u30eb\u30d5\u30a9\u30eb\u30c0\u30fc\u306b\u306a\u3063\u3066\u3044\u305f bg \u304c\u65e2\u5b9a\u3067\u5165\u3089\u306a\u304f\u306a\u308a\u307e\u3057\u305f\u3002"]],
         ["ver915", "\u8d77\u52d5\u6642\u306b .clip \u30c9\u30ed\u30c3\u30d7\u306e\u304a\u77e5\u3089\u305b\u3092\u8868\u793a\u3001\u7c21\u5358\u8aac\u660e\u66f8\u3082\u66f4\u65b0", ["\u30a2\u30d7\u30ea\u3092\u958b\u304f\u3068\u3001CLIP STUDIO \u306e\u30d5\u30a1\u30a4\u30eb\u3092\u305d\u306e\u307e\u307e\u30b7\u30fc\u30c8\u306b\u30c9\u30ed\u30c3\u30d7\u3067\u304d\u308b\u3053\u3068\u3092\u77ed\u304f\u304a\u77e5\u3089\u305b\u3057\u307e\u3059\u3002\u5916\u5074\u3092\u30af\u30ea\u30c3\u30af\u3059\u308b\u304b\u30dc\u30bf\u30f3\u3067\u9589\u3058\u3089\u308c\u3001\u300c\u4eca\u5f8c\u8868\u793a\u3057\u306a\u3044\u300d\u3092\u62bc\u3059\u3068\u51fa\u306a\u304f\u306a\u308a\u307e\u3059\u3002", "\u7c21\u5358\u8aac\u660e\u66f8\u306f\u4ee5\u524d\u306e\u624b\u9806\uff08\u5148\u306b\u30bf\u30a4\u30e0\u30b7\u30fc\u30c8\u3092 CSV \u304b .xdts \u306b\u66f8\u304d\u51fa\u3059\uff09\u3060\u3051\u3092\u66f8\u3044\u3066\u3044\u307e\u3057\u305f\u3002\u4eca\u306f .clip \u3092\u305d\u306e\u307e\u307e\u30c9\u30ed\u30c3\u30d7\u3059\u308b\u65b9\u6cd5\u3092\u5148\u306b\u66f8\u304d\u3001\u66f8\u304d\u51fa\u3057\u305f\u30bf\u30a4\u30e0\u30b7\u30fc\u30c8\u306e\u624b\u9806\u3082\u305d\u306e\u4e0b\u306b\u6b8b\u3057\u3066\u3044\u307e\u3059 \u2014 \u3069\u3061\u3089\u3082\u4f7f\u3048\u307e\u3059\u3002"]],
         ["ver914", ".clip \u8aad\u307f\u8fbc\u307f\uff1a\u5f79\u5272\u306e\u65e2\u5b9a\u30fb\u4e0d\u8981\u306a\u884c\u306e\u6298\u308a\u305f\u305f\u307f\u30fb\u30bb\u30eb\u756a\u53f7\u306e\u6574\u7406", ["\u30bb\u30eb\u30d5\u30a9\u30eb\u30c0\u30fc\u3067\u306a\u3044\u884c\u306f\u65e2\u5b9a\u304c\u300cBook\u300d\u3067\u3057\u305f\u3002\u7528\u7d19\u3082\u30bf\u30a4\u30c8\u30eb\u6b04\u3082\u30d5\u30ec\u30fc\u30e0\u6848\u5185\u3082 Book \u3067\u5165\u3063\u3066\u3044\u307e\u3057\u305f\u3002\u5f79\u5272\u306f\u3053\u306e\u30a2\u30d7\u30ea\u304c CSV \u53d6\u308a\u8fbc\u307f\u3067\u4f7f\u3063\u3066\u3044\u308b\u540d\u524d\u306e\u898f\u5247\u3092\u305d\u306e\u307e\u307e\u4f7f\u3044\u307e\u3059\uff08BOOK/BGBOOK \u2192 Book\u3001bg/background \u2192 Hide\u3001camera/\u64ae\u5f71 \u2192 Camera\uff09\u3002\u3069\u308c\u306b\u3082\u5f53\u305f\u3089\u306a\u3051\u308c\u3070\u30bb\u30eb\u3067\u3059\u3002", "\u53c2\u8003\u7528\u306e\u30ec\u30a4\u30e4\u30fc\uff08\u539f\u56f3\u30fb\u30b3\u30f3\u30c6\u30fb\u5b9a\u898f\u30fb\u7528\u7d19\uff09\u306f\u3001CLIP \u3067\u30a2\u30cb\u30e1\u30fc\u30b7\u30e7\u30f3\u30d5\u30a9\u30eb\u30c0\u30fc\u306b\u306a\u3063\u3066\u3044\u3066\u3082\u65e2\u5b9a\u3067\u306f\u30c1\u30a7\u30c3\u30af\u3057\u307e\u305b\u3093\u3002\u30b5\u30f3\u30d7\u30eb\u3067\u306f\u539f\u56f3\u304c 33 \u30d5\u30a1\u30a4\u30eb\u3067\u30a2\u30cb\u30e1\u30fc\u30b7\u30e7\u30f3\u30d5\u30a9\u30eb\u30c0\u30fc\u3067\u3057\u305f\u3002", "\u975e\u8868\u793a\u306e\u884c\u3001\u3053\u306e\u30bf\u30a4\u30e0\u30e9\u30a4\u30f3\u306b\u9732\u51fa\u304c\u306a\u3044\u884c\u3001\u53c2\u8003\u30ec\u30a4\u30e4\u30fc\u306f\u3072\u3068\u3064\u306b\u307e\u3068\u3081\u3066\u6298\u308a\u305f\u305f\u307f\u307e\u3059\u3002\u958b\u3051\u3070\u63a2\u3057\u3066\u9078\u3079\u307e\u3059\u3002", "A01/A02 \u3068\u66f8\u304b\u308c\u305f\u30bb\u30eb\u756a\u53f7\u306f 1/2 \u3067\u5165\u308a\u3001\u5148\u982d\u306e 0 \u3082\u53d6\u308c\u307e\u3059\u3002\u610f\u5473\u306e\u3042\u308b\u756a\u53f7\u306f\u305d\u306e\u307e\u307e\u3067\u3059 \u2014 4a\u30fb3a\u30fb1.5\u30fb\u304b\u306a\u30fb\u6307\u793a\u3001\u305d\u3057\u3066\u5225\u306e\u30bb\u30eb\u306e\u884c\u306b\u3042\u308b A01 \u3082\u89e6\u308a\u307e\u305b\u3093\u3002\u5143\u306e\u8868\u8a18\u306e\u307e\u307e\u5165\u308c\u305f\u3044\u3068\u304d\u306f\u7a93\u3067\u5207\u308c\u307e\u3059\u3002"]],
         ["ver913", ".clip \u8aad\u307f\u8fbc\u307f\u304c\u5931\u6557\u3057\u3066\u3082\u53d6\u308a\u6d88\u3057\u5c65\u6b74\u304c\u6b8b\u308a\u307e\u3059", [".clip \u306e\u8aad\u307f\u8fbc\u307f\u304c\u9014\u4e2d\u3067\u5931\u6557\u3057\u305f\u3068\u304d\u3001\u30b7\u30fc\u30c8\u3068\u6bb5\u968e\u306f\u5143\u306b\u623b\u3063\u3066\u3082\u53d6\u308a\u6d88\u3057\u30fb\u3084\u308a\u76f4\u3057\u306e\u5c65\u6b74\u306f\u623b\u308a\u307e\u305b\u3093\u3067\u3057\u305f\u3002\u305d\u306e\u5f8c\u306e Ctrl+Z \u3067\u4e2d\u9014\u534a\u7aef\u306a\u8aad\u307f\u8fbc\u307f\u72b6\u614b\u304c\u51fa\u305f\u308a\u3001\u3084\u308a\u76f4\u305b\u305f\u306f\u305a\u306e\u3082\u306e\u304c\u6d88\u3048\u305f\u308a\u3057\u3066\u3044\u307e\u3057\u305f\u3002\u5c65\u6b74\u3082\u4e00\u7dd2\u306b\u623b\u308a\u307e\u3059\u3002"]],
@@ -3893,6 +3895,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver916", "TVPaint \ud30c\uc77c\ub3c4 \uc2dc\ud2b8\uc5d0 \uadf8\ub300\ub85c \ub4dc\ub86d\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4", [".tvpp\ub97c \uc2dc\ud2b8\uc5d0 \ub04c\uc5b4\ub2e4 \ub193\uc73c\uba74 \ud30c\uc77c\uc5d0\uc11c \uc2dc\ud2b8\ub97c \uc77d\uc2b5\ub2c8\ub2e4(\ud0c0\uc784\uc2dc\ud2b8 \ub0b4\ubcf4\ub0b4\uae30 \ubd88\ud544\uc694). \ub808\uc774\uc5b4\uac00 \uce78\uc774 \ub418\uace0, .clip\uacfc \uac19\uc740 \ucc3d\uc5d0\uc11c \uac00\uc838\uc62c \uac83\uc744 \uace0\ub974\uace0 \uc774\ub984\uacfc \uc5ed\ud560\uc744 \uc815\ud569\ub2c8\ub2e4.", "TVPaint\ub294 \uadf8\ub9bc \uc774\ub984\uc744 \uc800\uc7a5\ud558\uc9c0 \uc54a\uc544\uc11c, \uadf8 \ub808\uc774\uc5b4\uc5d0 \ub098\uc624\ub294 \uc21c\uc11c\ub300\ub85c 1\u00b72\u00b73 \ubc88\ud638\ub97c \ub9e4\uae41\ub2c8\ub2e4. \uac19\uc740 \uadf8\ub9bc \uc720\uc9c0, \ube48 \uce78, \ub05d\uc758 \u00d7\ub294 \uadf8\ub300\ub85c \ub098\uc635\ub2c8\ub2e4.", "\uc5ed\ud560\uc774 \uc140\uc774 \uc544\ub2cc \ud589(\ubc30\uacbd\u00b7\uce74\uba54\ub77c\u00b7\ubd81\u00b7\ud504\ub808\uc784 \uc548\ub0b4)\uc740 \uae30\ubcf8\uc73c\ub85c \uccb4\ud06c\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. .clip\ub3c4 \ub9c8\ucc2c\uac00\uc9c0\ub77c, \uc140 \ud3f4\ub354\ub85c \ub418\uc5b4 \uc788\ub358 bg\uac00 \uae30\ubcf8\uc73c\ub85c \ub4e4\uc5b4\uc624\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."]],
         ["ver915", "\uccab \uc2e4\ud589\uc5d0 .clip \ub4dc\ub86d \uc548\ub0b4\ub97c \ub744\uc6b0\uace0, \uac04\ub2e8 \uc124\uba85\uc11c\ub3c4 \uac31\uc2e0", ["\uc571\uc744 \uc5f4\uba74 CLIP STUDIO \ud30c\uc77c\uc744 \uc2dc\ud2b8\uc5d0 \uadf8\ub300\ub85c \ub4dc\ub86d\ud560 \uc218 \uc788\ub2e4\ub294 \uc548\ub0b4\uac00 \uc9e7\uac8c \ub739\ub2c8\ub2e4. \ubc14\uae65\uc744 \ud074\ub9ad\ud558\uac70\ub098 \ubc84\ud2bc\uc73c\ub85c \ub2eb\uc744 \uc218 \uc788\uace0, \u300c\ub2e4\uc2dc \ubcf4\uc9c0 \uc54a\uae30\u300d\ub97c \ub204\ub974\uba74 \ub354 \ub728\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.", "\uac04\ub2e8 \uc124\uba85\uc11c\uac00 \uc608\uc804 \ubc29\ubc95(\ud0c0\uc784\uc2dc\ud2b8\ub97c CSV\ub098 .xdts\ub85c \uba3c\uc800 \ub0b4\ubcf4\ub0b4\uae30)\ub9cc \uc801\uace0 \uc788\uc5c8\uc2b5\ub2c8\ub2e4. \uc774\uc81c .clip\uc744 \uadf8\ub300\ub85c \ub4dc\ub86d\ud558\ub294 \ubc29\ubc95\uc744 \uba3c\uc800 \uc801\uace0, \ub0b4\ubcf4\ub0b8 \ud0c0\uc784\uc2dc\ud2b8 \ubc29\ubc95\ub3c4 \uadf8 \uc544\ub798 \ub0a8\uacbc\uc2b5\ub2c8\ub2e4 \u2014 \ub458 \ub2e4 \ub429\ub2c8\ub2e4."]],
         ["ver914", ".clip \uc77d\uae30: \uc5ed\ud560 \uae30\ubcf8\uac12 \u00b7 \uc548 \uc4f8 \ud589 \uc811\uae30 \u00b7 \uc140 \ubc88\ud638 \uc815\ub9ac", ["\uc140 \ud3f4\ub354\uac00 \uc544\ub2cc \ud589\uc740 \uae30\ubcf8\uac12\uc774 \u300cBook\u300d\uc774\uc5c8\uc2b5\ub2c8\ub2e4. \uadf8\ub798\uc11c \uc6a9\uc9c0\ub3c4 \uc791\ud488\uc815\ubcf4\ub3c4 \ud504\ub808\uc784 \uc548\ub0b4\ub3c4 Book\uc73c\ub85c \ub4e4\uc5b4\uc654\uc2b5\ub2c8\ub2e4. \uc5ed\ud560\uc740 \uc774 \uc571\uc774 CSV \ucde8\uc785\uc5d0\uc11c \uc774\ubbf8 \uc4f0\ub294 \uc774\ub984 \uaddc\uce59\uc744 \uadf8\ub300\ub85c \uc501\ub2c8\ub2e4(BOOK/BGBOOK \u2192 Book, bg/background \u2192 Hide, camera/\u64ae\u5f71 \u2192 Camera). \uc544\ubb34\uac83\ub3c4 \uc548 \uac78\ub9ac\uba74 \uc140\uc785\ub2c8\ub2e4.", "\ucc38\uace0\ub85c \uae54\uc544 \ub454 \ub808\uc774\uc5b4(\u539f\u56f3\u00b7\ucf58\ud2f0\u00b7\uc790\u00b7\uc6a9\uc9c0)\ub294 CLIP\uc5d0\uc11c \uc560\ub2c8\uba54\uc774\uc158 \ud3f4\ub354\ub85c \ub418\uc5b4 \uc788\uc5b4\ub3c4 \uae30\ubcf8\uc73c\ub85c \uccb4\ud06c\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ud45c\ubcf8\uc5d0\uc11c\ub294 \u539f\u56f3\uac00 33\uac1c \ud30c\uc77c\uc5d0\uc11c \uc560\ub2c8\uba54\uc774\uc158 \ud3f4\ub354\uc600\uc2b5\ub2c8\ub2e4.", "\uc228\uae34 \ud589, \uc774 \ud0c0\uc784\ub77c\uc778\uc5d0 \ub178\ucd9c\uc774 \uc5c6\ub294 \ud589, \ucc38\uace0 \ub808\uc774\uc5b4\ub294 \ud55c \ubb36\uc74c\uc73c\ub85c \uc811\ud799\ub2c8\ub2e4. \ud3bc\uce58\uba74 \ucc3e\uc544\uc11c \ucf24 \uc218 \uc788\uc2b5\ub2c8\ub2e4.", "A01/A02\ub85c \uc801\ud78c \uc140 \ubc88\ud638\ub294 1/2\ub85c \ub4e4\uc5b4\uc624\uace0 \uc55e\uc758 0\ub3c4 \uc5c6\uc5b4\uc9d1\ub2c8\ub2e4. \ub73b\uc774 \uc788\ub294 \ubc88\ud638\ub294 \uadf8\ub300\ub85c\uc785\ub2c8\ub2e4 \u2014 4a\u00b73a\u00b71.5\u00b7\uac00\ub098\u00b7\uc9c0\uc2dc\ubb38, \uadf8\ub9ac\uace0 \ub2e4\ub978 \uc140\uc758 \ud589\uc5d0 \uc788\ub294 A01\ub3c4 \uac74\ub4dc\ub9ac\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc6d0\ubcf8 \ud45c\uae30 \uadf8\ub300\ub85c \ubc1b\uace0 \uc2f6\uc73c\uba74 \ucc3d\uc5d0\uc11c \ub044\uba74 \ub429\ub2c8\ub2e4."]],
         ["ver913", ".clip \uc77d\uae30\uac00 \uc2e4\ud328\ud574\ub3c4 \uc2e4\ud589\ucde8\uc18c \uc774\ub825\uc774 \ub0a8\uc2b5\ub2c8\ub2e4", [".clip \uc77d\uae30\uac00 \ub3c4\uc911\uc5d0 \uc2e4\ud328\ud558\uba74 \uc2dc\ud2b8\uc640 \ub2e8\uacc4\ub294 \ub3cc\uc544\uc654\uc9c0\ub9cc \uc2e4\ud589\ucde8\uc18c\u00b7\ub2e4\uc2dc\uc2e4\ud589 \uc774\ub825\uc740 \ub3cc\uc544\uc624\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4. \uc774\ud6c4 Ctrl+Z\uc5d0\uc11c \ub35c \ub05d\ub09c \uac00\uc838\uc624\uae30 \uc0c1\ud0dc\uac00 \ub098\uc624\uac70\ub098, \ub2e4\uc2dc\uc2e4\ud589\ud560 \uc218 \uc788\ub358 \uac83\uc774 \uc0ac\ub77c\uc84c\uc2b5\ub2c8\ub2e4. \uc774\uc81c \uc774\ub825\ub3c4 \ud568\uaed8 \ub3cc\uc544\uc635\ub2c8\ub2e4."]],
@@ -3957,6 +3960,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver916", "TVPaint \u6587\u4ef6\u4e5f\u53ef\u4ee5\u76f4\u63a5\u62d6\u5230\u8868\u4e0a", ["\u628a .tvpp \u62d6\u5230\u8868\u4e0a\u5373\u53ef\u4ece\u6587\u4ef6\u8bfb\u53d6\u8868\uff08\u65e0\u9700\u5bfc\u51fa\u65f6\u95f4\u8868\uff09\u3002\u56fe\u5c42\u4f1a\u6210\u4e3a\u5217\uff0c\u5e76\u7528\u4e0e .clip \u76f8\u540c\u7684\u7a97\u53e3\u9009\u62e9\u8981\u5bfc\u5165\u7684\u5185\u5bb9\u3001\u6539\u540d\u5e76\u8bbe\u7f6e\u89d2\u8272\u3002", "TVPaint \u4e0d\u4fdd\u5b58\u753b\u7684\u540d\u79f0\uff0c\u56e0\u6b64\u6309\u8be5\u56fe\u5c42\u4e2d\u51fa\u73b0\u7684\u987a\u5e8f\u7f16\u53f7\u4e3a 1\u30012\u30013\u3002\u4fdd\u6301\u3001\u7a7a\u683c\u4e0e\u7ed3\u5c3e\u7684 \u00d7 \u90fd\u7167\u539f\u6837\u5448\u73b0\u3002", "\u89d2\u8272\u4e0d\u662f\u8d5b\u7490\u7490\u7684\u884c\uff08\u80cc\u666f\u3001\u6444\u5f71\u673a\u3001Book\u3001\u753b\u6846\u8bf4\u660e\uff09\u4e0d\u518d\u9ed8\u8ba4\u52fe\u9009\u3002.clip \u540c\u6837\u5982\u6b64\uff0c\u6b64\u524d\u4f5c\u4e3a\u8d5b\u7490\u7490\u6587\u4ef6\u5939\u7684 bg \u4e0d\u518d\u9ed8\u8ba4\u5bfc\u5165\u3002"]],
         ["ver915", "\u542f\u52a8\u65f6\u663e\u793a .clip \u62d6\u653e\u63d0\u793a\uff0c\u7b80\u660e\u8bf4\u660e\u4e66\u4e5f\u5df2\u66f4\u65b0", ["\u6253\u5f00\u5e94\u7528\u4f1a\u7b80\u77ed\u63d0\u793a\uff1aCLIP STUDIO \u6587\u4ef6\u53ef\u4ee5\u76f4\u63a5\u62d6\u5230\u8868\u4e0a\u3002\u70b9\u51fb\u5916\u4fa7\u6216\u6309\u94ae\u5373\u53ef\u5173\u95ed\uff0c\u6309\u300c\u4e0d\u518d\u663e\u793a\u300d\u5219\u4e0d\u4f1a\u518d\u51fa\u73b0\u3002", "\u7b80\u660e\u8bf4\u660e\u4e66\u6b64\u524d\u53ea\u5199\u4e86\u65e7\u6d41\u7a0b\uff08\u5148\u628a\u65f6\u95f4\u8868\u5bfc\u51fa\u4e3a CSV \u6216 .xdts\uff09\u3002\u73b0\u5728\u5148\u5199\u76f4\u63a5\u62d6\u653e .clip \u7684\u65b9\u6cd5\uff0c\u5e76\u5728\u5176\u4e0b\u4fdd\u7559\u5bfc\u51fa\u65f6\u95f4\u8868\u7684\u6d41\u7a0b \u2014 \u4e24\u79cd\u90fd\u53ef\u7528\u3002"]],
         ["ver914", ".clip \u8bfb\u53d6\uff1a\u89d2\u8272\u9ed8\u8ba4\u503c\u3001\u6298\u53e0\u6b21\u8981\u884c\u3001\u6574\u7406\u8d5b\u7490\u7490\u7f16\u53f7", ["\u975e\u8d5b\u7490\u7490\u6587\u4ef6\u5939\u7684\u884c\u4ee5\u524d\u9ed8\u8ba4\u4e3a\u300cBook\u300d\uff0c\u4e8e\u662f\u753b\u7eb8\u3001\u4f5c\u54c1\u4fe1\u606f\u3001\u753b\u6846\u8bf4\u660e\u90fd\u4ee5 Book \u5bfc\u5165\u3002\u89d2\u8272\u73b0\u5728\u6cbf\u7528\u672c\u5e94\u7528\u5728 CSV \u5bfc\u5165\u4e2d\u5df2\u6709\u7684\u540d\u79f0\u89c4\u5219\uff08BOOK/BGBOOK \u2192 Book\uff0cbg/background \u2192 Hide\uff0ccamera/\u64ae\u5f71 \u2192 Camera\uff09\uff0c\u90fd\u4e0d\u5339\u914d\u5219\u4e3a\u8d5b\u7490\u7490\u3002", "\u53c2\u8003\u7528\u56fe\u5c42\uff08\u539f\u56f3\u3001\u5206\u955c\u3001\u5c3a\u3001\u753b\u7eb8\uff09\u5373\u4f7f\u5728 CLIP \u4e2d\u662f\u52a8\u753b\u6587\u4ef6\u5939\uff0c\u4e5f\u4e0d\u518d\u9ed8\u8ba4\u52fe\u9009\u3002\u6837\u672c\u4e2d\u539f\u56f3\u5728 33 \u4e2a\u6587\u4ef6\u91cc\u662f\u52a8\u753b\u6587\u4ef6\u5939\u3002", "\u9690\u85cf\u7684\u884c\u3001\u672c\u65f6\u95f4\u8f74\u65e0\u66dd\u5149\u7684\u884c\u3001\u53c2\u8003\u56fe\u5c42\u4f1a\u6298\u53e0\u6210\u4e00\u7ec4\uff0c\u4e0d\u518d\u6df9\u6ca1\u771f\u6b63\u8981\u9009\u7684\u884c\u3002\u5c55\u5f00\u5373\u53ef\u67e5\u627e\u5e76\u52fe\u9009\u3002", "\u5199\u6210 A01/A02 \u7684\u8d5b\u7490\u7490\u7f16\u53f7\u4f1a\u4ee5 1/2 \u5bfc\u5165\uff0c\u524d\u5bfc\u96f6\u4e5f\u4f1a\u53bb\u6389\u3002\u6709\u610f\u4e49\u7684\u7f16\u53f7\u4fdd\u6301\u539f\u6837 \u2014 4a\u30013a\u30011.5\u3001\u5047\u540d\u3001\u6307\u793a\uff0c\u4ee5\u53ca\u4f4d\u4e8e\u5176\u4ed6\u8d5b\u7490\u7490\u884c\u4e2d\u7684 A01 \u90fd\u4e0d\u6539\u52a8\u3002\u60f3\u6309\u539f\u6587\u5bfc\u5165\u53ef\u5728\u7a97\u53e3\u4e2d\u5173\u95ed\u3002"]],
         ["ver913", "\u5373\u4f7f .clip \u8bfb\u53d6\u5931\u8d25\uff0c\u64a4\u9500\u8bb0\u5f55\u4e5f\u4f1a\u4fdd\u7559", [".clip \u8bfb\u53d6\u4e2d\u9014\u5931\u8d25\u65f6\uff0c\u5de5\u4f5c\u8868\u4e0e\u9636\u6bb5\u4f1a\u6062\u590d\uff0c\u4f46\u64a4\u9500/\u91cd\u505a\u8bb0\u5f55\u4e0d\u4f1a\u3002\u4e4b\u540e\u6309 Ctrl+Z \u53ef\u80fd\u51fa\u73b0\u672a\u5b8c\u6210\u7684\u5bfc\u5165\u72b6\u6001\uff0c\u539f\u672c\u53ef\u4ee5\u91cd\u505a\u7684\u5185\u5bb9\u4e5f\u4f1a\u6d88\u5931\u3002\u73b0\u5728\u8bb0\u5f55\u4e5f\u4f1a\u4e00\u5e76\u6062\u590d\u3002"]],
@@ -4807,20 +4811,20 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     function clipIntroText(key) {
       const docs = {
-        en:{ title:'Drop a .clip straight onto the sheet',
-             body:'CLIP STUDIO files now load by themselves. You no longer have to export a timesheet CSV first — drag the .clip onto the sheet and pick what comes in.',
+        en:{ title:'Drop a .clip or .tvpp straight onto the sheet',
+             body:'CLIP STUDIO and TVPaint files now load by themselves. You no longer have to export a timesheet first — drag the file onto the sheet and pick what comes in.',
              note:'A CSV or .xdts still works exactly as before.',
              close:'Got it', never:'Do not show again' },
-        ja:{ title:'.clip をそのままシートにドロップ',
-             body:'CLIP STUDIO のファイルをそのまま読み込めるようになりました。タイムシートを CSV に書き出す手間はもう要りません — .clip をシートにドラッグして、入れるものを選ぶだけです。',
+        ja:{ title:'.clip や .tvpp をそのままシートにドロップ',
+             body:'CLIP STUDIO と TVPaint のファイルをそのまま読み込めるようになりました。タイムシートを書き出す手間はもう要りません — ファイルをシートにドラッグして、入れるものを選ぶだけです。',
              note:'CSV や .xdts もこれまで通り使えます。',
              close:'わかりました', never:'今後表示しない' },
-        ko:{ title:'.clip 을 시트에 그대로 드롭',
-             body:'CLIP STUDIO 파일이 그대로 읽힙니다. 타임시트를 CSV 로 먼저 내보낼 필요가 없습니다 — .clip 을 시트 위로 끌어다 놓고 가져올 것을 고르면 됩니다.',
+        ko:{ title:'.clip 이나 .tvpp 를 시트에 그대로 드롭',
+             body:'CLIP STUDIO 와 TVPaint 파일이 그대로 읽힙니다. 타임시트를 먼저 내보낼 필요가 없습니다 — 파일을 시트 위로 끌어다 놓고 가져올 것을 고르면 됩니다.',
              note:'CSV 와 .xdts 도 전과 똑같이 됩니다.',
              close:'알겠습니다', never:'다시 보지 않기' },
-        zh:{ title:'把 .clip 直接拖到表上',
-             body:'CLIP STUDIO 文件现在可以直接读取，不必先导出时间表 CSV — 把 .clip 拖到表上，选择要导入的内容即可。',
+        zh:{ title:'把 .clip 或 .tvpp 直接拖到表上',
+             body:'CLIP STUDIO 和 TVPaint 文件现在可以直接读取，不必先导出时间表 — 把文件拖到表上，选择要导入的内容即可。',
              note:'CSV 和 .xdts 依然照常可用。',
              close:'知道了', never:'不再显示' }
       };
@@ -4908,6 +4912,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           <div class="manual-step"><span class="manual-step-no">1</span>Put something on the sheet</div>
           <ul>
             <li><strong>From CLIP STUDIO:</strong> <strong>drag the <code>.clip</code> itself onto the sheet</strong> — a window opens so you can pick what comes in. No timesheet export needed.</li>
+            <li><strong>From TVPaint:</strong> <strong>drag the <code>.tvpp</code> itself onto the sheet</strong>. Each layer becomes a column and its drawings are numbered 1, 2, 3 in the order they appear.</li>
             <li><strong>Or an exported timesheet:</strong> <code>File</code> → <code>Export animation</code> → <code>Timesheet information</code> saves a CSV or an <code>.xdts</code>; dropping either one works too.</li>
             <li><strong>Or type it yourself:</strong> write <code>A: 1 2 3</code> in Text Commands and cel A shows 1, 2, 3. Use <code>n</code> to hold the same drawing (e.g. <code>A: 1 n n 2</code>).</li>
             <li><strong>Dialog:</strong> <code>0+01 | 1+00 | speaker | line</code> (start | end | who | what).</li>
@@ -4946,6 +4951,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           <div class="manual-step"><span class="manual-step-no">1</span>中身を入れる</div>
           <ul>
             <li><strong>CLIP STUDIOから：</strong><code>.clip</code>を<strong>そのままシートにドラッグ＆ドロップ</strong>。窓が開くので入れるものを選びます。タイムシートの書き出しは要りません。</li>
+            <li><strong>TVPaintから：</strong><code>.tvpp</code>を<strong>そのままシートにドラッグ＆ドロップ</strong>。レイヤーが列になり、絵は出てくる順に1・2・3と番号が付きます。</li>
             <li><strong>書き出したタイムシートでも：</strong><code>ファイル</code> → <code>アニメーション書き出し</code> → <code>タイムシート情報</code> でCSVか<code>.xdts</code>を保存 → それをドロップしても読み込まれます。</li>
             <li><strong>手で書くなら：</strong>テキストコマンドに <code>A: 1 2 3</code> と書くと、Aセルに 1・2・3 が並びます。同じ絵を続けたいコマは <code>n</code>（例：<code>A: 1 n n 2</code>）。</li>
             <li><strong>セリフ：</strong><code>0+01 | 1+00 | 話者 | セリフ</code>（始まり | 終わり | だれ | なに）。</li>
@@ -4984,6 +4990,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           <div class="manual-step"><span class="manual-step-no">1</span>내용 넣기</div>
           <ul>
             <li><strong>CLIP STUDIO에서:</strong> <code>.clip</code>을 <strong>그대로 시트 위로 드래그앤드롭</strong>하세요. 창이 열리면 가져올 것을 고르면 됩니다. 타임시트 내보내기는 필요 없습니다.</li>
+            <li><strong>TVPaint에서:</strong> <code>.tvpp</code>를 <strong>그대로 시트 위로 드래그앤드롭</strong>하세요. 레이어가 칸이 되고, 그림은 나오는 순서대로 1·2·3 번호가 붙습니다.</li>
             <li><strong>내보낸 타임시트도:</strong> <code>파일</code> → <code>애니메이션 내보내기</code> → <code>타임시트 정보</code>로 CSV나 <code>.xdts</code>를 저장해 떨어뜨려도 됩니다.</li>
             <li><strong>직접 쓰려면:</strong> 텍스트 커맨드에 <code>A: 1 2 3</code>이라고 쓰면 A셀에 1·2·3이 나란히 들어갑니다. 같은 그림을 유지할 칸은 <code>n</code> (예: <code>A: 1 n n 2</code>).</li>
             <li><strong>대사:</strong> <code>0+01 | 1+00 | 화자 | 대사</code> (시작 | 끝 | 누가 | 뭐라고).</li>
@@ -5022,6 +5029,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           <div class="manual-step"><span class="manual-step-no">1</span>放入内容</div>
           <ul>
             <li><strong>从 CLIP STUDIO：</strong>把 <code>.clip</code> <strong>直接拖放到表上</strong>，会打开窗口让你选择要导入的内容。无需导出时间表。</li>
+            <li><strong>从 TVPaint：</strong>把 <code>.tvpp</code> <strong>直接拖放到表上</strong>。图层会成为列，画按出现顺序编号为 1、2、3。</li>
             <li><strong>导出的时间表也可以：</strong><code>文件</code> → <code>导出动画</code> → <code>时间表信息</code> 保存 CSV 或 <code>.xdts</code>，拖放同样可读取。</li>
             <li><strong>想手写的话：</strong>在文本命令里写 <code>A: 1 2 3</code>，A 栏就会依次出现 1、2、3。想保持同一张画的格子写 <code>n</code>（例：<code>A: 1 n n 2</code>）。</li>
             <li><strong>台词：</strong><code>0+01 | 1+00 | 说话人 | 台词</code>（开始 | 结束 | 谁 | 说什么）。</li>
@@ -24896,6 +24904,231 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       }
     }
 
+    // ══ [입력] TVPaint 타임시트 해독 (레이어 · 노출 → 커맨드 텍스트) ═══════════════════════════════
+    // .tvpp 는 레코드 하나가 코마 하나이고, 뒤따르는 12 바이트 스텁이 그 코마의 길이다.
+    // 그래서 **그림을 풀지 않고** 시트를 읽을 수 있다 — 스텁만 보면 어느 칸에 새 그림이 서고
+    // 어느 칸이 유지인지 알 수 있다. CLIP 보다 단순한 이유다.
+    // 코마 이름은 파일에 없다(표본 19 개의 LEXT 가 전부 `[images auid]` 뿐이었다) — 레이어마다
+    // 새 그림이 서는 순서대로 1·2·3 을 매긴다. TVPaint 원화는 그림 순서가 곧 번호다.
+    // 압축 해제는 .clip 과 한 벌(clipInflateDeflate)을 쓴다. 포맷 지식은 #hub/docs/engineering_rules.md.
+    const TVPP_GUID_META = '3385553abc4011d79e7c00105aafaaab';
+    const TVPP_TS = 64, TVPP_STUB_USIZE = 12;
+    const TVPP_CONT = { FORM: 1, LIST: 1, 'CAT ': 1, PROP: 1 };
+
+    function tvppU32(dv, o) { return dv.getUint32(o, false); }
+    async function tvppUnczmp(buf, off, size) {
+      const dv = new DataView(buf, off, size);
+      const nblk = tvppU32(dv, 16);
+      let p = 20, total = 0;
+      const parts = [];
+      for (let i = 0; i < nblk; i++) {
+        const csz = tvppU32(dv, p + 8); p += 12;
+        const chunk = await clipInflateDeflate(new Uint8Array(buf, off + p, csz)); // ver2383: .clip 과 같은 한 벌
+        parts.push(chunk); total += chunk.length; p += csz;
+      }
+      const out = new Uint8Array(total);
+      let q = 0;
+      parts.forEach(function(c) { out.set(c, q); q += c.length; });
+      return out;
+    }
+    function tvppParseContainer(buf) {
+      const dv = new DataView(buf), outer = [];
+      (function walk(off, end) {
+        while (off + 24 <= end) {
+          const size = tvppU32(dv, off + 20);
+          if (size <= 0 || off + 24 + size > end) break;
+          outer.push({ guid: new Uint8Array(buf, off, 16), off: off + 24, size: size });
+          walk(off + 24, off + 24 + size);
+          off += 24 + size;
+        }
+      })(0, buf.byteLength);
+      return outer;
+    }
+    function tvppHex(u8) {
+      return Array.from(u8).map(function(b) { return ('0' + b.toString(16)).slice(-2); }).join('');
+    }
+    function tvppParseMeta(buf, rec) {
+      const dv = new DataView(buf), end = Math.min(buf.byteLength, rec.off + rec.size), items = [];
+      if (rec.off < 0 || rec.off + 4 > end) return {};
+      const n = tvppU32(dv, rec.off); // count is key/value PAIRS, not strings
+      let p = rec.off + 4;
+      while (p + 2 <= end && items.length < n * 2) {
+        const len = dv.getUint16(p, false); p += 2;
+        if (p + len * 2 > end) break;
+        let s = '';
+        for (let i = 0; i < len; i++) s += String.fromCharCode(dv.getUint16(p + i * 2, false));
+        items.push(s); p += len * 2;
+      }
+      const meta = {};
+      for (let k = 0; k + 1 < items.length; k += 2) meta[items[k]] = items[k + 1];
+      return meta;
+    }
+    function tvppFourcc(dv, off) {
+      return String.fromCharCode(dv.getUint8(off), dv.getUint8(off + 1), dv.getUint8(off + 2), dv.getUint8(off + 3));
+    }
+    function tvppParseIff(buf, start) {
+      const dv = new DataView(buf), chunks = [];
+      (function walk(off, end) {
+        while (off + 8 <= end) {
+          const id = tvppFourcc(dv, off), size = tvppU32(dv, off + 4), body = off + 8;
+          if (body + size > end) break;
+          if (TVPP_CONT[id]) walk(body + 4, body + size);
+          else chunks.push({ id: id, off: body, size: size });
+          off = body + size + (size & 1);
+        }
+      })(start, start + 8 + tvppU32(dv, start + 4));
+      return chunks;
+    }
+    function tvppDecodeName(buf, ch, isWide) {
+      const raw = new Uint8Array(buf, ch.off, ch.size), z = raw.indexOf(0);
+      const body = raw.subarray(0, z < 0 ? raw.length : z);
+      if (!body.length) return '';
+      if (isWide) return new TextDecoder('utf-8').decode(body).trim();
+      try {
+        return new TextDecoder('shift_jis').decode(body).trim();
+      } catch (e) { return new TextDecoder('utf-8').decode(body).trim(); }
+    }
+
+    // 파일에서 레이어 목록만 읽는다. 픽셀·카메라·오디오는 시트에 쓰지 않으므로 건드리지 않는다.
+    function tvppSheetOpenFile(arrayBuffer) {
+      const dv = new DataView(arrayBuffer);
+      const outer = tvppParseContainer(arrayBuffer);
+      let meta = {}, iffStart = null;
+      outer.forEach(function(rec) {
+        if (tvppHex(rec.guid) === TVPP_GUID_META && !Object.keys(meta).length) meta = tvppParseMeta(arrayBuffer, rec);
+        if (iffStart === null && tvppFourcc(dv, rec.off) === 'FORM') iffStart = rec.off;
+      });
+      if (iffStart === null) throw new Error('FORM/TVPP not found');
+      const chunks = tvppParseIff(arrayBuffer, iffStart);
+      const one = function(id) {
+        for (let i = 0; i < chunks.length; i++) if (chunks[i].id === id) return chunks[i];
+        return null;
+      };
+      const frat = one('FRAT');
+      const fps = frat ? tvppU32(dv, frat.off) / 1000 : 24;
+      const layers = [];
+      let cur = null;
+      chunks.forEach(function(ch) {
+        if (ch.id === 'LNAM') {
+          // LNAM 은 Shift_JIS 이고 뒤따르는 LNAW 가 같은 이름의 유니코드 정본이다(#conte 실측).
+          cur = { name: tvppDecodeName(arrayBuffer, ch, false), zchk: [], start: 0 };
+          layers.push(cur);
+        } else if (cur && ch.id === 'LNAW') {
+          const wide = tvppDecodeName(arrayBuffer, ch, true);
+          if (wide) cur.name = wide;
+        } else if (cur && ch.id === 'ZCHK') cur.zchk.push(ch);
+        else if (cur && ch.id === 'LRHD') cur.start = tvppU32(dv, ch.off + 4);
+      });
+      return { buf: arrayBuffer, fps: fps, layers: layers };
+    }
+
+    // 스텁만 보고 코마 배치를 읽는다. 그림은 풀지 않는다.
+    //   (6,1,0) 류 = 앞 그림 그대로 → 그 코마가 한 칸 더 간다
+    //   (2,0,b)   = b 번째 그림을 다시 쓴다 → 그 코마의 번호를 다시 적는다
+    //               (#conte 주석: b=0 표본만 확인됐다. 비영 인덱스는 미확정이라 그대로 믿지 않는다)
+    //   그 밖     = 새 그림 → 다음 번호
+    async function tvppSheetReadLayer(tv, layer) {
+      const dv = new DataView(tv.buf);
+      const keys = [];
+      const numberOf = [];      // zchk 인덱스 → 그 칸에 선 번호
+      let nextNumber = 1;
+      let unresolved = 0;
+      for (let k = 0; k < layer.zchk.length; k++) {
+        const ch = layer.zchk[k];
+        const fourcc = tvppFourcc(dv, ch.off);
+        const usize = tvppU32(dv, ch.off + 4);
+        let label = '';
+        if (fourcc === 'SRAW' && usize === TVPP_STUB_USIZE) {
+          const stub = await tvppUnczmp(tv.buf, ch.off, ch.size);
+          const sv = new DataView(stub.buffer, stub.byteOffset, stub.length);
+          const kind = tvppU32(sv, 8), ref = tvppU32(sv, 16);
+          if (kind === 2) {
+            if (numberOf[ref]) label = numberOf[ref];
+            else { unresolved++; label = String(nextNumber++); }
+          } else {
+            // 유지 — 앞 코마를 한 칸 늘린다
+            if (keys.length) keys[keys.length - 1].endFrame += 1;
+            numberOf[k] = keys.length ? keys[keys.length - 1].komaName : '';
+            continue;
+          }
+        } else {
+          label = String(nextNumber++);
+        }
+        const frame = (layer.start || 0) + k;
+        keys.push({ frame: frame, endFrame: frame + 1, komaName: label });
+        numberOf[k] = label;
+      }
+      return { keys: keys, unresolved: unresolved };
+    }
+
+    // CLIP 취입과 **같은 모양**으로 만든다 — 창·적용·단계는 그대로 쓴다.
+    async function tvppSheetRead(arrayBuffer) {
+      const tv = tvppSheetOpenFile(arrayBuffer);
+      const items = [];
+      let end = 0;
+      for (let i = 0; i < tv.layers.length; i++) {
+        const layer = tv.layers[i];
+        const name = String(layer.name == null ? '' : layer.name) || ('layer' + (i + 1));
+        if (!layer.zchk.length) {
+          items.push({ kind:'other', name:name, mainId:'tvpp-' + i, path:'', visible:true,
+                       uuid:'', seq:i, keys:[], failure:'empty' });
+          continue;
+        }
+        let read;
+        try {
+          read = await tvppSheetReadLayer(tv, layer);
+        } catch (err) {
+          items.push({ kind:'other', name:name, mainId:'tvpp-' + i, path:'', visible:true,
+                       uuid:'', seq:i, keys:[], failure:String((err && err.message) || err) });
+          continue;
+        }
+        read.keys.forEach(function(key) { end = Math.max(end, key.endFrame); });
+        items.push({ kind:'cel', name:name, mainId:'tvpp-' + i, path:'', visible:true,
+                     uuid:'', seq:i, keys:read.keys, failure:'' });
+      }
+      const duration = Math.max(1, Math.round(end));
+      // 창은 타임라인 목록을 받게 되어 있다. tvpp 는 한 벌뿐이라 그 한 벌만 만들어 넘긴다.
+      return [{
+        timeline: { MainId:'tvpp', TimeLineName:'', FrameRate:tv.fps || FIXED_FPS, StartFrame:0, EndFrame:duration },
+        items: items,
+        duration: duration,
+        fps: tv.fps || FIXED_FPS,
+        blocked: '',
+        startFrame: 0
+      }];
+    }
+
+    function isTvppDropFile(file) {
+      return Boolean(file) && /\.tvpp$/i.test(String(file.name || ''));
+    }
+
+    async function loadDroppedTvppFile(file) {
+      if (!file) return false;
+      const generation = ++documentLoadGeneration;
+      setExportStatus(clipSheetText('reading'));
+      try {
+        const reads = await tvppSheetRead(await file.arrayBuffer());
+        if (generation !== documentLoadGeneration) return false;
+        if (!reads[0].items.some(function(item) { return item.kind === 'cel'; })) {
+          setExportStatus(clipSheetText('empty'), { level:'error' });
+          return false;
+        }
+        const result = await openClipSheetImportDialog(reads, file.name || 'tvpp');
+        if (!result) return false;
+        if (generation !== documentLoadGeneration) return false;
+        const plan = prepareClipSheetStages(result);
+        if (plan.error) { setExportStatus(plan.error, { level:'error' }); return false; }
+        const made = applyClipSheetStages(plan.stages);
+        const odd = plan.stages.filter(function(entry) { return Number(entry.read.fps) !== FIXED_FPS; });
+        setExportStatus(clipSheetText('loaded', { name:file.name || 'tvpp', stages:made })
+          + (odd.length ? ' · ' + clipSheetText('oddTiming', { count:odd.length, fps:Number(odd[0].read.fps) }) : ''));
+        return true;
+      } catch (err) {
+        if (generation === documentLoadGeneration) setExportStatus(ioText('loadFailed', { error:err.message || err }), { level:'error' });
+        return false;
+      }
+    }
+
     // ── .clip 취입 ─────────────────────────────────────────────────────────────────────────────────
     // CSP 의 타임시트 내보내기를 거치지 않고 원본에서 시트만 읽는다. 해독은 위의 CLIP 타임시트 절이
     // 맡고, 여기서는 무엇을 실을지 고르게 한 뒤 이 앱의 커맨드 텍스트로 착지시킨다.
@@ -24917,7 +25150,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     // 표본 72 개(tools/clip_layer_name_survey.cjs)에서 原図 가 33 개 파일에 셀로 들어 있었다.
     // 업계에서 쓰는 말만 담는다. 용지마다 다른 문구(작품정보·프레임 안내 따위)는 셀 폴더가 아니라
     // 이미 기본 해제이므로 여기 적지 않는다.
-    const CLIP_SHEET_REFERENCE_WORDS = ['原図', '原圖', 'コンテ', 'conte', '定規', '用紙'];
+    // FRAME·프레임은 TVPaint 쪽 표본 여러 파일에 같은 이름으로 있던 안내 레이어다(그림이 아니다).
+    const CLIP_SHEET_REFERENCE_WORDS = ['原図', '原圖', 'コンテ', 'conte', '定規', '用紙', 'frame', 'フレーム'];
 
     function clipSheetIsReferenceName(name) {
       const key = normalizeCsvLayerNameKey(name);
@@ -24952,7 +25186,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
             // 셀은 기본 체크, 그 밖 레이어는 기본 해제다(확정 사항). CLIP 에서 숨긴 것은 셀이어도 꺼 둔다.
             // 참고로 깔아 둔 것(原図·콘티·자·용지)은 셀 폴더로 만들어져 있어도 켜지 않는다.
             map[item.mainId] = {
-              checked: item.kind === 'cel' && item.visible && !item.failure && !clipSheetIsReferenceName(item.name),
+              checked: item.kind === 'cel' && item.visible && !item.failure
+                && !clipSheetIsReferenceName(item.name)
+                && clipSheetDefaultRole(item.name) === 'original',
               name: item.name,
               role: clipSheetDefaultRole(item.name)
             };
@@ -25324,6 +25560,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const clipFile = files.find(isClipDropFile);
       if (clipFile) {
         await loadDroppedClipFile(clipFile);
+        return;
+      }
+      const tvppFile = files.find(isTvppDropFile);
+      if (tvppFile) {
+        await loadDroppedTvppFile(tvppFile);
         return;
       }
       const paperFile = files.find(isPaperDropFile);
