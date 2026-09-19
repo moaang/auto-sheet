@@ -49,6 +49,7 @@
       --ui-h-control: 30px;
       --ui-h-action: 36px;
       --ui-h-line-control: 20px; /* maximum for a control attached to a text line */
+      --ui-fs-micro: 10px;
       --ui-fs-help: 11px;
       --ui-fs-body: 12px;
       --ui-fs-heading: 14px;
@@ -818,7 +819,10 @@
       padding: 14px;
       background: #fcfcfc;
     }
-    .paper-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    /* 되돌리기·다시 실행은 아이콘 둘이라 줄이 짧다. 용지 삭제(빨강)는 오른쪽 끝으로 떼어 놓는다 —
+       실수로 누를 자리가 아니게, 그리고 줄이 한눈에 「이력 · 삭제」로 읽히게. */
+    .paper-actions { display: flex; flex-wrap: wrap; align-items:center; gap: 8px; margin-top: 10px; }
+    .paper-actions #clearPaperImageBtn { margin-left:auto; }
     .paper-primary-actions {
       display: grid;
       grid-template-columns: minmax(128px, 1fr) auto auto;
@@ -844,17 +848,6 @@
     .paper-check-left { display:grid; grid-template-columns:16px minmax(0,1fr); align-items:center; gap:var(--ui-gap); grid-column:1 / -1; }
     .paper-inline-control { margin:0; color:var(--text); font-weight:700; }
     .paper-inline-control input { text-align:center; }
-    .paper-pixel-info {
-      margin-top: 6px;
-      padding: 8px 10px;
-      border: 1px dashed var(--soft);
-      border-radius: 10px;
-      background: white;
-      color: var(--muted);
-      font-size:var(--ui-fs-body);
-      line-height: 1.45;
-      min-height: 32px;
-    }
     /* Diagnostics readout: compact reference block pinned at the card bottom. */
     .paper-auto-align-status {
       display: none;
@@ -874,12 +867,15 @@
       font-size:var(--ui-fs-help);
       margin-bottom: 3px;
     }
+    /* 진단 목록은 읽을 것이 아니라 훑을 것이다 — 제목보다 한 단 작고 흐리게 둔다. */
     .paper-auto-align-status ol {
       margin: 2px 0 0 14px;
       padding: 0;
       display: grid;
       grid-template-columns: 1fr 1fr;
       column-gap: 12px;
+      font-size:var(--ui-fs-micro);
+      color: var(--muted);
     }
     .paper-auto-align-status li { margin: 1px 0; }
     .paper-auto-align-status.error {
@@ -1331,6 +1327,20 @@
     /* 한 벌뿐이라 고를 것이 없는 줄. ui-check-row 의 16px 칸에 넣으면 글자가 한 자씩 접힌다. */
     .clip-import-only { display:block; font-size:var(--ui-fs-body); font-weight:700; }
     .clip-import-only span { cursor:default; }
+    .clip-import-paper {
+      display:flex; align-items:center; justify-content:center; text-align:center;
+      min-height:56px; padding:var(--ui-gap); cursor:pointer;
+      border:1px dashed var(--soft); border-radius:var(--r-ctl);
+      background:var(--panel); color:var(--muted); font-size:var(--ui-fs-body);
+    }
+    .clip-import-paper input[type="file"] { display:none; }
+    .clip-import-paper.is-over { border-color:var(--ink); background:var(--soft); }
+    .clip-import-paper.is-set { border-style:solid; color:var(--text); font-weight:700; }
+    .clip-import-identity { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:var(--ui-gap-sm); }
+    .clip-import-identity label { display:grid; gap:2px; min-width:0; }
+    .clip-import-identity span { color:var(--muted); }
+    .clip-import-identity input { min-width:0; }
+    @media (max-width:640px) { .clip-import-identity { grid-template-columns:repeat(2, minmax(0,1fr)); } }
     .clip-import-rows { display:grid; gap:var(--ui-gap-sm); max-height:40dvh; overflow:auto; }
     .clip-import-row {
       display:grid;
@@ -1345,7 +1355,7 @@
     .clip-import-koma { grid-column:2 / -1; display:grid; gap:2px; }
     .clip-import-koma-head { display:flex; align-items:center; gap:var(--ui-gap-sm); color:var(--muted); }
     .clip-import-koma-head button { padding:0 6px; }
-    /* 전역 textarea 는 min-height 130px 이다(커맨드 입력용). 여기서는 두 줄이면 충분하다. */
+    /* 전역 textarea 는 min-height 130px 이다(커맨드 입력용) — rows 로는 못 이기므로 여기서 정한다. */
     .clip-import-koma-text {
       width:100%; min-width:0; min-height:0; height:calc(2 * 1.55em + 14px);
       resize:vertical; font-variant-numeric:tabular-nums;
@@ -2205,7 +2215,6 @@
             <label id="paperImageInputLabel" for="paperImageInput">会社指定用紙画像（JPG / PNG / PSD）</label>
             <input id="paperImageInput" type="file" accept="image/jpeg,image/png,.jpg,.jpeg,.png,.psd,image/vnd.adobe.photoshop,.clip" />
             <div id="paperImageStatus" class="status">No paper image loaded.</div>
-            <div id="paperImagePixelInfo" class="paper-pixel-info">Source pixels: -</div>
 
             <div class="paper-primary-actions">
               <button id="autoAlignPaperBtn" class="paper-mini-btn paper-auto-align-btn" type="button">Auto Align</button>
@@ -2213,8 +2222,8 @@
               <button id="resetLayoutAdjustBtn" class="paper-mini-btn" type="button">Position Reset</button>
             </div>
             <div class="paper-actions">
-              <button id="paperUndoBtn" class="paper-mini-btn" type="button" disabled>Undo</button>
-              <button id="paperRedoBtn" class="paper-mini-btn" type="button" disabled>Redo</button>
+              <button id="paperUndoBtn" class="paper-mini-btn icon-only" type="button" data-ui-title="globalUndo" aria-label="Undo" disabled><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 6 4.5 9.5 8 13M4.5 9.5H15a4.75 4.75 0 0 1 0 9.5h-5"/></svg></button>
+              <button id="paperRedoBtn" class="paper-mini-btn icon-only" type="button" data-ui-title="globalRedo" aria-label="Redo" disabled><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m16 6 3.5 3.5L16 13M19.5 9.5H9a4.75 4.75 0 0 0 0 9.5h5"/></svg></button>
               <button id="clearPaperImageBtn" class="paper-mini-btn" type="button">Clear Paper</button>
             </div>
             <label class="ui-check-row paper-check-row paper-psd-memo-row" id="showPsdMemoRow" aria-disabled="true"><input id="showPsdMemoToggle" type="checkbox" checked disabled /> <span id="showPsdMemoText">Show separated PSD memo</span></label>
@@ -2544,7 +2553,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '920';
+    const APP_VERSION = '923';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -2657,7 +2666,6 @@
     const previewWrapEl = document.querySelector('.preview-wrap');
     const paperImageInputEl = document.getElementById('paperImageInput');
     const paperImageStatusEl = document.getElementById('paperImageStatus');
-    const paperImagePixelInfoEl = document.getElementById('paperImagePixelInfo');
     const clearPaperImageBtn = document.getElementById('clearPaperImageBtn');
     const paperToolbarGroupEl = document.getElementById('paperToolbarGroup');
     const paperToolbarTitleEl = document.getElementById('paperToolbarTitle');
@@ -2872,7 +2880,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         paperAutoAlignToken: 0,
         paperAutoAlignResult: null,
         paperAutoAlignOverlay: null,
-        paperTemplateMatch: null,
         activePanelResize: null,
         stageSlotContextMenu: null,
         stageAddMenu: null,
@@ -2896,7 +2903,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         layoutDragPreviewNodes: null,
         layoutDragHtmlNodes: null,
         layoutDragPreviewFrame: null,
-        layoutDragPreviewPendingDrag: null,
         layoutDragMoveFrame: null,
         layoutDragPreviewMuted: false,
         commandInputRenderTimer: null,
@@ -3128,6 +3134,13 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         unifiedCurrentWork:"当前编辑工作", unifiedSelection:"已选{count}个工作", unifiedExcluded:"不导出", unifiedStopped:"已停止{count}个", unifiedExportAction:"导出{count}个工作・共{pages}页", unifiedWorkList:"要导出的工作", unifiedSelectAll:"全选", unifiedAllOptions:"应用到全部导出工作", unifiedCurrentOptions:"当前工作的导出设置", unifiedSavedDefaults:"未更改的选项保留各工作的保存设置。", unifiedMixed:"混合", unifiedResetOptions:"恢复保存设置", stageHeading:'阶段', stageAddSlotLabel:'添加阶段', stageCustomOption:'自定义…', stageRenameBtn:'重命名', stageDeleteBtn:'删除', stageDeleteLastHint:'无法删除最后一个阶段', hideNonCellCommandsLabel:'隐藏非 Cell 命令', hideRightPanelBtn:'隐藏对白/摄影', showRightPanelBtn:'显示对白/摄影', createdByLabel:'制作', settingsExportBtn:"保存工作", settingsFileBtn:"打开工作", settingsImportBtn:"工作文件夹", settingsRefreshBtn:'重新读取', settingsSelectPlaceholder:"已保存的工作", settingsSelectEmpty:"选择工作", settingsSelectNoSettings:"没有工作文件", textMemoApplyBtn:'应用', textMemoMenuAdd:'添加文字框', textMemoMenuDelete:'删除文字框', textMemoMenuEditMode:'文字框位置编辑', textMemoMenuEditDone:'结束文字框编辑', textMemoMenuAutoArrange:'自动排列文字框', textMemoInitialHint:'可通过右键添加或编辑文字框。', clearSheetDataBtn:'全部重置', hideSidebarBtn:'隐藏 UI', showSidebarBtn:'显示 UI', feedbackHeading:'反馈', feedbackFormLink:'Form', feedbackPlaceholder:'错误报告或改进建议', feedbackHint:'请尽量填写已知信息: 症状、复现步骤、使用的 CSV/PSD/图片格式、期望结果、实际结果、浏览器/OS。', feedbackSendBtn:'发送', feedbackEmpty:'请先输入内容。', feedbackSending:'发送中...', feedbackSent:'已发送。', feedbackRequested:'已请求发送。确认收件前保留原文。', feedbackFailed:'发送失败。请使用 Form 链接。', shortcutSummaryTopHint:'', workPickerCurrent:"当前打开的工作", workPickerOpened:"已打开工作：{name}", workPickerClose:"关闭工作列表", workPickerNoMatch:"没有匹配的工作文件。", workPickerCount:"共{total}个，显示{shown}个", workPickerSearch:"搜索文件名或文件夹", workPickerTitle:"打开已保存的工作", outputPixels:"输出 {width} × {height} px", lastOutputFile:"最后一个文件", firstOutputFile:"第一个文件", outputComposition:"当前显示的纸张图像、工作表内容和备注也会包含在内。", psdLayers:"PSD图层：备注 / 文字 / 纸张格线 / 纸张图像 / 背景", reviewCaption:"成品预览・显示缩放不影响图像尺寸", reviewRetry:"重新显示", reviewFailed:"无法显示预览：{error}", reviewLoading:"正在准备预览…", showOutputSettings:"显示导出设置", focusPreview:"放大查看", fitWidth:"适合宽度", fitPage:"适合整页", reviewNext:"下一页", reviewPrev:"上一页", reviewPage:"第{page} / {count}页", outputAction:"导出{count}页", outputFiles:"{count}个文件・每页一个文件", outputSize:"图像尺寸", outputLocation:"输出位置", outputFormat:"文件格式", outputCellLabel:"单元格标题", outputDuration:"时长的＋号", outputHeader:"表头", outputTemplate:"纸张格线", outputContents:"导出内容", backToEdit:"返回编辑", reviewTitle:"查看成品并导出", memoHistory:"备注", globalRedo:"重做 (Ctrl/Cmd+Shift+Z / Ctrl/Cmd+Y)", globalUndo:"撤销 (Ctrl/Cmd+Z)", sheetHistory:"历史", outputReview:"查看成品", workSaveHint:"保存为文件，之后可继续编辑。", libraryTitle:"工作列表", libraryAdd:"添加JSON", librarySelect:"选择搜索结果", libraryClear:"清除选择", librarySelected:"已选{count}/{total}个", librarySelectFile:"选择导出：{name}", libraryOpenFile:"打开：{name}", libraryEmpty:"选择工作文件夹或添加JSON。点击名称打开，勾选后可批量导出。", libraryExport:"导出所选工作（{count}个）", noticeClose:"关闭通知", batchTitle:"批量导出所选工作", batchScope:"使用每个JSON保存的活动阶段、纸张、内容和备注，导出该阶段的全部页面。保留当前编辑中的工作。", batchSavedFormat:"保存的格式", batchZip:"下载ZIP", batchDestinationHint:"文件夹导出每次创建新文件夹。停止时仍可下载已完成文件的ZIP。准备失败的工作不计入可导出数量。", batchReady:"已准备{count}个工作・{pages}页・{failed}个错误", batchRenamed:"已为{count}个同名文件添加编号", batchPreparing:"正在检查 {done}/{total}…", batchStart:"导出已准备的{count}个工作", batchFinished:"文件夹{folder}个文件・已请求ZIP下载{archive}个文件・错误{failed}个", batchProgress:"已处理{done}/{total}个文件", batchStop:"当前文件后停止", batchStopping:"正在停止…", batchPages:"页", batchState_pending:"检查中", batchState_ready:"就绪", batchState_running:"导出中", batchState_done:"完成", batchState_error:"错误", batchState_stopped:"已停止", batchMissingPaper:"找不到此JSON引用的纸张图像或备注。请包含纸张图像重新保存工作。", batchChanged:"准备后页数发生变化。", batchFolderCollision:"无法创建新的导出文件夹。", batchPartial:"已处理{count}个文件", batchArchiveFailed:"ZIP下载失败：{error}", batchZipLimit:"超过ZIP32的大小或文件数限制。请导出到文件夹或减少所选工作。"
       }
     };
+
+    // 화면 문구 한 벌 조회. 같은 본문이 `getShakuUiText`·`getTextMemoUiText` 두 벌로 있었다(전수 조사에서
+    // 발견) — 둘을 이것으로 모았다. `exportUiText()` 는 여기에 `{자리}` 치환까지 얹은 다른 함수다.
+    function getUiText(key) {
+      const doc = uiTexts[state.lang] || uiTexts.en || {};
+      return doc[key] || (uiTexts.en && uiTexts.en[key]) || key;
+    }
 
     function renderUiTexts() {
       const doc = uiTexts[state.lang] || uiTexts.en;
@@ -3783,6 +3796,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver923", "Paper can be dropped in the load window, and the paper panel is tidier", ["The load window for .clip and .tvpp now has a paper slot. Drop a paper image there and it comes in with the sheet; drop nothing and the paper you already have is kept.", "Folded rows are now split by the reason they were folded: no exposure or unreadable, background and reference, and cels from another step.", "In the external paper panel, undo and redo are icons now, the load line is one line instead of two, and the display options are worded the same way. Cell columns is now Key columns."]],
+        ["ver922", "The file name now fills in the title, episode and cut number", ["Drop a .clip or .tvpp and the window reads the title, episode, cut number and process step from the file name. Every field can be corrected there, and nothing reaches the sheet until you press Load.", "The process step becomes the stage name: _lo gives \u30ec\u30a4\u30a2\u30a6\u30c8, _ge gives \u539f\u753b\u6f14\u51fa, _les gives LO\u6f14\u51fa\u4f5c\u76e3. A word that is not in the list is kept exactly as written."]],
+        ["ver921", "A .clip now reads the same cels as its timesheet CSV", ["Cels you had hidden in CLIP STUDIO are read too. CLIP STUDIO's own timesheet CSV exports hidden cels, so dropping the .clip and dropping the CSV now give the same columns.", "Rows are read with the same naming rules the CSV import already used: dialog names come in as Dialog, camera words as Camera. Hidden rows are no longer folded away, so you can see what is coming in."]],
         ["ver920", "Tidy cel numbers is hidden when there is nothing to tidy", ["The Tidy cel numbers switch only appears when a name would actually change. If the file already has 1, 2, 3, the row is gone.", "Cel names in the one field are joined by a bare semicolon now (1;2;3) so you can type straight through. Pasting with spaces or commas still works."]],
         ["ver919", "Cel columns now start at A, and cel names are edited in one field", ["Columns read from a .clip were coming out backwards \u2014 D, C, B, A. They now start with the bottom cel, which is the A, B, C order on the paper and the order CLIP STUDIO itself exports in its timesheet CSV.", "The row list is laid out like a layer palette \u2014 upper layers on top, A at the bottom. The same for .tvpp.", "Cel names are no longer one box each: they sit in a single field joined by a semicolon. Edit the whole line at once, and pasting from TVPaint's bulk instance-name box works as is (commas and spaces count as separators too). Rows now have a divider between them."]],
         ["ver918", "Every row now shows its drawing count and its cel names, and you can edit them there", ["Each row carries a drawing count, and under it every cel name is listed. Type in a field and that name goes into the sheet. Renumber 1, 2, 3 gives numbers in order of first appearance \u2014 a drawing that stands again keeps the number it already had.", "The window now names the app the file came from. Drop a .tvpp and it says Read a sheet from TVPaint; when there is only one timeline there is nothing to pick, so only the information line is shown.", "BG and BOOK names are now read through brackets \u2014 [BG], (BG) and [BOOK] come in as Hide and Book. The same applies to .clip. The example after Tidy cel numbers was dropped."]],
@@ -3852,6 +3868,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver923", "\u8aad\u307f\u8fbc\u307f\u30a6\u30a3\u30f3\u30c9\u30a6\u3067\u7528\u7d19\u3082\u7f6e\u3051\u307e\u3059\u3002\u7528\u7d19\u30d1\u30cd\u30eb\u3082\u6574\u7406\u3057\u307e\u3057\u305f", ["\u300c.clip\u300d\u300c.tvpp\u300d\u306e\u8aad\u307f\u8fbc\u307f\u30a6\u30a3\u30f3\u30c9\u30a6\u306b\u7528\u7d19\u306e\u7f6e\u304d\u5834\u3092\u4f5c\u308a\u307e\u3057\u305f\u3002\u305d\u3053\u3078\u7528\u7d19\u753b\u50cf\u3092\u7f6e\u304f\u3068\u30b7\u30fc\u30c8\u3068\u4e00\u7dd2\u306b\u5165\u308a\u3001\u7f6e\u304b\u306a\u3051\u308c\u3070\u4eca\u306e\u7528\u7d19\u3092\u305d\u306e\u307e\u307e\u4f7f\u3044\u307e\u3059\u3002", "\u6298\u308a\u305f\u305f\u307e\u308c\u308b\u884c\u3092\u7406\u7531\u3054\u3068\u306b\u5206\u3051\u307e\u3057\u305f \u2014 \u9732\u51fa\u306a\u3057\u30fb\u8aad\u3081\u306a\u3044\u884c\uff0f\u80cc\u666f\u30fb\u53c2\u8003\uff0f\u4ed6\u5de5\u7a0b\u306e\u30bb\u30eb\u3002", "\u5916\u90e8\u7528\u7d19\u30d1\u30cd\u30eb\u3067\u306f\u3001\u53d6\u308a\u6d88\u3057\u30fb\u3084\u308a\u76f4\u3057\u3092\u30a2\u30a4\u30b3\u30f3\u306b\u3057\u3001\u8aad\u8fbc\u306e\u8868\u793a\u30922\u884c\u304b\u30891\u884c\u306b\u3057\u3001\u8868\u793a\u8a2d\u5b9a\u306e\u8a00\u3044\u65b9\u3092\u305d\u308d\u3048\u307e\u3057\u305f\u3002\u300cCell\u5217\u6570\u300d\u306f\u300c\u539f\u753b\u306e\u6b04\u6570\u300d\u306b\u306a\u308a\u307e\u3057\u305f\u3002"]],
+        ["ver922", "\u30d5\u30a1\u30a4\u30eb\u540d\u304b\u3089\u4f5c\u54c1\u540d\u30fb\u8a71\u6570\u30fb\u30ab\u30c3\u30c8\u756a\u53f7\u3092\u8aad\u307f\u53d6\u308a\u307e\u3059", ["\u300c.clip\u300d\u3084\u300c.tvpp\u300d\u3092\u7f6e\u304f\u3068\u3001\u30d5\u30a1\u30a4\u30eb\u540d\u304b\u3089\u4f5c\u54c1\u540d\u30fb\u8a71\u6570\u30fb\u30ab\u30c3\u30c8\u756a\u53f7\u3068\u5de5\u7a0b\u3092\u8aad\u307f\u53d6\u3063\u3066\u8aad\u307f\u8fbc\u307f\u30a6\u30a3\u30f3\u30c9\u30a6\u306b\u8868\u793a\u3057\u307e\u3059\u3002\u305d\u306e\u5834\u3067\u76f4\u305b\u307e\u3059\u3057\u3001\u300c\u8aad\u307f\u8fbc\u3080\u300d\u3092\u62bc\u3059\u307e\u3067\u30b7\u30fc\u30c8\u306b\u306f\u5165\u308a\u307e\u305b\u3093\u3002", "\u5de5\u7a0b\u306f\u6bb5\u968e\u540d\u306b\u306a\u308a\u307e\u3059\uff08_lo \u2192\u30ec\u30a4\u30a2\u30a6\u30c8\u3001_ge \u2192\u539f\u753b\u6f14\u51fa\u3001_les \u2192LO\u6f14\u51fa\u4f5c\u76e3\uff09\u3002\u8868\u306b\u306a\u3044\u8a00\u8449\u306f\u66f8\u304b\u308c\u305f\u307e\u307e\u6b8b\u3057\u307e\u3059\u3002"]],
+        ["ver921", "\u300c.clip\u300d\u304c\u30bf\u30a4\u30e0\u30b7\u30fc\u30c8CSV\u3068\u540c\u3058\u30bb\u30eb\u3092\u8aad\u307f\u8fbc\u307f\u307e\u3059", ["CLIP STUDIO \u3067\u975e\u8868\u793a\u306b\u3057\u3066\u3044\u305f\u30bb\u30eb\u3082\u8aad\u307f\u8fbc\u307f\u307e\u3059\u3002CLIP STUDIO \u306e\u30bf\u30a4\u30e0\u30b7\u30fc\u30c8CSV\u306f\u975e\u8868\u793a\u306e\u30bb\u30eb\u3082\u66f8\u304d\u51fa\u3059\u305f\u3081\u3001\u300c.clip\u300d\u3092\u7f6e\u3044\u3066\u3082CSV\u3092\u7f6e\u3044\u3066\u3082\u540c\u3058\u5217\u306b\u306a\u308a\u307e\u3059\u3002", "\u884c\u306e\u8aad\u307f\u65b9\u306fCSV\u53d6\u308a\u8fbc\u307f\u3068\u540c\u3058\u5224\u5b9a\u306b\u306a\u308a\u307e\u3057\u305f\u3002\u30bb\u30ea\u30d5\u7cfb\u306e\u540d\u524d\u306fDialog\u3001\u30ab\u30e1\u30e9\u7cfb\u306e\u8a00\u8449\u306fCamera\u3068\u3057\u3066\u5165\u308a\u307e\u3059\u3002\u975e\u8868\u793a\u306e\u884c\u306f\u6298\u308a\u305f\u305f\u307e\u308c\u306a\u304f\u306a\u308a\u3001\u4f55\u304c\u5165\u308b\u306e\u304b\u898b\u3048\u307e\u3059\u3002"]],
         ["ver920", "\u6574\u3048\u308b\u3082\u306e\u304c\u7121\u3044\u3068\u304d\u306f\u300c\u30bb\u30eb\u756a\u53f7\u3092\u6574\u3048\u308b\u300d\u3092\u51fa\u3057\u307e\u305b\u3093", ["\u300c\u30bb\u30eb\u756a\u53f7\u3092\u6574\u3048\u308b\u300d\u306f\u3001\u5b9f\u969b\u306b\u540d\u524d\u304c\u5909\u308f\u308b\u5834\u5408\u3060\u3051\u8868\u793a\u3057\u307e\u3059\u3002\u3082\u3068\u3082\u3068 1\u30fb2\u30fb3 \u306e\u30d5\u30a1\u30a4\u30eb\u3067\u306f\u51fa\u307e\u305b\u3093\u3002", "1\u3064\u306e\u6b04\u306e\u30bb\u30eb\u756a\u53f7\u306f\u3001\u533a\u5207\u308a\u3092\u300c;\u300d\u3060\u3051\u306b\u3057\u307e\u3057\u305f\uff081;2;3\uff09\u3002\u7d9a\u3051\u3066\u6253\u3066\u307e\u3059\u3002\u7a7a\u767d\u3084\u30ab\u30f3\u30de\u4ed8\u304d\u3067\u8cbc\u308a\u4ed8\u3051\u3066\u3082\u8aad\u3081\u307e\u3059\u3002"]],
         ["ver919", "\u30bb\u30eb\u5217\u304cA\u304b\u3089\u4e26\u3073\u3001\u30bb\u30eb\u756a\u53f7\u306f1\u3064\u306e\u6b04\u3067\u76f4\u305b\u307e\u3059", ["\u300c.clip\u300d\u304b\u3089\u8aad\u3093\u3060\u30bb\u30eb\u5217\u304c D\u30fbC\u30fbB\u30fbA \u3068\u9006\u306b\u4e26\u3093\u3067\u3044\u305f\u306e\u3092\u76f4\u3057\u307e\u3057\u305f\u3002\u3044\u3061\u3070\u3093\u4e0b\u306e\u30bb\u30eb\u304c\u6700\u521d\u306e\u5217\u306b\u306a\u308a\u307e\u3059 \u2014 \u7528\u7d19\u306e A\u30fbB\u30fbC \u306e\u4e26\u3073\u3067\u3001CLIP STUDIO \u304c\u66f8\u304d\u51fa\u3059\u30bf\u30a4\u30e0\u30b7\u30fc\u30c8CSV\u3068\u3082\u540c\u3058\u3067\u3059\u3002", "\u8aad\u307f\u8fbc\u3080\u884c\u306e\u4e00\u89a7\u306f\u30ec\u30a4\u30e4\u30fc\u30d1\u30ec\u30c3\u30c8\u306e\u3088\u3046\u306b\u4e26\u3073\u307e\u3059 \u2014 \u4e0a\u306e\u30ec\u30a4\u30e4\u30fc\u304c\u4e0a\u3001A\u304c\u4e0b\u3067\u3059\u3002.tvpp \u3082\u540c\u3058\u3067\u3059\u3002", "\u30bb\u30eb\u756a\u53f7\u306f\u6b04\u30921\u3064\u305a\u3064\u7f6e\u304b\u305a\u30011\u3064\u306e\u6b04\u306b\u30bb\u30df\u30b3\u30ed\u30f3\u3067\u3064\u306a\u3044\u3067\u4e26\u3079\u307e\u3059\u3002\u307e\u3068\u3081\u3066\u76f4\u305b\u307e\u3059\u3057\u3001TVPaint \u306e\u30a4\u30f3\u30b9\u30bf\u30f3\u30b9\u540d\u4e00\u62ec\u5165\u529b\u304b\u3089\u305d\u306e\u307e\u307e\u8cbc\u308a\u4ed8\u3051\u3089\u308c\u307e\u3059\uff08\u30ab\u30f3\u30de\u3084\u7a7a\u767d\u3082\u533a\u5207\u308a\u3068\u3057\u3066\u8aad\u307f\u307e\u3059\uff09\u3002\u884c\u306e\u9593\u306b\u533a\u5207\u308a\u7dda\u3092\u5165\u308c\u307e\u3057\u305f\u3002"]],
         ["ver918", "\u8aad\u307f\u8fbc\u3080\u884c\u3054\u3068\u306b\u679a\u6570\u3068\u30bb\u30eb\u756a\u53f7\u3092\u8868\u793a\u3057\u3001\u305d\u306e\u5834\u3067\u76f4\u305b\u307e\u3059", ["\u884c\u3054\u3068\u306b\u679a\u6570\u304c\u4ed8\u304d\u3001\u305d\u306e\u4e0b\u306b\u30bb\u30eb\u756a\u53f7\u304c\u3059\u3079\u3066\u4e26\u3073\u307e\u3059\u3002\u6b04\u3092\u76f4\u3059\u3068\u305d\u306e\u540d\u524d\u3067\u30b7\u30fc\u30c8\u306b\u5165\u308a\u307e\u3059\u3002\u300c1\u30fb2\u30fb3 \u306b\u632f\u308a\u76f4\u3059\u300d\u3092\u62bc\u3059\u3068\u51fa\u3066\u304d\u305f\u9806\u306b\u756a\u53f7\u3092\u4ed8\u3051\u3001\u540c\u3058\u7d75\u304c\u518d\u3073\u7f6e\u304b\u308c\u305f\u3068\u304d\u306f\u5143\u306e\u756a\u53f7\u3092\u305d\u306e\u307e\u307e\u4f7f\u3044\u307e\u3059\u3002", "\u7a93\u306e\u6587\u8a00\u304c\u30d5\u30a1\u30a4\u30eb\u306e\u51fa\u3069\u3053\u308d\u3067\u5909\u308f\u308a\u307e\u3059\u3002.tvpp \u3092\u843d\u3068\u3059\u3068\u300cTVPaint \u304b\u3089\u30b7\u30fc\u30c8\u3092\u8aad\u3080\u300d\u3068\u51fa\u3066\u3001\u30bf\u30a4\u30e0\u30e9\u30a4\u30f3\u304c1\u3064\u3060\u3051\u306a\u3089\u9078\u3076\u3082\u306e\u304c\u306a\u3044\u306e\u3067\u60c5\u5831\u306e\u884c\u3060\u3051\u306b\u306a\u308a\u307e\u3059\u3002", "BG\u30fbBOOK \u306f\u62ec\u5f27\u8d8a\u3057\u3067\u3082\u898b\u5206\u3051\u307e\u3059 \u2014 [BG]\u30fb(BG)\u30fb[BOOK] \u3082 Hide\u30fbBook \u3067\u5165\u308a\u307e\u3059\u3002.clip \u3082\u540c\u3058\u3067\u3059\u3002\u300c\u30bb\u30eb\u756a\u53f7\u3092\u6574\u3048\u308b\u300d\u306e\u5f8c\u308d\u306e\u4f8b\u306f\u5916\u3057\u307e\u3057\u305f\u3002"]],
@@ -3921,6 +3940,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver923", "\ubd88\ub7ec\uc624\uae30 \ucc3d\uc5d0\uc11c \uc6a9\uc9c0\ub3c4 \ubc1b\uace0, \uc6a9\uc9c0 \ud328\ub110\uc744 \uc815\ub9ac\ud588\uc2b5\ub2c8\ub2e4", ["\u300c.clip\u300d\u00b7\u300c.tvpp\u300d \ubd88\ub7ec\uc624\uae30 \ucc3d\uc5d0 \uc6a9\uc9c0 \uc790\ub9ac\ub97c \ub450\uc5c8\uc2b5\ub2c8\ub2e4. \uac70\uae30\uc5d0 \uc6a9\uc9c0 \uc774\ubbf8\uc9c0\ub97c \ub193\uc73c\uba74 \uc2dc\ud2b8\uc640 \ud568\uaed8 \ub4e4\uc5b4\uc624\uace0, \ub193\uc9c0 \uc54a\uc73c\uba74 \uc9c0\uae08 \uc124\uc815\ub41c \uc591\uc2dd\uc744 \uadf8\ub300\ub85c \uc501\ub2c8\ub2e4.", "\uc811\ud788\ub294 \uc904\uc744 \uc774\uc720\ubcc4\ub85c \uac08\ub790\uc2b5\ub2c8\ub2e4 \u2014 \ub178\ucd9c \uc5c6\uc74c\u00b7\uc77d\uc9c0 \ubabb\ud568 / \ubc30\uacbd\u00b7\ucc38\uace0 / \ub2e4\ub978 \uacf5\uc815\uc758 \uc140.", "\uc678\ubd80\uc6a9\uc9c0 \ud328\ub110\uc740 \ub418\ub3cc\ub9ac\uae30\u00b7\ub2e4\uc2dc \uc2e4\ud589\uc744 \uc544\uc774\ucf58\uc73c\ub85c \ubc14\uafb8\uace0, \ub85c\ub4dc \ud45c\uc2dc\ub97c \ub450 \uc904\uc5d0\uc11c \ud55c \uc904\ub85c \uc904\uc600\uc73c\uba70, \ud45c\uc2dc \uc124\uc815 \ubb38\uad6c\ub97c \ud1b5\uc77c\ud588\uc2b5\ub2c8\ub2e4. \u300c\uc140 \uce78 \uc218\u300d\ub294 \u300c\uc6d0\ud654 \uce78 \uc218\u300d\uac00 \ub418\uc5c8\uc2b5\ub2c8\ub2e4."]],
+        ["ver922", "\ud30c\uc77c \uc774\ub984\uc5d0\uc11c \uc791\ud488\uba85\u00b7\ud654\uc218\u00b7\ucef7\ubc88\ud638\ub97c \uc77d\uc2b5\ub2c8\ub2e4", ["\u300c.clip\u300d\u00b7\u300c.tvpp\u300d\uc744 \ub193\uc73c\uba74 \ud30c\uc77c \uc774\ub984\uc5d0\uc11c \uc791\ud488\uba85\u00b7\ud654\uc218\u00b7\ucef7\ubc88\ud638\uc640 \uacf5\uc815\uc744 \uc77d\uc5b4 \ubd88\ub7ec\uc624\uae30 \ucc3d\uc5d0 \ubcf4\uc5ec \uc90d\ub2c8\ub2e4. \uadf8 \uc790\ub9ac\uc5d0\uc11c \uace0\uce60 \uc218 \uc788\uace0, \u300c\ubd88\ub7ec\uc624\uae30\u300d\ub97c \ub20c\ub7ec\uc57c \uc2dc\ud2b8\uc5d0 \ub4e4\uc5b4\uac11\ub2c8\ub2e4.", "\uacf5\uc815\uc740 \ub2e8\uacc4 \uc774\ub984\uc774 \ub429\ub2c8\ub2e4(_lo \u2192 \u30ec\u30a4\u30a2\u30a6\u30c8, _ge \u2192 \u539f\u753b\u6f14\u51fa, _les \u2192 LO\u6f14\u51fa\u4f5c\u76e3). \ud45c\uc5d0 \uc5c6\ub294 \ub9d0\uc740 \uc801\ud78c \uadf8\ub300\ub85c \ub461\ub2c8\ub2e4."]],
+        ["ver921", "\u300c.clip\u300d\uc774 \ud0c0\uc784\uc2dc\ud2b8 CSV\uc640 \uac19\uc740 \uc140\uc744 \uc77d\uc2b5\ub2c8\ub2e4", ["CLIP STUDIO\uc5d0\uc11c \uc228\uaca8 \ub454 \uc140\ub3c4 \ud568\uaed8 \uc77d\uc2b5\ub2c8\ub2e4. CLIP STUDIO\uc758 \ud0c0\uc784\uc2dc\ud2b8 CSV\uac00 \uc228\uae34 \uc140\ub3c4 \ub0b4\ubcf4\ub0b4\uae30 \ub54c\ubb38\uc5d0, \u300c.clip\u300d\uc744 \ub193\ub4e0 CSV\ub97c \ub193\ub4e0 \uac19\uc740 \uce78\uc774 \ub098\uc635\ub2c8\ub2e4.", "\ud589\uc744 \uc77d\ub294 \ud310\uc815\uc774 CSV \ucde8\uc785\uacfc \uac19\uc544\uc84c\uc2b5\ub2c8\ub2e4. \ub300\uc0ac \uacc4\uc5f4 \uc774\ub984\uc740 Dialog, \uce74\uba54\ub77c \uacc4\uc5f4 \ub9d0\uc740 Camera\ub85c \ub4e4\uc5b4\uc635\ub2c8\ub2e4. \uc228\uae34 \ud589\uc774 \uc811\ud788\uc9c0 \uc54a\uc544 \ubb34\uc5c7\uc774 \ub4e4\uc5b4\uc624\ub294\uc9c0 \ubcf4\uc785\ub2c8\ub2e4."]],
         ["ver920", "\ub2e4\ub4ec\uc744 \uac83\uc774 \uc5c6\uc73c\uba74 \u300c\uc140 \ubc88\ud638 \ub2e4\ub4ec\uae30\u300d\ub97c \ub744\uc6b0\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4", ["\u300c\uc140 \ubc88\ud638 \ub2e4\ub4ec\uae30\u300d\ub294 \uc2e4\uc81c\ub85c \uc774\ub984\uc774 \ubc14\ub00c\ub294 \uacbd\uc6b0\uc5d0\ub9cc \ub739\ub2c8\ub2e4. \uc6d0\ub798\ubd80\ud130 1\u00b72\u00b73\uc778 \ud30c\uc77c\uc5d0\uc11c\ub294 \uadf8 \uc904\uc774 \uc5c6\uc2b5\ub2c8\ub2e4.", "\ud55c \uce78\uc5d0 \ubaa8\uc740 \uc140 \uc774\ub984\uc758 \uad6c\ubd84\uc790\uc5d0\uc11c \ub744\uc5b4\uc4f0\uae30\ub97c \ube90\uc2b5\ub2c8\ub2e4(1;2;3). \uc774\uc5b4\uc11c \uce58\uae30 \ud3b8\ud569\ub2c8\ub2e4. \ub744\uc5b4\uc4f0\uae30\ub098 \uc27c\ud45c\ub85c \ubd99\uc5ec \ub123\uc5b4\ub3c4 \uadf8\ub300\ub85c \uc77d\uc2b5\ub2c8\ub2e4."]],
         ["ver919", "\uc140 \uce78\uc774 A\ubd80\ud130 \uc11c\uace0, \uc140 \uc774\ub984\uc744 \ud55c \uce78\uc5d0\uc11c \uace0\uce69\ub2c8\ub2e4", [".clip\uc5d0\uc11c \uc77d\uc740 \uc140 \uce78\uc774 D\u00b7C\u00b7B\u00b7A\ucc98\ub7fc \uac70\uafb8\ub85c \uc11c\ub358 \uac83\uc744 \uace0\ucce4\uc2b5\ub2c8\ub2e4. \uc774\uc81c \ub9e8 \uc544\ub798 \uc140\uc774 \uccab \uce78\uc785\ub2c8\ub2e4 \u2014 \uc6a9\uc9c0\uc758 A\u00b7B\u00b7C \ucc28\ub840\uc774\uace0, CLIP STUDIO\uac00 \ub0b4\ubcf4\ub0b4\ub294 \ud0c0\uc784\uc2dc\ud2b8 CSV\uc640\ub3c4 \uac19\uc2b5\ub2c8\ub2e4.", "\uac00\uc838\uc62c \ud589 \ubaa9\ub85d\uc740 \ub808\uc774\uc5b4 \ud310\ucc98\ub7fc \ub193\uc785\ub2c8\ub2e4 \u2014 \uc704 \ub808\uc774\uc5b4\uac00 \uc704, A\uac00 \uc544\ub798\uc785\ub2c8\ub2e4. .tvpp\ub3c4 \uac19\uc2b5\ub2c8\ub2e4.", "\uc140 \uc774\ub984\uc740 \uce78\uc744 \ud558\ub098\uc529 \ub450\uc9c0 \uc54a\uace0 \ud55c \uce78\uc5d0 \uc138\ubbf8\ucf5c\ub860\uc73c\ub85c \uc774\uc5b4 \ub193\uc2b5\ub2c8\ub2e4. \ud1b5\uc9f8\ub85c \uace0\uce58\uba74 \ub418\uace0, TVPaint\uc758 \uc778\uc2a4\ud134\uc2a4 \uc774\ub984 \uc77c\uad04 \uc785\ub825\uc5d0\uc11c \ubcf5\uc0ac\ud574 \ubd99\uc5ec\ub3c4 \uadf8\ub300\ub85c \ub4e4\uc5b4\uc635\ub2c8\ub2e4(\uc27c\ud45c\u00b7\ub744\uc5b4\uc4f0\uae30\ub3c4 \uad6c\ubd84\uc790\ub85c \ubd05\ub2c8\ub2e4). \uc904 \uc0ac\uc774\uc5d0\ub294 \uad6c\ubd84\uc120\uc744 \ub123\uc5c8\uc2b5\ub2c8\ub2e4."]],
         ["ver918", "\uac00\uc838\uc62c \ud589\ub9c8\ub2e4 \uc7a5\uc218\uc640 \uc140 \uc774\ub984\uc744 \ubcf4\uc774\uace0, \uac70\uae30\uc11c \uace0\uce60 \uc218 \uc788\uc2b5\ub2c8\ub2e4", ["\ud589\ub9c8\ub2e4 \uc7a5\uc218\uac00 \ubd99\uace0 \uadf8 \uc544\ub798 \uc140 \uc774\ub984\uc774 \uc804\ubd80 \ub098\uc635\ub2c8\ub2e4. \uce78\uc744 \uace0\uce58\uba74 \uadf8 \uc774\ub984\uc73c\ub85c \uc2dc\ud2b8\uc5d0 \ub4e4\uc5b4\uac11\ub2c8\ub2e4. \u300c1\u00b72\u00b73\uc73c\ub85c \ub2e4\uc2dc \ub9e4\uae30\uae30\u300d\ub97c \ub204\ub974\uba74 \ucc98\uc74c \ub098\uc628 \ucc28\ub840\ub85c \ubc88\ud638\ub97c \uc8fc\uace0, \uac19\uc740 \uadf8\ub9bc\uc774 \ub2e4\uc2dc \uc11c\uba74 \uc6d0\ub798 \ubc88\ud638\ub97c \uadf8\ub300\ub85c \uc501\ub2c8\ub2e4.", "\ucc3d \ubb38\uad6c\uac00 \uc5b4\ub290 \ud504\ub85c\uadf8\ub7a8\uc5d0\uc11c \uc628 \ud30c\uc77c\uc778\uc9c0 \ub530\ub77c \uac08\ub9bd\ub2c8\ub2e4. .tvpp\ub97c \ub5a8\uc5b4\ub728\ub9ac\uba74 \u300cTVPaint\uc5d0\uc11c \uc2dc\ud2b8 \uc77d\uae30\u300d\ub77c\uace0 \ub728\uace0, \ud0c0\uc784\ub77c\uc778\uc774 \ud55c \ubc8c\ubfd0\uc774\uba74 \uace0\ub97c \uac83\uc774 \uc5c6\uc73c\ubbc0\ub85c \uc815\ubcf4 \uc904\ub9cc \ubcf4\uc785\ub2c8\ub2e4.", "BG\u00b7BOOK\uc744 \uad04\ud638 \ub108\uba38\ub85c\ub3c4 \uc54c\uc544\ubd05\ub2c8\ub2e4 \u2014 [BG]\u00b7(BG)\u00b7[BOOK]\ub3c4 Hide\u00b7Book\uc73c\ub85c \ub4e4\uc5b4\uc635\ub2c8\ub2e4. .clip\ub3c4 \ub9c8\ucc2c\uac00\uc9c0\uc785\ub2c8\ub2e4. \u300c\uc140 \ubc88\ud638 \ub2e4\ub4ec\uae30\u300d \ub4a4\uc758 \uc608\uc2dc\ub294 \ube90\uc2b5\ub2c8\ub2e4."]],
@@ -3990,6 +4012,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver923", "\u8bfb\u53d6\u7a97\u53e3\u4e5f\u80fd\u653e\u5165\u7eb8\u5f20\uff0c\u7eb8\u5f20\u9762\u677f\u5df2\u6574\u7406", ["\u300c.clip\u300d\u300c.tvpp\u300d\u7684\u8bfb\u53d6\u7a97\u53e3\u65b0\u589e\u4e86\u7eb8\u5f20\u4f4d\u7f6e\u3002\u5c06\u7eb8\u5f20\u56fe\u50cf\u62d6\u5230\u90a3\u91cc\u5c31\u4f1a\u4e0e\u5de5\u4f5c\u8868\u4e00\u8d77\u8bfb\u5165\uff1b\u4e0d\u653e\u5165\u65f6\u4fdd\u6301\u5f53\u524d\u7eb8\u5f20\u3002", "\u6298\u53e0\u7684\u884c\u6309\u6298\u53e0\u539f\u56e0\u5206\u7ec4 \u2014 \u65e0\u66dd\u5149\u00b7\u65e0\u6cd5\u8bfb\u53d6\uff0f\u80cc\u666f\u00b7\u53c2\u8003\uff0f\u5176\u4ed6\u5de5\u5e8f\u7684\u8d5b\u7490\u7490\u3002", "\u5916\u90e8\u7eb8\u5f20\u9762\u677f\u4e2d\uff0c\u64a4\u9500\u548c\u91cd\u505a\u6539\u4e3a\u56fe\u6807\uff0c\u8f7d\u5165\u4fe1\u606f\u4ece\u4e24\u884c\u7f29\u4e3a\u4e00\u884c\uff0c\u663e\u793a\u9009\u9879\u7684\u63aa\u8f9e\u5df2\u7edf\u4e00\u3002\u300cCell \u5217\u6570\u300d\u6539\u4e3a\u300c\u539f\u753b\u5217\u6570\u300d\u3002"]],
+        ["ver922", "\u4ece\u6587\u4ef6\u540d\u8bfb\u53d6\u4f5c\u54c1\u540d\u3001\u8bdd\u6570\u548c\u955c\u53f7", ["\u62d6\u5165\u300c.clip\u300d\u6216\u300c.tvpp\u300d\u65f6\uff0c\u4f1a\u4ece\u6587\u4ef6\u540d\u8bfb\u53d6\u4f5c\u54c1\u540d\u3001\u8bdd\u6570\u3001\u955c\u53f7\u548c\u5de5\u5e8f\u5e76\u663e\u793a\u5728\u8bfb\u53d6\u7a97\u53e3\u4e2d\u3002\u53ef\u4ee5\u5c31\u5730\u4fee\u6539\uff0c\u6309\u4e0b\u300c\u8bfb\u53d6\u300d\u4e4b\u524d\u4e0d\u4f1a\u8fdb\u5165\u5de5\u4f5c\u8868\u3002", "\u5de5\u5e8f\u4f1a\u6210\u4e3a\u9636\u6bb5\u540d\uff08_lo \u2192 \u30ec\u30a4\u30a2\u30a6\u30c8\uff0c_ge \u2192 \u539f\u753b\u6f14\u51fa\uff0c_les \u2192 LO\u6f14\u51fa\u4f5c\u76e3\uff09\u3002\u8868\u4e2d\u6ca1\u6709\u7684\u8bcd\u6309\u539f\u6837\u4fdd\u7559\u3002"]],
+        ["ver921", "\u300c.clip\u300d\u8bfb\u53d6\u4e0e\u65f6\u95f4\u8868CSV\u76f8\u540c\u7684\u8d5b\u7490\u7490", ["\u5728 CLIP STUDIO \u4e2d\u9690\u85cf\u7684\u8d5b\u7490\u7490\u4e5f\u4f1a\u8bfb\u53d6\u3002CLIP STUDIO \u5bfc\u51fa\u7684\u65f6\u95f4\u8868CSV\u540c\u6837\u5305\u542b\u9690\u85cf\u7684\u8d5b\u7490\u7490\uff0c\u56e0\u6b64\u62d6\u5165\u300c.clip\u300d\u4e0e\u62d6\u5165CSV\u4f1a\u5f97\u5230\u76f8\u540c\u7684\u5217\u3002", "\u884c\u7684\u5224\u5b9a\u4e0eCSV\u5bfc\u5165\u4e00\u81f4\uff1a\u53f0\u8bcd\u7c7b\u540d\u79f0\u4f5c\u4e3aDialog\uff0c\u6444\u5f71\u7c7b\u8bcd\u8bed\u4f5c\u4e3aCamera\u8bfb\u5165\u3002\u9690\u85cf\u7684\u884c\u4e0d\u518d\u88ab\u6298\u53e0\uff0c\u53ef\u4ee5\u770b\u5230\u5c06\u8981\u8bfb\u5165\u7684\u5185\u5bb9\u3002"]],
         ["ver920", "\u6ca1\u6709\u9700\u8981\u6574\u7406\u7684\u5185\u5bb9\u65f6\u4e0d\u663e\u793a\u300c\u6574\u7406\u8d5b\u7490\u7490\u7f16\u53f7\u300d", ["\u300c\u6574\u7406\u8d5b\u7490\u7490\u7f16\u53f7\u300d\u4ec5\u5728\u540d\u79f0\u786e\u5b9e\u4f1a\u6539\u53d8\u65f6\u624d\u663e\u793a\u3002\u6587\u4ef6\u672c\u6765\u5c31\u662f 1\u30012\u30013 \u65f6\u4e0d\u518d\u51fa\u73b0\u3002", "\u5355\u4e2a\u8f93\u5165\u6846\u4e2d\u7684\u7f16\u53f7\u5206\u9694\u7b26\u53bb\u6389\u4e86\u7a7a\u683c\uff081;2;3\uff09\uff0c\u53ef\u4ee5\u8fde\u7eed\u8f93\u5165\u3002\u7c98\u8d34\u5e26\u7a7a\u683c\u6216\u9017\u53f7\u7684\u5185\u5bb9\u540c\u6837\u53ef\u8bfb\u3002"]],
         ["ver919", "\u8d5b\u7490\u7490\u5217\u4ece A \u5f00\u59cb\u6392\u5217\uff0c\u7f16\u53f7\u5728\u4e00\u4e2a\u8f93\u5165\u6846\u4e2d\u4fee\u6539", ["\u4ece .clip \u8bfb\u53d6\u7684\u8d5b\u7490\u7490\u5217\u6b64\u524d\u662f D\u3001C\u3001B\u3001A \u7684\u5012\u5e8f\uff0c\u73b0\u5df2\u4fee\u6b63\u3002\u6700\u4e0b\u9762\u7684\u8d5b\u7490\u7490\u6210\u4e3a\u7b2c\u4e00\u5217 \u2014 \u8fd9\u662f\u7eb8\u9762\u4e0a A\u3001B\u3001C \u7684\u987a\u5e8f\uff0c\u4e5f\u4e0e CLIP STUDIO \u5bfc\u51fa\u7684\u65f6\u95f4\u8868 CSV \u4e00\u81f4\u3002", "\u8981\u8bfb\u53d6\u7684\u884c\u6309\u56fe\u5c42\u9762\u677f\u7684\u65b9\u5f0f\u6392\u5217 \u2014 \u4e0a\u5c42\u5728\u4e0a\uff0cA \u5728\u4e0b\u3002.tvpp \u540c\u6837\u5982\u6b64\u3002", "\u8d5b\u7490\u7490\u7f16\u53f7\u4e0d\u518d\u6bcf\u4e2a\u4e00\u4e2a\u8f93\u5165\u6846\uff0c\u800c\u662f\u7528\u5206\u53f7\u8fde\u6210\u4e00\u4e2a\u8f93\u5165\u6846\u3002\u53ef\u4ee5\u6574\u4f53\u4fee\u6539\uff0c\u4ece TVPaint \u7684\u5b9e\u4f8b\u540d\u6279\u91cf\u8f93\u5165\u6846\u590d\u5236\u7c98\u8d34\u4e5f\u53ef\u76f4\u63a5\u4f7f\u7528\uff08\u9017\u53f7\u548c\u7a7a\u683c\u540c\u6837\u89c6\u4e3a\u5206\u9694\u7b26\uff09\u3002\u884c\u4e0e\u884c\u4e4b\u95f4\u52a0\u4e86\u5206\u9694\u7ebf\u3002"]],
         ["ver918", "\u6bcf\u4e00\u884c\u73b0\u5728\u663e\u793a\u5f20\u6570\u4e0e\u8d5b\u7490\u7490\u7f16\u53f7\uff0c\u5e76\u53ef\u5c31\u5730\u4fee\u6539", ["\u6bcf\u884c\u90fd\u5e26\u5f20\u6570\uff0c\u4e0b\u9762\u5217\u51fa\u5168\u90e8\u8d5b\u7490\u7490\u7f16\u53f7\u3002\u4fee\u6539\u8f93\u5165\u6846\u540e\u5373\u4ee5\u8be5\u540d\u79f0\u8fdb\u5165\u8868\u3002\u70b9\u51fb\u300c\u91cd\u65b0\u7f16\u53f7\u4e3a 1\u30012\u30013\u300d\u4f1a\u6309\u9996\u6b21\u51fa\u73b0\u7684\u987a\u5e8f\u7f16\u53f7\uff1b\u540c\u4e00\u5f20\u753b\u518d\u6b21\u51fa\u73b0\u65f6\u6cbf\u7528\u539f\u7f16\u53f7\u3002", "\u7a97\u53e3\u6587\u5b57\u4f1a\u968f\u6587\u4ef6\u6765\u6e90\u53d8\u5316\u3002\u62d6\u5165 .tvpp \u4f1a\u663e\u793a\u300c\u4ece TVPaint \u8bfb\u53d6\u8868\u300d\uff1b\u65f6\u95f4\u8f74\u53ea\u6709\u4e00\u6761\u65f6\u6ca1\u6709\u53ef\u9009\u9879\uff0c\u53ea\u663e\u793a\u4fe1\u606f\u884c\u3002", "BG \u4e0e BOOK \u73b0\u5728\u80fd\u900f\u8fc7\u62ec\u53f7\u8bc6\u522b \u2014 [BG]\u3001(BG)\u3001[BOOK] \u4e5f\u4f1a\u4f5c\u4e3a Hide\u3001Book \u5bfc\u5165\u3002.clip \u540c\u6837\u5982\u6b64\u3002\u300c\u6574\u7406\u8d5b\u7490\u7490\u7f16\u53f7\u300d\u540e\u9762\u7684\u793a\u4f8b\u5df2\u79fb\u9664\u3002"]],
@@ -5103,12 +5128,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         upload:'External Paper Image (JPG / PNG / PSD)',
         noPaper:'No paper image loaded.',
         loading:'Loading paper image...',
-        loaded:function(name, meta){ return 'Loaded: ' + name + (meta ? ' · ' + meta : ''); },
+        loaded:function(name, size){ return name + (size ? ' · ' + size + ' px' : ''); },
         failed:function(msg){ return 'Paper image load failed: ' + msg; },
-        clear:'Clear Paper', undo:'Undo', redo:'Redo', reset:'Position Reset', position:'Position Edit', autoAlign:'Auto Align',
+        clear:'Clear Paper', reset:'Position Reset', position:'Position Edit', autoAlign:'Auto Align',
         toolbarTitle:'Paper', toolbarPosition:'Position', toolbarReset:'Reset', toolbarClear:'Clear',
-        pixelEmpty:'Source pixels: -',
-        pixelInfo:function(w, h){ return 'Source pixels: ' + w + ' × ' + h; },
         autoAlignStatus:{
           ready:'Auto Align compares the detected paper grid with the sheet UI.',
           working:'Analyzing paper lines and matching the sheet boxes...',
@@ -5116,13 +5139,13 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           done:'Auto Align applied',
           failed:function(msg){ return 'Auto Align failed: ' + msg; },
         },
-        showTemplate:'Show built-in sheet template',
-        showHeader:'Show header output',
-        showDurationPlus:'Show Duration + mark',
-        showCellLabel:'Show cell label output',
+        showTemplate:'Show built-in form',
+        showHeader:'Show header',
+        showDurationPlus:'Show second marks',
+        showCellLabel:'Show cel labels',
         showPsdMemo:'Show separated PSD memo',
-        cellColumns:'Cell columns',
-        inbetweenColumns:'Douga columns',
+        cellColumns:'Key columns',
+        inbetweenColumns:'Inbetween columns',
         cellColumnsHint:'',
         body:'',
         psdMeta:function(memoCount){ return memoCount ? 'PSD paper loaded; separated memo layers: ' + memoCount : 'PSD layers composited to one raster paper layer'; },
@@ -5135,12 +5158,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         upload:'会社指定用紙画像（JPG / PNG / PSD）',
         noPaper:'用紙画像は未読込。',
         loading:'用紙画像を読み込み中...',
-        loaded:function(name, meta){ return '読込完了: ' + name + (meta ? ' · ' + meta : ''); },
+        loaded:function(name, size){ return name + (size ? ' · ' + size + ' px' : ''); },
         failed:function(msg){ return '用紙画像の読込失敗: ' + msg; },
-        clear:'用紙をクリア', undo:'取り消し', redo:'やり直し', reset:'位置初期化', position:'位置編集', autoAlign:'自動整列',
+        clear:'用紙をクリア', reset:'位置初期化', position:'位置編集', autoAlign:'自動整列',
         toolbarTitle:'用紙設定', toolbarPosition:'位置編集', toolbarReset:'位置初期化', toolbarClear:'クリア',
-        pixelEmpty:'元画像ピクセル: -',
-        pixelInfo:function(w, h){ return '元画像ピクセル: ' + w + ' × ' + h; },
         autoAlignStatus:{
           ready:'自動整列は、検出した用紙グリッドとシートUIを照合する。',
           working:'用紙の線を解析し、シートの位置ボックスと照合中...',
@@ -5148,13 +5169,13 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           done:'自動整列を適用',
           failed:function(msg){ return '自動整列失敗: ' + msg; },
         },
-        showTemplate:'内蔵シートテンプレートを表示',
-        showHeader:'Header出力を表示',
-        showDurationPlus:'秒数 +マーク表示',
-        showCellLabel:'Cellラベル出力を表示',
+        showTemplate:'内蔵フォームを表示',
+        showHeader:'ヘッダーを表示',
+        showDurationPlus:'秒数の十字マークを表示',
+        showCellLabel:'セル番号を表示',
         showPsdMemo:'分離したPSDメモを表示',
-        cellColumns:'Cell列数',
-        inbetweenColumns:'動画列数',
+        cellColumns:'原画の欄数',
+        inbetweenColumns:'動画の欄数',
         cellColumnsHint:'',
         body:'',
         psdMeta:function(memoCount){ return memoCount ? 'PSD用紙を読込。分離メモレイヤー: ' + memoCount : 'PSDレイヤーを1枚の用紙ラスターレイヤーに合成'; },
@@ -5167,12 +5188,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         upload:'외부용지 이미지 (JPG / PNG / PSD)',
         noPaper:'용지 이미지가 로드되지 않았다.',
         loading:'용지 이미지를 로드 중...',
-        loaded:function(name, meta){ return '로드 완료: ' + name + (meta ? ' · ' + meta : ''); },
+        loaded:function(name, size){ return name + (size ? ' · ' + size + ' px' : ''); },
         failed:function(msg){ return '용지 이미지 로드 실패: ' + msg; },
-        clear:'용지 삭제', undo:'되돌리기', redo:'다시 실행', reset:'위치 초기화', position:'위치 편집', autoAlign:'자동 정렬',
+        clear:'용지 삭제', reset:'위치 초기화', position:'위치 편집', autoAlign:'자동 정렬',
         toolbarTitle:'용지설정', toolbarPosition:'위치편집', toolbarReset:'초기화', toolbarClear:'삭제',
-        pixelEmpty:'원본 픽셀: -',
-        pixelInfo:function(w, h){ return '원본 픽셀: ' + w + ' × ' + h; },
         autoAlignStatus:{
           ready:'자동 정렬은 감지한 용지 격자와 시트 UI를 대조한다.',
           working:'용지 선을 분석하고 시트 위치 박스와 대조 중...',
@@ -5180,12 +5199,12 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           done:'자동 정렬 적용',
           failed:function(msg){ return '자동 정렬 실패: ' + msg; },
         },
-        showTemplate:'내장 시트 용지양식 표시',
-        showHeader:'헤더 출력 표시',
-        showDurationPlus:'초수 +마크 표시',
-        showCellLabel:'셀 라벨 출력 표시',
+        showTemplate:'내장 양식 표시',
+        showHeader:'헤더 표시',
+        showDurationPlus:'초수 십자 마크 표시',
+        showCellLabel:'셀 라벨 표시',
         showPsdMemo:'분리된 PSD 메모 표시',
-        cellColumns:'셀 칸 수',
+        cellColumns:'원화 칸 수',
         inbetweenColumns:'동화 칸 수',
         cellColumnsHint:'',
         body:'',
@@ -5199,12 +5218,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         upload:'外部纸张图像（JPG / PNG / PSD）',
         noPaper:'尚未载入纸张图像。',
         loading:'正在载入纸张图像...',
-        loaded:function(name, meta){ return '载入完成: ' + name + (meta ? ' · ' + meta : ''); },
+        loaded:function(name, size){ return name + (size ? ' · ' + size + ' px' : ''); },
         failed:function(msg){ return '纸张图像载入失败: ' + msg; },
-        clear:'清除纸张', undo:'撤销', redo:'重做', reset:'位置重置', position:'位置编辑', autoAlign:'自动对齐',
+        clear:'清除纸张', reset:'位置重置', position:'位置编辑', autoAlign:'自动对齐',
         toolbarTitle:'纸张', toolbarPosition:'位置', toolbarReset:'重置', toolbarClear:'清除',
-        pixelEmpty:'原始像素: -',
-        pixelInfo:function(w, h){ return '原始像素: ' + w + ' × ' + h; },
         autoAlignStatus:{
           ready:'自动对齐会比较检测到的纸张网格和 Sheet UI。',
           working:'正在分析纸张线条并匹配 Sheet 位置框...',
@@ -5212,13 +5229,13 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           done:'已应用自动对齐',
           failed:function(msg){ return '自动对齐失败: ' + msg; },
         },
-        showTemplate:'显示内置 Sheet 模板',
-        showHeader:'显示 Header 输出',
-        showDurationPlus:'显示秒数 + 标记',
-        showCellLabel:'显示 Cell 标签输出',
+        showTemplate:'显示内置版式',
+        showHeader:'显示页眉',
+        showDurationPlus:'显示秒数十字标记',
+        showCellLabel:'显示赛璐璐标签',
         showPsdMemo:'显示分离的 PSD 备注',
-        cellColumns:'Cell 列数',
-        inbetweenColumns:'動画列数',
+        cellColumns:'原画列数',
+        inbetweenColumns:'动画列数',
         cellColumnsHint:'',
         body:'',
         psdMeta:function(memoCount){ return memoCount ? 'PSD 纸张已载入；分离备注图层: ' + memoCount : 'PSD 图层已合成为单张纸张栅格层'; },
@@ -5336,8 +5353,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (paperToolbarPositionBtn) paperToolbarPositionBtn.textContent = doc.toolbarPosition || doc.position;
       if (paperToolbarResetBtn) paperToolbarResetBtn.textContent = doc.toolbarReset || doc.reset;
       if (paperToolbarClearBtn) paperToolbarClearBtn.textContent = doc.toolbarClear || doc.clear;
-      if (paperUndoBtn) paperUndoBtn.textContent = doc.undo || 'Undo';
-      if (paperRedoBtn) paperRedoBtn.textContent = doc.redo || 'Redo';
       if (resetLayoutAdjustBtn) resetLayoutAdjustBtn.textContent = doc.reset;
       if (headerPositionModeBtn) headerPositionModeBtn.textContent = doc.position;
       if (autoAlignPaperBtn) autoAlignPaperBtn.textContent = doc.autoAlign || 'Auto Align';
@@ -5355,20 +5370,16 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
 
     // ══ [UI] 용지 패널 ① 이미지 상태 표기 · 토글/버튼 활성 동기화 ══════════════════════════════════════════════════════════════════════
+    // 한 줄로 적는다 — 종전에는 상태 줄이 「로드 완료: 이름 · 1754×2480를 1753×2480로 래스터화」,
+    // 그 아래 줄이 「원본 픽셀: 1754 × 2480」으로 같은 수를 두 번 말했다. 래스터 크기는 고정값이라
+    // 화면에서 알려 줄 것이 아니다(state.paperImageMeta 에는 그대로 남아 저장본 계약을 지킨다).
     function updatePaperImageStatus() {
+      if (!paperImageStatusEl) return;
       const doc = getPaperLayoutTexts();
-      if (paperImageStatusEl) {
-        paperImageStatusEl.textContent = state.paperImageDataUrl
-          ? doc.loaded(state.paperImageName || 'paper image', state.paperImageMeta || '')
-          : doc.noPaper;
-      }
-      if (paperImagePixelInfoEl) {
-        if (state.paperImageSourceWidth && state.paperImageSourceHeight) {
-          paperImagePixelInfoEl.textContent = doc.pixelInfo(state.paperImageSourceWidth, state.paperImageSourceHeight);
-        } else {
-          paperImagePixelInfoEl.textContent = doc.pixelEmpty;
-        }
-      }
+      if (!state.paperImageDataUrl) { paperImageStatusEl.textContent = doc.noPaper; return; }
+      const size = (state.paperImageSourceWidth && state.paperImageSourceHeight)
+        ? state.paperImageSourceWidth + ' × ' + state.paperImageSourceHeight : '';
+      paperImageStatusEl.textContent = doc.loaded(state.paperImageName || 'paper image', size);
     }
 
 
@@ -5758,6 +5769,21 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const normalizedRole = normalizeCsvColumnRole(role) || 'hidden';
       if (!state.csvColumnRoles || typeof state.csvColumnRoles !== 'object') state.csvColumnRoles = {};
       state.csvColumnRoles[String(col.index)] = normalizedRole;
+    }
+
+    // 이름만으로 정하는 기본 역할 — **CSV 컬럼과 .clip/.tvpp 행이 같은 이름을 같게 읽는다.**
+    // 두 입구가 각자 판정하던 때 `セリフ` 가 CSV 에서는 Dialog, .clip 에서는 Cell 로 들어왔다.
+    // 차례가 계약이다: 배경(Hide)을 먼저 걸러야 `BG_BOOK` 이 Book 으로 새지 않는다.
+    // 판정기 본체는 아래 「CSV 레이어 이름 판별」 절에 있다(함수 선언은 끌어올려진다).
+    function defaultLayerNameRole(name) {
+      const raw = String(name || '').trim();
+      if (isHiddenCsvLayerName(raw)) return 'hidden';
+      if (/^(音声|dialog|dialogue|セリフ|台詞)/i.test(raw)) return 'dialog';
+      if (isBookLayerName(raw)) return 'book';
+      if (/camera/i.test(raw)) return 'camera';
+      if (isCameraDirectiveLayerName(raw)) return 'camera';
+      if (isCameraLayerName(raw)) return 'camera';
+      return 'original';
     }
 
     // ══ [입력] CSV 레이어 이름 판별 — 전각 정규화 · 배경 숨김 · 카메라 지시어 ══════════════════════════════════════════════════════════════
@@ -6757,7 +6783,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         window.cancelAnimationFrame(state.layoutDragPreviewFrame);
         state.layoutDragPreviewFrame = null;
       }
-      state.layoutDragPreviewPendingDrag = null;
       const group = state.layoutDragPreviewGroup;
       if (group && group.parentNode) group.parentNode.removeChild(group);
       state.layoutDragPreviewGroup = null;
@@ -11769,7 +11794,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         state.layoutBoxBaseRects = {};
         state.cellColumnCount = clampCellColumnCount(result.cellColumnCount);
         state.paperAutoAlignOverlay = result.overlay;
-        state.paperTemplateMatch = templateMatch;
         // 동화 델타는 검출된 격자에서 바로 낸다 — handlePaperImageUpload 가 새 용지에 넣어 둔 0 을
         // 덮어쓴다. 사용자가 입력칸으로 고치는 길은 그대로 남는다.
         state.inbetweenColumnCount = clampInbetweenColumnCount(getPaperAutoAlignInbetweenDelta(result));
@@ -11785,7 +11809,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       } catch (err) {
         if (token !== state.paperAutoAlignToken) return;
         state.paperAutoAlignOverlay = null;
-        state.paperTemplateMatch = null;
         setPaperAutoAlignResult({ status:'error', message:err && err.message ? err.message : String(err || 'Unknown error') });
         syncPaperLayoutControls();
         sendClientErrorEvent('paper_auto_align', err, { feature:'paper_auto_align' });
@@ -11796,7 +11819,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     function cancelPendingPaperAutoAlign(options) {
       state.paperAutoAlignToken += 1;
       state.paperAutoAlignOverlay = null;
-      state.paperTemplateMatch = null;
       if (!(options && options.keepStatus)) setPaperAutoAlignResult(null);
     }
 
@@ -13348,14 +13370,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       state.csvColumns = header.map(function(name, index){ return { name:name || ('col_' + index), index:index }; }).filter(function(c){ return c.index !== frameIndex && c.name; });
       state.csvColumnOrder = state.csvColumns.slice().sort(compareCsvSourceColumnOrder).map(function(col){ return col.index; });
       state.csvColumns.forEach(function(c){
-        const name = String(c.name || '').trim();
-        if (isHiddenCsvLayerName(name)) { setCsvColumnRole(c, 'hidden'); return; }
-        if (/^(音声|dialog|dialogue|セリフ|台詞)/i.test(name)) setCsvColumnRole(c, 'dialog');
-        else if (isBookLayerName(name)) setCsvColumnRole(c, 'book');
-        else if (/camera/i.test(name)) setCsvColumnRole(c, 'camera');
-        else if (isCameraDirectiveLayerName(name)) setCsvColumnRole(c, 'camera');
-        else if (isCameraLayerName(name)) setCsvColumnRole(c, 'camera');
-        else setCsvColumnRole(c, 'original');
+        setCsvColumnRole(c, defaultLayerNameRole(c.name));
       });
     }
 
@@ -16347,15 +16362,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
 
     // ══ ▲ 카메라란 ② 끝 ▲  아래부터는 尺(shaku) 편집 ════════════════════════════════════════════════════════════════════════════
-    function getShakuUiText(key) {
-      const doc = uiTexts[state.lang] || uiTexts.en || {};
-      return doc[key] || (uiTexts.en && uiTexts.en[key]) || key;
-    }
-
     function updateShakuEditUI() {
       if (shakuEditBtn) {
         shakuEditBtn.classList.toggle('active', !!state.shakuMode);
-        shakuEditBtn.textContent = getShakuUiText('shakuEditBtn');
+        shakuEditBtn.textContent = getUiText('shakuEditBtn');
       }
       if (shakuUndoBtn) {
         // Icon-only button: localize the tooltip, keep the SVG (don't overwrite textContent).
@@ -16370,7 +16380,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         shakuRedoBtn.setAttribute('aria-label', redoLabel);
         shakuRedoBtn.disabled = !(state.contentRedoStack && state.contentRedoStack.length);
       }
-      if (shakuEditHintEl) shakuEditHintEl.textContent = getShakuUiText('shakuEditHint');
+      if (shakuEditHintEl) shakuEditHintEl.textContent = getUiText('shakuEditHint');
     }
 
     function toggleShakuEditMode() {
@@ -16573,7 +16583,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const box = getShakuRangeRect(block, from, to);
       const flashColor = flash.mode === 'cut' ? '#cf2a2a' : '#2f9d50';
       const flashFill = flash.mode === 'cut' ? 'rgba(207,42,42,.12)' : 'rgba(47,157,80,.12)';
-      const label = (flash.mode === 'cut' ? getShakuUiText('shakuFlashCut') : getShakuUiText('shakuFlashStretch')) + ' ' + framesToShakuLength(flash.frameCount || (to - from + 1));
+      const label = (flash.mode === 'cut' ? getUiText('shakuFlashCut') : getUiText('shakuFlashStretch')) + ' ' + framesToShakuLength(flash.frameCount || (to - from + 1));
       withDrawLayer('output', function(){
         appendSvgNode(attachFade(el('rect', { x:box.x, y:box.y, width:box.w, height:box.h, fill:flashFill, stroke:flashColor, 'stroke-width':6, opacity:opacity.toFixed(3), rx:4, ry:4, 'pointer-events':'none' })));
         const tx = Math.min(box.x + box.w - 8, Math.max(box.x + 8, box.x + 14));
@@ -16613,8 +16623,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         }
         appendSvgNode(cutBtn);
         appendSvgNode(extendBtn);
-        appendSvgNode(el('text', { x:cutX + btnW / 2, y:btnY + btnH / 2 + 0.5, fill:'white', 'font-size':12, 'font-family':'Arial, Helvetica, sans-serif', 'font-weight':'800', 'text-anchor':'middle', 'dominant-baseline':'middle', 'pointer-events':'none' }, getShakuUiText('shakuCutBtn')));
-        appendSvgNode(el('text', { x:extendX + btnW / 2, y:btnY + btnH / 2 + 0.5, fill:SHAKU_BLUE, 'font-size':12, 'font-family':'Arial, Helvetica, sans-serif', 'font-weight':'800', 'text-anchor':'middle', 'dominant-baseline':'middle', 'pointer-events':'none' }, getShakuUiText('shakuStretchBtn')));
+        appendSvgNode(el('text', { x:cutX + btnW / 2, y:btnY + btnH / 2 + 0.5, fill:'white', 'font-size':12, 'font-family':'Arial, Helvetica, sans-serif', 'font-weight':'800', 'text-anchor':'middle', 'dominant-baseline':'middle', 'pointer-events':'none' }, getUiText('shakuCutBtn')));
+        appendSvgNode(el('text', { x:extendX + btnW / 2, y:btnY + btnH / 2 + 0.5, fill:SHAKU_BLUE, 'font-size':12, 'font-family':'Arial, Helvetica, sans-serif', 'font-weight':'800', 'text-anchor':'middle', 'dominant-baseline':'middle', 'pointer-events':'none' }, getUiText('shakuStretchBtn')));
       });
     }
 
@@ -19021,11 +19031,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return 'textmemo-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 7);
     }
 
-    function getTextMemoUiText(key) {
-      const doc = uiTexts[state.lang] || uiTexts.en || {};
-      return doc[key] || (uiTexts.en && uiTexts.en[key]) || key;
-    }
-
     function getActiveTextMemo() {
       if (!state.activeTextMemo) return null;
       const pageIndex = Number(state.activeTextMemo.pageIndex || 0);
@@ -19650,20 +19655,20 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const menu = document.createElement('div');
       menu.className = 'text-memo-context-menu';
       const list = getTextMemoPageData(pageIndex);
-      addTextMemoContextMenuButton(menu, getTextMemoUiText('textMemoMenuAdd'), '', function(){
+      addTextMemoContextMenuButton(menu, getUiText('textMemoMenuAdd'), '', function(){
         createTextMemoAt(pageIndex, point.x, point.y);
       });
       if (memoId) {
-        addTextMemoContextMenuButton(menu, getTextMemoUiText('textMemoMenuDelete'), 'danger', function(){
+        addTextMemoContextMenuButton(menu, getUiText('textMemoMenuDelete'), 'danger', function(){
           if (deleteTextMemoById(pageIndex, memoId)) render();
         });
       }
       if (list.length) {
-        addTextMemoContextMenuButton(menu, getTextMemoUiText('textMemoMenuAutoArrange'), '', function(){
+        addTextMemoContextMenuButton(menu, getUiText('textMemoMenuAutoArrange'), '', function(){
           autoArrangeTextMemos(pageIndex);
         });
       }
-      addTextMemoContextMenuButton(menu, getTextMemoUiText(state.textMemoEditMode ? 'textMemoMenuEditDone' : 'textMemoMenuEditMode'), '', function(){
+      addTextMemoContextMenuButton(menu, getUiText(state.textMemoEditMode ? 'textMemoMenuEditDone' : 'textMemoMenuEditMode'), '', function(){
         toggleTextMemoEditMode();
       });
       document.body.appendChild(menu);
@@ -20252,7 +20257,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const opacity = getTextMemoInitialHintOpacity(hint);
       if (opacity <= 0) return;
       const gap = getTextMemoGapRect();
-      const label = getTextMemoUiText('textMemoInitialHint');
+      const label = getUiText('textMemoInitialHint');
       const y = clampNumber(Number(memo.y || 0) + Number(memo.h || 0) + 24, gap.y + 14, gap.y + gap.h - 6);
       const node = el('text', {
         x:Number(memo.x || 0),
@@ -20502,8 +20507,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       applyButton.className = 'text-memo-apply-fixed';
       applyButton.type = 'button';
       applyButton.textContent = 'x';
-      applyButton.setAttribute('aria-label', getTextMemoUiText('textMemoApplyBtn'));
-      applyButton.title = getTextMemoUiText('textMemoApplyBtn');
+      applyButton.setAttribute('aria-label', getUiText('textMemoApplyBtn'));
+      applyButton.title = getUiText('textMemoApplyBtn');
       document.body.appendChild(editor);
       document.body.appendChild(applyButton);
       state.textMemoEditor = { editor:editor, applyButton:applyButton, pageIndex:state.activeTextMemo.pageIndex, id:memo.id };
@@ -21421,6 +21426,13 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return shareHistoryValue({ content:content, paper:paper, source:source, inputs:inputs, memo:memo, text:text, images:images, stages:stages, activeStageId:state.activeStageId },previous);
     }
 
+    // 제스처 **도중**에는 이력을 커밋하지 않는다 — 중간 상태가 기준선이 되면 실행취소 한 번이
+    // 드래그 중간으로 되돌아간다. 이 목록은 손으로 유지하므로 **새 제스처를 만들면 여기 더한다.**
+    //   · 들어가는 것 = 끝나기 전에 문서 내용을 바꾸는 포인터 제스처
+    //   · 안 들어가는 것 = 위 제스처의 하위 상태(`layoutDragPreview*`·`memoPointerId` 등),
+    //     화면 이동·패널 크기(`viewPanX`·`previewPan`·`rightPanelWidth` — 스냅샷에 없다),
+    //     그리고 HTML5 드래그앤드롭(`textCommandColumnDragLine`) — 내용은 drop 에서 한 번에 바뀐다
+    // 2026-09-19 되짚기에서 제스처성 상태 15 개를 전수로 분류해 빠진 것이 없음을 확인했다.
     function editorHistoryGestureActive() {
       return !!(state.memoCurrentStroke || state.layoutDrag || state.activeTimelineDrag || state.cellLongPressDrag || state.cellLabelDrag || state.serifuRangeDrag || state.shakuDrag || state.textMemoPointerIntent || state.textMemoResize || state.pastedImageDrag || state.layerNameTagDrag);
     }
@@ -23449,7 +23461,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     // 셀 배치는 SQLite 가 아니라 트랙의 Exta 청크 안 BINC 트리에 있어서 그 해독기까지 필요하다.
     // 그림·벡터·오디오·카메라는 시트에 쓰지 않으므로 읽지 않는다.
     // CSV 로는 애니메이션 폴더 밖 레이어(BOOK 등)가 아예 오지 않는다 — 원본을 직접 읽는 이 길만 본다.
-    // 포맷 지식의 정본과 MoArt 쪽 짝은 #hub/clip/format.md 에 적는다(판정 q1=C).
+    // 포맷 지식의 정본과 MoArt 쪽 짝은 #hub/docs/engineering_rules.md 의 「외부 포맷 해석 — CLIP STUDIO」
+    // 절에 있다(판정 q1=C). 이 앱 쪽 설계·검사 사정은 docs/clip_direct_sheet_import_2026-09-18.md.
 
     function clipUtf16be(s) {
       var out = new Uint8Array(s.length * 2);
@@ -23729,7 +23742,12 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     // 루트부터 형제 사슬을 따라 한 단 목록을 만든다(판정 q2=A).
     // 선택 타임라인이 쓰는 애니메이션 폴더가 셀 컬럼, 그 밖 최상위 항목이 선택 후보다.
-    // 조상이 숨겨져 있으면 자신이 켜져 있어도 화면에 없다 — CSP 의 타임시트 출력과 같은 조건이다.
+    //
+    // **표시는 두 층을 따로 들고 나온다**(ver921). `visible` 은 화면에 보이는가(조상 AND 자신)이고,
+    // `parentVisible` 은 조상 사슬만 본 것이다. CSP 가 타임시트로 내보내는 조건은 **조상 사슬**이다 —
+    // 자기 자신을 꺼 둔 셀도 CSV 에는 실린다. 표본 4파일 45줄로 갈랐다(`docs/clip_direct_sheet_import_2026-09-18.md`):
+    // 「조상 사슬」 43/45(나머지 둘은 参考·BG 라 제품이 이름으로 이미 거른다) · 「자기 표시」 11/45.
+    // ver920 까지 `visible` 하나로 판정해, 셀을 꺼 두고 작업한 파일이 CSV 로는 6칸·`.clip` 으로는 1칸이 됐다.
     function clipSheetScanLayers(db, timeline) {
       const layers = db.readTable('Layer') || [];
       const canvas = (db.readTable('Canvas') || [])[0] || {};
@@ -23753,24 +23771,26 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           const isCel = Number(l.AnimationFolder) === 1 && onTimeline(l);
           if (isCel) {
             items.push({ kind:'cel', name:name, mainId:l.MainId, path:parentPath.join('/'),
-                         visible:shown, uuid:String(l.LayerUuid || '') });
+                         visible:shown, parentVisible:parentVisible, uuid:String(l.LayerUuid || '') });
           } else if (isFolder) {
             const before = items.length;
             walk(l.LayerFirstChildIndex, parentPath.concat([name]), depth + 1, shown);
             // 안에 이 타임라인의 셀이 하나도 없던 폴더는 그 폴더 자체가 후보다(BOOK·BG 가 보통 여기).
             if (items.length === before && depth === 0) {
               items.push({ kind:'other', name:name, mainId:l.MainId, path:parentPath.join('/'),
-                           visible:shown, uuid:String(l.LayerUuid || '') });
+                           visible:shown, parentVisible:parentVisible, uuid:String(l.LayerUuid || '') });
             }
           } else if (depth === 0) {
             items.push({ kind:'other', name:name, mainId:l.MainId, path:parentPath.join('/'),
-                         visible:shown, uuid:String(l.LayerUuid || '') });
+                         visible:shown, parentVisible:parentVisible, uuid:String(l.LayerUuid || '') });
           }
           cur = l.LayerNextIndex;
         }
       }
       walk(byId[rootId] ? byId[rootId].LayerFirstChildIndex : 0, [], 0, true);
-      items.reverse();   // CLIP 은 바닥부터 이어진다 — 뒤집어야 위에서 아래다
+      // CLIP 은 바닥부터 이어진다 — 뒤집어야 위에서 아래(= 레이어 판 차례)다.
+      // 커맨드 텍스트를 적을 때 clipSheetBuildCommandText 가 한 번 더 뒤집어 A 를 첫 칸으로 놓는다.
+      items.reverse();
       return items;
     }
 
@@ -23852,10 +23872,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return tidyNumbers ? clipSheetNormalizeKomaName(celName, label) : label;
     }
 
-    // 이름은 칸을 하나씩 두지 않고 **한 칸에 이어** 놓는다 — TVPaint 의 「Type name of All instance」와
-    // 같은 모양이고(구분자 `;`), 이어서 고치기가 훨씬 쉽다.
-    const CLIP_SHEET_KOMA_JOIN = ';';
-
     // 「셀 번호 다듬기」는 다듬을 것이 있을 때만 뜻이 있다 — 하나도 없으면 켜나 끄나 같은 글이
     // 나오므로 그 줄을 보이지 않는다. 고른 타임라인에 따라 흔들리면 안 되니 파일 전체로 본다.
     function clipSheetNeedsTidy(reads) {
@@ -23868,6 +23884,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         });
       });
     }
+
+    // 이름은 칸을 하나씩 두지 않고 **한 칸에 이어** 놓는다 — TVPaint 의 「Type name of All instance」와
+    // 같은 모양이고(구분자 `;`), 이어서 고치기가 훨씬 쉽다.
+    const CLIP_SHEET_KOMA_JOIN = ';';
 
     function clipSheetKomaText(pick, celName, labels, tidyNumbers) {
       return labels.map(function(label) {
@@ -25226,14 +25246,19 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     // CLIP 취입과 **같은 모양**으로 만든다 — 창·적용·단계는 그대로 쓴다.
     async function tvppSheetRead(arrayBuffer) {
       const tv = tvppSheetOpenFile(arrayBuffer);
+      // 파일의 레이어 순서가 곧 위에서 아래다 — 창이 레이어 판처럼 보이도록 그대로 담는다.
+      // 커맨드 텍스트는 clipSheetBuildCommandText 가 뒤집어 적으므로 A 가 첫 칸이 된다.
       const items = [];
+      const fps = tv.fps || FIXED_FPS;
       let end = 0;
+      // TVPaint 쪽에는 폴더 사슬이 없다 — 층이 하나라 조상 표시(parentVisible)는 언제나 참이다.
+      // 창의 기본 체크가 그 값을 보므로 빠뜨리면 아무 줄도 켜지지 않는다(ver921 에서 실제로 걸렸다).
       for (let i = 0; i < tv.layers.length; i++) {
         const layer = tv.layers[i];
         const name = String(layer.name == null ? '' : layer.name) || ('layer' + (i + 1));
         const aside = tvppSheetIsAsideLayerName(name);
         if (!layer.zchk.length) {
-          items.push({ kind:'other', name:name, mainId:'tvpp-' + i, path:'', visible:true,
+          items.push({ kind:'other', name:name, mainId:'tvpp-' + i, path:'', visible:true, parentVisible:true,
                        uuid:'', aside:aside, keys:[], failure:'empty' });
           continue;
         }
@@ -25241,23 +25266,21 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         try {
           keys = await tvppSheetReadLayer(tv, layer);
         } catch (err) {
-          items.push({ kind:'other', name:name, mainId:'tvpp-' + i, path:'', visible:true,
+          items.push({ kind:'other', name:name, mainId:'tvpp-' + i, path:'', visible:true, parentVisible:true,
                        uuid:'', aside:aside, keys:[], failure:String((err && err.message) || err) });
           continue;
         }
         keys.forEach(function(key) { end = Math.max(end, key.endFrame); });
-        items.push({ kind:aside ? 'other' : 'cel', name:name, mainId:'tvpp-' + i, path:'', visible:true,
+        items.push({ kind:aside ? 'other' : 'cel', name:name, mainId:'tvpp-' + i, path:'', visible:true, parentVisible:true,
                      uuid:'', aside:aside, keys:keys, failure:'' });
       }
-      // 파일의 레이어 순서가 곧 위에서 아래다 — 창이 레이어 판처럼 보이도록 그대로 둔다.
-      // 커맨드 텍스트는 clipSheetBuildCommandText 가 뒤집어 적으므로 A 가 첫 칸이 된다.
       const duration = Math.max(1, Math.round(end));
       // 창은 타임라인 목록을 받게 되어 있다. tvpp 는 한 벌뿐이라 그 한 벌만 만들어 넘긴다.
       return [{
-        timeline: { MainId:'tvpp', TimeLineName:'', FrameRate:tv.fps || FIXED_FPS, StartFrame:0, EndFrame:duration },
+        timeline: { MainId:'tvpp', TimeLineName:'', FrameRate:fps, StartFrame:0, EndFrame:duration },
         items: items,
         duration: duration,
-        fps: tv.fps || FIXED_FPS,
+        fps: fps,
         blocked: '',
         startFrame: 0
       }];
@@ -25284,7 +25307,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         if (generation !== documentLoadGeneration) return false;
         const plan = prepareClipSheetStages(result);
         if (plan.error) { setExportStatus(plan.error, { level:'error' }); return false; }
-        const made = applyClipSheetStages(plan.stages);
+        const made = applyClipSheetStages(plan.stages, result.identity);
+        // 용지는 단계가 다 선 **뒤에** 넣는다 — 적용 도중 실패는 되돌리는데 용지는 그 백업에 없다.
+        if (result.paperFile) await handlePaperImageUpload(result.paperFile);
         const odd = plan.stages.filter(function(entry) { return Number(entry.read.fps) !== FIXED_FPS; });
         setExportStatus(clipSheetText('loaded', { name:file.name || 'tvpp', stages:made }, app)
           + (odd.length ? ' · ' + clipSheetText('oddTiming', { count:odd.length, fps:Number(odd[0].read.fps) }, app) : ''));
@@ -25302,16 +25327,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return Boolean(file) && /\.clip$/i.test(String(file.name || ''));
     }
 
-    // 역할은 이 앱이 CSV 취입에서 쓰는 판정기 그대로 정한다 — 두 입구가 같은 이름을 다르게 읽으면 안 된다.
-    // 아무것도 걸리지 않으면 셀이다. 종전에는 셀 폴더가 아니면 무조건 Book 이었는데, Book 은 배경 판이라
-    // 용지·작품정보·프레임까지 Book 으로 뜨고 있었다(실제 파일에서 확인).
-    function clipSheetDefaultRole(name) {
-      if (isBookLayerName(name)) return 'book';
-      if (isHiddenCsvLayerName(name)) return 'hidden';
-      if (isCameraDirectiveLayerName(name)) return 'camera';
-      return 'original';
-    }
-
     // 그림이 아니라 참고로 깔아 두는 레이어. 셀 폴더로 만들어져 있어도 시트에 실을 것이 아니다 —
     // 표본 72 개(tools/clip_layer_name_survey.cjs)에서 原図 가 33 개 파일에 셀로 들어 있었다.
     // 업계에서 쓰는 말만 담는다. 용지마다 다른 문구(작품정보·프레임 안내 따위)는 셀 폴더가 아니라
@@ -25327,16 +25342,167 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       });
     }
 
+    // 어느 줄을 기본으로 켜는가 — **한 자리에 둔다.** 창과 검사기가 각자 판정하면 검사기는 자기 규칙을
+    // 재는 것이 되어 제품이 바뀌어도 통과한다(ver920 까지 실제로 그랬다).
+    //   · 조상 사슬이 보이는 셀만 — CSP 가 타임시트로 내보내는 조건이다(clipSheetScanLayers 주석).
+    //     자기 표시는 보지 않는다. 꺼 두고 작업한 셀도 CSV 에는 실린다.
+    //   · 해독하지 못한 줄, 참고로 깔아 둔 줄(原図·콘티·자·용지), Hide 역할(BG·배경)은 켜지 않는다.
+    //   · 셀이 아닌 줄(BOOK 후보)은 언제나 해제로 두되 목록에는 보인다.
+    function clipSheetRowCheckedByDefault(item) {
+      if (!item || item.kind !== 'cel') return false;
+      if (item.failure || !item.parentVisible) return false;
+      if (clipSheetIsReferenceName(item.name)) return false;
+      return defaultLayerNameRole(item.name) !== 'hidden';
+    }
+
+
+    // ══ [입력] 파일 이름에서 작품·화수·컷·공정 읽기 ═══════════════════════════════════════════════════════════════
+    // `JDG_12_114_lo.clip` 은 **작품 JDG · 12화 · 컷 114 · 공정 LO** 를 이미 이름에 담고 있다.
+    // 파일 **안**은 쓸 수 없다 — CLIP 의 `Project.ProjectName` 은 숫자 카운터("115")이고
+    // `TimeLineName` 은 대부분 기본 이름이며 컷번호를 담은 것도 어긋난다(표본 25 개에서 확인).
+    // 규칙과 표본 수는 docs/import_dialog_identity_and_paper_2026-09-19.md 가 정본이다.
+
+    // 화수 자리에 오는, 숫자가 아닌 말. A~E 는 영화의 파트 구분, OP/ED 는 오프닝·엔딩,
+    // MV 는 뮤직비디오다 — 전부 화수 자리에 적는다(사용자 확인 2026-09-19).
+    const SHEET_NAME_EPISODE_WORDS = /^(OP|ED|SP|PV|MV|NC|[A-E])$/i;
+
+    // 컷번호 모양: 숫자 2~4 자리, 앞에 c 가 붙기도 하고(`c003`) 뒤에 글자가 붙기도 한다(`002A`).
+    const SHEET_NAME_CUT_RE = /^[cC]?\d{2,4}[A-Za-z]{0,2}$/;
+
+    // 공정 = **바탕 + 체크**다. #hub/production/rules.md 의 「공정(LO/原画)×체크(演出/作監)」,
+    // MoArt 의 `GENGA_REVISION_ROLES`(E=演出·K=監督·S=作監·SS=総作監), 그리고 실물 파일의 폴더 트리
+    // (`01_rough/LE`·`LK`·`LS`, `02_key/G`·`GE`·`GS`)가 같은 문법을 보인다.
+    // 긴 것부터 적는다 — `ssk` 가 `s` 에 먼저 걸리면 안 된다.
+    // material 은 작화 공정이 아니라 **소재 종류**다 — `TS1_LO` 는 「LO 의 타임시트」이므로
+    // 단계 이름은 レイアウト 가 되어야 한다. 그래서 공정 바탕을 먼저 고르고, 없을 때만 소재를 쓴다.
+    const SHEET_PROCESS_BASES = [
+      { code:'lo', label:'LO', alone:'レイアウト', kind:'process' },
+      { code:'l',  label:'LO', alone:'レイアウト', kind:'process' },
+      { code:'g',  label:'原画', alone:'原画', kind:'process' },
+      { code:'ct', label:'CT', alone:'CT', kind:'material' },      // 컷팅용 소재(컷팅시트)
+      { code:'ts', label:'TS', alone:'TS', kind:'material' }       // 타임시트
+    ];
+    const SHEET_PROCESS_CHECKS = [
+      { code:'ssk', label:'総作監' }, { code:'ss', label:'総作監' },
+      { code:'sk',  label:'作監' },   { code:'s',  label:'作監' },
+      { code:'en',  label:'演出' },   { code:'e',  label:'演出' },
+      { code:'k',   label:'監督' }
+    ];
+
+    // 한 토큰을 바탕+체크로 푼다. **끝까지 풀리지 않으면 통째로 미상**이다 — `LOa` 처럼 바탕만 맞고
+    // 꼬리를 모르는 것을 「레이아웃」으로 읽으면 모르는 것을 아는 척하게 된다.
+    // 꼬리의 숫자는 테이크·연번이라 떼고 본다(`TS1` → TS).
+    function sheetProcessDecodeToken(token) {
+      const raw = String(token || '').toLowerCase().replace(/\d+$/, '');
+      if (!raw) return null;
+      let base = null;
+      let rest = raw;
+      for (let i = 0; i < SHEET_PROCESS_BASES.length; i++) {
+        if (rest.indexOf(SHEET_PROCESS_BASES[i].code) === 0) {
+          base = SHEET_PROCESS_BASES[i];
+          rest = rest.slice(base.code.length);
+          break;
+        }
+      }
+      const checks = [];
+      while (rest) {
+        const hit = SHEET_PROCESS_CHECKS.find(function(item) { return rest.indexOf(item.code) === 0; });
+        if (!hit) return null;
+        checks.push(hit.label);
+        rest = rest.slice(hit.code.length);
+      }
+      if (!base && !checks.length) return null;
+      return { base:base, checks:checks };
+    }
+
+    // 공정 문자열(파일명에서 컷번호 뒤에 남은 것) → 단계 이름.
+    //   `lo` → レイアウト · `le`·`loe` → LO演出 · `les` → LO演出作監 · `gen`·`ge` → 原画演出
+    //   `ge_ssk_R` → 原画演出総作監 (R 은 사전에 없어 버린다)
+    // 바탕이 하나도 안 잡히면 **적힌 그대로** 쓴다 — 지어내지 않는다.
+    function sheetProcessStageName(processText) {
+      const tokens = String(processText || '').split('_').filter(Boolean);
+      if (!tokens.length) return '';
+      let base = null;
+      let material = null;
+      const checks = [];
+      tokens.forEach(function(token) {
+        const decoded = sheetProcessDecodeToken(token);
+        if (!decoded) return;
+        if (decoded.base && decoded.base.kind === 'material') {
+          if (!material) material = decoded.base;
+          return;   // 소재는 공정이 아니다 — 체크도 가져오지 않는다.
+        }
+        if (decoded.base && !base) base = decoded.base;
+        if (!decoded.base || base === decoded.base) {
+          decoded.checks.forEach(function(label) { if (checks.indexOf(label) === -1) checks.push(label); });
+        }
+      });
+      if (!base) base = material;
+      if (!base) return tokens.join('_');
+      return checks.length ? base.label + checks.join('') : base.alone;
+    }
+
+    // 이름을 `_` 로 끊어 **뒤에서부터** 컷번호를 찾고, 그 앞을 작품명+화수, 뒤를 공정으로 본다.
+    // 앞머리의 `sheet` 는 출력물이 달고 나가는 말이라 버린다(`sheet_TKP_02_170_LO`).
+    // 작품명 꼬리에 화수가 붙어 있는 이름(`njw14`·`KHM01`·`tkp02`·`njwOP`)은 거기서 떼어 낸다.
+    // 컷번호를 못 찾으면 null — 정보가 없는 이름(`sheet`·`psj_test`)까지 억지로 읽지 않는다.
+    function parseSheetFileNameIdentity(fileName) {
+      const tokens = String(fileName || '').replace(/\.[^.]+$/, '').split('_').filter(function(token, index, all) {
+        return token !== '' || index < all.length - 1;
+      });
+      while (tokens.length && /^sheets?$/i.test(tokens[0])) tokens.shift();
+      let cutIndex = -1;
+      for (let i = tokens.length - 1; i >= 0; i--) {
+        if (SHEET_NAME_CUT_RE.test(tokens[i])) { cutIndex = i; break; }
+      }
+      if (cutIndex === -1) return null;
+      const cut = tokens[cutIndex].replace(/^[cC](?=\d)/, '');
+      const process = tokens.slice(cutIndex + 1).join('_');
+      let head = tokens.slice(0, cutIndex);
+      let episode = '';
+      if (head.length && (/^\d{1,3}[A-Za-z]?$/.test(head[head.length - 1]) || SHEET_NAME_EPISODE_WORDS.test(head[head.length - 1]))) {
+        episode = head[head.length - 1];
+        head = head.slice(0, -1);
+      }
+      let title = head.join('_');
+      if (!episode && title) {
+        const merged = title.match(/^(.*?[A-Za-z])(\d{1,3}|OP|ED|SP|PV|MV)$/i);
+        if (merged && merged[1]) { title = merged[1]; episode = merged[2]; }
+      }
+      return { title:title, episode:episode, cut:cut, process:process, stageName:sheetProcessStageName(process) };
+    }
+
+    // 창에서 확인·수정한 것을 헤더와 단계 이름에 넣는다. **빈 칸은 손대지 않는다** — 파일 이름에서
+    // 읽지 못했거나 사용자가 지운 자리는 지금 값이 그대로 남아야 한다.
+    function applySheetIdentity(identity) {
+      if (!identity) return;
+      [['title', 'title'], ['episode', 'episode'], ['cutNo', 'cutNo']].forEach(function(pair) {
+        const value = String(identity[pair[0]] == null ? '' : identity[pair[0]]).trim();
+        if (!value) return;
+        const node = getSheetInputNode(pair[1]);
+        if (node) node.value = value;
+      });
+      saveHeaderMemoryNow();
+      const stageName = String(identity.stage == null ? '' : identity.stage).trim().slice(0, SHEET_STAGE_NAME_MAX);
+      const stage = getActiveSheetStage();
+      if (stageName && stage) {
+        stage.code = SHEET_STAGE_CUSTOM_CODE;
+        stage.customLabel = stageName;
+        // 타임라인이 하나면 새 단계를 만들지 않으므로 여기서 칩을 다시 그리지 않으면 옛 이름이 남는다.
+        refreshSheetStageUI();
+      }
+    }
+
     // 어느 프로그램에서 온 파일인가 — 창 문구가 CLIP 과 TVPaint 를 갈라 부른다.
     const CLIP_SHEET_APPS = { clip:'CLIP STUDIO', tvpp:'TVPaint' };
     function clipSheetAppName(source) { return CLIP_SHEET_APPS[source] || CLIP_SHEET_APPS.clip; }
 
     function clipSheetText(key, values, app) {
       const docs = {
-        en:{ tidyNumbers:'Tidy cel numbers', sideRows:'Hidden, unexposed and reference layers ({count})', pickedRows:'{count} picked', blockedStart:'starts at frame {start} — not supported yet', allBlocked:'Every timeline in this file starts at a frame other than 0. That layout has not been verified, so nothing was loaded.', noExposure:'no exposure in this timeline', failed:'could not be read: {error}', emptyPick:'Nothing is checked in \"{name}\", so the sheet was left as it is.', oddTiming:'{count} timeline(s) are not 24fps (read as {fps}fps) — the frames were copied as they are.', title:'Read a sheet from {app}', timelines:'Timelines', timelineHint:'Each timeline you pick becomes one stage.', rows:'Rows to load', komaNames:'Cel names', renumber:'Renumber', komaCount:'{count} drawing(s)', fileSection:'File', name:'Name', role:'Role', confirm:'Load', cancel:'Cancel', cel:'cel', other:'layer', hidden:'hidden in {app}', empty:'No rows that can be read as cels were found in this file.', reading:'Reading the {app} file…', loaded:'{app} loaded: {name} · {stages} stage(s)', noPick:'Nothing was selected, so the sheet was left as it is.' },
-        ja:{ tidyNumbers:'セル番号を整える', sideRows:'非表示・露出なし・参考レイヤー（{count}）', pickedRows:'選択 {count}', blockedStart:'{start} フレーム開始 — 未対応', allBlocked:'このファイルのタイムラインはすべて0フレーム以外から始まります。未確認の並びのため読み込みませんでした。', noExposure:'このタイムラインに露出なし', failed:'読み取れませんでした：{error}', emptyPick:'「{name}」で何も選ばれていないため、シートはそのままです。', oddTiming:'24fps でないタイムラインが {count} 件あります（{fps}fps）。コマ数はそのまま移しました。', title:'{app} からシートを読む', timelines:'タイムライン', timelineHint:'選んだタイムラインごとに段階が1つ作られます。', rows:'読み込む行', komaNames:'セル番号', renumber:'順番に振り直す', komaCount:'{count}枚', fileSection:'ファイル', name:'名前', role:'役割', confirm:'読み込む', cancel:'キャンセル', cel:'セル', other:'レイヤー', hidden:'{app} で非表示', empty:'このファイルにセルとして読める行が見つかりませんでした。', reading:'{app} のファイルを読み込み中…', loaded:'{app} のファイルを読み込みました：{name} · 段階 {stages}個', noPick:'何も選ばれなかったため、シートはそのままです。' },
-        ko:{ tidyNumbers:'셀 번호 다듬기', sideRows:'숨김 · 노출 없음 · 참고 레이어 ({count})', pickedRows:'고른 행 {count}', blockedStart:'{start} 프레임에서 시작 — 아직 지원하지 않음', allBlocked:'이 파일의 타임라인이 전부 0프레임이 아닌 자리에서 시작합니다. 확인되지 않은 배치라 아무것도 읽지 않았습니다.', noExposure:'이 타임라인에 노출 없음', failed:'읽지 못했습니다: {error}', emptyPick:'「{name}」에서 아무것도 고르지 않아 시트를 그대로 두었습니다.', oddTiming:'24fps가 아닌 타임라인이 {count}개 있습니다({fps}fps). 칸 수는 그대로 옮겼습니다.', title:'{app}에서 시트 읽기', timelines:'타임라인', timelineHint:'고른 타임라인마다 단계가 하나씩 만들어집니다.', rows:'가져올 행', komaNames:'셀 이름', renumber:'순번대로 재배치', komaCount:'{count}장', fileSection:'파일', name:'이름', role:'역할', confirm:'불러오기', cancel:'취소', cel:'셀', other:'레이어', hidden:'{app}에서 숨김', empty:'이 파일에서 셀로 읽을 줄을 찾지 못했습니다.', reading:'{app} 파일을 읽는 중…', loaded:'{app} 파일을 읽었습니다: {name} · 단계 {stages}개', noPick:'아무것도 고르지 않아 시트를 그대로 두었습니다.' },
-        zh:{ tidyNumbers:'整理赛璐璐编号', sideRows:'隐藏 · 无曝光 · 参考图层（{count}）', pickedRows:'已选 {count}', blockedStart:'从第 {start} 帧开始 — 尚不支持', allBlocked:'此文件的时间轴都不是从第 0 帧开始。该排列尚未验证，因此未读取任何内容。', noExposure:'此时间轴没有曝光', failed:'无法读取：{error}', emptyPick:'「{name}」中未选择任何内容，工作表保持不变。', oddTiming:'有 {count} 条时间轴不是 24fps（{fps}fps）。格子数按原样移入。', title:'从 {app} 读取表', timelines:'时间轴', timelineHint:'所选的每条时间轴都会生成一个阶段。', rows:'要读取的行', komaNames:'赛璐璐编号', renumber:'按顺序重编', komaCount:'{count} 张', fileSection:'文件', name:'名称', role:'角色', confirm:'读取', cancel:'取消', cel:'赛璐璐', other:'图层', hidden:'在 {app} 中隐藏', empty:'在此文件中未找到可作为赛璐璐读取的行。', reading:'正在读取 {app} 文件…', loaded:'已读取 {app} 文件：{name} · {stages} 个阶段', noPick:'未选择任何内容，工作表保持不变。' }
+        en:{ sideUnread:'No exposure or unreadable ({count})', sideAside:'Background and reference ({count})', sideOffstage:'Cels from another step ({count})', paper:'Paper', paperDrop:'Drop a paper image here, or click to choose (JPG / PNG / PSD / .clip)', paperKeep:'Drop nothing and the paper you already have is kept.', paperChosen:'Will be replaced with {name}', identity:'Work info', identityTitle:'Title', identityEpisode:'Ep.', identityCut:'Cut no.', identityStage:'Stage name', identityStageHint:'The stage name is given to the first stage only.', tidyNumbers:'Tidy cel numbers', pickedRows:'{count} picked', blockedStart:'starts at frame {start} — not supported yet', allBlocked:'Every timeline in this file starts at a frame other than 0. That layout has not been verified, so nothing was loaded.', noExposure:'no exposure in this timeline', failed:'could not be read: {error}', emptyPick:'Nothing is checked in \"{name}\", so the sheet was left as it is.', oddTiming:'{count} timeline(s) are not 24fps (read as {fps}fps) — the frames were copied as they are.', title:'Read a sheet from {app}', timelines:'Timelines', timelineHint:'Each timeline you pick becomes one stage.', rows:'Rows to load', komaNames:'Cel names', renumber:'Renumber', komaCount:'{count} drawing(s)', fileSection:'File', name:'Name', role:'Role', confirm:'Load', cancel:'Cancel', cel:'cel', other:'layer', hidden:'hidden in {app}', empty:'No rows that can be read as cels were found in this file.', reading:'Reading the {app} file…', loaded:'{app} loaded: {name} · {stages} stage(s)', noPick:'Nothing was selected, so the sheet was left as it is.' },
+        ja:{ sideUnread:'露出なし・読めない行（{count}）', sideAside:'背景・参考（{count}）', sideOffstage:'他工程のセル（{count}）', paper:'用紙', paperDrop:'用紙画像をここに置くか、クリックして選びます（JPG / PNG / PSD / .clip）', paperKeep:'置かなければ、今の用紙をそのまま使います。', paperChosen:'{name} に差し替えます', identity:'作品情報', identityTitle:'作品名', identityEpisode:'話数', identityCut:'カット番号', identityStage:'段階名', identityStageHint:'段階名は最初の段階だけに付きます。', tidyNumbers:'セル番号を整える', pickedRows:'選択 {count}', blockedStart:'{start} フレーム開始 — 未対応', allBlocked:'このファイルのタイムラインはすべて0フレーム以外から始まります。未確認の並びのため読み込みませんでした。', noExposure:'このタイムラインに露出なし', failed:'読み取れませんでした：{error}', emptyPick:'「{name}」で何も選ばれていないため、シートはそのままです。', oddTiming:'24fps でないタイムラインが {count} 件あります（{fps}fps）。コマ数はそのまま移しました。', title:'{app} からシートを読む', timelines:'タイムライン', timelineHint:'選んだタイムラインごとに段階が1つ作られます。', rows:'読み込む行', komaNames:'セル番号', renumber:'順番に振り直す', komaCount:'{count}枚', fileSection:'ファイル', name:'名前', role:'役割', confirm:'読み込む', cancel:'キャンセル', cel:'セル', other:'レイヤー', hidden:'{app} で非表示', empty:'このファイルにセルとして読める行が見つかりませんでした。', reading:'{app} のファイルを読み込み中…', loaded:'{app} のファイルを読み込みました：{name} · 段階 {stages}個', noPick:'何も選ばれなかったため、シートはそのままです。' },
+        ko:{ sideUnread:'노출 없음 · 읽지 못함 ({count})', sideAside:'배경 · 참고 ({count})', sideOffstage:'다른 공정의 셀 ({count})', paper:'용지', paperDrop:'용지 이미지를 여기에 놓거나 눌러서 고릅니다 (JPG / PNG / PSD / .clip)', paperKeep:'놓지 않으면 지금 설정된 양식을 그대로 씁니다.', paperChosen:'{name} 으로 바꿉니다', identity:'작품 정보', identityTitle:'작품명', identityEpisode:'화수', identityCut:'컷번호', identityStage:'단계 이름', identityStageHint:'단계 이름은 첫 단계에만 붙습니다.', tidyNumbers:'셀 번호 다듬기', pickedRows:'고른 행 {count}', blockedStart:'{start} 프레임에서 시작 — 아직 지원하지 않음', allBlocked:'이 파일의 타임라인이 전부 0프레임이 아닌 자리에서 시작합니다. 확인되지 않은 배치라 아무것도 읽지 않았습니다.', noExposure:'이 타임라인에 노출 없음', failed:'읽지 못했습니다: {error}', emptyPick:'「{name}」에서 아무것도 고르지 않아 시트를 그대로 두었습니다.', oddTiming:'24fps가 아닌 타임라인이 {count}개 있습니다({fps}fps). 칸 수는 그대로 옮겼습니다.', title:'{app}에서 시트 읽기', timelines:'타임라인', timelineHint:'고른 타임라인마다 단계가 하나씩 만들어집니다.', rows:'가져올 행', komaNames:'셀 이름', renumber:'순번대로 재배치', komaCount:'{count}장', fileSection:'파일', name:'이름', role:'역할', confirm:'불러오기', cancel:'취소', cel:'셀', other:'레이어', hidden:'{app}에서 숨김', empty:'이 파일에서 셀로 읽을 줄을 찾지 못했습니다.', reading:'{app} 파일을 읽는 중…', loaded:'{app} 파일을 읽었습니다: {name} · 단계 {stages}개', noPick:'아무것도 고르지 않아 시트를 그대로 두었습니다.' },
+        zh:{ sideUnread:'无曝光 · 无法读取（{count}）', sideAside:'背景 · 参考（{count}）', sideOffstage:'其他工序的赛璐璐（{count}）', paper:'纸张', paperDrop:'将纸张图像拖到此处，或点击选择（JPG / PNG / PSD / .clip）', paperKeep:'不放入时保持当前纸张。', paperChosen:'将替换为 {name}', identity:'作品信息', identityTitle:'作品名', identityEpisode:'话数', identityCut:'镜号', identityStage:'阶段名', identityStageHint:'阶段名仅用于第一个阶段。', tidyNumbers:'整理赛璐璐编号', pickedRows:'已选 {count}', blockedStart:'从第 {start} 帧开始 — 尚不支持', allBlocked:'此文件的时间轴都不是从第 0 帧开始。该排列尚未验证，因此未读取任何内容。', noExposure:'此时间轴没有曝光', failed:'无法读取：{error}', emptyPick:'「{name}」中未选择任何内容，工作表保持不变。', oddTiming:'有 {count} 条时间轴不是 24fps（{fps}fps）。格子数按原样移入。', title:'从 {app} 读取表', timelines:'时间轴', timelineHint:'所选的每条时间轴都会生成一个阶段。', rows:'要读取的行', komaNames:'赛璐璐编号', renumber:'按顺序重编', komaCount:'{count} 张', fileSection:'文件', name:'名称', role:'角色', confirm:'读取', cancel:'取消', cel:'赛璐璐', other:'图层', hidden:'在 {app} 中隐藏', empty:'在此文件中未找到可作为赛璐璐读取的行。', reading:'正在读取 {app} 文件…', loaded:'已读取 {app} 文件：{name} · {stages} 个阶段', noPick:'未选择任何内容，工作表保持不变。' }
       };
       const doc = docs[state.lang] || docs.en;
       const fill = Object.assign({ app:app || CLIP_SHEET_APPS.clip }, values || {});
@@ -25357,14 +25523,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           chosen[key] = index === 0 && !read.blocked;
           const map = {};
           read.items.forEach(function(item) {
-            // 셀은 기본 체크, 그 밖 레이어는 기본 해제다(확정 사항). CLIP 에서 숨긴 것은 셀이어도 꺼 둔다.
-            // 참고로 깔아 둔 것(原図·콘티·자·용지)은 셀 폴더로 만들어져 있어도 켜지 않는다.
+            // 어느 줄을 켜는지는 clipSheetRowCheckedByDefault 가 정본이다(검사기도 그것을 부른다).
             map[item.mainId] = {
-              checked: item.kind === 'cel' && item.visible && !item.failure
-                && !clipSheetIsReferenceName(item.name)
-                && clipSheetDefaultRole(item.name) === 'original',
+              checked: clipSheetRowCheckedByDefault(item),
               name: item.name,
-              role: clipSheetDefaultRole(item.name),
+              role: defaultLayerNameRole(item.name),
               koma: {}          // 파일에 적힌 그림 이름 → 창에서 고쳐 쓴 이름
             };
           });
@@ -25405,6 +25568,98 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           tlSection.appendChild(tlHint);
         }
         body.appendChild(tlSection);
+
+        // 파일 이름이 이미 갖고 있는 것 — 작품명·화수·컷번호·공정. 읽지 못한 칸은 **지금 헤더 값**을
+        // 보여 준다(작품명·화수는 restoreHeaderMemory 가 기억한다). 확정을 눌러야 시트에 들어간다.
+        const parsedName = parseSheetFileNameIdentity(fileName) || {};
+        const identity = {
+          title: parsedName.title || getSheetInputValue('title'),
+          episode: parsedName.episode || getSheetInputValue('episode'),
+          cutNo: parsedName.cut || getSheetInputValue('cutNo'),
+          stage: parsedName.stageName || ''
+        };
+        const idSection = document.createElement('section');
+        const idTitle = document.createElement('h4');
+        idTitle.textContent = clipSheetText('identity', null, app);
+        idSection.appendChild(idTitle);
+        const idGrid = document.createElement('div');
+        idGrid.className = 'clip-import-identity';
+        [['title', 'identityTitle'], ['episode', 'identityEpisode'],
+         ['cutNo', 'identityCut'], ['stage', 'identityStage']].forEach(function(pair) {
+          const field = document.createElement('label');
+          const caption = document.createElement('span');
+          caption.textContent = clipSheetText(pair[1], null, app);
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.value = identity[pair[0]];
+          input.addEventListener('input', function() { identity[pair[0]] = input.value; });
+          field.appendChild(caption);
+          field.appendChild(input);
+          idGrid.appendChild(field);
+        });
+        idSection.appendChild(idGrid);
+        if (reads.length > 1) {
+          const idHint = document.createElement('div');
+          idHint.className = 'hint';
+          idHint.textContent = clipSheetText('identityStageHint', null, app);
+          idSection.appendChild(idHint);
+        }
+        body.appendChild(idSection);
+
+        // 용지도 여기서 받는다. **놓지 않으면 아무것도 하지 않는다** — 지금 설정된 양식 그대로다.
+        // 입구가 눈에 보이면 같은 `.clip` 이 시트로도 용지로도 읽히는 것이 예측 가능해진다
+        // (시트 위에 놓으면 시트, 이 칸에 놓으면 용지).
+        const paperPick = { file:null };
+        const paperSection = document.createElement('section');
+        const paperTitle = document.createElement('h4');
+        paperTitle.textContent = clipSheetText('paper', null, app);
+        paperSection.appendChild(paperTitle);
+        const paperZone = document.createElement('label');
+        paperZone.className = 'clip-import-paper';
+        const paperInput = document.createElement('input');
+        paperInput.type = 'file';
+        paperInput.accept = 'image/jpeg,image/png,.jpg,.jpeg,.png,.psd,image/vnd.adobe.photoshop,.clip';
+        const paperLabel = document.createElement('span');
+        const paperNote = document.createElement('div');
+        paperNote.className = 'hint';
+        paperNote.textContent = clipSheetText('paperKeep', null, app);
+        function showPaperPick() {
+          paperLabel.textContent = paperPick.file
+            ? clipSheetText('paperChosen', { name:paperPick.file.name }, app)
+            : clipSheetText('paperDrop', null, app);
+          paperZone.classList.toggle('is-set', Boolean(paperPick.file));
+        }
+        function takePaperFile(file) {
+          if (!file || !isPaperDropFile(file)) return;
+          paperPick.file = file;
+          showPaperPick();
+        }
+        paperInput.addEventListener('change', function() {
+          takePaperFile(paperInput.files && paperInput.files[0]);
+          paperInput.value = '';
+        });
+        ['dragenter', 'dragover'].forEach(function(type) {
+          paperZone.addEventListener(type, function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            paperZone.classList.add('is-over');
+          });
+        });
+        ['dragleave', 'dragend'].forEach(function(type) {
+          paperZone.addEventListener(type, function() { paperZone.classList.remove('is-over'); });
+        });
+        paperZone.addEventListener('drop', function(event) {
+          event.preventDefault();
+          event.stopPropagation();
+          paperZone.classList.remove('is-over');
+          takePaperFile(event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0]);
+        });
+        paperZone.appendChild(paperInput);
+        paperZone.appendChild(paperLabel);
+        showPaperPick();
+        paperSection.appendChild(paperZone);
+        paperSection.appendChild(paperNote);
+        body.appendChild(paperSection);
 
         const rowSection = document.createElement('section');
         const rowTitle = document.createElement('h4');
@@ -25493,12 +25748,26 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           });
         }
 
-        // 숨겼거나 이 타임라인에 노출이 없거나 참고로 깔아 둔 것, 그리고 TVPaint 가 이름을 붙인 채
-        // 둔 줄은 접어 둔다 — 그런 줄이 목록을 덮으면 정작 고를 것이 안 보인다.
-        // 찾아서 켤 수는 있어야 하므로 지우지 않는다.
+        // 기본으로 켜지지 않는 셀 줄은 접어 둔다 — 그런 줄이 목록을 덮으면 정작 고를 것이 안 보인다.
+        // 찾아서 켤 수는 있어야 하므로 지우지 않는다. 셀이 아닌 줄(BOOK 후보)은 접지 않는다.
+        // **자기 표시는 접는 조건이 아니다**(ver921) — 그 줄이 기본으로 켜지므로 보여야 한다.
         function isSideRow(item) {
-          return !item.visible || Boolean(item.failure) || Boolean(item.aside)
-            || clipSheetIsReferenceName(item.name);
+          if (item.failure || item.aside || clipSheetIsReferenceName(item.name)) return true;
+          return item.kind === 'cel' && !clipSheetRowCheckedByDefault(item);
+        }
+
+        // **왜 접혔는지는 셋으로 갈린다.** 한 덩어리로 두면 「이 타임라인에 없는 줄」과 「배경 판」과
+        // 「다른 공정의 셀」이 섞여, 찾으려는 줄이 어디 있는지 알 수 없다. 실제로 세 번째가 가장 많다 —
+        // 표본 한 파일은 켜지는 셀 3 개에 접히는 셀이 11 개이고 그 11 개가 전부 다른 공정의 것이다.
+        const SIDE_ROW_GROUPS = [
+          { key:'unread',   text:'sideUnread' },
+          { key:'aside',    text:'sideAside' },
+          { key:'offstage', text:'sideOffstage' }
+        ];
+        function sideRowGroup(item) {
+          if (item.failure || item.aside) return 'unread';
+          if (clipSheetIsReferenceName(item.name) || defaultLayerNameRole(item.name) === 'hidden') return 'aside';
+          return 'offstage';
         }
 
         function renderRows() {
@@ -25507,11 +25776,17 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           if (!read) return;
           const map = picks[viewing] || {};
           const side = read.items.filter(isSideRow);
-          const sideBox = document.createElement('details');
-          sideBox.className = 'clip-import-side';
-          const sideHead = document.createElement('summary');
-          sideHead.textContent = clipSheetText('sideRows', { count:side.length }, app);
-          sideBox.appendChild(sideHead);
+          const sideBoxes = {};
+          SIDE_ROW_GROUPS.forEach(function(group) {
+            const count = side.filter(function(item) { return sideRowGroup(item) === group.key; }).length;
+            if (!count) return;
+            const box = document.createElement('details');
+            box.className = 'clip-import-side';
+            const head = document.createElement('summary');
+            head.textContent = clipSheetText(group.text, { count:count }, app);
+            box.appendChild(head);
+            sideBoxes[group.key] = box;
+          });
           read.items.forEach(function(item) {
             const pick = map[item.mainId];
             if (!pick) return;
@@ -25580,27 +25855,32 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
               komaHead.appendChild(renumber);
               komaBox.appendChild(komaHead);
 
+              // 칸 높이는 CSS 가 정한다 — 전역 textarea 의 min-height 때문에 rows 로는 정해지지 않는다.
               const field = document.createElement('textarea');
               field.className = 'clip-import-koma-text';
-              field.rows = 2;
               field.spellcheck = false;
               field.setAttribute('aria-label', clipSheetText('komaNames', null, app) + ' — ' + item.name);
               // 창에 보이는 값과 커맨드 텍스트에 적히는 값은 같은 함수가 정한다.
-              field.value = clipSheetKomaText(pick, item.name, labels, tidyBox.checked);
+              const showNames = function() {
+                field.value = clipSheetKomaText(pick, item.name, labels, tidyBox.checked);
+              };
+              showNames();
               field.addEventListener('input', function() { clipSheetApplyKomaText(pick, labels, field.value); });
               renumber.addEventListener('click', function() {
                 // AutoSheet.tvpx 의 인스턴스 넘버링과 같은 규칙 — 처음 나온 차례로 1·2·3 을 주고,
                 // 같은 그림이 다시 서면 새 번호를 쓰지 않는다(이름 하나에 번호 하나이므로 저절로 그렇다).
                 labels.forEach(function(label, index) { pick.koma[label] = String(index + 1); });
-                field.value = clipSheetKomaText(pick, item.name, labels, tidyBox.checked);
+                showNames();
               });
               komaBox.appendChild(field);
               row.appendChild(komaBox);
             }
 
-            (isSideRow(item) ? sideBox : rowList).appendChild(row);
+            (isSideRow(item) ? sideBoxes[sideRowGroup(item)] : rowList).appendChild(row);
           });
-          if (side.length) rowList.appendChild(sideBox);
+          SIDE_ROW_GROUPS.forEach(function(group) {
+            if (sideBoxes[group.key]) rowList.appendChild(sideBoxes[group.key]);
+          });
         }
 
         function pickedCount(key) {
@@ -25628,6 +25908,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           finish({
             order: reads.filter(function(read) { return chosen[String(read.timeline.MainId)] && !read.blocked; }),
             picks: picks,
+            identity: identity,
+            paperFile: paperPick.file,
             tidyNumbers: tidyBox.checked
           });
         });
@@ -25664,7 +25946,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     // 시트 길이는 타임라인 길이로 맞춘다 — 커맨드만 바꾸면 앞서 쓰던 길이가 그대로 남는다.
     // **중간에 실패하면 손대기 전으로 되돌린다.** 문자열을 미리 만들어 두는 것만으로는 적용 도중의
     // 실패를 막지 못한다 — 단계 일부만 바뀐 채로 「현재 시트는 유지했습니다」를 띄우면 거짓말이 된다.
-    function applyClipSheetStages(stages) {
+    function applyClipSheetStages(stages, identity) {
       const modeSelect = document.getElementById('cellInputMode');
       // 단계를 만드는 길이 commitContentHistory() 를 지나며 실행취소 스택에 쌓고 **다시실행 스택을 비운다.**
       // 화면만 되돌리면 실패한 가져오기의 중간 상태가 Ctrl+Z 에 남고, 비워진 다시실행은 돌아오지 않는다.
@@ -25675,9 +25957,13 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         mode: modeSelect ? modeSelect.value : '',
         undo: (state.contentUndoStack || []).slice(),
         redo: (state.contentRedoStack || []).slice(),
-        baseline: contentHistoryBaseline
+        baseline: contentHistoryBaseline,
+        // 헤더는 위의 content 스냅샷에 없다 — 따로 찍어야 실패 복구가 여기까지 닿는다.
+        header: SHEET_HEADER_INPUTS.reduce(function(acc, id) { acc[id] = getSheetInputValue(id); return acc; }, {})
       };
       try {
+        // 작품 정보를 먼저 넣는다 — 단계 이름은 **지금 단계**(첫 벌이 들어갈 자리)에 붙는다.
+        applySheetIdentity(identity);
         stages.forEach(function(entry, index) {
           if (index > 0) pushNewSheetStage(SHEET_STAGE_CUSTOM_CODE, entry.label);
           if (modeSelect) modeSelect.value = 'text';
@@ -25690,6 +25976,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         state.stages = backup.stages;
         state.activeStageId = backup.activeStageId;
         if (modeSelect) modeSelect.value = backup.mode;
+        SHEET_HEADER_INPUTS.forEach(function(id) {
+          const node = getSheetInputNode(id);
+          if (node) node.value = backup.header[id];
+        });
+        saveHeaderMemoryNow();
         applyContentSnapshot(backup.content);
         // 이력은 화면을 되돌린 **뒤에** 되돌린다 — applyContentSnapshot 이 기준점을 다시 잡기 때문이다.
         state.contentUndoStack = backup.undo;
@@ -25742,7 +26033,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         if (generation !== documentLoadGeneration) return false;
         const plan = prepareClipSheetStages(result);
         if (plan.error) { setExportStatus(plan.error, { level:'error' }); return false; }
-        const made = applyClipSheetStages(plan.stages);
+        const made = applyClipSheetStages(plan.stages, result.identity);
+        // 용지는 단계가 다 선 **뒤에** 넣는다 — 적용 도중 실패는 되돌리는데 용지는 그 백업에 없다.
+        if (result.paperFile) await handlePaperImageUpload(result.paperFile);
         // 24fps 가 아닌 타임라인은 칸 수를 그대로 옮긴다 — 환산하면 코마 배치가 뭉개진다.
         // 초 표기만 달라지므로 칸은 어긋나지 않는다(0 이 아닌 시작은 아예 막았다. clipSheetReadTimeline 참조).
         const odd = plan.stages.filter(function(entry) { return Number(entry.read.fps) !== FIXED_FPS; });
@@ -25946,6 +26239,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return readStoredDirectoryHandleByKey(OUTPUT_DIRECTORY_HANDLE_KEY);
     }
 
+    // 설정 폴더가 사라졌을 때. **출력 폴더 쪽 짝은 `forgetExportDirectory()`** 다(이름이 다르다).
+    // 둘의 차이는 뜻이 있다 — 설정 쪽은 권한 거절처럼 「잠시 못 쓴다」가 있어 sticky 플래그를 세우고
+    // 기억은 **사라진 오류일 때만** 지우지만, 출력 쪽은 언제나 지운다.
     function markSettingsDirectoryUnavailable(handle, error) {
       if (handle && state.loadedSettingsDirectoryHandle !== handle) return;
       state.loadedSettingsDirectoryHandle = null;
@@ -26240,6 +26536,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return !!err && (err.name === 'NotFoundError' || err.name === 'NotReadableError');
     }
 
+    // 출력 폴더를 잊는다. **설정 폴더 쪽 짝은 `markSettingsDirectoryUnavailable()`** 이다.
+    // `isMissingExportDirectoryError()` 가 잡은 자리마다 이것을 부른다 — 폴더가 없어지면 기억을 지우고
+    // 기본 다운로드로 돌아간다.
     function forgetExportDirectory(expectedHandle) {
       if (expectedHandle && state.exportDirectoryHandle !== expectedHandle) return Promise.resolve(true);
       const generation = ++exportDirectoryGeneration;
