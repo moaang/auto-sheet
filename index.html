@@ -2147,6 +2147,7 @@
           <div class="work-library-body">
         <div class="work-library-actions"><button id="currentSettingsImportBtn" class="toolbar-btn with-icon" type="button"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3.5 7A1.5 1.5 0 0 1 5 5.5h4l2 2.5h8A1.5 1.5 0 0 1 20.5 9.5V17A1.5 1.5 0 0 1 19 18.5H5A1.5 1.5 0 0 1 3.5 17Z"/></svg><span data-ui-text="settingsImportBtn">読込先</span></button><button class="toolbar-btn" id="workLibraryAddBtn" type="button" data-ui-text="libraryAdd"></button><button id="currentSettingsRefreshBtn" class="toolbar-btn icon-only" type="button" data-ui-title="settingsRefreshBtn" title="Reload" aria-label="Reload"><svg class="ic-svg" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M13 7a5 5 0 1 0-1 4M13 3v4H9"/></svg></button></div>
         <div class="work-library-source" id="workLibrarySource"></div>
+        <div id="workLibraryCacheStatus" class="persistent-warning-banner" role="status" hidden></div>
         <input id="workLibrarySearch" class="work-library-search" type="search" autocomplete="off" spellcheck="false" />
         <div class="work-library-selection" id="workLibrarySelectionTools"><button class="toolbar-btn" id="workLibrarySelectBtn" type="button" data-ui-text="librarySelect"></button><button class="toolbar-btn" id="workLibraryClearBtn" type="button" data-ui-text="libraryClear"></button><span id="workLibraryCount" class="work-library-count" role="status"></span></div>
         <div id="workLibraryList" class="work-library-list" role="list"></div>
@@ -2585,7 +2586,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '938';
+    const APP_VERSION = '939';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -2784,6 +2785,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     const workLibrarySelection = new Set();
     let exportStatusTimer = null;
     let loadedSettingsSelectedId = '';
+    let workLibraryCacheFailed = false;
 
     let currentSvgTarget = svg;
     let currentRenderLayerFilter = 'all';
@@ -3871,6 +3873,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver939", "Work-list memory warning", ["The work list now shows when browser storage fails. Current work and original files are kept; the warning clears after a successful save."]],
         ["ver938", "Accurate sheet and paper import results", ["Paper failures and cancellations are reported separately from a successfully imported sheet. A late import no longer replaces the result of a newer work."]],
         ["ver937", "Paste stays with its original work", ["Fixed an image paste finishing in a different work after switching files or using Undo. Changing pages keeps the paste on its original page."]],
         ["ver936", "Cleaner BOOK dragging", ["Fixed overlapping tag fragments when splitting or merging BOOK groups. Rapid dragging now continues smoothly from the visible position."]],
@@ -3958,6 +3961,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver939", "作業一覧の記憶失敗を表示", ["ブラウザーに作業一覧を記憶できない場合に表示します。現在の作業と元ファイルを保ち、次の保存成功で表示が消えます。"]],
         ["ver938", "シートと用紙の読込結果を整理", ["シートの読込後、用紙の失敗・キャンセルを分けて表示します。遅れて完了した読込が新しい作業の結果を上書きしなくなりました。"]],
         ["ver937", "貼り付け先を保持", ["ファイル切替や取り消しの後、読み込み中の画像が別の作業に貼り付く問題を修正しました。ページを移動しても元のページに貼り付きます。"]],
         ["ver936", "BOOKドラッグの表示を修正", ["BOOKを分ける・まとめる際のタグの重なりを修正しました。続けてドラッグしても表示位置が飛ばなくなりました。"]],
@@ -4045,6 +4049,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver939", "작업 목록 기억 실패 안내", ["브라우저가 작업 목록을 기억하지 못하면 목록에 알립니다. 현재 작업과 원본 파일은 유지하며, 다음 저장이 성공하면 안내가 사라집니다."]],
         ["ver938", "시트·용지 불러오기 결과 구분", ["시트를 불러온 뒤 용지의 실패·취소를 별도로 알립니다. 늦게 끝난 불러오기가 새 작업의 결과를 덮지 않습니다."]],
         ["ver937", "붙여넣기 대상 유지", ["파일을 바꾸거나 실행취소한 뒤 이전 이미지가 다른 작업에 붙는 문제를 수정했습니다. 페이지를 이동해도 처음 페이지에 붙습니다."]],
         ["ver936", "BOOK 드래그 표시 수정", ["BOOK 묶음을 나누거나 합칠 때 태그 일부가 겹쳐 보이던 문제를 수정했습니다. 빠르게 이어 끌 때 미리보기와 카드의 위치가 튀는 현상도 줄였습니다."]],
@@ -4132,6 +4137,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver939", "工作列表存储提示", ["浏览器无法记住工作列表时显示提示。保留当前工作和原始文件，下次保存成功后清除提示。"]],
         ["ver938", "区分工作表与纸张读取结果", ["导入工作表后，分别提示纸张读取失败或取消。延迟完成的读取不再覆盖新工作的结果。"]],
         ["ver937", "保持原粘贴目标", ["修复切换文件或撤销后，读取中的图像被粘贴到其他工作的问题。切换页面后仍粘贴到原页面。"]],
         ["ver936", "修正BOOK拖动显示", ["修复拆分或合并BOOK组时标签局部重叠的问题。连续拖动时从当前显示位置平滑移动。"]],
@@ -21451,10 +21457,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     // ══ [출력] 상태 안내와 복구 선택 ═══════════════════════════════════════════════════════════════════════
     function ioText(key, values) {
       const docs = {
-        en:{ normal:'Browser download', unsupported:'Folder selection is unavailable in this browser. Files use browser downloads.', selected:'Output folder: {name}', choose:'Choose folder', cancel:'Cancel', downloadOnce:'Download this time', permission:'The output folder cannot be accessed. Choose how to continue.', missing:'The output folder is unavailable. It was disconnected; remaining pages use browser downloads.', memoryFailed:'Browser backup could not be saved. Save your settings file before closing.', forgetFailed:'Folder disconnected for this session. The browser could not remove its saved setting.', preparing:'Preparing {count} page(s)…', progress:'Processed {done}/{count} · Folder: {folder} · Download requests: {download}', complete:'Finished · Folder: {folder} · Download requests: {download}', failed:'Stopped at page {page}: {error}', savedSettings:'Work saved: {name}', downloadedSettings:'Work file download requested: {name}', canceled:'Canceled.', settingsFailed:'Settings save failed: {error}', loadFailed:'File load failed; the current sheet was kept: {error}', partial:'Folder scan: {count} settings, {skipped} skipped.', folderFailed:'Folder unavailable. The cached list is kept: {error}', cache:'Cached settings (folder unavailable)', notRemembered:'Folder selected for this session; browser memory could not be updated.', selectFailed:'Folder selection failed: {error}'},
-        ja:{ normal:'通常ダウンロード', unsupported:'このブラウザーでは保存先フォルダーを指定できません。通常ダウンロードを使用します。', selected:'保存先：{name}', choose:'フォルダーを選ぶ', cancel:'キャンセル', downloadOnce:'今回はダウンロード', permission:'保存先を使用できません。続行方法を選んでください。', missing:'保存先を使用できなくなったため解除しました。残りは通常ダウンロードします。', memoryFailed:'ブラウザーに記憶できませんでした。閉じる前に設定ファイルを保存してください。', forgetFailed:'この画面では保存先を解除しましたが、ブラウザーの記憶を削除できませんでした。', preparing:'{count}ページを準備中…', progress:'処理 {done}/{count} · フォルダー保存 {folder} · ダウンロード依頼 {download}', complete:'完了 · フォルダー保存 {folder} · ダウンロード依頼 {download}', failed:'{page}ページ目で停止：{error}', savedSettings:'作業を保存しました：{name}', downloadedSettings:'作業ファイルのダウンロードを依頼しました：{name}', canceled:'キャンセルしました。', settingsFailed:'設定の保存に失敗しました：{error}', loadFailed:'読込に失敗しました。現在のシートは保持しています：{error}', partial:'フォルダー読込：設定 {count}件、スキップ {skipped}件。', folderFailed:'フォルダーを使用できません。記憶済みの一覧は保持しています：{error}', cache:'記憶済みの設定（フォルダー使用不可）', notRemembered:'この画面では選択しましたが、次回のための記憶に失敗しました。', selectFailed:'フォルダー選択に失敗しました：{error}'},
-        ko:{ normal:'기본 다운로드', unsupported:'이 브라우저에서는 저장 폴더를 지정할 수 없습니다. 기본 다운로드를 사용합니다.', selected:'저장 폴더: {name}', choose:'폴더 선택', cancel:'취소', downloadOnce:'이번에는 다운로드', permission:'저장 폴더에 접근할 수 없습니다. 계속할 방법을 선택하세요.', missing:'저장 폴더를 사용할 수 없어 해제했습니다. 남은 페이지는 기본 다운로드로 보냅니다.', memoryFailed:'브라우저에 기억하지 못했습니다. 닫기 전에 설정 파일을 저장하세요.', forgetFailed:'이번 화면에서는 폴더를 해제했지만 브라우저의 기억은 삭제하지 못했습니다.', preparing:'{count}페이지 준비 중…', progress:'처리 {done}/{count} · 폴더 저장 {folder} · 다운로드 요청 {download}', complete:'완료 · 폴더 저장 {folder} · 다운로드 요청 {download}', failed:'{page}페이지에서 중단: {error}', savedSettings:'작업 저장 완료: {name}', downloadedSettings:'작업 파일 다운로드 요청: {name}', canceled:'취소했습니다.', settingsFailed:'설정 저장 실패: {error}', loadFailed:'파일을 읽지 못했습니다. 현재 시트는 유지했습니다: {error}', partial:'폴더 읽기: 설정 {count}개, 건너뜀 {skipped}개.', folderFailed:'폴더를 사용할 수 없습니다. 기억한 목록은 유지했습니다: {error}', cache:'기억한 설정 (폴더 사용 불가)', notRemembered:'이번 화면에서는 선택했지만 다음 실행을 위한 기억에 실패했습니다.', selectFailed:'폴더 선택 실패: {error}'},
-        zh:{ normal:'默认下载', unsupported:'此浏览器不能选择保存文件夹，将使用默认下载。', selected:'保存文件夹：{name}', choose:'选择文件夹', cancel:'取消', downloadOnce:'本次下载', permission:'无法访问保存文件夹。请选择继续方式。', missing:'保存文件夹不可用，已解除。剩余页面将使用默认下载。', memoryFailed:'无法保存浏览器备份。关闭前请保存设置文件。', forgetFailed:'本次已解除文件夹，但无法删除浏览器中保存的设置。', preparing:'正在准备 {count} 页…', progress:'已处理 {done}/{count} · 文件夹 {folder} · 下载请求 {download}', complete:'完成 · 文件夹 {folder} · 下载请求 {download}', failed:'在第 {page} 页停止：{error}', savedSettings:'工作已保存：{name}', downloadedSettings:'已请求下载工作文件：{name}', canceled:'已取消。', settingsFailed:'设置保存失败：{error}', loadFailed:'读取失败，当前工作表已保留：{error}', partial:'文件夹读取：{count} 个设置，跳过 {skipped} 个。', folderFailed:'文件夹不可用，已保留缓存列表：{error}', cache:'缓存设置（文件夹不可用）', notRemembered:'本次已选择文件夹，但无法记住此设置。', selectFailed:'选择文件夹失败：{error}'}
+        en:{ workCacheFailed:"Could not remember this list. Reopening may show the previous list. Original files are unchanged.", normal:'Browser download', unsupported:'Folder selection is unavailable in this browser. Files use browser downloads.', selected:'Output folder: {name}', choose:'Choose folder', cancel:'Cancel', downloadOnce:'Download this time', permission:'The output folder cannot be accessed. Choose how to continue.', missing:'The output folder is unavailable. It was disconnected; remaining pages use browser downloads.', memoryFailed:'Browser backup could not be saved. Save your settings file before closing.', forgetFailed:'Folder disconnected for this session. The browser could not remove its saved setting.', preparing:'Preparing {count} page(s)…', progress:'Processed {done}/{count} · Folder: {folder} · Download requests: {download}', complete:'Finished · Folder: {folder} · Download requests: {download}', failed:'Stopped at page {page}: {error}', savedSettings:'Work saved: {name}', downloadedSettings:'Work file download requested: {name}', canceled:'Canceled.', settingsFailed:'Settings save failed: {error}', loadFailed:'File load failed; the current sheet was kept: {error}', partial:'Folder scan: {count} settings, {skipped} skipped.', folderFailed:'Folder unavailable. The cached list is kept: {error}', cache:'Cached settings (folder unavailable)', notRemembered:'Folder selected for this session; browser memory could not be updated.', selectFailed:'Folder selection failed: {error}'},
+        ja:{ workCacheFailed:"この一覧を記憶できませんでした。次回は以前の一覧に戻る場合があります。元のファイルは変更していません。", normal:'通常ダウンロード', unsupported:'このブラウザーでは保存先フォルダーを指定できません。通常ダウンロードを使用します。', selected:'保存先：{name}', choose:'フォルダーを選ぶ', cancel:'キャンセル', downloadOnce:'今回はダウンロード', permission:'保存先を使用できません。続行方法を選んでください。', missing:'保存先を使用できなくなったため解除しました。残りは通常ダウンロードします。', memoryFailed:'ブラウザーに記憶できませんでした。閉じる前に設定ファイルを保存してください。', forgetFailed:'この画面では保存先を解除しましたが、ブラウザーの記憶を削除できませんでした。', preparing:'{count}ページを準備中…', progress:'処理 {done}/{count} · フォルダー保存 {folder} · ダウンロード依頼 {download}', complete:'完了 · フォルダー保存 {folder} · ダウンロード依頼 {download}', failed:'{page}ページ目で停止：{error}', savedSettings:'作業を保存しました：{name}', downloadedSettings:'作業ファイルのダウンロードを依頼しました：{name}', canceled:'キャンセルしました。', settingsFailed:'設定の保存に失敗しました：{error}', loadFailed:'読込に失敗しました。現在のシートは保持しています：{error}', partial:'フォルダー読込：設定 {count}件、スキップ {skipped}件。', folderFailed:'フォルダーを使用できません。記憶済みの一覧は保持しています：{error}', cache:'記憶済みの設定（フォルダー使用不可）', notRemembered:'この画面では選択しましたが、次回のための記憶に失敗しました。', selectFailed:'フォルダー選択に失敗しました：{error}'},
+        ko:{ workCacheFailed:"목록을 기억하지 못했습니다. 다시 열면 이전 목록이 표시될 수 있습니다. 원본 파일은 그대로입니다.", normal:'기본 다운로드', unsupported:'이 브라우저에서는 저장 폴더를 지정할 수 없습니다. 기본 다운로드를 사용합니다.', selected:'저장 폴더: {name}', choose:'폴더 선택', cancel:'취소', downloadOnce:'이번에는 다운로드', permission:'저장 폴더에 접근할 수 없습니다. 계속할 방법을 선택하세요.', missing:'저장 폴더를 사용할 수 없어 해제했습니다. 남은 페이지는 기본 다운로드로 보냅니다.', memoryFailed:'브라우저에 기억하지 못했습니다. 닫기 전에 설정 파일을 저장하세요.', forgetFailed:'이번 화면에서는 폴더를 해제했지만 브라우저의 기억은 삭제하지 못했습니다.', preparing:'{count}페이지 준비 중…', progress:'처리 {done}/{count} · 폴더 저장 {folder} · 다운로드 요청 {download}', complete:'완료 · 폴더 저장 {folder} · 다운로드 요청 {download}', failed:'{page}페이지에서 중단: {error}', savedSettings:'작업 저장 완료: {name}', downloadedSettings:'작업 파일 다운로드 요청: {name}', canceled:'취소했습니다.', settingsFailed:'설정 저장 실패: {error}', loadFailed:'파일을 읽지 못했습니다. 현재 시트는 유지했습니다: {error}', partial:'폴더 읽기: 설정 {count}개, 건너뜀 {skipped}개.', folderFailed:'폴더를 사용할 수 없습니다. 기억한 목록은 유지했습니다: {error}', cache:'기억한 설정 (폴더 사용 불가)', notRemembered:'이번 화면에서는 선택했지만 다음 실행을 위한 기억에 실패했습니다.', selectFailed:'폴더 선택 실패: {error}'},
+        zh:{ workCacheFailed:"无法记住此列表。再次打开时可能显示旧列表。原始文件未变更。", normal:'默认下载', unsupported:'此浏览器不能选择保存文件夹，将使用默认下载。', selected:'保存文件夹：{name}', choose:'选择文件夹', cancel:'取消', downloadOnce:'本次下载', permission:'无法访问保存文件夹。请选择继续方式。', missing:'保存文件夹不可用，已解除。剩余页面将使用默认下载。', memoryFailed:'无法保存浏览器备份。关闭前请保存设置文件。', forgetFailed:'本次已解除文件夹，但无法删除浏览器中保存的设置。', preparing:'正在准备 {count} 页…', progress:'已处理 {done}/{count} · 文件夹 {folder} · 下载请求 {download}', complete:'完成 · 文件夹 {folder} · 下载请求 {download}', failed:'在第 {page} 页停止：{error}', savedSettings:'工作已保存：{name}', downloadedSettings:'已请求下载工作文件：{name}', canceled:'已取消。', settingsFailed:'设置保存失败：{error}', loadFailed:'读取失败，当前工作表已保留：{error}', partial:'文件夹读取：{count} 个设置，跳过 {skipped} 个。', folderFailed:'文件夹不可用，已保留缓存列表：{error}', cache:'缓存设置（文件夹不可用）', notRemembered:'本次已选择文件夹，但无法记住此设置。', selectFailed:'选择文件夹失败：{error}'}
       };
       const doc = docs[state.lang] || docs.en;
       return String(doc[key] || docs.en[key] || key).replace(/\{(\w+)\}/g, function(_, name){ return values && values[name] != null ? String(values[name]) : ''; });
@@ -27000,9 +27006,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     // ══ [영속] 폴더 핸들 + 블롭 저장 경로 (폴더 · 다운로드) ════════════════════════════════════════════════════════════
-    // localStorage 는 5 MB 안팎이고 작업 하나의 용지 이미지만으로 그 절반을 쓴다 — 페이로드를 통째로
-    // 담으면 그림 있는 작업이 둘만 돼도 캐시 전체가 안 써지고(예외는 console 로만 간다) 목록이 사라졌다.
-    // 그래서 캐시본에서는 그림을 빼고 뺐다는 사실을 표시한다. 정본은 폴더의 JSON 이고, 캐시는 목록일 뿐이다.
+    // Browser storage limits vary; image data can exhaust the work-list cache.
+    // Cache copies omit images and mark that omission. Original JSON files are not changed.
     function safeSettingsCacheItem(item) {
       if (!item || !item.payload) return null;
       const payload = item.payload, paper = payload.paper || {};
@@ -27084,9 +27089,19 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           settings:(state.loadedSettingsFiles || []).map(safeSettingsCacheItem).filter(Boolean)
         };
         localStorage.setItem(SETTINGS_JSON_CACHE_STORAGE_KEY, JSON.stringify(payload));
+        workLibraryCacheFailed = false;
       } catch (err) {
+        workLibraryCacheFailed = true;
         console.warn('saveSettingsJsonFolderCache failed', err);
       }
+      updateWorkLibraryCacheStatus();
+      return !workLibraryCacheFailed;
+    }
+
+    function updateWorkLibraryCacheStatus() {
+      const status = document.getElementById('workLibraryCacheStatus');
+      status.hidden = !workLibraryCacheFailed;
+      status.textContent = workLibraryCacheFailed ? ioText('workCacheFailed') : '';
     }
 
     function restoreSettingsJsonFolderCache() {
@@ -27250,6 +27265,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     function refreshLoadedSettingsSelect() {
       const list = state.loadedSettingsFiles || [], container = document.getElementById('workLibraryList');
+      updateWorkLibraryCacheStatus();
       const focused = container.contains(document.activeElement) ? document.activeElement : null;
       const scroll = container.scrollTop;
       list.sort(compareWorkLibraryItems);
