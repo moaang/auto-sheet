@@ -2584,7 +2584,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '941';
+    const APP_VERSION = '942';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3871,6 +3871,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver942", "Less work while building ZIP exports", ["Reduced byte-processing overhead when adding exported files to ZIP archives. File contents and stop behavior are unchanged."]],
         ["ver941", "Consistent CSV import controls", ["CSV column controls now match the CLIP and TVPaint import layout, including narrow screens. One decoded source is reused through confirmation."]],
         ["ver940", "Consistent import messages", ["Import confirmations now follow the selected language. CSV guidance clarifies that hidden columns keep their data. Work-file wording is consistent."]],
         ["ver939", "Work-list memory warning", ["The work list now shows when browser storage fails. Current work and original files are kept; the warning clears after a successful save."]],
@@ -3961,6 +3962,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver942", "ZIP出力の処理を軽量化", ["出力ファイルをZIPに追加する際のバイト処理を軽くしました。ファイル内容と中止動作は変わりません。"]],
         ["ver941", "CSVの読込操作を統一", ["CSVの列設定をCLIP・TVPaintと同じ並びにそろえ、狭い画面にも対応しました。読み取った文字列を確定まで再利用します。"]],
         ["ver940", "読込メッセージを統一", ["読込結果を選択中の言語で表示します。CSVの非表示列もデータを保持することを明記し、作業ファイルの表記をそろえました。"]],
         ["ver939", "作業一覧の記憶失敗を表示", ["ブラウザーに作業一覧を記憶できない場合に表示します。現在の作業と元ファイルを保ち、次の保存成功で表示が消えます。"]],
@@ -4051,6 +4053,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver942", "ZIP 출력 처리 경량화", ["출력 파일을 ZIP에 담을 때 바이트 처리 비용을 줄였습니다. 파일 내용과 중지 동작은 유지됩니다."]],
         ["ver941", "CSV 불러오기 UI 통일", ["CSV 열 설정을 CLIP·TVPaint와 같은 배치로 맞추고 좁은 화면에 대응했습니다. 해독한 원문을 확정까지 재사용합니다."]],
         ["ver940", "불러오기 문구 통일", ["불러오기 결과를 선택한 언어로 표시합니다. CSV 숨김 열도 데이터를 유지한다는 안내와 작업 파일 용어를 맞췄습니다."]],
         ["ver939", "작업 목록 기억 실패 안내", ["브라우저가 작업 목록을 기억하지 못하면 목록에 알립니다. 현재 작업과 원본 파일은 유지하며, 다음 저장이 성공하면 안내가 사라집니다."]],
@@ -4141,6 +4144,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver942", "减轻ZIP导出处理", ["减少将输出文件加入ZIP时的字节处理开销。文件内容和停止行为保持不变。"]],
         ["ver941", "统一CSV导入控件", ["CSV列设置与CLIP、TVPaint采用相同排列，适应窄屏。解码结果复用至确认导入。"]],
         ["ver940", "统一读取提示", ["读取结果使用所选语言。明确CSV隐藏列仍保留数据，并统一工作文件的用语。"]],
         ["ver939", "工作列表存储提示", ["浏览器无法记住工作列表时显示提示。保留当前工作和原始文件，下次保存成功后清除提示。"]],
@@ -28458,7 +28462,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       try {
         for (;;) {
           const chunk = await reader.read(); if (chunk.done) break;
-          for (const byte of chunk.value) crc = (crc >>> 8) ^ batchZipCrcTable[(crc ^ byte) & 255];
+          const bytes = chunk.value;
+          for (let i = 0; i < bytes.length; i++) crc = (crc >>> 8) ^ batchZipCrcTable[(crc ^ bytes[i]) & 255];
         }
       } finally { reader.releaseLock(); }
       crc = (crc ^ 0xffffffff) >>> 0;
