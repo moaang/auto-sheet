@@ -1381,8 +1381,6 @@
     .csv-import-encoding { display:flex; align-items:center; justify-content:space-between; gap:12px; white-space:nowrap; }
     .csv-import-encoding select { width:auto; min-width:0; flex:1; }
     .csv-import-preview { margin:8px 0; max-height:140px; overflow:auto; white-space:pre; font-size:12px; border:1px solid var(--line); border-radius:8px; padding:8px; }
-    .csv-import-column { display:grid; grid-template-columns:20px 90px minmax(0,1fr); gap:8px; }
-    .csv-import-column input:not([type="checkbox"]), .csv-import-column select { width:100%; min-width:0; }
     /* 그 줄에 서는 그림 이름 — 한 칸에 `;` 로 이어 놓고 통째로 고친다(TVPaint 쪽과 같은 모양). */
     .clip-import-koma { grid-column:2 / -1; display:grid; grid-template-columns:minmax(0,1fr) auto auto; align-items:center; gap:var(--ui-gap-sm); }
     .clip-import-koma > label { color:var(--muted); }
@@ -2586,7 +2584,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '940';
+    const APP_VERSION = '941';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3873,6 +3871,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver941", "Consistent CSV import controls", ["CSV column controls now match the CLIP and TVPaint import layout, including narrow screens. One decoded source is reused through confirmation."]],
         ["ver940", "Consistent import messages", ["Import confirmations now follow the selected language. CSV guidance clarifies that hidden columns keep their data. Work-file wording is consistent."]],
         ["ver939", "Work-list memory warning", ["The work list now shows when browser storage fails. Current work and original files are kept; the warning clears after a successful save."]],
         ["ver938", "Accurate sheet and paper import results", ["Paper failures and cancellations are reported separately from a successfully imported sheet. A late import no longer replaces the result of a newer work."]],
@@ -3962,6 +3961,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver941", "CSVの読込操作を統一", ["CSVの列設定をCLIP・TVPaintと同じ並びにそろえ、狭い画面にも対応しました。読み取った文字列を確定まで再利用します。"]],
         ["ver940", "読込メッセージを統一", ["読込結果を選択中の言語で表示します。CSVの非表示列もデータを保持することを明記し、作業ファイルの表記をそろえました。"]],
         ["ver939", "作業一覧の記憶失敗を表示", ["ブラウザーに作業一覧を記憶できない場合に表示します。現在の作業と元ファイルを保ち、次の保存成功で表示が消えます。"]],
         ["ver938", "シートと用紙の読込結果を整理", ["シートの読込後、用紙の失敗・キャンセルを分けて表示します。遅れて完了した読込が新しい作業の結果を上書きしなくなりました。"]],
@@ -4051,6 +4051,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver941", "CSV 불러오기 UI 통일", ["CSV 열 설정을 CLIP·TVPaint와 같은 배치로 맞추고 좁은 화면에 대응했습니다. 해독한 원문을 확정까지 재사용합니다."]],
         ["ver940", "불러오기 문구 통일", ["불러오기 결과를 선택한 언어로 표시합니다. CSV 숨김 열도 데이터를 유지한다는 안내와 작업 파일 용어를 맞췄습니다."]],
         ["ver939", "작업 목록 기억 실패 안내", ["브라우저가 작업 목록을 기억하지 못하면 목록에 알립니다. 현재 작업과 원본 파일은 유지하며, 다음 저장이 성공하면 안내가 사라집니다."]],
         ["ver938", "시트·용지 불러오기 결과 구분", ["시트를 불러온 뒤 용지의 실패·취소를 별도로 알립니다. 늦게 끝난 불러오기가 새 작업의 결과를 덮지 않습니다."]],
@@ -4140,6 +4141,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver941", "统一CSV导入控件", ["CSV列设置与CLIP、TVPaint采用相同排列，适应窄屏。解码结果复用至确认导入。"]],
         ["ver940", "统一读取提示", ["读取结果使用所选语言。明确CSV隐藏列仍保留数据，并统一工作文件的用语。"]],
         ["ver939", "工作列表存储提示", ["浏览器无法记住工作列表时显示提示。保留当前工作和原始文件，下次保存成功后清除提示。"]],
         ["ver938", "区分工作表与纸张读取结果", ["导入工作表后，分别提示纸张读取失败或取消。延迟完成的读取不再覆盖新工作的结果。"]],
@@ -25552,7 +25554,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     function prepareCsvImport(buffer, options) {
       const mode = options && options.encoding || (buffer === state.csvFileBuffer ? state.csvOriginalEncoding : 'auto');
-      const decoded = decodeCsvBuffer(buffer, mode);
+      const decoded = options && options.decoded || decodeCsvBuffer(buffer, mode);
       const parsedRows = parseCSV(decoded.textValue);
       const sourceMode = detectCsvSourceMode(parsedRows);
       if (!sourceMode) throw new Error(t('csvUnsupported'));
@@ -25648,7 +25650,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const cancel=document.createElement('button'); cancel.type='button'; cancel.className='toolbar-btn'; cancel.textContent=csvImportText('cancel'); cancel.dataset.csvImportCancel='';
         const ok=document.createElement('button'); ok.type='button'; ok.className='toolbar-btn primary'; ok.textContent=csvImportText('apply'); ok.dataset.csvImportConfirm='';
         actions.appendChild(cancel); actions.appendChild(ok); box.appendChild(actions); backdrop.appendChild(box);
-        let draft=null, columns={}, settled=false;
+        let draft=null, decoded=null, columns={}, settled=false;
         const existingColumns = {};
         if (reread) state.csvColumns.forEach(function(col){ existingColumns[String(col.index)]={name:col.name,role:getCsvColumnRole(col)}; });
         function sync(){
@@ -25656,26 +25658,26 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           ok.title=draft && ok.disabled?csvImportText('empty'):'';
         }
         function rebuild(useExisting){
-          draft=null; columns={}; rows.replaceChildren(); warning.textContent=''; preview.textContent='';
+          draft=null; decoded=null; columns={}; rows.replaceChildren(); warning.textContent=''; preview.textContent='';
           try {
-            const decoded=decodeCsvBuffer(buffer,encoding.value);
+            decoded=decodeCsvBuffer(buffer,encoding.value);
             preview.textContent=decoded.textValue.split(/\r?\n/).slice(0,8).map(function(line){return line.slice(0,240);}).join('\n');
             if(decoded.needsReview) warning.textContent=csvImportText('review');
-            draft=prepareCsvImport(buffer,{fresh:true,encoding:encoding.value,columns:useExisting===true?existingColumns:null});
+            draft=prepareCsvImport(buffer,{fresh:true,encoding:encoding.value,decoded:decoded,columns:useExisting===true?existingColumns:null});
             const count=withSheetSnapshot(draft,function(){return getCsvDataRows().reduce(function(max,row){return Math.max(max,row.frame);},0);});
             status.textContent=csvImportText('detected',{encoding:decoded.encoding})+' · '+csvImportText('ready',{source:getCsvSourceDisplayName(draft.state.csvLoadedMode),columns:draft.state.csvColumns.length,frames:count});
             draft.state.csvColumnOrder.forEach(function(index){
               const col=draft.state.csvColumns.find(function(item){return item.index===index;}); if(!col)return;
               const pick={name:col.name,role:draft.state.csvColumnRoles[String(index)]}; columns[String(index)]=pick;
-              const row=document.createElement('div'); row.className='check-item csv-import-column';
+              const row=document.createElement('div'); row.className='clip-import-row';
               const check=document.createElement('input');check.type='checkbox';check.checked=pick.role!=='hidden';check.setAttribute('aria-label',col.name);row.appendChild(check);
               let enabledRole=pick.role==='hidden'?'original':pick.role;
-              const role=document.createElement('select'); role.className='col-role-select'; role.setAttribute('aria-label',csvImportText('role'));
+              const role=document.createElement('select'); role.setAttribute('aria-label',csvImportText('role'));
               getCsvColumnRoleOptions().forEach(function(pair){const option=document.createElement('option');option.value=pair[0];option.textContent=pair[1];role.appendChild(option);});
-              role.value=pick.role; role.addEventListener('change',function(){pick.role=role.value;check.checked=pick.role!=='hidden';if(check.checked)enabledRole=pick.role;sync();}); row.appendChild(role);
+              role.value=pick.role; role.addEventListener('change',function(){pick.role=role.value;check.checked=pick.role!=='hidden';if(check.checked)enabledRole=pick.role;sync();});
               check.addEventListener('change',function(){pick.role=check.checked?enabledRole:'hidden';role.value=pick.role;sync();});
-              const name=document.createElement('input');name.type='text';name.className='col-name-input';name.value=pick.name;name.setAttribute('aria-label',csvImportText('name'));
-              name.addEventListener('input',function(){pick.name=name.value;check.setAttribute('aria-label',name.value);});row.appendChild(name);rows.appendChild(row);
+              const name=document.createElement('input');name.type='text';name.value=pick.name;name.setAttribute('aria-label',csvImportText('name'));
+              name.addEventListener('input',function(){pick.name=name.value;check.setAttribute('aria-label',name.value);});row.append(name,role);rows.appendChild(row);
             });
           }catch(err){status.textContent=csvImportText('error',{error:err.message||err});}
           sync();
@@ -25685,7 +25687,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         cancel.addEventListener('click',function(){finish(null);});
         ok.addEventListener('click',function(){
           if(ok.disabled)return;
-          try { finish(prepareCsvImport(buffer,{fresh:true,encoding:encoding.value,columns:columns})); }
+          try { finish(prepareCsvImport(buffer,{fresh:true,encoding:encoding.value,decoded:decoded,columns:columns})); }
           catch(err){status.textContent=csvImportText('error',{error:err.message||err});}
         });
         backdrop.addEventListener('pointerdown',function(event){if(event.target===backdrop)finish(null);});
