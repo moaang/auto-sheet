@@ -1355,14 +1355,20 @@
     .clip-import-row .hint { grid-column:2 / -1; margin:0; overflow-wrap:anywhere; }
     .clip-import-order-viewport { overflow-x:auto; padding:4px; border:1px solid var(--soft); border-radius:var(--r-ctl); }
     .clip-import-order { position:relative; min-width:100%; }
-    .clip-order-item { position:absolute; bottom:0; width:58px; height:30px; padding:2px; border:1px solid var(--soft-strong); border-radius:0; background:var(--panel); color:var(--text); font:inherit; font-size:var(--ui-fs-help); line-height:1.2; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; cursor:grab; }
-    .clip-order-item.is-book { border-radius:4px 4px 8px 8px; white-space:pre; font-family:Arial, Helvetica, sans-serif; font-size:10px; line-height:12px; font-weight:600; }
+    .clip-order-item { position:absolute; bottom:0; width:58px; height:30px; padding:2px; border:1px solid var(--soft-strong); border-radius:0; background:var(--panel); color:var(--text); font:inherit; font-size:var(--ui-fs-help); line-height:1.2; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; cursor:grab; touch-action:none; user-select:none; }
+    .clip-order-item.is-book { padding:0; border:0; background:transparent; }
+    .clip-order-item.is-book svg { display:block; width:100%; height:100%; overflow:visible; pointer-events:none; }
     .cell-order-controls { display:flex; gap:6px; margin:8px 0; align-items:center; }
     .cell-order-controls select { min-width:0; flex:1; }
-    .cell-settings-rows { display:grid; gap:6px; margin:12px 0; }
-    .cell-settings-row { display:grid; grid-template-columns:40px minmax(0,1fr) 36px 36px 32px; gap:4px; align-items:center; }
+    .cell-settings-rows { position:relative; display:grid; gap:6px; margin:12px 0; }
+    .cell-settings-row { display:grid; grid-template-columns:30px 40px minmax(0,1fr) 30px; gap:var(--ui-gap-sm); align-items:center; padding:var(--ui-gap); border:1px solid var(--soft-strong); border-radius:var(--r-ctl); background:var(--panel); }
     .cell-settings-row input { min-width:0; width:100%; }
-    .cell-settings-row .toolbar-btn { min-height:36px; padding:4px; }
+    .cell-settings-row .toolbar-btn { --control-h:var(--ui-h-control); padding:var(--ui-gap-sm); }
+    .cell-order-handle { border:0; background:transparent; color:var(--muted); font-size:20px; height:var(--ui-h-control); cursor:grab; touch-action:none; user-select:none; }
+    .cell-order-handle:focus-visible { outline:2px solid var(--focus-ring); border-radius:4px; }
+    .cell-order-placeholder { opacity:.3; outline:2px solid var(--focus-ring); outline-offset:-2px; }
+    .cell-order-ghost { position:fixed; margin:0; z-index:13000; pointer-events:none; opacity:.92; box-shadow:var(--ui-dialog-shadow); outline:2px solid var(--focus-ring); cursor:grabbing; }
+    .cell-order-controls .hint { margin:0; flex:1; }
     .cell-settings-backdrop .app-dialog { display:flex; flex-direction:column; overflow:hidden; }
     .cell-settings-backdrop .app-dialog-body { min-height:0; overflow:auto; }
     .cell-settings-backdrop .app-dialog-header, .cell-settings-backdrop .app-dialog-actions { flex-shrink:0; }
@@ -2576,7 +2582,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '930';
+    const APP_VERSION = '931';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3862,6 +3868,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver931", "Animated cel and BOOK reordering", ["Drag the preview or a card handle to see items move into their new positions. Repeated arrow buttons have been removed; arrow-key controls remain available.", "BOOK tags use vertical text and the same shape in the sheet, export and CLIP/TVPaint import preview."]],
         ["ver930", "Sheet clicks work immediately after refresh", ["Fixed a transparent memo area covering cel controls on the first render. Cel labels and frame controls respond immediately after opening or refreshing the app."]],
         ["ver929", "Full-size paper images and cel-order preview", ["Reorder cel labels and BOOK tags by dragging or using arrow keys in the CLIP and TVPaint import window.", "CLIP paper imports read a full-size composite or visible normal raster layers. If full-size composition is unavailable, a preview is used only after you accept the quality notice.", "CLIP files with animation timelines ask for confirmation before being imported as paper.", "Cels hidden in TVPaint start unchecked and folded. They are labeled as hidden and can be selected again for import.", "Cell / BOOK settings open from a cel label with right-click or a long press. Multiple BOOKs can be placed before the first cel, shown as a compact group and edited individually."]],
         ["ver928", "Leave missing episode numbers blank", ["CLIP and TVPaint imports no longer fill a missing episode number with the previous work\u2019s value. Confirming a blank episode clears it on the sheet; a manually entered episode is preserved."]],
@@ -3941,6 +3948,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver931", "セル・BOOKを動きを見ながら並べ替え", ["プレビューやカードのハンドルをドラッグすると、周りの項目が移動して並びを確認できます。重複した矢印ボタンを整理し、矢印キー操作は残しました。", "BOOKタグを縦書きにそろえ、シート・書き出し・CLIP/TVPaint読み込みプレビューで同じ形を使います。"]],
         ["ver930", "再読み込み直後のシート操作を修正", ["初回描画時に透明なメモ領域がセル操作を覆う不具合を修正しました。起動・再読み込み直後からセル名やコマを操作できます。"]],
         ["ver929", "用紙の原寸画像とセルの並びプレビュー", ["CLIP・TVPaint読み込み画面で、セル名とBOOKタグだけを見ながらドラッグや矢印キーで並べ替えられます。", "CLIP用紙は原寸の合成画像、または表示中の通常ラスターレイヤーを読み込みます。原寸で合成できない場合は、画質の案内を確認して選んだときだけプレビューを使います。", "アニメーションのタイムラインがあるCLIPを用紙にするときは、先に確認します。", "TVPaintで非表示のセルは初期選択を外して折りたたみます。非表示の案内を確認し、必要な行は再選択して読み込めます。", "セル名の右クリック・長押しからセル・BOOK設定を開けます。先頭セルの前にも複数のBOOKを置け、表示は小さくまとめて個別に編集できます。"]],
         ["ver928", "\u30d5\u30a1\u30a4\u30eb\u540d\u306b\u8a71\u6570\u304c\u306a\u3051\u308c\u3070\u7a7a\u6b04\u306b", ["CLIP\u30fbTVPaint\u306e\u30d5\u30a1\u30a4\u30eb\u540d\u306b\u8a71\u6570\u304c\u306a\u3044\u5834\u5408\u3001\u524d\u306e\u4f5c\u696d\u306e\u8a71\u6570\u3092\u5f15\u304d\u7d99\u304c\u306a\u304f\u306a\u308a\u307e\u3057\u305f\u3002\u78ba\u8a8d\u753b\u9762\u3067\u7a7a\u6b04\u306e\u307e\u307e\u8aad\u307f\u8fbc\u3080\u3068\u30b7\u30fc\u30c8\u306b\u3082\u7a7a\u6b04\u3092\u53cd\u6620\u3057\u3001\u624b\u5165\u529b\u3057\u305f\u8a71\u6570\u306f\u305d\u306e\u307e\u307e\u4f7f\u3044\u307e\u3059\u3002"]],
@@ -4020,6 +4028,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver931", "셀·BOOK 드래그 정렬과 세로 태그", ["미리보기와 카드 손잡이를 드래그하면 주변 항목이 밀려나며 새 순서를 보여줍니다. 반복 화살표 버튼은 정리하고 방향키 조작은 유지했습니다.", "BOOK 태그를 세로쓰기로 맞추고 시트·출력·CLIP/TVPaint 불러오기 미리보기에서 같은 모양을 사용합니다."]],
         ["ver930", "새로고침 직후 시트 클릭 수정", ["첫 화면에서 투명한 메모 영역이 셀 조작을 가리던 문제를 고쳤습니다. 실행·새로고침 직후부터 셀 이름과 프레임을 조작할 수 있습니다."]],
         ["ver929", "용지 원본 이미지와 셀 순서 미리보기", ["CLIP·TVPaint 불러오기 창에서 셀 라벨과 BOOK 태그만 보며 드래그나 방향키로 순서를 조정할 수 있습니다.", "CLIP 용지는 원본 크기의 합성 이미지 또는 표시된 일반 래스터 레이어를 읽습니다. 원본 합성이 불가능할 때는 품질 안내 후 선택한 경우에만 미리보기를 사용합니다.", "애니메이션 타임라인이 있는 CLIP을 용지로 넣으면 먼저 확인합니다.", "TVPaint에서 비표시인 셀은 기본 선택을 해제하고 접어 둡니다. 비표시 안내를 확인하고 필요한 행을 다시 체크해 가져올 수 있습니다.", "셀 라벨의 우클릭·길게 누르기로 셀·BOOK 설정을 엽니다. 첫 셀 왼쪽에도 여러 BOOK을 놓을 수 있고, 작은 묶음으로 표시하면서 개별 편집합니다."]],
         ["ver928", "\ud30c\uc77c\uba85\uc5d0 \uc5c6\ub294 \ud654\uc218\ub294 \uacf5\ub780\uc73c\ub85c", ["CLIP\u00b7TVPaint \ud30c\uc77c\uba85\uc5d0 \ud654\uc218\uac00 \uc5c6\uc73c\uba74 \uc774\uc804 \uc791\uc5c5\uc758 \ud654\uc218\ub97c \ucc44\uc6b0\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ud655\uc778\ucc3d\uc744 \uacf5\ub780\uc73c\ub85c \ud655\uc815\ud558\uba74 \uc2dc\ud2b8\uc5d0\ub3c4 \uacf5\ub780\uc744 \ubc18\uc601\ud558\uba70, \uc9c1\uc811 \uc785\ub825\ud55c \ud654\uc218\ub294 \uadf8\ub300\ub85c \uc0ac\uc6a9\ud569\ub2c8\ub2e4."]],
@@ -4099,6 +4108,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver931", "带动画的单元格和BOOK排序", ["拖动预览或卡片手柄时，周围项目会移动以显示新顺序。移除重复的箭头按钮，保留方向键操作。", "BOOK标签统一为竖排，纸张、导出和CLIP/TVPaint导入预览使用相同形状。"]],
         ["ver930", "修复刷新后首次显示的纸张操作", ["修复首次绘制时透明备注区域遮挡单元格操作的问题。打开或刷新后即可操作单元格名称和帧。"]],
         ["ver929", "原尺寸纸张图像与赛璐璐顺序预览", ["在CLIP和TVPaint导入窗口中，仅查看单元格名称与BOOK标签即可通过拖动或方向键调整顺序。", "CLIP纸张读取原尺寸合成图像或可见的普通栅格图层。无法以原尺寸合成时，仅在确认画质提示后才使用预览。", "将带动画时间轴的CLIP作为纸张导入前会先确认。", "TVPaint中隐藏的单元格默认取消选择并折叠，标明隐藏状态，仍可重新选择导入。", "右键单击或长按单元格标签可打开Cell / BOOK设置。首个单元格左侧也可放置多个BOOK，以紧凑组显示并单独编辑。"]],
         ["ver928", "\u6587\u4ef6\u540d\u6ca1\u6709\u96c6\u6570\u65f6\u4fdd\u7559\u7a7a\u767d", ["\u5bfc\u5165CLIP\u548cTVPaint\u65f6\uff0c\u82e5\u6587\u4ef6\u540d\u6ca1\u6709\u96c6\u6570\uff0c\u4e0d\u518d\u6cbf\u7528\u4e0a\u4e00\u4efd\u5de5\u4f5c\u7684\u96c6\u6570\u3002\u786e\u8ba4\u7a7a\u767d\u96c6\u6570\u540e\uff0c\u5de5\u4f5c\u8868\u4e5f\u4f1a\u6e05\u7a7a\u8be5\u5b57\u6bb5\uff1b\u624b\u52a8\u8f93\u5165\u7684\u96c6\u6570\u4f1a\u6b63\u5e38\u4fdd\u7559\u3002"]],
@@ -4887,7 +4897,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (!dialog || event.isComposing || event.keyCode === 229) return;
       if (event.key === 'Escape') {
         event.preventDefault(); event.stopImmediatePropagation();
-        dialog.onRequestClose();
+        const sorting=dialog.backdrop.querySelector('[data-order-dragging]');
+        if (sorting && sorting.cancelCellOrderDrag) sorting.cancelCellOrderDrag();
+        else dialog.onRequestClose();
       } else if (event.key === 'Tab') {
         const controls = getAppDialogControls(dialog.backdrop), index = controls.indexOf(document.activeElement);
         const next = index < 0 ? (event.shiftKey ? controls.length - 1 : 0) : (index + (event.shiftKey ? -1 : 1) + controls.length) % controls.length;
@@ -17046,10 +17058,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     // ══ 셀 설정 — 원본 행을 보존하는 임시 편집 · 공용 헤더 미리보기 ════════════════════════════════════════════════════════
     function cellSettingsText(key) {
       const texts = {
-        ko:{title:'셀 · BOOK 설정', hint:'왼쪽은 아래 레이어, 오른쪽은 위 레이어입니다. BOOK은 셀 사이에 여러 개 놓을 수 있습니다.', labelHint:'클릭: 이름 수정 / 우클릭·길게 누르기: 셀 · BOOK 설정', add:'BOOK 추가', name:'이름', earlier:'왼쪽으로', later:'오른쪽으로', remove:'태그 삭제', select:'개별 셀 / BOOK 선택', cancel:'취소', apply:'적용', invalid:'이름에 줄바꿈이나 콜론(:)은 사용할 수 없습니다.'},
-        ja:{title:'セル・BOOK設定', hint:'左は下のレイヤー、右は上のレイヤーです。セルの間に複数のBOOKを置けます。', labelHint:'クリック：名前編集 / 右クリック・長押し：セル・BOOK設定', add:'BOOK追加', name:'名前', earlier:'左へ', later:'右へ', remove:'タグを削除', select:'個別セル / BOOKを選択', cancel:'キャンセル', apply:'適用', invalid:'名前に改行やコロン(:)は使えません。'},
-        en:{title:'Cell / BOOK settings', hint:'Left means a lower layer; right means an upper layer. Several BOOKs can share a cell boundary.', labelHint:'Click: rename / Right-click or hold: Cell / BOOK settings', add:'Add BOOK', name:'Name', earlier:'Move left', later:'Move right', remove:'Delete tag', select:'Select an individual Cell / BOOK', cancel:'Cancel', apply:'Apply', invalid:'Names cannot contain line breaks or a colon (:).'},
-        zh:{title:'Cell / BOOK 设置', hint:'左侧是下层，右侧是上层。同一单元边界可放置多个BOOK。', labelHint:'单击：改名 / 右键或长按：Cell / BOOK 设置', add:'添加BOOK', name:'名称', earlier:'左移', later:'右移', remove:'删除标签', select:'选择单个Cell / BOOK', cancel:'取消', apply:'应用', invalid:'名称不能包含换行或冒号(:)。'}
+        ko:{title:'셀 · BOOK 설정', hint:'왼쪽은 아래 레이어, 오른쪽은 위 레이어입니다. BOOK은 셀 사이에 여러 개 놓을 수 있습니다.', labelHint:'클릭: 이름 수정 / 우클릭·길게 누르기: 셀 · BOOK 설정', add:'BOOK 추가', name:'이름', drag:'순서 이동', sortHint:'드래그로 이동 · 방향키로 한 칸씩', remove:'태그 삭제', select:'개별 셀 / BOOK 선택', cancel:'취소', apply:'적용', invalid:'이름에 줄바꿈이나 콜론(:)은 사용할 수 없습니다.'},
+        ja:{title:'セル・BOOK設定', hint:'左は下のレイヤー、右は上のレイヤーです。セルの間に複数のBOOKを置けます。', labelHint:'クリック：名前編集 / 右クリック・長押し：セル・BOOK設定', add:'BOOK追加', name:'名前', drag:'並べ替え', sortHint:'ドラッグで移動・矢印キーで一つずつ', remove:'タグを削除', select:'個別セル / BOOKを選択', cancel:'キャンセル', apply:'適用', invalid:'名前に改行やコロン(:)は使えません。'},
+        en:{title:'Cell / BOOK settings', hint:'Left means a lower layer; right means an upper layer. Several BOOKs can share a cell boundary.', labelHint:'Click: rename / Right-click or hold: Cell / BOOK settings', add:'Add BOOK', name:'Name', drag:'Reorder', sortHint:'Drag to reorder · Arrow keys to move one step', remove:'Delete tag', select:'Select an individual Cell / BOOK', cancel:'Cancel', apply:'Apply', invalid:'Names cannot contain line breaks or a colon (:).'},
+        zh:{title:'Cell / BOOK 设置', hint:'左侧是下层，右侧是上层。同一单元边界可放置多个BOOK。', labelHint:'单击：改名 / 右键或长按：Cell / BOOK 设置', add:'添加BOOK', name:'名称', drag:'调整顺序', sortHint:'拖动排序 · 方向键逐项移动', remove:'删除标签', select:'选择单个Cell / BOOK', cancel:'取消', apply:'应用', invalid:'名称不能包含换行或冒号(:)。'}
       };
       return (texts[state.lang] || texts.en)[key] || texts.en[key] || key;
     }
@@ -17068,45 +17080,177 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return {entries:entries,tags:tags};
     }
 
+    function attachCellOrderSorting(container, options) {
+      const vertical = !!options.vertical;
+      container.addEventListener('pointerdown', function(start) {
+        const handle = start.target.closest(options.handle);
+        if (!handle || !container.contains(handle) || start.button !== 0 || start.isPrimary === false) return;
+        const source = handle.closest(options.item), original = Array.from(container.querySelectorAll(options.item));
+        if (!source || original.length < 2) return;
+        start.preventDefault(); handle.focus({preventScroll:true});
+        const id = options.key(source), controller = new AbortController(), signal = controller.signal;
+        const scroll = vertical ? container.closest('.app-dialog-body') : container.parentElement;
+        const startBox = source.getBoundingClientRect();
+        let x=start.clientX, y=start.clientY, dragging=false, target=null, after=false, ghost=null, frame=null, finished=false;
+        const animations = new Map();
+        function boxOf(node) {
+          // Layout coordinates stay stable while the visual FLIP animation is running.
+          const base=container.getBoundingClientRect(),top=base.top+node.offsetTop;
+          const left=base.left+(vertical?0:node.offsetLeft);
+          return {left:left,right:left+node.offsetWidth,top:top,bottom:top+node.offsetHeight,width:node.offsetWidth,height:node.offsetHeight};
+        }
+        function animateMove(before) {
+          if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+          original.forEach(function(node){
+            const dy=before.get(node)-boxOf(node).top;
+            if (!dy) return;
+            if (animations.has(node)) animations.get(node).cancel();
+            animations.set(node,node.animate([{transform:'translateY('+dy+'px)'},{transform:'translateY(0)'}],{duration:150,easing:'ease-out'}));
+          });
+        }
+        function update() {
+          ghost.style.left=(vertical?startBox.left:x-(start.clientX-startBox.left))+'px'; ghost.style.top=(y-(start.clientY-startBox.top))+'px';
+          const bounds=scroll.getBoundingClientRect();
+          if (x<bounds.left||x>bounds.right||y<bounds.top||y>bounds.bottom) {target=null;return;}
+          const items=Array.from(container.querySelectorAll(options.item));
+          const current=items.find(function(node){return options.contains?options.contains(node,id):node===source;});
+          const own=current&&boxOf(current);
+          if (!vertical && own&&x>=own.left&&x<=own.right&&y>=own.top&&y<=own.bottom) return;
+          const candidates=items.filter(function(node){return node!==current;});
+          if (!candidates.length) return;
+          target=candidates.reduce(function(best,node){
+            const box=boxOf(node), dx=Math.max(box.left-x,0,x-box.right), dy=Math.max(box.top-y,0,y-box.bottom);
+            const distance=vertical?Math.abs(y-(box.top+box.height/2)):dx*dx+dy*dy;
+            return !best||distance<best.distance?{node:node,distance:distance}:best;
+          },null).node;
+          const box=boxOf(target); after=vertical?y>=box.top+box.height/2:x>=box.left+box.width/2;
+          if (vertical) {
+            const anchor=after?target.nextSibling:target;
+            if (anchor!==source && source.nextSibling!==anchor) {
+              const before=new Map(original.map(function(node){return [node,boxOf(node).top];}));
+              container.insertBefore(source,anchor); animateMove(before);
+            }
+          } else options.preview(id,options.key(target),after);
+        }
+        function tick() {
+          if (!container.isConnected) {finish(false);return;}
+          if (dragging) {
+            const bounds=scroll.getBoundingClientRect(), value=vertical?y:x, low=vertical?bounds.top:bounds.left, high=vertical?bounds.bottom:bounds.right;
+            if (value>=low && value<=high) {
+              const step=value<low+28?-10:value>high-28?10:0;
+              if (step) {scroll.scrollBy(vertical?{top:step}:{left:step});update();}
+            }
+          }
+          frame=requestAnimationFrame(tick);
+        }
+        function finish(commit) {
+          if (finished) return; finished=true;
+          const destination=target&&options.key(target);
+          controller.abort(); cancelAnimationFrame(frame); animations.forEach(function(animation){animation.cancel();});
+          if (ghost) ghost.remove(); source.classList.remove('cell-order-placeholder');
+          container.removeAttribute('data-order-dragging'); delete container.cancelCellOrderDrag;
+          if (container.hasPointerCapture(start.pointerId)) container.releasePointerCapture(start.pointerId);
+          if (vertical) original.forEach(function(node){container.appendChild(node);});
+          if (dragging) {
+            const suppress=function(event){event.preventDefault();event.stopImmediatePropagation();};
+            window.addEventListener('click',suppress,{capture:true,once:true});
+            setTimeout(function(){window.removeEventListener('click',suppress,true);},0);
+          }
+          if (commit && container.isConnected && dragging && destination && destination!==id) options.move(id,destination,after);
+          else if (dragging && options.restore && container.isConnected) options.restore();
+        }
+        container.dataset.orderDragging='true'; container.cancelCellOrderDrag=function(){finish(false);};
+        window.addEventListener('pointermove',function(event){
+          if (event.pointerId!==start.pointerId) return;
+          x=event.clientX;y=event.clientY;
+          if (!dragging && Math.hypot(x-start.clientX,y-start.clientY)<5) return;
+          event.preventDefault();
+          if (!dragging) {
+            dragging=true;container.setPointerCapture(start.pointerId);ghost=source.cloneNode(true);ghost.classList.add('cell-order-ghost');ghost.setAttribute('aria-hidden','true');ghost.inert=true;
+            ghost.removeAttribute('id');ghost.querySelectorAll('[id]').forEach(function(node){node.removeAttribute('id');});
+            ghost.style.width=startBox.width+'px';ghost.style.height=startBox.height+'px';ghost.style.bottom='auto';document.body.appendChild(ghost);
+            source.classList.add('cell-order-placeholder');
+          }
+          update();
+        },{capture:true,passive:false,signal:signal});
+        window.addEventListener('pointerup',function(event){if(event.pointerId===start.pointerId)finish(true);},{capture:true,signal:signal});
+        window.addEventListener('pointercancel',function(event){if(event.pointerId===start.pointerId)finish(false);},{capture:true,signal:signal});
+        window.addEventListener('pointerdown',function(event){if(event.pointerId!==start.pointerId)finish(false);},{capture:true,signal:signal});
+        window.addEventListener('blur',function(){finish(false);},{signal:signal});
+        container.addEventListener('lostpointercapture',function(event){if(event.target===container&&event.pointerId===start.pointerId&&!container.hasPointerCapture(start.pointerId))finish(false);},{signal:signal});
+        frame=requestAnimationFrame(tick);
+      });
+    }
+
     function renderCellOrderPreview(host, rows, onMove, onSelect) {
       const selected = host.dataset.selectedOrder || (rows[0] && rows[0].key);
       host.replaceChildren();
-      const data = cellOrderPreviewData(rows), area = {x:60,y:0,w:Math.max(1,data.entries.length)*58,h:30};
-      const boxes = layoutLayerNameTagGroups(data.tags,data.entries,area);
-      const top = Math.min(-38,...boxes.map(function(box){ return box.y; }));
-      const viewport = document.createElement('div'); viewport.className = 'clip-import-order-viewport';
-      const preview = document.createElement('div'); preview.className = 'clip-import-order';
-      preview.style.width = (area.w+120)+'px'; preview.style.height = (34-top)+'px';
-      viewport.appendChild(preview); host.appendChild(viewport);
-      let dragged = null;
-      function select(key) { host.dataset.selectedOrder=key; chooser.value=key; if(onSelect) onSelect(key); }
-      function buttonFor(keys, label, box, book) {
-        const button = document.createElement('button'); button.type='button'; button.className='clip-order-item'+(book?' is-book':'');
-        button.textContent=label; button.dataset.orderId=keys[0]; button.draggable=true;
-        button.setAttribute('aria-label', keys.map(function(key){ return rows.find(function(row){return row.key===key;}).name; }).join(' / '));
-        button.style.left=box.x+'px'; button.style.top=(box.y-top)+'px'; button.style.width=box.w+'px'; button.style.height=box.h+'px';
-        const key = function(){return keys.includes(host.dataset.selectedOrder) ? host.dataset.selectedOrder : keys[0];};
+      const viewport=document.createElement('div');viewport.className='clip-import-order-viewport';
+      const preview=document.createElement('div');preview.className='clip-import-order';viewport.appendChild(preview);host.appendChild(viewport);
+      let signature='', previewTop=0;
+      function select(key) {host.dataset.selectedOrder=key;chooser.value=key;if(onSelect)onSelect(key);}
+      function buttonFor(keys,label,box,tagBox) {
+        const button=document.createElement('button');button.type='button';button.className='clip-order-item'+(tagBox?' is-book':'');
+        button.dataset.orderId=keys[0];button.dataset.orderKeys=JSON.stringify(keys);
+        button.setAttribute('aria-label',keys.map(function(key){return rows.find(function(row){return row.key===key;}).name;}).join(' / '));
+        button.setAttribute('aria-keyshortcuts','ArrowLeft ArrowRight');
+        button.style.left=box.x+'px';button.style.top=(box.y-previewTop)+'px';button.style.width=box.w+'px';button.style.height=box.h+'px';
+        if (tagBox) {
+          const icon=el('svg',{viewBox:'0 0 '+box.w+' '+box.h,'aria-hidden':'true'});
+          renderLayerNameTagShape(tagBox.members[0],Object.assign({},tagBox,{x:0,y:0}),false,icon);button.appendChild(icon);
+        } else button.textContent=label;
+        const key=function(){return keys.includes(host.dataset.selectedOrder)?host.dataset.selectedOrder:keys[0];};
         button.addEventListener('click',function(){select(key());});
         button.addEventListener('keydown',function(event){
           if(event.key!=='ArrowLeft'&&event.key!=='ArrowRight')return;
-          event.preventDefault(); const id=key(), step=event.key==='ArrowLeft'?-1:1, index=rows.findIndex(function(row){return row.key===id;});
-          if(rows[index+step]) {host.dataset.selectedOrder=id; onMove(id,rows[index+step].key,step>0);}
+          event.preventDefault();const id=key(),step=event.key==='ArrowLeft'?-1:1,index=rows.findIndex(function(row){return row.key===id;});
+          if(rows[index+step]) {
+            host.dataset.selectedOrder=id;onMove(id,rows[index+step].key,step>0);
+            const next=Array.from(host.querySelectorAll('[data-order-keys]')).find(function(node){return JSON.parse(node.dataset.orderKeys).includes(id);});
+            if(next)next.focus({preventScroll:true});
+          }
         });
-        button.addEventListener('dragstart',function(event){dragged=key();select(dragged);event.dataTransfer.effectAllowed='move';event.dataTransfer.setData('text/plain',dragged);});
-        button.addEventListener('dragover',function(event){if(dragged!==null){event.preventDefault();event.dataTransfer.dropEffect='move';}});
-        button.addEventListener('drop',function(event){if(dragged===null)return;event.preventDefault();event.stopPropagation();const rect=button.getBoundingClientRect();onMove(dragged,key(),event.clientX>=rect.left+rect.width/2);dragged=null;});
-        button.addEventListener('dragend',function(){dragged=null;});
-        preview.appendChild(button);
+        preview.appendChild(button);return button;
       }
-      data.entries.forEach(function(entry,index){buttonFor([entry.uid],entry.label,{x:area.x+index*58,y:0,w:58,h:30},false);});
-      boxes.forEach(function(box){buttonFor(box.members.map(function(tag){return tag.id;}),box.lines.join('\n'),box,true);});
+      function draw(displayRows,dragId) {
+        const nextSignature=JSON.stringify([displayRows.map(function(row){return row.key;}),dragId||'']);
+        if (signature===nextSignature) return;
+        const before=new Map(Array.from(preview.children).map(function(node){return [node.dataset.orderId,{x:node.offsetLeft,y:node.offsetTop}];}));
+        signature=nextSignature;
+        const data=cellOrderPreviewData(displayRows),area={x:60,y:0,w:Math.max(1,data.entries.length)*58,h:30};
+        const boxes=layoutLayerNameTagGroups(data.tags,data.entries,area);
+        // Reserve the tallest layout reached during this drag, so the controls do not jump.
+        previewTop=Math.min(previewTop,-38,...boxes.map(function(box){return box.y;}));
+        preview.style.width=(area.w+120)+'px';preview.style.height=(34-previewTop)+'px';preview.replaceChildren();
+        data.entries.forEach(function(entry,index){buttonFor([entry.uid],entry.label,{x:area.x+index*58,y:0,w:58,h:30},null);});
+        boxes.forEach(function(box){buttonFor(box.members.map(function(tag){return tag.id;}),'',box,box);});
+        Array.from(preview.children).forEach(function(node){
+          if (dragId && JSON.parse(node.dataset.orderKeys).includes(dragId)) node.classList.add('cell-order-placeholder');
+          const old=before.get(node.dataset.orderId);
+          if(old&&!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            const dx=old.x-node.offsetLeft,dy=old.y-node.offsetTop;
+            if(dx||dy)node.animate([{transform:'translate('+dx+'px,'+dy+'px)'},{transform:'translate(0,0)'}],{duration:150,easing:'ease-out'});
+          }
+        });
+      }
+      draw(rows);
+      attachCellOrderSorting(preview,{
+        handle:'.clip-order-item',item:'.clip-order-item',
+        key:function(node){const keys=JSON.parse(node.dataset.orderKeys);return keys.includes(host.dataset.selectedOrder)?host.dataset.selectedOrder:keys[0];},
+        contains:function(node,id){return JSON.parse(node.dataset.orderKeys).includes(id);},
+        preview:function(id,target,after){
+          const staged=rows.slice(),from=staged.findIndex(function(row){return row.key===id;});
+          const row=staged.splice(from,1)[0],to=staged.findIndex(function(row){return row.key===target;});
+          if(row&&to>=0){staged.splice(to+(after?1:0),0,row);draw(staged,id);}
+        },
+        restore:function(){draw(rows);},move:onMove
+      });
       const controls=document.createElement('div');controls.className='cell-order-controls';
       const chooser=document.createElement('select');chooser.className='ui-field';chooser.setAttribute('aria-label',cellSettingsText('select'));
       rows.forEach(function(row){const option=document.createElement('option');option.value=row.key;option.textContent=(row.kind==='book'?'BOOK · ':'Cell · ')+row.name;chooser.appendChild(option);});
       chooser.value=rows.some(function(row){return row.key===selected;})?selected:(rows[0]&&rows[0].key)||'';host.dataset.selectedOrder=chooser.value;
       chooser.addEventListener('change',function(){select(chooser.value);});controls.appendChild(chooser);
-      [-1,1].forEach(function(step){const button=document.createElement('button');button.type='button';button.className='toolbar-btn';button.textContent=step<0?'←':'→';button.setAttribute('aria-label',cellSettingsText(step<0?'earlier':'later'));button.addEventListener('click',function(){const index=rows.findIndex(function(row){return row.key===chooser.value;});if(rows[index+step])onMove(chooser.value,rows[index+step].key,step>0);});controls.appendChild(button);});
-      host.appendChild(controls);
+      const help=document.createElement('span');help.className='hint';help.textContent=cellSettingsText('sortHint');controls.appendChild(help);host.appendChild(controls);
     }
 
     function collectCellSettingsDraft() {
@@ -17218,22 +17362,24 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const body=document.createElement('div');body.className='app-dialog-body';
       const preview=document.createElement('div');preview.dataset.selectedOrder=selectedKey||'';body.appendChild(preview);
       const list=document.createElement('div');list.className='cell-settings-rows';body.appendChild(list);
+      attachCellOrderSorting(list,{vertical:true,handle:'.cell-order-handle',item:'.cell-settings-row',key:function(node){return node.dataset.orderId;},move:move});
       const add=document.createElement('button');add.type='button';add.className='toolbar-btn';add.textContent=cellSettingsText('add');body.appendChild(add);
       const error=document.createElement('div');error.className='hint';error.setAttribute('role','alert');body.appendChild(error);box.appendChild(body);
       const actions=document.createElement('footer');actions.className='app-dialog-actions';const cancel=document.createElement('button');cancel.type='button';cancel.className='toolbar-btn';cancel.textContent=cellSettingsText('cancel');const apply=document.createElement('button');apply.type='button';apply.className='toolbar-btn primary';apply.textContent=cellSettingsText('apply');actions.append(cancel,apply);box.appendChild(actions);backdrop.appendChild(box);
       const original=JSON.stringify(draft.rows);
       function select(key){const input=Array.from(list.querySelectorAll('input')).find(function(input){return input.dataset.cellSettingsKey===key;});if(input){input.focus({preventScroll:true});input.scrollIntoView({block:'nearest'});}}
       function refreshPreview(){renderCellOrderPreview(preview,draft.rows,move,select);}
-      function move(key,target,after){const from=draft.rows.findIndex(function(row){return row.key===key;});if(from<0||key===target)return;const row=draft.rows.splice(from,1)[0];row.moved=true;const to=draft.rows.findIndex(function(row){return row.key===target;});draft.rows.splice(to+(after?1:0),0,row);preview.dataset.selectedOrder=key;draw();select(key);}
+      function move(key,target,after){const from=draft.rows.findIndex(function(row){return row.key===key;});if(from<0||key===target)return;const row=draft.rows.splice(from,1)[0];row.moved=true;const to=draft.rows.findIndex(function(row){return row.key===target;});draft.rows.splice(to+(after?1:0),0,row);preview.dataset.selectedOrder=key;draw();const handle=Array.from(list.querySelectorAll('.cell-order-handle')).find(function(node){return node.parentElement.dataset.orderId===key;});if(handle)handle.focus({preventScroll:true});}
       function draw(){
         list.replaceChildren();
         draft.rows.forEach(function(row,index){
-          const line=document.createElement('div');line.className='cell-settings-row';
+          const line=document.createElement('div');line.className='cell-settings-row';line.dataset.orderId=row.key;
+          const handle=document.createElement('button');handle.type='button';handle.className='cell-order-handle';handle.textContent='⠿';handle.setAttribute('aria-label',cellSettingsText('drag')+' '+row.name);handle.setAttribute('aria-keyshortcuts','ArrowUp ArrowDown');
+          handle.addEventListener('keydown',function(event){if(event.key!=='ArrowUp'&&event.key!=='ArrowDown')return;event.preventDefault();const step=event.key==='ArrowUp'?-1:1;if(draft.rows[index+step])move(row.key,draft.rows[index+step].key,step>0);});
           const kind=document.createElement('span');kind.textContent=row.kind==='book'?'BOOK':'Cell';
           const input=document.createElement('input');input.className='ui-field';input.value=row.name;input.dataset.cellSettingsKey=row.key;input.setAttribute('aria-label',cellSettingsText('name')+' '+(index+1));
-          input.addEventListener('input',function(){row.name=input.value;refreshPreview();});
-          line.append(kind,input);
-          [-1,1].forEach(function(step){const button=document.createElement('button');button.type='button';button.className='toolbar-btn';button.textContent=step<0?'←':'→';button.disabled=!draft.rows[index+step];button.setAttribute('aria-label',cellSettingsText(step<0?'earlier':'later')+' '+row.name);button.addEventListener('click',function(){move(row.key,draft.rows[index+step].key,step>0);});line.appendChild(button);});
+          input.addEventListener('input',function(){row.name=input.value;handle.setAttribute('aria-label',cellSettingsText('drag')+' '+row.name);refreshPreview();});
+          line.append(handle,kind,input);
           if(row.kind==='book'&&row.lineIndex<0){const remove=document.createElement('button');remove.type='button';remove.className='toolbar-btn';remove.textContent='×';remove.setAttribute('aria-label',cellSettingsText('remove')+' '+row.name);remove.addEventListener('click',function(){draft.rows.splice(index,1);draw();});line.appendChild(remove);}
           list.appendChild(line);
         });refreshPreview();
@@ -17350,13 +17496,18 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return groupLayerNameTags(tags, entries).map(function(group){
         const text = formatLayerNameTagGroup(group.members), fontSize = 10;
         const maxTextWidth = Math.max(28, Math.min(100, colW * 1.8) - 12), lines = [];
-        let line = '';
-        Array.from(text).forEach(function(char){
-          if (line && estimateTextMemoTextWidth(line + char, fontSize) > maxTextWidth) { lines.push(line); line = ''; }
-          line += char;
-        });
-        if (line) lines.push(line);
-        const w = Math.max(34, ...lines.map(function(line){ return estimateTextMemoTextWidth(line, fontSize) + 12; }));
+        const numbered = /^BOOK\s*(\d+(?:,\d+)*)$/i.exec(text);
+        if (numbered) {
+          lines.push('B','O','O','K');
+          let numbers='';
+          numbered[1].split(',').forEach(function(number){
+            const next=numbers?numbers+','+number:number;
+            if (numbers && estimateTextMemoTextWidth(next,fontSize)>maxTextWidth) {lines.push(numbers);numbers=number;}
+            else numbers=next;
+          });
+          if (numbers) lines.push(numbers);
+        } else Array.from(text.replace(/\s+/g,'')).forEach(function(char){lines.push(char);});
+        const w = Math.max(22, ...lines.map(function(line){ return estimateTextMemoTextWidth(line, fontSize) + 12; }));
         const h = Math.max(28, lines.length * 12 + 14), xCenter = labelArea.x + group.boundary * colW;
         const x = xCenter - w / 2;
         let bottom = labelArea.y - 6;
