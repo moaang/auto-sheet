@@ -2585,7 +2585,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '937';
+    const APP_VERSION = '938';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3871,6 +3871,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver938", "Accurate sheet and paper import results", ["Paper failures and cancellations are reported separately from a successfully imported sheet. A late import no longer replaces the result of a newer work."]],
         ["ver937", "Paste stays with its original work", ["Fixed an image paste finishing in a different work after switching files or using Undo. Changing pages keeps the paste on its original page."]],
         ["ver936", "Cleaner BOOK dragging", ["Fixed overlapping tag fragments when splitting or merging BOOK groups. Rapid dragging now continues smoothly from the visible position."]],
         ["ver935", "Sidebar controls, simplified", ["The work library folds when empty. Refresh and paper selection controls are clearer, with shorter guidance."]],
@@ -3957,6 +3958,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver938", "シートと用紙の読込結果を整理", ["シートの読込後、用紙の失敗・キャンセルを分けて表示します。遅れて完了した読込が新しい作業の結果を上書きしなくなりました。"]],
         ["ver937", "貼り付け先を保持", ["ファイル切替や取り消しの後、読み込み中の画像が別の作業に貼り付く問題を修正しました。ページを移動しても元のページに貼り付きます。"]],
         ["ver936", "BOOKドラッグの表示を修正", ["BOOKを分ける・まとめる際のタグの重なりを修正しました。続けてドラッグしても表示位置が飛ばなくなりました。"]],
         ["ver935", "サイドバーをすっきり", ["空の作業一覧は折りたたみ、再読込と用紙選択を整理しました。案内と簡単ガイドも短くしました。"]],
@@ -4043,6 +4045,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver938", "시트·용지 불러오기 결과 구분", ["시트를 불러온 뒤 용지의 실패·취소를 별도로 알립니다. 늦게 끝난 불러오기가 새 작업의 결과를 덮지 않습니다."]],
         ["ver937", "붙여넣기 대상 유지", ["파일을 바꾸거나 실행취소한 뒤 이전 이미지가 다른 작업에 붙는 문제를 수정했습니다. 페이지를 이동해도 처음 페이지에 붙습니다."]],
         ["ver936", "BOOK 드래그 표시 수정", ["BOOK 묶음을 나누거나 합칠 때 태그 일부가 겹쳐 보이던 문제를 수정했습니다. 빠르게 이어 끌 때 미리보기와 카드의 위치가 튀는 현상도 줄였습니다."]],
         ["ver935", "사이드바 간소화", ["빈 작업 목록은 접히고, 새로고침과 용지 선택 영역을 정리했습니다. 반복 안내를 줄이고 간단 설명서를 갱신했습니다."]],
@@ -4129,6 +4132,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver938", "区分工作表与纸张读取结果", ["导入工作表后，分别提示纸张读取失败或取消。延迟完成的读取不再覆盖新工作的结果。"]],
         ["ver937", "保持原粘贴目标", ["修复切换文件或撤销后，读取中的图像被粘贴到其他工作的问题。切换页面后仍粘贴到原页面。"]],
         ["ver936", "修正BOOK拖动显示", ["修复拆分或合并BOOK组时标签局部重叠的问题。连续拖动时从当前显示位置平滑移动。"]],
         ["ver935", "精简侧边栏", ["空工作列表默认折叠，统一刷新与纸张选择控件，并精简提示和快速指南。"]],
@@ -24873,8 +24877,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     async function handlePaperImageUpload(file) {
-      if (!file) return;
-      const generation = ++paperLoadGeneration;
+      if (!file) return 'canceled';
+      const generation = ++paperLoadGeneration, documentGeneration = documentLoadGeneration;
+      const isCurrent = function(){ return generation === paperLoadGeneration && documentGeneration === documentLoadGeneration; };
       const beforeSnapshot = getPaperStateSnapshot();
       cancelPendingPaperAutoAlign();
       if (paperImageStatusEl) paperImageStatusEl.textContent = getPaperLayoutTexts().loading;
@@ -24901,8 +24906,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         } else {
           result = await loadRasterImageFileToDataUrl(file);
         }
-        if (generation !== paperLoadGeneration) return;
-        if (!result) { updatePaperImageStatus(); return; }
+        if (!isCurrent()) return 'stale';
+        if (!result) { updatePaperImageStatus(); return 'canceled'; }
         state.paperImageDataUrl = result.dataUrl;
         state.paperImageMemoDataUrl = result.memoDataUrl || '';
         trackEvent('paper_image_load');
@@ -24933,11 +24938,13 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         queueSavePaperMemory();
         render();
         runPaperAutoAlign({ silent:true });
+        return 'loaded';
       } catch (err) {
-        if (generation !== paperLoadGeneration) return;
+        if (!isCurrent()) return 'stale';
         restorePaperStateSnapshot(beforeSnapshot, { render:false });
         if (paperImageStatusEl) paperImageStatusEl.textContent = getPaperLayoutTexts().failed(err && err.message ? err.message : err);
         render();
+        return 'failed';
       }
     }
 
@@ -26118,15 +26125,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const result = await openClipSheetImportDialog(reads, file.name || 'tvpp', 'tvpp');
         if (!result) return false;
         if (generation !== documentLoadGeneration) return false;
-        const plan = prepareClipSheetStages(result);
-        if (plan.error) { setExportStatus(plan.error, { level:'error' }); return false; }
-        const made = applyClipSheetStages(plan.stages, result.identity);
-        // 용지는 단계가 다 선 **뒤에** 넣는다 — 적용 도중 실패는 되돌리는데 용지는 그 백업에 없다.
-        if (result.paperFile) await handlePaperImageUpload(result.paperFile);
-        const odd = plan.stages.filter(function(entry) { return Number(entry.read.fps) !== FIXED_FPS; });
-        setExportStatus(clipSheetText('loaded', { name:file.name || 'tvpp', stages:made }, app)
-          + (odd.length ? ' · ' + clipSheetText('oddTiming', { count:odd.length, fps:Number(odd[0].read.fps) }, app) : ''));
-        return true;
+        return await finishSheetFileImport(result, file, 'tvpp', generation);
       } catch (err) {
         if (generation === documentLoadGeneration) setExportStatus(ioText('loadFailed', { error:err.message || err }), { level:'error' });
         return false;
@@ -26325,10 +26324,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     function clipSheetText(key, values, app) {
       const docs = {
-        en:{ sideHidden:"Hidden in TVPaint ({count})", paperPreviewFallback:"Could not composite at full size. The saved preview ({width}×{height}) may blur lines and text. Import that preview? For full quality, cancel and choose a PNG exported from CLIP STUDIO PAINT.", paperPreviewContinue:"Import preview", paperPreviewMeta:"CLIP preview {width}×{height} · not full resolution", paperCompositeUnsupported:"This CLIP needs layer effects that cannot be reproduced for paper import. Export a merged PNG or PSD from CLIP STUDIO PAINT.", orderTitle:"Cel order",  paperAnimation:"This CLIP has an animation timeline and may not be a paper template. Import its saved composite as paper? To read cel timing, cancel and drop it onto the sheet preview.", paperContinue:"Import as paper", paperFullMissing:"The full-size CLIP composite is unavailable. Export a PNG or PSD from CLIP STUDIO PAINT and choose that file.", revisionE:"Direction", revisionS:"Animation director", revisionSS:"Chief animation director", revisionK:"Director", numberingAuto:'Instance names not set', numberingMixed:'Some instance names not set', numberingDetail:'Automatic numbers (source frames): {values}', cutReference:'Cut-number reference', revision:'Revision: {name}', revisionGeneration:' · round {count}', sideUnread:'No exposure or unreadable ({count})', sideAside:'Background and reference ({count})', sideOffstage:'Cels from another step ({count})', paper:'Paper', paperDrop:'Choose or drop paper image', paperKeep:'Not selected · keep current paper', paperChosen:'Will be replaced with {name}', identity:'Work info', identityTitle:'Title', identityEpisode:'Ep.', identityCut:'Cut no.', identityStage:'Stage name', identityStageHint:'The stage name is given to the first stage only.', tidyNumbers:'Tidy cel numbers', pickedRows:'{count} picked', blockedStart:'starts at frame {start} — not supported yet', allBlocked:'Every timeline in this file starts at a frame other than 0. That layout has not been verified, so nothing was loaded.', noExposure:'no exposure in this timeline', failed:'could not be read: {error}', emptyPick:'Nothing is checked in \"{name}\", so the sheet was left as it is.', oddTiming:'{count} timeline(s) are not 24fps (read as {fps}fps) — the frames were copied as they are.', title:'Read a sheet from {app}', timelines:'Timelines', timelineHint:'Each timeline you pick becomes one stage.', rows:'Rows to load', komaNames:'Cel names', renumber:'Renumber', manualInput:'Manual input', resetOriginal:'Restore original', name:'Name', role:'Role', confirm:'Load', cancel:'Cancel', cel:'cel', hidden:'hidden in {app}', empty:'No rows that can be read as cels were found in this file.', reading:'Reading the {app} file…', loaded:'{app} loaded: {name} · {stages} stage(s)', noPick:'Nothing was selected, so the sheet was left as it is.' },
-        ja:{ sideHidden:"TVPaintで非表示（{count}）", paperPreviewFallback:"原寸で合成できませんでした。保存されたプレビュー（{width}×{height}）を使うと線や文字がぼやける場合があります。プレビューを使いますか？原寸が必要な場合はキャンセルし、CLIP STUDIO PAINTから書き出したPNGを選んでください。", paperPreviewContinue:"プレビューを使う", paperPreviewMeta:"CLIPプレビュー {width}×{height} · 原寸ではありません", paperCompositeUnsupported:"このCLIPには用紙取り込みで再現できないレイヤー効果があります。CLIP STUDIO PAINTから合成済みのPNGまたはPSDを書き出してください。", orderTitle:"セルの並び",  paperAnimation:"このCLIPにはアニメーションのタイムラインがあり、用紙ではない可能性があります。保存時の合成画像を用紙として読み込みますか？セルの配置を読む場合はキャンセルしてシートプレビューに置いてください。", paperContinue:"用紙として読み込む", paperFullMissing:"CLIPの原寸合成画像を読み取れません。CLIP STUDIO PAINTからPNGまたはPSDを書き出して選んでください。", revisionE:"演出", revisionS:"作監", revisionSS:"総作監", revisionK:"監督", numberingAuto:'インスタンス名未設定', numberingMixed:'一部インスタンス名未設定', numberingDetail:'自動番号（元のフレーム）：{values}', cutReference:'カット番号の参考レイヤー', revision:'修正工程：{name}', revisionGeneration:' · {count}次', sideUnread:'露出なし・読めない行（{count}）', sideAside:'背景・参考（{count}）', sideOffstage:'他工程のセル（{count}）', paper:'用紙', paperDrop:'用紙画像を選択・ドロップ', paperKeep:'未選択 · 現在の用紙を使用', paperChosen:'{name} に差し替えます', identity:'作品情報', identityTitle:'作品名', identityEpisode:'話数', identityCut:'カット番号', identityStage:'段階名', identityStageHint:'段階名は最初の段階だけに付きます。', tidyNumbers:'セル番号を整える', pickedRows:'選択 {count}', blockedStart:'{start} フレーム開始 — 未対応', allBlocked:'このファイルのタイムラインはすべて0フレーム以外から始まります。未確認の並びのため読み込みませんでした。', noExposure:'このタイムラインに露出なし', failed:'読み取れませんでした：{error}', emptyPick:'「{name}」で何も選ばれていないため、シートはそのままです。', oddTiming:'24fps でないタイムラインが {count} 件あります（{fps}fps）。コマ数はそのまま移しました。', title:'{app} からシートを読む', timelines:'タイムライン', timelineHint:'選んだタイムラインごとに段階が1つ作られます。', rows:'読み込む行', komaNames:'セル番号', renumber:'順番に振り直す', manualInput:'手入力', resetOriginal:'元に戻す', name:'名前', role:'役割', confirm:'読み込む', cancel:'キャンセル', cel:'セル', hidden:'{app} で非表示', empty:'このファイルにセルとして読める行が見つかりませんでした。', reading:'{app} のファイルを読み込み中…', loaded:'{app} のファイルを読み込みました：{name} · 段階 {stages}個', noPick:'何も選ばれなかったため、シートはそのままです。' },
-        ko:{ sideHidden:"TVPaint에서 비표시 ({count})", paperPreviewFallback:"원본 크기로 합성하지 못했습니다. 저장된 미리보기({width}×{height})로 가져오면 선이나 글자가 흐려질 수 있습니다. 미리보기를 사용할까요? 원본 품질이 필요하면 취소하고 CLIP STUDIO PAINT에서 출력한 PNG를 골라 주세요.", paperPreviewContinue:"미리보기로 가져오기", paperPreviewMeta:"CLIP 미리보기 {width}×{height} · 원본 해상도 아님", paperCompositeUnsupported:"이 CLIP에는 용지 불러오기에서 재현할 수 없는 레이어 효과가 있습니다. CLIP STUDIO PAINT에서 합성된 PNG 또는 PSD로 출력해 주세요.", orderTitle:"셀 순서",  paperAnimation:"애니메이션 타임라인이 있는 CLIP이라 용지 파일이 아닐 수 있습니다. 저장 당시 합성 이미지를 용지로 가져올까요? 셀 배치를 읽으려면 취소하고 시트 미리보기에 놓아 주세요.", paperContinue:"용지로 가져오기", paperFullMissing:"CLIP 원본 크기 합성 이미지가 없습니다. CLIP STUDIO PAINT에서 PNG 또는 PSD로 출력한 파일을 골라 주세요.", revisionE:"연출", revisionS:"작감", revisionSS:"총작감", revisionK:"감독", numberingAuto:'인스턴스 이름 미지정', numberingMixed:'일부 인스턴스 이름 미지정', numberingDetail:'자동 번호(원본 프레임): {values}', cutReference:'컷번호 참고 레이어', revision:'리비전: {name}', revisionGeneration:' · {count}차', sideUnread:'노출 없음 · 읽지 못함 ({count})', sideAside:'배경 · 참고 ({count})', sideOffstage:'다른 공정의 셀 ({count})', paper:'용지', paperDrop:'용지 이미지 선택 · 드롭', paperKeep:'미선택 · 현재 용지 유지', paperChosen:'{name} 으로 바꿉니다', identity:'작품 정보', identityTitle:'작품명', identityEpisode:'화수', identityCut:'컷번호', identityStage:'단계 이름', identityStageHint:'단계 이름은 첫 단계에만 붙습니다.', tidyNumbers:'셀 번호 다듬기', pickedRows:'고른 행 {count}', blockedStart:'{start} 프레임에서 시작 — 아직 지원하지 않음', allBlocked:'이 파일의 타임라인이 전부 0프레임이 아닌 자리에서 시작합니다. 확인되지 않은 배치라 아무것도 읽지 않았습니다.', noExposure:'이 타임라인에 노출 없음', failed:'읽지 못했습니다: {error}', emptyPick:'「{name}」에서 아무것도 고르지 않아 시트를 그대로 두었습니다.', oddTiming:'24fps가 아닌 타임라인이 {count}개 있습니다({fps}fps). 칸 수는 그대로 옮겼습니다.', title:'{app}에서 시트 읽기', timelines:'타임라인', timelineHint:'고른 타임라인마다 단계가 하나씩 만들어집니다.', rows:'가져올 행', komaNames:'셀 이름', renumber:'순번대로 재배치', manualInput:'수동 입력', resetOriginal:'원본 복원', name:'이름', role:'역할', confirm:'불러오기', cancel:'취소', cel:'셀', hidden:'{app}에서 숨김', empty:'이 파일에서 셀로 읽을 줄을 찾지 못했습니다.', reading:'{app} 파일을 읽는 중…', loaded:'{app} 파일을 읽었습니다: {name} · 단계 {stages}개', noPick:'아무것도 고르지 않아 시트를 그대로 두었습니다.' },
-        zh:{ sideHidden:"在TVPaint中隐藏（{count}）", paperPreviewFallback:"无法以原尺寸合成。使用保存的预览（{width}×{height}）可能使线条和文字模糊。要导入预览吗？如需原始质量，请取消并选择从CLIP STUDIO PAINT导出的PNG。", paperPreviewContinue:"导入预览", paperPreviewMeta:"CLIP预览 {width}×{height} · 非原始分辨率", paperCompositeUnsupported:"此CLIP含有纸张导入无法重现的图层效果。请从CLIP STUDIO PAINT导出合成后的PNG或PSD。", orderTitle:"赛璐璐顺序",  paperAnimation:"此CLIP包含动画时间轴，可能不是纸张模板。要将保存时的合成图像作为纸张导入吗？如需读取赛璐璐时间，请取消并拖到摄影表预览中。", paperContinue:"作为纸张导入", paperFullMissing:"无法读取CLIP的原尺寸合成图像。请从CLIP STUDIO PAINT导出PNG或PSD后选择该文件。", revisionE:"演出", revisionS:"作画监督", revisionSS:"总作画监督", revisionK:"导演", numberingAuto:'未设置实例名称', numberingMixed:'部分实例名称未设置', numberingDetail:'自动编号（原始帧）：{values}', cutReference:'镜头编号参考图层', revision:'修正工序：{name}', revisionGeneration:' · 第{count}次', sideUnread:'无曝光 · 无法读取（{count}）', sideAside:'背景 · 参考（{count}）', sideOffstage:'其他工序的赛璐璐（{count}）', paper:'纸张', paperDrop:'选择或拖入纸张图像', paperKeep:'未选择 · 保留当前纸张', paperChosen:'将替换为 {name}', identity:'作品信息', identityTitle:'作品名', identityEpisode:'话数', identityCut:'镜号', identityStage:'阶段名', identityStageHint:'阶段名仅用于第一个阶段。', tidyNumbers:'整理赛璐璐编号', pickedRows:'已选 {count}', blockedStart:'从第 {start} 帧开始 — 尚不支持', allBlocked:'此文件的时间轴都不是从第 0 帧开始。该排列尚未验证，因此未读取任何内容。', noExposure:'此时间轴没有曝光', failed:'无法读取：{error}', emptyPick:'「{name}」中未选择任何内容，工作表保持不变。', oddTiming:'有 {count} 条时间轴不是 24fps（{fps}fps）。格子数按原样移入。', title:'从 {app} 读取表', timelines:'时间轴', timelineHint:'所选的每条时间轴都会生成一个阶段。', rows:'要读取的行', komaNames:'赛璐璐编号', renumber:'按顺序重编', manualInput:'手动输入', resetOriginal:'恢复原始', name:'名称', role:'角色', confirm:'读取', cancel:'取消', cel:'赛璐璐', hidden:'在 {app} 中隐藏', empty:'在此文件中未找到可作为赛璐璐读取的行。', reading:'正在读取 {app} 文件…', loaded:'已读取 {app} 文件：{name} · {stages} 个阶段', noPick:'未选择任何内容，工作表保持不变。' }
+        en:{ paperFailed:"Paper failed to load; the sheet was imported. See the paper panel for details.", paperCanceled:"Paper canceled; the current paper was kept.", sideHidden:"Hidden in TVPaint ({count})", paperPreviewFallback:"Could not composite at full size. The saved preview ({width}×{height}) may blur lines and text. Import that preview? For full quality, cancel and choose a PNG exported from CLIP STUDIO PAINT.", paperPreviewContinue:"Import preview", paperPreviewMeta:"CLIP preview {width}×{height} · not full resolution", paperCompositeUnsupported:"This CLIP needs layer effects that cannot be reproduced for paper import. Export a merged PNG or PSD from CLIP STUDIO PAINT.", orderTitle:"Cel order",  paperAnimation:"This CLIP has an animation timeline and may not be a paper template. Import its saved composite as paper? To read cel timing, cancel and drop it onto the sheet preview.", paperContinue:"Import as paper", paperFullMissing:"The full-size CLIP composite is unavailable. Export a PNG or PSD from CLIP STUDIO PAINT and choose that file.", revisionE:"Direction", revisionS:"Animation director", revisionSS:"Chief animation director", revisionK:"Director", numberingAuto:'Instance names not set', numberingMixed:'Some instance names not set', numberingDetail:'Automatic numbers (source frames): {values}', cutReference:'Cut-number reference', revision:'Revision: {name}', revisionGeneration:' · round {count}', sideUnread:'No exposure or unreadable ({count})', sideAside:'Background and reference ({count})', sideOffstage:'Cels from another step ({count})', paper:'Paper', paperDrop:'Choose or drop paper image', paperKeep:'Not selected · keep current paper', paperChosen:'Will be replaced with {name}', identity:'Work info', identityTitle:'Title', identityEpisode:'Ep.', identityCut:'Cut no.', identityStage:'Stage name', identityStageHint:'The stage name is given to the first stage only.', tidyNumbers:'Tidy cel numbers', pickedRows:'{count} picked', blockedStart:'starts at frame {start} — not supported yet', allBlocked:'Every timeline in this file starts at a frame other than 0. That layout has not been verified, so nothing was loaded.', noExposure:'no exposure in this timeline', failed:'could not be read: {error}', emptyPick:'Nothing is checked in \"{name}\", so the sheet was left as it is.', oddTiming:'{count} timeline(s) are not 24fps (read as {fps}fps) — the frames were copied as they are.', title:'Read a sheet from {app}', timelines:'Timelines', timelineHint:'Each timeline you pick becomes one stage.', rows:'Rows to load', komaNames:'Cel names', renumber:'Renumber', manualInput:'Manual input', resetOriginal:'Restore original', name:'Name', role:'Role', confirm:'Load', cancel:'Cancel', cel:'cel', hidden:'hidden in {app}', empty:'No rows that can be read as cels were found in this file.', reading:'Reading the {app} file…', loaded:'{app} loaded: {name} · {stages} stage(s)', noPick:'Nothing was selected, so the sheet was left as it is.' },
+        ja:{ paperFailed:"用紙の読込に失敗しました。シートは読み込み済みです。用紙欄で詳細を確認してください。", paperCanceled:"用紙の読込はキャンセルしました。現在の用紙を保持しています。", sideHidden:"TVPaintで非表示（{count}）", paperPreviewFallback:"原寸で合成できませんでした。保存されたプレビュー（{width}×{height}）を使うと線や文字がぼやける場合があります。プレビューを使いますか？原寸が必要な場合はキャンセルし、CLIP STUDIO PAINTから書き出したPNGを選んでください。", paperPreviewContinue:"プレビューを使う", paperPreviewMeta:"CLIPプレビュー {width}×{height} · 原寸ではありません", paperCompositeUnsupported:"このCLIPには用紙取り込みで再現できないレイヤー効果があります。CLIP STUDIO PAINTから合成済みのPNGまたはPSDを書き出してください。", orderTitle:"セルの並び",  paperAnimation:"このCLIPにはアニメーションのタイムラインがあり、用紙ではない可能性があります。保存時の合成画像を用紙として読み込みますか？セルの配置を読む場合はキャンセルしてシートプレビューに置いてください。", paperContinue:"用紙として読み込む", paperFullMissing:"CLIPの原寸合成画像を読み取れません。CLIP STUDIO PAINTからPNGまたはPSDを書き出して選んでください。", revisionE:"演出", revisionS:"作監", revisionSS:"総作監", revisionK:"監督", numberingAuto:'インスタンス名未設定', numberingMixed:'一部インスタンス名未設定', numberingDetail:'自動番号（元のフレーム）：{values}', cutReference:'カット番号の参考レイヤー', revision:'修正工程：{name}', revisionGeneration:' · {count}次', sideUnread:'露出なし・読めない行（{count}）', sideAside:'背景・参考（{count}）', sideOffstage:'他工程のセル（{count}）', paper:'用紙', paperDrop:'用紙画像を選択・ドロップ', paperKeep:'未選択 · 現在の用紙を使用', paperChosen:'{name} に差し替えます', identity:'作品情報', identityTitle:'作品名', identityEpisode:'話数', identityCut:'カット番号', identityStage:'段階名', identityStageHint:'段階名は最初の段階だけに付きます。', tidyNumbers:'セル番号を整える', pickedRows:'選択 {count}', blockedStart:'{start} フレーム開始 — 未対応', allBlocked:'このファイルのタイムラインはすべて0フレーム以外から始まります。未確認の並びのため読み込みませんでした。', noExposure:'このタイムラインに露出なし', failed:'読み取れませんでした：{error}', emptyPick:'「{name}」で何も選ばれていないため、シートはそのままです。', oddTiming:'24fps でないタイムラインが {count} 件あります（{fps}fps）。コマ数はそのまま移しました。', title:'{app} からシートを読む', timelines:'タイムライン', timelineHint:'選んだタイムラインごとに段階が1つ作られます。', rows:'読み込む行', komaNames:'セル番号', renumber:'順番に振り直す', manualInput:'手入力', resetOriginal:'元に戻す', name:'名前', role:'役割', confirm:'読み込む', cancel:'キャンセル', cel:'セル', hidden:'{app} で非表示', empty:'このファイルにセルとして読める行が見つかりませんでした。', reading:'{app} のファイルを読み込み中…', loaded:'{app} のファイルを読み込みました：{name} · 段階 {stages}個', noPick:'何も選ばれなかったため、シートはそのままです。' },
+        ko:{ paperFailed:"용지를 읽지 못했습니다. 시트는 불러왔습니다. 용지 영역에서 원인을 확인하세요.", paperCanceled:"용지 불러오기를 취소해 현재 용지를 유지했습니다.", sideHidden:"TVPaint에서 비표시 ({count})", paperPreviewFallback:"원본 크기로 합성하지 못했습니다. 저장된 미리보기({width}×{height})로 가져오면 선이나 글자가 흐려질 수 있습니다. 미리보기를 사용할까요? 원본 품질이 필요하면 취소하고 CLIP STUDIO PAINT에서 출력한 PNG를 골라 주세요.", paperPreviewContinue:"미리보기로 가져오기", paperPreviewMeta:"CLIP 미리보기 {width}×{height} · 원본 해상도 아님", paperCompositeUnsupported:"이 CLIP에는 용지 불러오기에서 재현할 수 없는 레이어 효과가 있습니다. CLIP STUDIO PAINT에서 합성된 PNG 또는 PSD로 출력해 주세요.", orderTitle:"셀 순서",  paperAnimation:"애니메이션 타임라인이 있는 CLIP이라 용지 파일이 아닐 수 있습니다. 저장 당시 합성 이미지를 용지로 가져올까요? 셀 배치를 읽으려면 취소하고 시트 미리보기에 놓아 주세요.", paperContinue:"용지로 가져오기", paperFullMissing:"CLIP 원본 크기 합성 이미지가 없습니다. CLIP STUDIO PAINT에서 PNG 또는 PSD로 출력한 파일을 골라 주세요.", revisionE:"연출", revisionS:"작감", revisionSS:"총작감", revisionK:"감독", numberingAuto:'인스턴스 이름 미지정', numberingMixed:'일부 인스턴스 이름 미지정', numberingDetail:'자동 번호(원본 프레임): {values}', cutReference:'컷번호 참고 레이어', revision:'리비전: {name}', revisionGeneration:' · {count}차', sideUnread:'노출 없음 · 읽지 못함 ({count})', sideAside:'배경 · 참고 ({count})', sideOffstage:'다른 공정의 셀 ({count})', paper:'용지', paperDrop:'용지 이미지 선택 · 드롭', paperKeep:'미선택 · 현재 용지 유지', paperChosen:'{name} 으로 바꿉니다', identity:'작품 정보', identityTitle:'작품명', identityEpisode:'화수', identityCut:'컷번호', identityStage:'단계 이름', identityStageHint:'단계 이름은 첫 단계에만 붙습니다.', tidyNumbers:'셀 번호 다듬기', pickedRows:'고른 행 {count}', blockedStart:'{start} 프레임에서 시작 — 아직 지원하지 않음', allBlocked:'이 파일의 타임라인이 전부 0프레임이 아닌 자리에서 시작합니다. 확인되지 않은 배치라 아무것도 읽지 않았습니다.', noExposure:'이 타임라인에 노출 없음', failed:'읽지 못했습니다: {error}', emptyPick:'「{name}」에서 아무것도 고르지 않아 시트를 그대로 두었습니다.', oddTiming:'24fps가 아닌 타임라인이 {count}개 있습니다({fps}fps). 칸 수는 그대로 옮겼습니다.', title:'{app}에서 시트 읽기', timelines:'타임라인', timelineHint:'고른 타임라인마다 단계가 하나씩 만들어집니다.', rows:'가져올 행', komaNames:'셀 이름', renumber:'순번대로 재배치', manualInput:'수동 입력', resetOriginal:'원본 복원', name:'이름', role:'역할', confirm:'불러오기', cancel:'취소', cel:'셀', hidden:'{app}에서 숨김', empty:'이 파일에서 셀로 읽을 줄을 찾지 못했습니다.', reading:'{app} 파일을 읽는 중…', loaded:'{app} 파일을 읽었습니다: {name} · 단계 {stages}개', noPick:'아무것도 고르지 않아 시트를 그대로 두었습니다.' },
+        zh:{ paperFailed:"纸张读取失败，工作表已导入。请在纸张区域查看原因。", paperCanceled:"已取消纸张读取，保留当前纸张。", sideHidden:"在TVPaint中隐藏（{count}）", paperPreviewFallback:"无法以原尺寸合成。使用保存的预览（{width}×{height}）可能使线条和文字模糊。要导入预览吗？如需原始质量，请取消并选择从CLIP STUDIO PAINT导出的PNG。", paperPreviewContinue:"导入预览", paperPreviewMeta:"CLIP预览 {width}×{height} · 非原始分辨率", paperCompositeUnsupported:"此CLIP含有纸张导入无法重现的图层效果。请从CLIP STUDIO PAINT导出合成后的PNG或PSD。", orderTitle:"赛璐璐顺序",  paperAnimation:"此CLIP包含动画时间轴，可能不是纸张模板。要将保存时的合成图像作为纸张导入吗？如需读取赛璐璐时间，请取消并拖到摄影表预览中。", paperContinue:"作为纸张导入", paperFullMissing:"无法读取CLIP的原尺寸合成图像。请从CLIP STUDIO PAINT导出PNG或PSD后选择该文件。", revisionE:"演出", revisionS:"作画监督", revisionSS:"总作画监督", revisionK:"导演", numberingAuto:'未设置实例名称', numberingMixed:'部分实例名称未设置', numberingDetail:'自动编号（原始帧）：{values}', cutReference:'镜头编号参考图层', revision:'修正工序：{name}', revisionGeneration:' · 第{count}次', sideUnread:'无曝光 · 无法读取（{count}）', sideAside:'背景 · 参考（{count}）', sideOffstage:'其他工序的赛璐璐（{count}）', paper:'纸张', paperDrop:'选择或拖入纸张图像', paperKeep:'未选择 · 保留当前纸张', paperChosen:'将替换为 {name}', identity:'作品信息', identityTitle:'作品名', identityEpisode:'话数', identityCut:'镜号', identityStage:'阶段名', identityStageHint:'阶段名仅用于第一个阶段。', tidyNumbers:'整理赛璐璐编号', pickedRows:'已选 {count}', blockedStart:'从第 {start} 帧开始 — 尚不支持', allBlocked:'此文件的时间轴都不是从第 0 帧开始。该排列尚未验证，因此未读取任何内容。', noExposure:'此时间轴没有曝光', failed:'无法读取：{error}', emptyPick:'「{name}」中未选择任何内容，工作表保持不变。', oddTiming:'有 {count} 条时间轴不是 24fps（{fps}fps）。格子数按原样移入。', title:'从 {app} 读取表', timelines:'时间轴', timelineHint:'所选的每条时间轴都会生成一个阶段。', rows:'要读取的行', komaNames:'赛璐璐编号', renumber:'按顺序重编', manualInput:'手动输入', resetOriginal:'恢复原始', name:'名称', role:'角色', confirm:'读取', cancel:'取消', cel:'赛璐璐', hidden:'在 {app} 中隐藏', empty:'在此文件中未找到可作为赛璐璐读取的行。', reading:'正在读取 {app} 文件…', loaded:'已读取 {app} 文件：{name} · {stages} 个阶段', noPick:'未选择任何内容，工作表保持不变。' }
       };
       const doc = docs[state.lang] || docs.en;
       const fill = Object.assign({ app:app || CLIP_SHEET_APPS.clip }, values || {});
@@ -26901,6 +26900,23 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (frameEl) frameEl.value = String(frames % FIXED_FPS);
     }
 
+    // Both formats share the commit boundary. A paper failure does not undo the imported sheet.
+    async function finishSheetFileImport(result, file, kind, generation) {
+      if (generation !== documentLoadGeneration) return false;
+      const app = clipSheetAppName(kind), plan = prepareClipSheetStages(result);
+      if (plan.error) { setExportStatus(plan.error, { level:'error' }); return false; }
+      const made = applyClipSheetStages(plan.stages, result.identity);
+      const paper = result.paperFile ? await handlePaperImageUpload(result.paperFile) : 'loaded';
+      if (generation !== documentLoadGeneration || paper === 'stale') return false;
+      // Preserve source frame positions; a different fps changes the displayed duration, not the cels.
+      const odd = plan.stages.filter(function(entry){ return Number(entry.read.fps) !== FIXED_FPS; });
+      const messages = [clipSheetText('loaded', { name:file.name || kind, stages:made }, app)];
+      if (paper !== 'loaded') messages.push(clipSheetText(paper === 'failed' ? 'paperFailed' : 'paperCanceled', null, app));
+      if (odd.length) messages.push(clipSheetText('oddTiming', { count:odd.length, fps:Number(odd[0].read.fps) }, app));
+      setExportStatus(messages.join(' · '), { level:paper === 'failed' ? 'error' : 'success' });
+      return true;
+    }
+
     async function loadDroppedClipFile(file) {
       if (!file) return false;
       const generation = ++documentLoadGeneration;
@@ -26927,17 +26943,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const result = await openClipSheetImportDialog(reads, file.name || 'clip', 'clip');
         if (!result) return false;
         if (generation !== documentLoadGeneration) return false;
-        const plan = prepareClipSheetStages(result);
-        if (plan.error) { setExportStatus(plan.error, { level:'error' }); return false; }
-        const made = applyClipSheetStages(plan.stages, result.identity);
-        // 용지는 단계가 다 선 **뒤에** 넣는다 — 적용 도중 실패는 되돌리는데 용지는 그 백업에 없다.
-        if (result.paperFile) await handlePaperImageUpload(result.paperFile);
-        // 24fps 가 아닌 타임라인은 칸 수를 그대로 옮긴다 — 환산하면 코마 배치가 뭉개진다.
-        // 초 표기만 달라지므로 칸은 어긋나지 않는다(0 이 아닌 시작은 아예 막았다. clipSheetReadTimeline 참조).
-        const odd = plan.stages.filter(function(entry) { return Number(entry.read.fps) !== FIXED_FPS; });
-        setExportStatus(clipSheetText('loaded', { name:file.name || 'clip', stages:made })
-          + (odd.length ? ' · ' + clipSheetText('oddTiming', { count:odd.length, fps:Number(odd[0].read.fps) }) : ''));
-        return true;
+        return await finishSheetFileImport(result, file, 'clip', generation);
       } catch (err) {
         if (generation === documentLoadGeneration) setExportStatus(ioText('loadFailed', { error:err.message || err }), { level:'error' });
         return false;
