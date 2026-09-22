@@ -1353,6 +1353,20 @@
       gap:var(--ui-gap-sm);
     }
     .clip-import-row .hint { grid-column:2 / -1; margin:0; overflow-wrap:anywhere; }
+    .clip-import-order-viewport { overflow-x:auto; padding:4px; border:1px solid var(--soft); border-radius:var(--r-ctl); }
+    .clip-import-order { position:relative; min-width:100%; }
+    .clip-order-item { position:absolute; bottom:0; width:58px; height:30px; padding:2px; border:1px solid var(--soft-strong); border-radius:0; background:var(--panel); color:var(--text); font:inherit; font-size:var(--ui-fs-help); line-height:1.2; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; cursor:grab; }
+    .clip-order-item.is-book { border-radius:4px 4px 8px 8px; white-space:pre; font-family:Arial, Helvetica, sans-serif; font-size:10px; line-height:12px; font-weight:600; }
+    .cell-order-controls { display:flex; gap:6px; margin:8px 0; align-items:center; }
+    .cell-order-controls select { min-width:0; flex:1; }
+    .cell-settings-rows { display:grid; gap:6px; margin:12px 0; }
+    .cell-settings-row { display:grid; grid-template-columns:40px minmax(0,1fr) 36px 36px 32px; gap:4px; align-items:center; }
+    .cell-settings-row input { min-width:0; width:100%; }
+    .cell-settings-row .toolbar-btn { min-height:36px; padding:4px; }
+    .cell-settings-backdrop .app-dialog { display:flex; flex-direction:column; overflow:hidden; }
+    .cell-settings-backdrop .app-dialog-body { min-height:0; overflow:auto; }
+    .cell-settings-backdrop .app-dialog-header, .cell-settings-backdrop .app-dialog-actions { flex-shrink:0; }
+    .clip-order-item:focus-visible { outline:2px solid var(--text); outline-offset:2px; z-index:2; }
     .clip-import-revision { display:inline-flex; align-items:center; padding:1px 6px; border:1px solid var(--line); border-radius:var(--r-ctl); background:var(--soft); color:var(--text); font-weight:600; line-height:1.4; }
     .clip-import-row input[type="text"] { min-width:0; }
     .clip-import-failed { color:var(--red); }
@@ -1503,7 +1517,6 @@
       word-break: normal;
     }
 
-    .inline-tag-delete { position:fixed; z-index:10001; color:var(--red); }
     .inline-text-editor {
       position: fixed;
       z-index: 10000;
@@ -1897,12 +1910,12 @@
 
     .guide-target-section { position: relative; border-radius: 10px; }
     .duration-boundary-hit { cursor: ns-resize; pointer-events: all; touch-action: none; -webkit-user-select: none; user-select: none; }
-    .layer-tag-action-btn, .pasted-image-action-btn { cursor: pointer; pointer-events: all; -webkit-user-select: none; user-select: none; }
+    .pasted-image-action-btn { cursor: pointer; pointer-events: all; -webkit-user-select: none; user-select: none; }
     .text-memo-selection-toolbar { position: fixed; z-index: 10003; display: none; gap: 4px; padding: 4px; border: 1px solid var(--soft); border-radius: 8px; background: rgba(255,255,255,.98); box-shadow: 0 6px 16px rgba(0,0,0,.18); pointer-events: auto; }
     .text-memo-selection-toolbar button { height: 24px; min-width: 42px; border: 1px solid var(--soft); border-radius: 6px; background: white; color: var(--text); font: inherit; font-size:var(--ui-fs-help); font-weight: 900; cursor: pointer; }
     .pasted-image-transform-outline { pointer-events: all; cursor: move; touch-action: none; }
     .pasted-image-transform-grip { pointer-events: all; cursor: nwse-resize; touch-action: none; }
-    html.pasted-image-dragging, html.pasted-image-dragging body, html.layer-tag-dragging, html.layer-tag-dragging body { overscroll-behavior: none; -webkit-user-select: none; user-select: none; }
+    html.pasted-image-dragging, html.pasted-image-dragging body { overscroll-behavior: none; -webkit-user-select: none; user-select: none; }
     .settings-refresh-btn { flex: 0 0 auto; width: 34px; padding: 0; }
 
     /* Forced line-break spacers inside the memo toolbar (only active on narrow screens) */
@@ -2426,6 +2439,7 @@
           <svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 4v10m0 0 4-4m-4 4-4-4M5 18.5h14"/></svg>
           <span data-ui-text="tvpPanelDownload">TVPaint用パネル</span>
         </a>
+        <button id="cellSettingsBtn" class="toolbar-btn" type="button">Cell / BOOK</button>
         <div id="textModeBox" class="mode-box">
           <label for="timelineCommandInput" data-ui-text="textCommandsLabel">Text Commands</label>
           <label class="command-filter-toggle">
@@ -2562,7 +2576,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '928';
+    const APP_VERSION = '929';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -2986,9 +3000,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         gestureStartTextMemoFontSize: 18,
         activePastedImage: null,
         pastedImageDrag: null,
-        activeLayerNameTagTarget: null,
-        activeLayerNameTag: null,
-        layerNameTagDrag: null,
         memoPointerId: null,
         memoCurrentStroke: null,
         manualSourceSyncTimer: null
@@ -3851,6 +3862,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver929", "Full-size paper images and cel-order preview", ["Reorder cel labels and BOOK tags by dragging or using arrow keys in the CLIP and TVPaint import window.", "CLIP paper imports read a full-size composite or visible normal raster layers. If full-size composition is unavailable, a preview is used only after you accept the quality notice.", "CLIP files with animation timelines ask for confirmation before being imported as paper.", "Cels hidden in TVPaint start unchecked and folded. They are labeled as hidden and can be selected again for import.", "Cell / BOOK settings open from a cel label with right-click or a long press. Multiple BOOKs can be placed before the first cel, shown as a compact group and edited individually."]],
         ["ver928", "Leave missing episode numbers blank", ["CLIP and TVPaint imports no longer fill a missing episode number with the previous work\u2019s value. Confirming a blank episode clears it on the sheet; a manually entered episode is preserved."]],
         ["ver927", "Instance-name sources and revision labels in import review", ["TVPaint imports distinguish file instance names from automatic numbering. Partly unnamed layers also show the source frames that received automatic numbers.", "Numeric layers matching the file cut number start unchecked as reference layers. Revision layers show their review role and round, start unchecked, and can be selected when needed."]],
         ["ver926", "More reliable imports and smoother editing", ["Fixed an issue where some TVPaint files could not be imported because no cells were detected.", "CSV imports now offer a preview, encoding selection and layer selection. Improved encoding detection, kept reference layers available to select, and preserved the final dialogue through the last frame.", "Reduced delays when selecting or finishing edits to cell tags and text, and reduced unnecessary work in previews and the work list.", "Improved sheet-number field detection on paper layouts with closely spaced horizontal header lines.", "Fixed missing or misplaced dialogue and camera annotations when importing or editing, and missing final values in XDTS files without a duration.", "PSD exports now check format size limits before creating the image."]],
@@ -3928,6 +3940,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver929", "用紙の原寸画像とセルの並びプレビュー", ["CLIP・TVPaint読み込み画面で、セル名とBOOKタグだけを見ながらドラッグや矢印キーで並べ替えられます。", "CLIP用紙は原寸の合成画像、または表示中の通常ラスターレイヤーを読み込みます。原寸で合成できない場合は、画質の案内を確認して選んだときだけプレビューを使います。", "アニメーションのタイムラインがあるCLIPを用紙にするときは、先に確認します。", "TVPaintで非表示のセルは初期選択を外して折りたたみます。非表示の案内を確認し、必要な行は再選択して読み込めます。", "セル名の右クリック・長押しからセル・BOOK設定を開けます。先頭セルの前にも複数のBOOKを置け、表示は小さくまとめて個別に編集できます。"]],
         ["ver928", "\u30d5\u30a1\u30a4\u30eb\u540d\u306b\u8a71\u6570\u304c\u306a\u3051\u308c\u3070\u7a7a\u6b04\u306b", ["CLIP\u30fbTVPaint\u306e\u30d5\u30a1\u30a4\u30eb\u540d\u306b\u8a71\u6570\u304c\u306a\u3044\u5834\u5408\u3001\u524d\u306e\u4f5c\u696d\u306e\u8a71\u6570\u3092\u5f15\u304d\u7d99\u304c\u306a\u304f\u306a\u308a\u307e\u3057\u305f\u3002\u78ba\u8a8d\u753b\u9762\u3067\u7a7a\u6b04\u306e\u307e\u307e\u8aad\u307f\u8fbc\u3080\u3068\u30b7\u30fc\u30c8\u306b\u3082\u7a7a\u6b04\u3092\u53cd\u6620\u3057\u3001\u624b\u5165\u529b\u3057\u305f\u8a71\u6570\u306f\u305d\u306e\u307e\u307e\u4f7f\u3044\u307e\u3059\u3002"]],
         ["ver927", "\u8aad\u307f\u8fbc\u307f\u4e00\u89a7\u306b\u540d\u524d\u306e\u51fa\u6240\u3068\u4fee\u6b63\u5de5\u7a0b\u3092\u8868\u793a", ["TVPaint\u306e\u30d5\u30a1\u30a4\u30eb\u5185\u30a4\u30f3\u30b9\u30bf\u30f3\u30b9\u540d\u3068\u81ea\u52d5\u756a\u53f7\u3092\u533a\u5225\u3057\u307e\u3059\u3002\u4e00\u90e8\u3060\u3051\u540d\u524d\u304c\u306a\u3044\u884c\u3067\u306f\u3001\u81ea\u52d5\u756a\u53f7\u3092\u4f7f\u3063\u305f\u5143\u306e\u30d5\u30ec\u30fc\u30e0\u3082\u8868\u793a\u3057\u307e\u3059\u3002", "\u30d5\u30a1\u30a4\u30eb\u540d\u306e\u30ab\u30c3\u30c8\u756a\u53f7\u3068\u4e00\u81f4\u3059\u308b\u6570\u5b57\u306e\u884c\u306f\u53c2\u8003\u30ec\u30a4\u30e4\u30fc\u3068\u3057\u3066\u9078\u629e\u3092\u5916\u3057\u307e\u3059\u3002\u4fee\u6b63\u30ec\u30a4\u30e4\u30fc\u306b\u306f\u6f14\u51fa\u30fb\u4f5c\u76e3\u30fb\u7dcf\u4f5c\u76e3\u30fb\u76e3\u7763\u3068\u4fee\u6b63\u6b21\u6570\u3092\u8868\u793a\u3057\u3001\u521d\u671f\u72b6\u614b\u3067\u306f\u9078\u629e\u3092\u5916\u3057\u307e\u3059\u3002\u5fc5\u8981\u306a\u884c\u306f\u30c1\u30a7\u30c3\u30af\u3057\u3066\u8aad\u307f\u8fbc\u3081\u307e\u3059\u3002"]],
         ["ver926", "\u8aad\u307f\u8fbc\u307f\u7cbe\u5ea6\u3068\u7de8\u96c6\u6642\u306e\u53cd\u5fdc\u3092\u6539\u5584", ["\u4e00\u90e8\u306eTVPaint\u30d5\u30a1\u30a4\u30eb\u3067\u30bb\u30eb\u304c\u898b\u3064\u304b\u3089\u305a\u8aad\u307f\u8fbc\u3081\u306a\u304b\u3063\u305f\u554f\u984c\u3092\u4fee\u6b63\u3057\u307e\u3057\u305f\u3002", "CSV\u8aad\u307f\u8fbc\u307f\u6642\u306b\u30d7\u30ec\u30d3\u30e5\u30fc\u30fb\u6587\u5b57\u30b3\u30fc\u30c9\u30fb\u8aad\u307f\u8fbc\u3080\u5217\u3092\u78ba\u8a8d\u3067\u304d\u307e\u3059\u3002\u6587\u5b57\u30b3\u30fc\u30c9\u306e\u81ea\u52d5\u5224\u5b9a\u3092\u6539\u5584\u3057\u3001\u53c2\u8003\u30ec\u30a4\u30e4\u30fc\u3082\u9078\u3079\u308b\u3088\u3046\u306b\u3057\u307e\u3057\u305f\u3002\u6700\u5f8c\u306e\u30bb\u30ea\u30d5\u3082\u6700\u7d42\u30d5\u30ec\u30fc\u30e0\u307e\u3067\u8aad\u307f\u8fbc\u307f\u307e\u3059\u3002", "\u30bb\u30eb\u306e\u30bf\u30b0\u3084\u6587\u5b57\u3092\u9078\u629e\u30fb\u7de8\u96c6\u7d42\u4e86\u3059\u308b\u3068\u304d\u306e\u5f85\u3061\u6642\u9593\u3092\u6e1b\u3089\u3057\u3001\u30d7\u30ec\u30d3\u30e5\u30fc\u3068\u4f5c\u696d\u4e00\u89a7\u306e\u4e0d\u8981\u306a\u51e6\u7406\u3092\u524a\u6e1b\u3057\u307e\u3057\u305f\u3002", "\u30d8\u30c3\u30c0\u30fc\u306e\u6a2a\u7dda\u304c\u8fd1\u63a5\u3057\u305f\u7528\u7d19\u3067\u3001\u30b7\u30fc\u30c8\u679a\u6570\u6b04\u306e\u691c\u51fa\u3092\u6539\u5584\u3057\u307e\u3057\u305f\u3002", "\u8aad\u307f\u8fbc\u307f\u3084\u7de8\u96c6\u6642\u306b\u30bb\u30ea\u30d5\u30fb\u30ab\u30e1\u30e9\u6ce8\u8a18\u304c\u6d88\u3048\u305f\u308a\u305a\u308c\u305f\u308a\u3059\u308b\u554f\u984c\u3068\u3001\u9577\u3055\u6307\u5b9a\u306e\u306a\u3044XDTS\u306e\u6700\u5f8c\u306e\u5024\u304c\u6b20\u3051\u308b\u554f\u984c\u3092\u4fee\u6b63\u3057\u307e\u3057\u305f\u3002", "PSD\u66f8\u304d\u51fa\u3057\u3067\u306f\u3001\u753b\u50cf\u3092\u4f5c\u308b\u524d\u306b\u5f62\u5f0f\u306e\u30b5\u30a4\u30ba\u4e0a\u9650\u3092\u78ba\u8a8d\u3057\u307e\u3059\u3002"]],
@@ -4005,6 +4018,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver929", "용지 원본 이미지와 셀 순서 미리보기", ["CLIP·TVPaint 불러오기 창에서 셀 라벨과 BOOK 태그만 보며 드래그나 방향키로 순서를 조정할 수 있습니다.", "CLIP 용지는 원본 크기의 합성 이미지 또는 표시된 일반 래스터 레이어를 읽습니다. 원본 합성이 불가능할 때는 품질 안내 후 선택한 경우에만 미리보기를 사용합니다.", "애니메이션 타임라인이 있는 CLIP을 용지로 넣으면 먼저 확인합니다.", "TVPaint에서 비표시인 셀은 기본 선택을 해제하고 접어 둡니다. 비표시 안내를 확인하고 필요한 행을 다시 체크해 가져올 수 있습니다.", "셀 라벨의 우클릭·길게 누르기로 셀·BOOK 설정을 엽니다. 첫 셀 왼쪽에도 여러 BOOK을 놓을 수 있고, 작은 묶음으로 표시하면서 개별 편집합니다."]],
         ["ver928", "\ud30c\uc77c\uba85\uc5d0 \uc5c6\ub294 \ud654\uc218\ub294 \uacf5\ub780\uc73c\ub85c", ["CLIP\u00b7TVPaint \ud30c\uc77c\uba85\uc5d0 \ud654\uc218\uac00 \uc5c6\uc73c\uba74 \uc774\uc804 \uc791\uc5c5\uc758 \ud654\uc218\ub97c \ucc44\uc6b0\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ud655\uc778\ucc3d\uc744 \uacf5\ub780\uc73c\ub85c \ud655\uc815\ud558\uba74 \uc2dc\ud2b8\uc5d0\ub3c4 \uacf5\ub780\uc744 \ubc18\uc601\ud558\uba70, \uc9c1\uc811 \uc785\ub825\ud55c \ud654\uc218\ub294 \uadf8\ub300\ub85c \uc0ac\uc6a9\ud569\ub2c8\ub2e4."]],
         ["ver927", "\ubd88\ub7ec\uc624\uae30 \ubaa9\ub85d\uc758 \uc774\ub984 \ucd9c\ucc98\uc640 \uc218\uc815 \uacf5\uc815 \ud45c\uc2dc", ["TVPaint\uc758 \ud30c\uc77c \uc778\uc2a4\ud134\uc2a4 \uc774\ub984\uacfc \uc790\ub3d9 \ubc88\ud638\ub97c \uad6c\ubd84\ud569\ub2c8\ub2e4. \uc77c\ubd80 \uc774\ub984\ub9cc \uc5c6\ub294 \ud589\uc740 \uc790\ub3d9 \ubc88\ud638\uac00 \ub4e4\uc5b4\uac04 \uc6d0\ubcf8 \ud504\ub808\uc784\ub3c4 \ud45c\uc2dc\ud569\ub2c8\ub2e4.", "\ud30c\uc77c\uba85\uc758 \ucef7\ubc88\ud638\uc640 \uac19\uc740 \uc22b\uc790 \ud589\uc740 \ucc38\uace0 \ub808\uc774\uc5b4\ub85c \uae30\ubcf8 \ud574\uc81c\ud569\ub2c8\ub2e4. \ub9ac\ube44\uc804 \ud589\uc5d0\ub294 \uc5f0\ucd9c\u00b7\uc791\uac10\u00b7\ucd1d\uc791\uac10\u00b7\uac10\ub3c5\uacfc \uc218\uc815 \ucc28\uc218\ub97c \ud45c\uc2dc\ud558\uace0 \uae30\ubcf8 \ud574\uc81c\ud558\uba70, \ud544\uc694\ud558\uba74 \uccb4\ud06c\ud574 \uac00\uc838\uc62c \uc218 \uc788\uc2b5\ub2c8\ub2e4."]],
         ["ver926", "\ubd88\ub7ec\uc624\uae30 \uc815\ud655\uc131\uacfc \ud3b8\uc9d1 \ubc18\uc751 \uac1c\uc120", ["\uc77c\ubd80 TVPaint \ud30c\uc77c\uc5d0\uc11c \uc140\uc744 \ucc3e\uc9c0 \ubabb\ud574 \ubd88\ub7ec\uc624\uc9c0 \ubabb\ud558\ub358 \ubb38\uc81c\ub97c \uc218\uc815\ud588\uc2b5\ub2c8\ub2e4.", "CSV\ub97c \ubd88\ub7ec\uc62c \ub54c \ubbf8\ub9ac\ubcf4\uae30\u00b7\uc778\ucf54\ub529\u00b7\uac00\uc838\uc62c \uc5f4\uc744 \ud655\uc778\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \uc790\ub3d9 \uc778\ucf54\ub529 \ud310\ubcc4\uc744 \uac1c\uc120\ud558\uace0 \ucc38\uace0 \ub808\uc774\uc5b4\ub3c4 \uc120\ud0dd\ud560 \uc218 \uc788\uac8c \ud588\uc73c\uba70, \ub9c8\uc9c0\ub9c9 \ub300\uc0ac\ub97c \ub9c8\uc9c0\ub9c9 \ud504\ub808\uc784\uae4c\uc9c0 \uac00\uc838\uc635\ub2c8\ub2e4.", "\uc140 \ud0dc\uadf8\uc640 \uae00\uc790\ub97c \uc120\ud0dd\ud558\uac70\ub098 \ud3b8\uc9d1\uc744 \ub05d\ub0bc \ub54c\uc758 \uc9c0\uc5f0\uc744 \uc904\uc774\uace0, \ubbf8\ub9ac\ubcf4\uae30\uc640 \uc791\uc5c5 \ubaa9\ub85d\uc758 \ubd88\ud544\uc694\ud55c \ucc98\ub9ac\ub97c \uc904\uc600\uc2b5\ub2c8\ub2e4.", "\ud5e4\ub354\uc758 \uac00\ub85c\uc120\uc774 \uac00\uae4c\uc774 \ubd99\uc740 \uc6a9\uc9c0\uc5d0\uc11c \uc2dc\ud2b8 \ub9e4\uc218 \uce78\uc744 \uc798\ubabb \ucc3e\ub358 \ubb38\uc81c\ub97c \uc218\uc815\ud588\uc2b5\ub2c8\ub2e4.", "\ubd88\ub7ec\uc624\uae30\u00b7\ud3b8\uc9d1 \uc911 \ub300\uc0ac\uc640 \uce74\uba54\ub77c \uba54\ubaa8\uac00 \uc0ac\ub77c\uc9c0\uac70\ub098 \ubc00\ub9ac\ub358 \ubb38\uc81c\uc640, \uae38\uc774 \uc815\ubcf4\uac00 \uc5c6\ub294 XDTS\uc758 \ub9c8\uc9c0\ub9c9 \uac12\uc774 \ub204\ub77d\ub418\ub358 \ubb38\uc81c\ub97c \uc218\uc815\ud588\uc2b5\ub2c8\ub2e4.", "PSD \ucd9c\ub825\uc740 \uc774\ubbf8\uc9c0\ub97c \ub9cc\ub4e4\uae30 \uc804\uc5d0 \ud30c\uc77c \ud615\uc2dd\uc758 \ud06c\uae30 \ud55c\ub3c4\ub97c \ud655\uc778\ud569\ub2c8\ub2e4."]],
@@ -4082,6 +4096,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver929", "原尺寸纸张图像与赛璐璐顺序预览", ["在CLIP和TVPaint导入窗口中，仅查看单元格名称与BOOK标签即可通过拖动或方向键调整顺序。", "CLIP纸张读取原尺寸合成图像或可见的普通栅格图层。无法以原尺寸合成时，仅在确认画质提示后才使用预览。", "将带动画时间轴的CLIP作为纸张导入前会先确认。", "TVPaint中隐藏的单元格默认取消选择并折叠，标明隐藏状态，仍可重新选择导入。", "右键单击或长按单元格标签可打开Cell / BOOK设置。首个单元格左侧也可放置多个BOOK，以紧凑组显示并单独编辑。"]],
         ["ver928", "\u6587\u4ef6\u540d\u6ca1\u6709\u96c6\u6570\u65f6\u4fdd\u7559\u7a7a\u767d", ["\u5bfc\u5165CLIP\u548cTVPaint\u65f6\uff0c\u82e5\u6587\u4ef6\u540d\u6ca1\u6709\u96c6\u6570\uff0c\u4e0d\u518d\u6cbf\u7528\u4e0a\u4e00\u4efd\u5de5\u4f5c\u7684\u96c6\u6570\u3002\u786e\u8ba4\u7a7a\u767d\u96c6\u6570\u540e\uff0c\u5de5\u4f5c\u8868\u4e5f\u4f1a\u6e05\u7a7a\u8be5\u5b57\u6bb5\uff1b\u624b\u52a8\u8f93\u5165\u7684\u96c6\u6570\u4f1a\u6b63\u5e38\u4fdd\u7559\u3002"]],
         ["ver927", "\u5bfc\u5165\u5217\u8868\u663e\u793a\u540d\u79f0\u6765\u6e90\u548c\u4fee\u6b63\u5de5\u5e8f", ["\u533a\u5206TVPaint\u6587\u4ef6\u4e2d\u7684\u5b9e\u4f8b\u540d\u79f0\u4e0e\u81ea\u52a8\u7f16\u53f7\u3002\u90e8\u5206\u672a\u547d\u540d\u7684\u56fe\u5c42\u8fd8\u4f1a\u663e\u793a\u4f7f\u7528\u81ea\u52a8\u7f16\u53f7\u7684\u539f\u59cb\u5e27\u3002", "\u4e0e\u6587\u4ef6\u540d\u955c\u5934\u7f16\u53f7\u4e00\u81f4\u7684\u6570\u5b57\u56fe\u5c42\u9ed8\u8ba4\u4f5c\u4e3a\u53c2\u8003\u56fe\u5c42\u53d6\u6d88\u52fe\u9009\u3002\u4fee\u6b63\u56fe\u5c42\u663e\u793a\u5de5\u5e8f\u548c\u4fee\u6b63\u6b21\u6570\uff0c\u9ed8\u8ba4\u4e0d\u9009\u4e2d\uff0c\u9700\u8981\u65f6\u53ef\u52fe\u9009\u5bfc\u5165\u3002"]],
         ["ver926", "\u63d0\u9ad8\u5bfc\u5165\u51c6\u786e\u6027\u548c\u7f16\u8f91\u54cd\u5e94\u901f\u5ea6", ["\u4fee\u590d\u4e86\u90e8\u5206TVPaint\u6587\u4ef6\u56e0\u672a\u68c0\u6d4b\u5230\u52a8\u753b\u5355\u5143\u800c\u65e0\u6cd5\u5bfc\u5165\u7684\u95ee\u9898\u3002", "\u5bfc\u5165CSV\u65f6\u53ef\u9884\u89c8\u5185\u5bb9\u3001\u9009\u62e9\u7f16\u7801\u548c\u8981\u5bfc\u5165\u7684\u5217\u3002\u6539\u8fdb\u4e86\u81ea\u52a8\u7f16\u7801\u68c0\u6d4b\uff0c\u53c2\u8003\u56fe\u5c42\u4e5f\u53ef\u624b\u52a8\u9009\u62e9\uff0c\u6700\u540e\u4e00\u6bb5\u5bf9\u767d\u4f1a\u4fdd\u7559\u5230\u6700\u540e\u4e00\u5e27\u3002", "\u51cf\u5c11\u4e86\u9009\u62e9\u6216\u7ed3\u675f\u7f16\u8f91\u5355\u5143\u6807\u7b7e\u548c\u6587\u5b57\u65f6\u7684\u5ef6\u8fdf\uff0c\u5e76\u51cf\u5c11\u4e86\u9884\u89c8\u548c\u5de5\u4f5c\u5217\u8868\u4e2d\u7684\u4e0d\u5fc5\u8981\u5904\u7406\u3002", "\u6539\u8fdb\u4e86\u8868\u5934\u6a2a\u7ebf\u95f4\u8ddd\u8f83\u5c0f\u65f6\u5bf9\u9875\u6570\u680f\u7684\u8bc6\u522b\u3002", "\u4fee\u590d\u4e86\u5bfc\u5165\u6216\u7f16\u8f91\u65f6\u5bf9\u767d\u548c\u6444\u5f71\u5907\u6ce8\u4e22\u5931\u6216\u9519\u4f4d\u7684\u95ee\u9898\uff0c\u4ee5\u53ca\u7f3a\u5c11\u65f6\u957f\u4fe1\u606f\u7684XDTS\u6587\u4ef6\u6700\u540e\u4e00\u4e2a\u503c\u88ab\u9057\u6f0f\u7684\u95ee\u9898\u3002", "\u5bfc\u51faPSD\u65f6\u4f1a\u5728\u521b\u5efa\u56fe\u50cf\u524d\u68c0\u67e5\u683c\u5f0f\u7684\u5c3a\u5bf8\u9650\u5236\u3002"]],
@@ -5224,7 +5239,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         cellColumnsHint:'',
         body:'',
         psdMeta:function(memoCount){ return memoCount ? 'PSD paper loaded; separated memo layers: ' + memoCount : 'PSD layers composited to one raster paper layer'; },
-        clipMeta:function(w, h){ return 'CLIP canvas preview ' + w + '×' + h + ' rasterized to ' + PAGE_W + '×' + PAGE_H; },
+        clipMeta:function(w, h){ return 'CLIP full-size composite ' + w + '×' + h + ' rasterized to ' + PAGE_W + '×' + PAGE_H; },
         rasterMeta:function(w, h){ return w + '×' + h + ' rasterized to ' + PAGE_W + '×' + PAGE_H; }
       },
       ja: {
@@ -5254,7 +5269,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         cellColumnsHint:'',
         body:'',
         psdMeta:function(memoCount){ return memoCount ? 'PSD用紙を読込。分離メモレイヤー: ' + memoCount : 'PSDレイヤーを1枚の用紙ラスターレイヤーに合成'; },
-        clipMeta:function(w, h){ return 'CLIPのキャンバスプレビュー ' + w + '×' + h + ' を ' + PAGE_W + '×' + PAGE_H + ' にラスタライズ'; },
+        clipMeta:function(w, h){ return 'CLIPの原寸合成画像 ' + w + '×' + h + ' を ' + PAGE_W + '×' + PAGE_H + ' にラスタライズ'; },
         rasterMeta:function(w, h){ return w + '×' + h + ' を ' + PAGE_W + '×' + PAGE_H + ' にラスタライズ'; }
       },
       ko: {
@@ -5284,7 +5299,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         cellColumnsHint:'',
         body:'',
         psdMeta:function(memoCount){ return memoCount ? 'PSD 용지 로드. 분리된 메모 레이어: ' + memoCount : 'PSD 레이어를 한 장의 용지 래스터 레이어로 합성'; },
-        clipMeta:function(w, h){ return 'CLIP 캔버스 미리보기 ' + w + '×' + h + '를 ' + PAGE_W + '×' + PAGE_H + '로 래스터화'; },
+        clipMeta:function(w, h){ return 'CLIP 원본 크기 합성 이미지 ' + w + '×' + h + '를 ' + PAGE_W + '×' + PAGE_H + '로 래스터화'; },
         rasterMeta:function(w, h){ return w + '×' + h + '를 ' + PAGE_W + '×' + PAGE_H + '로 래스터화'; }
       },
       zh: {
@@ -5314,7 +5329,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         cellColumnsHint:'',
         body:'',
         psdMeta:function(memoCount){ return memoCount ? 'PSD 纸张已载入；分离备注图层: ' + memoCount : 'PSD 图层已合成为单张纸张栅格层'; },
-        clipMeta:function(w, h){ return 'CLIP 画布预览 ' + w + '×' + h + ' 已栅格化为 ' + PAGE_W + '×' + PAGE_H; },
+        clipMeta:function(w, h){ return 'CLIP 原尺寸合成图像 ' + w + '×' + h + ' 已栅格化为 ' + PAGE_W + '×' + PAGE_H; },
         rasterMeta:function(w, h){ return w + '×' + h + ' 已栅格化为 ' + PAGE_W + '×' + PAGE_H; }
       }
     };
@@ -6503,6 +6518,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (selector && selector.value !== state.lang) selector.value = state.lang;
       saveLanguagePreference();
       renderUiTexts();
+      document.getElementById('cellSettingsBtn').textContent = cellSettingsText('title');
       renderManual();
       renderShortcutTexts();
       renderPaperLayoutTexts();
@@ -12086,11 +12102,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       editor.style.fontSize = Math.round(fontSize) + 'px';
       editor.style.fontWeight = active.node.getAttribute('font-weight') || '600';
       editor.style.textAlign = anchor === 'middle' ? 'center' : (anchor === 'end' ? 'right' : 'left');
-      if (active.deleteButton) {
-        const button = active.deleteButton;
-        button.style.left = clampNumber(left + width + 4, availLeft + 6, availLeft + availW - 34) + 'px';
-        button.style.top = clampNumber(top - 34, availTop + 6, availTop + availH - 34) + 'px';
-      }
       updateDurationStepperOverlayPosition();
     }
 
@@ -12100,7 +12111,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       active.closing = true;
       state.inlineTextEditor = null;
       removeDurationStepperOverlay();
-      if (active.deleteButton) active.deleteButton.remove();
       if (options && options.cancel && typeof active.editConfig.set === 'function') {
         active.editConfig.set(active.initialValue);
       }
@@ -12112,21 +12122,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         window.visualViewport.removeEventListener('scroll', updateInlineTextEditorPosition);
       }
       if (!options || options.render !== false) {
-        if (active.editConfig.layerNameTagId) refreshLayerNameTagOverlay();
-        else render();
+        render();
       }
-    }
-
-    function makeInlineEditorVirtualAnchor(node, attrs) {
-      let rect = null;
-      try { rect = node && node.getBoundingClientRect ? node.getBoundingClientRect() : null; } catch (err) { rect = null; }
-      const safeRect = rect || { left:0, top:0, right:90, bottom:30, width:90, height:30 };
-      const attrMap = attrs || {};
-      return {
-        textContent:'',
-        getBoundingClientRect:function(){ return safeRect; },
-        getAttribute:function(name){ return attrMap[name] || ''; }
-      };
     }
 
     function positionSpeakerSuffixMenu(anchorNode, menu) {
@@ -12256,14 +12253,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         initialValue: editor.value,
         closing: false
       };
-      if (editConfig.layerNameTagId) {
-        const button = document.createElement('button');
-        button.type = 'button'; button.className = 'toolbar-btn icon-only inline-tag-delete';
-        button.textContent = '×'; button.setAttribute('aria-label', getUiText('stageDeleteBtn'));
-        button.addEventListener('pointerdown', function(e){ e.preventDefault(); e.stopPropagation(); });
-        button.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); deleteActiveLayerNameTag(); });
-        state.inlineTextEditor.deleteButton = button; document.body.appendChild(button);
-      }
       updateInlineTextEditorPosition();
       editor.addEventListener('input', function(){
         if (typeof editConfig.set === 'function') editConfig.set(editor.value);
@@ -12394,18 +12383,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       hit.addEventListener('pointerdown', function(event){
         if (handleSerifuRangeShiftClick(event, entry, absFrame)) return;
       }, { passive:false });
-      attachTouchContextAction(hit, contextAction);
-      hit.addEventListener('contextmenu', function(event){
-        if (state.suppressNextClick) return;
-        const action = contextAction;
-        if (typeof action === 'function') {
-          event.preventDefault();
-          event.stopPropagation();
-          if (event.stopImmediatePropagation) event.stopImmediatePropagation();
-          action(event);
-          suppressNextClickBriefly(350);
-        }
-      });
+      attachContextAction(hit, contextAction);
       if (options.dragRange) attachCellLongPressDrag(hit, entry, absFrame, options.dragRange, options.dragOptions || {});
       hit.addEventListener('click', function(event){
         if (state.suppressNextClick) return;
@@ -13859,13 +13837,12 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           id:'text-book-tag-' + item.lineIndex,
           uid:'text-' + target.commandIndex,
           text:textValue,
-          snap:'right',
+          snap:item.lineIndex < target.lineIndex ? 'left' : 'right',
           autoTextBookTag:true,
           sourceLineIndex:item.lineIndex
         });
       });
       state.layerNameTags = manualTags.concat(bookTags);
-      pruneActiveLayerNameTag();
     }
 
     function refreshTextCommandColumnPicker() {
@@ -14005,7 +13982,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
             id:'csv-book-tag-' + item.column.index,
             uid:'csv-' + target.index,
             text:textValue,
-            snap:'right',
+            snap:commandCells.length && item.lineIndex < commandCells[0].lineIndex ? 'left' : 'right',
             autoBookTag:true,
             sourceColumnIndex:item.column.index
           });
@@ -14030,14 +14007,13 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
             id:'csv-book-tag-' + col.index,
             uid:'csv-' + target.index,
             text:textValue,
-            snap:'right',
+            snap:sourceIndex < Number(target.index) ? 'left' : 'right',
             autoBookTag:true,
             sourceColumnIndex:col.index
           });
         });
       }
       state.layerNameTags = manualTags.concat(bookTags);
-      pruneActiveLayerNameTag();
     }
 
     function stabilizeCsvEditedLayerUids(layers) {
@@ -14180,11 +14156,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         out.push(csvColumnToCommandLine(col));
       });
       state.csvColumnOrder = commandOrder.map(function(col){ return col.index; });
-      state.cellDisplayOrder = commandOrder.filter(function(col){
-        return getCsvColumnRole(col) === 'original';
-      }).map(function(col){
-        return 'csv-' + col.index;
-      });
+      syncCsvCellDisplayOrder(commandOrder);
       return out.join(String.fromCharCode(10));
     }
 
@@ -14209,13 +14181,19 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           if (!used.has(String(col.index))) orderedColumns.push(col);
         });
         state.csvColumnOrder = orderedColumns.map(function(col){ return col.index; });
-        state.cellDisplayOrder = orderedColumns.filter(function(col){
-          return getCsvColumnRole(col) === 'original';
-        }).map(function(col){
-          return 'csv-' + col.index;
-        });
+        syncCsvCellDisplayOrder(orderedColumns);
       }
       return changed;
+    }
+
+    function syncCsvCellDisplayOrder(columns) {
+      const queue=columns.filter(function(col){return getCsvColumnRole(col)==='original';}).map(function(col){return 'csv-'+col.index;});
+      // Source columns follow command order; explicitly positioned empty/extra columns keep their slots.
+      const existing=state.cellDisplayOrder||[];
+      const keepExtra=function(key){return /^(filler-|csv-edit-)/.test(key);};
+      state.cellDisplayOrder=existing.some(keepExtra)
+        ? existing.map(function(key){return keepExtra(key)?key:queue.shift();}).filter(Boolean).concat(queue)
+        : queue;
     }
 
     // ══ 커맨드 행 ③ 소스 토큰 기준 역할 동기화 — 수동 편집기 삭제를 커맨드에 되반영 ══════════════════════════════════════════════════════════════
@@ -14629,38 +14607,82 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       };
     }
 
-    function attachTouchContextAction(node, action) {
+    function attachContextAction(node, action) {
       if (!node || typeof action !== 'function') return node;
-      let touchContext = null;
-      function clearTouchContext() {
-        if (touchContext && touchContext.timer) clearTimeout(touchContext.timer);
-        touchContext = null;
+      let gesture = null, releaseTimer = null;
+      node.style.webkitTouchCallout = 'none';
+      function stop(event) { event.preventDefault(); event.stopPropagation(); if(event.stopImmediatePropagation)event.stopImmediatePropagation(); }
+      function clear() {
+        if(gesture)clearTimeout(gesture.timer);
+        gesture=null;clearTimeout(releaseTimer);
+        document.removeEventListener('pointermove',move,true);
+        document.removeEventListener('pointerup',end,true);
+        document.removeEventListener('pointercancel',cancel,true);
+        document.removeEventListener('pointerdown',another,true);
+        document.removeEventListener('click',consumeClick,true);
+        document.removeEventListener('contextmenu',nativeMenu,true);
+        window.removeEventListener('blur',cancel);
       }
-      node.addEventListener('pointerdown', function(event){
-        if (event.pointerType !== 'touch' && event.pointerType !== 'pen') return;
-        clearTouchContext();
-        touchContext = {
-          pointerId:event.pointerId,
-          startClientX:event.clientX,
-          startClientY:event.clientY,
-          fired:false,
-          timer:window.setTimeout(function(){
-            if (!touchContext || touchContext.pointerId !== event.pointerId) return;
-            touchContext.fired = true;
-            cancelCellLongPressDrag();
-            action(makeSyntheticContextEvent(event));
-            suppressNextClickBriefly(450);
-          }, 560)
-        };
-      }, { passive:false });
-      node.addEventListener('pointermove', function(event){
-        if (!touchContext || touchContext.pointerId !== event.pointerId) return;
-        const dx = event.clientX - touchContext.startClientX;
-        const dy = event.clientY - touchContext.startClientY;
-        if (Math.sqrt(dx * dx + dy * dy) > CELL_LONG_PRESS_MOVE_TOLERANCE) clearTouchContext();
-      }, { passive:false });
-      ['pointerup', 'pointercancel', 'pointerleave'].forEach(function(type){
-        node.addEventListener(type, clearTouchContext, { passive:false });
+      function cancel() { clear(); }
+      function another(event) {
+        if (!gesture) return;
+        if (event.pointerId !== gesture.id && !gesture.released) {
+          cancelCellLongPressDrag(); cancelCellLabelDrag(); cancelSerifuRangeDrag(); cancelTextMemoPointerIntent(gesture.event);
+          if (state.textMemoResize && state.textMemoResize.pointerId === gesture.id) cancelTextMemoResize(gesture.event);
+        }
+        if (event.pointerId !== gesture.id || gesture.released) clear();
+      }
+      function consumeClick(event) { if(gesture&&gesture.fired){stop(event);clear();} }
+      function nativeMenu(event) {
+        if(!gesture)return;
+        if(gesture.fired){stop(event);return;}
+        if(!node.contains(event.target))return;
+        stop(event);
+        if(!gesture.fired)fire(gesture.event);
+      }
+      function fire(event) {
+        if(!gesture||gesture.fired||!node.isConnected)return;
+        gesture.fired=true;clearTimeout(gesture.timer);
+        cancelCellLongPressDrag();cancelCellLabelDrag();cancelSerifuRangeDrag();cancelTextMemoPointerIntent(event);
+        if(state.textMemoResize && state.textMemoResize.pointerId===event.pointerId)cancelTextMemoResize(event);
+        // Suppress the release click for this gesture, even if the finger stays down
+        // longer than the old fixed 450ms or the action replaces its SVG hit node.
+        document.addEventListener('click',consumeClick,true);
+        action(makeSyntheticContextEvent(event));
+      }
+      function move(event) {
+        if(!gesture||event.pointerId!==gesture.id)return;
+        if(gesture.fired)return;
+        if(Math.hypot(event.clientX-gesture.x,event.clientY-gesture.y)>=CELL_LONG_PRESS_MOVE_TOLERANCE)clear();
+      }
+      function end(event) {
+        if(!gesture||event.pointerId!==gesture.id)return;
+        clearTimeout(gesture.timer);
+        if(!gesture.fired){clear();return;}
+        gesture.released=true;stop(event);
+        releaseTimer=setTimeout(clear,700);
+      }
+      node.addEventListener('pointerdown',function(event){
+        if(event.pointerType!=='touch'&&event.pointerType!=='pen')return;
+        if(event.isPrimary===false || event.button!==0){clear();return;}
+        clear();gesture={id:event.pointerId,x:event.clientX,y:event.clientY,event:event,fired:false,released:false,timer:setTimeout(function(){fire(event);},560)};
+        document.addEventListener('pointermove',move,true);
+        document.addEventListener('pointerup',end,true);
+        document.addEventListener('pointercancel',cancel,true);
+        document.addEventListener('pointerdown',another,true);
+        document.addEventListener('contextmenu',nativeMenu,true);
+        window.addEventListener('blur',cancel);
+      },{capture:true,passive:false});
+      node.addEventListener('contextmenu',function(event){
+        stop(event); if(gesture){if(!gesture.fired)fire(gesture.event);return;}
+        cancelCellLongPressDrag();cancelCellLabelDrag();cancelTextMemoPointerIntent(event);
+        if(state.textMemoResize)cancelTextMemoResize(event);
+        action(event);
+      });
+      node.addEventListener('keydown',function(event){
+        if(event.key!=='ContextMenu'&&!(event.shiftKey&&event.key==='F10'))return;
+        stop(event);const rect=node.getBoundingClientRect();
+        action(makeSyntheticContextEvent({clientX:rect.left+rect.width/2,clientY:rect.top+rect.height/2}));
       });
       return node;
     }
@@ -14788,6 +14810,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     function beginCellLongPressDrag(event, entry, frame, range, options) {
       if (!entry || state.memoMode || state.positionMode || state.textMemoEditMode || state.textMemoEditor || state.shakuMode) return;
       if (event.shiftKey) return;
+      if (event.isPrimary === false) return;
       if (event.button !== undefined && event.button !== 0) return;
       cancelCellLongPressDrag();
       if (event.pointerType === 'touch' || event.pointerType === 'pen') {
@@ -15605,7 +15628,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         }, { passive:false });
         // Same reason: the overlay's own contextmenu listener never fires while this
         // capture layer is on top, so the right-click → sheet menu lives here too.
-        hit.addEventListener('contextmenu', function(event){
+        attachContextAction(hit, function(event){
           const sel = state.serifuRangeSelection;
           if (!sel) return;
           const pt = getSvgPointFromPointerEvent(event);
@@ -15654,7 +15677,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           });
           if (interactive) {
             hit.style.cursor = 'context-menu';
-            hit.addEventListener('contextmenu', openSerifuRangeContextMenu);
+            attachContextAction(hit, openSerifuRangeContextMenu);
             hit.addEventListener('click', function(event){ event.preventDefault(); event.stopPropagation(); });
           }
           appendSvgNode(hit);
@@ -15953,17 +15976,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return applyCellDisplayOrder(entries);
     }
 
-    function moveCellDisplayColumn(fromIndex, toIndex, entries) {
-      const current = (entries || []).map(getCellEntryOrderKey);
-      const from = Math.max(0, Math.min(current.length - 1, Math.round(Number(fromIndex) || 0)));
-      const to = Math.max(0, Math.min(current.length - 1, Math.round(Number(toIndex) || 0)));
-      if (!current.length || from === to) return false;
-      const item = current.splice(from, 1)[0];
-      current.splice(to, 0, item);
-      state.cellDisplayOrder = current;
-      return true;
-    }
-
     function orderLayersByCellDisplayOrder(layers) {
       const source = (layers || []).slice();
       if (!source.length || !Array.isArray(state.cellDisplayOrder) || !state.cellDisplayOrder.length) return source;
@@ -15977,126 +15989,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const br = rank.has(String(b.uid || '')) ? rank.get(String(b.uid || '')) : 999999;
         return ar - br || compareAlphabetLayerNames(a && a.name, b && b.name);
       });
-    }
-
-    function getOrderedActualCellEntries(entries) {
-      const actualEntries = (entries || []).filter(function(entry){ return entry && entry.isActual; });
-      if (!actualEntries.length) return [];
-      const buckets = new Map();
-      actualEntries.forEach(function(entry){
-        const key = getCellEntryOrderKey(entry);
-        if (!buckets.has(key)) buckets.set(key, []);
-        buckets.get(key).push(entry);
-      });
-      const orderedActual = [];
-      (state.cellDisplayOrder || []).forEach(function(key){
-        const bucket = buckets.get(String(key || ''));
-        if (bucket && bucket.length) orderedActual.push(bucket.shift());
-      });
-      actualEntries.forEach(function(entry){
-        const bucket = buckets.get(getCellEntryOrderKey(entry));
-        if (bucket && bucket.indexOf(entry) !== -1) {
-          bucket.splice(bucket.indexOf(entry), 1);
-          orderedActual.push(entry);
-        }
-      });
-      return orderedActual;
-    }
-
-    function reorderCsvCommandTextByDisplayOrder(entries) {
-      if (!csvCommandEditEl || !entries || !entries.length) return;
-      const currentOrder = getCsvColumnsByCommandOrder();
-      const columnByUid = new Map((state.csvColumns || []).map(function(col){ return ['csv-' + col.index, col]; }));
-      const usedOriginals = new Set();
-      const orderedOriginals = [];
-      getOrderedActualCellEntries(entries).forEach(function(entry){
-        const col = columnByUid.get(String(entry && entry.uid || ''));
-        if (!col || getCsvColumnRole(col) !== 'original' || usedOriginals.has(String(col.index))) return;
-        orderedOriginals.push(col);
-        usedOriginals.add(String(col.index));
-      });
-      currentOrder.forEach(function(col){
-        if (getCsvColumnRole(col) !== 'original' || usedOriginals.has(String(col.index))) return;
-        orderedOriginals.push(col);
-        usedOriginals.add(String(col.index));
-      });
-      if (!orderedOriginals.length) return;
-
-      const lines = String(getCommandTextValue('csv') || '').replace(/\r/g, '').split('\n');
-      const assignments = getCsvCommandLineAssignmentsForAll(lines);
-      const assignmentByLine = new Map();
-      const lineByColumn = new Map();
-      assignments.forEach(function(item){
-        if (!item || !item.column) return;
-        assignmentByLine.set(item.lineIndex, item);
-        lineByColumn.set(String(item.column.index), item.rawLine || lines[item.lineIndex] || csvColumnToCommandLine(item.column));
-      });
-      const orderedLines = orderedOriginals.map(function(col){
-        return lineByColumn.get(String(col.index)) || csvColumnToCommandLine(col);
-      });
-      let cursor = 0;
-      const out = lines.map(function(lineText, lineIndex){
-        const assignment = assignmentByLine.get(lineIndex);
-        if (!assignment || !assignment.column || getCsvColumnRole(assignment.column) !== 'original') return lineText;
-        const nextLine = orderedLines[cursor];
-        cursor += 1;
-        return nextLine !== undefined ? nextLine : lineText;
-      });
-      while (cursor < orderedLines.length) {
-        out.push(orderedLines[cursor]);
-        cursor += 1;
-      }
-
-      const originalQueue = orderedOriginals.slice();
-      const nextColumnOrder = [];
-      currentOrder.forEach(function(col){
-        if (getCsvColumnRole(col) === 'original') {
-          nextColumnOrder.push(originalQueue.shift() || col);
-        } else {
-          nextColumnOrder.push(col);
-        }
-      });
-      originalQueue.forEach(function(col){ nextColumnOrder.push(col); });
-      state.csvColumnOrder = nextColumnOrder.map(function(col){ return col.index; });
-      setCommandTextValue('csv', out.join('\n'));
-      refreshCsvColumnPicker();
-    }
-
-    function reorderCommandTextByDisplayOrder(entries) {
-      const textarea = getCommandTextarea();
-      if (!textarea || !entries || !entries.length) return;
-      if (isCsvMode(getCurrentInputMode())) {
-        reorderCsvCommandTextByDisplayOrder(entries);
-        return;
-      }
-      const orderedActual = getOrderedActualCellEntries(entries);
-      if (!orderedActual.length) return;
-      const rank = new Map();
-      orderedActual.forEach(function(entry, index){
-        const label = String(entry.label || '').trim().toLowerCase();
-        if (label && !rank.has(label)) rank.set(label, index);
-      });
-      const lines = String(getCommandTextValue(textarea) || '').replace(/\r/g, '').split('\n');
-      const cellCommands = [];
-      lines.forEach(function(lineText, index){
-        const roleInfo = splitTextCommandRoleSuffix(lineText);
-        if (roleInfo.role !== 'cell') return;
-        const cleanLine = roleInfo.cleanLine;
-        const colonIndex = cleanLine.indexOf(':');
-        if (colonIndex === -1) return;
-        const name = cleanLine.slice(0, colonIndex).trim().toLowerCase();
-        cellCommands.push({ index:index, text:lineText, rank:rank.has(name) ? rank.get(name) : 999999 });
-      });
-      cellCommands.sort(function(a, b){ return a.rank - b.rank || a.index - b.index; });
-      let cursor = 0;
-      const nextLines = lines.map(function(lineText){
-        const roleInfo = splitTextCommandRoleSuffix(lineText);
-        if (roleInfo.role !== 'cell' || roleInfo.cleanLine.indexOf(':') === -1) return lineText;
-        const next = cellCommands[cursor];
-        cursor += 1;
-        return next ? next.text : lineText;
-      });
-      setCommandTextValue(textarea, nextLines.join('\n'));
     }
 
     // ══ 카메라란 ① 레인 배치와 세그먼트 연결·런 판정 (연결되면 하나의 카메라 워크) ═══════════════════════════════════════════════════════════════
@@ -17064,6 +16956,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     function beginCellLabelDrag(event, index, entries, labelArea) {
       removeCellLabelDragPreview();
       if (state.memoMode || state.positionMode || state.textMemoEditMode || state.textMemoEditor || state.shakuMode) return;
+      if (event.isPrimary === false) return;
       if (event.button !== undefined && event.button !== 0) return;
       state.cellLabelDrag = {
         pointerId:event.pointerId,
@@ -17105,11 +16998,15 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         event.preventDefault();
         event.stopPropagation();
         const targetIndex = getCellLabelDragTargetIndex(event, drag.labelArea, drag.entries.length);
-        if (moveCellDisplayColumn(drag.startIndex, targetIndex, drag.entries)) {
-          reorderCommandTextByDisplayOrder(drag.entries);
-          if (isCsvMode(getCurrentInputMode())) refreshCsvColumnPicker();
+        if (drag.startIndex !== targetIndex) {
+          const draft = collectCellSettingsDraft();
+          const from = draft.rows.findIndex(function(row){ return row.key === drag.entries[drag.startIndex].uid; });
+          const moving = draft.rows.splice(from, 1)[0];
+          const to = draft.rows.findIndex(function(row){ return row.key === drag.entries[targetIndex].uid; });
+          draft.rows.splice(to + (targetIndex > drag.startIndex ? 1 : 0), 0, moving);
+          state.cellLabelDrag = null;
+          applyCellSettingsDraft(draft);
           suppressNextClickBriefly(350);
-          render();
         }
       }
       const target = drag.sourceTarget;
@@ -17130,11 +17027,227 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     function attachCellLabelDrag(node, index, entries, labelArea) {
       if (!node) return node;
       node.classList.add('cell-label-drag-hit');
+      prepareTouchDragHit(node);
+      node.setAttribute('role','button'); node.setAttribute('tabindex','0');
+      node.setAttribute('aria-label', cellSettingsText('title') + ': ' + entries[index].label);
+      attachContextAction(node, function(event){
+        if (state.memoMode || state.positionMode || state.textMemoEditMode || state.shakuMode) return;
+        cancelCellLabelDrag(); openCellSettingsDialog(entries[index].uid);
+      });
+      node.addEventListener('keydown', function(event){ if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openCellSettingsDialog(entries[index].uid); } });
       node.addEventListener('pointerdown', function(event){ beginCellLabelDrag(event, index, entries, labelArea); }, { passive:false });
       return node;
     }
 
-    // ══ 레이어 네임태그 — 추가 · 위치 스냅 · 드래그 · 렌더 ═══════════════════════════════════════════════════════════════════════════
+    // ══ 셀 설정 — 원본 행을 보존하는 임시 편집 · 공용 헤더 미리보기 ════════════════════════════════════════════════════════
+    function cellSettingsText(key) {
+      const texts = {
+        ko:{title:'셀 · BOOK 설정', hint:'왼쪽은 아래 레이어, 오른쪽은 위 레이어입니다. BOOK은 셀 사이에 여러 개 놓을 수 있습니다.', labelHint:'클릭: 이름 수정 / 우클릭·길게 누르기: 셀 · BOOK 설정', add:'BOOK 추가', name:'이름', earlier:'왼쪽으로', later:'오른쪽으로', remove:'태그 삭제', select:'개별 셀 / BOOK 선택', cancel:'취소', apply:'적용', invalid:'이름에 줄바꿈이나 콜론(:)은 사용할 수 없습니다.'},
+        ja:{title:'セル・BOOK設定', hint:'左は下のレイヤー、右は上のレイヤーです。セルの間に複数のBOOKを置けます。', labelHint:'クリック：名前編集 / 右クリック・長押し：セル・BOOK設定', add:'BOOK追加', name:'名前', earlier:'左へ', later:'右へ', remove:'タグを削除', select:'個別セル / BOOKを選択', cancel:'キャンセル', apply:'適用', invalid:'名前に改行やコロン(:)は使えません。'},
+        en:{title:'Cell / BOOK settings', hint:'Left means a lower layer; right means an upper layer. Several BOOKs can share a cell boundary.', labelHint:'Click: rename / Right-click or hold: Cell / BOOK settings', add:'Add BOOK', name:'Name', earlier:'Move left', later:'Move right', remove:'Delete tag', select:'Select an individual Cell / BOOK', cancel:'Cancel', apply:'Apply', invalid:'Names cannot contain line breaks or a colon (:).'},
+        zh:{title:'Cell / BOOK 设置', hint:'左侧是下层，右侧是上层。同一单元边界可放置多个BOOK。', labelHint:'单击：改名 / 右键或长按：Cell / BOOK 设置', add:'添加BOOK', name:'名称', earlier:'左移', later:'右移', remove:'删除标签', select:'选择单个Cell / BOOK', cancel:'取消', apply:'应用', invalid:'名称不能包含换行或冒号(:)。'}
+      };
+      return (texts[state.lang] || texts.en)[key] || texts.en[key] || key;
+    }
+
+    function cellOrderPreviewData(rows) {
+      const entries = rows.filter(function(row){ return row.kind === 'cell'; }).map(function(row){ return {uid:row.key,label:row.name}; });
+      let index = -1;
+      const tags = [];
+      rows.forEach(function(row){
+        if (row.kind === 'cell') { index++; return; }
+        if (!entries.length) return;
+        const uid=entries[Math.max(0,index)].uid;
+        const centered=row.tag&&row.tag.snap==='center'&&!row.moved&&row.tag.uid===uid;
+        tags.push({id:row.key,uid:uid,text:row.name,snap:centered?'center':index < 0 ? 'left' : 'right'});
+      });
+      return {entries:entries,tags:tags};
+    }
+
+    function renderCellOrderPreview(host, rows, onMove, onSelect) {
+      const selected = host.dataset.selectedOrder || (rows[0] && rows[0].key);
+      host.replaceChildren();
+      const data = cellOrderPreviewData(rows), area = {x:60,y:0,w:Math.max(1,data.entries.length)*58,h:30};
+      const boxes = layoutLayerNameTagGroups(data.tags,data.entries,area);
+      const top = Math.min(-38,...boxes.map(function(box){ return box.y; }));
+      const viewport = document.createElement('div'); viewport.className = 'clip-import-order-viewport';
+      const preview = document.createElement('div'); preview.className = 'clip-import-order';
+      preview.style.width = (area.w+120)+'px'; preview.style.height = (34-top)+'px';
+      viewport.appendChild(preview); host.appendChild(viewport);
+      let dragged = null;
+      function select(key) { host.dataset.selectedOrder=key; chooser.value=key; if(onSelect) onSelect(key); }
+      function buttonFor(keys, label, box, book) {
+        const button = document.createElement('button'); button.type='button'; button.className='clip-order-item'+(book?' is-book':'');
+        button.textContent=label; button.dataset.orderId=keys[0]; button.draggable=true;
+        button.setAttribute('aria-label', keys.map(function(key){ return rows.find(function(row){return row.key===key;}).name; }).join(' / '));
+        button.style.left=box.x+'px'; button.style.top=(box.y-top)+'px'; button.style.width=box.w+'px'; button.style.height=box.h+'px';
+        const key = function(){return keys.includes(host.dataset.selectedOrder) ? host.dataset.selectedOrder : keys[0];};
+        button.addEventListener('click',function(){select(key());});
+        button.addEventListener('keydown',function(event){
+          if(event.key!=='ArrowLeft'&&event.key!=='ArrowRight')return;
+          event.preventDefault(); const id=key(), step=event.key==='ArrowLeft'?-1:1, index=rows.findIndex(function(row){return row.key===id;});
+          if(rows[index+step]) {host.dataset.selectedOrder=id; onMove(id,rows[index+step].key,step>0);}
+        });
+        button.addEventListener('dragstart',function(event){dragged=key();select(dragged);event.dataTransfer.effectAllowed='move';event.dataTransfer.setData('text/plain',dragged);});
+        button.addEventListener('dragover',function(event){if(dragged!==null){event.preventDefault();event.dataTransfer.dropEffect='move';}});
+        button.addEventListener('drop',function(event){if(dragged===null)return;event.preventDefault();event.stopPropagation();const rect=button.getBoundingClientRect();onMove(dragged,key(),event.clientX>=rect.left+rect.width/2);dragged=null;});
+        button.addEventListener('dragend',function(){dragged=null;});
+        preview.appendChild(button);
+      }
+      data.entries.forEach(function(entry,index){buttonFor([entry.uid],entry.label,{x:area.x+index*58,y:0,w:58,h:30},false);});
+      boxes.forEach(function(box){buttonFor(box.members.map(function(tag){return tag.id;}),box.lines.join('\n'),box,true);});
+      const controls=document.createElement('div');controls.className='cell-order-controls';
+      const chooser=document.createElement('select');chooser.className='ui-field';chooser.setAttribute('aria-label',cellSettingsText('select'));
+      rows.forEach(function(row){const option=document.createElement('option');option.value=row.key;option.textContent=(row.kind==='book'?'BOOK · ':'Cell · ')+row.name;chooser.appendChild(option);});
+      chooser.value=rows.some(function(row){return row.key===selected;})?selected:(rows[0]&&rows[0].key)||'';host.dataset.selectedOrder=chooser.value;
+      chooser.addEventListener('change',function(){select(chooser.value);});controls.appendChild(chooser);
+      [-1,1].forEach(function(step){const button=document.createElement('button');button.type='button';button.className='toolbar-btn';button.textContent=step<0?'←':'→';button.setAttribute('aria-label',cellSettingsText(step<0?'earlier':'later'));button.addEventListener('click',function(){const index=rows.findIndex(function(row){return row.key===chooser.value;});if(rows[index+step])onMove(chooser.value,rows[index+step].key,step>0);});controls.appendChild(button);});
+      host.appendChild(controls);
+    }
+
+    function collectCellSettingsDraft() {
+      const model=getSyncedRenderModel(), entries=model.layout.originalEntries;
+      const mode=isCsvMode(getCurrentInputMode())?'csv':'text', lines=getCommandTextValue(mode).replace(/\r/g,'').split('\n');
+      const items=getCommandLineItemsFromLines(lines), assignments=mode==='csv'?getCsvCommandLineAssignmentsForAll(lines):[];
+      const rows=entries.map(function(entry){
+        const lineIndex=findCommandLineIndexForEntry(lines,entry), item=items.find(function(item){return item.lineIndex===lineIndex;});
+        const assignment=assignments.find(function(assignment){return assignment.lineIndex===lineIndex;});
+        return {key:entry.uid,uid:entry.uid,name:entry.label,originalName:entry.label,kind:'cell',lineIndex:item?lineIndex:-1,column:assignment&&assignment.column,entry:entry};
+      });
+      const groups=groupLayerNameTags(getLayerNameTagList(),entries);
+      groups.slice().reverse().forEach(function(group){
+        const books=group.members.map(function(tag){
+          const assignment=tag.autoBookTag?assignments.find(function(item){return item.column&&item.column.index===tag.sourceColumnIndex;}):null;
+          return {key:tag.id,name:tag.text,originalName:tag.text,kind:'book',tag:Object.assign({},tag),lineIndex:tag.autoTextBookTag?tag.sourceLineIndex:assignment?assignment.lineIndex:-1,column:assignment&&assignment.column};
+        });
+        rows.splice(Math.ceil(group.boundary),0,...books);
+      });
+      return {mode:mode,lines:lines,items:items,assignments:assignments,rows:rows,sourceKeys:rows.filter(function(row){return row.lineIndex>=0;}).map(function(row){return row.key;}),cellKeys:rows.filter(function(row){return row.kind==='cell';}).map(function(row){return row.key;}),unplaced:getManualLayerNameTags().filter(function(tag){return !entries.some(function(entry){return entry.uid===tag.uid;});}).map(function(tag){return Object.assign({},tag);})};
+    }
+
+    function applyCellSettingsDraft(draft) {
+      const rows=draft.rows, before=draft.items, uidMap=new Map();
+      const uidPrefix=draft.mode==='csv'?'csv-edit':'text';
+      const sourceRows=rows.filter(function(row){return row.lineIndex>=0;});
+      const sourceOrderChanged=sourceRows.map(function(row){return row.key;}).join('\n')!==draft.sourceKeys.join('\n');
+      const slots=new Set(sourceRows.map(function(row){return row.lineIndex;}));
+      let cursor=0;
+      const indexed=draft.lines.map(function(line,index){
+        if(!slots.has(index)) return {text:line,index:index};
+        const row=sourceOrderChanged?sourceRows[cursor++]:sourceRows.find(function(row){return row.lineIndex===index;}), original=draft.lines[row.lineIndex];
+        return {text:row.name.trim()===row.originalName?original:setCommandLineName(original,row.name.trim()||row.originalName),index:row.lineIndex};
+      });
+      // Empty printed columns become commands only when explicitly renamed.
+      rows.filter(function(row){return row.kind==='cell'&&row.lineIndex<0&&row.name!==row.originalName;}).forEach(function(row){
+        row.createdIndex=indexed.length; indexed.push({text:row.name.trim()+':',index:-1});
+      });
+      const newLines=indexed.map(function(item){return item.text;}), after=getCommandLineItemsFromLines(newLines);
+      before.forEach(function(item){
+        const index=indexed.findIndex(function(line){return line.index===item.lineIndex;});
+        const next=after.find(function(item){return item.lineIndex===index;});
+        if(next)uidMap.set(uidPrefix+'-'+item.commandIndex,uidPrefix+'-'+next.commandIndex);
+      });
+      rows.forEach(function(row){
+        if(row.createdIndex!==undefined){const item=after.find(function(item){return item.lineIndex===row.createdIndex;});if(item)uidMap.set(row.uid,uidPrefix+'-'+item.commandIndex);}
+      });
+      const cells=rows.filter(function(row){return row.kind==='cell';});
+      const modelChanged=newLines.join('\n')!==draft.lines.join('\n') || cells.map(function(row){return row.key;}).join('\n')!==draft.cellKeys.join('\n');
+      commitPendingContentHistory();
+      if (modelChanged) {
+        if(draft.mode==='text')removeTextCommandGeneratedManualLinesForItems(before);
+        if(draft.mode==='csv'){
+          sourceRows.forEach(function(row){if(row.column)row.column.name=row.name.trim()||row.originalName;});
+          const assignmentByLine=new Map(draft.assignments.map(function(item){return [item.lineIndex,item.column];}));
+          state.csvColumnOrder=indexed.map(function(item){return assignmentByLine.get(item.index);}).filter(Boolean).map(function(col){return col.index;});
+        }
+        setCommandTextValue(draft.mode,newLines.join('\n'));
+        ['dotOverrides','markerOverrides'].forEach(function(field){
+          const out={}; Object.entries(state[field]||{}).forEach(function(pair){
+            const key=pair[0].replace(/(?:text|csv-edit)-\d+$/,function(uid){return uidMap.get(uid)||uid;});out[key]=pair[1];
+          });state[field]=out;
+        });
+        if(draft.mode==='text')rebuildTextCommandGeneratedManualLines();
+        state.cellDisplayOrder=cells.map(function(row){return getCellEntryOrderKey({uid:uidMap.get(row.uid)||row.uid,label:row.name.trim()||row.originalName});});
+      }
+      const manual=draft.unplaced.slice();
+      let target=cells[0], passed=false;
+      rows.forEach(function(row){
+        if(row.kind==='cell'){target=row;passed=true;return;}
+        if(row.lineIndex>=0||!target)return;
+        const uid=uidMap.get(target.uid)||target.uid;
+        // An unchanged centered manual label keeps its saved placement.
+        const snap=row.tag&&row.tag.snap==='center'&&!row.moved&&row.tag.uid===target.uid?'center':passed?'right':'left';
+        manual.push(Object.assign({},row.tag,{id:row.key,uid:uid,text:row.name.trim()||row.originalName||'BOOK',snap:snap}));
+      });
+      state.layerNameTags=manual.concat(state.layerNameTags.filter(function(tag){return tag.autoBookTag||tag.autoTextBookTag;}));
+      if(modelChanged)syncInputDerivedStateBeforeRender();
+      const rowRank=new Map(rows.map(function(row,index){return [row.key,index];}));
+      // Generated BOOK ids change with source line positions, so recover their draft identity.
+      const tagRank=function(tag){
+        if(!tag.autoBookTag&&!tag.autoTextBookTag)return rowRank.has(tag.id)?rowRank.get(tag.id):Number.MAX_SAFE_INTEGER;
+        const oldIndex=tag.autoTextBookTag&&indexed[tag.sourceLineIndex]?indexed[tag.sourceLineIndex].index:-1;
+        const row=rows.find(function(row){return tag.autoTextBookTag?row.lineIndex===oldIndex:tag.autoBookTag&&row.column&&row.column.index===tag.sourceColumnIndex;});
+        return row?rowRank.get(row.key):Number.MAX_SAFE_INTEGER;
+      };
+      const newEntries=cells.map(function(row){return {uid:uidMap.get(row.uid)||row.uid};});
+      groupLayerNameTags(state.layerNameTags,newEntries).forEach(function(group){
+        const members=group.members.slice().sort(function(a,b){return tagRank(a)-tagRank(b);});
+        let sourceCount=0;
+        members.forEach(function(tag,index){
+          if(tag.autoBookTag||tag.autoTextBookTag){sourceCount++;return;}
+          tag.bookOrder=sourceCount-1+(index+1)/(members.length+1);
+        });
+      });
+      if(modelChanged){state.serifuRangeAnchor=null;state.serifuRangeSelection=null;render();}
+      else refreshLayerNameTagOverlay();
+      commitContentHistory();
+    }
+
+    function openCellSettingsDialog(selectedKey) {
+      if(document.querySelector('.cell-settings-backdrop')||state.isExporting)return;
+      if(state.inlineTextEditor)closeInlineTextEditor({render:false});
+      cancelCellLabelDrag();cancelCellLongPressDrag();
+      const draft=collectCellSettingsDraft();
+      const backdrop=document.createElement('div');backdrop.className='app-dialog-backdrop cell-settings-backdrop';
+      const box=document.createElement('section');box.className='app-dialog clip-import-dialog';box.setAttribute('role','dialog');box.setAttribute('aria-modal','true');box.setAttribute('aria-label',cellSettingsText('title'));
+      const header=document.createElement('header');header.className='app-dialog-header';const title=document.createElement('h3');title.textContent=cellSettingsText('title');const hint=document.createElement('div');hint.className='hint';hint.textContent=cellSettingsText('hint');header.append(title,hint);box.appendChild(header);
+      const body=document.createElement('div');body.className='app-dialog-body';
+      const preview=document.createElement('div');preview.dataset.selectedOrder=selectedKey||'';body.appendChild(preview);
+      const list=document.createElement('div');list.className='cell-settings-rows';body.appendChild(list);
+      const add=document.createElement('button');add.type='button';add.className='toolbar-btn';add.textContent=cellSettingsText('add');body.appendChild(add);
+      const error=document.createElement('div');error.className='hint';error.setAttribute('role','alert');body.appendChild(error);box.appendChild(body);
+      const actions=document.createElement('footer');actions.className='app-dialog-actions';const cancel=document.createElement('button');cancel.type='button';cancel.className='toolbar-btn';cancel.textContent=cellSettingsText('cancel');const apply=document.createElement('button');apply.type='button';apply.className='toolbar-btn primary';apply.textContent=cellSettingsText('apply');actions.append(cancel,apply);box.appendChild(actions);backdrop.appendChild(box);
+      const original=JSON.stringify(draft.rows);
+      function select(key){const input=Array.from(list.querySelectorAll('input')).find(function(input){return input.dataset.cellSettingsKey===key;});if(input){input.focus({preventScroll:true});input.scrollIntoView({block:'nearest'});}}
+      function refreshPreview(){renderCellOrderPreview(preview,draft.rows,move,select);}
+      function move(key,target,after){const from=draft.rows.findIndex(function(row){return row.key===key;});if(from<0||key===target)return;const row=draft.rows.splice(from,1)[0];row.moved=true;const to=draft.rows.findIndex(function(row){return row.key===target;});draft.rows.splice(to+(after?1:0),0,row);preview.dataset.selectedOrder=key;draw();select(key);}
+      function draw(){
+        list.replaceChildren();
+        draft.rows.forEach(function(row,index){
+          const line=document.createElement('div');line.className='cell-settings-row';
+          const kind=document.createElement('span');kind.textContent=row.kind==='book'?'BOOK':'Cell';
+          const input=document.createElement('input');input.className='ui-field';input.value=row.name;input.dataset.cellSettingsKey=row.key;input.setAttribute('aria-label',cellSettingsText('name')+' '+(index+1));
+          input.addEventListener('input',function(){row.name=input.value;refreshPreview();});
+          line.append(kind,input);
+          [-1,1].forEach(function(step){const button=document.createElement('button');button.type='button';button.className='toolbar-btn';button.textContent=step<0?'←':'→';button.disabled=!draft.rows[index+step];button.setAttribute('aria-label',cellSettingsText(step<0?'earlier':'later')+' '+row.name);button.addEventListener('click',function(){move(row.key,draft.rows[index+step].key,step>0);});line.appendChild(button);});
+          if(row.kind==='book'&&row.lineIndex<0){const remove=document.createElement('button');remove.type='button';remove.className='toolbar-btn';remove.textContent='×';remove.setAttribute('aria-label',cellSettingsText('remove')+' '+row.name);remove.addEventListener('click',function(){draft.rows.splice(index,1);draw();});line.appendChild(remove);}
+          list.appendChild(line);
+        });refreshPreview();
+      }
+      add.addEventListener('click',function(){let number=1;const names=new Set(draft.rows.map(function(row){return row.name;}));while(names.has('BOOK'+number))number++;const row={key:makeLayerNameTagId(),name:'BOOK'+number,originalName:'BOOK'+number,kind:'book',lineIndex:-1,moved:true};const index=draft.rows.findIndex(function(item){return item.key===preview.dataset.selectedOrder;});draft.rows.splice(Math.max(0,index),0,row);preview.dataset.selectedOrder=row.key;draw();select(row.key);});
+      function close(){unmountAppDialog(backdrop);backdrop.remove();}
+      cancel.addEventListener('click',close);
+      apply.addEventListener('click',function(){
+        if(draft.rows.some(function(row){return !row.name.trim()||/[\r\n:]/.test(row.name);})){error.textContent=cellSettingsText('invalid');return;}
+        if(JSON.stringify(draft.rows)!==original)applyCellSettingsDraft(draft);
+        close();
+      });
+      document.body.appendChild(backdrop);draw();mountAppDialog(backdrop,{onRequestClose:close,initialFocus:cancel});
+      if(selectedKey)select(selectedKey);
+    }
+
+
+    // ══ 레이어 네임태그 — 개별 데이터 · 경계별 묶음 · 공용 배치와 렌더 ═══════════════════════════════════════════════════════════════
     function makeLayerNameTagId() {
       return 'layertag-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 7);
     }
@@ -17153,24 +17266,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       });
     }
 
-    // 목록을 통째로 갈아끼운 뒤(재생성·되돌리기) 사라진 이름표가 선택된 채 남지 않게 한다.
-    function pruneActiveLayerNameTag() {
-      if (state.activeLayerNameTag && !getLayerNameTagList().some(function(tag){ return tag && tag.id === state.activeLayerNameTag; })) {
-        state.activeLayerNameTag = null;
-      }
-    }
-
-    function selectLayerNameTagTarget(entry, index, labelArea, event) {
-      if (event) { event.preventDefault(); event.stopPropagation(); }
-      state.activeLayerNameTagTarget = { uid:entry.uid, label:entry.label, index:index, labelArea:Object.assign({}, labelArea), pageIndex:state.currentPreviewPage || 0 };
-      state.activeLayerNameTag = null;
-      refreshLayerNameTagOverlay();
-    }
-
     function handleCellLabelClick(event, entry, index, labelArea, anchorNode) {
       if (state.suppressNextClick) return;
       if (event && event.shiftKey) {
-        selectLayerNameTagTarget(entry, index, labelArea, event);
+        event.preventDefault(); event.stopPropagation();
+        openCellSettingsDialog(entry && entry.uid);
         return;
       }
       if (!entry) return;
@@ -17181,33 +17281,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         get:function(){ return entry.label || ''; },
         set:function(v){ updateCommandLayerNameByEntry(entry, v); }
       }, event);
-    }
-
-    function addLayerNameTagForTarget() {
-      const target = state.activeLayerNameTagTarget;
-      if (!target) return;
-      const tag = { id:makeLayerNameTagId(), uid:target.uid, text:String(target.label || 'NAME'), snap:'center' };
-      getLayerNameTagList().push(tag);
-      state.activeLayerNameTag = tag.id;
-      state.activeLayerNameTagTarget = null;
-      refreshLayerNameTagOverlay(); scheduleContentHistoryCommit();
-    }
-
-    function deleteActiveLayerNameTag() {
-      const id = state.activeLayerNameTag;
-      if (!id) return;
-      const list = getLayerNameTagList();
-      const idx = list.findIndex(function(tag){ return tag && tag.id === id; });
-      if (idx !== -1) list.splice(idx, 1);
-      state.activeLayerNameTag = null;
-      state.activeLayerNameTagTarget = null;
-      if (isLayerNameTagEditorOpen(id)) closeInlineTextEditor({ render:false });
-      refreshLayerNameTagOverlay(); scheduleContentHistoryCommit();
-    }
-
-    function updateLayerNameTagText(id, textValue) {
-      const tag = getLayerNameTagList().find(function(item){ return item && item.id === id; });
-      if (tag) tag.text = String(textValue || '').trim() || 'NAME';
     }
 
     function getLayerNameTagBlockGeometry(layout, block) {
@@ -17241,31 +17314,57 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       };
     }
 
-    function getLayerNameTagBox(tag, layout, block) {
-      const entries = layout.originalEntries || [];
-      const idx = entries.findIndex(function(entry){ return entry.uid === tag.uid; });
-      if (idx === -1 || !block) return null;
-      const tempBlock = getLayerNameTagBlockGeometry(layout, block);
-      if (!tempBlock) return null;
-      const labelArea = getCellLabelArea(tempBlock);
-      const colW = labelArea.w / Math.max(1, entries.length);
-      const naturalCenter = labelArea.x + idx * colW + colW / 2;
-      let xCenter = naturalCenter;
-      if (tag.snap === 'left') xCenter = labelArea.x + idx * colW;
-      if (tag.snap === 'right') xCenter = labelArea.x + (idx + 1) * colW;
-      const fontSize = 12;
-      const chars = String(tag.text || 'NAME').split('');
-      const w = Math.max(30, Math.min(colW * 0.9, 48));
-      const textBlockH = chars.length ? (chars.length * fontSize + Math.max(0, chars.length - 1)) : fontSize;
-      const verticalPad = Math.max(8, 20 - Math.max(0, chars.length - 2) * 2);
-      const h = Math.max(58, textBlockH + verticalPad * 2 + 10);
-      const y = labelArea.y - h - 10;
-      return { x:xCenter - w / 2, y:y, w:w, h:h, idx:idx, colW:colW, xCenter:xCenter, naturalCenter:naturalCenter, chars:chars, fontSize:fontSize, labelArea:labelArea };
+    function groupLayerNameTags(tags, entries) {
+      const groups = new Map();
+      (tags || []).forEach(function(tag){
+        const index = entries.findIndex(function(entry){ return entry.uid === tag.uid; });
+        if (index < 0) return;
+        const boundary = index + (tag.snap === 'left' ? 0 : tag.snap === 'right' ? 1 : 0.5);
+        if (!groups.has(boundary)) groups.set(boundary, { boundary:boundary, members:[] });
+        groups.get(boundary).members.push(tag);
+      });
+      return Array.from(groups.values()).sort(function(a,b){ return a.boundary - b.boundary; }).map(function(group){
+        let sourceOrder=0, manualOrder=-group.members.length;
+        group.members=group.members.map(function(tag){
+          const automatic=tag.autoBookTag||tag.autoTextBookTag;
+          return {tag:tag,order:automatic?sourceOrder++:Number.isFinite(tag.bookOrder)?tag.bookOrder:manualOrder++};
+        }).sort(function(a,b){return a.order-b.order;}).map(function(item){return item.tag;});
+        return group;
+      });
     }
 
-    function isLayerNameTagEditorOpen(id) {
-      const active = state.inlineTextEditor;
-      return !!(active && active.editConfig && active.editConfig.layerNameTagId === id);
+    function formatLayerNameTagGroup(members) {
+      const names = members.map(function(tag){ return String(tag.text || 'NAME'); });
+      const numbered = names.map(function(name){ return /^(BOOK)\s*(\d+)$/i.exec(name); });
+      return names.length > 1 && numbered.every(Boolean)
+        ? 'BOOK ' + numbered.map(function(match){ return match[2]; }).join(',')
+        : names.join(' / ');
+    }
+
+    function layoutLayerNameTagGroups(tags, entries, labelArea) {
+      const colW = labelArea.w / Math.max(1, entries.length), placed = [];
+      return groupLayerNameTags(tags, entries).map(function(group){
+        const text = formatLayerNameTagGroup(group.members), fontSize = 10;
+        const maxTextWidth = Math.max(28, Math.min(100, colW * 1.8) - 12), lines = [];
+        let line = '';
+        Array.from(text).forEach(function(char){
+          if (line && estimateTextMemoTextWidth(line + char, fontSize) > maxTextWidth) { lines.push(line); line = ''; }
+          line += char;
+        });
+        if (line) lines.push(line);
+        const w = Math.max(34, ...lines.map(function(line){ return estimateTextMemoTextWidth(line, fontSize) + 12; }));
+        const h = Math.max(28, lines.length * 12 + 14), xCenter = labelArea.x + group.boundary * colW;
+        const x = xCenter - w / 2;
+        let bottom = labelArea.y - 6;
+        // Adjacent boundaries may have wide names; raise only overlapping groups.
+        let collision;
+        while ((collision = placed.find(function(other){
+          return x < other.x + other.w + 4 && x + w + 4 > other.x && bottom > other.y - 4 && bottom - h < other.y + other.h + 4;
+        }))) bottom = collision.y - 4;
+        const box = { x:x, y:bottom-h, w:w, h:h, xCenter:xCenter, colW:colW, lines:lines, fontSize:fontSize, labelArea:labelArea, members:group.members };
+        placed.push(box);
+        return box;
+      });
     }
 
     function renderLayerNameTagShape(tag, box, interactive, container) {
@@ -17274,132 +17373,29 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const tipX = x + w / 2;
       const path = 'M ' + (x + 5) + ' ' + y + ' L ' + (x + w - 5) + ' ' + y + ' Q ' + (x + w) + ' ' + y + ' ' + (x + w) + ' ' + (y + 5) + ' L ' + (x + w) + ' ' + (y + h - 8) + ' L ' + (tipX + 6) + ' ' + (y + h - 8) + ' L ' + tipX + ' ' + (y + h) + ' L ' + (tipX - 6) + ' ' + (y + h - 8) + ' L ' + x + ' ' + (y + h - 8) + ' L ' + x + ' ' + (y + 5) + ' Q ' + x + ' ' + y + ' ' + (x + 5) + ' ' + y + ' Z';
       group.appendChild(el('path', { d:path, fill:'rgba(255,255,255,.92)', stroke:'#111', 'stroke-width':1.2 }));
-      const textBlockH = box.chars.length ? (box.chars.length * box.fontSize + Math.max(0, box.chars.length - 1)) : box.fontSize;
-      const textTop = box.y + Math.max(6, (box.h - textBlockH) / 2);
+      group.setAttribute('data-layer-tag-ids', box.members.map(function(item){ return item.id; }).join(' '));
+      const title = el('title', {}, box.members.map(function(item){ return item.text; }).join(' / ')); group.appendChild(title);
+      const textTop = box.y + 7;
+      box.lines.forEach(function(value,index){
+        group.appendChild(el('text', { x:box.x+box.w/2, y:textTop+index*12, fill:'#111', 'font-size':box.fontSize, 'font-family':'Arial, Helvetica, sans-serif', 'font-weight':'600', 'text-anchor':'middle', 'dominant-baseline':'hanging', 'pointer-events':'none' }, value));
+      });
       if (interactive) {
-        const editHit = el('rect', {
-          x:box.x, y:Math.max(box.y, textTop - 10), width:Math.max(14, box.w), height:Math.min(box.h, textBlockH + 20),
-          fill:'transparent', stroke:'transparent', 'pointer-events':'all', class:'layer-tag-text-edit-hit'
-        });
-        editHit.style.cursor = 'text';
-        editHit.addEventListener('pointerdown', function(event){ event.preventDefault(); event.stopPropagation(); if (event.stopImmediatePropagation) event.stopImmediatePropagation(); }, { passive:false });
-        editHit.addEventListener('click', function(event){
-          event.preventDefault(); event.stopPropagation();
-          state.activeLayerNameTag = tag.id;
-          state.activeLayerNameTagTarget = null;
-          const anchor = makeInlineEditorVirtualAnchor(editHit, { 'font-size':String(box.fontSize), 'font-weight':'800', 'text-anchor':'middle' });
-          openInlineTextEditor(anchor, {
-            layerNameTagId:tag.id,
-            get:function(){ return tag.text || ''; },
-            set:function(v){ updateLayerNameTagText(tag.id, v); }
-          }, event);
-        });
-        group.appendChild(editHit);
-      }
-      const textNode = el('text', { x:box.x + box.w / 2, y:textTop, fill:'#111', 'font-size':box.fontSize, 'font-family':'Arial, Helvetica, sans-serif', 'font-weight':'800', 'text-anchor':'middle', 'dominant-baseline':'hanging', 'pointer-events':'none' });
-      box.chars.forEach(function(ch, i){ textNode.appendChild(el('tspan', { x:box.x + box.w / 2, dy:i === 0 ? 0 : box.fontSize + 1 }, ch)); });
-      group.appendChild(textNode);
-      if (interactive) {
-        group.style.cursor = 'grab';
-        group.addEventListener('pointerdown', function(event){ beginLayerNameTagDrag(event, tag.id); }, { passive:false });
-        group.addEventListener('click', function(event){
-          const drag = state.layerNameTagDrag;
-          if (drag && drag.id === tag.id && drag.moved) return;
-          event.preventDefault(); event.stopPropagation();
-          state.activeLayerNameTag = tag.id;
-          state.activeLayerNameTagTarget = null;
-          refreshLayerNameTagOverlay();
-        });
+        group.style.cursor = 'pointer';
+        group.setAttribute('role','button'); group.setAttribute('tabindex','0');
+        group.setAttribute('aria-label', cellSettingsText('title') + ': ' + title.textContent);
+        const open = function(event){ event.preventDefault(); event.stopPropagation(); openCellSettingsDialog(tag.id); };
+        group.addEventListener('click', open);
+        attachContextAction(group, open);
+        group.addEventListener('keydown', function(event){ if (event.key === 'Enter' || event.key === ' ') open(event); });
+        group.addEventListener('pointerdown', function(event){ event.stopPropagation(); });
       }
       container.appendChild(group);
 
     }
 
-    function renderLayerNameTagAddButton(layout, interactive, container) {
-      const target = state.activeLayerNameTagTarget;
-      if (!interactive || !target || target.pageIndex !== (state.currentPreviewPage || 0) || currentSvgTarget !== svg) return;
-      const labelArea = target.labelArea;
-      if (!labelArea) return;
-      if (getLayerNameTagList().some(function(tag){ return tag && tag.uid === target.uid; })) return;
-      const entries = layout.originalEntries || [];
-      const idx = Math.max(0, Math.min(entries.length - 1, Number(target.index || 0)));
-      const colW = labelArea.w / Math.max(1, entries.length);
-      const cx = labelArea.x + idx * colW + colW / 2;
-      const cy = labelArea.y - 22;
-      const g = el('g', { class:'layer-tag-action-btn', 'pointer-events':'all' });
-      g.appendChild(el('circle', { cx:cx, cy:cy, r:12, fill:'white', stroke:RED, 'stroke-width':1.8 }));
-      g.appendChild(el('text', { x:cx, y:cy + 0.5, fill:RED, 'font-size':17, 'font-family':'Arial, Helvetica, sans-serif', 'font-weight':'900', 'text-anchor':'middle', 'dominant-baseline':'middle', 'pointer-events':'none' }, '+'));
-      g.addEventListener('click', function(event){ event.preventDefault(); event.stopPropagation(); addLayerNameTagForTarget(); });
-      container.appendChild(g);
-    }
-
-    function beginLayerNameTagDrag(event, id) {
-      if (state.memoMode || state.positionMode || state.textMemoEditMode) return;
-      event.preventDefault();
-      event.stopPropagation();
-      state.activeLayerNameTag = id;
-      const point = getSvgPointFromPointerEvent(event);
-      const tag = getLayerNameTagList().find(function(t){ return t && t.id === id; });
-      const layout = layerNameTagPreviewLayout;
-      const box = tag && layout ? getLayerNameTagBox(tag, layout, getBlocksForPage(layout, state.currentPreviewPage || 0)[0]) : null;
-      if (!box) return;
-      state.layerNameTagDrag = { pointerId:event.pointerId, id:id, startX:point.x, originSnap:tag.snap, box:box, sourceTarget:svg, moved:false };
-      document.documentElement.classList.add('layer-tag-dragging');
-      if (svg.setPointerCapture) {
-        try { svg.setPointerCapture(event.pointerId); } catch (err) {}
-      }
-    }
-
-    function continueLayerNameTagDrag(event) {
-      const drag = state.layerNameTagDrag;
-      if (!drag || drag.pointerId !== event.pointerId) return;
-      event.preventDefault();
-      const tag = getLayerNameTagList().find(function(t){ return t && t.id === drag.id; });
-      if (!tag) return;
-      const box = drag.box;
-      if (!box) return;
-      const point = getSvgPointFromPointerEvent(event);
-      if (Math.abs(point.x - drag.startX) > 3) drag.moved = true;
-      const naturalCenter = Number(box.naturalCenter || box.xCenter || point.x);
-      const nextSnap = point.x < naturalCenter - box.colW * 0.36 ? 'left' : point.x > naturalCenter + box.colW * 0.36 ? 'right' : 'center';
-      if (tag.snap === nextSnap) return;
-      tag.snap = nextSnap;
-      refreshLayerNameTagOverlay(); scheduleContentHistoryCommit();
-    }
-
-    function cancelLayerNameTagDrag(event) {
-      const drag = state.layerNameTagDrag;
-      if (!drag) return;
-      const tag = getLayerNameTagList().find(function(t){ return t && t.id === drag.id; });
-      if (tag) tag.snap = drag.originSnap;
-      const target = drag.sourceTarget;
-      if (target && target.releasePointerCapture && event && event.pointerId !== undefined) {
-        try { target.releasePointerCapture(event.pointerId); } catch (err) {}
-      }
-      state.layerNameTagDrag = null;
-      document.documentElement.classList.remove('layer-tag-dragging');
-      refreshLayerNameTagOverlay();
-      commitPendingContentHistory();
-    }
-
-    function endLayerNameTagDrag(event) {
-      const drag = state.layerNameTagDrag;
-      if (!drag || drag.pointerId !== event.pointerId) return;
-      event.preventDefault();
-      const target = drag.sourceTarget;
-      if (target && target.releasePointerCapture) {
-        try { target.releasePointerCapture(event.pointerId); } catch (err) {}
-      }
-      state.layerNameTagDrag = null;
-      document.documentElement.classList.remove('layer-tag-dragging');
-      refreshLayerNameTagOverlay();
-      commitPendingContentHistory();
-    }
-
     let layerNameTagPreviewLayout = null;
     function refreshLayerNameTagOverlay() {
-      if (!layerNameTagPreviewLayout || currentSvgTarget !== svg) return;
-      renderLayerNameTags(state.currentPreviewPage || 0, layerNameTagPreviewLayout, true);
+      if (layerNameTagPreviewLayout && currentSvgTarget === svg) renderLayerNameTags(state.currentPreviewPage || 0, layerNameTagPreviewLayout, true);
     }
 
     function renderLayerNameTags(pageIndex, layout, interactive) {
@@ -17409,14 +17405,13 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const blocks = getBlocksForPage(layout, pageIndex);
       withDrawLayer('output', function(){
         const container = el('g', { 'data-layer-name-tags':'true' });
-        getLayerNameTagList().forEach(function(tag){
-          blocks.forEach(function(block){
-            const box = getLayerNameTagBox(tag, layout, block);
-            if (!box) return;
-            renderLayerNameTagShape(tag, box, live, container);
+        blocks.forEach(function(block){
+          const geometry = getLayerNameTagBlockGeometry(layout, block);
+          if (!geometry) return;
+          layoutLayerNameTagGroups(getLayerNameTagList(), layout.originalEntries || [], getCellLabelArea(geometry)).forEach(function(box){
+            renderLayerNameTagShape(box.members[0], box, live && !state.memoMode && !state.positionMode && !state.textMemoEditMode && !state.shakuMode, container);
           });
         });
-        renderLayerNameTagAddButton(layout, live, container);
         const previous = live && svg.querySelector('[data-layer-name-tags]');
         if (previous) previous.replaceWith(container);
         else appendSvgNode(container);
@@ -18549,7 +18544,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
                   const labelHit = el('rect', { x:templateLabelArea.x + idx * labelColW, y:templateLabelArea.y, width:labelColW, height:templateLabelArea.h, fill:'transparent', stroke:'transparent', 'pointer-events':'all' });
                   attachCellLabelDrag(labelHit, idx, params.originalEntries, templateLabelArea);
                   labelHit.style.cursor = 'pointer';
-                  labelHit.setAttribute('title', 'Click: edit label / Shift-click: name tag');
+                  labelHit.setAttribute('title', cellSettingsText('labelHint'));
                   labelHit.addEventListener('click', function(event){ handleCellLabelClick(event, entry, idx, templateLabelArea, labelHit); });
                   appendSvgNode(labelHit);
                 }
@@ -18607,7 +18602,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
                   const labelHit = el('rect', { x:labelArea.x + idx * labelColW, y:labelArea.y, width:labelColW, height:labelArea.h, fill:'transparent', stroke:'transparent', 'pointer-events':'all' });
                   attachCellLabelDrag(labelHit, idx, params.originalEntries, labelArea);
                   labelHit.style.cursor = 'pointer';
-                  labelHit.setAttribute('title', 'Click: edit label / Shift-click: name tag');
+                  labelHit.setAttribute('title', cellSettingsText('labelHint'));
                   labelHit.addEventListener('click', function(event){ handleCellLabelClick(event, entry, idx, labelArea, labelHit); });
                   appendSvgNode(labelHit);
                 }
@@ -18684,14 +18679,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
                 prepareTouchDragHit(hit);
                 hit.setAttribute('title', 'Click: dot on/off / Shift-click: text');
                 attachCellLongPressDrag(hit, entry, absFrame, { minFrame:params.startFrame, maxFrame:params.startFrame + params.frameCount - 1 }, { block:tempBlock, colIndex:colIndex });
-                attachTouchContextAction(hit, function(contextEvent){ openCellFrameTextEditor(hit, entry, absFrame, '', contextEvent, false); });
-                hit.addEventListener('contextmenu', function(contextEvent){
-                  contextEvent.preventDefault();
-                  contextEvent.stopPropagation();
-                  if (contextEvent.stopImmediatePropagation) contextEvent.stopImmediatePropagation();
-                  openCellFrameTextEditor(hit, entry, absFrame, '', contextEvent, false);
-                  suppressNextClickBriefly(350);
-                });
+                attachContextAction(hit, function(contextEvent){ openCellFrameTextEditor(hit, entry, absFrame, '', contextEvent, false); });
                 hit.addEventListener('click', function(event){
                   if (handleSerifuRangeShiftClick(event, entry, absFrame)) return;
                   if (event.shiftKey) {
@@ -18738,8 +18726,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
                 labelNode.setAttribute('data-inline-editable', 'shift-only');
                 labelNode.setAttribute('title', 'Click to edit / Shift-click to change mark / drag to move');
                 attachCellLongPressDrag(labelNode, entry, absFrame, { minFrame:params.startFrame, maxFrame:params.startFrame + params.frameCount - 1 }, { tokenDragCursor:false, block:tempBlock, colIndex:colIndex });
-                attachTouchContextAction(labelNode, function(contextEvent){ return handleCellMarkerClick(contextEvent, entry, absFrame, seg, key); });
-              labelNode.addEventListener('contextmenu', function(contextEvent){ handleCellMarkerClick(contextEvent, entry, absFrame, seg, key); suppressNextClickBriefly(350); });
+                attachContextAction(labelNode, function(contextEvent){ handleCellMarkerClick(contextEvent, entry, absFrame, seg, key); });
               labelNode.addEventListener('click', function(event){
                 if (state.suppressNextClick) return;
                 if (handleSerifuRangeShiftClick(event, entry, absFrame)) return;
@@ -18777,14 +18764,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
               prepareTouchDragHit(dotHit);
               dotHit.setAttribute('title', 'Click: dot on/off / Shift-click: text');
               attachCellLongPressDrag(dotHit, entry, absFrame, { minFrame:params.startFrame, maxFrame:params.startFrame + params.frameCount - 1 }, { tokenDragCursor:true, block:tempBlock, colIndex:colIndex });
-              attachTouchContextAction(dotHit, function(contextEvent){ openCellFrameTextEditor(dotHit, entry, absFrame, '', contextEvent, false); });
-              dotHit.addEventListener('contextmenu', function(contextEvent){
-                contextEvent.preventDefault();
-                contextEvent.stopPropagation();
-                if (contextEvent.stopImmediatePropagation) contextEvent.stopImmediatePropagation();
-                openCellFrameTextEditor(dotHit, entry, absFrame, '', contextEvent, false);
-                suppressNextClickBriefly(350);
-              });
+              attachContextAction(dotHit, function(contextEvent){ openCellFrameTextEditor(dotHit, entry, absFrame, '', contextEvent, false); });
               dotHit.addEventListener('click', function(event){
                 if (handleSerifuRangeShiftClick(event, entry, absFrame)) return;
                 if (event.shiftKey) {
@@ -18959,14 +18939,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       prepareTouchDragHit(hit);
       hit.setAttribute('title', 'Click: dot on/off / Shift-click: text');
       attachCellLongPressDrag(hit, entry, frame, { minFrame:block.start, maxFrame:block.end }, { block:block, colIndex:columnIndex });
-      attachTouchContextAction(hit, function(contextEvent){ openCellFrameTextEditor(hit, entry, frame, '', contextEvent, false); });
-      hit.addEventListener('contextmenu', function(contextEvent){
-        contextEvent.preventDefault();
-        contextEvent.stopPropagation();
-        if (contextEvent.stopImmediatePropagation) contextEvent.stopImmediatePropagation();
-        openCellFrameTextEditor(hit, entry, frame, '', contextEvent, false);
-        suppressNextClickBriefly(350);
-      });
+      attachContextAction(hit, function(contextEvent){ openCellFrameTextEditor(hit, entry, frame, '', contextEvent, false); });
       hit.addEventListener('click', function(event){
         if (handleSerifuRangeShiftClick(event, entry, frame)) return;
         if (event.shiftKey) {
@@ -20373,7 +20346,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const gap = getTextMemoGapRect();
       const hit = el('rect', { x:gap.x, y:gap.y, width:gap.w, height:gap.h, fill:'transparent', stroke:'transparent', 'pointer-events':'all', class:'text-memo-hit-area' });
       hit.style.cursor = 'default';
-      hit.addEventListener('pointerdown', function(event){
+      hit.addEventListener('click', function(event){
         if (event.button !== undefined && event.button !== 0) return;
         const point = getSvgPointFromPointerEvent(event);
         if (getTextMemoAtPoint(pageIndex, point)) return;
@@ -20390,7 +20363,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         if (event.stopImmediatePropagation) event.stopImmediatePropagation();
         createInitialTextMemoAtTopLeft(pageIndex);
       }, { passive:false });
-      hit.addEventListener('contextmenu', function(event){
+      attachContextAction(hit, function(event){
         const point = getSvgPointFromPointerEvent(event);
         const memo = getTextMemoAtPoint(pageIndex, point);
         openTextMemoContextMenu(event, pageIndex, memo && memo.id);
@@ -20518,7 +20491,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         x += w;
       });
       group.addEventListener('pointerdown', function(event){ beginTextMemoPointerIntent(event, memo.id, state.currentPreviewPage || 0); }, { passive:false });
-      group.addEventListener('contextmenu', function(event){ openTextMemoContextMenu(event, state.currentPreviewPage || 0, memo.id); });
+      attachContextAction(group, function(event){ openTextMemoContextMenu(event, state.currentPreviewPage || 0, memo.id); });
       group.addEventListener('wheel', handleTextMemoWheel, { passive:false });
       appendSvgNode(group);
     }
@@ -20536,14 +20509,14 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         'data-text-memo-id':memo.id
       });
       hit.style.cursor = 'text';
-      hit.addEventListener('contextmenu', function(event){ openTextMemoContextMenu(event, pageIndex, memo.id); });
+      attachContextAction(hit, function(event){ openTextMemoContextMenu(event, pageIndex, memo.id); });
       hit.addEventListener('pointerdown', function(event){ beginTextMemoPointerIntent(event, memo.id, pageIndex); }, { passive:false });
       appendSvgNode(hit);
     }
 
     function renderTextMemoControls(memo) {
       const group = el('g', { class:'text-memo-controls', 'data-text-memo-id':memo.id });
-      group.addEventListener('contextmenu', function(event){ openTextMemoContextMenu(event, state.currentPreviewPage || 0, memo.id); });
+      attachContextAction(group, function(event){ openTextMemoContextMenu(event, state.currentPreviewPage || 0, memo.id); });
       const outline = el('rect', {
         x:memo.x, y:memo.y, width:memo.w, height:memo.h, rx:6, ry:6,
         fill:'rgba(255,255,255,0.2)', stroke:RED, 'stroke-width':2, 'stroke-dasharray':'8 5',
@@ -20965,6 +20938,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     function beginTextMemoResize(event, id, mode) {
       if (state.memoMode || !shouldShowTextMemoControls()) return;
+      if ((event.button !== undefined && event.button !== 0) || event.isPrimary === false) return;
       event.preventDefault();
       event.stopPropagation();
       if (event.stopImmediatePropagation) event.stopImmediatePropagation();
@@ -21741,8 +21715,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         applyContentInputs(snap);
         applyContentState(snap);
         if (activeSheetSnapshot) return;
-        pruneActiveLayerNameTag();
-        syncPaperLayoutControls();
+          syncPaperLayoutControls();
         // 카메라 지시 셀렉터는 textarea 의 INPUT 이벤트로만 다시 그려진다. 내용 복원은 .value
         // 대입이라 이벤트가 없어, 단계를 전환하면 **이전 단계의 셀렉터가 그대로 남았다**
         // (실측: 한 줄짜리 단계에서 세 줄짜리 단계의 셀렉터 둘이 떠 있었다). 작업 열기 경로에는
@@ -21797,7 +21770,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     //     그리고 HTML5 드래그앤드롭(`textCommandColumnDragLine`) — 내용은 drop 에서 한 번에 바뀐다
     // 2026-09-19 되짚기에서 제스처성 상태 15 개를 전수로 분류해 빠진 것이 없음을 확인했다.
     function editorHistoryGestureActive() {
-      return !!(state.memoCurrentStroke || state.layoutDrag || state.activeTimelineDrag || state.cellLongPressDrag || state.cellLabelDrag || state.serifuRangeDrag || state.shakuDrag || state.textMemoPointerIntent || state.textMemoResize || state.pastedImageDrag || state.layerNameTagDrag);
+      return !!(state.memoCurrentStroke || state.layoutDrag || state.activeTimelineDrag || state.cellLongPressDrag || state.cellLabelDrag || state.serifuRangeDrag || state.shakuDrag || state.textMemoPointerIntent || state.textMemoResize || state.pastedImageDrag);
     }
 
     function applyEditorHistorySnapshot(snapshot, pageIndex) {
@@ -22067,7 +22040,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         btn.setAttribute('aria-pressed', active && item.id === active.id ? 'true' : 'false');
         btn.addEventListener('click', function(){ switchSheetStage(item.id); });
         btn.addEventListener('dblclick', function(event){ event.preventDefault(); beginRenameStageSlot(btn, item); });
-        btn.addEventListener('contextmenu', function(event){ openStageSlotContextMenu(event, btn, item); });
+        attachContextAction(btn, function(event){ openStageSlotContextMenu(event, btn, item); });
         stageSlotRowEl.appendChild(btn);
       });
       const emptyCount = Math.max(1, unused.length);
@@ -23423,59 +23396,170 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       }
     }
 
-    function readClipSqliteTableRows(arrayBuffer, tableName) {
-      const bytes = new Uint8Array(arrayBuffer);
-      const sqliteSignature = [0x53,0x51,0x4c,0x69,0x74,0x65,0x20,0x66,0x6f,0x72,0x6d,0x61,0x74,0x20,0x33,0x00];
-      const dbOffset = findBytePattern(bytes, sqliteSignature, 0);
-      if (dbOffset < 0) throw new Error('CLIP preview database not found');
-      const db = bytes.subarray(dbOffset);
-      let pageSize = readUint16BE(db, 16);
-      if (pageSize === 1) pageSize = 65536;
-      if (!pageSize || pageSize > db.length) throw new Error('Invalid CLIP SQLite page size');
-      const usableSize = pageSize - (db[20] || 0);
-      const masterRows = [];
-      collectSqliteTableRows(db, pageSize, usableSize, 1, masterRows, {});
-      let rootPage = 0;
-      masterRows.some(function(row) {
-        const values = row.values || [];
-        if (values[0] === 'table' && values[1] === tableName) {
-          rootPage = Number(values[3]) || 0;
-          return true;
+    function clipParseBlockGrid(u8, start, end) {
+      var dv = new DataView(u8.buffer, u8.byteOffset, u8.byteLength);
+      if (start < 0 || end > u8.length || end < start) throw new Error('Invalid CLIP bitmap extent');
+      var ii = start, blocks = [], blockCount1 = 0;
+      while (ii < end) {
+        if (clipEqAt(u8, ii + 4, CLIP_STATUS_TAG) && u8[ii] === 0 && u8[ii + 1] === 0 && u8[ii + 2] === 0 && u8[ii + 3] === 0x0b) {
+          ii += blockCount1 * 4 + 12 + (CLIP_STATUS_TAG.length + 4);
+        } else if (clipEqAt(u8, ii + 4, CLIP_CHECKSUM_TAG) && u8[ii] === 0 && u8[ii + 1] === 0 && u8[ii + 2] === 0 && u8[ii + 3] === 0x0d) {
+          ii += 4 + CLIP_CHECKSUM_TAG.length + 12 + blockCount1 * 4;
+        } else if (clipEqAt(u8, ii + 8, CLIP_BLOCK_DATA_BEGIN)) {
+          var blockSize = dv.getUint32(ii, false);
+          if (blockSize < 100 || ii + blockSize > end) throw new Error('Invalid CLIP tile extent');
+          var hasData = dv.getUint32(ii + 8 + CLIP_BLOCK_DATA_BEGIN.length + 4 * 4, false);
+          if (hasData === 1) {
+            var subOff = ii + 8 + CLIP_BLOCK_DATA_BEGIN.length + 7 * 4;
+            var subEnd = ii + blockSize - (4 + CLIP_BLOCK_DATA_END.length);
+            blocks.push(u8.subarray(subOff, subEnd));
+          } else if (hasData === 0) blocks.push(null); else throw new Error('Invalid CLIP tile flag');
+          blockCount1 += 1; ii += blockSize;
+        } else {
+          throw new Error('cannot parse block grid at ' + ii);
         }
-        return false;
-      });
-      if (!rootPage) throw new Error('CLIP ' + tableName + ' table not found');
-      const rows = [];
-      collectSqliteTableRows(db, pageSize, usableSize, rootPage, rows, {});
-      return rows;
+      }
+      if (ii !== end) throw new Error('Invalid CLIP bitmap length');
+      return blocks;
     }
 
-    function getClipPreviewImageType(bytes) {
-      if (!bytes || bytes.length < 4) return '';
-      if (bytes.length >= 8 &&
-          bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47 &&
-          bytes[4] === 0x0d && bytes[5] === 0x0a && bytes[6] === 0x1a && bytes[7] === 0x0a) return 'image/png';
-      if (bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) return 'image/jpeg';
-      return '';
+    function clipParseOffscreenAttribute(attr) {
+      var dv = new DataView(attr.buffer, attr.byteOffset, attr.byteLength);
+      var p = 0;
+      function u32() { var v = dv.getUint32(p, false); p += 4; return v; }
+      function str() { var n = u32(); var s = new TextDecoder('utf-16be').decode(attr.subarray(p, p + n * 2)); p += n * 2; return s; }
+      var headerSize = u32(); if (headerSize !== 16) throw new Error('unexpected offscreen attribute header size ' + headerSize);
+      var infoSize = u32(); if (infoSize !== 102) throw new Error('unexpected offscreen attribute info size ' + infoSize);
+      var extraSize = u32(); if (extraSize !== 42 && extraSize !== 58) throw new Error('unexpected offscreen attribute extra size ' + extraSize);
+      u32();
+      var tag = str(); if (tag !== 'Parameter') throw new Error('expected Parameter tag');
+      var width = u32(), height = u32(), gridW = u32(), gridH = u32();
+      // MoArt의 검증된 타일 해독을 재사용한다. (1,4)=알파+BGRX, 단일 채널은 그림으로 읽지 않는다.
+      if (!width || !height || width * height > 67108864 || gridW !== Math.ceil(width / 256) || gridH !== Math.ceil(height / 256)) throw new Error('Invalid CLIP bitmap dimensions');
+      var attributesArrays = [];
+      for (var i = 0; i < 16; i++) attributesArrays.push(u32());
+      var channelPacking = [attributesArrays[1], attributesArrays[2]];
+      var isLayerImage = (channelPacking[0] === 1 && channelPacking[1] === 4);
+      var initColorTag = str(); if (initColorTag !== 'InitColor') throw new Error('expected InitColor tag');
+      u32();
+      var defaultFillWhite = u32();
+      return { width: width, height: height, gridW: gridW, gridH: gridH, defaultFillWhite: !!defaultFillWhite,
+               isLayerImage: isLayerImage, channelPacking: channelPacking };
     }
 
-    function extractClipCanvasPreview(arrayBuffer) {
-      const rows = readClipSqliteTableRows(arrayBuffer, 'CanvasPreview');
-      const candidates = [];
-      rows.forEach(function(row) {
-        const values = row.values || [];
-        const width = Number(values[4]) || 0;
-        const height = Number(values[5]) || 0;
-        const imageBytes = values[6];
-        const mime = getClipPreviewImageType(imageBytes);
-        if (mime) candidates.push({ width:width, height:height, bytes:imageBytes, mime:mime });
+    async function clipDecodeTileToRgba(compressed) {
+      var raw = await clipInflateDeflate(compressed);
+      var k = 256 * 256;
+      if (raw.length !== 5 * k) throw new Error('unexpected tile size ' + raw.length);
+      var out = new Uint8ClampedArray(k * 4);
+      for (var i = 0; i < k; i++) {
+        var a = raw[i], b = raw[k + i * 4], g = raw[k + i * 4 + 1], r = raw[k + i * 4 + 2];
+        out[i * 4] = r; out[i * 4 + 1] = g; out[i * 4 + 2] = b; out[i * 4 + 3] = a;
+      }
+      return out;
+    }
+
+    // 저장된 100% 루트 합성이 있으면 그대로 사용한다. 없으면 표시된 래스터 트리를 합성한다.
+    // 미지원 효과/마스크를 조용히 떨어뜨리거나 CanvasPreview를 확대해 원본으로 가장하지 않는다.
+    async function readClipPaperCanvas(arrayBuffer, db) {
+      const canvasInfo = (db.readTable('Canvas') || [])[0] || {};
+      const width = Number(canvasInfo.CanvasWidth), height = Number(canvasInfo.CanvasHeight);
+      if (!Number.isInteger(width) || !Number.isInteger(height) || width <= 0 || height <= 0 || width * height > 67108864) throw new Error('Invalid CLIP canvas size');
+      function table(name) { return new Map((db.readTable(name) || []).map(function(row){ return [row.MainId, row]; })); }
+      const layers = table('Layer'), mips = table('Mipmap'), infos = table('MipmapInfo'), offscreens = table('Offscreen');
+      const root = layers.get(canvasInfo.CanvasRootFolder);
+      if (!root) throw new Error(clipSheetText('paperFullMissing'));
+      const u8 = new Uint8Array(arrayBuffer), chunks = new Map();
+      for (const chunk of clipIterateChunks(u8)) {
+        if (chunk.name !== 'Exta') continue;
+        const exta = clipParseExtaChunk(u8, chunk.off, chunk.size); chunks.set(exta.chunkId, exta);
+      }
+      function newCanvas(w, h) { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; }
+      async function bitmap(layer) {
+        const mip = mips.get(layer.LayerRenderMipmap), info = mip && infos.get(mip.BaseMipmapInfo);
+        const os = info && Number(info.ThisScale) === 100 && offscreens.get(info.Offscreen);
+        if (!os || !os.Attribute || !os.BlockData) return null;
+        const exta = chunks.get(new TextDecoder().decode(os.BlockData));
+        if (!exta || !exta.isBitmap) return null;
+        const attr = clipParseOffscreenAttribute(os.Attribute);
+        if (!attr.isLayerImage) throw new Error(clipSheetText('paperFullMissing'));
+        const tiles = clipParseBlockGrid(u8, exta.binOff, exta.binOff + exta.binLen);
+        if (tiles.length !== attr.gridW * attr.gridH) throw new Error('Incomplete CLIP canvas tiles');
+        const canvas = newCanvas(attr.width, attr.height), ctx = canvas.getContext('2d');
+        if (!ctx) throw new Error('Canvas is unavailable');
+        if (attr.defaultFillWhite) { ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, attr.width, attr.height); }
+        for (let i = 0; i < tiles.length; i++) {
+          if (!tiles[i]) continue;
+          const rgba = await clipDecodeTileToRgba(tiles[i]);
+          ctx.putImageData(new ImageData(rgba, 256, 256), (i % attr.gridW) * 256, Math.floor(i / attr.gridW) * 256);
+        }
+        return { canvas:canvas, x:(Number(layer.LayerOffsetX) || 0) + (Number(layer.LayerRenderOffscrOffsetX) || 0),
+          y:(Number(layer.LayerOffsetY) || 0) + (Number(layer.LayerRenderOffscrOffsetY) || 0) };
+      }
+      const cached = await bitmap(root), output = newCanvas(width, height);
+      if (cached) {
+        output.getContext('2d').drawImage(cached.canvas, cached.x, cached.y);
+        cached.canvas.width = cached.canvas.height = 0;
+        return output;
+      }
+      const visiting = new Set();
+      async function drawChildren(parent, target, depth) {
+        if (depth > 32) throw new Error('CLIP folder nesting is too deep');
+        let id = parent.LayerFirstChildIndex;
+        while (id) {
+          if (visiting.has(id)) throw new Error('Cyclic CLIP layer tree');
+          visiting.add(id);
+          const layer = layers.get(id);
+          if (!layer) throw new Error('Missing CLIP layer');
+          id = layer.LayerNextIndex;
+          if (!clipSheetLayerVisible(layer)) continue;
+          // Normal만 지원한다. 미지원 혼합·클리핑·마스크를 보통 합성으로 대체하지 않는다.
+          if (Number(layer.LayerComposite) !== 0 || Number(layer.LayerClip) || ((Number(layer.LayerVisibility) & 2) && Number(layer.LayerLayerMaskMipmap))) throw new Error(clipSheetText('paperCompositeUnsupported'));
+          const opacity = layer.LayerOpacity == null ? 1 : Math.max(0, Math.min(1, Number(layer.LayerOpacity) / 256));
+          let piece;
+          if (layer.LayerFolder) {
+            if (Number(layer.LayerOffsetX) || Number(layer.LayerOffsetY)) throw new Error(clipSheetText('paperCompositeUnsupported'));
+            // 이 경로의 자식도 Normal뿐이므로 불투명 폴더마다 전면 캔버스를 만들 필요가 없다.
+            if (opacity === 1) { await drawChildren(layer, target, depth + 1); continue; }
+            piece = { canvas:newCanvas(width, height), x:0, y:0 };
+            try { await drawChildren(layer, piece.canvas, depth + 1); }
+            catch (err) { piece.canvas.width = piece.canvas.height = 0; throw err; }
+          } else {
+            piece = await bitmap(layer);
+            if (!piece) throw new Error(clipSheetText('paperFullMissing'));
+          }
+          try {
+            const ctx = target.getContext('2d');
+            ctx.globalAlpha = opacity;
+            ctx.drawImage(piece.canvas, piece.x, piece.y); ctx.globalAlpha = 1;
+          } finally { piece.canvas.width = piece.canvas.height = 0; }
+        }
+      }
+      try { await drawChildren(root, output, 0); return output; }
+      catch (err) { output.width = output.height = 0; throw err; }
+    }
+
+    function confirmClipPaperChoice(messageKey, actionKey, values) {
+      return new Promise(function(resolve){
+        const backdrop = document.createElement('div'); backdrop.className = 'app-dialog-backdrop clip-paper-warning';
+        const box = document.createElement('div'); box.className = 'app-dialog';
+        box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true');
+        box.setAttribute('aria-label', clipSheetText(messageKey, values));
+        const message = document.createElement('p'); message.className = 'app-dialog-body';
+        message.textContent = clipSheetText(messageKey, values); box.appendChild(message);
+        let settled = false;
+        function finish(value) {
+          if (settled) return; settled = true;
+          unmountAppDialog(backdrop); backdrop.remove(); resolve(value);
+        }
+        const actions = document.createElement('footer'); actions.className = 'app-dialog-actions';
+        const cancel = document.createElement('button'); cancel.type = 'button'; cancel.className = 'toolbar-btn';
+        cancel.textContent = clipSheetText('cancel'); cancel.addEventListener('click', function(){ finish(false); });
+        const proceed = document.createElement('button'); proceed.type = 'button'; proceed.className = 'toolbar-btn primary';
+        proceed.textContent = clipSheetText(actionKey); proceed.addEventListener('click', function(){ finish(true); });
+        actions.append(cancel, proceed); box.appendChild(actions); backdrop.appendChild(box); document.body.appendChild(backdrop);
+        mountAppDialog(backdrop, { onRequestClose:function(){ finish(false); }, initialFocus:cancel });
       });
-      candidates.sort(function(a, b) {
-        return ((b.width * b.height) || 0) - ((a.width * a.height) || 0) || b.bytes.length - a.bytes.length;
-      });
-      if (!candidates.length) throw new Error('CLIP canvas preview image not found');
-      const best = candidates[0];
-      return { blob:new Blob([best.bytes], { type:best.mime }), width:best.width, height:best.height };
     }
 
     function decodePackBitsRow(bytes, offset, expected) {
@@ -24005,6 +24089,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return true;
     }
     const CLIP_BLOCK_DATA_BEGIN = clipUtf16be('BlockDataBeginChunk');
+    const CLIP_BLOCK_DATA_END = clipUtf16be('BlockDataEndChunk');
+    const CLIP_STATUS_TAG = clipUtf16be('BlockStatus');
+    const CLIP_CHECKSUM_TAG = clipUtf16be('BlockCheckSum');
 
     function clipSqliteColumnNames(sql) {
       const open = String(sql || '').indexOf('(');
@@ -24339,10 +24426,17 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     // (위 레이어가 위), 시트는 맨 아래 셀이 첫 칸이어야 한다 — 용지의 라벨 줄이 왼쪽부터 A·B·C 이고
     // (docs/sheet_structure_rules.md B-5), CSP 가 내보낸 타임시트 CSV 도 A·B·C·D 차례다.
     // ver918 까지는 두 차례가 같아서 칸이 D·C·B·A 로 뒤집혀 나갔다(표본 BW_ED_008G_LO 에서 확인).
+    // 파일의 기본 역순과 창에서 정한 순서를 미리보기·커맨드 생성이 함께 쓴다.
+    function clipSheetOrderedItems(read, picks) {
+      const defaults = read.items.slice().reverse();
+      return defaults.map(function(item, index){ return { item:item, order:Number.isFinite(picks[item.mainId] && picks[item.mainId].order) ? picks[item.mainId].order : index }; })
+        .sort(function(a, b){ return a.order - b.order; }).map(function(entry){ return entry.item; });
+    }
+
     function clipSheetBuildCommandText(read, picks, options) {
       const tidyNumbers = !options || options.tidyNumbers !== false;
       const lines = [];
-      read.items.slice().reverse().forEach(function(item) {
+      clipSheetOrderedItems(read, picks).forEach(function(item) {
         const pick = picks[item.mainId];
         if (!pick || !pick.checked) return;
         const tokens = item.kind === 'cel'
@@ -24380,8 +24474,26 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     async function loadClipFileToDataUrl(file) {
-      const preview = extractClipCanvasPreview(await file.arrayBuffer());
-      return loadRasterBlobToDataUrl(preview.blob, function(w, h){ return getPaperLayoutTexts().clipMeta(w || preview.width, h || preview.height); });
+      const buffer = await file.arrayBuffer();
+      const db = openClipSqlite(buffer);
+      if ((db.readTable('TimeLine') || []).length && !(await confirmClipPaperChoice('paperAnimation', 'paperContinue'))) return null;
+      let full;
+      try { full = await readClipPaperCanvas(buffer, db); }
+      catch (err) {
+        // 기존에 읽던 미리보기는 품질을 명시하고 선택할 때만 사용한다. 자동 강등하지 않는다.
+        const previews = (db.readTable('CanvasPreview') || []).filter(function(row){ return row.ImageData && row.ImageWidth > 0 && row.ImageHeight > 0; })
+          .sort(function(a, b){ return b.ImageWidth * b.ImageHeight - a.ImageWidth * a.ImageHeight; });
+        if (!previews.length) throw err;
+        const preview = previews[0];
+        if (!(await confirmClipPaperChoice('paperPreviewFallback', 'paperPreviewContinue', { width:preview.ImageWidth, height:preview.ImageHeight }))) return null;
+        return loadRasterBlobToDataUrl(new Blob([preview.ImageData]), function(w, h){ return clipSheetText('paperPreviewMeta', { width:w, height:h }); });
+      }
+      const canvas = document.createElement('canvas'); canvas.width = PAGE_W; canvas.height = PAGE_H;
+      const ctx = canvas.getContext('2d'); ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(full, 0, 0, PAGE_W, PAGE_H);
+      const width = full.width, height = full.height;
+      full.width = full.height = 0;
+      return { dataUrl:canvas.toDataURL('image/png'), width:width, height:height, meta:getPaperLayoutTexts().clipMeta(width, height) };
     }
 
     // ══ [영속] 저장소 연결·트랜잭션 수명 — 실패/중단도 반드시 종료한다 ═════════════════════════════════════
@@ -24689,6 +24801,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           result = await loadRasterImageFileToDataUrl(file);
         }
         if (generation !== paperLoadGeneration) return;
+        if (!result) { updatePaperImageStatus(); return; }
         state.paperImageDataUrl = result.dataUrl;
         state.paperImageMemoDataUrl = result.memoDataUrl || '';
         trackEvent('paper_image_load');
@@ -24780,8 +24893,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       state.cameraPreviewStyles = {};
       resetCsvStateForSheetClear();
       state.layerNameTags = [];
-      state.activeLayerNameTagTarget = null;
-      state.activeLayerNameTag = null;
       state.currentPreviewPage = 0;
       state.totalPages = 1;
       queueSavePaperMemory();
@@ -25702,13 +25813,19 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           }
         } else if (ch.id === 'LNAM') {
           // LNAM 은 Shift_JIS 이고 뒤따르는 LNAW 가 같은 이름의 유니코드 정본이다(#conte 실측).
-          cur = { name: tvppDecodeName(arrayBuffer, ch, false), frames: [], start: 0, names: null, marks: null };
+          cur = { name: tvppDecodeName(arrayBuffer, ch, false), frames: [], start: 0, visible: null, names: null, marks: null };
           layers.push(cur);
         } else if (cur && ch.id === 'LNAW') {
           const wide = tvppDecodeName(arrayBuffer, ch, true);
           if (wide) cur.name = wide;
         } else if (cur && (ch.id === 'ZCHK' || ch.id === 'DBOD' || ch.id === 'SRAW')) cur.frames.push(ch);
-        else if (cur && ch.id === 'LRHD') cur.start = tvppU32(dv, ch.off + 4);
+        else if (cur && ch.id === 'LRHD') {
+          cur.start = tvppU32(dv, ch.off + 4);
+          // 사용자 원본 화면 대조: TAP_n·위 A는 0(표시), 아래 A는 1(비표시).
+          // word[7]은 표시가 아니라 숨김이다. 짧은 헤더·미확인 값은 추측해 숨기지 않는다.
+          const hidden = ch.size >= 32 ? tvppU32(dv, ch.off + 28) : null;
+          cur.visible = hidden === 0 ? true : hidden === 1 ? false : null;
+        }
         else if (cur && ch.id === 'LEXT') cur.names = tvppParseImageNames(arrayBuffer, ch);
       });
       markRows.forEach(function(row) {
@@ -25819,13 +25936,13 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const fps = tv.fps || FIXED_FPS;
       let end = 0;
       // TVPaint 쪽에는 폴더 사슬이 없다 — 층이 하나라 조상 표시(parentVisible)는 언제나 참이다.
-      // 창의 기본 체크가 그 값을 보므로 빠뜨리면 아무 줄도 켜지지 않는다(ver921 에서 실제로 걸렸다).
+      // 자신의 표시는 따로 전달한다. CLIP의 조상 표시 계약과 섞지 않는다.
       for (let i = 0; i < tv.layers.length; i++) {
         const layer = tv.layers[i];
         const name = String(layer.name == null ? '' : layer.name) || ('layer' + (i + 1));
         const aside = tvppSheetIsAsideLayerName(name);
         if (!layer.frames.length) {
-          items.push({ kind:'other', name:name, mainId:'tvpp-' + i, path:'', visible:true, parentVisible:true,
+          items.push({ kind:'other', name:name, mainId:'tvpp-' + i, path:'', visible:layer.visible !== false, parentVisible:true,
                        uuid:'', aside:aside, keys:[], failure:'empty' });
           continue;
         }
@@ -25833,12 +25950,12 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         try {
           decoded = await tvppSheetReadLayer(tv, layer);
         } catch (err) {
-          items.push({ kind:'other', name:name, mainId:'tvpp-' + i, path:'', visible:true, parentVisible:true,
+          items.push({ kind:'other', name:name, mainId:'tvpp-' + i, path:'', visible:layer.visible !== false, parentVisible:true,
                        uuid:'', aside:aside, keys:[], failure:String((err && err.message) || err) });
           continue;
         }
         decoded.keys.forEach(function(key) { end = Math.max(end, key.endFrame); });
-        items.push({ kind:aside ? 'other' : 'cel', name:name, mainId:'tvpp-' + i, path:'', visible:true, parentVisible:true,
+        items.push({ kind:aside ? 'other' : 'cel', name:name, mainId:'tvpp-' + i, path:'', visible:layer.visible !== false, parentVisible:true,
                      uuid:'', aside:aside, keys:decoded.keys, numbering:decoded.numbering, failure:'' });
       }
       const duration = Math.max(1, Math.round(end));
@@ -26079,10 +26196,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     function clipSheetText(key, values, app) {
       const docs = {
-        en:{ revisionE:"Direction", revisionS:"Animation director", revisionSS:"Chief animation director", revisionK:"Director", numberingNamed:'Instance names set in file', numberingAuto:'No instance names · automatic numbering', numberingMixed:'Partly unnamed · automatic numbering at {auto} exposure(s)', numberingDetail:'Automatic numbers (source frames): {values}', cutReference:'Cut-number reference', revision:'Revision: {name}', revisionGeneration:' · round {count}', sideUnread:'No exposure or unreadable ({count})', sideAside:'Background and reference ({count})', sideOffstage:'Cels from another step ({count})', paper:'Paper', paperDrop:'Drop a paper image here, or click to choose (JPG / PNG / PSD / .clip)', paperKeep:'Drop nothing and the paper you already have is kept.', paperChosen:'Will be replaced with {name}', identity:'Work info', identityTitle:'Title', identityEpisode:'Ep.', identityCut:'Cut no.', identityStage:'Stage name', identityStageHint:'The stage name is given to the first stage only.', tidyNumbers:'Tidy cel numbers', pickedRows:'{count} picked', blockedStart:'starts at frame {start} — not supported yet', allBlocked:'Every timeline in this file starts at a frame other than 0. That layout has not been verified, so nothing was loaded.', noExposure:'no exposure in this timeline', failed:'could not be read: {error}', emptyPick:'Nothing is checked in \"{name}\", so the sheet was left as it is.', oddTiming:'{count} timeline(s) are not 24fps (read as {fps}fps) — the frames were copied as they are.', title:'Read a sheet from {app}', timelines:'Timelines', timelineHint:'Each timeline you pick becomes one stage.', rows:'Rows to load', komaNames:'Cel names', renumber:'Renumber', komaCount:'{count} drawing(s)', fileSection:'File', name:'Name', role:'Role', confirm:'Load', cancel:'Cancel', cel:'cel', other:'layer', hidden:'hidden in {app}', empty:'No rows that can be read as cels were found in this file.', reading:'Reading the {app} file…', loaded:'{app} loaded: {name} · {stages} stage(s)', noPick:'Nothing was selected, so the sheet was left as it is.' },
-        ja:{ revisionE:"演出", revisionS:"作監", revisionSS:"総作監", revisionK:"監督", numberingNamed:'インスタンス名設定済み', numberingAuto:'インスタンス名未設定 · 自動番号', numberingMixed:'一部未設定 · 自動番号 {auto}か所', numberingDetail:'自動番号（元のフレーム）：{values}', cutReference:'カット番号の参考レイヤー', revision:'修正工程：{name}', revisionGeneration:' · {count}次', sideUnread:'露出なし・読めない行（{count}）', sideAside:'背景・参考（{count}）', sideOffstage:'他工程のセル（{count}）', paper:'用紙', paperDrop:'用紙画像をここに置くか、クリックして選びます（JPG / PNG / PSD / .clip）', paperKeep:'置かなければ、今の用紙をそのまま使います。', paperChosen:'{name} に差し替えます', identity:'作品情報', identityTitle:'作品名', identityEpisode:'話数', identityCut:'カット番号', identityStage:'段階名', identityStageHint:'段階名は最初の段階だけに付きます。', tidyNumbers:'セル番号を整える', pickedRows:'選択 {count}', blockedStart:'{start} フレーム開始 — 未対応', allBlocked:'このファイルのタイムラインはすべて0フレーム以外から始まります。未確認の並びのため読み込みませんでした。', noExposure:'このタイムラインに露出なし', failed:'読み取れませんでした：{error}', emptyPick:'「{name}」で何も選ばれていないため、シートはそのままです。', oddTiming:'24fps でないタイムラインが {count} 件あります（{fps}fps）。コマ数はそのまま移しました。', title:'{app} からシートを読む', timelines:'タイムライン', timelineHint:'選んだタイムラインごとに段階が1つ作られます。', rows:'読み込む行', komaNames:'セル番号', renumber:'順番に振り直す', komaCount:'{count}枚', fileSection:'ファイル', name:'名前', role:'役割', confirm:'読み込む', cancel:'キャンセル', cel:'セル', other:'レイヤー', hidden:'{app} で非表示', empty:'このファイルにセルとして読める行が見つかりませんでした。', reading:'{app} のファイルを読み込み中…', loaded:'{app} のファイルを読み込みました：{name} · 段階 {stages}個', noPick:'何も選ばれなかったため、シートはそのままです。' },
-        ko:{ revisionE:"연출", revisionS:"작감", revisionSS:"총작감", revisionK:"감독", numberingNamed:'인스턴스 이름 지정됨', numberingAuto:'인스턴스 이름 미지정 · 자동 번호', numberingMixed:'일부 이름 미지정 · 자동 번호 {auto}곳', numberingDetail:'자동 번호(원본 프레임): {values}', cutReference:'컷번호 참고 레이어', revision:'리비전: {name}', revisionGeneration:' · {count}차', sideUnread:'노출 없음 · 읽지 못함 ({count})', sideAside:'배경 · 참고 ({count})', sideOffstage:'다른 공정의 셀 ({count})', paper:'용지', paperDrop:'용지 이미지를 여기에 놓거나 눌러서 고릅니다 (JPG / PNG / PSD / .clip)', paperKeep:'놓지 않으면 지금 설정된 양식을 그대로 씁니다.', paperChosen:'{name} 으로 바꿉니다', identity:'작품 정보', identityTitle:'작품명', identityEpisode:'화수', identityCut:'컷번호', identityStage:'단계 이름', identityStageHint:'단계 이름은 첫 단계에만 붙습니다.', tidyNumbers:'셀 번호 다듬기', pickedRows:'고른 행 {count}', blockedStart:'{start} 프레임에서 시작 — 아직 지원하지 않음', allBlocked:'이 파일의 타임라인이 전부 0프레임이 아닌 자리에서 시작합니다. 확인되지 않은 배치라 아무것도 읽지 않았습니다.', noExposure:'이 타임라인에 노출 없음', failed:'읽지 못했습니다: {error}', emptyPick:'「{name}」에서 아무것도 고르지 않아 시트를 그대로 두었습니다.', oddTiming:'24fps가 아닌 타임라인이 {count}개 있습니다({fps}fps). 칸 수는 그대로 옮겼습니다.', title:'{app}에서 시트 읽기', timelines:'타임라인', timelineHint:'고른 타임라인마다 단계가 하나씩 만들어집니다.', rows:'가져올 행', komaNames:'셀 이름', renumber:'순번대로 재배치', komaCount:'{count}장', fileSection:'파일', name:'이름', role:'역할', confirm:'불러오기', cancel:'취소', cel:'셀', other:'레이어', hidden:'{app}에서 숨김', empty:'이 파일에서 셀로 읽을 줄을 찾지 못했습니다.', reading:'{app} 파일을 읽는 중…', loaded:'{app} 파일을 읽었습니다: {name} · 단계 {stages}개', noPick:'아무것도 고르지 않아 시트를 그대로 두었습니다.' },
-        zh:{ revisionE:"演出", revisionS:"作画监督", revisionSS:"总作画监督", revisionK:"导演", numberingNamed:'实例名称已设置', numberingAuto:'未设置实例名称 · 自动编号', numberingMixed:'部分未命名 · {auto}处自动编号', numberingDetail:'自动编号（原始帧）：{values}', cutReference:'镜头编号参考图层', revision:'修正工序：{name}', revisionGeneration:' · 第{count}次', sideUnread:'无曝光 · 无法读取（{count}）', sideAside:'背景 · 参考（{count}）', sideOffstage:'其他工序的赛璐璐（{count}）', paper:'纸张', paperDrop:'将纸张图像拖到此处，或点击选择（JPG / PNG / PSD / .clip）', paperKeep:'不放入时保持当前纸张。', paperChosen:'将替换为 {name}', identity:'作品信息', identityTitle:'作品名', identityEpisode:'话数', identityCut:'镜号', identityStage:'阶段名', identityStageHint:'阶段名仅用于第一个阶段。', tidyNumbers:'整理赛璐璐编号', pickedRows:'已选 {count}', blockedStart:'从第 {start} 帧开始 — 尚不支持', allBlocked:'此文件的时间轴都不是从第 0 帧开始。该排列尚未验证，因此未读取任何内容。', noExposure:'此时间轴没有曝光', failed:'无法读取：{error}', emptyPick:'「{name}」中未选择任何内容，工作表保持不变。', oddTiming:'有 {count} 条时间轴不是 24fps（{fps}fps）。格子数按原样移入。', title:'从 {app} 读取表', timelines:'时间轴', timelineHint:'所选的每条时间轴都会生成一个阶段。', rows:'要读取的行', komaNames:'赛璐璐编号', renumber:'按顺序重编', komaCount:'{count} 张', fileSection:'文件', name:'名称', role:'角色', confirm:'读取', cancel:'取消', cel:'赛璐璐', other:'图层', hidden:'在 {app} 中隐藏', empty:'在此文件中未找到可作为赛璐璐读取的行。', reading:'正在读取 {app} 文件…', loaded:'已读取 {app} 文件：{name} · {stages} 个阶段', noPick:'未选择任何内容，工作表保持不变。' }
+        en:{ sideHidden:"Hidden in TVPaint ({count})", paperPreviewFallback:"Could not composite at full size. The saved preview ({width}×{height}) may blur lines and text. Import that preview? For full quality, cancel and choose a PNG exported from CLIP STUDIO PAINT.", paperPreviewContinue:"Import preview", paperPreviewMeta:"CLIP preview {width}×{height} · not full resolution", paperCompositeUnsupported:"This CLIP needs layer effects that cannot be reproduced for paper import. Export a merged PNG or PSD from CLIP STUDIO PAINT.", orderTitle:"Cel order",  paperAnimation:"This CLIP has an animation timeline and may not be a paper template. Import its saved composite as paper? To read cel timing, cancel and drop it onto the sheet preview.", paperContinue:"Import as paper", paperFullMissing:"The full-size CLIP composite is unavailable. Export a PNG or PSD from CLIP STUDIO PAINT and choose that file.", revisionE:"Direction", revisionS:"Animation director", revisionSS:"Chief animation director", revisionK:"Director", numberingNamed:'Instance names set in file', numberingAuto:'No instance names · automatic numbering', numberingMixed:'Partly unnamed · automatic numbering at {auto} exposure(s)', numberingDetail:'Automatic numbers (source frames): {values}', cutReference:'Cut-number reference', revision:'Revision: {name}', revisionGeneration:' · round {count}', sideUnread:'No exposure or unreadable ({count})', sideAside:'Background and reference ({count})', sideOffstage:'Cels from another step ({count})', paper:'Paper', paperDrop:'Drop a paper image here, or click to choose (JPG / PNG / PSD / .clip)', paperKeep:'Drop nothing and the paper you already have is kept.', paperChosen:'Will be replaced with {name}', identity:'Work info', identityTitle:'Title', identityEpisode:'Ep.', identityCut:'Cut no.', identityStage:'Stage name', identityStageHint:'The stage name is given to the first stage only.', tidyNumbers:'Tidy cel numbers', pickedRows:'{count} picked', blockedStart:'starts at frame {start} — not supported yet', allBlocked:'Every timeline in this file starts at a frame other than 0. That layout has not been verified, so nothing was loaded.', noExposure:'no exposure in this timeline', failed:'could not be read: {error}', emptyPick:'Nothing is checked in \"{name}\", so the sheet was left as it is.', oddTiming:'{count} timeline(s) are not 24fps (read as {fps}fps) — the frames were copied as they are.', title:'Read a sheet from {app}', timelines:'Timelines', timelineHint:'Each timeline you pick becomes one stage.', rows:'Rows to load', komaNames:'Cel names', renumber:'Renumber', komaCount:'{count} drawing(s)', fileSection:'File', name:'Name', role:'Role', confirm:'Load', cancel:'Cancel', cel:'cel', other:'layer', hidden:'hidden in {app}', empty:'No rows that can be read as cels were found in this file.', reading:'Reading the {app} file…', loaded:'{app} loaded: {name} · {stages} stage(s)', noPick:'Nothing was selected, so the sheet was left as it is.' },
+        ja:{ sideHidden:"TVPaintで非表示（{count}）", paperPreviewFallback:"原寸で合成できませんでした。保存されたプレビュー（{width}×{height}）を使うと線や文字がぼやける場合があります。プレビューを使いますか？原寸が必要な場合はキャンセルし、CLIP STUDIO PAINTから書き出したPNGを選んでください。", paperPreviewContinue:"プレビューを使う", paperPreviewMeta:"CLIPプレビュー {width}×{height} · 原寸ではありません", paperCompositeUnsupported:"このCLIPには用紙取り込みで再現できないレイヤー効果があります。CLIP STUDIO PAINTから合成済みのPNGまたはPSDを書き出してください。", orderTitle:"セルの並び",  paperAnimation:"このCLIPにはアニメーションのタイムラインがあり、用紙ではない可能性があります。保存時の合成画像を用紙として読み込みますか？セルの配置を読む場合はキャンセルしてシートプレビューに置いてください。", paperContinue:"用紙として読み込む", paperFullMissing:"CLIPの原寸合成画像を読み取れません。CLIP STUDIO PAINTからPNGまたはPSDを書き出して選んでください。", revisionE:"演出", revisionS:"作監", revisionSS:"総作監", revisionK:"監督", numberingNamed:'インスタンス名設定済み', numberingAuto:'インスタンス名未設定 · 自動番号', numberingMixed:'一部未設定 · 自動番号 {auto}か所', numberingDetail:'自動番号（元のフレーム）：{values}', cutReference:'カット番号の参考レイヤー', revision:'修正工程：{name}', revisionGeneration:' · {count}次', sideUnread:'露出なし・読めない行（{count}）', sideAside:'背景・参考（{count}）', sideOffstage:'他工程のセル（{count}）', paper:'用紙', paperDrop:'用紙画像をここに置くか、クリックして選びます（JPG / PNG / PSD / .clip）', paperKeep:'置かなければ、今の用紙をそのまま使います。', paperChosen:'{name} に差し替えます', identity:'作品情報', identityTitle:'作品名', identityEpisode:'話数', identityCut:'カット番号', identityStage:'段階名', identityStageHint:'段階名は最初の段階だけに付きます。', tidyNumbers:'セル番号を整える', pickedRows:'選択 {count}', blockedStart:'{start} フレーム開始 — 未対応', allBlocked:'このファイルのタイムラインはすべて0フレーム以外から始まります。未確認の並びのため読み込みませんでした。', noExposure:'このタイムラインに露出なし', failed:'読み取れませんでした：{error}', emptyPick:'「{name}」で何も選ばれていないため、シートはそのままです。', oddTiming:'24fps でないタイムラインが {count} 件あります（{fps}fps）。コマ数はそのまま移しました。', title:'{app} からシートを読む', timelines:'タイムライン', timelineHint:'選んだタイムラインごとに段階が1つ作られます。', rows:'読み込む行', komaNames:'セル番号', renumber:'順番に振り直す', komaCount:'{count}枚', fileSection:'ファイル', name:'名前', role:'役割', confirm:'読み込む', cancel:'キャンセル', cel:'セル', other:'レイヤー', hidden:'{app} で非表示', empty:'このファイルにセルとして読める行が見つかりませんでした。', reading:'{app} のファイルを読み込み中…', loaded:'{app} のファイルを読み込みました：{name} · 段階 {stages}個', noPick:'何も選ばれなかったため、シートはそのままです。' },
+        ko:{ sideHidden:"TVPaint에서 비표시 ({count})", paperPreviewFallback:"원본 크기로 합성하지 못했습니다. 저장된 미리보기({width}×{height})로 가져오면 선이나 글자가 흐려질 수 있습니다. 미리보기를 사용할까요? 원본 품질이 필요하면 취소하고 CLIP STUDIO PAINT에서 출력한 PNG를 골라 주세요.", paperPreviewContinue:"미리보기로 가져오기", paperPreviewMeta:"CLIP 미리보기 {width}×{height} · 원본 해상도 아님", paperCompositeUnsupported:"이 CLIP에는 용지 불러오기에서 재현할 수 없는 레이어 효과가 있습니다. CLIP STUDIO PAINT에서 합성된 PNG 또는 PSD로 출력해 주세요.", orderTitle:"셀 순서",  paperAnimation:"애니메이션 타임라인이 있는 CLIP이라 용지 파일이 아닐 수 있습니다. 저장 당시 합성 이미지를 용지로 가져올까요? 셀 배치를 읽으려면 취소하고 시트 미리보기에 놓아 주세요.", paperContinue:"용지로 가져오기", paperFullMissing:"CLIP 원본 크기 합성 이미지가 없습니다. CLIP STUDIO PAINT에서 PNG 또는 PSD로 출력한 파일을 골라 주세요.", revisionE:"연출", revisionS:"작감", revisionSS:"총작감", revisionK:"감독", numberingNamed:'인스턴스 이름 지정됨', numberingAuto:'인스턴스 이름 미지정 · 자동 번호', numberingMixed:'일부 이름 미지정 · 자동 번호 {auto}곳', numberingDetail:'자동 번호(원본 프레임): {values}', cutReference:'컷번호 참고 레이어', revision:'리비전: {name}', revisionGeneration:' · {count}차', sideUnread:'노출 없음 · 읽지 못함 ({count})', sideAside:'배경 · 참고 ({count})', sideOffstage:'다른 공정의 셀 ({count})', paper:'용지', paperDrop:'용지 이미지를 여기에 놓거나 눌러서 고릅니다 (JPG / PNG / PSD / .clip)', paperKeep:'놓지 않으면 지금 설정된 양식을 그대로 씁니다.', paperChosen:'{name} 으로 바꿉니다', identity:'작품 정보', identityTitle:'작품명', identityEpisode:'화수', identityCut:'컷번호', identityStage:'단계 이름', identityStageHint:'단계 이름은 첫 단계에만 붙습니다.', tidyNumbers:'셀 번호 다듬기', pickedRows:'고른 행 {count}', blockedStart:'{start} 프레임에서 시작 — 아직 지원하지 않음', allBlocked:'이 파일의 타임라인이 전부 0프레임이 아닌 자리에서 시작합니다. 확인되지 않은 배치라 아무것도 읽지 않았습니다.', noExposure:'이 타임라인에 노출 없음', failed:'읽지 못했습니다: {error}', emptyPick:'「{name}」에서 아무것도 고르지 않아 시트를 그대로 두었습니다.', oddTiming:'24fps가 아닌 타임라인이 {count}개 있습니다({fps}fps). 칸 수는 그대로 옮겼습니다.', title:'{app}에서 시트 읽기', timelines:'타임라인', timelineHint:'고른 타임라인마다 단계가 하나씩 만들어집니다.', rows:'가져올 행', komaNames:'셀 이름', renumber:'순번대로 재배치', komaCount:'{count}장', fileSection:'파일', name:'이름', role:'역할', confirm:'불러오기', cancel:'취소', cel:'셀', other:'레이어', hidden:'{app}에서 숨김', empty:'이 파일에서 셀로 읽을 줄을 찾지 못했습니다.', reading:'{app} 파일을 읽는 중…', loaded:'{app} 파일을 읽었습니다: {name} · 단계 {stages}개', noPick:'아무것도 고르지 않아 시트를 그대로 두었습니다.' },
+        zh:{ sideHidden:"在TVPaint中隐藏（{count}）", paperPreviewFallback:"无法以原尺寸合成。使用保存的预览（{width}×{height}）可能使线条和文字模糊。要导入预览吗？如需原始质量，请取消并选择从CLIP STUDIO PAINT导出的PNG。", paperPreviewContinue:"导入预览", paperPreviewMeta:"CLIP预览 {width}×{height} · 非原始分辨率", paperCompositeUnsupported:"此CLIP含有纸张导入无法重现的图层效果。请从CLIP STUDIO PAINT导出合成后的PNG或PSD。", orderTitle:"赛璐璐顺序",  paperAnimation:"此CLIP包含动画时间轴，可能不是纸张模板。要将保存时的合成图像作为纸张导入吗？如需读取赛璐璐时间，请取消并拖到摄影表预览中。", paperContinue:"作为纸张导入", paperFullMissing:"无法读取CLIP的原尺寸合成图像。请从CLIP STUDIO PAINT导出PNG或PSD后选择该文件。", revisionE:"演出", revisionS:"作画监督", revisionSS:"总作画监督", revisionK:"导演", numberingNamed:'实例名称已设置', numberingAuto:'未设置实例名称 · 自动编号', numberingMixed:'部分未命名 · {auto}处自动编号', numberingDetail:'自动编号（原始帧）：{values}', cutReference:'镜头编号参考图层', revision:'修正工序：{name}', revisionGeneration:' · 第{count}次', sideUnread:'无曝光 · 无法读取（{count}）', sideAside:'背景 · 参考（{count}）', sideOffstage:'其他工序的赛璐璐（{count}）', paper:'纸张', paperDrop:'将纸张图像拖到此处，或点击选择（JPG / PNG / PSD / .clip）', paperKeep:'不放入时保持当前纸张。', paperChosen:'将替换为 {name}', identity:'作品信息', identityTitle:'作品名', identityEpisode:'话数', identityCut:'镜号', identityStage:'阶段名', identityStageHint:'阶段名仅用于第一个阶段。', tidyNumbers:'整理赛璐璐编号', pickedRows:'已选 {count}', blockedStart:'从第 {start} 帧开始 — 尚不支持', allBlocked:'此文件的时间轴都不是从第 0 帧开始。该排列尚未验证，因此未读取任何内容。', noExposure:'此时间轴没有曝光', failed:'无法读取：{error}', emptyPick:'「{name}」中未选择任何内容，工作表保持不变。', oddTiming:'有 {count} 条时间轴不是 24fps（{fps}fps）。格子数按原样移入。', title:'从 {app} 读取表', timelines:'时间轴', timelineHint:'所选的每条时间轴都会生成一个阶段。', rows:'要读取的行', komaNames:'赛璐璐编号', renumber:'按顺序重编', komaCount:'{count} 张', fileSection:'文件', name:'名称', role:'角色', confirm:'读取', cancel:'取消', cel:'赛璐璐', other:'图层', hidden:'在 {app} 中隐藏', empty:'在此文件中未找到可作为赛璐璐读取的行。', reading:'正在读取 {app} 文件…', loaded:'已读取 {app} 文件：{name} · {stages} 个阶段', noPick:'未选择任何内容，工作表保持不变。' }
       };
       const doc = docs[state.lang] || docs.en;
       const fill = Object.assign({ app:app || CLIP_SHEET_APPS.clip }, values || {});
@@ -26105,16 +26222,18 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           const key = String(read.timeline.MainId);
           chosen[key] = index === 0 && !read.blocked;
           const map = {};
-          read.items.forEach(function(item) {
+          read.items.forEach(function(item, index) {
             // 파일에서 확인한 컷번호만 쓴다. 이전 작업의 헤더나 숫자라는 이유만으로 숨기지 않는다.
             const cutReference = source === 'tvpp' && /^\d{2,4}$/.test(String(item.name).trim())
               && /^\d{2,4}$/.test(parsedName.cut || '') && Number(item.name) === Number(parsedName.cut);
             const revision = sheetLayerRevisionInfo(item.name);
-            rowMetadata.set(item, { cutReference:cutReference, revision:revision });
+            const nativeHidden = source === 'tvpp' && item.visible === false;
+            rowMetadata.set(item, { cutReference:cutReference, revision:revision, nativeHidden:nativeHidden });
             // 파일 내용의 기본 선택에 이 창의 참고 행·수정 공정 선택을 적용한다. 직접 켠 뒤에는 유지한다.
             map[item.mainId] = {
-              checked: !cutReference && !revision && clipSheetRowCheckedByDefault(item),
+              checked: !nativeHidden && !cutReference && !revision && clipSheetRowCheckedByDefault(item),
               name: item.name,
+              order: read.items.length - 1 - index,
               role: cutReference ? 'hidden' : defaultLayerNameRole(item.name),
               koma: {}          // 파일에 적힌 그림 이름 → 창에서 고쳐 쓴 이름
             };
@@ -26271,6 +26390,45 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         rowSection.appendChild(rowList);
         body.appendChild(rowSection);
 
+        // 전체 시트를 렌더하지 않는다. 선택한 셀 라벨·BOOK의 배치만 가볍게 그린다.
+        const orderSection = document.createElement('section');
+        orderSection.className = 'clip-import-order-section';
+        const orderTitle = document.createElement('h4'); orderTitle.textContent = clipSheetText('orderTitle');
+        const orderHint = document.createElement('div'); orderHint.className = 'hint'; orderHint.textContent = cellSettingsText('hint');
+        const orderViewport = document.createElement('div'); orderViewport.className = 'cell-order-container';
+        const orderPreview = document.createElement('div'); orderPreview.className = 'cell-order-preview';
+        orderPreview.setAttribute('aria-label', clipSheetText('orderTitle'));
+        orderViewport.appendChild(orderPreview); orderSection.append(orderTitle, orderHint, orderViewport);
+        body.insertBefore(orderSection, rowSection);
+
+        function previewItems() {
+          const read = readOf(viewing), map = picks[viewing];
+          return clipSheetOrderedItems(read, map).filter(function(item){
+            const pick = map[item.mainId];
+            return pick.checked && ['cell', 'book'].includes(normalizeTextCommandRole(pick.role));
+          });
+        }
+        function moveOrder(id, targetId, after) {
+          const map = picks[viewing], items = clipSheetOrderedItems(readOf(viewing), map);
+          const from = items.findIndex(function(item){ return String(item.mainId) === String(id); });
+          if (from < 0 || String(id) === String(targetId)) return;
+          const item = items.splice(from, 1)[0];
+          const target = items.findIndex(function(row){ return String(row.mainId) === String(targetId); });
+          if (target < 0) return;
+          items.splice(target + (after ? 1 : 0), 0, item);
+          items.forEach(function(row, index){ map[row.mainId].order = index; });
+          renderOrderPreview();
+          const focus = Array.from(orderPreview.querySelectorAll('button')).find(function(button){ return button.dataset.orderId === String(id); });
+          if (focus) { focus.focus({ preventScroll:true }); focus.scrollIntoView({ block:'nearest', inline:'nearest' }); }
+        }
+        function renderOrderPreview() {
+          const items=previewItems(), map=picks[viewing];
+          orderSection.hidden=!items.length;
+          renderCellOrderPreview(orderPreview,items.map(function(item){
+            return {key:String(item.mainId),name:map[item.mainId].name||item.name||'?',kind:normalizeTextCommandRole(map[item.mainId].role)};
+          }),moveOrder);
+        }
+
         const actions = document.createElement('footer');
         actions.className = 'app-dialog-actions';
         const cancelBtn = document.createElement('button');
@@ -26336,30 +26494,31 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         }
 
         // 기본으로 켜지지 않는 셀 줄은 접어 둔다 — 그런 줄이 목록을 덮으면 정작 고를 것이 안 보인다.
-        // 찾아서 켤 수는 있어야 하므로 지우지 않는다. 셀이 아닌 줄(BOOK 후보)은 접지 않는다.
-        // **자기 표시는 접는 조건이 아니다**(ver921) — 그 줄이 기본으로 켜지므로 보여야 한다.
+        // 찾아서 켤 수는 있어야 하므로 지우지 않는다. 표시된 BOOK 후보는 그대로 보여 준다.
+        // CLIP은 조상 표시만 기본 체크에 쓰고, TVPaint는 자신의 비표시도 접는다.
         function isSideRow(item) {
-          if (rowMetadata.get(item).cutReference || rowMetadata.get(item).revision) return true;
+          if (rowMetadata.get(item).nativeHidden || rowMetadata.get(item).cutReference || rowMetadata.get(item).revision) return true;
           if (item.failure || item.aside || clipSheetIsReferenceName(item.name)) return true;
           return item.kind === 'cel' && !clipSheetRowCheckedByDefault(item);
         }
 
-        // **왜 접혔는지는 셋으로 갈린다.** 한 덩어리로 두면 「이 타임라인에 없는 줄」과 「배경 판」과
-        // 「다른 공정의 셀」이 섞여, 찾으려는 줄이 어디 있는지 알 수 없다. 실제로 세 번째가 가장 많다 —
-        // 표본 한 파일은 켜지는 셀 3 개에 접히는 셀이 11 개이고 그 11 개가 전부 다른 공정의 것이다.
+        // 배경·참고의 분류는 유지하고, 파일에서 꺼 둔 일반 셀을 다른 공정과 구별한다.
         const SIDE_ROW_GROUPS = [
           { key:'unread',   text:'sideUnread' },
           { key:'aside',    text:'sideAside' },
+          { key:'hidden',   text:'sideHidden' },
           { key:'offstage', text:'sideOffstage' }
         ];
         function sideRowGroup(item) {
           if (rowMetadata.get(item).cutReference) return 'aside';
           if (item.failure || item.aside) return 'unread';
           if (clipSheetIsReferenceName(item.name) || defaultLayerNameRole(item.name) === 'hidden') return 'aside';
+          if (rowMetadata.get(item).nativeHidden) return 'hidden';
           return 'offstage';
         }
 
         function renderRows() {
+          renderOrderPreview();
           rowList.innerHTML = '';
           const read = readOf(viewing);
           if (!read) return;
@@ -26387,6 +26546,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
             check.checked = Boolean(pick.checked);
             check.addEventListener('change', function() {
               pick.checked = check.checked;
+              renderOrderPreview();
               renderTimelines();
               syncOk();
             });
@@ -26396,7 +26556,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
             name.type = 'text';
             name.value = pick.name;
             name.setAttribute('aria-label', clipSheetText('name', null, app));
-            name.addEventListener('input', function() { pick.name = name.value; });
+            name.addEventListener('input', function() { pick.name = name.value; renderOrderPreview(); });
             row.appendChild(name);
 
             const role = document.createElement('select');
@@ -26408,7 +26568,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
               role.appendChild(el);
             });
             role.value = pick.role;
-            role.addEventListener('change', function() { pick.role = role.value; });
+            role.addEventListener('change', function() { pick.role = role.value; renderOrderPreview(); });
             row.appendChild(role);
 
             const labels = item.kind === 'cel' && !item.failure ? clipSheetKomaLabels(item) : [];
@@ -26778,9 +26938,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       state.textMemoPointerIntent = null;
       state.activePastedImage = null;
       state.pastedImageDrag = null;
-      state.layerNameTagDrag = null;
-      state.activeLayerNameTag = null;
-      state.activeLayerNameTagTarget = null;
       state.previewSpacePanKey = false;
       if (opts.clearMemoContent) {
         state.memoPages = {};
@@ -26791,7 +26948,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         'cell-dragging',
         'serifu-range-dragging',
         'cell-label-dragging',
-        'layer-tag-dragging',
         'pasted-image-dragging',
         'text-memo-dragging',
         'timeline-edge-dragging',
@@ -28361,6 +28517,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       }
     });
 
+    document.getElementById('cellSettingsBtn').addEventListener('click', function(){ openCellSettingsDialog(); });
     if (currentSettingsExportBtn) currentSettingsExportBtn.addEventListener('click', saveCurrentSettings);
     if (currentSettingsFileBtn) currentSettingsFileBtn.addEventListener('click', chooseCurrentSettingsFile);
     if (currentSettingsImportBtn) currentSettingsImportBtn.addEventListener('click', function(){ trackEvent('project_load'); chooseCurrentSettingsDirectory(); });
@@ -28449,7 +28606,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (state.textMemoPointerIntent) { continueTextMemoPointerIntent(event); return; }
       if (state.textMemoResize) { continueTextMemoResize(event); return; }
       if (state.pastedImageDrag) { continuePastedImageDrag(event); return; }
-      if (state.layerNameTagDrag) continueLayerNameTagDrag(event);
     }
 
     function handleGlobalPointerUp(event) {
@@ -28461,7 +28617,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (state.textMemoPointerIntent) { endTextMemoPointerIntent(event); return; }
       if (state.textMemoResize) { endTextMemoResize(event); return; }
       if (state.pastedImageDrag) { endPastedImageDrag(event); return; }
-      if (state.layerNameTagDrag) endLayerNameTagDrag(event);
     }
 
     function handleGlobalPointerCancel(event) {
@@ -28473,7 +28628,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (state.textMemoPointerIntent) { cancelTextMemoPointerIntent(event); return; }
       if (state.textMemoResize) { cancelTextMemoResize(event); return; }
       if (state.pastedImageDrag) { cancelPastedImageDrag(event); return; }
-      if (state.layerNameTagDrag) cancelLayerNameTagDrag(event);
     }
 
     document.addEventListener('pointermove', handleGlobalPointerMove, { passive:false });
