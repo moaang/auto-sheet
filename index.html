@@ -1322,6 +1322,7 @@
     /* CLIP 취입 창 — 행이 여러 줄 서므로 칸을 격자로 고정한다(나란한 flex 는 칸이 어긋난다).
        이름칸만 늘어나고 체크·역할은 제 폭을 지킨다. */
     .clip-import-dialog { width:min(640px,100%); }
+    .clip-import-dialog [hidden] { display:none; }
     .clip-import-body { display:grid; gap:var(--ui-gap-lg); }
     .clip-import-body h4 { margin:0 0 var(--ui-gap-sm); font-size:var(--ui-fs-body); font-weight:800; }
     .clip-import-timelines { display:grid; gap:var(--ui-gap-sm); }
@@ -1367,7 +1368,7 @@
     .cell-order-handle { border:0; background:transparent; color:var(--muted); font-size:20px; height:var(--ui-h-control); cursor:grab; touch-action:none; user-select:none; }
     .cell-order-handle:focus-visible { outline:2px solid var(--focus-ring); border-radius:4px; }
     .cell-order-moving { opacity:.8; background:var(--panel-2); cursor:grabbing; }
-    .cell-order-controls .hint { margin:0; flex:1; }
+    .cell-order-controls[hidden] { display:none; }
     .cell-settings-backdrop .app-dialog { display:flex; flex-direction:column; overflow:hidden; }
     .cell-settings-backdrop .app-dialog-body { min-height:0; overflow:auto; }
     .cell-settings-backdrop .app-dialog-header, .cell-settings-backdrop .app-dialog-actions { flex-shrink:0; }
@@ -1381,9 +1382,7 @@
     .csv-import-column { display:grid; grid-template-columns:20px 90px minmax(0,1fr); gap:8px; }
     .csv-import-column input:not([type="checkbox"]), .csv-import-column select { width:100%; min-width:0; }
     /* 그 줄에 서는 그림 이름 — 한 칸에 `;` 로 이어 놓고 통째로 고친다(TVPaint 쪽과 같은 모양). */
-    .clip-import-koma { grid-column:2 / -1; display:grid; gap:2px; }
-    .clip-import-koma-head { display:flex; align-items:center; gap:var(--ui-gap-sm); color:var(--muted); }
-    .clip-import-koma-head button { padding:0 6px; }
+    .clip-import-koma { grid-column:2 / -1; display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:start; gap:var(--ui-gap-sm); }
     /* 전역 textarea 는 min-height 130px 이다(커맨드 입력용) — rows 로는 못 이기므로 여기서 정한다. */
     .clip-import-koma-text {
       width:100%; min-width:0; min-height:0; height:calc(2 * 1.55em + 14px);
@@ -2581,7 +2580,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '932';
+    const APP_VERSION = '933';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3867,6 +3866,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver933", "Simpler sheet import", ["Removed repeated summaries and instructions. Reorder directly in the preview; individual BOOK selection appears only for grouped tags. Instance-name badges and paper status are shorter."]],
         ["ver932", "Simpler drag reordering", ["Removed the floating duplicate and heavy shadow. Only the moving item is lightly highlighted while surrounding items slide into place."]],
         ["ver931", "Animated cel and BOOK reordering", ["Drag the preview or a card handle to see items move into their new positions. Repeated arrow buttons have been removed; arrow-key controls remain available.", "BOOK tags use vertical text and the same shape in the sheet, export and CLIP/TVPaint import preview."]],
         ["ver930", "Sheet clicks work immediately after refresh", ["Fixed a transparent memo area covering cel controls on the first render. Cel labels and frame controls respond immediately after opening or refreshing the app."]],
@@ -3948,6 +3948,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver933", "シート読み込み画面をすっきり", ["重複する概要と説明を整理しました。プレビューを直接並べ替え、BOOKの個別選択はまとまったタグだけに表示します。名前指定と用紙の状態も短くしました。"]],
         ["ver932", "ドラッグ並べ替えの表示をすっきり", ["浮いた複製と大きな影をなくしました。移動中の項目だけを控えめに強調し、周りの項目が滑らかに並び替わります。"]],
         ["ver931", "セル・BOOKを動きを見ながら並べ替え", ["プレビューやカードのハンドルをドラッグすると、周りの項目が移動して並びを確認できます。重複した矢印ボタンを整理し、矢印キー操作は残しました。", "BOOKタグを縦書きにそろえ、シート・書き出し・CLIP/TVPaint読み込みプレビューで同じ形を使います。"]],
         ["ver930", "再読み込み直後のシート操作を修正", ["初回描画時に透明なメモ領域がセル操作を覆う不具合を修正しました。起動・再読み込み直後からセル名やコマを操作できます。"]],
@@ -4029,6 +4030,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver933", "시트 불러오기 화면 간소화", ["중복 요약과 설명문을 줄였습니다. 미리보기에서 바로 정렬하고, BOOK 개별 선택은 묶음에만 표시합니다. 이름 지정과 용지 상태도 짧게 정리했습니다."]],
         ["ver932", "드래그 정렬 표시 간소화", ["떠다니는 복제본과 큰 그림자를 없앴습니다. 이동하는 항목 하나만 가볍게 강조하고 주변 항목이 밀려나며 순서를 보여줍니다."]],
         ["ver931", "셀·BOOK 드래그 정렬과 세로 태그", ["미리보기와 카드 손잡이를 드래그하면 주변 항목이 밀려나며 새 순서를 보여줍니다. 반복 화살표 버튼은 정리하고 방향키 조작은 유지했습니다.", "BOOK 태그를 세로쓰기로 맞추고 시트·출력·CLIP/TVPaint 불러오기 미리보기에서 같은 모양을 사용합니다."]],
         ["ver930", "새로고침 직후 시트 클릭 수정", ["첫 화면에서 투명한 메모 영역이 셀 조작을 가리던 문제를 고쳤습니다. 실행·새로고침 직후부터 셀 이름과 프레임을 조작할 수 있습니다."]],
@@ -4110,6 +4112,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver933", "精简摄影表导入界面", ["移除重复概要和说明。直接在预览中排序，仅对分组标签显示单个BOOK选择。缩短命名和纸张状态提示。"]],
         ["ver932", "简化拖动排序显示", ["移除悬浮副本和大阴影。仅轻微突出正在移动的项目，周围项目滑动以显示新顺序。"]],
         ["ver931", "带动画的单元格和BOOK排序", ["拖动预览或卡片手柄时，周围项目会移动以显示新顺序。移除重复的箭头按钮，保留方向键操作。", "BOOK标签统一为竖排，纸张、导出和CLIP/TVPaint导入预览使用相同形状。"]],
         ["ver930", "修复刷新后首次显示的纸张操作", ["修复首次绘制时透明备注区域遮挡单元格操作的问题。打开或刷新后即可操作单元格名称和帧。"]],
@@ -17061,10 +17064,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     // ══ 셀 설정 — 원본 행을 보존하는 임시 편집 · 공용 헤더 미리보기 ════════════════════════════════════════════════════════
     function cellSettingsText(key) {
       const texts = {
-        ko:{title:'셀 · BOOK 설정', hint:'왼쪽은 아래 레이어, 오른쪽은 위 레이어입니다. BOOK은 셀 사이에 여러 개 놓을 수 있습니다.', labelHint:'클릭: 이름 수정 / 우클릭·길게 누르기: 셀 · BOOK 설정', add:'BOOK 추가', name:'이름', drag:'순서 이동', sortHint:'드래그로 이동 · 방향키로 한 칸씩', remove:'태그 삭제', select:'개별 셀 / BOOK 선택', cancel:'취소', apply:'적용', invalid:'이름에 줄바꿈이나 콜론(:)은 사용할 수 없습니다.'},
-        ja:{title:'セル・BOOK設定', hint:'左は下のレイヤー、右は上のレイヤーです。セルの間に複数のBOOKを置けます。', labelHint:'クリック：名前編集 / 右クリック・長押し：セル・BOOK設定', add:'BOOK追加', name:'名前', drag:'並べ替え', sortHint:'ドラッグで移動・矢印キーで一つずつ', remove:'タグを削除', select:'個別セル / BOOKを選択', cancel:'キャンセル', apply:'適用', invalid:'名前に改行やコロン(:)は使えません。'},
-        en:{title:'Cell / BOOK settings', hint:'Left means a lower layer; right means an upper layer. Several BOOKs can share a cell boundary.', labelHint:'Click: rename / Right-click or hold: Cell / BOOK settings', add:'Add BOOK', name:'Name', drag:'Reorder', sortHint:'Drag to reorder · Arrow keys to move one step', remove:'Delete tag', select:'Select an individual Cell / BOOK', cancel:'Cancel', apply:'Apply', invalid:'Names cannot contain line breaks or a colon (:).'},
-        zh:{title:'Cell / BOOK 设置', hint:'左侧是下层，右侧是上层。同一单元边界可放置多个BOOK。', labelHint:'单击：改名 / 右键或长按：Cell / BOOK 设置', add:'添加BOOK', name:'名称', drag:'调整顺序', sortHint:'拖动排序 · 方向键逐项移动', remove:'删除标签', select:'选择单个Cell / BOOK', cancel:'取消', apply:'应用', invalid:'名称不能包含换行或冒号(:)。'}
+        ko:{title:'셀 · BOOK 설정', hint:'왼쪽은 아래 레이어, 오른쪽은 위 레이어입니다. BOOK은 셀 사이에 여러 개 놓을 수 있습니다.', labelHint:'클릭: 이름 수정 / 우클릭·길게 누르기: 셀 · BOOK 설정', add:'BOOK 추가', name:'이름', drag:'순서 이동', sortHint:'드래그로 이동 · 방향키로 한 칸씩', remove:'태그 삭제', select:'BOOK 선택', cancel:'취소', apply:'적용', invalid:'이름에 줄바꿈이나 콜론(:)은 사용할 수 없습니다.'},
+        ja:{title:'セル・BOOK設定', hint:'左は下のレイヤー、右は上のレイヤーです。セルの間に複数のBOOKを置けます。', labelHint:'クリック：名前編集 / 右クリック・長押し：セル・BOOK設定', add:'BOOK追加', name:'名前', drag:'並べ替え', sortHint:'ドラッグで移動・矢印キーで一つずつ', remove:'タグを削除', select:'BOOKを選択', cancel:'キャンセル', apply:'適用', invalid:'名前に改行やコロン(:)は使えません。'},
+        en:{title:'Cell / BOOK settings', hint:'Left means a lower layer; right means an upper layer. Several BOOKs can share a cell boundary.', labelHint:'Click: rename / Right-click or hold: Cell / BOOK settings', add:'Add BOOK', name:'Name', drag:'Reorder', sortHint:'Drag to reorder · Arrow keys to move one step', remove:'Delete tag', select:'Select BOOK', cancel:'Cancel', apply:'Apply', invalid:'Names cannot contain line breaks or a colon (:).'},
+        zh:{title:'Cell / BOOK 设置', hint:'左侧是下层，右侧是上层。同一单元边界可放置多个BOOK。', labelHint:'单击：改名 / 右键或长按：Cell / BOOK 设置', add:'添加BOOK', name:'名称', drag:'调整顺序', sortHint:'拖动排序 · 方向键逐项移动', remove:'删除标签', select:'选择BOOK', cancel:'取消', apply:'应用', invalid:'名称不能包含换行或冒号(:)。'}
       };
       return (texts[state.lang] || texts.en)[key] || texts.en[key] || key;
     }
@@ -17184,10 +17187,18 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     function renderCellOrderPreview(host, rows, onMove, onSelect) {
       const selected = host.dataset.selectedOrder || (rows[0] && rows[0].key);
       host.replaceChildren();
-      const viewport=document.createElement('div');viewport.className='clip-import-order-viewport';
+      const viewport=document.createElement('div');viewport.className='clip-import-order-viewport';viewport.setAttribute('aria-label',cellSettingsText('hint'));
       const preview=document.createElement('div');preview.className='clip-import-order';viewport.appendChild(preview);host.appendChild(viewport);
       let signature='', previewTop=0;
-      function select(key) {host.dataset.selectedOrder=key;chooser.value=key;if(onSelect)onSelect(key);}
+      function select(key) {host.dataset.selectedOrder=key;syncChooser();if(onSelect)onSelect(key);}
+      function syncChooser() {
+        const active=Array.from(preview.children).find(function(node){return JSON.parse(node.dataset.orderKeys).includes(host.dataset.selectedOrder);});
+        const keys=active?JSON.parse(active.dataset.orderKeys):[];
+        controls.hidden=keys.length<2;chooser.replaceChildren();
+        if(keys.length<2)return;
+        keys.forEach(function(key){const option=document.createElement('option');option.value=key;option.textContent=rows.find(function(row){return row.key===key;}).name;chooser.appendChild(option);});
+        chooser.value=host.dataset.selectedOrder;
+      }
       function buttonFor(keys,label,box,tagBox) {
         const button=document.createElement('button');button.type='button';button.className='clip-order-item'+(tagBox?' is-book':'');
         button.dataset.orderId=keys[0];button.dataset.orderKeys=JSON.stringify(keys);
@@ -17219,7 +17230,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const data=cellOrderPreviewData(displayRows),area={x:60,y:0,w:Math.max(1,data.entries.length)*58,h:30};
         const boxes=layoutLayerNameTagGroups(data.tags,data.entries,area);
         // Reserve the tallest layout reached during this drag, so the controls do not jump.
-        previewTop=Math.min(previewTop,-38,...boxes.map(function(box){return box.y;}));
+        previewTop=Math.min(previewTop,...boxes.map(function(box){return box.y;}));
         preview.style.width=(area.w+120)+'px';preview.style.height=(34-previewTop)+'px';preview.replaceChildren();
         data.entries.forEach(function(entry,index){buttonFor([entry.uid],entry.label,{x:area.x+index*58,y:0,w:58,h:30},null);});
         boxes.forEach(function(box){buttonFor(box.members.map(function(tag){return tag.id;}),'',box,box);});
@@ -17246,10 +17257,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       });
       const controls=document.createElement('div');controls.className='cell-order-controls';
       const chooser=document.createElement('select');chooser.className='ui-field';chooser.setAttribute('aria-label',cellSettingsText('select'));
-      rows.forEach(function(row){const option=document.createElement('option');option.value=row.key;option.textContent=(row.kind==='book'?'BOOK · ':'Cell · ')+row.name;chooser.appendChild(option);});
-      chooser.value=rows.some(function(row){return row.key===selected;})?selected:(rows[0]&&rows[0].key)||'';host.dataset.selectedOrder=chooser.value;
+      host.dataset.selectedOrder=rows.some(function(row){return row.key===selected;})?selected:(rows[0]&&rows[0].key)||'';
       chooser.addEventListener('change',function(){select(chooser.value);});controls.appendChild(chooser);
-      const help=document.createElement('span');help.className='hint';help.textContent=cellSettingsText('sortHint');controls.appendChild(help);host.appendChild(controls);
+      host.appendChild(controls);syncChooser();
+      viewport.title=cellSettingsText('sortHint');
     }
 
     function collectCellSettingsDraft() {
@@ -17357,7 +17368,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const draft=collectCellSettingsDraft();
       const backdrop=document.createElement('div');backdrop.className='app-dialog-backdrop cell-settings-backdrop';
       const box=document.createElement('section');box.className='app-dialog clip-import-dialog';box.setAttribute('role','dialog');box.setAttribute('aria-modal','true');box.setAttribute('aria-label',cellSettingsText('title'));
-      const header=document.createElement('header');header.className='app-dialog-header';const title=document.createElement('h3');title.textContent=cellSettingsText('title');const hint=document.createElement('div');hint.className='hint';hint.textContent=cellSettingsText('hint');header.append(title,hint);box.appendChild(header);
+      const header=document.createElement('header');header.className='app-dialog-header';const title=document.createElement('h3');title.textContent=cellSettingsText('title');header.appendChild(title);box.appendChild(header);
       const body=document.createElement('div');body.className='app-dialog-body';
       const preview=document.createElement('div');preview.dataset.selectedOrder=selectedKey||'';body.appendChild(preview);
       const list=document.createElement('div');list.className='cell-settings-rows';body.appendChild(list);
@@ -24478,13 +24489,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return out;
     }
 
-    // 장수 = 이름이 다른 그림 + 이름 대신 동화점이 찍힌 새 그림. 유지·빈 칸은 그림이 아니다.
-    function clipSheetKomaCount(item) {
-      const keys = item && Array.isArray(item.keys) ? item.keys : [];
-      const dots = keys.filter(function(key) { return key && key.mark && key.head; }).length;
-      return clipSheetKomaLabels(item).length + dots;
-    }
-
     // 창에서 고친 이름이 있으면 그것이 이긴다. 없으면 「셀 번호 다듬기」가 켜졌을 때만 다듬는다.
     function clipSheetKomaLabelOf(pick, celName, label, tidyNumbers) {
       const edited = pick && pick.koma ? pick.koma[label] : null;
@@ -26352,10 +26356,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     function clipSheetText(key, values, app) {
       const docs = {
-        en:{ sideHidden:"Hidden in TVPaint ({count})", paperPreviewFallback:"Could not composite at full size. The saved preview ({width}×{height}) may blur lines and text. Import that preview? For full quality, cancel and choose a PNG exported from CLIP STUDIO PAINT.", paperPreviewContinue:"Import preview", paperPreviewMeta:"CLIP preview {width}×{height} · not full resolution", paperCompositeUnsupported:"This CLIP needs layer effects that cannot be reproduced for paper import. Export a merged PNG or PSD from CLIP STUDIO PAINT.", orderTitle:"Cel order",  paperAnimation:"This CLIP has an animation timeline and may not be a paper template. Import its saved composite as paper? To read cel timing, cancel and drop it onto the sheet preview.", paperContinue:"Import as paper", paperFullMissing:"The full-size CLIP composite is unavailable. Export a PNG or PSD from CLIP STUDIO PAINT and choose that file.", revisionE:"Direction", revisionS:"Animation director", revisionSS:"Chief animation director", revisionK:"Director", numberingNamed:'Instance names set in file', numberingAuto:'No instance names · automatic numbering', numberingMixed:'Partly unnamed · automatic numbering at {auto} exposure(s)', numberingDetail:'Automatic numbers (source frames): {values}', cutReference:'Cut-number reference', revision:'Revision: {name}', revisionGeneration:' · round {count}', sideUnread:'No exposure or unreadable ({count})', sideAside:'Background and reference ({count})', sideOffstage:'Cels from another step ({count})', paper:'Paper', paperDrop:'Drop a paper image here, or click to choose (JPG / PNG / PSD / .clip)', paperKeep:'Drop nothing and the paper you already have is kept.', paperChosen:'Will be replaced with {name}', identity:'Work info', identityTitle:'Title', identityEpisode:'Ep.', identityCut:'Cut no.', identityStage:'Stage name', identityStageHint:'The stage name is given to the first stage only.', tidyNumbers:'Tidy cel numbers', pickedRows:'{count} picked', blockedStart:'starts at frame {start} — not supported yet', allBlocked:'Every timeline in this file starts at a frame other than 0. That layout has not been verified, so nothing was loaded.', noExposure:'no exposure in this timeline', failed:'could not be read: {error}', emptyPick:'Nothing is checked in \"{name}\", so the sheet was left as it is.', oddTiming:'{count} timeline(s) are not 24fps (read as {fps}fps) — the frames were copied as they are.', title:'Read a sheet from {app}', timelines:'Timelines', timelineHint:'Each timeline you pick becomes one stage.', rows:'Rows to load', komaNames:'Cel names', renumber:'Renumber', komaCount:'{count} drawing(s)', fileSection:'File', name:'Name', role:'Role', confirm:'Load', cancel:'Cancel', cel:'cel', other:'layer', hidden:'hidden in {app}', empty:'No rows that can be read as cels were found in this file.', reading:'Reading the {app} file…', loaded:'{app} loaded: {name} · {stages} stage(s)', noPick:'Nothing was selected, so the sheet was left as it is.' },
-        ja:{ sideHidden:"TVPaintで非表示（{count}）", paperPreviewFallback:"原寸で合成できませんでした。保存されたプレビュー（{width}×{height}）を使うと線や文字がぼやける場合があります。プレビューを使いますか？原寸が必要な場合はキャンセルし、CLIP STUDIO PAINTから書き出したPNGを選んでください。", paperPreviewContinue:"プレビューを使う", paperPreviewMeta:"CLIPプレビュー {width}×{height} · 原寸ではありません", paperCompositeUnsupported:"このCLIPには用紙取り込みで再現できないレイヤー効果があります。CLIP STUDIO PAINTから合成済みのPNGまたはPSDを書き出してください。", orderTitle:"セルの並び",  paperAnimation:"このCLIPにはアニメーションのタイムラインがあり、用紙ではない可能性があります。保存時の合成画像を用紙として読み込みますか？セルの配置を読む場合はキャンセルしてシートプレビューに置いてください。", paperContinue:"用紙として読み込む", paperFullMissing:"CLIPの原寸合成画像を読み取れません。CLIP STUDIO PAINTからPNGまたはPSDを書き出して選んでください。", revisionE:"演出", revisionS:"作監", revisionSS:"総作監", revisionK:"監督", numberingNamed:'インスタンス名設定済み', numberingAuto:'インスタンス名未設定 · 自動番号', numberingMixed:'一部未設定 · 自動番号 {auto}か所', numberingDetail:'自動番号（元のフレーム）：{values}', cutReference:'カット番号の参考レイヤー', revision:'修正工程：{name}', revisionGeneration:' · {count}次', sideUnread:'露出なし・読めない行（{count}）', sideAside:'背景・参考（{count}）', sideOffstage:'他工程のセル（{count}）', paper:'用紙', paperDrop:'用紙画像をここに置くか、クリックして選びます（JPG / PNG / PSD / .clip）', paperKeep:'置かなければ、今の用紙をそのまま使います。', paperChosen:'{name} に差し替えます', identity:'作品情報', identityTitle:'作品名', identityEpisode:'話数', identityCut:'カット番号', identityStage:'段階名', identityStageHint:'段階名は最初の段階だけに付きます。', tidyNumbers:'セル番号を整える', pickedRows:'選択 {count}', blockedStart:'{start} フレーム開始 — 未対応', allBlocked:'このファイルのタイムラインはすべて0フレーム以外から始まります。未確認の並びのため読み込みませんでした。', noExposure:'このタイムラインに露出なし', failed:'読み取れませんでした：{error}', emptyPick:'「{name}」で何も選ばれていないため、シートはそのままです。', oddTiming:'24fps でないタイムラインが {count} 件あります（{fps}fps）。コマ数はそのまま移しました。', title:'{app} からシートを読む', timelines:'タイムライン', timelineHint:'選んだタイムラインごとに段階が1つ作られます。', rows:'読み込む行', komaNames:'セル番号', renumber:'順番に振り直す', komaCount:'{count}枚', fileSection:'ファイル', name:'名前', role:'役割', confirm:'読み込む', cancel:'キャンセル', cel:'セル', other:'レイヤー', hidden:'{app} で非表示', empty:'このファイルにセルとして読める行が見つかりませんでした。', reading:'{app} のファイルを読み込み中…', loaded:'{app} のファイルを読み込みました：{name} · 段階 {stages}個', noPick:'何も選ばれなかったため、シートはそのままです。' },
-        ko:{ sideHidden:"TVPaint에서 비표시 ({count})", paperPreviewFallback:"원본 크기로 합성하지 못했습니다. 저장된 미리보기({width}×{height})로 가져오면 선이나 글자가 흐려질 수 있습니다. 미리보기를 사용할까요? 원본 품질이 필요하면 취소하고 CLIP STUDIO PAINT에서 출력한 PNG를 골라 주세요.", paperPreviewContinue:"미리보기로 가져오기", paperPreviewMeta:"CLIP 미리보기 {width}×{height} · 원본 해상도 아님", paperCompositeUnsupported:"이 CLIP에는 용지 불러오기에서 재현할 수 없는 레이어 효과가 있습니다. CLIP STUDIO PAINT에서 합성된 PNG 또는 PSD로 출력해 주세요.", orderTitle:"셀 순서",  paperAnimation:"애니메이션 타임라인이 있는 CLIP이라 용지 파일이 아닐 수 있습니다. 저장 당시 합성 이미지를 용지로 가져올까요? 셀 배치를 읽으려면 취소하고 시트 미리보기에 놓아 주세요.", paperContinue:"용지로 가져오기", paperFullMissing:"CLIP 원본 크기 합성 이미지가 없습니다. CLIP STUDIO PAINT에서 PNG 또는 PSD로 출력한 파일을 골라 주세요.", revisionE:"연출", revisionS:"작감", revisionSS:"총작감", revisionK:"감독", numberingNamed:'인스턴스 이름 지정됨', numberingAuto:'인스턴스 이름 미지정 · 자동 번호', numberingMixed:'일부 이름 미지정 · 자동 번호 {auto}곳', numberingDetail:'자동 번호(원본 프레임): {values}', cutReference:'컷번호 참고 레이어', revision:'리비전: {name}', revisionGeneration:' · {count}차', sideUnread:'노출 없음 · 읽지 못함 ({count})', sideAside:'배경 · 참고 ({count})', sideOffstage:'다른 공정의 셀 ({count})', paper:'용지', paperDrop:'용지 이미지를 여기에 놓거나 눌러서 고릅니다 (JPG / PNG / PSD / .clip)', paperKeep:'놓지 않으면 지금 설정된 양식을 그대로 씁니다.', paperChosen:'{name} 으로 바꿉니다', identity:'작품 정보', identityTitle:'작품명', identityEpisode:'화수', identityCut:'컷번호', identityStage:'단계 이름', identityStageHint:'단계 이름은 첫 단계에만 붙습니다.', tidyNumbers:'셀 번호 다듬기', pickedRows:'고른 행 {count}', blockedStart:'{start} 프레임에서 시작 — 아직 지원하지 않음', allBlocked:'이 파일의 타임라인이 전부 0프레임이 아닌 자리에서 시작합니다. 확인되지 않은 배치라 아무것도 읽지 않았습니다.', noExposure:'이 타임라인에 노출 없음', failed:'읽지 못했습니다: {error}', emptyPick:'「{name}」에서 아무것도 고르지 않아 시트를 그대로 두었습니다.', oddTiming:'24fps가 아닌 타임라인이 {count}개 있습니다({fps}fps). 칸 수는 그대로 옮겼습니다.', title:'{app}에서 시트 읽기', timelines:'타임라인', timelineHint:'고른 타임라인마다 단계가 하나씩 만들어집니다.', rows:'가져올 행', komaNames:'셀 이름', renumber:'순번대로 재배치', komaCount:'{count}장', fileSection:'파일', name:'이름', role:'역할', confirm:'불러오기', cancel:'취소', cel:'셀', other:'레이어', hidden:'{app}에서 숨김', empty:'이 파일에서 셀로 읽을 줄을 찾지 못했습니다.', reading:'{app} 파일을 읽는 중…', loaded:'{app} 파일을 읽었습니다: {name} · 단계 {stages}개', noPick:'아무것도 고르지 않아 시트를 그대로 두었습니다.' },
-        zh:{ sideHidden:"在TVPaint中隐藏（{count}）", paperPreviewFallback:"无法以原尺寸合成。使用保存的预览（{width}×{height}）可能使线条和文字模糊。要导入预览吗？如需原始质量，请取消并选择从CLIP STUDIO PAINT导出的PNG。", paperPreviewContinue:"导入预览", paperPreviewMeta:"CLIP预览 {width}×{height} · 非原始分辨率", paperCompositeUnsupported:"此CLIP含有纸张导入无法重现的图层效果。请从CLIP STUDIO PAINT导出合成后的PNG或PSD。", orderTitle:"赛璐璐顺序",  paperAnimation:"此CLIP包含动画时间轴，可能不是纸张模板。要将保存时的合成图像作为纸张导入吗？如需读取赛璐璐时间，请取消并拖到摄影表预览中。", paperContinue:"作为纸张导入", paperFullMissing:"无法读取CLIP的原尺寸合成图像。请从CLIP STUDIO PAINT导出PNG或PSD后选择该文件。", revisionE:"演出", revisionS:"作画监督", revisionSS:"总作画监督", revisionK:"导演", numberingNamed:'实例名称已设置', numberingAuto:'未设置实例名称 · 自动编号', numberingMixed:'部分未命名 · {auto}处自动编号', numberingDetail:'自动编号（原始帧）：{values}', cutReference:'镜头编号参考图层', revision:'修正工序：{name}', revisionGeneration:' · 第{count}次', sideUnread:'无曝光 · 无法读取（{count}）', sideAside:'背景 · 参考（{count}）', sideOffstage:'其他工序的赛璐璐（{count}）', paper:'纸张', paperDrop:'将纸张图像拖到此处，或点击选择（JPG / PNG / PSD / .clip）', paperKeep:'不放入时保持当前纸张。', paperChosen:'将替换为 {name}', identity:'作品信息', identityTitle:'作品名', identityEpisode:'话数', identityCut:'镜号', identityStage:'阶段名', identityStageHint:'阶段名仅用于第一个阶段。', tidyNumbers:'整理赛璐璐编号', pickedRows:'已选 {count}', blockedStart:'从第 {start} 帧开始 — 尚不支持', allBlocked:'此文件的时间轴都不是从第 0 帧开始。该排列尚未验证，因此未读取任何内容。', noExposure:'此时间轴没有曝光', failed:'无法读取：{error}', emptyPick:'「{name}」中未选择任何内容，工作表保持不变。', oddTiming:'有 {count} 条时间轴不是 24fps（{fps}fps）。格子数按原样移入。', title:'从 {app} 读取表', timelines:'时间轴', timelineHint:'所选的每条时间轴都会生成一个阶段。', rows:'要读取的行', komaNames:'赛璐璐编号', renumber:'按顺序重编', komaCount:'{count} 张', fileSection:'文件', name:'名称', role:'角色', confirm:'读取', cancel:'取消', cel:'赛璐璐', other:'图层', hidden:'在 {app} 中隐藏', empty:'在此文件中未找到可作为赛璐璐读取的行。', reading:'正在读取 {app} 文件…', loaded:'已读取 {app} 文件：{name} · {stages} 个阶段', noPick:'未选择任何内容，工作表保持不变。' }
+        en:{ sideHidden:"Hidden in TVPaint ({count})", paperPreviewFallback:"Could not composite at full size. The saved preview ({width}×{height}) may blur lines and text. Import that preview? For full quality, cancel and choose a PNG exported from CLIP STUDIO PAINT.", paperPreviewContinue:"Import preview", paperPreviewMeta:"CLIP preview {width}×{height} · not full resolution", paperCompositeUnsupported:"This CLIP needs layer effects that cannot be reproduced for paper import. Export a merged PNG or PSD from CLIP STUDIO PAINT.", orderTitle:"Cel order",  paperAnimation:"This CLIP has an animation timeline and may not be a paper template. Import its saved composite as paper? To read cel timing, cancel and drop it onto the sheet preview.", paperContinue:"Import as paper", paperFullMissing:"The full-size CLIP composite is unavailable. Export a PNG or PSD from CLIP STUDIO PAINT and choose that file.", revisionE:"Direction", revisionS:"Animation director", revisionSS:"Chief animation director", revisionK:"Director", numberingNamed:'Named', numberingMixed:'Named · {auto} automatic', numberingDetail:'Automatic numbers (source frames): {values}', cutReference:'Cut-number reference', revision:'Revision: {name}', revisionGeneration:' · round {count}', sideUnread:'No exposure or unreadable ({count})', sideAside:'Background and reference ({count})', sideOffstage:'Cels from another step ({count})', paper:'Paper', paperDrop:'Choose or drop paper image', paperKeep:'Not selected · keep current paper', paperChosen:'Will be replaced with {name}', identity:'Work info', identityTitle:'Title', identityEpisode:'Ep.', identityCut:'Cut no.', identityStage:'Stage name', identityStageHint:'The stage name is given to the first stage only.', tidyNumbers:'Tidy cel numbers', pickedRows:'{count} picked', blockedStart:'starts at frame {start} — not supported yet', allBlocked:'Every timeline in this file starts at a frame other than 0. That layout has not been verified, so nothing was loaded.', noExposure:'no exposure in this timeline', failed:'could not be read: {error}', emptyPick:'Nothing is checked in \"{name}\", so the sheet was left as it is.', oddTiming:'{count} timeline(s) are not 24fps (read as {fps}fps) — the frames were copied as they are.', title:'Read a sheet from {app}', timelines:'Timelines', timelineHint:'Each timeline you pick becomes one stage.', rows:'Rows to load', komaNames:'Cel names', renumber:'Renumber', name:'Name', role:'Role', confirm:'Load', cancel:'Cancel', cel:'cel', hidden:'hidden in {app}', empty:'No rows that can be read as cels were found in this file.', reading:'Reading the {app} file…', loaded:'{app} loaded: {name} · {stages} stage(s)', noPick:'Nothing was selected, so the sheet was left as it is.' },
+        ja:{ sideHidden:"TVPaintで非表示（{count}）", paperPreviewFallback:"原寸で合成できませんでした。保存されたプレビュー（{width}×{height}）を使うと線や文字がぼやける場合があります。プレビューを使いますか？原寸が必要な場合はキャンセルし、CLIP STUDIO PAINTから書き出したPNGを選んでください。", paperPreviewContinue:"プレビューを使う", paperPreviewMeta:"CLIPプレビュー {width}×{height} · 原寸ではありません", paperCompositeUnsupported:"このCLIPには用紙取り込みで再現できないレイヤー効果があります。CLIP STUDIO PAINTから合成済みのPNGまたはPSDを書き出してください。", orderTitle:"セルの並び",  paperAnimation:"このCLIPにはアニメーションのタイムラインがあり、用紙ではない可能性があります。保存時の合成画像を用紙として読み込みますか？セルの配置を読む場合はキャンセルしてシートプレビューに置いてください。", paperContinue:"用紙として読み込む", paperFullMissing:"CLIPの原寸合成画像を読み取れません。CLIP STUDIO PAINTからPNGまたはPSDを書き出して選んでください。", revisionE:"演出", revisionS:"作監", revisionSS:"総作監", revisionK:"監督", numberingNamed:'名前指定', numberingMixed:'名前指定 · 自動{auto}件', numberingDetail:'自動番号（元のフレーム）：{values}', cutReference:'カット番号の参考レイヤー', revision:'修正工程：{name}', revisionGeneration:' · {count}次', sideUnread:'露出なし・読めない行（{count}）', sideAside:'背景・参考（{count}）', sideOffstage:'他工程のセル（{count}）', paper:'用紙', paperDrop:'用紙画像を選択・ドロップ', paperKeep:'未選択 · 現在の用紙を使用', paperChosen:'{name} に差し替えます', identity:'作品情報', identityTitle:'作品名', identityEpisode:'話数', identityCut:'カット番号', identityStage:'段階名', identityStageHint:'段階名は最初の段階だけに付きます。', tidyNumbers:'セル番号を整える', pickedRows:'選択 {count}', blockedStart:'{start} フレーム開始 — 未対応', allBlocked:'このファイルのタイムラインはすべて0フレーム以外から始まります。未確認の並びのため読み込みませんでした。', noExposure:'このタイムラインに露出なし', failed:'読み取れませんでした：{error}', emptyPick:'「{name}」で何も選ばれていないため、シートはそのままです。', oddTiming:'24fps でないタイムラインが {count} 件あります（{fps}fps）。コマ数はそのまま移しました。', title:'{app} からシートを読む', timelines:'タイムライン', timelineHint:'選んだタイムラインごとに段階が1つ作られます。', rows:'読み込む行', komaNames:'セル番号', renumber:'順番に振り直す', name:'名前', role:'役割', confirm:'読み込む', cancel:'キャンセル', cel:'セル', hidden:'{app} で非表示', empty:'このファイルにセルとして読める行が見つかりませんでした。', reading:'{app} のファイルを読み込み中…', loaded:'{app} のファイルを読み込みました：{name} · 段階 {stages}個', noPick:'何も選ばれなかったため、シートはそのままです。' },
+        ko:{ sideHidden:"TVPaint에서 비표시 ({count})", paperPreviewFallback:"원본 크기로 합성하지 못했습니다. 저장된 미리보기({width}×{height})로 가져오면 선이나 글자가 흐려질 수 있습니다. 미리보기를 사용할까요? 원본 품질이 필요하면 취소하고 CLIP STUDIO PAINT에서 출력한 PNG를 골라 주세요.", paperPreviewContinue:"미리보기로 가져오기", paperPreviewMeta:"CLIP 미리보기 {width}×{height} · 원본 해상도 아님", paperCompositeUnsupported:"이 CLIP에는 용지 불러오기에서 재현할 수 없는 레이어 효과가 있습니다. CLIP STUDIO PAINT에서 합성된 PNG 또는 PSD로 출력해 주세요.", orderTitle:"셀 순서",  paperAnimation:"애니메이션 타임라인이 있는 CLIP이라 용지 파일이 아닐 수 있습니다. 저장 당시 합성 이미지를 용지로 가져올까요? 셀 배치를 읽으려면 취소하고 시트 미리보기에 놓아 주세요.", paperContinue:"용지로 가져오기", paperFullMissing:"CLIP 원본 크기 합성 이미지가 없습니다. CLIP STUDIO PAINT에서 PNG 또는 PSD로 출력한 파일을 골라 주세요.", revisionE:"연출", revisionS:"작감", revisionSS:"총작감", revisionK:"감독", numberingNamed:'이름 지정', numberingMixed:'이름 지정 · 자동 {auto}곳', numberingDetail:'자동 번호(원본 프레임): {values}', cutReference:'컷번호 참고 레이어', revision:'리비전: {name}', revisionGeneration:' · {count}차', sideUnread:'노출 없음 · 읽지 못함 ({count})', sideAside:'배경 · 참고 ({count})', sideOffstage:'다른 공정의 셀 ({count})', paper:'용지', paperDrop:'용지 이미지 선택 · 드롭', paperKeep:'미선택 · 현재 용지 유지', paperChosen:'{name} 으로 바꿉니다', identity:'작품 정보', identityTitle:'작품명', identityEpisode:'화수', identityCut:'컷번호', identityStage:'단계 이름', identityStageHint:'단계 이름은 첫 단계에만 붙습니다.', tidyNumbers:'셀 번호 다듬기', pickedRows:'고른 행 {count}', blockedStart:'{start} 프레임에서 시작 — 아직 지원하지 않음', allBlocked:'이 파일의 타임라인이 전부 0프레임이 아닌 자리에서 시작합니다. 확인되지 않은 배치라 아무것도 읽지 않았습니다.', noExposure:'이 타임라인에 노출 없음', failed:'읽지 못했습니다: {error}', emptyPick:'「{name}」에서 아무것도 고르지 않아 시트를 그대로 두었습니다.', oddTiming:'24fps가 아닌 타임라인이 {count}개 있습니다({fps}fps). 칸 수는 그대로 옮겼습니다.', title:'{app}에서 시트 읽기', timelines:'타임라인', timelineHint:'고른 타임라인마다 단계가 하나씩 만들어집니다.', rows:'가져올 행', komaNames:'셀 이름', renumber:'순번대로 재배치', name:'이름', role:'역할', confirm:'불러오기', cancel:'취소', cel:'셀', hidden:'{app}에서 숨김', empty:'이 파일에서 셀로 읽을 줄을 찾지 못했습니다.', reading:'{app} 파일을 읽는 중…', loaded:'{app} 파일을 읽었습니다: {name} · 단계 {stages}개', noPick:'아무것도 고르지 않아 시트를 그대로 두었습니다.' },
+        zh:{ sideHidden:"在TVPaint中隐藏（{count}）", paperPreviewFallback:"无法以原尺寸合成。使用保存的预览（{width}×{height}）可能使线条和文字模糊。要导入预览吗？如需原始质量，请取消并选择从CLIP STUDIO PAINT导出的PNG。", paperPreviewContinue:"导入预览", paperPreviewMeta:"CLIP预览 {width}×{height} · 非原始分辨率", paperCompositeUnsupported:"此CLIP含有纸张导入无法重现的图层效果。请从CLIP STUDIO PAINT导出合成后的PNG或PSD。", orderTitle:"赛璐璐顺序",  paperAnimation:"此CLIP包含动画时间轴，可能不是纸张模板。要将保存时的合成图像作为纸张导入吗？如需读取赛璐璐时间，请取消并拖到摄影表预览中。", paperContinue:"作为纸张导入", paperFullMissing:"无法读取CLIP的原尺寸合成图像。请从CLIP STUDIO PAINT导出PNG或PSD后选择该文件。", revisionE:"演出", revisionS:"作画监督", revisionSS:"总作画监督", revisionK:"导演", numberingNamed:'已命名', numberingMixed:'已命名 · {auto}处自动编号', numberingDetail:'自动编号（原始帧）：{values}', cutReference:'镜头编号参考图层', revision:'修正工序：{name}', revisionGeneration:' · 第{count}次', sideUnread:'无曝光 · 无法读取（{count}）', sideAside:'背景 · 参考（{count}）', sideOffstage:'其他工序的赛璐璐（{count}）', paper:'纸张', paperDrop:'选择或拖入纸张图像', paperKeep:'未选择 · 保留当前纸张', paperChosen:'将替换为 {name}', identity:'作品信息', identityTitle:'作品名', identityEpisode:'话数', identityCut:'镜号', identityStage:'阶段名', identityStageHint:'阶段名仅用于第一个阶段。', tidyNumbers:'整理赛璐璐编号', pickedRows:'已选 {count}', blockedStart:'从第 {start} 帧开始 — 尚不支持', allBlocked:'此文件的时间轴都不是从第 0 帧开始。该排列尚未验证，因此未读取任何内容。', noExposure:'此时间轴没有曝光', failed:'无法读取：{error}', emptyPick:'「{name}」中未选择任何内容，工作表保持不变。', oddTiming:'有 {count} 条时间轴不是 24fps（{fps}fps）。格子数按原样移入。', title:'从 {app} 读取表', timelines:'时间轴', timelineHint:'所选的每条时间轴都会生成一个阶段。', rows:'要读取的行', komaNames:'赛璐璐编号', renumber:'按顺序重编', name:'名称', role:'角色', confirm:'读取', cancel:'取消', cel:'赛璐璐', hidden:'在 {app} 中隐藏', empty:'在此文件中未找到可作为赛璐璐读取的行。', reading:'正在读取 {app} 文件…', loaded:'已读取 {app} 文件：{name} · {stages} 个阶段', noPick:'未选择任何内容，工作表保持不变。' }
       };
       const doc = docs[state.lang] || docs.en;
       const fill = Object.assign({ app:app || CLIP_SHEET_APPS.clip }, values || {});
@@ -26367,7 +26371,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     function openClipSheetImportDialog(reads, fileName, source) {
       return new Promise(function(resolve) {
         const app = clipSheetAppName(source);
-        // 한 벌뿐이면 고를 것이 없다 — 체크 없이 정보 줄만 보인다(.tvpp 는 언제나 한 벌이다).
+        // 한 벌이면 타임라인 선택/요약을 생략하고, 가져올 수 없는 이유만 남긴다.
         const single = reads.length < 2;
         const picks = {};      // timelineId → mainId → { checked, name, role, koma }
         const chosen = {};     // timelineId → 가져올지
@@ -26419,7 +26423,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
         const tlSection = document.createElement('section');
         const tlTitle = document.createElement('h4');
-        tlTitle.textContent = clipSheetText(single && source === 'tvpp' ? 'fileSection' : 'timelines', null, app);
+        tlTitle.textContent = clipSheetText('timelines', null, app);
         tlSection.appendChild(tlTitle);
         const tlList = document.createElement('div');
         tlList.className = 'clip-import-timelines';
@@ -26484,12 +26488,14 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const paperLabel = document.createElement('span');
         const paperNote = document.createElement('div');
         paperNote.className = 'hint';
-        paperNote.textContent = clipSheetText('paperKeep', null, app);
+
         function showPaperPick() {
           paperLabel.textContent = paperPick.file
             ? clipSheetText('paperChosen', { name:paperPick.file.name }, app)
             : clipSheetText('paperDrop', null, app);
           paperZone.classList.toggle('is-set', Boolean(paperPick.file));
+          paperNote.textContent = paperPick.file ? '' : clipSheetText('paperKeep', null, app);
+          paperNote.hidden = Boolean(paperPick.file);
         }
         function takePaperFile(file) {
           if (!file || !isPaperDropFile(file)) return;
@@ -26550,11 +26556,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const orderSection = document.createElement('section');
         orderSection.className = 'clip-import-order-section';
         const orderTitle = document.createElement('h4'); orderTitle.textContent = clipSheetText('orderTitle');
-        const orderHint = document.createElement('div'); orderHint.className = 'hint'; orderHint.textContent = cellSettingsText('hint');
         const orderViewport = document.createElement('div'); orderViewport.className = 'cell-order-container';
         const orderPreview = document.createElement('div'); orderPreview.className = 'cell-order-preview';
         orderPreview.setAttribute('aria-label', clipSheetText('orderTitle'));
-        orderViewport.appendChild(orderPreview); orderSection.append(orderTitle, orderHint, orderViewport);
+        orderViewport.appendChild(orderPreview); orderSection.append(orderTitle, orderViewport);
         body.insertBefore(orderSection, rowSection);
 
         function previewItems() {
@@ -26606,6 +26611,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
         function renderTimelines() {
           tlList.innerHTML = '';
+          tlSection.hidden = single && !reads[0].blocked;
+          if (tlSection.hidden) return;
           reads.forEach(function(read) {
             const key = String(read.timeline.MainId);
             const celCount = read.items.filter(function(item) { return item.kind === 'cel' && !rowMetadata.get(item).cutReference; }).length;
@@ -26732,15 +26739,13 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
             const note = document.createElement('small');
             note.className = 'hint' + (item.failure ? ' clip-import-failed' : '');
             const metadata = rowMetadata.get(item);
-            note.textContent = (item.path ? item.path + '/' : '')
-              + (metadata.cutReference ? clipSheetText('cutReference', null, app)
-                 : clipSheetText(item.kind === 'cel' ? 'cel' : 'other', null, app))
-              + (item.kind === 'cel' && !item.failure && !item.numbering && !metadata.cutReference
-                 ? ' · ' + clipSheetText('komaCount', { count:clipSheetKomaCount(item) }, app) : '')
-              + (item.visible ? '' : ' · ' + clipSheetText('hidden', null, app))
-              + (item.failure === 'empty' ? ' · ' + clipSheetText('noExposure', null, app)
-                 : (item.failure ? ' · ' + clipSheetText('failed', { error:item.failure }, app) : ''));
-            row.appendChild(note);
+            const notes = [];
+            if (item.path) notes.push(item.path);
+            if (metadata.cutReference) notes.push(clipSheetText('cutReference', null, app));
+            if (!item.visible) notes.push(clipSheetText('hidden', null, app));
+            if (item.failure) notes.push(item.failure === 'empty' ? clipSheetText('noExposure', null, app)
+              : clipSheetText('failed', { error:item.failure }, app));
+            note.textContent = notes.join(' · ');
 
             if (metadata.revision) {
               const revisionNote = document.createElement('span');
@@ -26752,27 +26757,27 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
                 + (metadata.revision.explicitGeneration
                    ? clipSheetText('revisionGeneration', { count:metadata.revision.generation }, app) : '');
               revisionNote.title = clipSheetText('revision', { name:revisionNote.textContent }, app);
-              note.appendChild(document.createTextNode(' · '));
+              if (note.textContent) note.appendChild(document.createTextNode(' · '));
               note.appendChild(revisionNote);
             }
-            if (item.numbering && !item.failure && (item.numbering.named || item.numbering.automatic.length)) {
+            if (item.numbering && !item.failure && item.numbering.named) {
               const numbered = item.numbering;
               const automatic = numbered.automatic;
               const provenance = document.createElement('small');
-              provenance.className = 'hint';
-              provenance.dataset.numbering = numbered.named ? (automatic.length ? 'mixed' : 'named') : 'auto';
-              provenance.textContent = clipSheetText(numbered.named
-                ? (automatic.length ? 'numberingMixed' : 'numberingNamed') : 'numberingAuto',
+              provenance.className = 'clip-import-revision';
+              provenance.dataset.numbering = automatic.length ? 'mixed' : 'named';
+              provenance.textContent = clipSheetText(automatic.length ? 'numberingMixed' : 'numberingNamed',
                 { named:numbered.named, auto:automatic.length }, app);
               // 같은 '1'이 파일 이름과 자동 번호에 함께 있어도 원본 프레임으로 구별한다.
               if (numbered.named && automatic.length) {
                 const positions = automatic.map(function(entry) { return entry.label + ' (' + (entry.frame + 1) + 'F)'; });
-                provenance.textContent += ' · ' + clipSheetText('numberingDetail',
-                  { values:positions.slice(0, 4).join(', ') + (positions.length > 4 ? ' …' : '') }, app);
                 provenance.title = clipSheetText('numberingDetail', { values:positions.join(', ') }, app);
               }
-              row.appendChild(provenance);
+              if (note.textContent) note.appendChild(document.createTextNode(' · '));
+              note.appendChild(provenance);
             }
+
+            if (note.childNodes.length) row.appendChild(note);
 
             // 그 줄에 서는 그림 이름을 전부 보이고 고칠 수 있게 한다. 파일에 인스턴스 이름이 없으면
             // 처음 나온 차례로 1·2·3 이 들어와 있다 — 그대로 두거나 여기서 고쳐 쓴다.
@@ -26781,18 +26786,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
               komaBox.className = 'clip-import-koma';
               komaBox.hidden = !pick.checked;
               check.addEventListener('change', function() { komaBox.hidden = !check.checked; });
-
-              const komaHead = document.createElement('div');
-              komaHead.className = 'clip-import-koma-head';
-              const komaTitle = document.createElement('span');
-              komaTitle.textContent = clipSheetText('komaNames', null, app);
-              komaHead.appendChild(komaTitle);
-              const renumber = document.createElement('button');
-              renumber.type = 'button';
-              renumber.className = 'toolbar-btn';
-              renumber.textContent = clipSheetText('renumber', null, app);
-              komaHead.appendChild(renumber);
-              komaBox.appendChild(komaHead);
 
               // 칸 높이는 CSS 가 정한다 — 전역 textarea 의 min-height 때문에 rows 로는 정해지지 않는다.
               const field = document.createElement('textarea');
@@ -26805,13 +26798,18 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
               };
               showNames();
               field.addEventListener('input', function() { clipSheetApplyKomaText(pick, labels, field.value); });
+              const renumber = document.createElement('button');
+              renumber.type = 'button';renumber.className = 'toolbar-btn clip-import-renumber';
+              renumber.textContent = '1…N';renumber.title = clipSheetText('renumber', null, app);
+              renumber.setAttribute('aria-label', renumber.title);
               renumber.addEventListener('click', function() {
                 // AutoSheet.tvpx 의 인스턴스 넘버링과 같은 규칙 — 처음 나온 차례로 1·2·3 을 주고,
                 // 같은 그림이 다시 서면 새 번호를 쓰지 않는다(이름 하나에 번호 하나이므로 저절로 그렇다).
                 labels.forEach(function(label, index) { pick.koma[label] = String(index + 1); });
                 showNames();
               });
-              komaBox.appendChild(field);
+              field.placeholder = clipSheetText('komaNames', null, app);
+              komaBox.append(field, renumber);
               row.appendChild(komaBox);
             }
 
