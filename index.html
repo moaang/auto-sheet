@@ -2585,7 +2585,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '936';
+    const APP_VERSION = '937';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3871,6 +3871,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver937", "Paste stays with its original work", ["Fixed an image paste finishing in a different work after switching files or using Undo. Changing pages keeps the paste on its original page."]],
         ["ver936", "Cleaner BOOK dragging", ["Fixed overlapping tag fragments when splitting or merging BOOK groups. Rapid dragging now continues smoothly from the visible position."]],
         ["ver935", "Sidebar controls, simplified", ["The work library folds when empty. Refresh and paper selection controls are clearer, with shorter guidance."]],
         ["ver934", "Restore original cel names during import", ["Added a manual-input heading with renumber and restore-original buttons. Only missing instance names are marked. Cel-preview spacing is balanced."]],
@@ -3956,6 +3957,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver937", "貼り付け先を保持", ["ファイル切替や取り消しの後、読み込み中の画像が別の作業に貼り付く問題を修正しました。ページを移動しても元のページに貼り付きます。"]],
         ["ver936", "BOOKドラッグの表示を修正", ["BOOKを分ける・まとめる際のタグの重なりを修正しました。続けてドラッグしても表示位置が飛ばなくなりました。"]],
         ["ver935", "サイドバーをすっきり", ["空の作業一覧は折りたたみ、再読込と用紙選択を整理しました。案内と簡単ガイドも短くしました。"]],
         ["ver934", "読み込み時に元のセル名へ戻す", ["手入力欄に振り直し・元に戻すボタンを並べました。インスタンス名が未設定の場合だけ表示し、セルプレビューの上下余白をそろえました。"]],
@@ -4041,6 +4043,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver937", "붙여넣기 대상 유지", ["파일을 바꾸거나 실행취소한 뒤 이전 이미지가 다른 작업에 붙는 문제를 수정했습니다. 페이지를 이동해도 처음 페이지에 붙습니다."]],
         ["ver936", "BOOK 드래그 표시 수정", ["BOOK 묶음을 나누거나 합칠 때 태그 일부가 겹쳐 보이던 문제를 수정했습니다. 빠르게 이어 끌 때 미리보기와 카드의 위치가 튀는 현상도 줄였습니다."]],
         ["ver935", "사이드바 간소화", ["빈 작업 목록은 접히고, 새로고침과 용지 선택 영역을 정리했습니다. 반복 안내를 줄이고 간단 설명서를 갱신했습니다."]],
         ["ver934", "셀 번호 원본 복원", ["수동 입력 제목 옆에 재번호·원본 복원 버튼을 배치했습니다. 인스턴스 이름이 미지정인 경우만 표시하고 셀 미리보기의 위아래 여백을 맞췄습니다."]],
@@ -4126,6 +4129,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver937", "保持原粘贴目标", ["修复切换文件或撤销后，读取中的图像被粘贴到其他工作的问题。切换页面后仍粘贴到原页面。"]],
         ["ver936", "修正BOOK拖动显示", ["修复拆分或合并BOOK组时标签局部重叠的问题。连续拖动时从当前显示位置平滑移动。"]],
         ["ver935", "精简侧边栏", ["空工作列表默认折叠，统一刷新与纸张选择控件，并精简提示和快速指南。"]],
         ["ver934", "恢复导入的原始名称", ["手动输入标题旁排列重新编号和恢复原始按钮。仅提示未设置的实例名称，并统一预览的上下间距。"]],
@@ -20271,25 +20275,24 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       });
     }
 
-    function resolvePastedImageRectForPlacement(rect) {
-      const pageIndex = state.currentPreviewPage || 0;
+    function resolvePastedImageRectForPlacement(rect, pageIndex) {
       const candidate = clampPastedImageBox(Object.assign({}, rect));
       const boxes = getPastedImageOtherBoxes(pageIndex, null);
       if (!textMemoIntersectsAny(candidate, boxes)) return candidate;
       return resolveRectAwayFromBoxes(candidate, boxes, getTextMemoGapRect(), clampPastedImageBox) || candidate;
     }
 
-    function addPastedImageFromDataUrl(dataUrl, naturalW, naturalH) {
-      const pageIndex = state.currentPreviewPage || 0;
+    function addPastedImageFromDataUrl(dataUrl, naturalW, naturalH, pageIndex) {
+      if (pageIndex == null) pageIndex = state.currentPreviewPage || 0;
       const pageData = getPastedImagePageData(pageIndex);
       const maxW = 360;
       const ratio = naturalW && naturalH ? naturalW / naturalH : 1;
       const w = Math.min(maxW, naturalW || maxW);
       const h = Math.max(24, w / Math.max(0.01, ratio));
-      const placed = resolvePastedImageRectForPlacement({ x:120, y:180, w:w, h:h });
+      const placed = resolvePastedImageRectForPlacement({ x:120, y:180, w:w, h:h }, pageIndex);
       const img = Object.assign({ id:makePastedImageId(), src:dataUrl, ratio:ratio }, placed);
       pageData.push(img);
-      state.activePastedImage = { pageIndex:pageIndex, id:img.id };
+      if (pageIndex === (state.currentPreviewPage || 0)) state.activePastedImage = { pageIndex:pageIndex, id:img.id };
       refreshPreviewOverlay('image', true);
     }
 
@@ -20300,12 +20303,18 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const file = imageItem.getAsFile && imageItem.getAsFile();
       if (!file) return;
       event.preventDefault();
+      // Async paste belongs to its original document and page; Undo also invalidates the generation.
+      const generation = documentLoadGeneration, pageIndex = state.currentPreviewPage || 0;
       const reader = new FileReader();
       reader.onload = function(){
+        if (generation !== documentLoadGeneration) return;
         const dataUrl = String(reader.result || '');
         const probe = new Image();
-        probe.onload = function(){ addPastedImageFromDataUrl(dataUrl, probe.naturalWidth || probe.width, probe.naturalHeight || probe.height); };
-        probe.onerror = function(){ addPastedImageFromDataUrl(dataUrl, 320, 240); };
+        function finish(width, height) {
+          if (generation === documentLoadGeneration) addPastedImageFromDataUrl(dataUrl, width, height, pageIndex);
+        }
+        probe.onload = function(){ finish(probe.naturalWidth || probe.width, probe.naturalHeight || probe.height); };
+        probe.onerror = function(){ finish(320, 240); };
         probe.src = dataUrl;
       };
       reader.onerror = function(){
