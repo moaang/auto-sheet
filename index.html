@@ -2584,7 +2584,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '942';
+    const APP_VERSION = '943';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3871,6 +3871,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver943", "Broader CSV encoding support", ["Improved CSV encoding detection and added Chinese, Western European and other encoding choices. Check the preview when detection is uncertain."]],
         ["ver942", "Less work while building ZIP exports", ["Reduced byte-processing overhead when adding exported files to ZIP archives. File contents and stop behavior are unchanged."]],
         ["ver941", "Consistent CSV import controls", ["CSV column controls now match the CLIP and TVPaint import layout, including narrow screens. One decoded source is reused through confirmation."]],
         ["ver940", "Consistent import messages", ["Import confirmations now follow the selected language. CSV guidance clarifies that hidden columns keep their data. Work-file wording is consistent."]],
@@ -3962,6 +3963,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver943", "CSV文字コードの対応を拡充", ["CSVの文字コード判定を改善し、中国語・西欧などの文字コードを選べるようにしました。判定が不確かな場合はプレビューを確認できます。"]],
         ["ver942", "ZIP出力の処理を軽量化", ["出力ファイルをZIPに追加する際のバイト処理を軽くしました。ファイル内容と中止動作は変わりません。"]],
         ["ver941", "CSVの読込操作を統一", ["CSVの列設定をCLIP・TVPaintと同じ並びにそろえ、狭い画面にも対応しました。読み取った文字列を確定まで再利用します。"]],
         ["ver940", "読込メッセージを統一", ["読込結果を選択中の言語で表示します。CSVの非表示列もデータを保持することを明記し、作業ファイルの表記をそろえました。"]],
@@ -4053,6 +4055,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver943", "CSV 인코딩 지원 확대", ["CSV 자동판별을 개선하고 중국어·서유럽 등 인코딩 선택을 추가했습니다. 판별이 애매한 파일은 미리보기에서 확인할 수 있습니다."]],
         ["ver942", "ZIP 출력 처리 경량화", ["출력 파일을 ZIP에 담을 때 바이트 처리 비용을 줄였습니다. 파일 내용과 중지 동작은 유지됩니다."]],
         ["ver941", "CSV 불러오기 UI 통일", ["CSV 열 설정을 CLIP·TVPaint와 같은 배치로 맞추고 좁은 화면에 대응했습니다. 해독한 원문을 확정까지 재사용합니다."]],
         ["ver940", "불러오기 문구 통일", ["불러오기 결과를 선택한 언어로 표시합니다. CSV 숨김 열도 데이터를 유지한다는 안내와 작업 파일 용어를 맞췄습니다."]],
@@ -4144,6 +4147,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver943", "扩展CSV编码支持", ["改进CSV编码检测，并增加中文、西欧等编码选项。检测不确定时可在预览中确认。"]],
         ["ver942", "减轻ZIP导出处理", ["减少将输出文件加入ZIP时的字节处理开销。文件内容和停止行为保持不变。"]],
         ["ver941", "统一CSV导入控件", ["CSV列设置与CLIP、TVPaint采用相同排列，适应窄屏。解码结果复用至确认导入。"]],
         ["ver940", "统一读取提示", ["读取结果使用所选语言。明确CSV隐藏列仍保留数据，并统一工作文件的用语。"]],
@@ -13236,104 +13240,133 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     const CSV_DOT_MARK_VALUE_RE = /^[\u25cb\u3007\u25ef\u25cf\u26ab\u2b24\u23fa\u2022]$/;
 
     function hasLikelyCsvMojibake(textValue) {
+      // These are warnings, not proof: valid UTF-8 and explicit choices bypass language guesses.
       const text = String(textValue || '');
-      const replacement = (text.match(/�/g) || []).length;
-      const suspicious = (text.match(/[ÃÂ¤«»縺繧譁荳蜷鬆]/g) || []).length;
-      const koreanSplitAsSjis = (text.match(/｡ｿ/g) || []).length;
-      const koreanSplitAsSjisAuto = (text.match(/\uff61\uff7f/g) || []).length;
-      const c1Controls = (text.match(/[\u0080-\u009f]/g) || []).length;
-      return replacement > 0 || suspicious >= 2 || koreanSplitAsSjis > 0 || koreanSplitAsSjisAuto > 0 || c1Controls > 0;
+      return /[\ufffd\u0000-\u0008\u000b\u000c\u000e-\u001f\u0080-\u009f]/.test(text)
+        || (text.match(/[ÃÂ¤«»縺繧譁荳蜷鬆]/g) || []).length >= 2 || /\uff61\uff7f/.test(text);
     }
 
     function scoreDecodedCsvText(textValue) {
       const total = Math.max(1, textValue.length);
-      const koreanSplitAsSjis = (textValue.match(/\uff61\uff7f/g) || []).length;
-      const splitMarks = (textValue.match(/\u00d7/g) || []).length;
-      const dotMarks = (textValue.match(CSV_DOT_MARK_RE) || []).length;
-      const blackDotMarks = (textValue.match(CSV_BLACK_DOT_MARK_RE) || []).length;
-      const jp = (textValue.match(/[\u3040-\u30ff\u3400-\u9fff]/g) || []).length;
-      const kr = (textValue.match(/[\uac00-\ud7af]/g) || []).length;
+      const letters = (textValue.match(/\p{L}/gu) || []).length;
       const ascii = (textValue.match(/[A-Za-z0-9 _\-\/,:.#\[\]"]/g) || []).length;
+      const controls = (textValue.match(/[\ufffd\u0000-\u0008\u000b\u000c\u000e-\u001f\u0080-\u009f]/g) || []).length;
       const suspicious = (textValue.match(/[ÃÂ¤«»]/g) || []).length;
-      const replacement = (textValue.match(/�/g) || []).length;
-      const c1Controls = (textValue.match(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u0080-\u009f]/g) || []).length;
-      let score = ((jp * 2.2) + (kr * 2.2) + (ascii * 0.35)) / total * 100;
+      let score = (letters * 2.2 + ascii * 0.35) / total * 100;
+      // Header and timeline vocabulary help ties, but are never evidence of an encoding by themselves.
       if (/\bFrame\b/i.test(textValue)) score += 20;
       if (/\bTVPaint\b/i.test(textValue)) score += 35;
       if (/^#Layers/m.test(textValue)) score += 30;
       if (/^#\d{5}/m.test(textValue)) score += 30;
-      ['カメラ', '演出', '位置', 'フレーム', '動画', 'セル', 'レイヤー', 'タイム'].forEach(function(keyword) {
-        if (textValue.indexOf(keyword) !== -1) score += 10;
-      });
-      ['프레임', '카메라', '레이어'].forEach(function(keyword) {
-        if (textValue.indexOf(keyword) !== -1) score += 10;
-      });
-      score -= suspicious * 6;
-      score -= replacement * 20;
-      score -= koreanSplitAsSjis * 35;
-      score -= c1Controls * 24;
-      if (/\bFrame\b/i.test(textValue) && (splitMarks || dotMarks)) score += Math.min(80, ((splitMarks + dotMarks) * 6) + (blackDotMarks * 10));
-      return score;
+      ['カメラ','演出','位置','フレーム','動画','セル','レイヤー','タイム',
+       '프레임','카메라','레이어'].forEach(function(keyword){ if(textValue.includes(keyword)) score += 10; });
+      return score - controls * 24 - suspicious * 6 - (textValue.match(/\uff61\uff7f/g) || []).length * 35;
     }
 
     function getCsvDecoderEncodingLabel(encoding) {
       const label = String(encoding || '').trim().toLowerCase();
-      if (label === 'cp949' || label === 'windows-949' || label === 'ks_c_5601-1987' || label === 'ksc5601') return 'euc-kr';
-      if (label === 'cp932' || label === 'windows-31j' || label === 'ms932') return 'shift_jis';
+      if (['cp949','windows-949','ks_c_5601-1987','ksc5601'].includes(label)) return 'euc-kr';
+      if (['cp932','windows-31j','ms932'].includes(label)) return 'shift_jis';
+      if (/^cp125[0-8]$/.test(label)) return 'windows-' + label.slice(2);
+      if (label === 'cp874') return 'windows-874';
+      if (['gbk','gb2312','cp936','windows-936'].includes(label)) return 'gb18030';
+      if (['cp950','big5-hkscs'].includes(label)) return 'big5';
       return label || 'utf-8';
     }
 
-    // ⚠ 이 함수와 위의 다섯(CSV_BLACK_DOT_MARK_RE · CSV_DOT_MARK_RE · hasLikelyCsvMojibake ·
-    // scoreDecodedCsvText · getCsvDecoderEncodingLabel)은 **MoArt 가 이름으로 잘라 가서** 자기 CSV 해석의
-    // 기준으로 돌린다(#conte/docs/tests/csv_encoding_audit_ver2501/browser_contract.cjs — 이 파일을 acorn 으로
-    // 파싱해 그 여섯 노드만 이어 붙여 실행한다). 그러므로 ① 이름을 바꾸지 말고 ② 이 여섯 바깥의 것을
-    // 새로 부르지 말고 ③ `decodeCsvBuffer(buffer,'auto')` 가 `{textValue, encoding}` 을 주는 것을 지킨다.
-    // 공통 헬퍼로 빼내는 정리는 저쪽 검사를 조용히 깨뜨린다.
+    // External contract: MoArt extracts these six declarations by name. Keep their names,
+    // self-containment and {textValue, encoding} result; do not depend on app state or UI language.
+    // CSV_BLACK_DOT_MARK_RE, CSV_DOT_MARK_RE, hasLikelyCsvMojibake,
+    // scoreDecodedCsvText, getCsvDecoderEncodingLabel, decodeCsvBuffer.
     function decodeCsvBuffer(arrayBuffer, encodingMode) {
-      // Keep this function self-contained: MoArt's contract harness extracts it by name.
       const bytes = new Uint8Array(arrayBuffer);
       const explicitMode = encodingMode && encodingMode !== 'auto';
       const bom = bytes[0] === 0xef && bytes[1] === 0xbb && bytes[2] === 0xbf ? 'utf-8'
         : bytes[0] === 0xff && bytes[1] === 0xfe ? 'utf-16le'
         : bytes[0] === 0xfe && bytes[1] === 0xff ? 'utf-16be' : '';
-      const candidates = [];
-      function decode(encoding, fatal) {
+      // Bound candidate work and retained strings. Streaming avoids a false error at a split character.
+      const sample = bytes.subarray(0, 65536);
+      function decode(encoding, fatal, sampled) {
         try {
-          const label = getCsvDecoderEncodingLabel(encoding);
-          const textValue = new TextDecoder(label, { fatal:fatal }).decode(arrayBuffer);
-          const candidate = { textValue:textValue, encoding:label, score:scoreDecodedCsvText(textValue),
-            damaged:hasLikelyCsvMojibake(textValue) || /[\u0000-\u0008\u000b\u000c\u000e-\u001f]/.test(textValue) };
-          return candidate;
+          return new TextDecoder(getCsvDecoderEncodingLabel(encoding), {fatal:fatal})
+            .decode(sampled ? sample : bytes, {stream:!!sampled && sample.length < bytes.length});
         } catch (_) { return null; }
       }
-      function result(candidate, needsReview) {
-        return { textValue:candidate.textValue, encoding:candidate.encoding, needsReview:!!needsReview };
+      function result(encoding, needsReview, decodedText) {
+        const strict = decodedText === undefined ? decode(encoding, true, false) : decodedText;
+        const textValue = strict === null ? decode(encoding, false, false) : strict;
+        if (textValue === null) throw new Error('Unsupported CSV encoding: ' + encoding);
+        return {textValue:textValue, encoding:getCsvDecoderEncodingLabel(encoding),
+          needsReview:!!needsReview || strict === null || /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u0080-\u009f]/.test(textValue)};
       }
-      if (explicitMode || bom) {
-        const encoding = explicitMode ? encodingMode : bom;
-        const strict = decode(encoding, true);
-        if (strict) return result(strict, false);
-        const repaired = decode(encoding, false);
-        if (repaired) return result(repaired, true);
-        throw new Error('Unsupported CSV encoding: ' + encoding);
+      if (explicitMode || bom) return result(explicitMode ? encodingMode : bom, false);
+      // UTF-16 without BOM: require alternating NUL bytes AND a decoded timesheet header.
+      if (bytes.length >= 8 && bytes.length % 2 === 0) {
+        let even = 0, odd = 0;
+        for (let i=0; i<sample.length; i++) if(sample[i]===0) { if(i%2) odd++; else even++; }
+        const utf16 = odd > sample.length * 0.2 && even < odd * 0.1 ? 'utf-16le'
+          : even > sample.length * 0.2 && odd < even * 0.1 ? 'utf-16be' : '';
+        if (utf16) {
+          const text = decode(utf16, true, true);
+          if (text !== null && /^(?:"?Frame"?,|#Layers,)/im.test(text)) return result(utf16, false);
+        }
       }
-      // A valid UTF-8 byte sequence is stronger evidence than a blacklist of legitimate characters.
-      const utf8 = decode('utf-8', true);
-      if (utf8) return result(utf8, /[\u0000-\u0008\u000b\u000c\u000e-\u001f]/.test(utf8.textValue));
-      // CP949/windows-949 and CP932 are aliases of these decoders, not extra candidates.
-      ['euc-kr','shift_jis','euc-jp'].forEach(function(encoding){
-        const candidate = decode(encoding, true);
-        if (candidate) candidates.push(candidate);
+      // ISO-2022-JP is ASCII with escape sequences, so check its signature before UTF-8.
+      const iso2022 = sample.some(function(byte,i){return byte===0x1b && sample[i+1]===0x24 && (sample[i+2]===0x40 || sample[i+2]===0x42);});
+      if (iso2022) {
+        if (decode('iso-2022-jp', true, true) !== null) return result('iso-2022-jp', false);
+      }
+      const utf8 = decode('utf-8', true, false);
+      if (utf8 !== null) return result('utf-8', false, utf8);
+      const candidates = [];
+      // Manual choices below additionally cover ISO/Mac variants. Aliases are not extra candidates.
+      ['shift_jis','euc-kr','euc-jp','gb18030','big5','windows-1252','windows-874',
+       'windows-1250','windows-1251','windows-1253','windows-1254','windows-1255',
+       'windows-1256','windows-1257','windows-1258','koi8-r'].forEach(function(encoding){
+        let text = decode(encoding, true, true);
+        if (text === null) return;
+        if (sample.length < bytes.length) text = text.slice(0, text.lastIndexOf('\n') + 1);
+        let marks = 0;
+        // Only whole values in frame rows count. A dot in a title/name is not an inbetween.
+        const singleLineFields = text.replace(/"(?:[^"]|"")*"/g, function(field){return field.replace(/[\r\n]/g, ' ');});
+        const frameRows = singleLineFields.match(/^"?\d+"?,[^\r\n]*/gm) || [];
+        frameRows.forEach(function(row){
+          const fields = row.match(/(?:^|,)(?:"(?:[^"\r\n]|"")*"|[^",\r\n]*)(?=,|$)/g) || [];
+          fields.slice(1).forEach(function(field){
+            const value = field.slice(1).replace(/^"|"$/g, '').trim();
+            if (value === '×' || value.length === 1 && (value.match(CSV_DOT_MARK_RE) || []).length) {
+              marks += 1 + (value.match(CSV_BLACK_DOT_MARK_RE) || []).length;
+            }
+          });
+        });
+        let score = scoreDecodedCsvText(text);
+        // A valid multibyte sequence is more restrictive evidence than a single-byte table,
+        // where almost every byte is printable. Keep the prior small and still report ambiguity.
+        if (['shift_jis','euc-kr','euc-jp','gb18030','big5'].includes(encoding)) score += 8;
+        const latin = (text.match(/[A-Za-z]/g) || []).length;
+        const accents = (text.match(/[\u00c0-\u024f]/g) || []).length;
+        score -= Math.max(0, accents - latin * 0.5) * 6;
+        // CP949 extension syllables and half-width kana can decode arbitrary foreign byte pairs.
+        // Penalize that weak evidence, rather than favoring Korean/Japanese by country or UI language.
+        if (encoding === 'euc-kr') {
+          for (let i=0; i<sample.length; i++) if(sample[i]>=0x81 && sample[i]<=0xfe) {
+            if(sample[i]<0xa1 || sample[i+1]<0xa1) score -= 6;
+            i++;
+          }
+        }
+        score -= Math.min(40, (text.match(/[\uff61-\uff9f]/g) || []).length * 3);
+        candidates.push({encoding:encoding,textValue:text,marks:marks,score:score,
+          damaged:/[\ufffd\u0000-\u0008\u000b\u000c\u000e-\u001f\u0080-\u009f]/.test(text),
+          suspicious:hasLikelyCsvMojibake(text)});
       });
-      if (!candidates.length) {
-        const repaired = decode('utf-8', false);
-        return result(repaired, true);
-      }
-      candidates.sort(function(a,b){ return a.damaged !== b.damaged ? (a.damaged ? 1 : -1) : b.score - a.score; });
+      if (!candidates.length) return result('utf-8', true);
+      candidates.sort(function(a,b){
+        return Number(a.damaged)-Number(b.damaged) || b.marks-a.marks || b.score-a.score;
+      });
       const best = candidates[0];
-      // Equivalent decoded text needs no choice; different, similarly scored text does.
-      const rival = candidates.find(function(item){ return item.textValue !== best.textValue && item.damaged === best.damaged; });
-      return result(best, best.damaged || best.score < 0 || (rival && best.score - rival.score < 12));
+      const rival = candidates.find(function(item){return item.textValue !== best.textValue && item.damaged === best.damaged;});
+      // A score gap alone cannot prove language. Equal marker evidence always needs a human preview.
+      return result(best.encoding, best.damaged || best.suspicious || best.score < 0 || best.marks === 0 || rival && rival.marks === best.marks);
     }
 
     function normalizeCsvCellValue(value) {
@@ -25615,10 +25648,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     function csvImportText(key, values) {
       const docs = {
-        ko:{ title:'CSV 불러오기', settings:'CSV 읽기 설정', encoding:'문자 인코딩', auto:'자동 판별', detected:'판별: {encoding}', review:'자동판별을 확신하기 어렵습니다. 아래 글자와 표식을 확인하거나 인코딩을 직접 선택하세요.', preview:'원본 미리보기', columns:'가져올 열', hint:'Hide는 데이터를 유지한 채 숨깁니다. 인코딩을 바꾸면 열 설정이 다시 만들어집니다.', reopen:'원본 CSV를 다시 읽습니다. CSV 커맨드에서 직접 편집한 내용은 새 열 설정으로 다시 생성됩니다.', apply:'불러오기', cancel:'취소', empty:'가져올 열을 하나 이상 선택하세요.', name:'열 이름', role:'역할', error:'읽을 수 없습니다: {error}', ready:'{source} · {columns}열 · {frames}프레임' },
-        ja:{ title:'CSVを読み込む', settings:'CSV読み込み設定', encoding:'文字コード', auto:'自動判定', detected:'判定: {encoding}', review:'自動判定が不確かです。下の文字と記号を確認するか、文字コードを選択してください。', preview:'元データのプレビュー', columns:'読み込む列', hint:'Hideはデータを残して非表示にします。文字コードを変えると列設定を作り直します。', reopen:'元のCSVを読み直します。CSVコマンドで直接編集した内容は列設定から再生成されます。', apply:'読み込む', cancel:'キャンセル', empty:'読み込む列を選択してください。', name:'列名', role:'役割', error:'読み込めません: {error}', ready:'{source} · {columns}列 · {frames}フレーム' },
-        en:{ title:'Import CSV', settings:'CSV read settings', encoding:'Text encoding', auto:'Auto detect', detected:'Detected: {encoding}', review:'Detection is uncertain. Check the text and marks below, or select an encoding.', preview:'Source preview', columns:'Columns to import', hint:'Hide keeps the data but hides the column. Changing encoding rebuilds column settings.', reopen:'This rereads the original CSV. Direct CSV command edits will be regenerated from the column settings.', apply:'Import', cancel:'Cancel', empty:'Select at least one column.', name:'Column name', role:'Role', error:'Cannot read: {error}', ready:'{source} · {columns} columns · {frames} frames' },
-        zh:{ title:'导入 CSV', settings:'CSV读取设置', encoding:'字符编码', auto:'自动检测', detected:'检测: {encoding}', review:'自动检测不确定。请检查下方文字和符号，或手动选择编码。', preview:'原始内容预览', columns:'导入的列', hint:'Hide保留数据并隐藏该列。更改编码会重新生成列设置。', reopen:'将重新读取原始CSV。直接编辑的CSV命令将根据列设置重新生成。', apply:'导入', cancel:'取消', empty:'请至少选择一列。', name:'列名', role:'角色', error:'无法读取: {error}', ready:'{source} · {columns}列 · {frames}帧' }
+        ko:{ western:'서유럽', central:'중부 유럽', cyrillic:'키릴 문자', greek:'그리스어', turkish:'튀르키예어', hebrew:'히브리어', arabic:'아랍어', baltic:'발트어', vietnamese:'베트남어', thai:'태국어', title:'CSV 불러오기', settings:'CSV 읽기 설정', encoding:'문자 인코딩', auto:'자동 판별', detected:'판별: {encoding}', review:'글자와 표식을 확인하세요. 깨져 보이면 인코딩을 바꿔 주세요.', preview:'원본 미리보기', columns:'가져올 열', hint:'Hide는 데이터를 유지한 채 숨깁니다. 인코딩을 바꾸면 열 설정이 다시 만들어집니다.', reopen:'원본 CSV를 다시 읽습니다. CSV 커맨드에서 직접 편집한 내용은 새 열 설정으로 다시 생성됩니다.', apply:'불러오기', cancel:'취소', empty:'가져올 열을 하나 이상 선택하세요.', name:'열 이름', role:'역할', error:'읽을 수 없습니다: {error}', ready:'{source} · {columns}열 · {frames}프레임' },
+        ja:{ western:'西欧', central:'中欧', cyrillic:'キリル文字', greek:'ギリシャ語', turkish:'トルコ語', hebrew:'ヘブライ語', arabic:'アラビア語', baltic:'バルト語', vietnamese:'ベトナム語', thai:'タイ語', title:'CSVを読み込む', settings:'CSV読み込み設定', encoding:'文字コード', auto:'自動判定', detected:'判定: {encoding}', review:'文字と記号を確認してください。文字化けする場合は文字コードを変更してください。', preview:'元データのプレビュー', columns:'読み込む列', hint:'Hideはデータを残して非表示にします。文字コードを変えると列設定を作り直します。', reopen:'元のCSVを読み直します。CSVコマンドで直接編集した内容は列設定から再生成されます。', apply:'読み込む', cancel:'キャンセル', empty:'読み込む列を選択してください。', name:'列名', role:'役割', error:'読み込めません: {error}', ready:'{source} · {columns}列 · {frames}フレーム' },
+        en:{ western:'Western Europe', central:'Central Europe', cyrillic:'Cyrillic', greek:'Greek', turkish:'Turkish', hebrew:'Hebrew', arabic:'Arabic', baltic:'Baltic', vietnamese:'Vietnamese', thai:'Thai', title:'Import CSV', settings:'CSV read settings', encoding:'Text encoding', auto:'Auto detect', detected:'Detected: {encoding}', review:'Check the text and marks. If they look wrong, choose another encoding.', preview:'Source preview', columns:'Columns to import', hint:'Hide keeps the data but hides the column. Changing encoding rebuilds column settings.', reopen:'This rereads the original CSV. Direct CSV command edits will be regenerated from the column settings.', apply:'Import', cancel:'Cancel', empty:'Select at least one column.', name:'Column name', role:'Role', error:'Cannot read: {error}', ready:'{source} · {columns} columns · {frames} frames' },
+        zh:{ western:'西欧', central:'中欧', cyrillic:'西里尔文', greek:'希腊文', turkish:'土耳其文', hebrew:'希伯来文', arabic:'阿拉伯文', baltic:'波罗的海文', vietnamese:'越南文', thai:'泰文', title:'导入 CSV', settings:'CSV读取设置', encoding:'字符编码', auto:'自动检测', detected:'检测: {encoding}', review:'请检查文字和符号。如有乱码，请更改编码。', preview:'原始内容预览', columns:'导入的列', hint:'Hide保留数据并隐藏该列。更改编码会重新生成列设置。', reopen:'将重新读取原始CSV。直接编辑的CSV命令将根据列设置重新生成。', apply:'导入', cancel:'取消', empty:'请至少选择一列。', name:'列名', role:'角色', error:'无法读取: {error}', ready:'{source} · {columns}列 · {frames}帧' }
       };
       let text = (docs[state.lang] || docs.en)[key] || docs.en[key] || key;
       Object.keys(values || {}).forEach(function(name){ text = text.replace('{'+name+'}', String(values[name])); });
@@ -25637,7 +25670,14 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const body = document.createElement('div'); body.className = 'app-dialog-body';
         const label = document.createElement('label'); label.className = 'csv-import-encoding'; label.textContent = csvImportText('encoding');
         const encoding = document.createElement('select'); encoding.className = 'ui-field'; encoding.dataset.csvImportEncoding = '';
-        [['auto',csvImportText('auto')],['utf-8','UTF-8'],['shift_jis','Shift_JIS / CP932'],['euc-kr','EUC-KR / CP949'],['euc-jp','EUC-JP'],['utf-16le','UTF-16 LE'],['utf-16be','UTF-16 BE']].forEach(function(pair){
+        [['auto',csvImportText('auto')],['utf-8','UTF-8'],['shift_jis','Shift_JIS / CP932'],
+         ['euc-kr','EUC-KR / CP949'],['euc-jp','EUC-JP'],['gb18030','GB18030 / GBK'],['big5','Big5'],
+         ['windows-1252',csvImportText('western')+' · Windows-1252'],['windows-874',csvImportText('thai')+' · Windows-874'],
+         ['windows-1250',csvImportText('central')+' · Windows-1250'],['windows-1251',csvImportText('cyrillic')+' · Windows-1251'],['windows-1253',csvImportText('greek')+' · Windows-1253'],
+         ['windows-1254',csvImportText('turkish')+' · Windows-1254'],['windows-1255',csvImportText('hebrew')+' · Windows-1255'],['windows-1256',csvImportText('arabic')+' · Windows-1256'],
+         ['windows-1257',csvImportText('baltic')+' · Windows-1257'],['windows-1258',csvImportText('vietnamese')+' · Windows-1258'],['koi8-r','KOI8-R'],
+         ['iso-8859-2','ISO-8859-2'],['iso-8859-15','ISO-8859-15'],['macintosh','Macintosh'],
+         ['iso-2022-jp','ISO-2022-JP'],['utf-16le','UTF-16 LE'],['utf-16be','UTF-16 BE']].forEach(function(pair){
           const option=document.createElement('option'); option.value=pair[0]; option.textContent=pair[1]; encoding.appendChild(option);
         });
         encoding.value = reread ? getCsvDecoderEncodingLabel(state.csvOriginalEncoding) : 'auto';
