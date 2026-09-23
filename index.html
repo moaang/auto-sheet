@@ -2584,7 +2584,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '943';
+    const APP_VERSION = '944';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3871,6 +3871,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver944", "Match CSV and CLIP sheet imports", ["CSV imports now keep holds through the final frame. CLIP imports apply dialogue and camera tracks, and CSV imports can confirm work information from the file name."]],
         ["ver943", "Broader CSV encoding support", ["Improved CSV encoding detection and added Chinese, Western European and other encoding choices. Check the preview when detection is uncertain."]],
         ["ver942", "Less work while building ZIP exports", ["Reduced byte-processing overhead when adding exported files to ZIP archives. File contents and stop behavior are unchanged."]],
         ["ver941", "Consistent CSV import controls", ["CSV column controls now match the CLIP and TVPaint import layout, including narrow screens. One decoded source is reused through confirmation."]],
@@ -3963,6 +3964,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver944", "CSVとCLIPのシート読み込みを統一", ["CSVの最後のフレームまでセルの保持を反映します。CLIPのセリフ・カメラを反映し、CSVでもファイル名から作品情報を確認できます。"]],
         ["ver943", "CSV文字コードの対応を拡充", ["CSVの文字コード判定を改善し、中国語・西欧などの文字コードを選べるようにしました。判定が不確かな場合はプレビューを確認できます。"]],
         ["ver942", "ZIP出力の処理を軽量化", ["出力ファイルをZIPに追加する際のバイト処理を軽くしました。ファイル内容と中止動作は変わりません。"]],
         ["ver941", "CSVの読込操作を統一", ["CSVの列設定をCLIP・TVPaintと同じ並びにそろえ、狭い画面にも対応しました。読み取った文字列を確定まで再利用します。"]],
@@ -4055,6 +4057,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver944", "CSV·CLIP 시트 불러오기 일치", ["CSV의 마지막 프레임까지 셀 유지를 반영합니다. CLIP의 대사·카메라 적용을 고치고 CSV에서도 파일명의 작품 정보를 확인할 수 있습니다."]],
         ["ver943", "CSV 인코딩 지원 확대", ["CSV 자동판별을 개선하고 중국어·서유럽 등 인코딩 선택을 추가했습니다. 판별이 애매한 파일은 미리보기에서 확인할 수 있습니다."]],
         ["ver942", "ZIP 출력 처리 경량화", ["출력 파일을 ZIP에 담을 때 바이트 처리 비용을 줄였습니다. 파일 내용과 중지 동작은 유지됩니다."]],
         ["ver941", "CSV 불러오기 UI 통일", ["CSV 열 설정을 CLIP·TVPaint와 같은 배치로 맞추고 좁은 화면에 대응했습니다. 해독한 원문을 확정까지 재사용합니다."]],
@@ -4147,6 +4150,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver944", "统一CSV与CLIP时表导入", ["CSV保留到最后一帧的曝光。修正CLIP对白和摄影轨道的应用，并可在CSV导入时确认文件名中的作品信息。"]],
         ["ver943", "扩展CSV编码支持", ["改进CSV编码检测，并增加中文、西欧等编码选项。检测不确定时可在预览中确认。"]],
         ["ver942", "减轻ZIP导出处理", ["减少将输出文件加入ZIP时的字节处理开销。文件内容和停止行为保持不变。"]],
         ["ver941", "统一CSV导入控件", ["CSV列设置与CLIP、TVPaint采用相同排列，适应窄屏。解码结果复用至确认导入。"]],
@@ -12966,7 +12970,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return String(token || '').trim() === '-';
     }
 
-    // 드문드문한 프레임 키를 커맨드 토큰 줄로 편다. XDTS 취입과 CLIP 취입이 **같이 쓴다** —
+    // 드문드문한 프레임 키를 커맨드 토큰 줄로 편다. CSV·XDTS·CLIP 취입이 **같이 쓴다** —
     // 두 입구가 같은 시트를 서로 다르게 적으면 그때부터 갈라진다.
     //   kind 'value' 그 칸에 그림이 선다 · 'empty' 확실히 빈 칸(쥔 값도 놓는다)
     //        'hold'  앞의 것을 이어간다   · 'tick'  값을 바꾸지 않는 중간점
@@ -13688,8 +13692,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
               return candidate !== seg && Math.round(Number(candidate.from) || 0) > Math.round(Number(seg.from) || 0);
             })
           : segments[index + 1];
-        // CSV's last spoken value has no following event; its known final frame closes it.
-        // Other command producers and camera endpoints keep their existing contract.
+        // Imported timelines supply their final frame to close the last spoken value.
+        // Free-form commands and camera endpoints keep their existing contract.
         if (!next && !(normalizedRole === 'dialog' && Number(finalDialogFrame) >= Number(seg.from))) return;
         const from = Math.max(1, Math.round(Number(seg.from) || 1));
         const to = Math.max(from, Math.round(Number(next ? next.from : finalDialogFrame) || from));
@@ -13931,11 +13935,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     // ══ [입력] CSV 취입 ⑤ 커맨드 텍스트 ↔ 컬럼 역할 왕복 (편집본 우선 · UID 안정화) ════════════════════════════════════════════════════════
-    function csvRoleBlocksToManualLines(role) {
-      const finalDialogFrame = getCsvDataRows().reduce(function(max, item){ return Math.max(max, item.frame); }, 0);
+    function commandRoleBlocksToManualLines(commandText, role, finalDialogFrame) {
       const lines = [];
       const normalizedRole = normalizeTextCommandRole(role);
-      const commandLines = String(getCommandTextValue('csv') || '').replace(/\r/g, '').split('\n');
+      const commandLines = String(commandText || '').replace(/\r/g, '').split('\n');
       const sourceItems = getCommandLineItemsFromLines(commandLines);
       const sourceByLine = new Map(sourceItems.map(function(item){ return [item.lineIndex, item.sourceToken]; }));
       commandLines.forEach(function(lineText, lineIndex){
@@ -13944,6 +13947,22 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         textCommandLineToManualLines(roleInfo.cleanLine, normalizedRole, sourceByLine.get(lineIndex) || '', finalDialogFrame).forEach(function(line){ lines.push(line); });
       });
       return lines;
+    }
+
+    function csvRoleBlocksToManualLines(role) {
+      const duration = getCsvDataRows().reduce(function(max, item){ return Math.max(max, item.frame); }, 0);
+      return commandRoleBlocksToManualLines(getCommandTextValue('csv'), role, duration);
+    }
+
+    function applyImportedCommandRoles(commandText, duration) {
+      ['dialog','camera'].forEach(function(kind){
+        const target = getSheetInputNode(kind + 'Manual');
+        // Historical field names are part of saved state; all file imports share this ownership.
+        const previousKey = kind === 'dialog' ? 'lastCsvGeneratedDialogLines' : 'lastCsvGeneratedCameraLines';
+        const lines = commandRoleBlocksToManualLines(commandText, kind, duration);
+        target.value = mergeCsvGeneratedLines(target.value, state[previousKey], lines).text;
+        state[previousKey] = lines;
+      });
     }
 
     function layersFromCsvSelection() {
@@ -14093,8 +14112,17 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     function csvColumnToCommandLine(col) {
       const role = csvRoleToTextRole(getCsvColumnRole(col));
-      const line = layersToCommandText([csvColumnToTimelineLayer(col)]);
-      return setTextCommandLineRole(line, role);
+      const rows = getCsvDataRows();
+      const duration = rows.length ? rows[rows.length - 1].frame : 0;
+      const entries = rows.map(function(row){
+        const value = normalizeCsvCellValue(row.row[col.index]);
+        if (!value) return null;
+        const kind = isCsvDotValue(value) ? 'tick' : isCsvCrossValue(value) ? 'close' : value === '_' ? 'empty' : 'value';
+        return {frame:row.frame - 1, kind:kind, value:value};
+      }).filter(Boolean);
+      // Imported timelines have a known end. The editor's compact serializer drops trailing holds.
+      const tokens = sheetSparseEntriesToTokens(entries, duration);
+      return setTextCommandLineRole(col.name + ': ' + tokens.join(' '), role);
     }
 
     // CSV columns follow editable command line order. Role changes only rewrite
@@ -25589,6 +25617,14 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       updateCsvSettingsActionVisibility();
     }
 
+    function resetImportedTimelineState() {
+      clearTimelineInteractionOverrides();
+      state.cellDisplayOrder = [];
+      state.dougaSheetEnabled = false;
+      state.dougaSheetData = null;
+      state.serifuSheetGuides = [];
+    }
+
     function prepareCsvImport(buffer, options) {
       const mode = options && options.encoding || (buffer === state.csvFileBuffer ? state.csvOriginalEncoding : 'auto');
       const decoded = options && options.decoded || decodeCsvBuffer(buffer, mode);
@@ -25601,8 +25637,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         state.csvOriginalText = decoded.textValue; state.csvOriginalEncoding = decoded.encoding;
         state.csvLoadedMode = sourceMode; state.tvpaintCellSourceColumns = [];
         if (options && options.fresh) state.csvDurationAutofillPending = true;
-        state.dougaSheetEnabled = false; state.dougaSheetData = null; state.serifuSheetGuides = [];
-        clearTimelineInteractionOverrides();
+        resetImportedTimelineState();
         const rows = sourceMode === 'tvpaint' ? convertTvpaintRowsToPseudoCsv(parsedRows) : parsedRows;
         setupCsvState(rows);
         // A name filter chooses the initial checkbox state; the raw column remains recoverable.
@@ -25618,12 +25653,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         snapshot.inputs.cellInputMode = 'csv';
         snapshot.inputs.csvCommandEdit = buildCsvCommandTextFromColumns();
         syncCsvBookNameTags();
-        ['dialog','camera'].forEach(function(kind){
-          const key = kind + 'Manual', previousKey = kind === 'dialog' ? 'lastCsvGeneratedDialogLines' : 'lastCsvGeneratedCameraLines';
-          const lines = csvRoleBlocksToManualLines(kind);
-          snapshot.inputs[key] = mergeCsvGeneratedLines(snapshot.inputs[key], state[previousKey], lines).text;
-          state[previousKey] = lines;
-        });
+        const duration = getCsvDataRows().reduce(function(max, item){ return Math.max(max, item.frame); }, 0);
+        applyImportedCommandRoles(snapshot.inputs.csvCommandEdit, duration);
         applyDurationFromCsvRows(rows);
         state.csvDurationAutofillPending = false; state.csvLoadError = '';
         getRenderModel();
@@ -25632,6 +25663,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     function commitCsvImport(snapshot, shouldRender) {
+      if (snapshot.importIdentity) applySheetIdentity(snapshot.importIdentity);
       applySheetState('csv', snapshot.state);
       applySheetInputs(snapshot.inputs, ['cellInputMode','csvCommandEdit','dialogManual','cameraManual','seconds','frames']);
       refreshCsvColumnPicker(); updateCsvStatusText(); updateInputModeButtons(); refreshCommandCellViews();
@@ -25668,6 +25700,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const source = document.createElement('div'); source.className = 'hint'; source.textContent = fileName; source.style.overflowWrap = 'anywhere'; header.appendChild(source);
         box.appendChild(header);
         const body = document.createElement('div'); body.className = 'app-dialog-body';
+        const identityEditor = reread ? null : createSheetImportIdentitySection(parseSheetFileNameIdentity(fileName) || {}, 'CSV');
+        if (identityEditor) body.appendChild(identityEditor.element);
         const label = document.createElement('label'); label.className = 'csv-import-encoding'; label.textContent = csvImportText('encoding');
         const encoding = document.createElement('select'); encoding.className = 'ui-field'; encoding.dataset.csvImportEncoding = '';
         [['auto',csvImportText('auto')],['utf-8','UTF-8'],['shift_jis','Shift_JIS / CP932'],
@@ -25731,7 +25765,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         cancel.addEventListener('click',function(){finish(null);});
         ok.addEventListener('click',function(){
           if(ok.disabled)return;
-          try { finish(prepareCsvImport(buffer,{fresh:true,encoding:encoding.value,decoded:decoded,columns:columns})); }
+          try {
+            const prepared = prepareCsvImport(buffer,{fresh:true,encoding:encoding.value,decoded:decoded,columns:columns});
+            if (identityEditor) prepared.importIdentity = identityEditor.identity;
+            finish(prepared);
+          }
           catch(err){status.textContent=csvImportText('error',{error:err.message||err});}
         });
         backdrop.addEventListener('pointerdown',function(event){if(event.target===backdrop)finish(null);});
@@ -26352,6 +26390,37 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return { title:title, episode:episode, cut:cut, stageName:sheetProcessStageName(process) };
     }
 
+    // File import dialogs share the same draft fields; only confirmation applies them.
+    function createSheetImportIdentitySection(parsedName, app) {
+      const identity = {
+        title: parsedName.title || getSheetInputValue('title'),
+        episode: parsedName.episode || '',
+        cutNo: parsedName.cut || getSheetInputValue('cutNo'),
+        stage: parsedName.stageName || ''
+      };
+      const idSection = document.createElement('section');
+      const idTitle = document.createElement('h4');
+      idTitle.textContent = clipSheetText('identity', null, app);
+      idSection.appendChild(idTitle);
+      const idGrid = document.createElement('div');
+      idGrid.className = 'clip-import-identity';
+      [['title', 'identityTitle'], ['episode', 'identityEpisode'],
+       ['cutNo', 'identityCut'], ['stage', 'identityStage']].forEach(function(pair) {
+        const field = document.createElement('label');
+        const caption = document.createElement('span');
+        caption.textContent = clipSheetText(pair[1], null, app);
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = identity[pair[0]];
+        input.addEventListener('input', function() { identity[pair[0]] = input.value; });
+        field.appendChild(caption);
+        field.appendChild(input);
+        idGrid.appendChild(field);
+      });
+      idSection.appendChild(idGrid);
+      return {element:idSection, identity:identity};
+    }
+
     // 창에서 확인한 화수는 공란도 반영한다. 화수가 없는 파일에 이전 작업의 값이 남으면 안 된다.
     // 전달되지 않은 필드와, 비어 있는 작품명·컷번호·단계 이름은 기존 값을 유지한다.
     function applySheetIdentity(identity) {
@@ -26462,32 +26531,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
         // 파일명에 화수가 없으면 공란이다. 작품명·컷번호만 읽지 못했을 때 기존 헤더를 제안한다.
         // 창에서 확인한 값은 확정을 눌러야 시트에 들어간다.
-        const identity = {
-          title: parsedName.title || getSheetInputValue('title'),
-          episode: parsedName.episode || '',
-          cutNo: parsedName.cut || getSheetInputValue('cutNo'),
-          stage: parsedName.stageName || ''
-        };
-        const idSection = document.createElement('section');
-        const idTitle = document.createElement('h4');
-        idTitle.textContent = clipSheetText('identity', null, app);
-        idSection.appendChild(idTitle);
-        const idGrid = document.createElement('div');
-        idGrid.className = 'clip-import-identity';
-        [['title', 'identityTitle'], ['episode', 'identityEpisode'],
-         ['cutNo', 'identityCut'], ['stage', 'identityStage']].forEach(function(pair) {
-          const field = document.createElement('label');
-          const caption = document.createElement('span');
-          caption.textContent = clipSheetText(pair[1], null, app);
-          const input = document.createElement('input');
-          input.type = 'text';
-          input.value = identity[pair[0]];
-          input.addEventListener('input', function() { identity[pair[0]] = input.value; });
-          field.appendChild(caption);
-          field.appendChild(input);
-          idGrid.appendChild(field);
-        });
-        idSection.appendChild(idGrid);
+        const identityEditor = createSheetImportIdentitySection(parsedName, app);
+        const identity = identityEditor.identity, idSection = identityEditor.element;
         if (reads.length > 1) {
           const idHint = document.createElement('div');
           idHint.className = 'hint';
@@ -26918,9 +26963,12 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         stages.forEach(function(entry, index) {
           if (index > 0) pushNewSheetStage(SHEET_STAGE_CUSTOM_CODE, entry.label);
           if (modeSelect) modeSelect.value = 'text';
+          resetImportedTimelineState();
           setCommandTextValue('text', entry.text);
           applyClipSheetDuration(entry.read.duration);
+          applyImportedCommandRoles(entry.text, entry.read.duration);
           updateModeUI();
+          writeCameraLinesToMemo();
         });
         return stages.length;
       } catch (err) {
