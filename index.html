@@ -1319,6 +1319,17 @@
     .app-dialog-backdrop { position:fixed; inset:0; z-index:var(--dialog-layer,11000); background:rgba(28,30,34,.28); display:flex; align-items:center; justify-content:center; padding:14px; pointer-events:auto; }
     .app-dialog { width:min(560px,100%); max-height:calc(100dvh - 28px); overflow:auto; padding:var(--ui-pad-dialog); border:1px solid var(--soft); border-radius:var(--r-card); background:var(--panel); box-shadow:var(--ui-dialog-shadow); color:var(--text); font-family:inherit; font-size:var(--ui-fs-body); }
     .app-dialog h3 { margin:0; font-size:var(--ui-fs-title); line-height:1.3; font-weight:800; }
+    .psd-paper-dialog { width:min(780px,100%); }
+    .psd-paper-body { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:var(--ui-gap-lg); align-items:start; }
+    .psd-paper-body canvas { width:100%; height:auto; max-height:58dvh; object-fit:contain; border:1px solid var(--soft); }
+    .psd-paper-layers { max-height:58dvh; overflow:auto; min-width:0; }
+    .psd-paper-layers .ui-check-row { min-height:var(--ui-h-control); padding:var(--ui-gap-sm); }
+    .psd-paper-layers span { overflow-wrap:anywhere; min-width:0; }
+    @media(max-width:520px) {
+      .psd-paper-body { grid-template-columns:minmax(0,1fr); }
+      .psd-paper-body canvas { max-height:28dvh; }
+      .psd-paper-layers { max-height:30dvh; }
+    }
     /* CLIP 취입 창 — 행이 여러 줄 서므로 칸을 격자로 고정한다(나란한 flex 는 칸이 어긋난다).
        이름칸만 늘어나고 체크·역할은 제 폭을 지킨다. */
     .clip-import-dialog { width:min(640px,100%); }
@@ -2584,7 +2595,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '944';
+    const APP_VERSION = '945';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3871,6 +3882,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver945", "PSD paper layer preview", ["Automatically includes small header and ruler layers. Review the selected paper layers before importing; thin camera borders are detected more reliably."]],
         ["ver944", "Match CSV and CLIP sheet imports", ["CSV imports now keep holds through the final frame. CLIP imports apply dialogue and camera tracks, and CSV imports can confirm work information from the file name."]],
         ["ver943", "Broader CSV encoding support", ["Improved CSV encoding detection and added Chinese, Western European and other encoding choices. Check the preview when detection is uncertain."]],
         ["ver942", "Less work while building ZIP exports", ["Reduced byte-processing overhead when adding exported files to ZIP archives. File contents and stop behavior are unchanged."]],
@@ -3964,6 +3976,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver945", "PSD用紙のレイヤープレビュー", ["小さな見出しや目盛りも用紙として自動選択します。読み込み前に用紙レイヤーを確認・変更でき、細いカメラ欄の境界も改善しました。"]],
         ["ver944", "CSVとCLIPのシート読み込みを統一", ["CSVの最後のフレームまでセルの保持を反映します。CLIPのセリフ・カメラを反映し、CSVでもファイル名から作品情報を確認できます。"]],
         ["ver943", "CSV文字コードの対応を拡充", ["CSVの文字コード判定を改善し、中国語・西欧などの文字コードを選べるようにしました。判定が不確かな場合はプレビューを確認できます。"]],
         ["ver942", "ZIP出力の処理を軽量化", ["出力ファイルをZIPに追加する際のバイト処理を軽くしました。ファイル内容と中止動作は変わりません。"]],
@@ -4057,6 +4070,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver945", "PSD 용지 레이어 미리보기", ["작은 머리글·눈금도 용지로 자동 선택합니다. 불러오기 전에 용지 레이어를 확인·변경할 수 있고, 얇은 카메라 칸 테두리 인식을 개선했습니다."]],
         ["ver944", "CSV·CLIP 시트 불러오기 일치", ["CSV의 마지막 프레임까지 셀 유지를 반영합니다. CLIP의 대사·카메라 적용을 고치고 CSV에서도 파일명의 작품 정보를 확인할 수 있습니다."]],
         ["ver943", "CSV 인코딩 지원 확대", ["CSV 자동판별을 개선하고 중국어·서유럽 등 인코딩 선택을 추가했습니다. 판별이 애매한 파일은 미리보기에서 확인할 수 있습니다."]],
         ["ver942", "ZIP 출력 처리 경량화", ["출력 파일을 ZIP에 담을 때 바이트 처리 비용을 줄였습니다. 파일 내용과 중지 동작은 유지됩니다."]],
@@ -4150,6 +4164,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver945", "PSD纸张图层预览", ["自动选择小标题和刻度图层。导入前可确认和调整纸张图层，并改善细摄影栏边框的识别。"]],
         ["ver944", "统一CSV与CLIP时表导入", ["CSV保留到最后一帧的曝光。修正CLIP对白和摄影轨道的应用，并可在CSV导入时确认文件名中的作品信息。"]],
         ["ver943", "扩展CSV编码支持", ["改进CSV编码检测，并增加中文、西欧等编码选项。检测不确定时可在预览中确认。"]],
         ["ver942", "减轻ZIP导出处理", ["减少将输出文件加入ZIP时的字节处理开销。文件内容和停止行为保持不变。"]],
@@ -9054,6 +9069,20 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           const dividerStrength = getPaperAutoAlignLineStrength(xDetailed, lines[i]);
           const score = dividerStrength + 120 + Math.min(90, Math.max(0, cameraWidthRatio) * 42) + i * 0.45;
           if (!wideCameraSpan || score > wideCameraSpan.score) wideCameraSpan = { index:i, score:score };
+        }
+      }
+      // A thin outer rail may score below an interior divider after PSD rasterization.
+      // Prefer the rail only with independent boundary evidence: an inter-block gutter,
+      // a taller top edge, and a shared bottom. Do not infer an edge from width alone.
+      if (peerGroup && follower && searchEndIndex >= 2) {
+        const endIndex = searchEndIndex - 1, edge = lines[endIndex], inner = lines[endIndex - 1];
+        const rail = findPaperAutoAlignLineInfo(xDetailed, edge), divider = findPaperAutoAlignLineInfo(xDetailed, inner);
+        const width = edge - lines[follower.endIndex], gutter = lines[searchEndIndex] - edge;
+        if (rail && divider && gutter > Math.max(group.cellW * 2.5, (edge - inner) * 1.7) &&
+            Number(rail.runStart) < Number(divider.runStart) - group.cellW * 0.5 &&
+            Math.abs(Number(rail.runEnd) - Number(divider.runEnd)) <= 3 &&
+            width >= group.cellW * 1.55 && width <= Math.max(group.actionW * 1.55, group.cellW * 6.2)) {
+          wideCameraSpan = { index:endIndex, score:wideCameraSpan ? wideCameraSpan.score : 0 };
         }
       }
       // 1블록 용지는 카메라란 오른쪽에 상대 블록이 없다 — 본문의 오른쪽 테두리가 곧 끝이다.
@@ -23414,6 +23443,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     function isLikelyPsdMemoLayer(record) {
       const name = String(record && record.name || '').toLowerCase();
       if (!name) return false;
+      if (/枠|罫線|frame|border|grid|테두리|격자|边框/.test(name)) return false;
       if (/memo|note|comment|annotation|remark|メモ|めも|コメント|注記|書込|書き込み|메모|주석|비고|备注|註記/.test(name)) return true;
       return false;
     }
@@ -23848,9 +23878,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const scaleY = psdHeight && psdHeight !== PAGE_H ? PAGE_H / psdHeight : 1;
       pageCtx.save();
       pageCtx.scale(scaleX, scaleY);
-      pageCtx.globalAlpha = Math.max(0, Math.min(1, Number(record.opacity || 255) / 255));
-      pageCtx.globalCompositeOperation = 'source-over';
-      pageCtx.drawImage(record.layerCanvas, record.left, record.top, record.width, record.height);
+      drawPsdDecodedLayer(pageCtx, record);
       pageCtx.restore();
       return pageCanvas;
     }
@@ -23927,13 +23955,150 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     function drawPsdDecodedLayer(targetCtx, record) {
       if (!record || !record.layerCanvas || record.hidden || !record.width || !record.height) return;
       targetCtx.save();
-      targetCtx.globalAlpha = Math.max(0, Math.min(1, Number(record.opacity || 255) / 255));
-      targetCtx.globalCompositeOperation = 'source-over';
+      targetCtx.globalAlpha = Math.max(0, Math.min(1, Number(record.opacity == null ? 255 : record.opacity) / 255));
+      targetCtx.globalCompositeOperation = record.blendMode === 'mul ' ? 'multiply' : 'source-over';
       targetCtx.drawImage(record.layerCanvas, record.left, record.top, record.width, record.height);
       targetCtx.restore();
     }
 
-    async function compositePsdLayersToCanvas(arrayBuffer) {
+    async function classifyPsdPaperLayers(records, width, height) {
+      const grids = [];
+      for (const record of records) {
+        if (isLikelyPsdMemoLayer(record)) record.psdImportKind = 'memo';
+        else if (isPsdLayerNearlySolid(record, width, height)) record.psdImportKind = 'solid';
+        else if (await isPsdLayerSheetFormat(record, width, height)) {
+          record.psdImportKind = 'sheet';
+          grids.push(record);
+        } else record.psdImportKind = 'memo';
+      }
+      // A small header/label is not a grid by itself. Locate the body using the grids,
+      // then retain surrounding stationery without guessing from a particular filename.
+      let body = null, analysis = null;
+      if (grids.length) {
+        const draft = composePsdPaperLayers(records, width, height, { width:PAGE_W, height:PAGE_H });
+        analysis = await analyzePaperAutoAlignLines(draft.paperCanvas.toDataURL('image/png'));
+        try { body = findPaperAutoAlignBodyGrid(analysis.yLines); }
+        catch (err) { console.warn('PSD paper body could not be located; review the layer selection', err); }
+      }
+      records.forEach(function(record){
+        if (record.psdImportKind !== 'memo' || isLikelyPsdMemoLayer(record)) return;
+        const top = record.top * PAGE_H / height, bottom = record.bottom * PAGE_H / height;
+        const outsideBody = body && (bottom <= body.bodyTop + 2 || top >= body.bodyBottom - 2 ||
+          grids.every(function(grid){ return record.right <= grid.left || record.left >= grid.right; }));
+        if (!grids.length || outsideBody || isPsdPaperRuler(record, body, analysis, width, height)) record.psdImportKind = 'sheet';
+      });
+      records.forEach(function(record){ record.paperSelected = record.psdImportKind !== 'memo'; });
+    }
+
+    function isPsdPaperRuler(record, body, analysis, width, height) {
+      if (!body || !analysis) return false;
+      const rowH = body.rowH, scaleX = PAGE_W / width, scaleY = PAGE_H / height;
+      // Repeated small marks aligned to a ruling: seconds/frame numbers and timing ticks.
+      // A continuous stroke or a wide note inside the body is not a ruler.
+      if (record.width * scaleX > rowH * 0.7 || record.height * scaleY < (body.bodyBottom - body.bodyTop) * 0.4 ||
+          !(analysis.xLines || []).some(function(x){ return Math.abs(x - record.right * scaleX) <= rowH * 0.25; })) return false;
+      const data = record.layerCanvas.getContext('2d').getImageData(0,0,record.width,record.height).data;
+      let occupied = 0, groups = 0, last = -10;
+      for (let y = 0; y < record.height; y++) {
+        let ink = false;
+        for (let x = 0; x < record.width; x++) {
+          const i = (y * record.width + x) * 4;
+          if (data[i + 3] > 24 && Math.min(data[i],data[i + 1],data[i + 2]) < 220) { ink = true; break; }
+        }
+        if (ink) { occupied++; if (y - last > 4) groups++; last = y; }
+      }
+      return groups >= 3 && occupied / record.height < 0.15;
+    }
+
+    function composePsdPaperLayers(records, width, height, previewSize) {
+      const w = previewSize ? previewSize.width : PAGE_W, h = previewSize ? previewSize.height : PAGE_H;
+      function makeCanvas(background) {
+        const canvas = document.createElement('canvas'); canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        if (background) { ctx.fillStyle = background; ctx.fillRect(0, 0, w, h); }
+        ctx.scale(w / width, h / height);
+        return canvas;
+      }
+      const selected = function(record){ return record.paperSelected == null ? record.psdImportKind !== 'memo' : record.paperSelected; };
+      const memoLayerCount = records.filter(function(record){ return !selected(record); }).length;
+      const paperCanvas = makeCanvas('#ffffff'), memoCanvas = !previewSize && memoLayerCount ? makeCanvas() : null;
+      // Preserve source stacking, including a background that is not the bottom layer.
+      records.forEach(function(record){
+        const canvas = selected(record) ? paperCanvas : memoCanvas;
+        if (canvas) drawPsdDecodedLayer(canvas.getContext('2d'), record);
+      });
+      return { paperCanvas:paperCanvas, memoCanvas:memoCanvas, memoLayerCount:memoLayerCount,
+        paperLayerCount:records.length - memoLayerCount,
+        solidLayerCount:records.filter(function(record){ return selected(record) && record.psdImportKind === 'solid'; }).length,
+        sheetLayerCount:records.filter(function(record){ return selected(record) && record.psdImportKind !== 'solid'; }).length };
+    }
+
+    function psdPaperText(key) {
+      const texts = {
+        ko:{ title:'PSD 용지', hint:'체크한 레이어를 용지로 사용합니다. 나머지는 메모로 보존합니다.', auto:'자동 선택', cancel:'취소', apply:'불러오기', layer:'레이어', preview:'선택한 용지 미리보기' },
+        ja:{ title:'PSD用紙', hint:'選んだレイヤーを用紙に使い、残りはメモとして保持します。', auto:'自動選択', cancel:'キャンセル', apply:'読み込む', layer:'レイヤー', preview:'選択した用紙のプレビュー' },
+        en:{ title:'PSD paper', hint:'Checked layers form the paper. The rest are kept as notes.', auto:'Auto select', cancel:'Cancel', apply:'Import', layer:'Layer', preview:'Selected paper preview' },
+        zh:{ title:'PSD 纸张', hint:'勾选的图层用作纸张，其余保留为备注。', auto:'自动选择', cancel:'取消', apply:'导入', layer:'图层', preview:'所选纸张预览' }
+      };
+      return (texts[state.lang] || texts.en)[key];
+    }
+
+    function openPsdPaperImportDialog(composite) {
+      if (!composite.layers || !composite.layers.length) return Promise.resolve(composite);
+      return new Promise(function(resolve,reject){
+        const records = composite.layers;
+        const backdrop = document.createElement('div'); backdrop.className = 'app-dialog-backdrop psd-paper-backdrop';
+        const box = document.createElement('div'); box.className = 'app-dialog psd-paper-dialog';
+        box.setAttribute('role','dialog'); box.setAttribute('aria-modal','true'); box.setAttribute('aria-label',psdPaperText('title'));
+        const header = document.createElement('div'); header.className = 'app-dialog-header';
+        const title = document.createElement('h3'); title.textContent = psdPaperText('title');
+        const reset = document.createElement('button'); reset.type = 'button'; reset.className = 'toolbar-btn'; reset.textContent = psdPaperText('auto'); reset.dataset.psdAuto = '';
+        header.append(title,reset);
+        const hint = document.createElement('p'); hint.className = 'small'; hint.textContent = psdPaperText('hint');
+        const body = document.createElement('div'); body.className = 'app-dialog-body psd-paper-body';
+        const preview = document.createElement('canvas'); preview.width = 480; preview.height = Math.round(480 * PAGE_H / PAGE_W);
+        preview.setAttribute('role','img'); preview.setAttribute('aria-label',psdPaperText('preview'));
+        const list = document.createElement('div'); list.className = 'psd-paper-layers';
+        const actions = document.createElement('div'); actions.className = 'app-dialog-actions';
+        const cancel = document.createElement('button'); cancel.type = 'button'; cancel.textContent = psdPaperText('cancel');
+        const apply = document.createElement('button'); apply.type = 'button'; apply.className = 'primary'; apply.textContent = psdPaperText('apply'); apply.dataset.psdConfirm = '';
+        const inputs = [];
+        let frame = 0, closed = false;
+        function draw() {
+          frame = 0;
+          const image = composePsdPaperLayers(records, composite.sourceWidth, composite.sourceHeight, preview);
+          preview.getContext('2d').drawImage(image.paperCanvas,0,0);
+        }
+        function update() {
+          apply.disabled = !records.some(function(record){ return record.paperSelected; });
+          if (!frame) frame = requestAnimationFrame(draw);
+        }
+        records.slice().reverse().forEach(function(record,index){
+          const row = document.createElement('label'); row.className = 'ui-check-row';
+          const input = document.createElement('input'); input.type = 'checkbox'; input.checked = record.paperSelected; input.dataset.psdLayer = String(index);
+          const name = document.createElement('span'); name.textContent = record.name || psdPaperText('layer') + ' ' + (index + 1);
+          input.addEventListener('change',function(){ record.paperSelected = input.checked; update(); });
+          row.append(input,name); list.appendChild(row); inputs.push({input:input,record:record});
+        });
+        function finish(confirmed) {
+          if (closed) return;
+          closed = true; if (frame) cancelAnimationFrame(frame);
+          unmountAppDialog(backdrop); backdrop.remove();
+          try { resolve(confirmed ? composePsdPaperLayers(records,composite.sourceWidth,composite.sourceHeight) : null); }
+          catch (err) { reject(err); }
+        }
+        reset.addEventListener('click',function(){
+          inputs.forEach(function(item){ item.input.checked = item.record.paperSelected = item.record.psdImportKind !== 'memo'; }); update();
+        });
+        cancel.addEventListener('click',function(){ finish(false); });
+        apply.addEventListener('click',function(){ if (!apply.disabled) finish(true); });
+        body.append(preview,list); actions.append(cancel,apply); box.append(header,hint,body,actions); backdrop.appendChild(box);
+        document.body.appendChild(backdrop); update();
+        mountAppDialog(backdrop,{ initialFocus:apply, onRequestClose:function(){ finish(false); } });
+      });
+    }
+
+    async function compositePsdLayersToCanvas(arrayBuffer, options) {
       const bytes = new Uint8Array(arrayBuffer);
       const view = new DataView(arrayBuffer);
       let o = 0;
@@ -23972,7 +24137,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
               const length = view.getUint32(o, false); o += 4;
               channelInfos.push({ id:id, length:length });
             }
-            o += 8; // blend signature + mode
+            const blendMode = readAsciiFromData(view, o + 4, 4); o += 8; // blend signature + mode
             const opacity = view.getUint8(o++);
             o += 1; // clipping
             const flags = view.getUint8(o++);
@@ -23982,7 +24147,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
             const extraEnd = Math.min(layerInfoEnd, o + extraLength);
             const extraInfo = parsePsdLayerExtraInfo(view, bytes, extraStart, extraEnd);
             o = Math.min(layerInfoEnd, extraStart + extraLength);
-            records.push({ top:top, left:left, bottom:bottom, right:right, width:Math.max(0, right - left), height:Math.max(0, bottom - top), channelInfos:channelInfos, opacity:opacity, hidden:!!(flags & 2), name:extraInfo.name || '', channelData:{} });
+            records.push({ top:top, left:left, bottom:bottom, right:right, width:Math.max(0, right - left), height:Math.max(0, bottom - top), channelInfos:channelInfos, opacity:opacity, blendMode:blendMode, hidden:!!(flags & 2), name:extraInfo.name || '', channelData:{} });
           }
           records.forEach(function(record){
             record.channelInfos.forEach(function(ch){
@@ -23993,15 +24158,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         }
       }
       o = layerMaskEnd;
-      const canvas = document.createElement('canvas');
-      canvas.width = PAGE_W;
-      canvas.height = PAGE_H;
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, PAGE_W, PAGE_H);
       if (records.length) {
-        const scaleX = width && width !== PAGE_W ? PAGE_W / width : 1;
-        const scaleY = height && height !== PAGE_H ? PAGE_H / height : 1;
         const visibleRecordsTopToBottom = records.map(function(record){
           if (!record || record.hidden || !record.width || !record.height) return null;
           try {
@@ -24014,57 +24171,18 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           }
         }).filter(Boolean);
         const visibleRecordsBottomToTop = visibleRecordsTopToBottom.slice().reverse();
-        const solidRecords = [];
-        let sheetRecords = [];
-        let memoRecords = [];
-        for (let i = 0; i < visibleRecordsBottomToTop.length; i++) {
-          const record = visibleRecordsBottomToTop[i];
-          if (isPsdLayerNearlySolid(record, width, height)) {
-            record.psdImportKind = 'solid';
-            solidRecords.push(record);
-          } else if (await isPsdLayerSheetFormat(record, width, height)) {
-            record.psdImportKind = 'sheet';
-            sheetRecords.push(record);
-          } else {
-            record.psdImportKind = 'memo';
-            memoRecords.push(record);
-          }
-        }
-        if (!sheetRecords.length && visibleRecordsBottomToTop.length) {
-          const sheetLikeRecords = memoRecords.filter(function(record){ return !isLikelyPsdMemoLayer(record); });
-          if (sheetLikeRecords.length) {
-            const sheetLikeSet = new Set(sheetLikeRecords);
-            sheetRecords = sheetLikeRecords;
-            memoRecords = memoRecords.filter(function(record){ return !sheetLikeSet.has(record); });
-          }
-        }
-        const memoCanvas = memoRecords.length ? document.createElement('canvas') : null;
-        if (memoCanvas) {
-          memoCanvas.width = PAGE_W;
-          memoCanvas.height = PAGE_H;
-          memoCanvas.getContext('2d').clearRect(0, 0, PAGE_W, PAGE_H);
-        }
-        ctx.save();
-        ctx.scale(scaleX, scaleY);
-        solidRecords.forEach(function(record){ drawPsdDecodedLayer(ctx, record); });
-        sheetRecords.forEach(function(record){ drawPsdDecodedLayer(ctx, record); });
-        ctx.restore();
-        if (memoCanvas) {
-          const memoCtx = memoCanvas.getContext('2d');
-          memoCtx.save();
-          memoCtx.scale(scaleX, scaleY);
-          memoRecords.forEach(function(record){ drawPsdDecodedLayer(memoCtx, record); });
-          memoCtx.restore();
-        }
-        return {
-          paperCanvas:canvas,
-          memoCanvas:memoCanvas,
-          memoLayerCount:memoRecords.length,
-          paperLayerCount:solidRecords.length + sheetRecords.length,
-          solidLayerCount:solidRecords.length,
-          sheetLayerCount:sheetRecords.length
-        };
+        await classifyPsdPaperLayers(visibleRecordsBottomToTop, width, height);
+        const result = options && options.review ? {} : composePsdPaperLayers(visibleRecordsBottomToTop, width, height);
+        // Decoded pixels live only during this import; never enter persisted paper state.
+        result.layers = visibleRecordsBottomToTop;
+        result.sourceWidth = width;
+        result.sourceHeight = height;
+        return result;
       }
+      const canvas = document.createElement('canvas');
+      canvas.width = PAGE_W; canvas.height = PAGE_H;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, PAGE_W, PAGE_H);
       if (o < bytes.length) {
         const channelBytes = bytes.subarray(o);
         const total = width * height;
@@ -24966,7 +25084,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         if (lower.endsWith('.psd') || file.type === 'image/vnd.adobe.photoshop') {
           const buffer = await file.arrayBuffer();
           const size = readPsdPixelSize(buffer);
-          const psdComposite = await compositePsdLayersToCanvas(buffer);
+          const decoded = await compositePsdLayersToCanvas(buffer, { review:true });
+          if (!isCurrent()) return 'stale';
+          const psdComposite = await openPsdPaperImportDialog(decoded);
+          if (!isCurrent()) return 'stale';
+          if (!psdComposite) { updatePaperImageStatus(); return 'canceled'; }
           const canvas = psdComposite && psdComposite.paperCanvas ? psdComposite.paperCanvas : psdComposite;
           const memoCanvas = psdComposite && psdComposite.memoCanvas ? psdComposite.memoCanvas : null;
           const memoLayerCount = psdComposite && psdComposite.memoLayerCount ? psdComposite.memoLayerCount : 0;
