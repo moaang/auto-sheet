@@ -2595,7 +2595,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '945';
+    const APP_VERSION = '946';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3882,6 +3882,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver946", "Dialogue lane boundaries", ["Dialogue and SE start/end lines now stay within their own timesheet lanes."]],
         ["ver945", "PSD paper layer preview", ["Automatically includes small header and ruler layers. Review the selected paper layers before importing; thin camera borders are detected more reliably."]],
         ["ver944", "Match CSV and CLIP sheet imports", ["CSV imports now keep holds through the final frame. CLIP imports apply dialogue and camera tracks, and CSV imports can confirm work information from the file name."]],
         ["ver943", "Broader CSV encoding support", ["Improved CSV encoding detection and added Chinese, Western European and other encoding choices. Check the preview when detection is uncertain."]],
@@ -3976,6 +3977,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver946", "セリフ欄の境界線", ["タイムシートのセリフとSEが並ぶとき、開始・終了線が隣のレーンを横切らないようにしました。"]],
         ["ver945", "PSD用紙のレイヤープレビュー", ["小さな見出しや目盛りも用紙として自動選択します。読み込み前に用紙レイヤーを確認・変更でき、細いカメラ欄の境界も改善しました。"]],
         ["ver944", "CSVとCLIPのシート読み込みを統一", ["CSVの最後のフレームまでセルの保持を反映します。CLIPのセリフ・カメラを反映し、CSVでもファイル名から作品情報を確認できます。"]],
         ["ver943", "CSV文字コードの対応を拡充", ["CSVの文字コード判定を改善し、中国語・西欧などの文字コードを選べるようにしました。判定が不確かな場合はプレビューを確認できます。"]],
@@ -4070,6 +4072,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver946", "대사 레인 경계선", ["타임시트에서 대사와 SE가 나란히 있을 때 시작·끝 선이 옆 레인을 가로지르지 않도록 수정했습니다."]],
         ["ver945", "PSD 용지 레이어 미리보기", ["작은 머리글·눈금도 용지로 자동 선택합니다. 불러오기 전에 용지 레이어를 확인·변경할 수 있고, 얇은 카메라 칸 테두리 인식을 개선했습니다."]],
         ["ver944", "CSV·CLIP 시트 불러오기 일치", ["CSV의 마지막 프레임까지 셀 유지를 반영합니다. CLIP의 대사·카메라 적용을 고치고 CSV에서도 파일명의 작품 정보를 확인할 수 있습니다."]],
         ["ver943", "CSV 인코딩 지원 확대", ["CSV 자동판별을 개선하고 중국어·서유럽 등 인코딩 선택을 추가했습니다. 판별이 애매한 파일은 미리보기에서 확인할 수 있습니다."]],
@@ -4164,6 +4167,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver946", "台词轨道边界", ["台词与SE并列时，时间表的起止线不再横穿相邻轨道。"]],
         ["ver945", "PSD纸张图层预览", ["自动选择小标题和刻度图层。导入前可确认和调整纸张图层，并改善细摄影栏边框的识别。"]],
         ["ver944", "统一CSV与CLIP时表导入", ["CSV保留到最后一帧的曝光。修正CLIP对白和摄影轨道的应用，并可在CSV导入时确认文件名中的作品信息。"]],
         ["ver943", "扩展CSV编码支持", ["改进CSV编码检测，并增加中文、西欧等编码选项。检测不确定时可在预览中确认。"]],
@@ -18494,14 +18498,15 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const dialogArea = getDialogArea(block);
         const x = dialogArea.x;
         const w = dialogArea.w;
+        const dialogLaneBounds = getDistributedLaneBounds(x, w, seg.lane || 0, dialogLaneCount, 12);
         const guideX = getDistributedLaneX(x, w, seg.lane || 0, dialogLaneCount, 12);
-        if (showsSegmentStart) line(x, rowTop, x + w, rowTop, RED, 2.6);
-        if (showsSegmentEnd) line(x, rowTop + height, x + w, rowTop + height, RED, 2.6);
+        if (showsSegmentStart) line(dialogLaneBounds.x, rowTop, dialogLaneBounds.x + dialogLaneBounds.w, rowTop, RED, 2.6);
+        if (showsSegmentEnd) line(dialogLaneBounds.x, rowTop + height, dialogLaneBounds.x + dialogLaneBounds.w, rowTop + height, RED, 2.6);
         line(guideX, rowTop, guideX, rowTop + height, RED, 1.1);
         const chars = getTimelineCharSlice(seg.text, seg.from, seg.to, from, to, getOutputRowH(block, 'dialog'));
         drawDialogTextSlice(x, w, rowTop, seg.lane || 0, dialogLaneCount, chars, { get:function(){ return seg.text || ''; }, set:function(v){ updateManualBlockField('dialog', seg.id, 'text', v); } });
-        if (showsSegmentStart) addTimelineEdgeHandle(block, rowTop, 'dialog', seg, 'from', x, w);
-        if (showsSegmentEnd) addTimelineEdgeHandle(block, rowTop + height, 'dialog', seg, 'to', x, w);
+        if (showsSegmentStart) addTimelineEdgeHandle(block, rowTop, 'dialog', seg, 'from', dialogLaneBounds.x, dialogLaneBounds.w);
+        if (showsSegmentEnd) addTimelineEdgeHandle(block, rowTop + height, 'dialog', seg, 'to', dialogLaneBounds.x, dialogLaneBounds.w);
         if (showsSegmentStart) {
           const speakerInfo = splitDialogSpeakerSuffix(seg.label);
           const visibleDialogLabel = isBlankDialogFirstFrameLabel(speakerInfo.base) ? '' : speakerInfo.base;
