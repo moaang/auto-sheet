@@ -2595,7 +2595,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '949';
+    const APP_VERSION = '950';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -2936,7 +2936,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       columns:["cellColumnCount","inbetweenColumnCount"],
       columnOrder:["cellDisplayOrder"],
       douga:["dougaSheetEnabled","dougaSheetData"],
-      overrides:["markerOverrides","cameraPreviewStyles","cameraEndpointFr","cameraSeries","dotOverrides","layerNameTags"],
+      overrides:["markerOverrides","cameraPreviewStyles","cameraEndpointFr","cameraSeries","dotOverrides","layerNameTags","bookNames"],
       paperImage:["paperImageDataUrl","paperImageMemoDataUrl","paperImageMemoLayerCount","paperImageName","paperImageMeta","paperImagePixelInfo","paperImageSourceWidth","paperImageSourceHeight"],
       paperOutput:["showTemplate","showHeaderOutput","showDurationPlusOutput","showCellLabelOutput","showPsdMemo"],
       paperLayout:["layoutBoxes","layoutBoxBaseRects"],
@@ -3085,6 +3085,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       textMemoPages: {},
       pastedImages: {},
       layerNameTags: [],
+      bookNames: {},
       memoPages: {}
     }, createCsvState(), createSheetTransientState());
     const settingsDocumentDefaults = captureSheetSnapshot();
@@ -3882,6 +3883,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver950", "BOOK names and grouped markers", ["Preserves original BOOK display names separately from image identifiers when exchanging sheet settings. Consecutive BOOK numbers share a range, and crowded markers fit above the sheet columns."]],
         ["ver949", "Faster paper analysis and import", ["Reduces repeated work when analyzing paper and importing TVPaint CSV or CLIP files. PSD output releases finished canvas buffers sooner."]],
         ["ver948", "Sheet navigation and import performance", ["Avoids repeated memo drawing during pan and zoom, and reduces redundant work in CSV imports and saved work loading."]],
         ["ver947", "CLIP inbetween marks", ["Import inbetween marks from CLIP timelines while preserving cel exposures."]],
@@ -3980,6 +3982,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver950", "BOOK名とまとめ表示", ["シート設定の受け渡しで、画像識別名とは別に元のBOOK表示名を保持します。連番は範囲でまとめ、密集したマークも用紙の列上部に収めます。"]],
         ["ver949", "用紙解析・読み込みを軽量化", ["用紙解析、TVPaint CSV・CLIPの読み込みで重複する処理を減らしました。PSD出力後のキャンバスも早めに解放します。"]],
         ["ver948", "シート操作と読み込みの軽量化", ["移動・拡大縮小時のメモ再描画と、CSV・保存済み作業を読み込む際の重複処理を減らしました。"]],
         ["ver947", "CLIPの動画マーク", ["CLIPタイムラインの動画マークを、セルの表示期間を保ったまま読み込むようにしました。"]],
@@ -4078,6 +4081,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver950", "BOOK 이름 보존과 묶음 표시", ["시트 설정을 주고받을 때 그림 식별명과 원래 BOOK 표시 이름을 따로 보존합니다. 연속 번호는 범위로 묶고, 여러 표식도 시트 열 위쪽에 겹치지 않게 배치합니다."]],
         ["ver949", "용지 분석·불러오기 경량화", ["용지 분석과 TVPaint CSV·CLIP 불러오기의 반복 처리를 줄였습니다. PSD 출력이 끝난 캔버스도 바로 정리합니다."]],
         ["ver948", "시트 조작·불러오기 경량화", ["이동·확대 시 메모 재그리기와 CSV·저장한 작업을 불러올 때의 중복 처리를 줄였습니다."]],
         ["ver947", "CLIP 동화점", ["CLIP 타임라인의 동화점을 셀 노출 길이를 유지하며 불러옵니다."]],
@@ -4176,6 +4180,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver950", "BOOK名称与合并标记", ["交换摄影表设置时，将原始BOOK显示名称与图像标识分别保留。连续编号合并为范围，密集标记也能排列在表格栏上方。"]],
         ["ver949", "优化纸张分析与导入", ["减少纸张分析及TVPaint CSV、CLIP导入中的重复处理，并及时释放PSD输出后的画布。"]],
         ["ver948", "优化时表操作与导入", ["减少平移缩放时的备注重绘，以及导入CSV和打开已保存工作时的重复处理。"]],
         ["ver947", "CLIP中间画标记", ["导入CLIP时间轴的中间画标记，并保持赛璐珞曝光时长不变。"]],
@@ -13887,10 +13892,12 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         if (!target) return;
         const textValue = String(item.name || '').trim();
         if (!textValue) return;
+        const bookNameKey = getUniqueCommandNameKey(item.name, items);
         bookTags.push({
           id:'text-book-tag-' + item.lineIndex,
           uid:'text-' + target.commandIndex,
-          text:textValue,
+          text:getBookNameOverride(bookNameKey) || textValue,
+          bookNameKey:bookNameKey,
           snap:item.lineIndex < target.lineIndex ? 'left' : 'right',
           autoTextBookTag:true,
           sourceLineIndex:item.lineIndex
@@ -13927,9 +13934,18 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         });
         const nameInput = document.createElement('input');
         nameInput.type = 'text';
-        nameInput.value = item.name;
+        const pickerBookNameKey = normalizeTextCommandRole(item.role) === 'book' ? getUniqueCommandNameKey(item.name, items) : '';
+        nameInput.value = pickerBookNameKey ? (getBookNameOverride(pickerBookNameKey) || item.name) : item.name;
         nameInput.className = 'col-name-input';
         nameInput.addEventListener('change', function(){
+          // BOOK 행은 이미지 매칭이 쓰는 원본 커맨드명을 그대로 두고 표시 이름만 bookNames에
+          // 적는다. 다만 이 이름을 공유하는 다른 행이 있어 모호하면(bookNameKey 없음) 안전한
+          // 키가 없으므로 다른 역할과 같이 원본 커맨드 줄 자체를 바꾸는 쪽으로 되돌아간다.
+          if (pickerBookNameKey) {
+            setBookNameOverride(pickerBookNameKey, nameInput.value, item.name);
+            render();
+            return;
+          }
           const textarea = document.getElementById('timelineCommandInput');
           if (!textarea) return;
           const lines = String(getCommandTextValue('text') || '').replace(/\r/g, '').split('\n');
@@ -14028,6 +14044,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       });
       const bookTags = [];
       if (commandAssignments.length) {
+        const lineItems = getCommandLineItemsFromLines(commandLines);
         commandAssignments.filter(function(item){
           return item.column && normalizeTextCommandRole(item.role) === 'book';
         }).forEach(function(item){
@@ -14039,10 +14056,12 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           if (!target) return;
           const textValue = String(item.column.name || '').trim();
           if (!textValue) return;
+          const bookNameKey = getUniqueCommandNameKey(textValue, lineItems);
           bookTags.push({
             id:'csv-book-tag-' + item.column.index,
             uid:'csv-' + target.index,
-            text:textValue,
+            text:getBookNameOverride(bookNameKey) || textValue,
+            bookNameKey:bookNameKey,
             snap:commandCells.length && item.lineIndex < commandCells[0].lineIndex ? 'left' : 'right',
             autoBookTag:true,
             sourceColumnIndex:item.column.index
@@ -14064,10 +14083,12 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           if (!target) return;
           const textValue = String(col.name || '').trim();
           if (!textValue) return;
+          const bookNameKey = getUniqueCommandNameKey(textValue, state.csvColumns);
           bookTags.push({
             id:'csv-book-tag-' + col.index,
             uid:'csv-' + target.index,
-            text:textValue,
+            text:getBookNameOverride(bookNameKey) || textValue,
+            bookNameKey:bookNameKey,
             snap:sourceIndex < Number(target.index) ? 'left' : 'right',
             autoBookTag:true,
             sourceColumnIndex:col.index
@@ -17346,7 +17367,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       groups.slice().reverse().forEach(function(group){
         const books=group.members.map(function(tag){
           const assignment=tag.autoBookTag?assignments.find(function(item){return item.column&&item.column.index===tag.sourceColumnIndex;}):null;
-          return {key:tag.id,name:tag.text,originalName:tag.text,kind:'book',tag:Object.assign({},tag),lineIndex:tag.autoTextBookTag?tag.sourceLineIndex:assignment?assignment.lineIndex:-1,column:assignment&&assignment.column};
+          return {key:tag.id,name:tag.text,originalName:tag.text,kind:'book',tag:Object.assign({},tag),bookNameKey:tag.bookNameKey,lineIndex:tag.autoTextBookTag?tag.sourceLineIndex:assignment?assignment.lineIndex:-1,column:assignment&&assignment.column};
         });
         rows.splice(Math.ceil(group.boundary),0,...books);
       });
@@ -17363,7 +17384,18 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const indexed=draft.lines.map(function(line,index){
         if(!slots.has(index)) return {text:line,index:index};
         const row=sourceOrderChanged?sourceRows[cursor++]:sourceRows.find(function(row){return row.lineIndex===index;}), original=draft.lines[row.lineIndex];
+        // BOOK 표시 이름 수정은 bookNames에 적을 뿐, 이미지 매칭이 쓰는 원본 커맨드 줄은
+        // 건드리지 않는다. 단, 이 이름을 공유하는 다른 행이 있어 모호하면(bookNameKey 없음)
+        // 안전한 키가 없으므로 원래 동작(원본 줄 자체를 바꾸는 방식)으로 되돌아간다.
+        if(row.kind==='book'&&row.bookNameKey) return {text:original,index:row.lineIndex};
         return {text:row.name.trim()===row.originalName?original:setCommandLineName(original,row.name.trim()||row.originalName),index:row.lineIndex};
+      });
+      let bookNamesChanged=false;
+      rows.filter(function(row){return row.kind==='book'&&row.lineIndex>=0&&row.bookNameKey;}).forEach(function(row){
+        const next=row.name.trim();
+        if(!next||next===row.originalName)return;
+        setBookNameOverride(row.bookNameKey,next,row.originalName);
+        bookNamesChanged=true;
       });
       // Empty printed columns become commands only when explicitly renamed.
       rows.filter(function(row){return row.kind==='cell'&&row.lineIndex<0&&row.name!==row.originalName;}).forEach(function(row){
@@ -17426,7 +17458,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           tag.bookOrder=sourceCount-1+(index+1)/(members.length+1);
         });
       });
-      if(modelChanged){state.serifuRangeAnchor=null;state.serifuRangeSelection=null;render();}
+      if(modelChanged||bookNamesChanged){state.serifuRangeAnchor=null;state.serifuRangeSelection=null;render();}
       else refreshLayerNameTagOverlay();
       commitContentHistory();
     }
@@ -17487,6 +17519,37 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return state.layerNameTags;
     }
 
+    // bookNames keys are exact, globally unique command names; display edits leave image IDs intact.
+    // Ambiguous names keep the raw-line editor. Own-property access also preserves literal __proto__ keys.
+    function getUniqueCommandNameKey(name, items) {
+      const key = String(name || '').trim();
+      if (!key) return '';
+      let count = 0;
+      (items || []).forEach(function(item){
+        if (String(item && item.name || '').trim() === key) count++;
+      });
+      return count === 1 ? key : '';
+    }
+
+    function getBookNameOverride(key) {
+      const name = String(key || '').trim();
+      if (!name || !state.bookNames || !Object.prototype.hasOwnProperty.call(state.bookNames, name)) return '';
+      const value = state.bookNames[name];
+      return typeof value === 'string' ? value.trim() : '';
+    }
+
+    function setBookNameOverride(key, displayName, rawName) {
+      const name = String(key || '').trim();
+      if (!name) return;
+      if (!state.bookNames || typeof state.bookNames !== 'object') state.bookNames = {};
+      const value = String(displayName || '').trim();
+      if (!value || value === String(rawName || '').trim()) {
+        if (Object.prototype.hasOwnProperty.call(state.bookNames, name)) delete state.bookNames[name];
+        return;
+      }
+      Object.defineProperty(state.bookNames, name, { value:value, enumerable:true, configurable:true, writable:true });
+    }
+
     // 손으로 붙인 이름표만 고른다. book 자동 태그는 syncTextCommandBookNameTags /
     // syncCsvBookNameTags 가 커맨드 텍스트에서 다시 만들므로, 저장본이나 되돌리기
     // 스냅샷에 담으면 재생성분과 겹쳐 두 벌이 된다. 담는 쪽은 전부 이 함수를 쓴다.
@@ -17544,6 +17607,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       };
     }
 
+    const LAYER_NAME_TAG_HEADER_MIN_TOP = 180;
+
     function groupLayerNameTags(tags, entries) {
       const groups = new Map();
       (tags || []).forEach(function(tag){
@@ -17562,57 +17627,110 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         return group;
       });
     }
-
     function formatLayerNameTagGroup(members) {
-      const names = members.map(function(tag){ return String(tag.text || 'NAME'); });
-      const numbered = names.map(function(name){ return /^(BOOK)\s*(\d+)$/i.exec(name); });
-      return names.length > 1 && numbered.every(Boolean)
-        ? 'BOOK ' + numbered.map(function(match){ return match[2]; }).join(',')
-        : names.join(' / ');
+      const names = members.map(function(tag) { return String(tag.text || 'NAME'); });
+      const numbered = names.map(function(name) { return /^(BOOK)\s*(\d+)$/i.exec(name); });
+      if (names.length > 1 && numbered.every(Boolean)) {
+        const rawNumbers = numbered.map(function(match) { return match[2]; });
+        const padded = rawNumbers.some(function(value) { return /^0\d/.test(value); });
+        if (padded && rawNumbers.some(function(value) { return value.length !== rawNumbers[0].length; })) return names.join(' / ');
+        const numbers = rawNumbers.map(Number);
+        if (numbers.every(function(n, i) { return Number.isSafeInteger(n) && (i === 0 || n === numbers[i - 1] + 1); })) return 'BOOK' + rawNumbers[0] + '〜' + rawNumbers[rawNumbers.length - 1];
+        return 'BOOK' + rawNumbers.join(',');
+      }
+      return names.join(' / ');
     }
-
-    function layoutLayerNameTagGroups(tags, entries, labelArea) {
-      const colW = labelArea.w / Math.max(1, entries.length), placed = [];
-      return groupLayerNameTags(tags, entries).map(function(group){
-        const text = formatLayerNameTagGroup(group.members), fontSize = 10;
-        const maxTextWidth = Math.max(28, Math.min(100, colW * 1.8) - 12), lines = [];
-        const numbered = /^BOOK\s*(\d+(?:,\d+)*)$/i.exec(text);
-        if (numbered) {
-          lines.push('B','O','O','K');
-          let numbers='';
-          numbered[1].split(',').forEach(function(number){
-            const next=numbers?numbers+','+number:number;
-            if (numbers && estimateTextMemoTextWidth(next,fontSize)>maxTextWidth) {lines.push(numbers);numbers=number;}
-            else numbers=next;
-          });
-          if (numbers) lines.push(numbers);
-        } else Array.from(text.replace(/\s+/g,'')).forEach(function(char){lines.push(char);});
-        const w = Math.max(22, ...lines.map(function(line){ return estimateTextMemoTextWidth(line, fontSize) + 12; }));
-        const h = Math.max(28, lines.length * 12 + 14), xCenter = labelArea.x + group.boundary * colW;
-        const x = xCenter - w / 2;
-        let bottom = labelArea.y - 6;
-        // Adjacent boundaries may have wide names; raise only overlapping groups.
-        let collision;
-        while ((collision = placed.find(function(other){
-          return x < other.x + other.w + 4 && x + w + 4 > other.x && bottom > other.y - 4 && bottom - h < other.y + other.h + 4;
-        }))) bottom = collision.y - 4;
-        const box = { x:x, y:bottom-h, w:w, h:h, xCenter:xCenter, colW:colW, lines:lines, fontSize:fontSize, labelArea:labelArea, members:group.members };
-        placed.push(box);
-        return box;
+    function createLayerNameTagTextMeasure() {
+      const context = document.createElement('canvas').getContext('2d'), widths = new Map();
+      return function(value, fontSize) {
+        const key = fontSize + '|' + value;
+        if (!widths.has(key)) {
+          context.font = '600 ' + fontSize + 'px Arial, Helvetica, sans-serif';
+          const metrics = context.measureText(value);
+          widths.set(key, Math.max(metrics.width, Math.abs(metrics.actualBoundingBoxLeft || 0) + Math.abs(metrics.actualBoundingBoxRight || 0)));
+        }
+        return widths.get(key);
+      };
+    }
+    function wrapLayerNameTagText(text, fontSize, maxTextWidth, measureText) {
+      const lines = [], numbered = /^BOOK\s*([\d,〜]+)$/i.exec(text);
+      if (numbered) {
+        lines.push('B', 'O', 'O', 'K');
+        let chunk = '';
+        numbered[1].split(',').forEach(function(number) {
+          const next = chunk ? chunk + ',' + number : number;
+          if (chunk && measureText(next, fontSize) > maxTextWidth) { lines.push(chunk); chunk = number; }
+          else chunk = next;
+        });
+        if (chunk) lines.push(chunk);
+      } else Array.from(text.replace(/\s+/g, '')).forEach(function(char) { lines.push(char); });
+      return lines;
+    }
+    function splitLayerNameTagColumns(lines, maxRows) {
+      const rows = Math.max(1, maxRows), count = Math.max(1, Math.ceil(lines.length / rows));
+      const rowsPerColumn = Math.ceil(lines.length / count), columns = [];
+      for (let i = 0; i < lines.length; i += rowsPerColumn) columns.push(lines.slice(i, i + rowsPerColumn));
+      return columns.length ? columns : [[]];
+    }
+    function fitLayerNameTagText(lines, available, fontSize, measureText) {
+      const size = fontSize, lineH = size * 1.2, pad = size * 1.4;
+      const maxRows = Number.isFinite(available) ? Math.max(1, Math.floor((available - pad) / lineH)) : Math.max(1, lines.length);
+      const columns = splitLayerNameTagColumns(lines, maxRows);
+      const colWidths = columns.map(function(column) { return Math.max(size * 2.2, ...column.map(function(line) { return measureText(line, size) + size * 1.2; })); });
+      return { columns: columns, colWidths: colWidths, w: colWidths.reduce(function(sum, width) { return sum + width; }, 0), h: Math.max(size * 2.8, Math.max(...columns.map(function(column) { return column.length; })) * lineH + pad), fontSize: size, lineH: lineH };
+    }
+    // Refit the whole boundary set at one font size; an earlier neighbor never exhausts a later one's budget.
+    // Omitted minTop keeps the unbounded widget layout. Page bounds and a width measurer are explicit inputs.
+    function layoutLayerNameTagGroups(tags, entries, labelArea, minTop, options) {
+      options = options || {};
+      const groups = groupLayerNameTags(tags, entries), colW = labelArea.w / Math.max(1, entries.length);
+      if (!groups.length) return [];
+      const measureText = options.measureText || createLayerNameTagTextMeasure();
+      const floor = Number.isFinite(minTop) ? minTop : -Infinity, bottomAnchor = labelArea.y - 6;
+      const left = Number.isFinite(options.pageLeft) ? options.pageLeft : -Infinity;
+      const right = Number.isFinite(options.pageRight) ? options.pageRight : Infinity;
+      const available = bottomAnchor - floor;
+      if (available <= 0) throw new RangeError('Layer name tags require space above the cell labels');
+      let fontSize = Math.min(10, available / 2.8);
+      for (let pass = 0; pass < 128; pass++) {
+        const placed = [];
+        groups.forEach(function(group) {
+          const text = formatLayerNameTagGroup(group.members);
+          const lines = wrapLayerNameTagText(text, fontSize, Math.max(28, Math.min(100, colW * 1.8) - 12), measureText);
+          const fit = fitLayerNameTagText(lines, available, fontSize, measureText);
+          const xCenter = labelArea.x + group.boundary * colW, x = xCenter - fit.w / 2;
+          let bottom = bottomAnchor, collision;
+          while ((collision = placed.find(function(other) { return x < other.x + other.w + 4 && x + fit.w + 4 > other.x && bottom > other.y - 4 && bottom - fit.h < other.y + other.h + 4; }))) bottom = collision.y - 4;
+          placed.push(Object.assign({}, fit, { x: x, y: bottom - fit.h, xCenter: xCenter, colW: colW, labelArea: labelArea, members: group.members }));
+        });
+        if (placed.every(function(box) { return box.y >= floor && box.x >= left && box.x + box.w <= right; })) return placed;
+        fontSize *= 0.9;
+      }
+      throw new RangeError('Layer name tags cannot fit the supplied page bounds');
+    }
+    function layerNameTagShape(box) {
+      const x = box.x, y = box.y, w = box.w, h = box.h, scale = box.fontSize / 10;
+      const corner = 5 * scale, tip = 8 * scale, halfTip = 6 * scale, tipX = x + w / 2;
+      const path = 'M ' + (x + corner) + ' ' + y + ' L ' + (x + w - corner) + ' ' + y + ' Q ' + (x + w) + ' ' + y + ' ' + (x + w) + ' ' + (y + corner)
+        + ' L ' + (x + w) + ' ' + (y + h - tip) + ' L ' + (tipX + halfTip) + ' ' + (y + h - tip) + ' L ' + tipX + ' ' + (y + h) + ' L ' + (tipX - halfTip) + ' ' + (y + h - tip)
+        + ' L ' + x + ' ' + (y + h - tip) + ' L ' + x + ' ' + (y + corner) + ' Q ' + x + ' ' + y + ' ' + (x + corner) + ' ' + y + ' Z';
+      const texts = []; let colX = x;
+      box.columns.forEach(function(column, index) {
+        const width = box.colWidths[index];
+        column.forEach(function(value, row) { texts.push({ x: colX + width / 2, y: y + 7 * scale + row * box.lineH, value: value }); });
+        colX += width;
       });
+      return { path: path, texts: texts };
     }
 
     function renderLayerNameTagShape(tag, box, interactive, container) {
       const group = el('g', { 'pointer-events':interactive ? 'all' : 'none' });
-      const x = box.x, y = box.y, w = box.w, h = box.h;
-      const tipX = x + w / 2;
-      const path = 'M ' + (x + 5) + ' ' + y + ' L ' + (x + w - 5) + ' ' + y + ' Q ' + (x + w) + ' ' + y + ' ' + (x + w) + ' ' + (y + 5) + ' L ' + (x + w) + ' ' + (y + h - 8) + ' L ' + (tipX + 6) + ' ' + (y + h - 8) + ' L ' + tipX + ' ' + (y + h) + ' L ' + (tipX - 6) + ' ' + (y + h - 8) + ' L ' + x + ' ' + (y + h - 8) + ' L ' + x + ' ' + (y + 5) + ' Q ' + x + ' ' + y + ' ' + (x + 5) + ' ' + y + ' Z';
-      group.appendChild(el('path', { d:path, fill:'rgba(255,255,255,.92)', stroke:'#111', 'stroke-width':1.2 }));
+      const shape = layerNameTagShape(box);
+      group.appendChild(el('path', { d:shape.path, fill:'rgba(255,255,255,.92)', stroke:'#111', 'stroke-width':1.2 }));
       group.setAttribute('data-layer-tag-ids', box.members.map(function(item){ return item.id; }).join(' '));
       const title = el('title', {}, box.members.map(function(item){ return item.text; }).join(' / ')); group.appendChild(title);
-      const textTop = box.y + 7;
-      box.lines.forEach(function(value,index){
-        group.appendChild(el('text', { x:box.x+box.w/2, y:textTop+index*12, fill:'#111', 'font-size':box.fontSize, 'font-family':'Arial, Helvetica, sans-serif', 'font-weight':'600', 'text-anchor':'middle', 'dominant-baseline':'hanging', 'pointer-events':'none' }, value));
+      shape.texts.forEach(function(text){
+        group.appendChild(el('text', { x:text.x, y:text.y, fill:'#111', 'font-size':box.fontSize, 'font-family':'Arial, Helvetica, sans-serif', 'font-weight':'600', 'text-anchor':'middle', 'dominant-baseline':'hanging', 'pointer-events':'none' }, text.value));
       });
       if (interactive) {
         group.style.cursor = 'pointer';
@@ -17643,7 +17761,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         blocks.forEach(function(block){
           const geometry = getLayerNameTagBlockGeometry(layout, block);
           if (!geometry) return;
-          layoutLayerNameTagGroups(getLayerNameTagList(), layout.originalEntries || [], getCellLabelArea(geometry)).forEach(function(box){
+          layoutLayerNameTagGroups(getLayerNameTagList(), layout.originalEntries || [], getCellLabelArea(geometry), LAYER_NAME_TAG_HEADER_MIN_TOP, {pageLeft:1,pageRight:PAGE_W-1}).forEach(function(box){
             renderLayerNameTagShape(box.members[0], box, live && !state.memoMode && !state.positionMode && !state.textMemoEditMode && !state.shakuMode, container);
           });
         });
@@ -21921,7 +22039,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         cameraPreviewStyles:cloneSheetData(state.cameraPreviewStyles || {}),
         cameraEndpointFr:cloneSheetData(state.cameraEndpointFr || {}),
         cameraSeries:cloneSheetData(state.cameraSeries || []),
-        dotOverrides:cloneSheetData(state.dotOverrides || {})
+        dotOverrides:cloneSheetData(state.dotOverrides || {}),
+        bookNames:cloneSheetData(state.bookNames || {})
       };
     }
 
@@ -21948,6 +22067,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       state.cameraEndpointFr = snap.cameraEndpointFr && typeof snap.cameraEndpointFr === 'object' ? cloneSheetData(snap.cameraEndpointFr) : {};
       state.cameraSeries = Array.isArray(snap.cameraSeries) ? cloneSheetData(snap.cameraSeries) : [];
       state.dotOverrides = snap.dotOverrides && typeof snap.dotOverrides === 'object' ? cloneSheetData(snap.dotOverrides) : {};
+      state.bookNames = snap.bookNames && typeof snap.bookNames === 'object' ? cloneSheetData(snap.bookNames) : {};
     }
 
     function applyContentSnapshot(snap, options) {
@@ -25252,6 +25372,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       state.cameraPreviewStyles = {};
       resetCsvStateForSheetClear();
       state.layerNameTags = [];
+      state.bookNames = {};
       state.currentPreviewPage = 0;
       state.totalPages = 1;
       queueSavePaperMemory();
@@ -25472,7 +25593,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       Object.entries(paper.layoutBoxes || {}).forEach(function(entry){ item(entry[1], 'paper.layoutBoxes.' + entry[0]); });
       array(paper.cellDisplayOrder, 'paper.cellDisplayOrder', scalar);
       const overrides = copy.overrides || {};
-      ['markerOverrides','cameraPreviewStyles','cameraEndpointFr','dotOverrides'].forEach(function(key){ record(overrides[key], 'overrides.' + key); });
+      ['markerOverrides','cameraPreviewStyles','cameraEndpointFr','dotOverrides','bookNames'].forEach(function(key){ record(overrides[key], 'overrides.' + key); });
       array(overrides.layerNameTags, 'overrides.layerNameTags', item);
       array(overrides.cameraSeries, 'overrides.cameraSeries', function(series,path){ item(series,path); array(series.lines,path + '.lines',scalar); scalar(series.name,path + '.name'); });
       const memo = copy.memo || {};
@@ -25494,7 +25615,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         item(stage,path); record(stage.content,path + '.content');
         const content = stage.content || {};
         ['cellDisplayOrder','layerNameTags','cameraSeries'].forEach(function(key){ array(content[key],path + '.content.' + key, key === 'cellDisplayOrder' ? scalar : item); });
-        ['header','markerOverrides','cameraPreviewStyles','cameraEndpointFr','dotOverrides','dougaSheetData'].forEach(function(key){ record(content[key],path + '.content.' + key); });
+        ['header','markerOverrides','cameraPreviewStyles','cameraEndpointFr','dotOverrides','bookNames','dougaSheetData'].forEach(function(key){ record(content[key],path + '.content.' + key); });
       });
       return copy;
     }
