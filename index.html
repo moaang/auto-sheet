@@ -2595,7 +2595,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '947';
+    const APP_VERSION = '948';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3882,6 +3882,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver948", "Sheet navigation and import performance", ["Avoids repeated memo drawing during pan and zoom, and reduces redundant work in CSV imports and saved work loading."]],
         ["ver947", "CLIP inbetween marks", ["Import inbetween marks from CLIP timelines while preserving cel exposures."]],
         ["ver946", "Dialogue lane boundaries", ["Dialogue and SE start/end lines now stay within their own timesheet lanes."]],
         ["ver945", "PSD paper layer preview", ["Automatically includes small header and ruler layers. Review the selected paper layers before importing; thin camera borders are detected more reliably."]],
@@ -3978,6 +3979,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver948", "シート操作と読み込みの軽量化", ["移動・拡大縮小時のメモ再描画と、CSV・保存済み作業を読み込む際の重複処理を減らしました。"]],
         ["ver947", "CLIPの動画マーク", ["CLIPタイムラインの動画マークを、セルの表示期間を保ったまま読み込むようにしました。"]],
         ["ver946", "セリフ欄の境界線", ["タイムシートのセリフとSEが並ぶとき、開始・終了線が隣のレーンを横切らないようにしました。"]],
         ["ver945", "PSD用紙のレイヤープレビュー", ["小さな見出しや目盛りも用紙として自動選択します。読み込み前に用紙レイヤーを確認・変更でき、細いカメラ欄の境界も改善しました。"]],
@@ -4074,6 +4076,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver948", "시트 조작·불러오기 경량화", ["이동·확대 시 메모 재그리기와 CSV·저장한 작업을 불러올 때의 중복 처리를 줄였습니다."]],
         ["ver947", "CLIP 동화점", ["CLIP 타임라인의 동화점을 셀 노출 길이를 유지하며 불러옵니다."]],
         ["ver946", "대사 레인 경계선", ["타임시트에서 대사와 SE가 나란히 있을 때 시작·끝 선이 옆 레인을 가로지르지 않도록 수정했습니다."]],
         ["ver945", "PSD 용지 레이어 미리보기", ["작은 머리글·눈금도 용지로 자동 선택합니다. 불러오기 전에 용지 레이어를 확인·변경할 수 있고, 얇은 카메라 칸 테두리 인식을 개선했습니다."]],
@@ -4170,6 +4173,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver948", "优化时表操作与导入", ["减少平移缩放时的备注重绘，以及导入CSV和打开已保存工作时的重复处理。"]],
         ["ver947", "CLIP中间画标记", ["导入CLIP时间轴的中间画标记，并保持赛璐珞曝光时长不变。"]],
         ["ver946", "台词轨道边界", ["台词与SE并列时，时间表的起止线不再横穿相邻轨道。"]],
         ["ver945", "PSD纸张图层预览", ["自动选择小标题和刻度图层。导入前可确认和调整纸张图层，并改善细摄影栏边框的识别。"]],
@@ -6403,8 +6407,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         clearCsvGeneratedTimelineBlocks();
         return;
       }
-      const dialogLines = csvRoleBlocksToManualLines('dialog');
-      const cameraLines = csvRoleBlocksToManualLines('camera');
+      const rows = getCsvDataRows(), duration = rows.length ? rows[rows.length - 1].frame : 0;
+      const command = getCommandTextValue('csv');
+      const dialogLines = commandRoleBlocksToManualLines(command, 'dialog', duration);
+      const cameraLines = commandRoleBlocksToManualLines(command, 'camera', duration);
       const dialogEl = document.getElementById('dialogManual');
       const cameraEl = document.getElementById('cameraManual');
       if (dialogEl) {
@@ -10144,10 +10150,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         return evidence;
       }
 
-      function getHeaderLocalEndpointHorizontalJoint(x, minArm) {
+      function getHeaderEndpointHorizontalJoint(x, minArm, bandEvidence) {
         const xx = Number(x);
         if (!Number.isFinite(xx)) return null;
-        const evidence = getHeaderBandJointEvidence(xx, minArm);
+        const evidence = bandEvidence || getHeaderBandJointEvidence(xx, minArm);
         if (evidence.startScore >= 3 && evidence.startEndpointCount >= 2 && evidence.startScore > evidence.endScore) {
           return { kind:'endpoint', side:'start', y:evidence.firstStartY, local:true, score:evidence.startScore };
         }
@@ -10157,16 +10163,12 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         return null;
       }
 
-      function getHeaderEndpointHorizontalJoint(x, minArm) {
-        return getHeaderLocalEndpointHorizontalJoint(x, minArm);
-      }
-
       function getHeaderHorizontalJointKind(x) {
         if (!analysis || typeof analysis.measureDarkSpan !== 'function') return 'cross';
         const minArm = getHeaderJointMinArm();
-        const endpoint = getHeaderEndpointHorizontalJoint(x, minArm);
+        const evidence = getHeaderBandJointEvidence(Number(x), minArm);
+        const endpoint = getHeaderEndpointHorizontalJoint(x, minArm, evidence);
         if (endpoint) return 'endpoint';
-        const evidence = getHeaderBandJointEvidence(x, minArm);
         if (evidence.crossCount >= 2) return 'cross';
         if (evidence.jointCount >= 2) return 'band';
         return 'none';
@@ -11672,13 +11674,13 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     function makePaperAutoAlignLayoutResult(analysis, bodyGrid, variantName) {
-      const columnGroups = makePaperAutoAlignColumnGroups(analysis.xLines, analysis.xDetailed, bodyGrid, analysis);
       let pair = null;
       let pairError = null;
       // 용지 구조로 먼저 가른다. 3초 용지는 좌우 짝 조건을 **우연히 통과**하므로(실측), 짝짓기
       // 실패를 기다리면 영영 1블록 경로에 못 간다.
       const singleBlockPaper = isPaperAutoAlignSingleBlockPaper(analysis, bodyGrid);
       if (!singleBlockPaper) {
+        const columnGroups = makePaperAutoAlignColumnGroups(analysis.xLines, analysis.xDetailed, bodyGrid, analysis);
         try {
           pair = choosePaperAutoAlignColumnPair(columnGroups, analysis.xLines, analysis.xDetailed);
         } catch (err) {
@@ -13986,11 +13988,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return lines;
     }
 
-    function csvRoleBlocksToManualLines(role) {
-      const duration = getCsvDataRows().reduce(function(max, item){ return Math.max(max, item.frame); }, 0);
-      return commandRoleBlocksToManualLines(getCommandTextValue('csv'), role, duration);
-    }
-
     function applyImportedCommandRoles(commandText, duration) {
       ['dialog','camera'].forEach(function(kind){
         const target = getSheetInputNode(kind + 'Manual');
@@ -14147,9 +14144,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       }).join(String.fromCharCode(10));
     }
 
-    function csvColumnToCommandLine(col) {
+    function csvColumnToCommandLine(col, rows) {
       const role = csvRoleToTextRole(getCsvColumnRole(col));
-      const rows = getCsvDataRows();
+      rows = rows || getCsvDataRows();
       const duration = rows.length ? rows[rows.length - 1].frame : 0;
       const entries = rows.map(function(row){
         const value = normalizeCsvCellValue(row.row[col.index]);
@@ -14170,7 +14167,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     function buildCsvCommandTextFromColumns() {
-      return getCsvCommandColumnsInDisplayOrder().map(csvColumnToCommandLine).join(String.fromCharCode(10));
+      const rows = getCsvDataRows();
+      return getCsvCommandColumnsInDisplayOrder().map(function(col){ return csvColumnToCommandLine(col, rows); }).join(String.fromCharCode(10));
     }
 
     function getCsvCommandLineAssignmentsForAll(lines) {
@@ -14198,23 +14196,23 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     function syncCsvCommandEditWithColumns(raw) {
       const sourceLines = String(raw || '').replace(/\r/g, '').split('\n');
       const assignments = getCsvCommandLineAssignmentsForAll(sourceLines);
-      const usedLineIndexes = new Set();
       const lineByColumn = new Map();
       const commandOrder = [];
       assignments.forEach(function(item){
         if (!item.column) return;
-        usedLineIndexes.add(item.lineIndex);
         commandOrder.push(item.column);
         const role = csvRoleToTextRole(getCsvColumnRole(item.column));
         const renamed = setCommandLineName(item.cleanLine, item.column.name);
         lineByColumn.set(String(item.column.index), setTextCommandLineRole(renamed, role));
       });
       const out = [];
+      let rows;
+      function makeMissingLine(col) { return csvColumnToCommandLine(col, rows || (rows = getCsvDataRows())); }
       sourceLines.forEach(function(lineText, lineIndex){
         const assignment = assignments.find(function(item){ return item.lineIndex === lineIndex; });
         if (assignment && assignment.column) {
           const key = String(assignment.column.index);
-          out.push(lineByColumn.has(key) ? lineByColumn.get(key) : csvColumnToCommandLine(assignment.column));
+          out.push(lineByColumn.has(key) ? lineByColumn.get(key) : makeMissingLine(assignment.column));
           return;
         }
         if (String(lineText || '').trim()) out.push(lineText);
@@ -14223,7 +14221,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const key = String(col.index);
         if (lineByColumn.has(key)) return;
         commandOrder.push(col);
-        out.push(csvColumnToCommandLine(col));
+        out.push(makeMissingLine(col));
       });
       state.csvColumnOrder = commandOrder.map(function(col){ return col.index; });
       syncCsvCellDisplayOrder(commandOrder);
@@ -14929,8 +14927,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (!targetFrame) return;
       const tokens = Array.isArray(drag.tokensSnapshot) ? drag.tokensSnapshot : [];
       const previewFrame = findAvailableCellMoveFrame(tokens, targetFrame, drag.startFrame, drag.minFrame, drag.maxFrame);
+      const previousFrame = drag.previewFrame || drag.startFrame;
       if (previewFrame) drag.previewFrame = previewFrame;
-      updateCellTokenDragPreview(drag, drag.previewFrame || drag.startFrame);
+      const nextFrame = drag.previewFrame || drag.startFrame;
+      if (nextFrame !== previousFrame || !svg.querySelector('#cellTokenDragPreview')) updateCellTokenDragPreview(drag, nextFrame);
       suppressNextClickBriefly(300);
     }
 
@@ -16111,22 +16111,32 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       }) || null;
     }
 
+    // Connections belong to this ordered segment list, for one model/render call only.
+    // Keep the original first-match rule even for duplicate boundaries and cycles.
+    function prepareCameraConnections(segments) {
+      const connections = new Map();
+      segments.forEach(function(seg){
+        connections.set(seg, { before:findConnectedCameraBefore(seg, segments), after:findConnectedCameraAfter(seg, segments) });
+      });
+      return connections;
+    }
+
     // The whole connected run `seg` belongs to, collected by walking to the run's head and then to its tail with
     // the same connection rule the camera column draws with. The visited guard keeps degenerate data (a segment
     // that connects to itself through equal boundary labels) from looping forever.
-    function getCameraConnectedRunMembers(seg, segments) {
+    function getCameraConnectedRunMembers(seg, segments, connections) {
       if (!seg) return [];
       const visited = new Set([seg]);
       let cursor = seg;
       for (;;) {
-        const previous = findConnectedCameraBefore(cursor, segments);
+        const previous = connections ? connections.get(cursor).before : findConnectedCameraBefore(cursor, segments);
         if (!previous || visited.has(previous)) break;
         visited.add(previous);
         cursor = previous;
       }
       cursor = seg;
       for (;;) {
-        const next = findConnectedCameraAfter(cursor, segments);
+        const next = connections ? connections.get(cursor).after : findConnectedCameraAfter(cursor, segments);
         if (!next || visited.has(next)) break;
         visited.add(next);
         cursor = next;
@@ -16134,18 +16144,19 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return Array.from(visited);
     }
 
-    function getCameraConnectedRunLength(seg, segments) {
-      return getCameraConnectedRunMembers(seg, segments).length;
+    function getCameraConnectedRunLength(seg, segments, connections) {
+      return getCameraConnectedRunMembers(seg, segments, connections).length;
     }
 
     function isCameraGroupedRunLength(length) {
       return Number(length) >= CAMERA_GROUPED_RUN_MIN;
     }
 
-    function getCameraConnectionState(seg, segments) {
+    function getCameraConnectionState(seg, segments, connections) {
+      const linked = connections && connections.get(seg);
       return {
-        start:!!findConnectedCameraBefore(seg, segments),
-        end:!!findConnectedCameraAfter(seg, segments)
+        start:!!(linked ? linked.before : findConnectedCameraBefore(seg, segments)),
+        end:!!(linked ? linked.after : findConnectedCameraAfter(seg, segments))
       };
     }
 
@@ -16156,9 +16167,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     function assignCameraLanes(segments) {
       const sorted = segments.slice().sort(function(a,b){ return a.from - b.from || a.to - b.to; });
       const runs = [], seen = new Set();
+      const connections = prepareCameraConnections(sorted);
       sorted.forEach(function(seg){
         if (seen.has(seg)) return;
-        const members = getCameraConnectedRunMembers(seg, sorted);
+        const members = getCameraConnectedRunMembers(seg, sorted, connections);
         let from = seg.from, to = seg.to;
         members.forEach(function(member){
           seen.add(member);
@@ -16198,12 +16210,12 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
 
     // ══ 카메라란 ② 출력 표기 — 마크 · 원 라벨 · 持続線 곡선 · F.I/F.O/O.L 쐐기 ═══════════════════════════════════════════
-    function getCameraMarkerStyle(seg, segments) {
+    function getCameraMarkerStyle(seg, segments, connections) {
       if (!seg || getCameraSpecialShapeInfo(seg)) return '';
       const style = normalizeCameraMarkerToken(seg.previewStyle) || '▲';
       // Coerced at READ time only: the stored ▲ survives, so shortening the run below CAMERA_GROUPED_RUN_MIN
       // brings the triangle back instead of having silently rewritten the user's choice.
-      if (style === '▲' && isCameraGroupedRunLength(getCameraConnectedRunLength(seg, segments))) return '-';
+      if (style === '▲' && isCameraGroupedRunLength(getCameraConnectedRunLength(seg, segments, connections))) return '-';
       return style;
     }
 
@@ -17057,8 +17069,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       }
       event.preventDefault();
       event.stopPropagation();
+      const previousIndex = drag.currentIndex;
       drag.currentIndex = getCellLabelDragTargetIndex(event, drag.labelArea, drag.entries.length);
-      updateCellLabelDragPreview();
+      if (drag.currentIndex !== previousIndex || !svg.querySelector('#cellLabelDragPreview')) updateCellLabelDragPreview();
     }
 
     function endCellLabelDrag(event) {
@@ -18070,22 +18083,22 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     // ══ 시트 렌더 ③ 블록 기하: 행/열 좌표와 원화·대사·카메라·동화 영역 ═══════════════════════════════════════════════════════
-    function getOutputRowH(block, laneKind) {
+    function getOutputRowGeometry(block, laneKind) {
       let area;
       if (laneKind === 'dialog') area = getDialogArea(block);
       else if (laneKind === 'camera') area = getCameraArea(block);
       else area = getCellArea(block);
       const frameCount = Math.max(1, (block.end && block.start) ? (block.end - block.start + 1) : (block.frameCount || 72));
-      return Math.max(2, area.h / frameCount);
+      return { area:area, rowH:Math.max(2, area.h / frameCount) };
+    }
+
+    function getOutputRowH(block, laneKind) {
+      return getOutputRowGeometry(block, laneKind).rowH;
     }
 
     function getOutputRowTop(block, frame, laneKind) {
-      let area;
-      if (laneKind === 'dialog') area = getDialogArea(block);
-      else if (laneKind === 'camera') area = getCameraArea(block);
-      else area = getCellArea(block);
-      const rowH = getOutputRowH(block, laneKind);
-      return area.y + (frame - block.start) * rowH;
+      const geometry = getOutputRowGeometry(block, laneKind);
+      return geometry.area.y + (frame - block.start) * geometry.rowH;
     }
 
     function getCellArea(block) {
@@ -18490,16 +18503,19 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     function renderRangeSegments(block, dialogSegs, cameraSegs, dialogLaneCount, cameraLaneCount) {
       withDrawLayer('output', function(){
+      const dialogRows = getOutputRowGeometry(block, 'dialog'), cameraRows = getOutputRowGeometry(block, 'camera');
+      const dialogArea = dialogRows.area, dialogRowH = dialogRows.rowH;
+      const cameraArea = cameraRows.area, cameraRowH = cameraRows.rowH;
+      const cameraConnections = prepareCameraConnections(cameraSegs);
       dialogSegs.forEach(function(seg){
         if (isSilentDialogBlock(seg)) return;
         const from = Math.max(seg.from, block.start);
         const to = Math.min(seg.to, block.end);
         if (to < from) return;
-        const rowTop = getOutputRowTop(block, from, 'dialog');
-        const height = (to - from + 1) * getOutputRowH(block, 'dialog');
+        const rowTop = (dialogArea.y + (from - block.start) * dialogRowH);
+        const height = (to - from + 1) * dialogRowH;
         const showsSegmentStart = seg.from >= block.start && seg.from <= block.end;
         const showsSegmentEnd = seg.to >= block.start && seg.to <= block.end;
-        const dialogArea = getDialogArea(block);
         const x = dialogArea.x;
         const w = dialogArea.w;
         const dialogLaneBounds = getDistributedLaneBounds(x, w, seg.lane || 0, dialogLaneCount, 12);
@@ -18507,14 +18523,14 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         if (showsSegmentStart) line(dialogLaneBounds.x, rowTop, dialogLaneBounds.x + dialogLaneBounds.w, rowTop, RED, 2.6);
         if (showsSegmentEnd) line(dialogLaneBounds.x, rowTop + height, dialogLaneBounds.x + dialogLaneBounds.w, rowTop + height, RED, 2.6);
         line(guideX, rowTop, guideX, rowTop + height, RED, 1.1);
-        const chars = getTimelineCharSlice(seg.text, seg.from, seg.to, from, to, getOutputRowH(block, 'dialog'));
+        const chars = getTimelineCharSlice(seg.text, seg.from, seg.to, from, to, dialogRowH);
         drawDialogTextSlice(x, w, rowTop, seg.lane || 0, dialogLaneCount, chars, { get:function(){ return seg.text || ''; }, set:function(v){ updateManualBlockField('dialog', seg.id, 'text', v); } });
         if (showsSegmentStart) addTimelineEdgeHandle(block, rowTop, 'dialog', seg, 'from', dialogLaneBounds.x, dialogLaneBounds.w);
         if (showsSegmentEnd) addTimelineEdgeHandle(block, rowTop + height, 'dialog', seg, 'to', dialogLaneBounds.x, dialogLaneBounds.w);
         if (showsSegmentStart) {
           const speakerInfo = splitDialogSpeakerSuffix(seg.label);
           const visibleDialogLabel = isBlankDialogFirstFrameLabel(speakerInfo.base) ? '' : speakerInfo.base;
-          if (visibleDialogLabel) drawTimelineFirstFrameLabel(x, w, rowTop, getOutputRowH(block, 'dialog'), seg.lane || 0, dialogLaneCount, visibleDialogLabel, {
+          if (visibleDialogLabel) drawTimelineFirstFrameLabel(x, w, rowTop, dialogRowH, seg.lane || 0, dialogLaneCount, visibleDialogLabel, {
             get:function(){ return getDialogSpeakerBaseLabel(seg.id, seg.label); },
             set:function(v){ updateDialogSpeakerBaseLabel(seg.id, v); },
             speakerSuffix:{
@@ -18531,12 +18547,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const from = Math.max(seg.from, block.start);
         const to = Math.min(seg.to, block.end);
         if (to < from) return;
-        const rowTop = getOutputRowTop(block, from, 'camera');
-        const height = (to - from + 1) * getOutputRowH(block, 'camera');
-        const rowH = getOutputRowH(block, 'camera');
+        const rowTop = (cameraArea.y + (from - block.start) * cameraRowH);
+        const height = (to - from + 1) * cameraRowH;
+        const rowH = cameraRowH;
         const showsSegmentStart = seg.from >= block.start && seg.from <= block.end;
         const showsSegmentEnd = seg.to >= block.start && seg.to <= block.end;
-        const cameraArea = getCameraArea(block);
         const x = cameraArea.x;
         const w = cameraArea.w;
         const cameraLaneBounds = getDistributedLaneBounds(x, w, seg.lane || 0, cameraLaneCount, 12);
@@ -18544,9 +18559,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const cameraShapeInfo = getCameraSpecialShapeInfo(seg);
         const cameraShape = cameraShapeInfo ? cameraShapeInfo.shape : '';
         const cameraTargetShape = isCameraTargetShapeSegment(seg, cameraShapeInfo);
-        const cameraMarkerStyle = getCameraMarkerStyle(seg, cameraSegs);
+        const cameraMarkerStyle = getCameraMarkerStyle(seg, cameraSegs, cameraConnections);
         const withinCutOl = getWithinCutOlInfo(seg);
-        const cameraConnection = getCameraConnectionState(seg, cameraSegs);
+        const cameraConnection = getCameraConnectionState(seg, cameraSegs, cameraConnections);
         let cameraStartEdgeGuide = null;
         let cameraEndEdgeGuide = null;
         if (!cameraConnection.start && showsSegmentStart) {
@@ -18582,7 +18597,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           drawCameraMarkerEndpoint(x, w, rowTop, rowH, seg.lane || 0, cameraLaneCount, cameraMarkerStyle, 'start', seg.label);
         }
         if (!withinCutOl && !cameraTargetShape && seg.endLabel && showsSegmentEnd) {
-          const endRowTop = getOutputRowTop(block, seg.to, 'camera');
+          const endRowTop = (cameraArea.y + (seg.to - block.start) * cameraRowH);
           drawCameraMarkerEndpoint(x, w, endRowTop, rowH, seg.lane || 0, cameraLaneCount, cameraMarkerStyle, 'end', seg.endLabel);
         }
         if (showsSegmentStart) addTimelineEdgeHandle(block, rowTop, 'camera', seg, 'from', cameraLaneBounds.x, cameraLaneBounds.w, cameraStartEdgeGuide);
@@ -19149,10 +19164,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return next;
     }
 
-    function addRepeatContinuationDotHit(entry, baseLayer, frame, bounds, block, columnIndex) {
+    function addRepeatContinuationDotHit(entry, baseLayer, frame, bounds, block, columnIndex, geometry) {
       if (!entry || !baseLayer || currentSvgTarget !== svg || state.memoMode || state.positionMode || state.textMemoEditMode || state.shakuMode) return;
-      const rowTop = getOutputRowTop(block, frame, 'cell');
-      const rowH = getOutputRowH(block, 'cell');
+      const rowH = geometry.rowH;
+      const rowTop = geometry.area.y + (frame - block.start) * rowH;
       const hit = el('rect', { x:bounds.x1, y:rowTop, width:bounds.x2 - bounds.x1, height:rowH, fill:'transparent', stroke:'transparent', 'pointer-events':'all' });
       hit.style.cursor = 'pointer';
       markCellFrameHit(hit);
@@ -19177,6 +19192,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     function renderRepeatContinuations(block, layout, durationFrame, explicitDurationFrame, interactive) {
       withDrawLayer('output', function(){
+      const geometry = getOutputRowGeometry(block, 'cell');
       layout.layers.forEach(function(layer){
         const columnIndex = layout.originalEntries.findIndex(function(entry){ return entry.uid === layer.uid; });
         if (columnIndex === -1) return;
@@ -19195,12 +19211,12 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           const fromFrame = Math.max(mark.frame + 1, block.start);
           const toFrame = Math.min(targetFrame || 0, block.end);
           if (toFrame < fromFrame) return;
-          const y1 = getOutputRowTop(block, fromFrame, 'cell') + 1.5;
-          const y2 = getOutputRowTop(block, toFrame + 1, 'cell') - 1.5;
+          const y1 = (geometry.area.y + (fromFrame - block.start) * geometry.rowH) + 1.5;
+          const y2 = (geometry.area.y + (toFrame + 1 - block.start) * geometry.rowH) - 1.5;
           line(xCenter, y1, xCenter, y2, '#111', 1);
           if (interactive !== false) {
             for (let frame = fromFrame; frame <= toFrame; frame++) {
-              addRepeatContinuationDotHit(entry, baseLayer, frame, bounds, block, columnIndex);
+              addRepeatContinuationDotHit(entry, baseLayer, frame, bounds, block, columnIndex, geometry);
             }
           }
         });
@@ -19261,6 +19277,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const targetDuration = Math.round(Number(durationFrame) || 0);
       if (!targetDuration || targetDuration < block.start) return;
       withDrawLayer('output', function(){
+        const geometry = getOutputRowGeometry(block, 'cell'), rowH = geometry.rowH;
         (originalEntries || []).forEach(function(entry, columnIndex){
           if (!entry || !entry.isActual || !layersById || !layersById.has(entry.uid)) return;
           const layer = layersById.get(entry.uid);
@@ -19280,17 +19297,13 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           const bounds = getOutputCellBounds(block, columnIndex);
           const xCenter = (bounds.x1 + bounds.x2) / 2;
           // 블록 안 경로(renderBlock 의 seg 분기)와 같은 규칙: 직접 넣은 × 는 검정, 자동으로 붙는 선두 × 만 빨강.
-          // 2026-08-11: lastIsExplicitCross 가 선언만 돼 있고 안 쓰여서 이 경로만 전부 빨강이었다 — 같은 판정이 두 벌이었다.
           const strokeColor = lastSeg.kind === 'cross' ? (lastIsExplicitCross ? '#111' : RED) : '#111';
           const strokeWidth = lastSeg.kind === 'cross' ? 1.4 : 1;
           for (let frame = fromFrame; frame <= toFrame; frame++) {
             if (previewEndFrame && frame === previewEndFrame) continue;
-            const rowTop = getOutputRowTop(block, frame, 'cell');
-            const rowH = getOutputRowH(block, 'cell');
+            const rowTop = geometry.area.y + (frame - block.start) * rowH;
             const y1 = rowTop + 1.5;
             const y2 = rowTop + rowH - 1.5;
-            // (2026-08-11) 여기 있던 `if (frame === lastSeg.to)` y1 보정은 도달할 수 없어 지웠다 —
-            // fromFrame = max(block.start, lastSeg.to + 1) 이라 frame 은 항상 lastSeg.to 보다 크다.
             if (y2 > y1) renderCellContinuationLine(xCenter, y1, y2, strokeColor, strokeWidth, lastSeg.kind === 'cross');
           }
         });
@@ -21978,10 +21991,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     function getEditorHistorySnapshot(previous) {
-      const content = getContentSnapshot(), paper = getPaperStateSnapshot(), source = readSheetState('historySource'), inputs = readSheetInputs(SHEET_MODE_INPUTS), memo = {}, text = {}, images = {};
+      const content = getContentSnapshot(), paper = readPaperData(), source = readSheetState('historySource'), inputs = readSheetInputs(SHEET_MODE_INPUTS), memo = {}, text = {}, images = {};
       // Tool mode and generated empty page buckets are navigation, not edits.
-      delete paper.positionMode;
-      delete paper.autoAlignResult; delete paper.autoAlignOverlay;
       Object.keys(state.memoPages || {}).forEach(function(key){ const strokes = state.memoPages[key].strokes; if (strokes && strokes.length) memo[key] = { strokes:strokes, redo:[] }; });
       Object.keys(state.textMemoPages || {}).forEach(function(key){ if (state.textMemoPages[key].length) text[key] = state.textMemoPages[key]; });
       Object.keys(state.pastedImages || {}).forEach(function(key){ if (state.pastedImages[key].length) images[key] = state.pastedImages[key]; });
@@ -22572,19 +22583,22 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return resized;
     }
 
-    function populateMemoSizeSelect(selectEl, options, value) {
+    function syncMemoSizeSelect(selectEl, options, value) {
       if (!selectEl) return;
-      selectEl.innerHTML = options.map(function(size){
-        return '<option value="' + size + '">' + size + 'px</option>';
-      }).join('');
+      // Size choices are fixed; tool/state updates only change the selection.
+      if (!selectEl.options.length) {
+        selectEl.innerHTML = options.map(function(size){
+          return '<option value="' + size + '">' + size + 'px</option>';
+        }).join('');
+      }
       selectEl.value = String(value);
     }
 
     function syncMemoSizeSelects() {
       if (!MEMO_PEN_SIZES.includes(Number(state.memoPenSize))) state.memoPenSize = MEMO_PEN_SIZES[0];
       if (!MEMO_ERASER_SIZES.includes(Number(state.memoEraserSize))) state.memoEraserSize = 100;
-      populateMemoSizeSelect(memoPenSizeSelectEl, MEMO_PEN_SIZES, state.memoPenSize);
-      populateMemoSizeSelect(memoEraserSizeSelectEl, MEMO_ERASER_SIZES, state.memoEraserSize);
+      syncMemoSizeSelect(memoPenSizeSelectEl, MEMO_PEN_SIZES, state.memoPenSize);
+      syncMemoSizeSelect(memoEraserSizeSelectEl, MEMO_ERASER_SIZES, state.memoEraserSize);
     }
 
     // ══ 프리뷰 뷰 변환 — 자유 줌·팬 클램프 · 휠/핀치 줌 ═════════════════════════════════════════════════════════════════════════════
@@ -22643,7 +22657,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (sheetStageEl) sheetStageEl.style.transform = 'translate(' + (Number(state.viewPanX) || 0) + 'px, ' + (Number(state.viewPanY) || 0) + 'px) scale(' + zoom + ')';
       if (previewWrapEl) previewWrapEl.classList.toggle('zoomed', zoom > 1.001);
       if (zoomResetBtn) zoomResetBtn.textContent = Math.round(zoom * 100) + '%';
-      redrawMemoCanvas();
+      // The fixed-resolution memo bitmap moves with sheetStage's CSS transform.
       updateSheetSideStackPosition();
     }
 
@@ -23863,8 +23877,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     function decodePsdLayerToCanvas(record) {
       if (!record || record.hidden || !record.width || !record.height) return null;
-      const empty = new Uint8Array(2 + record.width * record.height);
-      const r = decodePsdChannel(record.channelData[0] || record.channelData[-1] || empty, record.width, record.height, false);
+      const source = record.channelData[0] || record.channelData[-1] || new Uint8Array(2 + record.width * record.height);
+      const r = decodePsdChannel(source, record.width, record.height, false);
       const g = record.channelData[1] ? decodePsdChannel(record.channelData[1], record.width, record.height, false) : r;
       const b = record.channelData[2] ? decodePsdChannel(record.channelData[2], record.width, record.height, false) : r;
       const a = record.channelData[-1] ? decodePsdChannel(record.channelData[-1], record.width, record.height, false) : null;
@@ -24385,7 +24399,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           (interps && (!Array.isArray(interps) || interps.length !== ticks.length))) throw new Error('BINC curve metadata count');
       return {ticks:ticks, values:values, tags:tags, interps:interps};
     }
-    async function clipReadCelKeyframes(u8, tracksByUuid, extaList, externalChunkRows, layerUuid, fps) {
+    async function clipReadCelKeyframes(u8, tracksByUuid, extaList, layerUuid, fps) {
       var tree = await clipTrackCurveTree(u8, tracksByUuid[String(layerUuid || '').toLowerCase()], extaList);
       if (!tree) return null;
       var keys = [];
@@ -24718,7 +24732,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         db: db,
         u8: u8,
         extaList: clipIterateChunks(u8).filter(function(c) { return c.name === 'Exta'; }),
-        externalChunkRows: db.readTable('ExternalChunk') || [],
         timelines: clipSheetTimelines(db)
       };
     }
@@ -24737,7 +24750,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         // 해독하지 못한 것을 빈 셀로 넘기면 시트가 조용히 빈 채로 들어온다.
         // 노출이 없는 트랙(null)과 읽다 실패한 것(예외)을 갈라 두고, 실패는 창에 이유를 보인다.
         try {
-          const keys = await clipReadCelKeyframes(ctx.u8, tracksByUuid, ctx.extaList, ctx.externalChunkRows, item.uuid, fps);
+          const keys = await clipReadCelKeyframes(ctx.u8, tracksByUuid, ctx.extaList, item.uuid, fps);
           if (keys) {
             item.keys = keys;
             item.inbetweenFrames = clipReadInbetweenFrames(ctx.timelineLabelsById, tracksByUuid[String(item.uuid || '').toLowerCase()]);
@@ -27117,7 +27130,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         undo: (state.contentUndoStack || []).slice(),
         redo: (state.contentRedoStack || []).slice(),
         baseline: contentHistoryBaseline,
-        // 헤더는 위의 content 스냅샷에 없다 — 따로 찍어야 실패 복구가 여기까지 닿는다.
+        // 실패 시 화면과 저장된 헤더 기억을 함께 되돌리기 위한 입력값이다.
         header: SHEET_HEADER_INPUTS.reduce(function(acc, id) { acc[id] = getSheetInputValue(id); return acc; }, {})
       };
       try {
@@ -27603,7 +27616,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const item = (state.loadedSettingsFiles || []).find(function(entry){ return entry && entry.id === id; });
       if (!item) return false;
       try {
-        applyCurrentSettingsPayload(JSON.parse(JSON.stringify(item.payload)));
+        applyCurrentSettingsPayload(item.payload);
         loadedSettingsSelectedId = item.id;
         refreshLoadedSettingsSelect();
         const omitted = !!(item.payload && item.payload.imagesOmitted);
@@ -29057,12 +29070,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     });
     if (globalUndoBtn) globalUndoBtn.addEventListener('click', function(){ contentUndo(); });
     if (globalRedoBtn) globalRedoBtn.addEventListener('click', function(){ contentRedo(); });
-    if ('ResizeObserver' in window) {
-      const memoResizeObserver = new ResizeObserver(function(){ redrawMemoCanvas(); });
-      memoResizeObserver.observe(sheetStageEl);
-    } else {
-      window.addEventListener('resize', redrawMemoCanvas);
-    }
     prevPageBtn.addEventListener('click', function(){
       if (state.currentPreviewPage > 0) {
         state.currentPreviewPage -= 1;
