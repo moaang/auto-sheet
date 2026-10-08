@@ -2595,7 +2595,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '946';
+    const APP_VERSION = '947';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3882,6 +3882,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver947", "CLIP inbetween marks", ["Import inbetween marks from CLIP timelines while preserving cel exposures."]],
         ["ver946", "Dialogue lane boundaries", ["Dialogue and SE start/end lines now stay within their own timesheet lanes."]],
         ["ver945", "PSD paper layer preview", ["Automatically includes small header and ruler layers. Review the selected paper layers before importing; thin camera borders are detected more reliably."]],
         ["ver944", "Match CSV and CLIP sheet imports", ["CSV imports now keep holds through the final frame. CLIP imports apply dialogue and camera tracks, and CSV imports can confirm work information from the file name."]],
@@ -3977,6 +3978,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver947", "CLIPの動画マーク", ["CLIPタイムラインの動画マークを、セルの表示期間を保ったまま読み込むようにしました。"]],
         ["ver946", "セリフ欄の境界線", ["タイムシートのセリフとSEが並ぶとき、開始・終了線が隣のレーンを横切らないようにしました。"]],
         ["ver945", "PSD用紙のレイヤープレビュー", ["小さな見出しや目盛りも用紙として自動選択します。読み込み前に用紙レイヤーを確認・変更でき、細いカメラ欄の境界も改善しました。"]],
         ["ver944", "CSVとCLIPのシート読み込みを統一", ["CSVの最後のフレームまでセルの保持を反映します。CLIPのセリフ・カメラを反映し、CSVでもファイル名から作品情報を確認できます。"]],
@@ -4072,6 +4074,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver947", "CLIP 동화점", ["CLIP 타임라인의 동화점을 셀 노출 길이를 유지하며 불러옵니다."]],
         ["ver946", "대사 레인 경계선", ["타임시트에서 대사와 SE가 나란히 있을 때 시작·끝 선이 옆 레인을 가로지르지 않도록 수정했습니다."]],
         ["ver945", "PSD 용지 레이어 미리보기", ["작은 머리글·눈금도 용지로 자동 선택합니다. 불러오기 전에 용지 레이어를 확인·변경할 수 있고, 얇은 카메라 칸 테두리 인식을 개선했습니다."]],
         ["ver944", "CSV·CLIP 시트 불러오기 일치", ["CSV의 마지막 프레임까지 셀 유지를 반영합니다. CLIP의 대사·카메라 적용을 고치고 CSV에서도 파일명의 작품 정보를 확인할 수 있습니다."]],
@@ -4167,6 +4170,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver947", "CLIP中间画标记", ["导入CLIP时间轴的中间画标记，并保持赛璐珞曝光时长不变。"]],
         ["ver946", "台词轨道边界", ["台词与SE并列时，时间表的起止线不再横穿相邻轨道。"]],
         ["ver945", "PSD纸张图层预览", ["自动选择小标题和刻度图层。导入前可确认和调整纸张图层，并改善细摄影栏边框的识别。"]],
         ["ver944", "统一CSV与CLIP时表导入", ["CSV保留到最后一帧的曝光。修正CLIP对白和摄影轨道的应用，并可在CSV导入时确认文件名中的作品信息。"]],
@@ -24597,8 +24601,16 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return entries;
     }
 
-    function clipSheetKeysToTokens(keys, duration) {
-      return sheetSparseEntriesToTokens(clipSheetKeysToEntries(keys, duration), duration);
+    function clipSheetKeysToTokens(keys, duration, inbetweenFrames) {
+      const tokens = sheetSparseEntriesToTokens(clipSheetKeysToEntries(keys, duration), duration);
+      // CLIP labels are independent of exposure keys. Mark held frames without splitting,
+      // renaming or extending a drawing. A start/blank frame cannot replace a cel label.
+      (inbetweenFrames || []).forEach(function(frame){
+        if (tokens[frame] === 'n' && keys.some(function(key){
+          return !key.mark && key.komaName && frame > key.frame && frame < key.endFrame;
+        })) tokens[frame] = 'dot';
+      });
+      return tokens;
     }
 
     // CSP 에서 코마를 「A01」처럼 셀 문자와 0 을 붙여 적는 사람이 있다. 시트에는 1·2·3 으로 적는다.
@@ -24677,11 +24689,32 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       });
     }
 
+    // TimeLineLabel is a separate track-owned chain, not an ImageCelName BINC curve.
+    // LabelType=1 is the verified hollow inbetween mark; other types are not inferred.
+    function clipReadInbetweenFrames(labelsById, track) {
+      const frames = new Set(), seen = new Set();
+      let id = track && track.TrackLabelFirstIndex;
+      while (id) {
+        const label = labelsById[id];
+        if (!label || seen.has(id) || label.TrackId !== track.MainId) throw new Error('Invalid CLIP track label chain');
+        seen.add(id);
+        if (label.LabelType === 1) {
+          if (!Number.isSafeInteger(label.LabelFrame)) throw new Error('Invalid CLIP inbetween frame');
+          frames.add(label.LabelFrame);
+        }
+        id = label.LabelNextIndex;
+      }
+      return Array.from(frames).sort(function(a,b){ return a-b; });
+    }
+
     // 파일 한 벌을 읽어 창이 쓸 재료를 만든다. 타임라인마다 따로 읽는다(하나의 파일에 여러 벌이 있다).
     function clipSheetOpenFile(arrayBuffer) {
       const db = openClipSqlite(arrayBuffer);
       const u8 = new Uint8Array(arrayBuffer);
+      const timelineLabelsById = Object.create(null);
+      (db.readTable('TimeLineLabel') || []).forEach(function(label){ timelineLabelsById[label.MainId] = label; });
       return {
+        timelineLabelsById: timelineLabelsById,
         db: db,
         u8: u8,
         extaList: clipIterateChunks(u8).filter(function(c) { return c.name === 'Exta'; }),
@@ -24698,14 +24731,17 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       for (let i = 0; i < items.length; i++) {
         const item = items[i];
         item.keys = [];
+        item.inbetweenFrames = [];
         item.failure = '';
         if (item.kind !== 'cel') continue;
         // 해독하지 못한 것을 빈 셀로 넘기면 시트가 조용히 빈 채로 들어온다.
         // 노출이 없는 트랙(null)과 읽다 실패한 것(예외)을 갈라 두고, 실패는 창에 이유를 보인다.
         try {
           const keys = await clipReadCelKeyframes(ctx.u8, tracksByUuid, ctx.extaList, ctx.externalChunkRows, item.uuid, fps);
-          if (keys) item.keys = keys;
-          else item.failure = 'empty';
+          if (keys) {
+            item.keys = keys;
+            item.inbetweenFrames = clipReadInbetweenFrames(ctx.timelineLabelsById, tracksByUuid[String(item.uuid || '').toLowerCase()]);
+          } else item.failure = 'empty';
         } catch (err) {
           item.failure = String((err && err.message) || err);
         }
@@ -24746,7 +24782,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         if (!pick || !pick.checked) return;
         const tokens = item.kind === 'cel'
           // 해독은 파일에 적힌 그대로 두고(검사기가 그것을 원문과 견준다) 라벨만 여기서 다듬는다.
-          ? clipSheetKeysToTokens(item.keys, read.duration).map(function(token) {
+          ? clipSheetKeysToTokens(item.keys, read.duration, item.inbetweenFrames).map(function(token) {
               if (isCommandControlToken(token)) return token;
               return clipSheetKomaLabelOf(pick, item.name, token, tidyNumbers);
             })
