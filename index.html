@@ -2447,12 +2447,12 @@
         </div>
         <label for="cellInputMode" data-ui-text="inputModeLabel">Input Mode</label>
         <select id="cellInputMode" class="input-mode-select-hidden" aria-hidden="true" tabindex="-1">
-          <option value="text" selected data-ui-text="inputModeTextCommands">Text Commands</option>
-          <option value="csv" data-ui-text="inputModeCsv">CSV Upload</option>
+          <option value="text" selected data-ui-text="inputModeTextCommands">Edit</option>
+          <option value="csv" data-ui-text="inputModeCsv">Import file</option>
         </select>
         <div id="cellInputModeButtons" class="input-mode-button-row" role="tablist" aria-label="Input Mode">
-          <button class="input-mode-btn active" type="button" data-input-mode="text" data-ui-text="inputModeTextCommands" role="tab" aria-selected="true">Text Commands</button>
-          <button class="input-mode-btn" type="button" data-input-mode="csv" data-ui-text="inputModeCsv" role="tab" aria-selected="false">CSV Upload</button>
+          <button class="input-mode-btn active" type="button" data-input-mode="text" data-ui-text="inputModeTextCommands" role="tab" aria-selected="true">Edit</button>
+          <button class="input-mode-btn" type="button" data-input-mode="csv" data-ui-text="inputModeCsv" role="tab" aria-selected="false">Import file</button>
         </div>
         <a id="tvpPanelDownload" class="tvp-download-chip" href="AutoSheet.tvpx" download="AutoSheet.tvpx">
           <svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 4v10m0 0 4-4m-4 4-4-4M5 18.5h14"/></svg>
@@ -2460,6 +2460,7 @@
         </a>
         <button id="cellSettingsBtn" class="toolbar-btn" type="button">Cell / BOOK</button>
         <div id="textModeBox" class="mode-box">
+          <div id="textCommandBox">
           <label for="timelineCommandInput" data-ui-text="textCommandsLabel">Text Commands</label>
           <label class="command-filter-toggle">
             <input id="textCommandCellViewToggle" type="checkbox" />
@@ -2471,11 +2472,23 @@
           <div class="guide-target-section">
           <div id="textCommandColumnPicker" class="checkbox-list"></div>
           </div>
+          </div>
+          <div id="csvCommandBox" class="hidden">
+          <label for="csvCommandEdit" style="margin-top:10px;" data-ui-text="csvCommandEditLabel">Editable Commands from CSV</label>
+          <label class="command-filter-toggle">
+            <input id="csvCommandCellViewToggle" type="checkbox" />
+            <span data-ui-text="hideNonCellCommandsLabel">Hide non-Cell commands</span>
+          </label>
+          <textarea id="csvCommandEdit"></textarea>
+          <textarea id="csvCommandCellView" class="hidden" spellcheck="false"></textarea>
+          <div id="csvEditHelp" class="hint"></div>
+          </div>
         </div>
 
         <div id="csvModeBox" class="mode-box hidden">
-          <label for="csvFileInput" data-ui-text="csvFileLabel">CSV File</label>
-          <input id="csvFileInput" type="file" accept=".csv,text/csv" />
+          <label id="sheetFileDropZone" class="paper-file-drop" for="csvFileInput" data-ui-text="csvFileLabel">CLIP / TVPaint / CSV / XDTS</label>
+          <input id="csvFileInput" class="hidden" type="file" accept=".clip,.tvpp,.csv,.xdts,text/csv" />
+          <div id="csvImportDetails" class="hidden">
           <div id="csvSourceInfo" class="csv-source-info" aria-live="polite"></div>
           <button id="csvReadSettingsBtn" class="toolbar-btn" type="button" data-ui-text="csvReadSettings" disabled>CSV read settings</button>
           <div class="csv-settings-actions">
@@ -2485,15 +2498,9 @@
           <div class="guide-target-section">
           <div id="csvColumnPicker" class="checkbox-list"></div>
           </div>
-          <label for="csvCommandEdit" style="margin-top:10px;" data-ui-text="csvCommandEditLabel">Editable Commands from CSV</label>
-          <label class="command-filter-toggle">
-            <input id="csvCommandCellViewToggle" type="checkbox" />
-            <span data-ui-text="hideNonCellCommandsLabel">Hide non-Cell commands</span>
-          </label>
-          <textarea id="csvCommandEdit"></textarea>
-          <textarea id="csvCommandCellView" class="hidden" spellcheck="false"></textarea>
-          <div id="csvEditHelp" class="hint"></div>
+
           <div id="csvHelp" class="hint"></div>
+          </div>
         </div>
         <div class="shaku-edit-row">
           <button id="shakuEditBtn" class="shaku-edit-btn" type="button" data-ui-text="shakuEditBtn">尺編集</button>
@@ -2595,7 +2602,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '952';
+    const APP_VERSION = '953';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3181,8 +3188,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     const uiTexts = {
       en: {
         languageLabel:'Language', headerCardTitle:'Header', episodeLabel:'Ep.no', titleLabel:'Title', cutNoLabel:'Cut.no', secondsLabel:'Duration sec', framesLabel:'Duration frame', authorLabel:'name', pageLabel:'Page',
-        originalCellTitle:'Sheet Input', inputModeLabel:'Input Mode', inputModeTextCommands:'Text Commands', inputModeCsv:'CSV Upload', csvReadSettings:'CSV read settings', tvpPanelDownload:'TVPaint panel', csvSettingsExportBtn:'Save Project', shakuEditBtn:'Length Edit', shakuEditHint:'Drag a blue frame line to select a range.', shakuCutBtn:'Cut', shakuStretchBtn:'Extend', shakuUndoBtn:'Undo', shakuRedoBtn:'Redo', shakuFlashCut:'Cut applied', shakuFlashStretch:'Extend applied', dougaSheetCreate:'Make Douga', dougaSheetRefresh:'Refresh Douga', dougaSheetTitle:'Generate a read-only douga sheet from Cell numbers and dot marks', cellReadabilityTitle:'Large Cell text',
-        textCommandsLabel:'Text Commands', csvFileLabel:'CSV File', csvCommandEditLabel:'Editable Commands from CSV',
+        originalCellTitle:'Sheet Input', inputModeLabel:'Input Mode', inputModeTextCommands:'Edit', inputModeCsv:'Import file', csvReadSettings:'CSV read settings', tvpPanelDownload:'TVPaint panel', csvSettingsExportBtn:'Save Project', shakuEditBtn:'Length Edit', shakuEditHint:'Drag a blue frame line to select a range.', shakuCutBtn:'Cut', shakuStretchBtn:'Extend', shakuUndoBtn:'Undo', shakuRedoBtn:'Redo', shakuFlashCut:'Cut applied', shakuFlashStretch:'Extend applied', dougaSheetCreate:'Make Douga', dougaSheetRefresh:'Refresh Douga', dougaSheetTitle:'Generate a read-only douga sheet from Cell numbers and dot marks', cellReadabilityTitle:'Large Cell text',
+        textCommandsLabel:'Text Commands', csvFileLabel:'CLIP / TVPaint · Choose or drop a file', csvCommandEditLabel:'Editable Commands from CSV',
         dialogBlocksTitle:'Dialog Area', dialogFormatLabel:'Ex: 0+01 | 1+00 | speaker | line  (start | end | who | what)', cameraBlocksTitle:'Camera Area', cameraFormatLabel:'Ex: 0+01 | 1+00 | A | PAN | B  (start | end | from | move | to)', cameraExamplesTitle:'Examples',
         cameraExPan:'pan (A → B)', cameraExTu:'track up / push in', cameraExFi:'fade in', cameraExOl:'overlap (switch)',
         sheetPreviewTitle:'Sheet Preview', chooseExportDirBtn:"Output folder", downloadAllBtn:"Export", memoModeBtn:'Memo Mode', cameraToMemoBtn:'Camera→Memo', memoPenLabel:'Pen', memoEraserLabel:'Eraser', memoRightClickNoticeL1:'Right-click the memo area', memoRightClickNoticeL2:'to create / edit a text box', cellReadabilityNotice:'← Enlarge the genga numbers (cell digits)',
@@ -3190,8 +3197,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       },
       ja: {
         languageLabel:'言語', headerCardTitle:'ヘッダー', episodeLabel:'話数', titleLabel:'タイトル', cutNoLabel:'カット番号', secondsLabel:'尺 秒', framesLabel:'尺 コマ', authorLabel:'名前', pageLabel:'ページ',
-        originalCellTitle:'シート入力', inputModeLabel:'入力モード', inputModeTextCommands:'テキストコマンド', inputModeCsv:'CSV読込', csvReadSettings:'CSV読み込み設定', tvpPanelDownload:'TVPaint用パネル', csvSettingsExportBtn:'プロジェクト保存', shakuEditBtn:'尺編集(演出向け)', shakuEditHint:'青いフレーム線をドラッグして尺を選択', shakuCutBtn:'切る', shakuStretchBtn:'伸ばす', shakuUndoBtn:'取り消し', shakuRedoBtn:'やり直し', shakuFlashCut:'切る 反映', shakuFlashStretch:'伸ばす 反映', dougaSheetCreate:'動画作成', dougaSheetRefresh:'動画更新', dougaSheetTitle:'Cell番号と動画点から編集不可の動画欄を生成', cellReadabilityTitle:'Cell文字を大きく表示',
-        textCommandsLabel:'テキストコマンド', csvFileLabel:'CSVファイル', csvCommandEditLabel:'CSVから生成された編集可能コマンド',
+        originalCellTitle:'シート入力', inputModeLabel:'入力モード', inputModeTextCommands:'直接入力', inputModeCsv:'ファイル読込', csvReadSettings:'CSV読み込み設定', tvpPanelDownload:'TVPaint用パネル', csvSettingsExportBtn:'プロジェクト保存', shakuEditBtn:'尺編集(演出向け)', shakuEditHint:'青いフレーム線をドラッグして尺を選択', shakuCutBtn:'切る', shakuStretchBtn:'伸ばす', shakuUndoBtn:'取り消し', shakuRedoBtn:'やり直し', shakuFlashCut:'切る 反映', shakuFlashStretch:'伸ばす 反映', dougaSheetCreate:'動画作成', dougaSheetRefresh:'動画更新', dougaSheetTitle:'Cell番号と動画点から編集不可の動画欄を生成', cellReadabilityTitle:'Cell文字を大きく表示',
+        textCommandsLabel:'テキストコマンド', csvFileLabel:'CLIP / TVPaint · 選択またはドロップ', csvCommandEditLabel:'CSVから生成された編集可能コマンド',
         dialogBlocksTitle:'セリフ欄', dialogFormatLabel:'例: 0+01 | 1+00 | 話者 | セリフ（始まり｜終わり｜だれ｜なに）', cameraBlocksTitle:'カメラ欄', cameraFormatLabel:'例: 0+01 | 1+00 | A | PAN | B（始まり｜終わり｜前｜動き｜後）', cameraExamplesTitle:'例',
         cameraExPan:'流し（A→B）', cameraExTu:'寄り（トラックアップ）', cameraExFi:'フェードイン', cameraExOl:'オーバーラップ（切替）',
         sheetPreviewTitle:'シートプレビュー', chooseExportDirBtn:"出力先", downloadAllBtn:"書き出し", memoModeBtn:'メモモード', cameraToMemoBtn:'カメラ→メモ', memoPenLabel:'ペン', memoEraserLabel:'消しゴム', memoRightClickNoticeL1:'メモ欄で右クリック', memoRightClickNoticeL2:'：テキスト枠の作成・編集', cellReadabilityNotice:'←原画番号（セルの数字）を大きく表示',
@@ -3199,8 +3206,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       },
       ko: {
         languageLabel:'언어', headerCardTitle:'헤더', episodeLabel:'화수', titleLabel:'제목', cutNoLabel:'컷 번호', secondsLabel:'길이 초', framesLabel:'길이 프레임', authorLabel:'이름', pageLabel:'페이지',
-        originalCellTitle:'시트 입력', inputModeLabel:'입력 방식', inputModeTextCommands:'텍스트 커맨드', inputModeCsv:'CSV 읽기', csvReadSettings:'CSV 읽기 설정', tvpPanelDownload:'TVPaint용 패널', csvSettingsExportBtn:'프로젝트 저장', shakuEditBtn:'연출용 편집툴', shakuEditHint:'파란 프레임선을 드래그해 길이를 선택', shakuCutBtn:'자르기', shakuStretchBtn:'늘리기', shakuUndoBtn:'되돌리기', shakuRedoBtn:'다시 실행', shakuFlashCut:'자르기 반영', shakuFlashStretch:'늘리기 반영', dougaSheetCreate:'동화시트 작성', dougaSheetRefresh:'동화시트 갱신', dougaSheetTitle:'셀 번호와 동화점으로 수정 불가능한 동화칸 생성', cellReadabilityTitle:'셀 글자 크게 보기',
-        textCommandsLabel:'텍스트 커맨드', csvFileLabel:'CSV 파일', csvCommandEditLabel:'CSV에서 생성된 편집 가능 커맨드',
+        originalCellTitle:'시트 입력', inputModeLabel:'입력 방식', inputModeTextCommands:'직접 입력', inputModeCsv:'파일에서 가져오기', csvReadSettings:'CSV 읽기 설정', tvpPanelDownload:'TVPaint용 패널', csvSettingsExportBtn:'프로젝트 저장', shakuEditBtn:'연출용 편집툴', shakuEditHint:'파란 프레임선을 드래그해 길이를 선택', shakuCutBtn:'자르기', shakuStretchBtn:'늘리기', shakuUndoBtn:'되돌리기', shakuRedoBtn:'다시 실행', shakuFlashCut:'자르기 반영', shakuFlashStretch:'늘리기 반영', dougaSheetCreate:'동화시트 작성', dougaSheetRefresh:'동화시트 갱신', dougaSheetTitle:'셀 번호와 동화점으로 수정 불가능한 동화칸 생성', cellReadabilityTitle:'셀 글자 크게 보기',
+        textCommandsLabel:'텍스트 커맨드', csvFileLabel:'CLIP / TVPaint · 선택 또는 드롭', csvCommandEditLabel:'CSV에서 생성된 편집 가능 커맨드',
         dialogBlocksTitle:'대사란', dialogFormatLabel:'예: 0+01 | 1+00 | 화자 | 대사（시작｜끝｜누가｜무엇）', cameraBlocksTitle:'카메라란', cameraFormatLabel:'예: 0+01 | 1+00 | A | PAN | B（시작｜끝｜이전｜움직임｜이후）', cameraExamplesTitle:'예시',
         cameraExPan:'팬 이동（A→B）', cameraExTu:'당김（트랙업）', cameraExFi:'페이드 인', cameraExOl:'오버랩（전환）',
         sheetPreviewTitle:'시트 프리뷰', chooseExportDirBtn:"출력 위치", downloadAllBtn:"출력", memoModeBtn:'메모 모드', cameraToMemoBtn:'카메라→메모', memoPenLabel:'펜', memoEraserLabel:'지우개', memoRightClickNoticeL1:'메모 영역 우클릭', memoRightClickNoticeL2:'텍스트 박스 생성·편집', cellReadabilityNotice:'← 원화 번호(셀 숫자)를 크게 표시',
@@ -3208,8 +3215,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       },
       zh: {
         languageLabel:'语言', headerCardTitle:'页眉', episodeLabel:'集数', titleLabel:'标题', cutNoLabel:'镜头编号', secondsLabel:'时长 秒', framesLabel:'时长 帧', authorLabel:'姓名', pageLabel:'页码',
-        originalCellTitle:'表格输入', inputModeLabel:'输入模式', inputModeTextCommands:'文本命令', inputModeCsv:'CSV 导入', csvReadSettings:'CSV读取设置', tvpPanelDownload:'TVPaint 面板', csvSettingsExportBtn:'保存项目', shakuEditBtn:'时长编辑', shakuEditHint:'拖动蓝色帧线选择范围', shakuCutBtn:'切除', shakuStretchBtn:'延长', shakuUndoBtn:'撤销', shakuRedoBtn:'重做', shakuFlashCut:'切除已应用', shakuFlashStretch:'延长已应用', dougaSheetCreate:'生成动画栏', dougaSheetRefresh:'刷新动画栏', dougaSheetTitle:'由 Cell 编号和动画点生成只读动画栏', cellReadabilityTitle:'放大 Cell 文字',
-        textCommandsLabel:'文本命令', csvFileLabel:'CSV 文件', csvCommandEditLabel:'从 CSV 生成的可编辑命令',
+        originalCellTitle:'表格输入', inputModeLabel:'输入模式', inputModeTextCommands:'直接输入', inputModeCsv:'从文件导入', csvReadSettings:'CSV读取设置', tvpPanelDownload:'TVPaint 面板', csvSettingsExportBtn:'保存项目', shakuEditBtn:'时长编辑', shakuEditHint:'拖动蓝色帧线选择范围', shakuCutBtn:'切除', shakuStretchBtn:'延长', shakuUndoBtn:'撤销', shakuRedoBtn:'重做', shakuFlashCut:'切除已应用', shakuFlashStretch:'延长已应用', dougaSheetCreate:'生成动画栏', dougaSheetRefresh:'刷新动画栏', dougaSheetTitle:'由 Cell 编号和动画点生成只读动画栏', cellReadabilityTitle:'放大 Cell 文字',
+        textCommandsLabel:'文本命令', csvFileLabel:'CLIP / TVPaint · 选择或拖放', csvCommandEditLabel:'从 CSV 生成的可编辑命令',
         dialogBlocksTitle:'对白栏', dialogFormatLabel:'例: 0+01 | 1+00 | 说话人 | 台词（起始｜结束｜谁｜内容）', cameraBlocksTitle:'摄影机栏', cameraFormatLabel:'例: 0+01 | 1+00 | A | PAN | B（起始｜结束｜之前｜运动｜之后）', cameraExamplesTitle:'示例',
         cameraExPan:'摇镜（A→B）', cameraExTu:'推近（Track Up）', cameraExFi:'淡入', cameraExOl:'叠化（切换）',
         sheetPreviewTitle:'Sheet 预览', chooseExportDirBtn:"输出位置", downloadAllBtn:"导出", memoModeBtn:'备注模式', cameraToMemoBtn:'摄影→备注', memoPenLabel:'笔', memoEraserLabel:'橡皮', memoRightClickNoticeL1:'在备注区右键', memoRightClickNoticeL2:'创建/编辑文本框', cellReadabilityNotice:'← 放大原画编号（单元格数字）',
@@ -3897,6 +3904,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver953", "Unified sheet import", ["Choose or drop CLIP, TVPaint, CSV or XDTS files in one place. Switching tabs preserves edits. CSV and XDTS imports recommend direct CLIP or TVPaint import."]],
         ["ver952", "CSV BOOK display names after reordering", ["Reordering cells now keeps BOOK display names separate from the original CSV names. Undo also refreshes the input-mode controls consistently."]],
         ["ver951", "Feedback environment details", ["Feedback messages and the Form link automatically include the app version and browser information. Your original message stays in the input field."]],
         ["ver950", "BOOK names and grouped markers", ["Preserves original BOOK display names separately from image identifiers when exchanging sheet settings. Consecutive BOOK numbers share a range, and crowded markers fit above the sheet columns."]],
@@ -3998,6 +4006,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver953", "シート読込の入口を統一", ["CLIP・TVPaint・CSV・XDTSを同じ場所から選択・ドロップできます。タブ切替で編集を維持し、CSV・XDTSでは直接読込を案内します。"]],
         ["ver952", "CSVの並べ替えとBOOK表示名", ["セルを並べ替えてもBOOKの表示名がCSVの元の名前に混ざらないよう修正しました。元に戻す操作後の入力モード表示も揃えました。"]],
         ["ver951", "お問い合わせの環境情報", ["お問い合わせとFormリンクにアプリのバージョンとブラウザ情報を自動で添付します。入力した原文はそのまま残ります。"]],
         ["ver950", "BOOK名とまとめ表示", ["シート設定の受け渡しで、画像識別名とは別に元のBOOK表示名を保持します。連番は範囲でまとめ、密集したマークも用紙の列上部に収めます。"]],
@@ -4099,6 +4108,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver953", "시트 파일 가져오기 통합", ["CLIP·TVPaint·CSV·XDTS를 한 곳에서 선택하거나 드롭합니다. 탭 전환으로 편집을 덮지 않으며 CSV·XDTS에서는 직접 불러오기를 권장합니다."]],
         ["ver952", "CSV 정렬·BOOK 표시 이름 수정", ["셀을 재정렬할 때 BOOK 표시 이름이 CSV 원본 이름에 섞이는 문제를 고쳤습니다. 실행취소 뒤 입력 모드 표시도 함께 갱신합니다."]],
         ["ver951", "문의 환경 정보 자동 첨부", ["문의와 Form 링크에 앱 버전과 브라우저 정보를 자동으로 첨부합니다. 입력한 원문은 그대로 남습니다."]],
         ["ver950", "BOOK 이름 보존과 묶음 표시", ["시트 설정을 주고받을 때 그림 식별명과 원래 BOOK 표시 이름을 따로 보존합니다. 연속 번호는 범위로 묶고, 여러 표식도 시트 열 위쪽에 겹치지 않게 배치합니다."]],
@@ -4200,6 +4210,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver953", "统一表格导入入口", ["可在同一位置选择或拖放CLIP、TVPaint、CSV和XDTS文件。切换标签保留编辑；CSV和XDTS导入会推荐直接导入原文件。"]],
         ["ver952", "修复CSV排序与BOOK显示名", ["重新排列单元格时，BOOK显示名不会再覆盖CSV中的原名称。撤销后也会同步输入模式控件。"]],
         ["ver951", "反馈环境信息", ["反馈内容和Form链接会自动附加应用版本及浏览器信息。输入的原文会保留。"]],
         ["ver950", "BOOK名称与合并标记", ["交换摄影表设置时，将原始BOOK显示名称与图像标识分别保留。连续编号合并为范围，密集标记也能排列在表格栏上方。"]],
@@ -5186,7 +5197,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         title: 'Quick Guide',
         hint: '',
         html: `
-<div class="manual-step"><span class="manual-step-no">1</span>Read</div><ul><li><code>.clip / .tvpp / .csv / .xdts</code>: drop onto the sheet to import.</li><li>Type <code>A: 1 n n 2</code> for cel commands; <code>n</code> holds the drawing.</li></ul>
+<div class="manual-step"><span class="manual-step-no">1</span>Read</div><ul><li><code>.clip / .tvpp / .csv / .xdts</code>: choose in <strong>Import file</strong> or drop onto the sheet.</li><li>Type <code>A: 1 n n 2</code> for cel commands; <code>n</code> holds the drawing.</li></ul>
 <div class="manual-step"><span class="manual-step-no">2</span>Edit</div><ul><li>Click text to edit. Right-click or hold a cel label for Cell / BOOK settings.</li><li>Drag the preview to reorder. Use <strong>Restore original</strong> to reset imported cel names.</li></ul>
 <div class="manual-step"><span class="manual-step-no">3</span>Export / save</div><ul><li><strong>Export</strong>: PNG / JPG / PSD. <strong>Save work</strong>: editable JSON, including pasted images.</li><li><strong>External paper</strong>: choose or drop JPG / PNG / PSD / .clip, then Auto Align.</li></ul>
 <details class="manual-tvp"><summary>TVPaint panel (optional)</summary>
@@ -5204,7 +5215,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         title: '簡単説明書',
         hint: '',
         html: `
-<div class="manual-step"><span class="manual-step-no">1</span>読み込む</div><ul><li><code>.clip / .tvpp / .csv / .xdts</code>をシートにドロップして読み込みます。</li><li>直接入力は <code>A: 1 n n 2</code>。<code>n</code>は同じ絵の継続です。</li></ul>
+<div class="manual-step"><span class="manual-step-no">1</span>読み込む</div><ul><li><code>.clip / .tvpp / .csv / .xdts</code>は<strong>ファイル読込</strong>で選択、またはシートにドロップ。</li><li>直接入力は <code>A: 1 n n 2</code>。<code>n</code>は同じ絵の継続です。</li></ul>
 <div class="manual-step"><span class="manual-step-no">2</span>編集する</div><ul><li>文字をクリックして編集。セル名の右クリック・長押しでセル・BOOK設定を開きます。</li><li>プレビューをドラッグして並べ替え。セル番号は<strong>元に戻す</strong>で読み込み元に戻せます。</li></ul>
 <div class="manual-step"><span class="manual-step-no">3</span>書き出し・保存</div><ul><li><strong>書き出し</strong>はPNG / JPG / PSD。<strong>作業を保存</strong>は貼り付け画像も含む編集用JSON。</li><li><strong>外部用紙</strong>でJPG / PNG / PSD / .clipを選択・ドロップし、自動整列します。</li></ul>
 <details class="manual-tvp"><summary>TVPaintパネル（任意）</summary>
@@ -5222,7 +5233,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         title: '간단 설명서',
         hint: '',
         html: `
-<div class="manual-step"><span class="manual-step-no">1</span>불러오기</div><ul><li><code>.clip / .tvpp / .csv / .xdts</code>를 시트에 놓아 불러옵니다.</li><li>직접 입력은 <code>A: 1 n n 2</code>. <code>n</code>은 같은 그림 유지입니다.</li></ul>
+<div class="manual-step"><span class="manual-step-no">1</span>불러오기</div><ul><li><code>.clip / .tvpp / .csv / .xdts</code>는 <strong>파일에서 가져오기</strong>에서 선택하거나 시트에 놓습니다.</li><li>직접 입력은 <code>A: 1 n n 2</code>. <code>n</code>은 같은 그림 유지입니다.</li></ul>
 <div class="manual-step"><span class="manual-step-no">2</span>편집</div><ul><li>문자를 눌러 편집합니다. 셀 이름을 우클릭·길게 누르면 셀·BOOK 설정이 열립니다.</li><li>미리보기를 드래그해 순서를 바꿉니다. 셀 번호는 <strong>원본 복원</strong>으로 되돌립니다.</li></ul>
 <div class="manual-step"><span class="manual-step-no">3</span>출력·저장</div><ul><li><strong>출력</strong>은 PNG / JPG / PSD. <strong>작업 저장</strong>은 붙여 넣은 이미지까지 포함한 편집용 JSON입니다.</li><li><strong>외부용지</strong>에서 JPG / PNG / PSD / .clip을 선택·드롭하고 자동 정렬합니다.</li></ul>
 <details class="manual-tvp"><summary>TVPaint 패널(선택)</summary>
@@ -6455,8 +6466,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       }
     }
 
+    let sheetInputView = 'text';
+
     function updateInputModeButtons() {
-      const mode = normalizeInputModeValue(getCurrentInputMode());
+      const mode = sheetInputView;
       cellInputModeButtons.forEach(function(btn){
         const active = btn.dataset.inputMode === mode;
         btn.classList.toggle('active', active);
@@ -6468,13 +6481,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       mode = String(mode || '');
       if (mode === 'csv' || /^csv_/.test(mode)) return 'csv';
       return 'text';
-    }
-
-    function setCurrentInputMode(mode) {
-      const select = document.getElementById('cellInputMode');
-      if (!select) return;
-      select.value = normalizeInputModeValue(mode);
-      updateModeUI();
     }
 
     function getCurrentInputMode() {
@@ -21635,10 +21641,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     // ══ [출력] 상태 안내와 복구 선택 ═══════════════════════════════════════════════════════════════════════
     function ioText(key, values) {
       const docs = {
-        en:{ workLoaded:"Work loaded.", fileLoaded:"Loaded: {name}", workCacheFailed:"Could not remember this list. Reopening may show the previous list. Original files are unchanged.", normal:'Browser download', unsupported:'Folder selection is unavailable in this browser. Files use browser downloads.', selected:'Output folder: {name}', choose:'Choose folder', cancel:'Cancel', downloadOnce:'Download this time', permission:'The output folder cannot be accessed. Choose how to continue.', missing:'The output folder is unavailable. It was disconnected; remaining pages use browser downloads.', memoryFailed:'Browser backup could not be saved. Save your work file before closing.', forgetFailed:'Folder disconnected for this session. The browser could not remove its saved setting.', preparing:'Preparing {count} page(s)…', progress:'Processed {done}/{count} · Folder: {folder} · Download requests: {download}', complete:'Finished · Folder: {folder} · Download requests: {download}', failed:'Stopped at page {page}: {error}', savedSettings:'Work saved: {name}', downloadedSettings:'Work file download requested: {name}', canceled:'Canceled.', settingsFailed:'Work save failed: {error}', loadFailed:'File load failed; the current sheet was kept: {error}', partial:'Folder scan: {count} work files, {skipped} skipped.', folderFailed:'Folder unavailable. The cached list is kept: {error}', cache:'Cached work (folder unavailable)', notRemembered:'Folder selected for this session; browser memory could not be updated.', selectFailed:'Folder selection failed: {error}'},
-        ja:{ workLoaded:"作業を読み込みました。", fileLoaded:"読み込みました：{name}", workCacheFailed:"この一覧を記憶できませんでした。次回は以前の一覧に戻る場合があります。元のファイルは変更していません。", normal:'通常ダウンロード', unsupported:'このブラウザーでは保存先フォルダーを指定できません。通常ダウンロードを使用します。', selected:'保存先：{name}', choose:'フォルダーを選ぶ', cancel:'キャンセル', downloadOnce:'今回はダウンロード', permission:'保存先を使用できません。続行方法を選んでください。', missing:'保存先を使用できなくなったため解除しました。残りは通常ダウンロードします。', memoryFailed:'ブラウザーに記憶できませんでした。閉じる前に作業ファイルを保存してください。', forgetFailed:'この画面では保存先を解除しましたが、ブラウザーの記憶を削除できませんでした。', preparing:'{count}ページを準備中…', progress:'処理 {done}/{count} · フォルダー保存 {folder} · ダウンロード依頼 {download}', complete:'完了 · フォルダー保存 {folder} · ダウンロード依頼 {download}', failed:'{page}ページ目で停止：{error}', savedSettings:'作業を保存しました：{name}', downloadedSettings:'作業ファイルのダウンロードを依頼しました：{name}', canceled:'キャンセルしました。', settingsFailed:'作業の保存に失敗しました：{error}', loadFailed:'読込に失敗しました。現在のシートは保持しています：{error}', partial:'フォルダー読込：作業 {count}件、スキップ {skipped}件。', folderFailed:'フォルダーを使用できません。記憶済みの一覧は保持しています：{error}', cache:'記憶済みの作業（フォルダー使用不可）', notRemembered:'この画面では選択しましたが、次回のための記憶に失敗しました。', selectFailed:'フォルダー選択に失敗しました：{error}'},
-        ko:{ workLoaded:"작업을 불러왔습니다.", fileLoaded:"불러왔습니다: {name}", workCacheFailed:"목록을 기억하지 못했습니다. 다시 열면 이전 목록이 표시될 수 있습니다. 원본 파일은 그대로입니다.", normal:'기본 다운로드', unsupported:'이 브라우저에서는 저장 폴더를 지정할 수 없습니다. 기본 다운로드를 사용합니다.', selected:'저장 폴더: {name}', choose:'폴더 선택', cancel:'취소', downloadOnce:'이번에는 다운로드', permission:'저장 폴더에 접근할 수 없습니다. 계속할 방법을 선택하세요.', missing:'저장 폴더를 사용할 수 없어 해제했습니다. 남은 페이지는 기본 다운로드로 보냅니다.', memoryFailed:'브라우저에 기억하지 못했습니다. 닫기 전에 작업 파일을 저장하세요.', forgetFailed:'이번 화면에서는 폴더를 해제했지만 브라우저의 기억은 삭제하지 못했습니다.', preparing:'{count}페이지 준비 중…', progress:'처리 {done}/{count} · 폴더 저장 {folder} · 다운로드 요청 {download}', complete:'완료 · 폴더 저장 {folder} · 다운로드 요청 {download}', failed:'{page}페이지에서 중단: {error}', savedSettings:'작업 저장 완료: {name}', downloadedSettings:'작업 파일 다운로드 요청: {name}', canceled:'취소했습니다.', settingsFailed:'작업 저장 실패: {error}', loadFailed:'파일을 읽지 못했습니다. 현재 시트는 유지했습니다: {error}', partial:'폴더 읽기: 작업 {count}개, 건너뜀 {skipped}개.', folderFailed:'폴더를 사용할 수 없습니다. 기억한 목록은 유지했습니다: {error}', cache:'기억한 작업 (폴더 사용 불가)', notRemembered:'이번 화면에서는 선택했지만 다음 실행을 위한 기억에 실패했습니다.', selectFailed:'폴더 선택 실패: {error}'},
-        zh:{ workLoaded:"已读取工作。", fileLoaded:"已读取：{name}", workCacheFailed:"无法记住此列表。再次打开时可能显示旧列表。原始文件未变更。", normal:'默认下载', unsupported:'此浏览器不能选择保存文件夹，将使用默认下载。', selected:'保存文件夹：{name}', choose:'选择文件夹', cancel:'取消', downloadOnce:'本次下载', permission:'无法访问保存文件夹。请选择继续方式。', missing:'保存文件夹不可用，已解除。剩余页面将使用默认下载。', memoryFailed:'无法保存浏览器备份。关闭前请保存工作文件。', forgetFailed:'本次已解除文件夹，但无法删除浏览器中保存的设置。', preparing:'正在准备 {count} 页…', progress:'已处理 {done}/{count} · 文件夹 {folder} · 下载请求 {download}', complete:'完成 · 文件夹 {folder} · 下载请求 {download}', failed:'在第 {page} 页停止：{error}', savedSettings:'工作已保存：{name}', downloadedSettings:'已请求下载工作文件：{name}', canceled:'已取消。', settingsFailed:'工作保存失败：{error}', loadFailed:'读取失败，当前工作表已保留：{error}', partial:'文件夹读取：{count} 个工作，跳过 {skipped} 个。', folderFailed:'文件夹不可用，已保留缓存列表：{error}', cache:'缓存工作（文件夹不可用）', notRemembered:'本次已选择文件夹，但无法记住此设置。', selectFailed:'选择文件夹失败：{error}'}
+        en:{ directImportRecommended:'CLIP and TVPaint files are supported. Direct import of .clip or .tvpp is recommended. CSV and XDTS remain available.', workLoaded:"Work loaded.", fileLoaded:"Loaded: {name}", workCacheFailed:"Could not remember this list. Reopening may show the previous list. Original files are unchanged.", normal:'Browser download', unsupported:'Folder selection is unavailable in this browser. Files use browser downloads.', selected:'Output folder: {name}', choose:'Choose folder', cancel:'Cancel', downloadOnce:'Download this time', permission:'The output folder cannot be accessed. Choose how to continue.', missing:'The output folder is unavailable. It was disconnected; remaining pages use browser downloads.', memoryFailed:'Browser backup could not be saved. Save your work file before closing.', forgetFailed:'Folder disconnected for this session. The browser could not remove its saved setting.', preparing:'Preparing {count} page(s)…', progress:'Processed {done}/{count} · Folder: {folder} · Download requests: {download}', complete:'Finished · Folder: {folder} · Download requests: {download}', failed:'Stopped at page {page}: {error}', savedSettings:'Work saved: {name}', downloadedSettings:'Work file download requested: {name}', canceled:'Canceled.', settingsFailed:'Work save failed: {error}', loadFailed:'File load failed; the current sheet was kept: {error}', partial:'Folder scan: {count} work files, {skipped} skipped.', folderFailed:'Folder unavailable. The cached list is kept: {error}', cache:'Cached work (folder unavailable)', notRemembered:'Folder selected for this session; browser memory could not be updated.', selectFailed:'Folder selection failed: {error}'},
+        ja:{ directImportRecommended:'CLIP・TVPaintファイルに対応しています。.clip / .tvpp の直接読み込みを推奨します。CSV・XDTSも読み込めます。', workLoaded:"作業を読み込みました。", fileLoaded:"読み込みました：{name}", workCacheFailed:"この一覧を記憶できませんでした。次回は以前の一覧に戻る場合があります。元のファイルは変更していません。", normal:'通常ダウンロード', unsupported:'このブラウザーでは保存先フォルダーを指定できません。通常ダウンロードを使用します。', selected:'保存先：{name}', choose:'フォルダーを選ぶ', cancel:'キャンセル', downloadOnce:'今回はダウンロード', permission:'保存先を使用できません。続行方法を選んでください。', missing:'保存先を使用できなくなったため解除しました。残りは通常ダウンロードします。', memoryFailed:'ブラウザーに記憶できませんでした。閉じる前に作業ファイルを保存してください。', forgetFailed:'この画面では保存先を解除しましたが、ブラウザーの記憶を削除できませんでした。', preparing:'{count}ページを準備中…', progress:'処理 {done}/{count} · フォルダー保存 {folder} · ダウンロード依頼 {download}', complete:'完了 · フォルダー保存 {folder} · ダウンロード依頼 {download}', failed:'{page}ページ目で停止：{error}', savedSettings:'作業を保存しました：{name}', downloadedSettings:'作業ファイルのダウンロードを依頼しました：{name}', canceled:'キャンセルしました。', settingsFailed:'作業の保存に失敗しました：{error}', loadFailed:'読込に失敗しました。現在のシートは保持しています：{error}', partial:'フォルダー読込：作業 {count}件、スキップ {skipped}件。', folderFailed:'フォルダーを使用できません。記憶済みの一覧は保持しています：{error}', cache:'記憶済みの作業（フォルダー使用不可）', notRemembered:'この画面では選択しましたが、次回のための記憶に失敗しました。', selectFailed:'フォルダー選択に失敗しました：{error}'},
+        ko:{ directImportRecommended:'CLIP·TVPaint 파일을 지원합니다. .clip / .tvpp 직접 불러오기를 권장합니다. CSV·XDTS도 가져올 수 있습니다.', workLoaded:"작업을 불러왔습니다.", fileLoaded:"불러왔습니다: {name}", workCacheFailed:"목록을 기억하지 못했습니다. 다시 열면 이전 목록이 표시될 수 있습니다. 원본 파일은 그대로입니다.", normal:'기본 다운로드', unsupported:'이 브라우저에서는 저장 폴더를 지정할 수 없습니다. 기본 다운로드를 사용합니다.', selected:'저장 폴더: {name}', choose:'폴더 선택', cancel:'취소', downloadOnce:'이번에는 다운로드', permission:'저장 폴더에 접근할 수 없습니다. 계속할 방법을 선택하세요.', missing:'저장 폴더를 사용할 수 없어 해제했습니다. 남은 페이지는 기본 다운로드로 보냅니다.', memoryFailed:'브라우저에 기억하지 못했습니다. 닫기 전에 작업 파일을 저장하세요.', forgetFailed:'이번 화면에서는 폴더를 해제했지만 브라우저의 기억은 삭제하지 못했습니다.', preparing:'{count}페이지 준비 중…', progress:'처리 {done}/{count} · 폴더 저장 {folder} · 다운로드 요청 {download}', complete:'완료 · 폴더 저장 {folder} · 다운로드 요청 {download}', failed:'{page}페이지에서 중단: {error}', savedSettings:'작업 저장 완료: {name}', downloadedSettings:'작업 파일 다운로드 요청: {name}', canceled:'취소했습니다.', settingsFailed:'작업 저장 실패: {error}', loadFailed:'파일을 읽지 못했습니다. 현재 시트는 유지했습니다: {error}', partial:'폴더 읽기: 작업 {count}개, 건너뜀 {skipped}개.', folderFailed:'폴더를 사용할 수 없습니다. 기억한 목록은 유지했습니다: {error}', cache:'기억한 작업 (폴더 사용 불가)', notRemembered:'이번 화면에서는 선택했지만 다음 실행을 위한 기억에 실패했습니다.', selectFailed:'폴더 선택 실패: {error}'},
+        zh:{ directImportRecommended:'支持CLIP和TVPaint文件，推荐直接导入.clip / .tvpp。仍可导入CSV和XDTS。', workLoaded:"已读取工作。", fileLoaded:"已读取：{name}", workCacheFailed:"无法记住此列表。再次打开时可能显示旧列表。原始文件未变更。", normal:'默认下载', unsupported:'此浏览器不能选择保存文件夹，将使用默认下载。', selected:'保存文件夹：{name}', choose:'选择文件夹', cancel:'取消', downloadOnce:'本次下载', permission:'无法访问保存文件夹。请选择继续方式。', missing:'保存文件夹不可用，已解除。剩余页面将使用默认下载。', memoryFailed:'无法保存浏览器备份。关闭前请保存工作文件。', forgetFailed:'本次已解除文件夹，但无法删除浏览器中保存的设置。', preparing:'正在准备 {count} 页…', progress:'已处理 {done}/{count} · 文件夹 {folder} · 下载请求 {download}', complete:'完成 · 文件夹 {folder} · 下载请求 {download}', failed:'在第 {page} 页停止：{error}', savedSettings:'工作已保存：{name}', downloadedSettings:'已请求下载工作文件：{name}', canceled:'已取消。', settingsFailed:'工作保存失败：{error}', loadFailed:'读取失败，当前工作表已保留：{error}', partial:'文件夹读取：{count} 个工作，跳过 {skipped} 个。', folderFailed:'文件夹不可用，已保留缓存列表：{error}', cache:'缓存工作（文件夹不可用）', notRemembered:'本次已选择文件夹，但无法记住此设置。', selectFailed:'选择文件夹失败：{error}'}
       };
       const doc = docs[state.lang] || docs.en;
       return String(doc[key] || docs.en[key] || key).replace(/\{(\w+)\}/g, function(_, name){ return values && values[name] != null ? String(values[name]) : ''; });
@@ -25677,11 +25683,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     // Shared by the sidebar and sheet-import dialogs; each caller owns how the file is applied.
-    function bindPaperFileDrop(zone, input, onFile) {
+    function bindFileDrop(zone, input, onFile, accepts) {
       zone.tabIndex = 0;
       zone.setAttribute('role', 'button');
-      zone.title = 'JPG / PNG / PSD / .clip';
-      function take(file) { if (file && isPaperDropFile(file)) onFile(file); }
+      zone.title = input.accept;
+      function take(file) { if (file && accepts(file)) onFile(file); }
       input.addEventListener('change', function() {
         const file = input.files && input.files[0];
         input.value = '';
@@ -25901,7 +25907,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const summary=document.createElement('summary'); summary.textContent=csvImportText('preview'); details.appendChild(summary);
         const preview=document.createElement('pre'); preview.className='csv-import-preview'; preview.dataset.csvImportPreview=''; details.appendChild(preview); body.appendChild(details);
         const heading=document.createElement('h4'); heading.textContent=csvImportText('columns'); body.appendChild(heading);
-        const hint=document.createElement('div'); hint.className='hint'; hint.textContent=csvImportText('hint')+(reread?' '+csvImportText('reopen'):''); body.appendChild(hint);
+        const hint=document.createElement('div'); hint.className='hint'; hint.textContent=ioText('directImportRecommended')+' '+(reread?csvImportText('reopen'):csvImportText('hint')); body.appendChild(hint);
         const rows=document.createElement('div'); rows.className='clip-import-rows'; body.appendChild(rows); box.appendChild(body);
         const actions=document.createElement('footer'); actions.className='app-dialog-actions';
         const cancel=document.createElement('button'); cancel.type='button'; cancel.className='toolbar-btn'; cancel.textContent=csvImportText('cancel'); cancel.dataset.csvImportCancel='';
@@ -26079,6 +26085,24 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return lines.join('\n');
     }
 
+    function confirmXdtsImport() {
+      return new Promise(function(resolve) {
+        const backdrop = document.createElement('div'); backdrop.className = 'app-dialog-backdrop';
+        const box = document.createElement('section'); box.className = 'app-dialog';
+        box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true');
+        box.setAttribute('aria-label', 'XDTS');
+        const message = document.createElement('p'); message.className = 'app-dialog-body'; message.textContent = ioText('directImportRecommended');
+        const actions = document.createElement('footer'); actions.className = 'app-dialog-actions';
+        function finish(value) { unmountAppDialog(backdrop); backdrop.remove(); resolve(value); }
+        const cancel = document.createElement('button'); cancel.type = 'button'; cancel.className = 'toolbar-btn'; cancel.textContent = csvImportText('cancel');
+        const apply = document.createElement('button'); apply.type = 'button'; apply.className = 'toolbar-btn primary'; apply.textContent = csvImportText('apply');
+        cancel.addEventListener('click', function() { finish(false); });
+        apply.addEventListener('click', function() { finish(true); });
+        actions.append(cancel, apply); box.append(message, actions); backdrop.appendChild(box); document.body.appendChild(backdrop);
+        mountAppDialog(backdrop, {onRequestClose:function() { finish(false); }, initialFocus:apply});
+      });
+    }
+
     async function loadDroppedXdtsFile(file) {
       if (!file) return false;
       const generation = ++documentLoadGeneration;
@@ -26090,6 +26114,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const json = JSON.parse(text.slice(braceIndex));
         const commandText = buildTextCommandsFromXdts(json);
         if (!commandText) throw new Error('No Cell field found in this XDTS file');
+        if (!(await confirmXdtsImport()) || generation !== documentLoadGeneration) return false;
         const modeSelect = document.getElementById('cellInputMode');
         if (modeSelect) modeSelect.value = 'text';
         setCommandTextValue('text', commandText);
@@ -26749,7 +26774,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           paperPick.file = file;
           showPaperPick();
         }
-        bindPaperFileDrop(paperZone, paperInput, takePaperFile);
+        bindFileDrop(paperZone, paperInput, takePaperFile, isPaperDropFile);
         paperZone.appendChild(paperInput);
         paperZone.appendChild(paperLabel);
         showPaperPick();
@@ -27244,6 +27269,18 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (previewWrapEl) previewWrapEl.classList.remove('file-drop-active');
     }
 
+    async function loadSheetImportFile(file) {
+      if (!file || state.isExporting) return false;
+      const loader = isCsvDropFile(file) ? loadDroppedCsvFile
+        : isXdtsDropFile(file) ? loadDroppedXdtsFile
+        : isClipDropFile(file) ? loadDroppedClipFile
+        : isTvppDropFile(file) ? loadDroppedTvppFile : null;
+      if (!loader) return false;
+      const loaded = await loader(file);
+      if (loaded) { sheetInputView = 'text'; syncInputModeUI(); }
+      return loaded;
+    }
+
     async function handlePreviewFileDrop(event) {
       const files = getDroppedFiles(event);
       if (!files.length) {
@@ -27258,26 +27295,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         await loadDroppedSettingsJsonFile(settingsFile);
         return;
       }
-      const csvFile = files.find(isCsvDropFile);
-      if (csvFile) {
-        await loadDroppedCsvFile(csvFile);
-        return;
-      }
-      const xdtsFile = files.find(isXdtsDropFile);
-      if (xdtsFile) {
-        await loadDroppedXdtsFile(xdtsFile);
-        return;
-      }
-      const clipFile = files.find(isClipDropFile);
-      if (clipFile) {
-        await loadDroppedClipFile(clipFile);
-        return;
-      }
-      const tvppFile = files.find(isTvppDropFile);
-      if (tvppFile) {
-        await loadDroppedTvppFile(tvppFile);
-        return;
-      }
+      const sheetFile = files.find(isCsvDropFile) || files.find(isXdtsDropFile)
+        || files.find(isClipDropFile) || files.find(isTvppDropFile);
+      if (sheetFile) { await loadSheetImportFile(sheetFile); return; }
       const paperFile = files.find(isPaperDropFile);
       if (paperFile) await handlePaperImageUpload(paperFile);
     }
@@ -28829,8 +28849,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     function syncInputModeUI() {
       const mode = getCurrentInputMode();
       updateInputModeButtons();
-      document.getElementById('textModeBox').classList.toggle('hidden', mode !== 'text');
-      document.getElementById('csvModeBox').classList.toggle('hidden', !isCsvMode(mode));
+      document.getElementById('textModeBox').classList.toggle('hidden', sheetInputView !== 'text');
+      document.getElementById('csvModeBox').classList.toggle('hidden', sheetInputView === 'text');
+      document.getElementById('textCommandBox').classList.toggle('hidden', isCsvMode(mode));
+      document.getElementById('csvCommandBox').classList.toggle('hidden', !isCsvMode(mode));
+      document.getElementById('csvImportDetails').classList.toggle('hidden', !isCsvMode(mode) || !state.csvRawRows.length);
       refreshCommandCellViews();
       updateCsvSettingsActionVisibility();
       updateCsvHelpText();
@@ -28838,31 +28861,16 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     function updateModeUI(options) {
       const shouldRender = !(options && options.render === false);
-      const mode = getCurrentInputMode();
       syncInputModeUI();
-      if (isCsvMode(mode) && state.csvFileBuffer) {
-        try {
-          loadCsvFromCurrentBuffer({ render:shouldRender });
-        } catch (err) {
-          setExportStatus(ioText('loadFailed', { error:err.message || err }), { level:'error' });
-        }
-      } else if (shouldRender) render();
-    }
-
-    // ══ [입력] CSV 재적재 (모드 전환 · 파일 입력 공용 진입점) ══════════════════════════════════════════════════════════
-    function loadCsvFromCurrentBuffer(options) {
-      if (!state.csvFileBuffer) return;
-      const columns = {};
-      state.csvColumns.forEach(function(col){ columns[String(col.index)]={name:col.name,role:getCsvColumnRole(col)}; });
-      const snapshot = prepareCsvImport(state.csvFileBuffer,{columns:columns});
-      commitCsvImport(snapshot, !(options && options.render === false));
+      if (shouldRender) render();
     }
 
     document.getElementById('languageSelect').addEventListener('change', function(){ updateLanguage(); trackEvent('language_change', { lang: state.lang }); });
     document.getElementById('cellInputMode').addEventListener('change', updateModeUI);
     cellInputModeButtons.forEach(function(btn){
       btn.addEventListener('click', function(){
-        setCurrentInputMode(btn.dataset.inputMode || 'text');
+        sheetInputView = btn.dataset.inputMode || 'text';
+        syncInputModeUI();
       });
     });
     memoModeBtn.addEventListener('click', toggleMemoMode);
@@ -29111,7 +29119,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     downloadAllBtn.addEventListener('click', function(){ openExportPreflightModal(); });
     document.getElementById('outputReviewBtn').addEventListener('click', function(){ openExportPreflightModal({ focus:true }); });
     if (paperImageInputEl) {
-      bindPaperFileDrop(document.getElementById('paperImageDropZone'), paperImageInputEl, handlePaperImageUpload);
+      bindFileDrop(document.getElementById('paperImageDropZone'), paperImageInputEl, handlePaperImageUpload, isPaperDropFile);
     }
     if (clearPaperImageBtn) clearPaperImageBtn.addEventListener('click', clearPaperImage);
     if (paperToolbarClearBtn) paperToolbarClearBtn.addEventListener('click', clearPaperImage);
@@ -29148,11 +29156,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     svg.addEventListener('pointermove', continueHeaderPositionDrag, { passive:false });
     svg.addEventListener('pointerup', endHeaderPositionDrag, { passive:false });
     svg.addEventListener('pointercancel', endHeaderPositionDrag, { passive:false });
-    document.getElementById('csvFileInput').addEventListener('change', function(event){
-      const file = event.target.files && event.target.files[0];
-      event.target.value = '';
-      loadDroppedCsvFile(file);
-    });
+    bindFileDrop(document.getElementById('sheetFileDropZone'), document.getElementById('csvFileInput'), loadSheetImportFile,
+      function(file) { return isClipDropFile(file) || isTvppDropFile(file) || isCsvDropFile(file) || isXdtsDropFile(file); });
     document.getElementById('csvReadSettingsBtn').addEventListener('click', reopenCsvImportDialog);
     const csvSettingsExportBtn = document.getElementById('csvSettingsExportBtn');
     if (csvSettingsExportBtn) csvSettingsExportBtn.addEventListener('click', saveCurrentSettings);
