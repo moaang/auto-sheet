@@ -2595,7 +2595,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '951';
+    const APP_VERSION = '952';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -2929,7 +2929,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     const SHEET_STATE_GROUPS = {
       csv:Object.values(CSV_SETTINGS_FIELDS).map(function(field){ return field[0]; }),
       csvBuffer:["csvFileBuffer"],
-      csvPending:["csvDurationAutofillPending"],
       csvGenerated:["lastCsvGeneratedDialogLines","lastCsvGeneratedCameraLines"],
       guides:["serifuSheetGuides"],
       readability:["cellReadabilityLarge"],
@@ -2948,11 +2947,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       loadReset:["previewSpacePanKey","shakuFlash","shakuMode","shakuSelection","textMemoEditMode"]
     };
     const SHEET_STATE_SCOPES = {
-      settings:["csv","csvBuffer","csvPending","guides","readability","columns","columnOrder","douga","overrides","paperImage","paperOutput","paperLayout","memo","pastedImages","workPreferences","loadReset"],
-      csv:["csv","csvBuffer","csvPending","csvGenerated","columnOrder","douga","guides","overrides"],
+      settings:["csv","csvBuffer","guides","readability","columns","columnOrder","douga","overrides","paperImage","paperOutput","paperLayout","memo","pastedImages","workPreferences","loadReset"],
+      csv:["csv","csvBuffer","csvGenerated","columnOrder","douga","guides","overrides"],
       historySource:["csv","csvBuffer","csvGenerated","guides","readability"],
       content:["columns","columnOrder","douga","overrides"],
-      snapshot:["csv","csvBuffer","csvPending","csvGenerated","guides","readability","columns","columnOrder","douga","overrides","paperImage","paperOutput","paperLayout","memo","pastedImages","stages","workPreferences","renderContext"]
+      snapshot:["csv","csvBuffer","csvGenerated","guides","readability","columns","columnOrder","douga","overrides","paperImage","paperOutput","paperLayout","memo","pastedImages","stages","workPreferences","renderContext"]
     };
     const SHEET_HEADER_INPUTS = ['episode','title','cutNo','seconds','frames','author','page'];
     const SHEET_COMMAND_INPUTS = { timeline:'timelineCommandInput', csv:'csvCommandEdit', dialog:'dialogManual', camera:'cameraManual' };
@@ -3028,7 +3027,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     let state = Object.assign({
       lang: 'ja',
-      csvDurationAutofillPending: false,
       lastCsvGeneratedDialogLines: [],
       lastCsvGeneratedCameraLines: [],
       markerOverrides: {},
@@ -3899,6 +3897,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver952", "CSV BOOK display names after reordering", ["Reordering cells now keeps BOOK display names separate from the original CSV names. Undo also refreshes the input-mode controls consistently."]],
         ["ver951", "Feedback environment details", ["Feedback messages and the Form link automatically include the app version and browser information. Your original message stays in the input field."]],
         ["ver950", "BOOK names and grouped markers", ["Preserves original BOOK display names separately from image identifiers when exchanging sheet settings. Consecutive BOOK numbers share a range, and crowded markers fit above the sheet columns."]],
         ["ver949", "Faster paper analysis and import", ["Reduces repeated work when analyzing paper and importing TVPaint CSV or CLIP files. PSD output releases finished canvas buffers sooner."]],
@@ -3999,6 +3998,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver952", "CSVの並べ替えとBOOK表示名", ["セルを並べ替えてもBOOKの表示名がCSVの元の名前に混ざらないよう修正しました。元に戻す操作後の入力モード表示も揃えました。"]],
         ["ver951", "お問い合わせの環境情報", ["お問い合わせとFormリンクにアプリのバージョンとブラウザ情報を自動で添付します。入力した原文はそのまま残ります。"]],
         ["ver950", "BOOK名とまとめ表示", ["シート設定の受け渡しで、画像識別名とは別に元のBOOK表示名を保持します。連番は範囲でまとめ、密集したマークも用紙の列上部に収めます。"]],
         ["ver949", "用紙解析・読み込みを軽量化", ["用紙解析、TVPaint CSV・CLIPの読み込みで重複する処理を減らしました。PSD出力後のキャンバスも早めに解放します。"]],
@@ -4099,6 +4099,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver952", "CSV 정렬·BOOK 표시 이름 수정", ["셀을 재정렬할 때 BOOK 표시 이름이 CSV 원본 이름에 섞이는 문제를 고쳤습니다. 실행취소 뒤 입력 모드 표시도 함께 갱신합니다."]],
         ["ver951", "문의 환경 정보 자동 첨부", ["문의와 Form 링크에 앱 버전과 브라우저 정보를 자동으로 첨부합니다. 입력한 원문은 그대로 남습니다."]],
         ["ver950", "BOOK 이름 보존과 묶음 표시", ["시트 설정을 주고받을 때 그림 식별명과 원래 BOOK 표시 이름을 따로 보존합니다. 연속 번호는 범위로 묶고, 여러 표식도 시트 열 위쪽에 겹치지 않게 배치합니다."]],
         ["ver949", "용지 분석·불러오기 경량화", ["용지 분석과 TVPaint CSV·CLIP 불러오기의 반복 처리를 줄였습니다. PSD 출력이 끝난 캔버스도 바로 정리합니다."]],
@@ -4199,6 +4200,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver952", "修复CSV排序与BOOK显示名", ["重新排列单元格时，BOOK显示名不会再覆盖CSV中的原名称。撤销后也会同步输入模式控件。"]],
         ["ver951", "反馈环境信息", ["反馈内容和Form链接会自动附加应用版本及浏览器信息。输入的原文会保留。"]],
         ["ver950", "BOOK名称与合并标记", ["交换摄影表设置时，将原始BOOK显示名称与图像标识分别保留。连续编号合并为范围，密集标记也能排列在表格栏上方。"]],
         ["ver949", "优化纸张分析与导入", ["减少纸张分析及TVPaint CSV、CLIP导入中的重复处理，并及时释放PSD输出后的画布。"]],
@@ -6064,16 +6066,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     function clearCsvGeneratedTimelineBlocks() {
-      const dialogEl = document.getElementById('dialogManual');
-      const cameraEl = document.getElementById('cameraManual');
-      if (dialogEl) dialogEl.value = mergeCsvGeneratedLines(dialogEl.value, state.lastCsvGeneratedDialogLines, []).text;
-      if (cameraEl) {
-        const merged = mergeCsvGeneratedLines(cameraEl.value, state.lastCsvGeneratedCameraLines, []);
-        cameraEl.value = merged.text;
-        remapCameraPreviewStyles(cameraEl, merged.survivors);
-      }
-      state.lastCsvGeneratedDialogLines = [];
-      state.lastCsvGeneratedCameraLines = [];
+      applyImportedCommandRoles('', 0);
     }
 
     const MANUAL_SOURCE_SUFFIX_RE = /\s+\(cell:([^)]+)\)\s*$/i;
@@ -6432,26 +6425,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     // ══ [입력] CSV 역할 → 타임라인 블록 반영 · 입력 모드(텍스트/CSV) 전환 ═══════════════════════════════════════════════════════════════
     function updateCsvTimelineBlocksFromRoles() {
-      if (!state.csvRawRows.length) {
-        clearCsvGeneratedTimelineBlocks();
-        return;
-      }
+      if (!state.csvRawRows.length) { clearCsvGeneratedTimelineBlocks(); return; }
       const rows = getCsvDataRows(), duration = rows.length ? rows[rows.length - 1].frame : 0;
-      const command = getCommandTextValue('csv');
-      const dialogLines = commandRoleBlocksToManualLines(command, 'dialog', duration);
-      const cameraLines = commandRoleBlocksToManualLines(command, 'camera', duration);
-      const dialogEl = document.getElementById('dialogManual');
-      const cameraEl = document.getElementById('cameraManual');
-      if (dialogEl) {
-        dialogEl.value = mergeCsvGeneratedLines(dialogEl.value, state.lastCsvGeneratedDialogLines, dialogLines).text;
-        state.lastCsvGeneratedDialogLines = dialogLines.slice();
-      }
-      if (cameraEl) {
-        const merged = mergeCsvGeneratedLines(cameraEl.value, state.lastCsvGeneratedCameraLines, cameraLines);
-        cameraEl.value = merged.text;
-        remapCameraPreviewStyles(cameraEl, merged.survivors);
-        state.lastCsvGeneratedCameraLines = cameraLines.slice();
-      }
+      applyImportedCommandRoles(getCommandTextValue('csv'), duration);
     }
 
     function updateCsvOutputsFromSelection() {
@@ -6460,8 +6436,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       updateCsvTimelineBlocksFromRoles();
     }
 
-    function applyDurationFromCsvRows(rows) {
-      if (!state.csvDurationAutofillPending || !rows || !rows.length) return;
+    function applyDurationFromCsvRows(rows, fresh) {
+      if (!fresh || !rows || !rows.length) return;
       let frameIndex = 0;
       const header = rows[0] || [];
       const found = header.findIndex(function(v){ return String(v || '').toLowerCase() === 'frame'; });
@@ -6477,7 +6453,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         if (secEl) secEl.value = String(Math.floor(lastFrame / FIXED_FPS));
         if (frameEl) frameEl.value = String(lastFrame % FIXED_FPS);
       }
-      state.csvDurationAutofillPending = false;
     }
 
     function updateInputModeButtons() {
@@ -9715,171 +9690,170 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return titleCenter <= episodeCenter ? 'titleEp' : 'epTitle';
     }
 
-    // ══ 용지 인식 ⑥ 헤더 필드 박스 추론 (단일 초대형 함수 · 내부 클로저 60여 개) ═══════════════════════════════════════════════
+    // ══ 용지 인식 ⑥A 헤더 외곽 후보 수집·선택 — 필드 추론 상태를 변경하지 않는다 ═════════════════════
+    const PAPER_HEADER_EDGE_MARGIN = 3;
+
+    function isPaperAutoAlignHeaderEdgeNoiseX(x) {
+      const xx = Number(x);
+      return !Number.isFinite(xx) || xx <= PAPER_HEADER_EDGE_MARGIN || xx >= PAGE_W - 1 - PAPER_HEADER_EDGE_MARGIN;
+    }
+
+    function getHeaderSegmentRunStart(segment) {
+      const value = Number(segment && segment.runStart);
+      return Number.isFinite(value) ? value : Number(segment && segment.start);
+    }
+
+    function getHeaderSegmentRunEnd(segment) {
+      const value = Number(segment && segment.runEnd);
+      return Number.isFinite(value) ? value : Number(segment && segment.end);
+    }
+
+    function findPaperAutoAlignHeaderRect(analysis, bodyTop, upperYLimit) {
+      if (!analysis || typeof analysis.findHorizontalSegments !== 'function') return null;
+      const segments = analysis.findHorizontalSegments({
+        left:0,
+        right:PAGE_W - 1,
+        top:6,
+        bottom:upperYLimit,
+        minRun:Math.max(360, PAGE_W * 0.28)
+      }).filter(function(segment){
+        return segment.maxRun >= 360 && segment.pos < bodyTop - 55;
+      });
+      function hasHeaderRectOneSidedArm(x, y, direction, minArm) {
+        if (!analysis || typeof analysis.measureDarkSpan !== 'function') return false;
+        const arm = Math.max(6, Math.round(Number(minArm) || 10));
+        for (let dy = -2; dy <= 2; dy++) {
+          const span = analysis.measureDarkSpan(x, y + dy, 'x', Math.max(48, arm * 6));
+          if (!span) continue;
+          if (direction > 0 && Number(span.after || 0) >= arm) return true;
+          if (direction < 0 && Number(span.before || 0) >= arm) return true;
+        }
+        return false;
+      }
+      function scoreHeaderRectEndpoint(x, top, bottom, direction) {
+        const xx = Number(x);
+        const t = Number(top);
+        const b = Number(bottom);
+        if (![xx, t, b].every(Number.isFinite) || b <= t || isPaperAutoAlignHeaderEdgeNoiseX(xx)) return 0;
+        const height = b - t;
+        const arm = Math.max(7, Math.min(18, (Math.abs(xx) + PAGE_W) * 0.0035));
+        const topArm = hasHeaderRectOneSidedArm(xx, t, direction, arm);
+        const bottomArm = hasHeaderRectOneSidedArm(xx, b, direction, arm);
+        const armCount = (topArm ? 1 : 0) + (bottomArm ? 1 : 0);
+        let score = armCount * 34;
+        if (armCount === 2) score += 42;
+        if (analysis && typeof analysis.findVerticalSegments === 'function') {
+          const tolerance = Math.max(6, Math.min(16, height * 0.18));
+          const verticals = analysis.findVerticalSegments({
+            left:xx - tolerance,
+            right:xx + tolerance,
+            top:t - 4,
+            bottom:b + 4,
+            minRun:Math.max(18, height * 0.50),
+            minCoverage:0.50
+          }).filter(function(line){
+            return Math.abs(Number(line.pos || 0) - xx) <= tolerance;
+          }).sort(function(a,b){
+            return Math.abs(Number(a.pos || 0) - xx) - Math.abs(Number(b.pos || 0) - xx);
+          });
+          if (verticals.length) {
+            const line = verticals[0];
+            const maxRun = Number(line.maxRun || 0);
+            const ink = Number(line.ink || 0);
+            const straightness = Number(line.straightness || 0);
+            const runRatio = maxRun / Math.max(1, height);
+            const inkRatio = ink / Math.max(1, height);
+            if (Math.max(runRatio, inkRatio) < 0.50) return score;
+            score += Math.min(155, runRatio * 120 + inkRatio * 76 + straightness * 46);
+            if (runRatio >= 0.42 || inkRatio >= 0.28) score += 36;
+          }
+        }
+        return score;
+      }
+      let best = null;
+      for (let i = 0; i < segments.length; i++) {
+        for (let j = i + 1; j < segments.length; j++) {
+          const topSeg = segments[i];
+          const bottomSeg = segments[j];
+          const height = bottomSeg.pos - topSeg.pos;
+          if (height < 46 || height > 210) continue;
+          const overlapLeft = Math.max(topSeg.start, bottomSeg.start);
+          const overlapRight = Math.min(topSeg.end, bottomSeg.end);
+          const overlap = overlapRight - overlapLeft;
+          const left = Math.min(topSeg.start, bottomSeg.start);
+          const right = Math.max(topSeg.end, bottomSeg.end);
+          const width = right - left;
+          if (overlap < 360 || width < 520) continue;
+          const runLeft = Math.min(getHeaderSegmentRunStart(topSeg), getHeaderSegmentRunStart(bottomSeg));
+          const runRight = Math.max(getHeaderSegmentRunEnd(topSeg), getHeaderSegmentRunEnd(bottomSeg));
+          const runWidth = runRight - runLeft;
+          const useRunEndpointScore = Number.isFinite(runLeft) && Number.isFinite(runRight) &&
+            runWidth >= Math.max(360, width * 0.42) &&
+            runWidth <= width + Math.max(12, width * 0.04);
+          const leftScoreX = useRunEndpointScore ? runLeft : left;
+          const rightScoreX = useRunEndpointScore ? runRight : right;
+          const middleBonus = segments.some(function(seg){
+            return seg.pos > topSeg.pos + 14 && seg.pos < bottomSeg.pos - 12 && Math.min(seg.end, right) - Math.max(seg.start, left) > width * 0.45;
+          }) ? 80 : 0;
+          let sameSpanOuterLineAbove = false;
+          const outerLineAbove = segments.some(function(seg){
+            const gapY = topSeg.pos - seg.pos;
+            if (gapY < 12 || gapY > Math.max(56, height * 0.90)) return false;
+            const overlapAbove = Math.min(seg.end, right) - Math.max(seg.start, left);
+            if (overlapAbove <= width * 0.45) return false;
+            const nearlySameSpan = overlapAbove >= width * 0.86 &&
+              Math.abs(seg.start - left) <= Math.max(8, width * 0.018) &&
+              Math.abs(seg.end - right) <= Math.max(8, width * 0.018);
+            if (nearlySameSpan && gapY <= Math.max(34, height * 0.32)) sameSpanOuterLineAbove = true;
+            return true;
+          });
+          const complexity = scorePaperAutoAlignHeaderComplexity(analysis, left, right, topSeg.pos, bottomSeg.pos);
+          let score = overlap * 1.6 + width * 0.35 + middleBonus + complexity.bonus - complexity.penalty - topSeg.pos * 0.30 - Math.abs(height - 90) * 1.4;
+          const topStraightness = Number(topSeg.straightness || 0);
+          const bottomStraightness = Number(bottomSeg.straightness || 0);
+          score += Math.min(80, (topStraightness + bottomStraightness) * 42);
+          score -= Math.max(0, 0.22 - topStraightness) * 260;
+          score -= Math.max(0, 0.22 - bottomStraightness) * 260;
+          if (outerLineAbove) score -= 700;
+          if (sameSpanOuterLineAbove) score -= 620;
+          if (topSeg.pos > 90 && complexity.dividerCount > 11) score -= Math.min(230, (topSeg.pos - 90) * 0.95 + (complexity.dividerCount - 11) * 26);
+          if (left > 8 && left < PAGE_W * 0.22) score += 45;
+          if (right > PAGE_W * 0.55 && right < PAGE_W - 8) score += 45;
+          const leftEndpointScore = scoreHeaderRectEndpoint(leftScoreX, topSeg.pos, bottomSeg.pos, 1);
+          const rightEndpointScore = scoreHeaderRectEndpoint(rightScoreX, topSeg.pos, bottomSeg.pos, -1);
+          score += Math.min(190, leftEndpointScore) + Math.min(190, rightEndpointScore);
+          score -= Math.max(0, 72 - leftEndpointScore) * 1.15;
+          score -= Math.max(0, 72 - rightEndpointScore) * 1.15;
+          if (!best || score > best.score) best = { left:left, right:right, top:topSeg.pos, bottom:bottomSeg.pos, score:score, segments:segments, selectedTopSegment:topSeg.pos, selectedBottomSegment:bottomSeg.pos, leftEndpointScore:leftEndpointScore, rightEndpointScore:rightEndpointScore };
+        }
+      }
+      return best;
+    }
+
+    // ══ 용지 인식 ⑥B 헤더 필드 추론 — 선택한 외곽에서 구분선·사선·필드 박스를 확정한다 ═════════════════════
     function inferPaperAutoAlignHeaderBoxes(analysis, bodyGrid, sides) {
       const xLines = analysis && Array.isArray(analysis.xLines) ? analysis.xLines : [];
       const yLines = analysis && Array.isArray(analysis.yLines) ? analysis.yLines : [];
       const bodyTop = Number(bodyGrid && bodyGrid.bodyTop) || PAGE_H;
       const upperYLimit = Math.max(140, Math.min(bodyTop - 55, 360));
       const upperY = (yLines || []).filter(function(y){ return y > 20 && y < upperYLimit; }).sort(function(a,b){ return a-b; });
-      let headerRawHorizontalSegments = [];
-      let headerDebugHorizontalSegments = [];
       let headerDebugVerticalCandidates = [];
       let headerDebugPlusCandidates = [];
-      const headerPaperEdgeMargin = 3;
 
       // ── [헤더] 가로 선분 수집 · 종이 가장자리 잡음 제외 ────────────
-      function isHeaderPaperEdgeNoiseX(x) {
-        const xx = Number(x);
-        return !Number.isFinite(xx) || xx <= headerPaperEdgeMargin || xx >= PAGE_W - 1 - headerPaperEdgeMargin;
-      }
 
-      function makeHeaderRectFromSegments() {
-        if (!analysis || typeof analysis.findHorizontalSegments !== 'function') return null;
-        const segments = analysis.findHorizontalSegments({
-          left:0,
-          right:PAGE_W - 1,
-          top:6,
-          bottom:upperYLimit,
-          minRun:Math.max(360, PAGE_W * 0.28)
-        }).filter(function(segment){
-          return segment.maxRun >= 360 && segment.pos < bodyTop - 55;
-        });
-        headerRawHorizontalSegments = segments;
-        headerDebugHorizontalSegments = segments.map(function(segment){
-          return normalizePaperAutoAlignDebugSegment(segment, false);
-        }).filter(Boolean).slice(0, 96);
-        function hasHeaderRectOneSidedArm(x, y, direction, minArm) {
-          if (!analysis || typeof analysis.measureDarkSpan !== 'function') return false;
-          const arm = Math.max(6, Math.round(Number(minArm) || 10));
-          for (let dy = -2; dy <= 2; dy++) {
-            const span = analysis.measureDarkSpan(x, y + dy, 'x', Math.max(48, arm * 6));
-            if (!span) continue;
-            if (direction > 0 && Number(span.after || 0) >= arm) return true;
-            if (direction < 0 && Number(span.before || 0) >= arm) return true;
-          }
-          return false;
-        }
-        function scoreHeaderRectEndpoint(x, top, bottom, direction) {
-          const xx = Number(x);
-          const t = Number(top);
-          const b = Number(bottom);
-          if (![xx, t, b].every(Number.isFinite) || b <= t || isHeaderPaperEdgeNoiseX(xx)) return 0;
-          const height = b - t;
-          const arm = Math.max(7, Math.min(18, (Math.abs(xx) + PAGE_W) * 0.0035));
-          const topArm = hasHeaderRectOneSidedArm(xx, t, direction, arm);
-          const bottomArm = hasHeaderRectOneSidedArm(xx, b, direction, arm);
-          const armCount = (topArm ? 1 : 0) + (bottomArm ? 1 : 0);
-          let score = armCount * 34;
-          if (armCount === 2) score += 42;
-          if (analysis && typeof analysis.findVerticalSegments === 'function') {
-            const tolerance = Math.max(6, Math.min(16, height * 0.18));
-            const verticals = analysis.findVerticalSegments({
-              left:xx - tolerance,
-              right:xx + tolerance,
-              top:t - 4,
-              bottom:b + 4,
-              minRun:Math.max(18, height * 0.50),
-              minCoverage:0.50
-            }).filter(function(line){
-              return Math.abs(Number(line.pos || 0) - xx) <= tolerance;
-            }).sort(function(a,b){
-              return Math.abs(Number(a.pos || 0) - xx) - Math.abs(Number(b.pos || 0) - xx);
-            });
-            if (verticals.length) {
-              const line = verticals[0];
-              const maxRun = Number(line.maxRun || 0);
-              const ink = Number(line.ink || 0);
-              const straightness = Number(line.straightness || 0);
-              const runRatio = maxRun / Math.max(1, height);
-              const inkRatio = ink / Math.max(1, height);
-              if (Math.max(runRatio, inkRatio) < 0.50) return score;
-              score += Math.min(155, runRatio * 120 + inkRatio * 76 + straightness * 46);
-              if (runRatio >= 0.42 || inkRatio >= 0.28) score += 36;
-            }
-          }
-          return score;
-        }
-        let best = null;
-        for (let i = 0; i < segments.length; i++) {
-          for (let j = i + 1; j < segments.length; j++) {
-            const topSeg = segments[i];
-            const bottomSeg = segments[j];
-            const height = bottomSeg.pos - topSeg.pos;
-            if (height < 46 || height > 210) continue;
-            const overlapLeft = Math.max(topSeg.start, bottomSeg.start);
-            const overlapRight = Math.min(topSeg.end, bottomSeg.end);
-            const overlap = overlapRight - overlapLeft;
-            const left = Math.min(topSeg.start, bottomSeg.start);
-            const right = Math.max(topSeg.end, bottomSeg.end);
-            const width = right - left;
-            if (overlap < 360 || width < 520) continue;
-            const runLeft = Math.min(getHeaderSegmentRunStart(topSeg), getHeaderSegmentRunStart(bottomSeg));
-            const runRight = Math.max(getHeaderSegmentRunEnd(topSeg), getHeaderSegmentRunEnd(bottomSeg));
-            const runWidth = runRight - runLeft;
-            const useRunEndpointScore = Number.isFinite(runLeft) && Number.isFinite(runRight) &&
-              runWidth >= Math.max(360, width * 0.42) &&
-              runWidth <= width + Math.max(12, width * 0.04);
-            const leftScoreX = useRunEndpointScore ? runLeft : left;
-            const rightScoreX = useRunEndpointScore ? runRight : right;
-            const middleBonus = segments.some(function(seg){
-              return seg.pos > topSeg.pos + 14 && seg.pos < bottomSeg.pos - 12 && Math.min(seg.end, right) - Math.max(seg.start, left) > width * 0.45;
-            }) ? 80 : 0;
-            let sameSpanOuterLineAbove = false;
-            const outerLineAbove = segments.some(function(seg){
-              const gapY = topSeg.pos - seg.pos;
-              if (gapY < 12 || gapY > Math.max(56, height * 0.90)) return false;
-              const overlapAbove = Math.min(seg.end, right) - Math.max(seg.start, left);
-              if (overlapAbove <= width * 0.45) return false;
-              const nearlySameSpan = overlapAbove >= width * 0.86 &&
-                Math.abs(seg.start - left) <= Math.max(8, width * 0.018) &&
-                Math.abs(seg.end - right) <= Math.max(8, width * 0.018);
-              if (nearlySameSpan && gapY <= Math.max(34, height * 0.32)) sameSpanOuterLineAbove = true;
-              return true;
-            });
-            const complexity = scorePaperAutoAlignHeaderComplexity(analysis, left, right, topSeg.pos, bottomSeg.pos);
-            let score = overlap * 1.6 + width * 0.35 + middleBonus + complexity.bonus - complexity.penalty - topSeg.pos * 0.30 - Math.abs(height - 90) * 1.4;
-            const topStraightness = Number(topSeg.straightness || 0);
-            const bottomStraightness = Number(bottomSeg.straightness || 0);
-            score += Math.min(80, (topStraightness + bottomStraightness) * 42);
-            score -= Math.max(0, 0.22 - topStraightness) * 260;
-            score -= Math.max(0, 0.22 - bottomStraightness) * 260;
-            if (outerLineAbove) score -= 700;
-            if (sameSpanOuterLineAbove) score -= 620;
-            if (topSeg.pos > 90 && complexity.dividerCount > 11) score -= Math.min(230, (topSeg.pos - 90) * 0.95 + (complexity.dividerCount - 11) * 26);
-            if (left > 8 && left < PAGE_W * 0.22) score += 45;
-            if (right > PAGE_W * 0.55 && right < PAGE_W - 8) score += 45;
-            const leftEndpointScore = scoreHeaderRectEndpoint(leftScoreX, topSeg.pos, bottomSeg.pos, 1);
-            const rightEndpointScore = scoreHeaderRectEndpoint(rightScoreX, topSeg.pos, bottomSeg.pos, -1);
-            score += Math.min(190, leftEndpointScore) + Math.min(190, rightEndpointScore);
-            score -= Math.max(0, 72 - leftEndpointScore) * 1.15;
-            score -= Math.max(0, 72 - rightEndpointScore) * 1.15;
-            if (!best || score > best.score) best = { left:left, right:right, top:topSeg.pos, bottom:bottomSeg.pos, score:score, segments:segments, selectedTopSegment:topSeg.pos, selectedBottomSegment:bottomSeg.pos, leftEndpointScore:leftEndpointScore, rightEndpointScore:rightEndpointScore };
-          }
-        }
-        return best;
-      }
-      const headerRect = makeHeaderRectFromSegments();
+      const headerRect = findPaperAutoAlignHeaderRect(analysis, bodyTop, upperYLimit);
       if (!headerRect) return {};
+      const headerRawHorizontalSegments = headerRect.segments;
+      const headerDebugHorizontalSegments = headerRawHorizontalSegments.map(function(segment){
+        return normalizePaperAutoAlignDebugSegment(segment, false);
+      }).filter(Boolean).slice(0, 96);
       let headerLeft = Math.max(0, Math.round(headerRect.left));
       let headerRight = Math.min(PAGE_W - 1, Math.round(headerRect.right));
       const headerTop = Math.max(0, Math.round(headerRect.top));
       const headerBottom = Math.min(PAGE_H - 1, Math.round(headerRect.bottom));
       if (headerRight - headerLeft < 520 || headerBottom - headerTop < 44) return {};
       const headerH = headerBottom - headerTop;
-      // ver-audit 2026-08-02: 이 둘은 makeHeaderRectFromSegments 안에도 같은 사본이 있었다.
-      // 안쪽에 갇혀 형제 함수에서 안 보인다는 이유로 바깥에 다시 선언한 것이었고,
-      // 바깥 하나로 합쳤다(함수 선언이라 호이스팅되어 안쪽에서도 보인다).
-
-      function getHeaderSegmentRunStart(segment) {
-        const value = Number(segment && segment.runStart);
-        return Number.isFinite(value) ? value : Number(segment && segment.start);
-      }
-
-      function getHeaderSegmentRunEnd(segment) {
-        const value = Number(segment && segment.runEnd);
-        return Number.isFinite(value) ? value : Number(segment && segment.end);
-      }
 
       function addHeaderDebugHorizontalSegment(segment, selected, flags) {
         const normalized = normalizePaperAutoAlignDebugSegment(segment, selected, flags);
@@ -10569,7 +10543,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           minCoverage:0.50
         }).filter(function(line){
           const x = Number(line && line.pos);
-          if (!Number.isFinite(x) || isHeaderPaperEdgeNoiseX(x)) return false;
+          if (!Number.isFinite(x) || isPaperAutoAlignHeaderEdgeNoiseX(x)) return false;
           if (!hasMinimumHeaderVerticalStrokeCoverage(line, 0.50)) return false;
           const endpoint = getHeaderEndpointHorizontalJoint(x, getHeaderJointMinArm());
           if (!endpoint) return false;
@@ -10602,7 +10576,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           minCoverage:0.50
         }).filter(function(line){
           const x = Number(line && line.pos);
-          if (!Number.isFinite(x) || isHeaderPaperEdgeNoiseX(x)) return false;
+          if (!Number.isFinite(x) || isPaperAutoAlignHeaderEdgeNoiseX(x)) return false;
           if (!hasMinimumHeaderVerticalStrokeCoverage(line, 0.50)) return false;
           if (countHeaderBandJoints(x) < 2) return false;
           if (!isHeaderVerticalLengthPlausible(x, line)) return false;
@@ -10676,7 +10650,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         }).map(function(line){ return line.pos; }));
       }
       headerLines = mergePaperAutoAlignUniquePositions(headerLines, 5).filter(function(x){
-        return !isHeaderPaperEdgeNoiseX(x) &&
+        return !isPaperAutoAlignHeaderEdgeNoiseX(x) &&
           (x >= headerLeft - 5 && x <= headerRight + 5 || getHeaderHorizontalJointKind(x) === 'endpoint');
       });
       headerLines = mergePaperAutoAlignUniquePositions(headerLines, 5);
@@ -10705,10 +10679,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const leftEndpoint = endpointLines[0].x;
         const rightEndpoint = endpointLines[endpointLines.length - 1].x;
         if (leftEndpoint < headerLeft && headerLeft - leftEndpoint <= maxExpand) {
-          headerLeft = Math.max(headerPaperEdgeMargin + 1, Math.round(leftEndpoint));
+          headerLeft = Math.max(PAPER_HEADER_EDGE_MARGIN + 1, Math.round(leftEndpoint));
         }
         if (rightEndpoint > headerRight && rightEndpoint - headerRight <= maxExpand) {
-          headerRight = Math.min(PAGE_W - headerPaperEdgeMargin - 2, Math.round(rightEndpoint));
+          headerRight = Math.min(PAGE_W - PAPER_HEADER_EDGE_MARGIN - 2, Math.round(rightEndpoint));
         }
         headerWForJoints = Math.max(1, headerRight - headerLeft);
       }
@@ -10779,7 +10753,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
       function refreshHeaderIntervalsForVirtualLines() {
         headerLines = mergePaperAutoAlignUniquePositions(headerLines, 5).filter(function(x){
-          return !isHeaderPaperEdgeNoiseX(x) && x >= headerLeft - 5 && x <= headerRight + 5;
+          return !isPaperAutoAlignHeaderEdgeNoiseX(x) && x >= headerLeft - 5 && x <= headerRight + 5;
         });
         intervals = makePaperAutoAlignHeaderIntervals(headerLines);
         slashLeftLimit = Number.isFinite(Number(confirmedHeaderEndpointLeft))
@@ -10940,7 +10914,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         headerDebugCandidateMap.set(key, virtualLine);
         headerLines = headerLines.concat([alignedX]);
         if (alignedX < headerLeft) {
-          headerLeft = Math.max(headerPaperEdgeMargin + 1, Math.round(alignedX));
+          headerLeft = Math.max(PAPER_HEADER_EDGE_MARGIN + 1, Math.round(alignedX));
           headerWForJoints = Math.max(1, headerRight - headerLeft);
         }
         const previousLeft = Number(confirmedHeaderEndpointLeft);
@@ -14036,7 +14010,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         // Historical field names are part of saved state; all file imports share this ownership.
         const previousKey = kind === 'dialog' ? 'lastCsvGeneratedDialogLines' : 'lastCsvGeneratedCameraLines';
         const lines = commandRoleBlocksToManualLines(commandText, kind, duration);
-        target.value = mergeCsvGeneratedLines(target.value, state[previousKey], lines).text;
+        if (target) {
+          const merged = mergeCsvGeneratedLines(target.value, state[previousKey], lines);
+          target.value = merged.text;
+          if (kind === 'camera') remapCameraPreviewStyles(target, merged.survivors);
+        }
         state[previousKey] = lines;
       });
     }
@@ -14842,32 +14820,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       let found = null;
       blocks.forEach(function(block){
         if (found || frame < block.start || frame >= block.start + block.count) return;
-        const top = SHEET_BLOCK_TOP;
-        const nameStripH = SHEET_BLOCK_NAME_STRIP_H;
-        const bodyH = SHEET_BLOCK_BODY_H;
-        const rowH = bodyH / block.count;
-        const xOriginalRight = block.x + block.metrics.originalAreaW;
-        const xDialogRight = xOriginalRight + block.metrics.dialogW;
-        const xInbetweenRight = xDialogRight + block.metrics.inbetweenW;
-        found = {
-          blockX:block.x,
-          blockW:block.w,
-          originalColW:block.metrics.originalAreaW / Math.max(1, model.layout.originalEntries.length),
-          originalAreaW:block.metrics.originalAreaW,
-          originalEntriesCount:model.layout.originalEntries.length,
-          top:top,
-          nameStripH:nameStripH,
-          rowH:rowH,
-          frameCount:block.count,
-          start:block.start,
-          end:block.start + block.count - 1,
-          xOriginalRight:xOriginalRight,
-          xDialogRight:xDialogRight,
-          xInbetweenRight:xInbetweenRight,
-          dialogW:block.metrics.dialogW,
-          cameraW:block.metrics.cameraW,
-          previewBlockType:blockType
-        };
+        found = getSheetBlockGeometry(model.layout, block);
+        found.previewBlockType = blockType;
       });
       return found;
     }
@@ -15196,15 +15150,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       let result = null;
       blocks.forEach(function(block){
         if (result) return;
-        const top = SHEET_BLOCK_TOP, nameStripH = SHEET_BLOCK_NAME_STRIP_H, bodyH = SHEET_BLOCK_BODY_H;
-        const tempBlock = {
-          blockX:block.x, blockW:block.w,
-          originalColW:block.metrics.originalAreaW / Math.max(1, entries.length),
-          originalAreaW:block.metrics.originalAreaW,
-          originalEntriesCount:entries.length,
-          top:top, nameStripH:nameStripH, rowH:bodyH / block.count,
-          frameCount:block.count, start:block.start
-        };
+        const tempBlock = getSheetBlockGeometry(model.layout, block);
         const area = getCellArea(tempBlock);
         if (p.x < area.x || p.x > area.x + area.w || p.y < area.y || p.y > area.y + area.h) return;
         const areaRowH = getOutputRowH(tempBlock, 'cell');
@@ -15705,15 +15651,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const entries = (model.layout && model.layout.originalEntries) || [];
       if (!entries.length) return;
       getBlocksForPage(model.layout, pageIndex).forEach(function(block){
-        const top = SHEET_BLOCK_TOP, nameStripH = SHEET_BLOCK_NAME_STRIP_H, bodyH = SHEET_BLOCK_BODY_H;
-        const tempBlock = {
-          blockX:block.x, blockW:block.w,
-          originalColW:block.metrics.originalAreaW / Math.max(1, entries.length),
-          originalAreaW:block.metrics.originalAreaW,
-          originalEntriesCount:entries.length,
-          top:top, nameStripH:nameStripH, rowH:bodyH / block.count,
-          frameCount:block.count, start:block.start, end:block.start + block.count - 1
-        };
+        const tempBlock = getSheetBlockGeometry(model.layout, block);
         const area = getCellArea(tempBlock);
         const hit = el('rect', { x:area.x, y:area.y, width:area.w, height:area.h, fill:'transparent', stroke:'transparent', 'pointer-events':'all', class:'serifu-capture-area' });
         hit.style.cursor = 'crosshair';
@@ -17422,13 +17360,15 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         row.createdIndex=indexed.length; indexed.push({text:row.name.trim()+':',index:-1});
       });
       const newLines=indexed.map(function(item){return item.text;}), after=getCommandLineItemsFromLines(newLines);
+      const afterByLine=new Map(after.map(function(item){return [item.lineIndex,item];}));
+      const afterBySource=new Map();
+      indexed.forEach(function(line,index){if(!afterBySource.has(line.index))afterBySource.set(line.index,afterByLine.get(index));});
       before.forEach(function(item){
-        const index=indexed.findIndex(function(line){return line.index===item.lineIndex;});
-        const next=after.find(function(item){return item.lineIndex===index;});
+        const next=afterBySource.get(item.lineIndex);
         if(next)uidMap.set(uidPrefix+'-'+item.commandIndex,uidPrefix+'-'+next.commandIndex);
       });
       rows.forEach(function(row){
-        if(row.createdIndex!==undefined){const item=after.find(function(item){return item.lineIndex===row.createdIndex;});if(item)uidMap.set(row.uid,uidPrefix+'-'+item.commandIndex);}
+        if(row.createdIndex!==undefined){const item=afterByLine.get(row.createdIndex);if(item)uidMap.set(row.uid,uidPrefix+'-'+item.commandIndex);}
       });
       const cells=rows.filter(function(row){return row.kind==='cell';});
       const modelChanged=newLines.join('\n')!==draft.lines.join('\n') || cells.map(function(row){return row.key;}).join('\n')!==draft.cellKeys.join('\n');
@@ -17436,7 +17376,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (modelChanged) {
         if(draft.mode==='text')removeTextCommandGeneratedManualLinesForItems(before);
         if(draft.mode==='csv'){
-          sourceRows.forEach(function(row){if(row.column)row.column.name=row.name.trim()||row.originalName;});
+          // CSV identity follows the resolved command; display-only BOOK edits live in bookNames.
+          sourceRows.forEach(function(row){const item=afterBySource.get(row.lineIndex);if(row.column&&item)row.column.name=item.name;});
           const assignmentByLine=new Map(draft.assignments.map(function(item){return [item.lineIndex,item.column];}));
           state.csvColumnOrder=indexed.map(function(item){return assignmentByLine.get(item.index);}).filter(Boolean).map(function(col){return col.index;});
         }
@@ -17596,7 +17537,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       }, event);
     }
 
-    function getLayerNameTagBlockGeometry(layout, block) {
+    function getSheetBlockGeometry(layout, block) {
       const entries = layout && Array.isArray(layout.originalEntries) ? layout.originalEntries : [];
       if (!block || !block.metrics) return null;
       const top = SHEET_BLOCK_TOP;
@@ -17779,7 +17720,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       withDrawLayer('output', function(){
         const container = el('g', { 'data-layer-name-tags':'true' });
         blocks.forEach(function(block){
-          const geometry = getLayerNameTagBlockGeometry(layout, block);
+          const geometry = getSheetBlockGeometry(layout, block);
           if (!geometry) return;
           layoutLayerNameTagGroups(getLayerNameTagList(), layout.originalEntries || [], getCellLabelArea(geometry), LAYER_NAME_TAG_HEADER_MIN_TOP, {pageLeft:1,pageRight:PAGE_W-1}).forEach(function(box){
             renderLayerNameTagShape(box.members[0], box, live && !state.memoMode && !state.positionMode && !state.textMemoEditMode && !state.shakuMode, container);
@@ -19261,7 +19202,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const blocks = getBlocksForPage(model.layout, state.currentPreviewPage || 0);
       let candidate = null;
       blocks.forEach(function(block){
-        const tempBlock = getLayerNameTagBlockGeometry(model.layout, block);
+        const tempBlock = getSheetBlockGeometry(model.layout, block);
         if (!tempBlock) return;
         const boundaryArea = getDurationBoundaryArea(tempBlock);
         const cellArea = getCellArea(tempBlock);
@@ -20093,9 +20034,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const endLabel = String(parsed.endLabel || '').trim();
       let core = '';
       // Within-cut O.L: cel+OL in the middle (e.g. "AセルOL"), states in start/end labels → AセルO.L A1 ⋈ A2.
-      const midOl = !isCameraTargetShapeDirective(label) ? text.normalize('NFKC').match(/^(.*?)\s*O\.?\s*L$/i) : null;
+      const midOl = getWithinCutOlInfo(parsed);
       if (midOl) {
-        const celOl = String(midOl[1] || '').trim() + 'O.L';
+        const celOl = midOl.cel + 'O.L';
         core = (label && endLabel) ? (label + ' ⋈ ' + endLabel + ' ' + celOl) : celOl;
       } else if (isCameraTargetShapeDirective(label)) {
         // Directive in the label position: FI/FO target form, or legacy OL | A1 | A2.
@@ -20121,8 +20062,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (!parsed) return true;
       const label = String(parsed.label || '').trim();
       if (isCameraTargetShapeDirective(label)) return true;
-      const text = String(parsed.text || '').trim();
-      return /^(.*?)\s*O\.?\s*L$/i.test(text.normalize('NFKC'));
+      return !!getWithinCutOlInfo(parsed);
     }
 
     // Same connection rule as the camera column: previous `to` === next `from` and the boundary labels match.
@@ -21453,31 +21393,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const dragType = state.activeTimelineDrag && state.activeTimelineDrag.blockType ? state.activeTimelineDrag.blockType : 'cell';
       let nearestFrame = null;
       blocks.forEach(function(block){
-        const top = SHEET_BLOCK_TOP;
-        const nameStripH = SHEET_BLOCK_NAME_STRIP_H;
-        const bodyH = SHEET_BLOCK_BODY_H;
-        const rowH = bodyH / block.count;
-        const xOriginalRight = block.x + block.metrics.originalAreaW;
-        const xDialogRight = xOriginalRight + block.metrics.dialogW;
-        const xInbetweenRight = xDialogRight + block.metrics.inbetweenW;
-        const tempBlock = {
-          blockX:block.x,
-          blockW:block.w,
-          originalColW:block.metrics.originalAreaW / Math.max(1, model.layout.originalEntries.length),
-          originalAreaW:block.metrics.originalAreaW,
-          originalEntriesCount:model.layout.originalEntries.length,
-          top:top,
-          nameStripH:nameStripH,
-          rowH:rowH,
-          frameCount:block.count,
-          start:block.start,
-          end:block.start + block.count - 1,
-          xOriginalRight:xOriginalRight,
-          xDialogRight:xDialogRight,
-          xInbetweenRight:xInbetweenRight,
-          dialogW:block.metrics.dialogW,
-          cameraW:block.metrics.cameraW
-        };
+        const tempBlock = getSheetBlockGeometry(model.layout, block);
         const area = dragType === 'camera' ? getCameraArea(tempBlock) : (dragType === 'dialog' ? getDialogArea(tempBlock) : getCellArea(tempBlock));
         const areaRowH = getOutputRowH(tempBlock, dragType);
         const bodyTop = area.y;
@@ -21660,7 +21576,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       values.dataStartRow = Number(csv.dataStartRow) || 1;
       Object.entries(CSV_SETTINGS_FIELDS).forEach(function(entry){ state[entry[1][0]] = cloneSheetData(values[entry[0]]); });
       state.csvFileBuffer = null;
-      state.csvDurationAutofillPending = false;
     }
 
     function getSheetStateKeys(scope) {
@@ -21882,35 +21797,17 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       }
       if (queuedRenderFrame !== null) return;
       queuedRenderFrame = window.requestAnimationFrame(function(){
-        queuedRenderFrame = null;
         if (state.layoutDrag) {
+          queuedRenderFrame = null;
           queuedRenderDeferred = true;
           return;
         }
-        const shouldSync = queuedRenderNeedsCommandSync;
-        queuedRenderNeedsCommandSync = false;
-        queuedRenderDeferred = false;
-        if (shouldSync) syncCommandTextFromCurrentState();
         render();
       });
     }
 
     function flushQueuedRender() {
-      if (queuedRenderFrame !== null) {
-        window.cancelAnimationFrame(queuedRenderFrame);
-        queuedRenderFrame = null;
-        const shouldSync = queuedRenderNeedsCommandSync;
-        queuedRenderNeedsCommandSync = false;
-        queuedRenderDeferred = false;
-        if (shouldSync) syncCommandTextFromCurrentState();
-        render();
-      } else if (queuedRenderDeferred) {
-        const shouldSync = queuedRenderNeedsCommandSync;
-        queuedRenderNeedsCommandSync = false;
-        queuedRenderDeferred = false;
-        if (shouldSync) syncCommandTextFromCurrentState();
-        render();
-      }
+      if (queuedRenderFrame !== null || queuedRenderDeferred) render();
     }
 
     function flushPendingCommandInputRender() {
@@ -22164,17 +22061,13 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         resetSheetTransientState();
         const snap = cloneSheetData(snapshot);
         applySheetState('historySource', snap.source);
-        state.csvDurationAutofillPending = false;
         applySheetInputs(snap.inputs);
         state.stages = snap.stages; state.activeStageId = snap.activeStageId;
         state.memoPages = snap.memo; state.textMemoPages = snap.text; state.pastedImages = snap.images;
         state.currentPreviewPage = pageIndex;
         restorePaperStateSnapshot(snap.paper, { render:false });
         Object.assign(state,modes);
-        updateInputModeButtons();
-        document.getElementById('textModeBox').classList.toggle('hidden', getCurrentInputMode() !== 'text');
-        document.getElementById('csvModeBox').classList.toggle('hidden', !isCsvMode(getCurrentInputMode()));
-        refreshCsvColumnPicker(); updateCsvStatusText(); refreshCommandCellViews();
+        refreshCsvColumnPicker(); updateCsvStatusText(); syncInputModeUI();
         applyContentSnapshot(snap.content);
         refreshSheetStageUI();
         saveHeaderMemoryNow();
@@ -25891,39 +25784,14 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return '';
     }
 
-    function resetCsvLoadState(message, options) {
-      const opts = options || {};
-      clearTimelineInteractionOverrides();
-      clearCsvGeneratedTimelineBlocks();
-      state.csvRawRows = [];
-      state.csvOriginalRows = [];
-      state.csvOriginalText = '';
-      state.csvOriginalEncoding = 'utf-8';
-      state.csvLoadedMode = '';
-      state.tvpaintCellSourceColumns = [];
-      state.csvColumns = [];
-      state.csvColumnOrder = [];
-      state.csvColumnRoles = {};
-      state.csvDurationAutofillPending = false;
-      state.csvFrameIndex = 0;
-      state.csvDataStartRow = 1;
-      state.cellDisplayOrder = [];
-      state.dougaSheetEnabled = false;
-      state.dougaSheetData = null;
-      state.serifuSheetGuides = [];
-      if (!opts.keepBuffer) state.csvFileBuffer = null;
-      if (csvColumnPickerEl) csvColumnPickerEl.innerHTML = '';
-      setCommandTextValue('csv', '');
-      state.csvLoadError = message || '';
-      if (csvInfoEl) csvInfoEl.textContent = state.csvLoadError || t('noCsv');
-      updateCsvSourceInfo();
-      updateCsvSettingsActionVisibility();
-    }
 
     function resetCsvStateForSheetClear() {
-      resetCsvLoadState('', { keepBuffer:false });
+      resetImportedTimelineState();
+      clearCsvGeneratedTimelineBlocks();
+      Object.assign(state, createCsvState());
+      state.csvFileBuffer = null;
+      if (csvColumnPickerEl) csvColumnPickerEl.innerHTML = '';
       setCommandTextValue('csv', 'A:');
-      state.csvLoadError = '';
       const csvFileInput = document.getElementById('csvFileInput');
       if (csvFileInput) csvFileInput.value = '';
       if (csvInfoEl) csvInfoEl.textContent = t('noCsv');
@@ -25950,7 +25818,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         state.csvFileBuffer = buffer; state.csvOriginalRows = parsedRows;
         state.csvOriginalText = decoded.textValue; state.csvOriginalEncoding = decoded.encoding;
         state.csvLoadedMode = sourceMode; state.tvpaintCellSourceColumns = [];
-        if (options && options.fresh) state.csvDurationAutofillPending = true;
         resetImportedTimelineState();
         const rows = sourceMode === 'tvpaint' ? convertTvpaintRowsToPseudoCsv(parsedRows) : parsedRows;
         setupCsvState(rows);
@@ -25969,8 +25836,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         syncCsvBookNameTags();
         const duration = getCsvDataRows().reduce(function(max, item){ return Math.max(max, item.frame); }, 0);
         applyImportedCommandRoles(snapshot.inputs.csvCommandEdit, duration);
-        applyDurationFromCsvRows(rows);
-        state.csvDurationAutofillPending = false; state.csvLoadError = '';
+        applyDurationFromCsvRows(rows, options && options.fresh);
+        state.csvLoadError = '';
         getRenderModel();
       });
       return snapshot;
@@ -25980,10 +25847,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (snapshot.importIdentity) applySheetIdentity(snapshot.importIdentity);
       applySheetState('csv', snapshot.state);
       applySheetInputs(snapshot.inputs, ['cellInputMode','csvCommandEdit','dialogManual','cameraManual','seconds','frames']);
-      refreshCsvColumnPicker(); updateCsvStatusText(); updateInputModeButtons(); refreshCommandCellViews();
-      document.getElementById('textModeBox').classList.toggle('hidden', true);
-      document.getElementById('csvModeBox').classList.toggle('hidden', false);
-      updateCsvSourceInfo(); updateCsvSettingsActionVisibility();
+      refreshCsvColumnPicker(); updateCsvStatusText();
+      syncInputModeUI(); updateCsvSourceInfo();
       // 카메라 줄이 통째로 바뀌었으니 그 줄에서 만든 메모도 다시 쓴다. 작업 열기 경로는
       // prepareLoadedTextMemos() 에서 같은 일을 한다 — 여기에만 없어서, 취입 직후 화면에
       // 앞 문서(첫 화면이면 기본 표본)의 카메라 메모가 남아 있었다.
@@ -28961,8 +28826,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       }
     }
 
-    function updateModeUI(options) {
-      const shouldRender = !(options && options.render === false);
+    function syncInputModeUI() {
       const mode = getCurrentInputMode();
       updateInputModeButtons();
       document.getElementById('textModeBox').classList.toggle('hidden', mode !== 'text');
@@ -28970,6 +28834,12 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       refreshCommandCellViews();
       updateCsvSettingsActionVisibility();
       updateCsvHelpText();
+    }
+
+    function updateModeUI(options) {
+      const shouldRender = !(options && options.render === false);
+      const mode = getCurrentInputMode();
+      syncInputModeUI();
       if (isCsvMode(mode) && state.csvFileBuffer) {
         try {
           loadCsvFromCurrentBuffer({ render:shouldRender });
