@@ -282,6 +282,15 @@
     .app-dialog-header > :first-child { min-width:0; }
     .app-dialog-header button { flex:none; }
     .app-dialog-body { min-width:0; }
+    .drawing-count-dialog { width:min(550px,calc(100vw - 24px)); max-height:calc(100dvh - 32px); overflow:auto; }
+    .drawing-count-table { width:100%; border-collapse:collapse; text-align:right; font-variant-numeric:tabular-nums; }
+    .drawing-count-table th,.drawing-count-table td { padding:12px 8px; border-bottom:1px solid var(--line,#ddd); overflow-wrap:anywhere; }
+    .drawing-count-table th:first-child { text-align:left; }
+    .drawing-count-table thead { color:var(--muted,#78808b); font-size:11px; }
+    .drawing-count-table tfoot { font-weight:700; }
+    .drawing-count-dialog .app-dialog-actions { flex-wrap:wrap; }
+    .drawing-count-display { display:inline-flex; align-items:center; gap:8px; margin-right:auto; white-space:nowrap; }
+
     .export-review-footer > button.primary { --control-h:var(--ui-h-action); }
     .ui-setting-row { display:grid; grid-template-columns:minmax(0,1fr) minmax(64px,96px); align-items:center; gap:var(--ui-gap); min-width:0; }
     .ui-setting-row > :is(input,select) { width:100%; min-width:0; }
@@ -2361,6 +2370,7 @@
             <div id="pageIndicator" class="page-indicator">1 / 1</div>
             <button id="nextPageBtn" class="toolbar-btn icon-only" type="button" aria-label="Next page"><svg class="ic-svg" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false" style="transform:scaleX(-1)"><path d="M14.5 6.5 9 12l5.5 5.5"/></svg></button>
           </div>
+          <button id="drawingCountBtn" class="toolbar-btn" type="button" data-ui-text="drawingCountTitle"></button>
           <button id="outputReviewBtn" class="toolbar-btn" type="button" data-ui-text="outputReview"></button>
           <div class="export-actions">
             <select id="exportFormatSelect" class="export-select" aria-label="Export image format">
@@ -2602,7 +2612,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '954';
+    const APP_VERSION = '955';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -2949,7 +2959,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       memo:["memoPages","textMemoPages"],
       pastedImages:["pastedImages"],
       stages:["stages","activeStageId"],
-      workPreferences:["memoMode","memoTool","memoColor","memoPenSize","memoEraserSize","shortcuts","sheetZoom","currentPreviewPage"],
+      workPreferences:["drawingCountPosition","memoMode","memoTool","memoColor","memoPenSize","memoEraserSize","shortcuts","sheetZoom","currentPreviewPage"],
       renderContext:["lang","totalPages","exportFilenameOverride"],
       loadReset:["previewSpacePanKey","shakuFlash","shakuMode","shakuSelection","textMemoEditMode"]
     };
@@ -3077,6 +3087,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       showCellLabelOutput: true,
       showPsdMemo: true,
       cellReadabilityLarge: false,
+      drawingCountPosition: '',
       dougaSheetEnabled: false,
       dougaSheetData: null,
       stages: [],
@@ -3188,6 +3199,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     const uiTexts = {
       en: {
         languageLabel:'Language', headerCardTitle:'Header', episodeLabel:'Ep.no', titleLabel:'Title', cutNoLabel:'Cut.no', secondsLabel:'Duration sec', framesLabel:'Duration frame', authorLabel:'name', pageLabel:'Page',
+        drawingCountTitle:"Drawing count", drawingCountCell:"Cell", drawingCountNumbered:"Numbered drawings", drawingCountInbetweens:"Inbetweens", drawingCountTotal:"Total", drawingCountPending:"Check required", drawingCountDisplay:"Display", drawingCountOff:"Off", drawingCountBottom:"Header bottom right", drawingCountTop:"Header top right", drawingCountCsv:"Save CSV", drawingCountText:"Save text", drawingCountClose:"Close", drawingCountHint:"Reused drawings and repeats count once. Unplaced ranges require checking.", drawingCountWork:"Work", drawingCountEpisode:"Episode", drawingCountCut:"Cut",
         originalCellTitle:'Sheet Input', inputModeLabel:'Input Mode', inputModeTextCommands:'Edit', inputModeCsv:'Import file', csvReadSettings:'CSV read settings', tvpPanelDownload:'TVPaint panel', csvSettingsExportBtn:'Save Project', shakuEditBtn:'Length Edit', shakuEditHint:'Drag a blue frame line to select a range.', shakuCutBtn:'Cut', shakuStretchBtn:'Extend', shakuUndoBtn:'Undo', shakuRedoBtn:'Redo', shakuFlashCut:'Cut applied', shakuFlashStretch:'Extend applied', dougaSheetCreate:'Make Douga', dougaSheetRefresh:'Refresh Douga', dougaSheetTitle:'Generate a read-only douga sheet from Cell numbers and dot marks', cellReadabilityTitle:'Large Cell text',
         textCommandsLabel:'Text Commands', csvFileLabel:'CLIP / TVPaint · Choose or drop a file', csvCommandEditLabel:'Editable Commands from CSV',
         dialogBlocksTitle:'Dialog Area', dialogFormatLabel:'Ex: 0+01 | 1+00 | speaker | line  (start | end | who | what)', cameraBlocksTitle:'Camera Area', cameraFormatLabel:'Ex: 0+01 | 1+00 | A | PAN | B  (start | end | from | move | to)', cameraExamplesTitle:'Examples',
@@ -3197,6 +3209,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       },
       ja: {
         languageLabel:'言語', headerCardTitle:'ヘッダー', episodeLabel:'話数', titleLabel:'タイトル', cutNoLabel:'カット番号', secondsLabel:'尺 秒', framesLabel:'尺 コマ', authorLabel:'名前', pageLabel:'ページ',
+        drawingCountTitle:"動画枚数", drawingCountCell:"セル", drawingCountNumbered:"番号絵", drawingCountInbetweens:"中割り", drawingCountTotal:"合計", drawingCountPending:"要確認", drawingCountDisplay:"表示", drawingCountOff:"非表示", drawingCountBottom:"ヘッダー右下", drawingCountTop:"ヘッダー右上", drawingCountCsv:"CSV保存", drawingCountText:"テキスト保存", drawingCountClose:"閉じる", drawingCountHint:"同じ絵の再使用・リピートは1枚として集計。仮置き区間は要確認。", drawingCountWork:"作品", drawingCountEpisode:"話数", drawingCountCut:"カット",
         originalCellTitle:'シート入力', inputModeLabel:'入力モード', inputModeTextCommands:'直接入力', inputModeCsv:'ファイル読込', csvReadSettings:'CSV読み込み設定', tvpPanelDownload:'TVPaint用パネル', csvSettingsExportBtn:'プロジェクト保存', shakuEditBtn:'尺編集(演出向け)', shakuEditHint:'青いフレーム線をドラッグして尺を選択', shakuCutBtn:'切る', shakuStretchBtn:'伸ばす', shakuUndoBtn:'取り消し', shakuRedoBtn:'やり直し', shakuFlashCut:'切る 反映', shakuFlashStretch:'伸ばす 反映', dougaSheetCreate:'動画作成', dougaSheetRefresh:'動画更新', dougaSheetTitle:'Cell番号と動画点から編集不可の動画欄を生成', cellReadabilityTitle:'Cell文字を大きく表示',
         textCommandsLabel:'テキストコマンド', csvFileLabel:'CLIP / TVPaint · 選択またはドロップ', csvCommandEditLabel:'CSVから生成された編集可能コマンド',
         dialogBlocksTitle:'セリフ欄', dialogFormatLabel:'例: 0+01 | 1+00 | 話者 | セリフ（始まり｜終わり｜だれ｜なに）', cameraBlocksTitle:'カメラ欄', cameraFormatLabel:'例: 0+01 | 1+00 | A | PAN | B（始まり｜終わり｜前｜動き｜後）', cameraExamplesTitle:'例',
@@ -3206,6 +3219,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       },
       ko: {
         languageLabel:'언어', headerCardTitle:'헤더', episodeLabel:'화수', titleLabel:'제목', cutNoLabel:'컷 번호', secondsLabel:'길이 초', framesLabel:'길이 프레임', authorLabel:'이름', pageLabel:'페이지',
+        drawingCountTitle:"동화 매수", drawingCountCell:"셀", drawingCountNumbered:"번호 그림", drawingCountInbetweens:"중간그림", drawingCountTotal:"합계", drawingCountPending:"확인 필요", drawingCountDisplay:"표시", drawingCountOff:"표시 안 함", drawingCountBottom:"헤더 우하단", drawingCountTop:"헤더 우상단", drawingCountCsv:"CSV 저장", drawingCountText:"텍스트 저장", drawingCountClose:"닫기", drawingCountHint:"재사용·리피트는 한 번만 셉니다. 가배치 구간은 확인이 필요합니다.", drawingCountWork:"작품", drawingCountEpisode:"화수", drawingCountCut:"컷",
         originalCellTitle:'시트 입력', inputModeLabel:'입력 방식', inputModeTextCommands:'직접 입력', inputModeCsv:'파일에서 가져오기', csvReadSettings:'CSV 읽기 설정', tvpPanelDownload:'TVPaint용 패널', csvSettingsExportBtn:'프로젝트 저장', shakuEditBtn:'연출용 편집툴', shakuEditHint:'파란 프레임선을 드래그해 길이를 선택', shakuCutBtn:'자르기', shakuStretchBtn:'늘리기', shakuUndoBtn:'되돌리기', shakuRedoBtn:'다시 실행', shakuFlashCut:'자르기 반영', shakuFlashStretch:'늘리기 반영', dougaSheetCreate:'동화시트 작성', dougaSheetRefresh:'동화시트 갱신', dougaSheetTitle:'셀 번호와 동화점으로 수정 불가능한 동화칸 생성', cellReadabilityTitle:'셀 글자 크게 보기',
         textCommandsLabel:'텍스트 커맨드', csvFileLabel:'CLIP / TVPaint · 선택 또는 드롭', csvCommandEditLabel:'CSV에서 생성된 편집 가능 커맨드',
         dialogBlocksTitle:'대사란', dialogFormatLabel:'예: 0+01 | 1+00 | 화자 | 대사（시작｜끝｜누가｜무엇）', cameraBlocksTitle:'카메라란', cameraFormatLabel:'예: 0+01 | 1+00 | A | PAN | B（시작｜끝｜이전｜움직임｜이후）', cameraExamplesTitle:'예시',
@@ -3215,6 +3229,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       },
       zh: {
         languageLabel:'语言', headerCardTitle:'页眉', episodeLabel:'集数', titleLabel:'标题', cutNoLabel:'镜头编号', secondsLabel:'时长 秒', framesLabel:'时长 帧', authorLabel:'姓名', pageLabel:'页码',
+        drawingCountTitle:"动画张数", drawingCountCell:"层", drawingCountNumbered:"编号图", drawingCountInbetweens:"中间画", drawingCountTotal:"合计", drawingCountPending:"需确认", drawingCountDisplay:"显示", drawingCountOff:"不显示", drawingCountBottom:"页眉右下", drawingCountTop:"页眉右上", drawingCountCsv:"保存CSV", drawingCountText:"保存文本", drawingCountClose:"关闭", drawingCountHint:"重复使用和循环只计一次。临时区间需确认。", drawingCountWork:"作品", drawingCountEpisode:"集数", drawingCountCut:"镜头",
         originalCellTitle:'表格输入', inputModeLabel:'输入模式', inputModeTextCommands:'直接输入', inputModeCsv:'从文件导入', csvReadSettings:'CSV读取设置', tvpPanelDownload:'TVPaint 面板', csvSettingsExportBtn:'保存项目', shakuEditBtn:'时长编辑', shakuEditHint:'拖动蓝色帧线选择范围', shakuCutBtn:'切除', shakuStretchBtn:'延长', shakuUndoBtn:'撤销', shakuRedoBtn:'重做', shakuFlashCut:'切除已应用', shakuFlashStretch:'延长已应用', dougaSheetCreate:'生成动画栏', dougaSheetRefresh:'刷新动画栏', dougaSheetTitle:'由 Cell 编号和动画点生成只读动画栏', cellReadabilityTitle:'放大 Cell 文字',
         textCommandsLabel:'文本命令', csvFileLabel:'CLIP / TVPaint · 选择或拖放', csvCommandEditLabel:'从 CSV 生成的可编辑命令',
         dialogBlocksTitle:'对白栏', dialogFormatLabel:'例: 0+01 | 1+00 | 说话人 | 台词（起始｜结束｜谁｜内容）', cameraBlocksTitle:'摄影机栏', cameraFormatLabel:'例: 0+01 | 1+00 | A | PAN | B（起始｜结束｜之前｜运动｜之后）', cameraExamplesTitle:'示例',
@@ -3904,6 +3919,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver955", "Drawing counts", ["Count unique drawings per Cell, excluding reuse and repeats. Show a compact count above or below the header, or save CSV and text."]],
         ["ver954", "Reliable sheet settings import", ["Opening MoArt sheet settings after editing CSV now displays the imported cels. Files without an input mode use their own command data instead of the previous work's mode."]],
         ["ver953", "Unified sheet import", ["Choose or drop CLIP, TVPaint, CSV or XDTS files in one place. Switching tabs preserves edits. CSV and XDTS imports recommend direct CLIP or TVPaint import."]],
         ["ver952", "CSV BOOK display names after reordering", ["Reordering cells now keeps BOOK display names separate from the original CSV names. Undo also refreshes the input-mode controls consistently."]],
@@ -4007,6 +4023,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver955", "動画枚数", ["セル別の動画枚数を再使用・リピートの重複なしで集計。ヘッダー右上・右下への表示とCSV・テキスト保存に対応。"]],
         ["ver954", "シート設定の読込を修正", ["CSV編集中にMoArtのシート設定を開いてもセルが表示されます。入力モードがないファイルは、前の作業ではなくファイル内のコマンドから読み方を決めます。"]],
         ["ver953", "シート読込の入口を統一", ["CLIP・TVPaint・CSV・XDTSを同じ場所から選択・ドロップできます。タブ切替で編集を維持し、CSV・XDTSでは直接読込を案内します。"]],
         ["ver952", "CSVの並べ替えとBOOK表示名", ["セルを並べ替えてもBOOKの表示名がCSVの元の名前に混ざらないよう修正しました。元に戻す操作後の入力モード表示も揃えました。"]],
@@ -4110,6 +4127,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver955", "동화 매수 집계", ["셀별 동화 매수를 재사용·리피트 중복 없이 셉니다. 헤더 우상단·우하단 표시와 CSV·텍스트 저장을 지원합니다."]],
         ["ver954", "시트 설정 불러오기 수정", ["CSV 편집 후 모아트 시트 설정을 열어도 셀이 표시됩니다. 입력 모드가 없는 파일은 이전 작업 대신 파일 안의 명령으로 읽는 방식을 정합니다."]],
         ["ver953", "시트 파일 가져오기 통합", ["CLIP·TVPaint·CSV·XDTS를 한 곳에서 선택하거나 드롭합니다. 탭 전환으로 편집을 덮지 않으며 CSV·XDTS에서는 직접 불러오기를 권장합니다."]],
         ["ver952", "CSV 정렬·BOOK 표시 이름 수정", ["셀을 재정렬할 때 BOOK 표시 이름이 CSV 원본 이름에 섞이는 문제를 고쳤습니다. 실행취소 뒤 입력 모드 표시도 함께 갱신합니다."]],
@@ -4213,6 +4231,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver955", "动画张数统计", ["按层统计独立图画，重复使用和循环不重复计数。支持页眉右上或右下显示，以及CSV和文本保存。"]],
         ["ver954", "修正表格设置导入", ["编辑CSV后打开MoArt表格设置也能显示单元格。未指定输入模式的文件会根据自身命令选择模式，不再沿用上一份工作的模式。"]],
         ["ver953", "统一表格导入入口", ["可在同一位置选择或拖放CLIP、TVPaint、CSV和XDTS文件。切换标签保留编辑；CSV和XDTS导入会推荐直接导入原文件。"]],
         ["ver952", "修复CSV排序与BOOK显示名", ["重新排列单元格时，BOOK显示名不会再覆盖CSV中的原名称。撤销后也会同步输入模式控件。"]],
@@ -17981,6 +18000,92 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return { byUid:byUid, byLabel:byLabel, sourceSignatures:sourceSignatures, createdAt:Date.now() };
     }
 
+    // ══ 동화 매수 — 치환 결과의 고유 번호를 창·파일·시트에서 공유 ═════════════════════════════════════════════
+    // Keep only the last derived count; style/page changes must not rerun the quadratic numbering pass.
+    let drawingCountCache = { signature:null, value:null };
+    function getDrawingCounts(layers) {
+      const signature = JSON.stringify(layers.map(makeDougaLayerSourceSignature));
+      if (drawingCountCache.signature === signature) return drawingCountCache.value;
+      const rows = layers.map(function(layer){
+        const pending = layer.marks.some(function(mark){ return mark.type === 'wavy' || (mark.type === 'repeat' && !getRepeatMarkValidity(layer,mark).valid); });
+        const entries = makeDougaLayerData(layer).entries;
+        const numbers = new Set(), numbered = new Set();
+        entries.forEach(function(entry){
+          if (isDougaCrossEntry(entry)) return;
+          numbers.add(entry.value);
+          if (entry.type === 'label') numbered.add(entry.value);
+        });
+        return { uid:layer.uid, name:layer.name, numbered:pending ? null : numbered.size,
+          inbetweens:pending ? null : numbers.size - numbered.size, total:pending ? null : numbers.size };
+      });
+      const total = rows.some(function(row){ return row.total === null; }) ? null : rows.reduce(function(sum,row){ return sum + row.total; },0);
+      drawingCountCache = { signature:signature, value:{rows:rows,total:total} };
+      return drawingCountCache.value;
+    }
+
+    function drawingCountFileText(counts, format) {
+      const doc = uiTexts[state.lang] || uiTexts.en;
+      const header = [getSheetInputValue('title'),getSheetInputValue('episode'),getSheetInputValue('cutNo')];
+      const value = function(n){ return n === null ? doc.drawingCountPending : String(n); };
+      if (format === 'txt') return [header.filter(Boolean).join(' / ')].concat(counts.rows.map(function(row){ return row.name + ': ' + value(row.total); }),[doc.drawingCountTotal + ': ' + value(counts.total)]).join('\r\n');
+      // Quote every CSV field, including labels containing punctuation or line breaks. Prefix spreadsheet formulas.
+      const quote = function(v){ const raw=String(v == null ? '' : v); return '"' + (/^[=+@\-\t\r\n]/.test(raw) ? "'" : '') + raw.replaceAll('"','""') + '"'; };
+      const rows = [[doc.drawingCountWork,doc.drawingCountEpisode,doc.drawingCountCut,doc.drawingCountCell,doc.drawingCountNumbered,doc.drawingCountInbetweens,doc.drawingCountTotal]];
+      counts.rows.forEach(function(row){ rows.push(header.concat([row.name,value(row.numbered),value(row.inbetweens),value(row.total)])); });
+      rows.push(header.concat([doc.drawingCountTotal,'','',value(counts.total)]));
+      return '\ufeff' + rows.map(function(row){ return row.map(quote).join(','); }).join('\r\n');
+    }
+
+    function openDrawingCountDialog() {
+      const doc=uiTexts[state.lang] || uiTexts.en, counts=getDrawingCounts(getInputLayers());
+      const backdrop=document.createElement('div');backdrop.className='app-dialog-backdrop';
+      const box=document.createElement('section');box.className='app-dialog drawing-count-dialog';box.setAttribute('role','dialog');box.setAttribute('aria-modal','true');box.setAttribute('aria-label',doc.drawingCountTitle);
+      const header=document.createElement('header');header.className='app-dialog-header';
+      const title=document.createElement('h3');title.textContent=doc.drawingCountTitle;header.appendChild(title);
+      const close=document.createElement('button');close.type='button';close.className='toolbar-btn';close.textContent=doc.drawingCountClose;header.appendChild(close);box.appendChild(header);
+      const body=document.createElement('div');body.className='app-dialog-body';
+      const table=document.createElement('table');table.className='drawing-count-table';
+      function row(parent,values,heading){ const tr=document.createElement('tr'); values.forEach(function(value,i){const td=document.createElement(heading || i===0 ? 'th':'td');td.textContent=value === null ? doc.drawingCountPending : String(value);tr.appendChild(td);});parent.appendChild(tr); }
+      const head=document.createElement('thead');row(head,[doc.drawingCountCell,doc.drawingCountNumbered,doc.drawingCountInbetweens,doc.drawingCountTotal],true);table.appendChild(head);
+      const tbody=document.createElement('tbody');counts.rows.forEach(function(r){row(tbody,[r.name,r.numbered,r.inbetweens,r.total]);});table.appendChild(tbody);
+      const foot=document.createElement('tfoot');row(foot,[doc.drawingCountTotal,'','',counts.total]);table.appendChild(foot);body.appendChild(table);
+      const hint=document.createElement('p');hint.className='hint';hint.textContent=doc.drawingCountHint;body.appendChild(hint);box.appendChild(body);
+      const actions=document.createElement('div');actions.className='app-dialog-actions';
+      const label=document.createElement('label');label.className='drawing-count-display';label.appendChild(document.createTextNode(doc.drawingCountDisplay));
+      const select=document.createElement('select');[['',doc.drawingCountOff],['bottom',doc.drawingCountBottom],['top',doc.drawingCountTop]].forEach(function(item){const option=document.createElement('option');option.value=item[0];option.textContent=item[1];select.appendChild(option);});
+      select.value=state.drawingCountPosition || '';select.addEventListener('change',function(){state.drawingCountPosition=select.value;render();});label.appendChild(select);actions.appendChild(label);
+      ['txt','csv'].forEach(function(format){
+        const button=document.createElement('button');button.type='button';button.className='toolbar-btn';
+        button.textContent=format==='csv'?doc.drawingCountCsv:doc.drawingCountText;
+        button.addEventListener('click',function(){
+          const base=sanitizeFilenameBase([getSheetInputValue('title'),getSheetInputValue('episode'),getSheetInputValue('cutNo')].filter(Boolean).join('_')) || 'sheet';
+          const blob=new Blob([drawingCountFileText(counts,format)],{type:format==='csv'?'text/csv;charset=utf-8':'text/plain;charset=utf-8'});
+          downloadBlob(blob,base+'_counts.'+format);
+        });
+        actions.appendChild(button);
+      });
+      function finish(){unmountAppDialog(backdrop);backdrop.remove();}
+      close.addEventListener('click',finish);backdrop.addEventListener('click',function(event){if(event.target===backdrop)finish();});
+      box.appendChild(actions);backdrop.appendChild(box);document.body.appendChild(backdrop);mountAppDialog(backdrop,{onRequestClose:finish,initialFocus:close});
+    }
+
+    function renderDrawingCount(counts) {
+      if (!counts || !state.drawingCountPosition) return;
+      const doc=uiTexts[state.lang] || uiTexts.en;
+      const value=function(n){return n===null?'?':String(n);};
+      const lineValue=doc.drawingCountTitle + '  ' + counts.rows.map(function(row){return row.name + ':' + value(row.total);}).join(' / ') + '  ' + doc.drawingCountTotal + ':' + value(counts.total);
+      const boxes=SHEET_HEADER_INPUTS.map(function(key){return state.layoutBoxes['header-'+key];}).filter(Boolean);
+      const right=boxes.length ? Math.min(PAGE_W-24,Math.max.apply(null,boxes.map(function(b){return b.x+b.w;}))) : 1696;
+      const top=boxes.length ? Math.min.apply(null,boxes.map(function(b){return b.y;})) : 52;
+      const bottom=boxes.length ? Math.max.apply(null,boxes.map(function(b){return b.y+b.h;})) : 172;
+      const y=state.drawingCountPosition==='top' ? Math.max(18,top-14) : Math.min(PAGE_H-18,bottom+24);
+      withDrawLayer('output',function(){
+        const node=text(right,y,lineValue,18,'end','400','#555');node.setAttribute('data-drawing-count','');
+        const width=Array.from(lineValue).reduce(function(w,c){return w + (c.charCodeAt(0)>255 ? 18:10);},0);
+        if(width>right-60){node.setAttribute('textLength',Math.max(1,right-60));node.setAttribute('lengthAdjust','spacingAndGlyphs');}
+      });
+    }
+
     function refreshDougaSheetFromCells() {
       state.dougaSheetData = buildDougaSheetData(getInputLayers(), state.dougaSheetData);
       state.dougaSheetEnabled = true;
@@ -18126,7 +18231,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     // 지속선(세로선)은 hold 가 4칸 이상일 때만 긋는다 = blankCount 가 3 이상. 3코마 打ち(hold 3칸)는
     // blankCount=2 라 선이 안 그어지고 번호만 남는다 — 짧은 hold 마다 그으면 시트가 선으로 덮인다.
     // ★ #conte(MoArt) 도 2026-08-11 사용자 판정으로 이 값에 맞춘다. **같은 값을 두 곳에 쓰지 말 것** —
-    //   갈리면 같은 컷의 시트가 두 프로그램에서 다르게 보인다. 정본 규칙: #hub/timesheet/rules.md
+    //   갈리면 같은 컷의 시트가 두 프로그램에서 다르게 보인다.
     const CELL_HOLD_LINE_MIN_BLANKS = 3;
     function shouldRenderCellHoldLineAtFrame(boundaryFrames, seg, frame, targetEnd) {
       const info = getCellHoldLineInfoAtFrame(boundaryFrames, seg, frame, targetEnd);
@@ -19515,6 +19620,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const layout = computeLayout(layers, baseLayers, maxFrame);
       const totalPages = Math.max(1, Math.ceil(layout.maxFrame / layout.pageFrames));
       return {
+        drawingCounts:state.drawingCountPosition ? getDrawingCounts(layers) : null,
         baseLayers: baseLayers,
         layers: layers,
         dialogBlocks: dialogBlocks,
@@ -21747,6 +21853,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       withStaticLayer(function(){ withDrawLayer('background', function(){ rect(0, 0, PAGE_W, PAGE_H, 0, 'white', 'none'); }); });
       withStaticLayer(function(){ addPaperImageLayer(); });
       renderHeader(0, pageIndex, model.totalPages);
+      renderDrawingCount(model.drawingCounts);
       const explicitDurationFrame = getDurationFrameCount();
       const durationFrame = explicitDurationFrame || (model && model.hasContent ? model.contentMaxFrame : 0);
       const layersById = new Map(model.layout.layers.map(function(layer){ return [layer.uid, layer]; }));
@@ -24298,7 +24405,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     // 셀 배치는 SQLite 가 아니라 트랙의 Exta 청크 안 BINC 트리에 있어서 그 해독기까지 필요하다.
     // 그림·벡터·오디오·카메라는 시트에 쓰지 않으므로 읽지 않는다.
     // CSV 로는 애니메이션 폴더 밖 레이어(BOOK 등)가 아예 오지 않는다 — 원본을 직접 읽는 이 길만 본다.
-    // 포맷 지식의 정본과 MoArt 쪽 짝은 #hub/docs/engineering_rules.md 의 「외부 포맷 해석 — CLIP STUDIO」
+    // MoArt 와 함께 해석하는 경계는 공유 계약(#dev/docs/shared_contracts.md)의 「외부 포맷 공동 해석」
     // 절에 있다(판정 q1=C). 이 앱 쪽 설계·검사 사정은 docs/clip_direct_sheet_import_2026-09-18.md.
 
     function clipUtf16be(s) {
@@ -24638,7 +24745,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     //   · 키의 komaName 이 그 칸의 그림이다. mark 가 붙은 키는 그림 대신 동화점(`dot`)이다.
     //   · endFrame 을 넘긴 자리부터는 그 셀의 그림이 없다 — 이 앱의 명시적 빈칸 `x` 로 적는다.
     //     CSP 가 낸 타임시트 CSV 도 같은 자리에 `×`(cp932 0x81 0x7E)를 적는다. 둘이 같은 말이다.
-    //     `~` 글리프는 대사 가배치의 물결이라 다른 표시다(#hub/timesheet/rules.md).
+    //     `~` 글리프는 대사 가배치의 물결이라 다른 표시다.
     //   · 음수 프레임은 CSP 내보내기의 알려진 이상치이지 실제 칸이 아니다(XDTS 쪽과 같은 판단)
     function clipSheetKeysToEntries(keys, duration) {
       const total = Math.max(0, Math.round(Number(duration) || 0));
@@ -25329,7 +25436,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     // ══ [왕복] _settei.json — #sheet 생산 정본. 저장마다 스키마 8키로 새로 조립해 모르는 필드는
-    // 보존 안 됨(왕복 상대·상세 사정은 #hub/timesheet/rules.md) ═══
+    // 보존 안 됨(왕복 상대·상세 사정은 공유 계약 「현재 JSON 교환 경계」) ═══
     function collectCurrentSettingsPayload() {
       materializeDotOverridesIntoCommandText();
       const content = getContentSnapshot();
@@ -25347,6 +25454,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           exportFormat:exportFormatSelectEl ? exportFormatSelectEl.value : 'png',
           sheetZoom:state.sheetZoom || 1,
           cellReadabilityLarge:!!state.cellReadabilityLarge,
+          drawingCountPosition:state.drawingCountPosition,
           dougaSheetEnabled:!!state.dougaSheetEnabled,
           dougaSheetData:content.dougaSheetData
         },
@@ -25555,6 +25663,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         if (ui.exportFormat) getSheetInputNode('exportFormatSelect').value = ui.exportFormat;
         if (ui.sheetZoom !== undefined) state.sheetZoom = clampSheetZoom(ui.sheetZoom);
         state.cellReadabilityLarge = !!ui.cellReadabilityLarge;
+        state.drawingCountPosition = ['top','bottom'].includes(ui.drawingCountPosition) ? ui.drawingCountPosition : '';
         state.dougaSheetEnabled = !!ui.dougaSheetEnabled;
         state.dougaSheetData = ui.dougaSheetData && typeof ui.dougaSheetData === 'object' ? ui.dougaSheetData : null;
         state.serifuSheetGuides = [];
@@ -26485,7 +26594,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     // 컷번호 모양: 숫자 2~4 자리, 앞에 c 가 붙기도 하고(`c003`) 뒤에 글자가 붙기도 한다(`002A`).
     const SHEET_NAME_CUT_RE = /^[cC]?\d{2,4}[A-Za-z]{0,2}$/;
 
-    // 공정 = **바탕 + 체크**다. #hub/production/rules.md 의 「공정(LO/原画)×체크(演出/作監)」,
+    // 공정 = **바탕 + 체크**다. 공유 계약의 체크 어휘 절,
     // MoArt 의 `GENGA_REVISION_ROLES`(E=演出·K=監督·S=作監·SS=総作監), 그리고 실물 파일의 폴더 트리
     // (`01_rough/LE`·`LK`·`LS`, `02_key/G`·`GE`·`GS`)가 같은 문법을 보인다.
     // 긴 것부터 적는다 — `ssk` 가 `s` 에 먼저 걸리면 안 된다.
@@ -28882,6 +28991,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     memoModeBtn.addEventListener('click', toggleMemoMode);
     if (serifuModeBtn) serifuModeBtn.addEventListener('click', toggleSerifuMode);
     if (cameraToMemoBtn) cameraToMemoBtn.addEventListener('click', writeCameraLinesToMemo);
+    document.getElementById('drawingCountBtn').addEventListener('click', openDrawingCountDialog);
     if (dougaSheetBtn) dougaSheetBtn.addEventListener('click', refreshDougaSheetFromCells);
     if (cellReadabilityBtn) cellReadabilityBtn.addEventListener('click', function(){
       state.cellReadabilityLarge = !state.cellReadabilityLarge;
