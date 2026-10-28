@@ -2612,7 +2612,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '955';
+    const APP_VERSION = '956';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3919,7 +3919,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
-        ["ver955", "Drawing counts", ["Count unique drawings per Cell, excluding reuse and repeats. Show a compact count above or below the header, or save CSV and text."]],
+        ["ver956", "Drawing counts", ["Count unique drawings per Cell, excluding reuse and repeats. Show a compact count above or below the header, or save CSV and text."]],
         ["ver954", "Reliable sheet settings import", ["Opening MoArt sheet settings after editing CSV now displays the imported cels. Files without an input mode use their own command data instead of the previous work's mode."]],
         ["ver953", "Unified sheet import", ["Choose or drop CLIP, TVPaint, CSV or XDTS files in one place. Switching tabs preserves edits. CSV and XDTS imports recommend direct CLIP or TVPaint import."]],
         ["ver952", "CSV BOOK display names after reordering", ["Reordering cells now keeps BOOK display names separate from the original CSV names. Undo also refreshes the input-mode controls consistently."]],
@@ -4023,7 +4023,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
-        ["ver955", "動画枚数", ["セル別の動画枚数を再使用・リピートの重複なしで集計。ヘッダー右上・右下への表示とCSV・テキスト保存に対応。"]],
+        ["ver956", "動画枚数", ["セル別の動画枚数を再使用・リピートの重複なしで集計。ヘッダー右上・右下への表示とCSV・テキスト保存に対応。"]],
         ["ver954", "シート設定の読込を修正", ["CSV編集中にMoArtのシート設定を開いてもセルが表示されます。入力モードがないファイルは、前の作業ではなくファイル内のコマンドから読み方を決めます。"]],
         ["ver953", "シート読込の入口を統一", ["CLIP・TVPaint・CSV・XDTSを同じ場所から選択・ドロップできます。タブ切替で編集を維持し、CSV・XDTSでは直接読込を案内します。"]],
         ["ver952", "CSVの並べ替えとBOOK表示名", ["セルを並べ替えてもBOOKの表示名がCSVの元の名前に混ざらないよう修正しました。元に戻す操作後の入力モード表示も揃えました。"]],
@@ -4127,7 +4127,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
-        ["ver955", "동화 매수 집계", ["셀별 동화 매수를 재사용·리피트 중복 없이 셉니다. 헤더 우상단·우하단 표시와 CSV·텍스트 저장을 지원합니다."]],
+        ["ver956", "동화 매수 집계", ["셀별 동화 매수를 재사용·리피트 중복 없이 셉니다. 헤더 우상단·우하단 표시와 CSV·텍스트 저장을 지원합니다."]],
         ["ver954", "시트 설정 불러오기 수정", ["CSV 편집 후 모아트 시트 설정을 열어도 셀이 표시됩니다. 입력 모드가 없는 파일은 이전 작업 대신 파일 안의 명령으로 읽는 방식을 정합니다."]],
         ["ver953", "시트 파일 가져오기 통합", ["CLIP·TVPaint·CSV·XDTS를 한 곳에서 선택하거나 드롭합니다. 탭 전환으로 편집을 덮지 않으며 CSV·XDTS에서는 직접 불러오기를 권장합니다."]],
         ["ver952", "CSV 정렬·BOOK 표시 이름 수정", ["셀을 재정렬할 때 BOOK 표시 이름이 CSV 원본 이름에 섞이는 문제를 고쳤습니다. 실행취소 뒤 입력 모드 표시도 함께 갱신합니다."]],
@@ -4231,7 +4231,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
-        ["ver955", "动画张数统计", ["按层统计独立图画，重复使用和循环不重复计数。支持页眉右上或右下显示，以及CSV和文本保存。"]],
+        ["ver956", "动画张数统计", ["按层统计独立图画，重复使用和循环不重复计数。支持页眉右上或右下显示，以及CSV和文本保存。"]],
         ["ver954", "修正表格设置导入", ["编辑CSV后打开MoArt表格设置也能显示单元格。未指定输入模式的文件会根据自身命令选择模式，不再沿用上一份工作的模式。"]],
         ["ver953", "统一表格导入入口", ["可在同一位置选择或拖放CLIP、TVPaint、CSV和XDTS文件。切换标签保留编辑；CSV和XDTS导入会推荐直接导入原文件。"]],
         ["ver952", "修复CSV排序与BOOK显示名", ["重新排列单元格时，BOOK显示名不会再覆盖CSV中的原名称。撤销后也会同步输入模式控件。"]],
@@ -18069,15 +18069,14 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       box.appendChild(actions);backdrop.appendChild(box);document.body.appendChild(backdrop);mountAppDialog(backdrop,{onRequestClose:finish,initialFocus:close});
     }
 
-    function renderDrawingCount(counts) {
+    function renderDrawingCount(counts, boxes) {
       if (!counts || !state.drawingCountPosition) return;
       const doc=uiTexts[state.lang] || uiTexts.en;
       const value=function(n){return n===null?'?':String(n);};
       const lineValue=doc.drawingCountTitle + '  ' + counts.rows.map(function(row){return row.name + ':' + value(row.total);}).join(' / ') + '  ' + doc.drawingCountTotal + ':' + value(counts.total);
-      const boxes=SHEET_HEADER_INPUTS.map(function(key){return state.layoutBoxes['header-'+key];}).filter(Boolean);
-      const right=boxes.length ? Math.min(PAGE_W-24,Math.max.apply(null,boxes.map(function(b){return b.x+b.w;}))) : 1696;
-      const top=boxes.length ? Math.min.apply(null,boxes.map(function(b){return b.y;})) : 52;
-      const bottom=boxes.length ? Math.max.apply(null,boxes.map(function(b){return b.y+b.h;})) : 172;
+      const right=Math.min(PAGE_W-24,Math.max.apply(null,boxes.map(function(b){return b.x+b.w;})));
+      const top=Math.min.apply(null,boxes.map(function(b){return b.y;}));
+      const bottom=Math.max.apply(null,boxes.map(function(b){return b.y+b.h;}));
       const y=state.drawingCountPosition==='top' ? Math.max(18,top-14) : Math.min(PAGE_H-18,bottom+24);
       withDrawLayer('output',function(){
         const node=text(right,y,lineValue,18,'end','400','#555');node.setAttribute('data-drawing-count','');
@@ -18482,7 +18481,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     // ══ 시트 렌더 ⑤ 헤더란과 타임라인 라벨 박스 ══════════════════════════════════════════════════════════════════════
-    function renderHeader(offsetY, pageIndex, pageCount) {
+    function renderHeader(offsetY, pageIndex, pageCount, drawingCounts) {
       const hx = 60, hy = offsetY + 52, hw = 1636, hh = 120;
       const wEp = 140, wTitle = 610, wCut = 220, wDuration = 220, wName = 260, wPage = 186;
       const x1 = hx + wEp, x2 = x1 + wTitle, x3 = x2 + wCut, x4 = x3 + wDuration, x5 = x4 + wName;
@@ -18497,9 +18496,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         author:getHeaderFieldBaseRect('author', x4 + 10, editY, wName - 20, editH),
         page:getHeaderFieldBaseRect('page', x5 + 10, editY, wPage - 20, editH)
       };
+      const headerKeys = SHEET_HEADER_INPUTS;
+      const useAdjustedHeader = headerKeys.some(function(key){ return !!(state.layoutBoxes && Object.prototype.hasOwnProperty.call(state.layoutBoxes, 'header-' + key)); });
+      const paperBoxes = useAdjustedHeader ? headerKeys.map(function(key){ return { key:key, box:getHeaderFieldRect(key, boxes[key]) }; }) : [];
       withDrawLayer('paper', function(){
-        const headerKeys = ['episode', 'title', 'cutNo', 'seconds', 'frames', 'author', 'page'];
-        const useAdjustedHeader = headerKeys.some(function(key){ return !!(state.layoutBoxes && Object.prototype.hasOwnProperty.call(state.layoutBoxes, 'header-' + key)); });
         if (!useAdjustedHeader) {
           rect(hx, hy, hw, hh, 1, 'none', '#111');
           [x1, x2, x3, x4, x5].forEach(function(x){ line(x, hy, x, hy + hh, '#111', 1); });
@@ -18512,7 +18512,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           return;
         }
         const headerLabels = { episode:'Ep.no', title:'Title', cutNo:'Cut.no', seconds:'Sec', frames:'Frm', author:'name', page:'Page' };
-        const paperBoxes = headerKeys.map(function(key){ return { key:key, box:getHeaderFieldRect(key, boxes[key]) }; });
         const minX = Math.min.apply(null, paperBoxes.map(function(item){ return item.box.x; }));
         const minY = Math.min.apply(null, paperBoxes.map(function(item){ return item.box.y; }));
         const maxX = Math.max.apply(null, paperBoxes.map(function(item){ return item.box.x + item.box.w; }));
@@ -18549,6 +18548,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         }
         Object.keys(boxes).forEach(function(field){ addPositionEditBox('header-' + field, boxes[field], 'Header ' + field); });
       });
+      renderDrawingCount(drawingCounts,useAdjustedHeader ? paperBoxes.map(function(item){return item.box;}) : [{x:hx,y:hy,w:hw,h:hh}]);
     }
 
     function drawCompactText(x, y, value, size, anchor, weight, fill, editConfig) {
@@ -21852,8 +21852,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       currentSvgTarget.setAttribute('height', PAGE_H);
       withStaticLayer(function(){ withDrawLayer('background', function(){ rect(0, 0, PAGE_W, PAGE_H, 0, 'white', 'none'); }); });
       withStaticLayer(function(){ addPaperImageLayer(); });
-      renderHeader(0, pageIndex, model.totalPages);
-      renderDrawingCount(model.drawingCounts);
+      renderHeader(0, pageIndex, model.totalPages, model.drawingCounts);
       const explicitDurationFrame = getDurationFrameCount();
       const durationFrame = explicitDurationFrame || (model && model.hasContent ? model.contentMaxFrame : 0);
       const layersById = new Map(model.layout.layers.map(function(layer){ return [layer.uid, layer]; }));
