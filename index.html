@@ -2612,7 +2612,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '962';
+    const APP_VERSION = '963';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -13367,8 +13367,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return label || 'utf-8';
     }
 
-    // External contract: MoArt extracts these six declarations by name. Keep their names,
-    // self-containment and {textValue, encoding} result; do not depend on app state or UI language.
+    // Historical MoArt CSV audits extracted these declarations; this is not a live app dependency.
+    // Keep the standalone names and {textValue, encoding} result, independent of app state/UI language.
     // CSV_BLACK_DOT_MARK_RE, CSV_DOT_MARK_RE, hasLikelyCsvMojibake,
     // scoreDecodedCsvText, getCsvDecoderEncodingLabel, decodeCsvBuffer.
     function decodeCsvBuffer(arrayBuffer, encodingMode) {
@@ -13808,8 +13808,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       }).sort(function(a, b){ return a.frame - b.frame; });
     }
 
-    function csvColumnToTimelineLayer(col) {
-      const dataRows = getCsvDataRows();
+    function csvColumnToTimelineLayer(col, dataRows) {
       const layerName = String(col && col.name || '').trim();
       if (!col || !layerName || !dataRows.length) {
         return { uid:'csv-' + (col && col.index != null ? col.index : 'unknown'), name:layerName, sourceColumnIndex:col && col.index, segments:[], marks:[] };
@@ -14066,12 +14065,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     function layersFromCsvSelection() {
-      const layers = [];
-      getCsvColumnsByCommandOrder().forEach(function(col){
-        if (getCsvColumnRole(col) !== 'original') return;
-        layers.push(csvColumnToTimelineLayer(col));
-      });
-      return layers;
+      const columns = getCsvColumnsByCommandOrder().filter(function(col){ return getCsvColumnRole(col) === 'original'; });
+      if (!columns.length) return [];
+      const rows = getCsvDataRows();
+      return columns.map(function(col){ return csvColumnToTimelineLayer(col, rows); });
     }
 
     function syncCsvBookNameTags() {
@@ -25887,11 +25884,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const row = rows[r] || [];
         const frameIndex = row.findIndex(function(value){ return String(value || '').trim().toLowerCase() === 'frame'; });
         if (frameIndex === -1) continue;
-        const dataRows = rows.slice(r + 1).filter(function(dataRow){
-          const frame = Number(dataRow && dataRow[frameIndex]);
-          return Number.isFinite(frame) && frame > 0;
-        });
-        if (dataRows.length) return true;
+        for (let i = r + 1; i < rows.length; i++) {
+          const frame = Number(rows[i] && rows[i][frameIndex]);
+          if (Number.isFinite(frame) && frame > 0) return true;
+        }
       }
       return false;
     }
@@ -26036,7 +26032,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           draft=null; decoded=null; columns={}; rows.replaceChildren(); warning.textContent=''; preview.textContent='';
           try {
             decoded=decodeCsvBuffer(buffer,encoding.value);
-            preview.textContent=decoded.textValue.split(/\r?\n/).slice(0,8).map(function(line){return line.slice(0,240);}).join('\n');
+            preview.textContent=decoded.textValue.split(/\r?\n/,8).map(function(line){return line.slice(0,240);}).join('\n');
             if(decoded.needsReview) warning.textContent=csvImportText('review');
             draft=prepareCsvImport(buffer,{fresh:true,encoding:encoding.value,decoded:decoded,columns:useExisting===true?existingColumns:null});
             const count=withSheetSnapshot(draft,function(){return getCsvDataRows().reduce(function(max,row){return Math.max(max,row.frame);},0);});
