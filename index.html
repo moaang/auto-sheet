@@ -2612,7 +2612,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '960';
+    const APP_VERSION = '961';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -8548,8 +8548,16 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const lines = (xLines || []).map(Number).filter(Number.isFinite).sort(function(a,b){ return a-b; });
       const groups = [];
       const seen = new Set();
-      const bodyLines = bodyGrid && Array.isArray(bodyGrid.lines) ? bodyGrid.lines : [];
       const hasHorizontalSampler = analysis && typeof analysis.sampleHorizontalBand === 'function';
+      // All candidates share read-only pixel results over the same body rows.
+      const sectionPatterns = new Map();
+      function getSectionPattern(startIndex, endIndex) {
+        const key = startIndex + ':' + endIndex;
+        if (!sectionPatterns.has(key)) {
+          sectionPatterns.set(key, getPaperAutoAlignSectionHorizontalPresence(analysis, lines[startIndex], lines[endIndex], bodyGrid, 'absent'));
+        }
+        return sectionPatterns.get(key);
+      }
       function pushCandidate(startIndex, rightIndex, displayColumns, cellW, options) {
         options = options || {};
         if (rightIndex <= startIndex || rightIndex + 1 >= lines.length) return;
@@ -8573,7 +8581,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           if (seen.has(key)) continue;
           seen.add(key);
           const dialogPattern = hasHorizontalSampler
-            ? getPaperAutoAlignSectionHorizontalPresence(analysis, lines[rightIndex], lines[dialogEndIndex], bodyGrid, 'absent')
+            ? getSectionPattern(rightIndex, dialogEndIndex)
             : null;
           const metric = dialogPattern ? dialogPattern.raw : null;
           const dialogAvg = metric ? metric.avgDarkRatio : 0.25;
@@ -8585,10 +8593,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           // Sample the shared tail only when a dialog candidate survives deduplication.
           if (tailLooksLikeDialog === undefined) {
             const tailCellMetric = hasHorizontalSampler && rightIndex > startIndex + 1
-              ? analysis.sampleHorizontalBand(lines[rightIndex - 1], lines[rightIndex], bodyLines)
+              ? getSectionPattern(rightIndex - 1, rightIndex).raw
               : null;
             const prevTailCellMetric = hasHorizontalSampler && rightIndex > startIndex + 2
-              ? analysis.sampleHorizontalBand(lines[rightIndex - 2], lines[rightIndex - 1], bodyLines)
+              ? getSectionPattern(rightIndex - 2, rightIndex - 1).raw
               : null;
             const tailHit = tailCellMetric ? Number(tailCellMetric.hitRatio || 0) : 0;
             const prevTailHit = prevTailCellMetric ? Number(prevTailCellMetric.hitRatio || 0) : 0;
@@ -10550,16 +10558,18 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const key = Math.round(Number(line.pos || 0));
         if (!Number.isFinite(key)) return;
         const previous = headerDebugCandidateMap.get(key);
+        // The loose test includes the strict test; classify this line only once.
+        const qualified = !!(previous && previous.accepted && previous.loose) || isLooseHeaderDividerLine(line);
         if (previous) {
           previous.source = String(previous.source || '').indexOf(source) >= 0 ? previous.source : String(previous.source || '') + '+' + source;
-          previous.accepted = previous.accepted || isHeaderDividerLine(line.pos, line) || isLooseHeaderDividerLine(line);
-          previous.loose = previous.loose || isLooseHeaderDividerLine(line);
+          previous.accepted = previous.accepted || qualified;
+          previous.loose = previous.loose || qualified;
           return;
         }
         headerDebugCandidateMap.set(key, Object.assign({}, line, {
           source:source,
-          accepted:isHeaderDividerLine(line.pos, line) || isLooseHeaderDividerLine(line),
-          loose:isLooseHeaderDividerLine(line)
+          accepted:qualified,
+          loose:qualified
         }));
       }
 
@@ -10659,7 +10669,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const endpointHeaderLineInfos = findHeaderEndpointVerticalLines();
         endpointHeaderLineInfos.forEach(function(line){ addHeaderDebugVerticalCandidate(line, 'endpoint'); });
         const confirmedEndpointLineInfos = endpointHeaderLineInfos.filter(function(line){
-          return isHeaderDividerLine(line.pos, line) || isLooseHeaderDividerLine(line);
+          return isLooseHeaderDividerLine(line);
         });
         if (confirmedEndpointLineInfos.length) {
           confirmedHeaderEndpointLeft = confirmedEndpointLineInfos.reduce(function(best, line){
@@ -10673,13 +10683,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           if (!Number.isFinite(confirmedHeaderEndpointLeft)) confirmedHeaderEndpointLeft = null;
           if (!Number.isFinite(confirmedHeaderEndpointRight)) confirmedHeaderEndpointRight = null;
         }
-        headerLines = headerLines.concat(endpointHeaderLineInfos.filter(function(line){
-          return isHeaderDividerLine(line.pos, line) || isLooseHeaderDividerLine(line);
-        }).map(function(line){ return line.pos; }));
+        headerLines = headerLines.concat(confirmedEndpointLineInfos.map(function(line){ return line.pos; }));
         const bandJointHeaderLineInfos = findHeaderBandJointVerticalLines();
         bandJointHeaderLineInfos.forEach(function(line){ addHeaderDebugVerticalCandidate(line, 'band-joint'); });
         headerLines = headerLines.concat(bandJointHeaderLineInfos.filter(function(line){
-          return isHeaderDividerLine(line.pos, line) || isLooseHeaderDividerLine(line);
+          return isLooseHeaderDividerLine(line);
         }).map(function(line){ return line.pos; }));
       }
       headerLines = mergePaperAutoAlignUniquePositions(headerLines, 5).filter(function(x){
