@@ -2612,7 +2612,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '957';
+    const APP_VERSION = '958';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3919,6 +3919,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver958", "Loading and export cancellation", ["Replaced imports no longer overwrite load status or continue scanning and decoding. Stopping during an export retry no longer starts another render or displays a failure."]],
         ["ver956", "Drawing counts", ["Count unique drawings per Cell, excluding reuse and repeats. Show a compact count above or below the header, or save CSV and text."]],
         ["ver954", "Reliable sheet settings import", ["Opening MoArt sheet settings after editing CSV now displays the imported cels. Files without an input mode use their own command data instead of the previous work's mode."]],
         ["ver953", "Unified sheet import", ["Choose or drop CLIP, TVPaint, CSV or XDTS files in one place. Switching tabs preserves edits. CSV and XDTS imports recommend direct CLIP or TVPaint import."]],
@@ -4023,6 +4024,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver958", "読込と出力中止の修正", ["新しい読込に置き換わった処理は、状態表示を上書きせず、検索・解読を続けません。出力の再試行待ちで中止すると、余分に描画したり失敗と表示したりしなくなりました。"]],
         ["ver956", "動画枚数", ["セル別の動画枚数を再使用・リピートの重複なしで集計。ヘッダー右上・右下への表示とCSV・テキスト保存に対応。"]],
         ["ver954", "シート設定の読込を修正", ["CSV編集中にMoArtのシート設定を開いてもセルが表示されます。入力モードがないファイルは、前の作業ではなくファイル内のコマンドから読み方を決めます。"]],
         ["ver953", "シート読込の入口を統一", ["CLIP・TVPaint・CSV・XDTSを同じ場所から選択・ドロップできます。タブ切替で編集を維持し、CSV・XDTSでは直接読込を案内します。"]],
@@ -4127,6 +4129,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver958", "불러오기·출력 중지 수정", ["새 불러오기로 교체된 처리는 안내를 덮거나 검색·해독을 이어 하지 않습니다. 출력 재시도 대기 중 중지하면 추가로 렌더하거나 실패로 표시하지 않습니다."]],
         ["ver956", "동화 매수 집계", ["셀별 동화 매수를 재사용·리피트 중복 없이 셉니다. 헤더 우상단·우하단 표시와 CSV·텍스트 저장을 지원합니다."]],
         ["ver954", "시트 설정 불러오기 수정", ["CSV 편집 후 모아트 시트 설정을 열어도 셀이 표시됩니다. 입력 모드가 없는 파일은 이전 작업 대신 파일 안의 명령으로 읽는 방식을 정합니다."]],
         ["ver953", "시트 파일 가져오기 통합", ["CLIP·TVPaint·CSV·XDTS를 한 곳에서 선택하거나 드롭합니다. 탭 전환으로 편집을 덮지 않으며 CSV·XDTS에서는 직접 불러오기를 권장합니다."]],
@@ -4231,6 +4234,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver958", "修复导入与停止输出", ["被新导入替换的处理不再覆盖状态提示或继续扫描、解码。在输出重试等待期间停止，不再额外渲染或显示为失败。"]],
         ["ver956", "动画张数统计", ["按层统计独立图画，重复使用和循环不重复计数。支持页眉右上或右下显示，以及CSV和文本保存。"]],
         ["ver954", "修正表格设置导入", ["编辑CSV后打开MoArt表格设置也能显示单元格。未指定输入模式的文件会根据自身命令选择模式，不再沿用上一份工作的模式。"]],
         ["ver953", "统一表格导入入口", ["可在同一位置选择或拖放CLIP、TVPaint、CSV和XDTS文件。切换标签保留编辑；CSV和XDTS导入会推荐直接导入原文件。"]],
@@ -25868,8 +25872,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (!file) return false;
       const generation = ++documentLoadGeneration;
       try {
-        const payload = JSON.parse(await readDroppedTextFile(file));
+        const text = await readDroppedTextFile(file);
         if (generation !== documentLoadGeneration) return false;
+        const payload = JSON.parse(text);
         applyCurrentSettingsPayload(payload);
         setExportStatus(ioText('fileLoaded', { name:file.name || 'settings.json' }));
         return true;
@@ -26532,7 +26537,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const generation = ++documentLoadGeneration;
       setExportStatus(clipSheetText('reading', null, app));
       try {
-        const reads = await tvppSheetRead(await file.arrayBuffer());
+        const buffer = await file.arrayBuffer();
+        if (generation !== documentLoadGeneration) return false;
+        const reads = await tvppSheetRead(buffer);
         if (generation !== documentLoadGeneration) return false;
         if (!reads[0].items.some(function(item) { return item.kind === 'cel'; })) {
           setExportStatus(clipSheetText('empty', null, app), { level:'error' });
@@ -27348,8 +27355,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const generation = ++documentLoadGeneration;
       setExportStatus(clipSheetText('reading'));
       try {
-        const ctx = clipSheetOpenFile(await file.arrayBuffer());
+        const buffer = await file.arrayBuffer();
         if (generation !== documentLoadGeneration) return false;
+        const ctx = clipSheetOpenFile(buffer);
         const reads = [];
         for (let i = 0; i < ctx.timelines.list.length; i++) {
           const read = await clipSheetReadTimeline(ctx, ctx.timelines.list[i]);
@@ -27731,15 +27739,18 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     async function importWorkLibraryFiles(files, replace) {
       const generation = ++settingsDirectoryGeneration, incoming = [], errors = [];
       for (const file of Array.from(files || [])) {
+        if (generation !== settingsDirectoryGeneration) return;
         if (!/\.json$/i.test(file.name)) continue;
         try {
-          const payload = JSON.parse(await file.text());
+          const text = await file.text();
+          if (generation !== settingsDirectoryGeneration) return;
+          const payload = JSON.parse(text);
           if (!isCurrentSettingsPayload(payload)) continue;
           const name = file.webkitRelativePath || file.name;
           incoming.push({ id:makeLoadedFolderJsonId('settings',name,0), filename:name, label:name, payload:validateCurrentSettingsPayload(payload) });
         } catch (err) { errors.push(err); }
-        if (generation !== settingsDirectoryGeneration) return;
       }
+      if (generation !== settingsDirectoryGeneration) return;
       if (incoming.length) {
         const merged = new Map((replace ? [] : state.loadedSettingsFiles || []).map(function(item){ return [item.filename,item]; }));
         incoming.forEach(function(item){ merged.set(item.filename,item); });
@@ -27787,14 +27798,16 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return true;
     }
 
-    async function collectJsonEntriesFromDirectory(handle, prefix, out, errors) {
-      if (!handle || typeof handle.values !== 'function') return;
+    async function collectJsonEntriesFromDirectory(handle, prefix, out, errors, generation) {
+      if (generation !== settingsDirectoryGeneration || !handle || typeof handle.values !== 'function') return;
       for await (const entry of handle.values()) {
+        if (generation !== settingsDirectoryGeneration) return;
         if (!entry) continue;
         const path = (prefix || '') + String(entry.name || '');
         if (entry.kind === 'directory') {
-          try { await collectJsonEntriesFromDirectory(entry, path + '/', out, errors); }
+          try { await collectJsonEntriesFromDirectory(entry, path + '/', out, errors, generation); }
           catch (err) { errors.push({ path:path, error:err.name || 'Error' }); }
+          if (generation !== settingsDirectoryGeneration) return;
         } else if (entry.kind === 'file' && /\.json$/i.test(entry.name)) out.push({ entry:entry, path:path });
       }
     }
@@ -27802,12 +27815,15 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     async function loadJsonFilesFromSettingsDirectory(handle, options) {
       const opts = options || {}, generation = opts.generation == null ? ++settingsDirectoryGeneration : opts.generation;
       const entries = [], errors = [], settingsItems = [];
-      await collectJsonEntriesFromDirectory(handle, '', entries, errors);
+      await collectJsonEntriesFromDirectory(handle, '', entries, errors, generation);
       for (const found of entries) {
         if (generation !== settingsDirectoryGeneration) return false;
         try {
           const file = await found.entry.getFile();
-          const payload = JSON.parse(await file.text());
+          if (generation !== settingsDirectoryGeneration) return false;
+          const text = await file.text();
+          if (generation !== settingsDirectoryGeneration) return false;
+          const payload = JSON.parse(text);
           if (isCurrentSettingsPayload(payload)) {
             const checked = validateCurrentSettingsPayload(payload);
             settingsItems.push({ id:makeLoadedFolderJsonId('settings', found.path, settingsItems.length), filename:found.path, label:found.path, payload:checked });
@@ -28721,11 +28737,13 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const opts = options || {};
       let lastError;
       for (let attempt = 0; attempt <= EXPORT_RENDER_RETRY_COUNT; attempt++) {
+        if (opts.cancelled && opts.cancelled()) throw new DOMException('Canceled','AbortError');
         try { return await renderExportPageBlob(snapshot,page); }
         catch (err) {
           lastError = err;
           if (err && err.name === 'AbortError') throw err;
-          if (attempt === EXPORT_RENDER_RETRY_COUNT || (opts.cancelled && opts.cancelled())) break;
+          if (opts.cancelled && opts.cancelled()) throw new DOMException('Canceled','AbortError');
+          if (attempt === EXPORT_RENDER_RETRY_COUNT) break;
           reportExportFailure(err,{ stage:'render', path:opts.path || '', attempt:attempt + 1, format:snapshot.format });
           // 앞 장을 브라우저가 놓을 틈을 준다. 이것이 성공을 보장하지는 않는다 — 그래서 횟수를 센다.
           await wait(120);
