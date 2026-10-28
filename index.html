@@ -2612,7 +2612,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '958';
+    const APP_VERSION = '959';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -14848,15 +14848,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     function findTimelineDragPreviewBlock(frame, blockType) {
-      const model = getSyncedRenderModel();
-      const blocks = getBlocksForPage(model.layout, state.currentPreviewPage || 0);
-      let found = null;
-      blocks.forEach(function(block){
-        if (found || frame < block.start || frame >= block.start + block.count) return;
-        found = getSheetBlockGeometry(model.layout, block);
-        found.previewBlockType = blockType;
+      const found = previewSelectionBlocks.find(function(item){
+        return frame >= item.block.start && frame <= item.block.end;
       });
-      return found;
+      return found ? Object.assign({}, found.block, { previewBlockType:blockType }) : null;
     }
 
     function updateTimelineEdgeDragPreview(drag, frame) {
@@ -15175,27 +15170,23 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     // Coordinate hit-test for the 口パク capture overlay: which cel column + frame is under the pointer.
     function serifuHitFromEvent(event) {
-      const model = getSyncedRenderModel();
-      const entries = (model.layout && model.layout.originalEntries) || [];
-      if (!entries.length) return null;
       const p = getSvgPointFromPointerEvent(event);
-      const blocks = getBlocksForPage(model.layout, state.currentPreviewPage || 0);
       let result = null;
-      blocks.forEach(function(block){
-        if (result) return;
-        const tempBlock = getSheetBlockGeometry(model.layout, block);
+      previewSelectionBlocks.forEach(function(item){
+        const tempBlock = item.block, entries = item.entries;
+        if (result || !entries.length) return;
         const area = getCellArea(tempBlock);
         if (p.x < area.x || p.x > area.x + area.w || p.y < area.y || p.y > area.y + area.h) return;
         const areaRowH = getOutputRowH(tempBlock, 'cell');
         const yClamped = Math.max(area.y, Math.min(area.y + area.h - 0.01, p.y));
-        const frame = Math.max(block.start, Math.min(block.start + block.count - 1, block.start + Math.floor((yClamped - area.y) / areaRowH)));
+        const frame = Math.max(tempBlock.start, Math.min(tempBlock.end, tempBlock.start + Math.floor((yClamped - area.y) / areaRowH)));
         let colIndex = -1;
         for (let ci = 0; ci < entries.length; ci++) {
           const b = getOutputCellBounds(tempBlock, ci);
           if (p.x >= b.x1 && p.x <= b.x2) { colIndex = ci; break; }
         }
         if (colIndex < 0 || !entries[colIndex]) return;
-        result = { entry:entries[colIndex], frame:frame, range:{ minFrame:block.start, maxFrame:block.start + block.count - 1 } };
+        result = { entry:entries[colIndex], frame:frame, range:{ minFrame:tempBlock.start, maxFrame:tempBlock.end } };
       });
       return result;
     }
@@ -15678,13 +15669,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     // ══ 세리후 시트 ④ 선택 범위 오버레이 렌더 ═════════════════════════════════════════════════════════════════════════════════════
     // ══ 口パク 세리프 범위 선택 캡처 레이어 — 메모 사이에 끼어든 남의 것 ═════════════════════════════════════════════════════════════════════
-    function renderSerifuCaptureArea(pageIndex, interactive) {
+    function renderSerifuCaptureArea(interactive) {
       if (!interactive || !state.serifuMode || state.memoMode || state.positionMode || state.shakuMode || state.textMemoEditMode || currentSvgTarget !== svg) return;
-      const model = getSyncedRenderModel();
-      const entries = (model.layout && model.layout.originalEntries) || [];
-      if (!entries.length) return;
-      getBlocksForPage(model.layout, pageIndex).forEach(function(block){
-        const tempBlock = getSheetBlockGeometry(model.layout, block);
+      previewSelectionBlocks.forEach(function(item){
+        const tempBlock = item.block, entries = item.entries;
+        if (!entries.length) return;
         const area = getCellArea(tempBlock);
         const hit = el('rect', { x:area.x, y:area.y, width:area.w, height:area.h, fill:'transparent', stroke:'transparent', 'pointer-events':'all', class:'serifu-capture-area' });
         hit.style.cursor = 'crosshair';
@@ -16631,23 +16620,22 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     function getShakuBoundaryFromPointerEvent(event) {
-      const model = getSyncedRenderModel();
       const p = getSvgPointFromPointerEvent(event);
-      const blocks = getBlocksForPage(model.layout, state.currentPreviewPage || 0);
       let best = null;
-      blocks.forEach(function(block){
+      previewSelectionBlocks.forEach(function(item){
+        const block = item.block;
         const top = SHEET_BLOCK_TOP;
         const nameStripH = SHEET_BLOCK_NAME_STRIP_H;
         const bodyH = SHEET_BLOCK_BODY_H;
-        const rowH = bodyH / block.count;
+        const rowH = bodyH / block.frameCount;
         const bodyTop = top + nameStripH;
         const bodyBottom = bodyTop + bodyH;
-        const xInside = p.x >= block.x && p.x <= block.x + block.w;
+        const xInside = p.x >= block.blockX && p.x <= block.blockX + block.blockW;
         const yInside = p.y >= bodyTop - rowH * 0.6 && p.y <= bodyBottom + rowH * 0.6;
         if (!xInside || !yInside) return;
-        const r = Math.max(0, Math.min(block.count, Math.round((p.y - bodyTop) / rowH)));
+        const r = Math.max(0, Math.min(block.frameCount, Math.round((p.y - bodyTop) / rowH)));
         const boundaryFrame = block.start + r;
-        const candidate = { pageIndex:state.currentPreviewPage || 0, blockKey:getBlockSideKey({ blockX:block.x, blockW:block.w }), blockStart:block.start, blockEnd:block.start + block.count - 1, boundaryFrame:boundaryFrame, block:block };
+        const candidate = { pageIndex:state.currentPreviewPage || 0, blockKey:getBlockSideKey(block), blockStart:block.start, blockEnd:block.end, boundaryFrame:boundaryFrame };
         if (!best) best = candidate;
       });
       return best;
@@ -19316,13 +19304,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     function getDurationFrameFromPointerEvent(event) {
-      const model = getSyncedRenderModel();
       const p = getSvgPointFromPointerEvent(event);
-      const blocks = getBlocksForPage(model.layout, state.currentPreviewPage || 0);
       let candidate = null;
-      blocks.forEach(function(block){
-        const tempBlock = getSheetBlockGeometry(model.layout, block);
-        if (!tempBlock) return;
+      previewSelectionBlocks.forEach(function(item){
+        const tempBlock = item.block;
         const boundaryArea = getDurationBoundaryArea(tempBlock);
         const cellArea = getCellArea(tempBlock);
         const rowH = getOutputRowH(tempBlock, 'cell');
@@ -19646,6 +19631,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     // ══ ▲ 시트 렌더 본 영역 끝 ▲  아래부터는 텍스트 메모 ═══════════════════════════════════════════════════════════════
     const previewOverlayFrames = new Map();
+    // Live render owns these blocks; selection and pointer previews reuse its geometry.
     let previewSelectionBlocks = [];
     function refreshPreviewOverlay(kind, changed) {
       if (previewOverlayFrames.has(kind)) {
@@ -21507,22 +21493,20 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     function getFrameFromPointerEvent(event) {
-      const model = getSyncedRenderModel();
       const p = getSvgPointFromPointerEvent(event);
-      const blocks = getBlocksForPage(model.layout, state.currentPreviewPage || 0);
       const dragType = state.activeTimelineDrag && state.activeTimelineDrag.blockType ? state.activeTimelineDrag.blockType : 'cell';
       let nearestFrame = null;
-      blocks.forEach(function(block){
-        const tempBlock = getSheetBlockGeometry(model.layout, block);
+      previewSelectionBlocks.forEach(function(item){
+        const tempBlock = item.block;
         const area = dragType === 'camera' ? getCameraArea(tempBlock) : (dragType === 'dialog' ? getDialogArea(tempBlock) : getCellArea(tempBlock));
         const areaRowH = getOutputRowH(tempBlock, dragType);
         const bodyTop = area.y;
         const bodyBottom = area.y + area.h;
         const xInsideArea = p.x >= area.x && p.x <= area.x + area.w;
-        const xInsideBlock = p.x >= block.x && p.x <= block.x + block.w;
+        const xInsideBlock = p.x >= tempBlock.blockX && p.x <= tempBlock.blockX + tempBlock.blockW;
         const yClamped = Math.max(bodyTop, Math.min(bodyBottom - 0.01, p.y));
-        const frame = block.start + Math.floor((yClamped - bodyTop) / areaRowH);
-        const candidate = Math.max(block.start, Math.min(block.start + block.count - 1, frame));
+        const frame = tempBlock.start + Math.floor((yClamped - bodyTop) / areaRowH);
+        const candidate = Math.max(tempBlock.start, Math.min(tempBlock.end, frame));
         if (xInsideBlock) nearestFrame = candidate;
         if ((xInsideArea || xInsideBlock) && p.y >= bodyTop && p.y <= bodyBottom) nearestFrame = candidate;
       });
@@ -21893,7 +21877,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       renderTextMemos(pageIndex, isInteractive);
       renderPastedImages(pageIndex, isInteractive);
       renderLayerNameTags(pageIndex, model.layout, isInteractive);
-      renderSerifuCaptureArea(pageIndex, isInteractive);
+      renderSerifuCaptureArea(isInteractive);
       renderPaperAutoAlignOverlay();
       } finally {
         setSvgTarget(previousSvgTarget);
