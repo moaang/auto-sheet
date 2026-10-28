@@ -2612,7 +2612,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '956';
+    const APP_VERSION = '957';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -22057,7 +22057,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       };
     }
 
-    function getContentSnapshot() {
+    // Borrow document branches here; snapshot owners copy them once at their boundary.
+    function readContentData() {
       return {
         header:readSheetInputs(SHEET_HEADER_INPUTS),
         timeline:getCommandTextValue('text'),
@@ -22065,18 +22066,21 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         dialog:getSheetInputValue('dialogManual'),
         camera:getSheetInputValue('cameraManual'),
         ...readContentColumns(),
-        dougaSheetData:cloneSheetData(state.dougaSheetData || null),
+        dougaSheetData:state.dougaSheetData || null,
         dougaSheetEnabled:!!state.dougaSheetEnabled,
-        layerNameTags:cloneSheetData(getManualLayerNameTags()),
-        markerOverrides:cloneSheetData(state.markerOverrides || {}),
-        cameraPreviewStyles:cloneSheetData(state.cameraPreviewStyles || {}),
-        cameraEndpointFr:cloneSheetData(state.cameraEndpointFr || {}),
-        cameraSeries:cloneSheetData(state.cameraSeries || []),
-        dotOverrides:cloneSheetData(state.dotOverrides || {}),
-        bookNames:cloneSheetData(state.bookNames || {})
+        layerNameTags:getManualLayerNameTags(),
+        markerOverrides:state.markerOverrides || {},
+        cameraPreviewStyles:state.cameraPreviewStyles || {},
+        cameraEndpointFr:state.cameraEndpointFr || {},
+        cameraSeries:state.cameraSeries || [],
+        dotOverrides:state.dotOverrides || {},
+        bookNames:state.bookNames || {}
       };
     }
 
+    function getContentSnapshot() {
+      return cloneSheetData(readContentData());
+    }
 
     function applyContentInputs(snap) {
       applySheetInputs(snap.header || {}, SHEET_HEADER_INPUTS);
@@ -22147,7 +22151,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     function getEditorHistorySnapshot(previous) {
-      const content = getContentSnapshot(), paper = readPaperData(), source = readSheetState('historySource'), inputs = readSheetInputs(SHEET_MODE_INPUTS), memo = {}, text = {}, images = {};
+      const content = readContentData(), paper = readPaperData(), source = readSheetState('historySource'), inputs = readSheetInputs(SHEET_MODE_INPUTS), memo = {}, text = {}, images = {};
       // Tool mode and generated empty page buckets are navigation, not edits.
       Object.keys(state.memoPages || {}).forEach(function(key){ const strokes = state.memoPages[key].strokes; if (strokes && strokes.length) memo[key] = { strokes:strokes, redo:[] }; });
       Object.keys(state.textMemoPages || {}).forEach(function(key){ if (state.textMemoPages[key].length) text[key] = state.textMemoPages[key]; });
