@@ -2612,7 +2612,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '963';
+    const APP_VERSION = '964';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -2955,7 +2955,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       overrides:["markerOverrides","cameraPreviewStyles","cameraEndpointFr","cameraSeries","dotOverrides","layerNameTags","bookNames"],
       paperImage:["paperImageDataUrl","paperImageMemoDataUrl","paperImageMemoLayerCount","paperImageName","paperImageMeta","paperImagePixelInfo","paperImageSourceWidth","paperImageSourceHeight"],
       paperOutput:["showTemplate","showHeaderOutput","showDurationPlusOutput","showCellLabelOutput","showPsdMemo"],
-      paperLayout:["layoutBoxes","layoutBoxBaseRects"],
+      paperLayout:["layoutBoxes","layoutBoxBaseRects","layoutGrid"],
       memo:["memoPages","textMemoPages"],
       pastedImages:["pastedImages"],
       stages:["stages","activeStageId"],
@@ -3097,6 +3097,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       cellDisplayOrder: [],
       serifuSheetGuides: [],
       layoutBoxes: {},
+      layoutGrid: null,
       layoutBoxBaseRects: {},
       textMemoPages: {},
       pastedImages: {},
@@ -3920,6 +3921,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver964", "Cells follow paper lines", ["After Auto Align, cels, dialogue and camera marks sit on the printed lines even where the paper's rows or columns are unevenly spaced."]],
         ["ver958", "Loading and export cancellation", ["Replaced imports no longer overwrite load status or continue scanning and decoding. Stopping during an export retry no longer starts another render or displays a failure."]],
         ["ver956", "Drawing counts", ["Count unique drawings per Cell, excluding reuse and repeats. Show a compact count above or below the header, or save CSV and text."]],
         ["ver954", "Reliable sheet settings import", ["Opening MoArt sheet settings after editing CSV now displays the imported cels. Files without an input mode use their own command data instead of the previous work's mode."]],
@@ -4025,6 +4027,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver964", "用紙の罫線に合わせて配置", ["自動位置合わせ後は、行や列の間隔が均一でない用紙でも、セル・台詞・カメラ指示が印刷された罫線の位置に入ります。"]],
         ["ver958", "読込と出力中止の修正", ["新しい読込に置き換わった処理は、状態表示を上書きせず、検索・解読を続けません。出力の再試行待ちで中止すると、余分に描画したり失敗と表示したりしなくなりました。"]],
         ["ver956", "動画枚数", ["セル別の動画枚数を再使用・リピートの重複なしで集計。ヘッダー右上・右下への表示とCSV・テキスト保存に対応。"]],
         ["ver954", "シート設定の読込を修正", ["CSV編集中にMoArtのシート設定を開いてもセルが表示されます。入力モードがないファイルは、前の作業ではなくファイル内のコマンドから読み方を決めます。"]],
@@ -4130,6 +4133,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver964", "용지 칸선에 맞춰 배치", ["자동정렬한 용지는 행·열 간격이 고르지 않아도 셀·대사·카메라 표시가 인쇄된 칸선 위치에 들어갑니다."]],
         ["ver958", "불러오기·출력 중지 수정", ["새 불러오기로 교체된 처리는 안내를 덮거나 검색·해독을 이어 하지 않습니다. 출력 재시도 대기 중 중지하면 추가로 렌더하거나 실패로 표시하지 않습니다."]],
         ["ver956", "동화 매수 집계", ["셀별 동화 매수를 재사용·리피트 중복 없이 셉니다. 헤더 우상단·우하단 표시와 CSV·텍스트 저장을 지원합니다."]],
         ["ver954", "시트 설정 불러오기 수정", ["CSV 편집 후 모아트 시트 설정을 열어도 셀이 표시됩니다. 입력 모드가 없는 파일은 이전 작업 대신 파일 안의 명령으로 읽는 방식을 정합니다."]],
@@ -4235,6 +4239,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver964", "按用纸格线排布", ["自动对齐后，即使用纸的行列间距不均匀，赛璐珞、台词和镜头标记也会落在印刷格线的位置。"]],
         ["ver958", "修复导入与停止输出", ["被新导入替换的处理不再覆盖状态提示或继续扫描、解码。在输出重试等待期间停止，不再额外渲染或显示为失败。"]],
         ["ver956", "动画张数统计", ["按层统计独立图画，重复使用和循环不重复计数。支持页眉右上或右下显示，以及CSV和文本保存。"]],
         ["ver954", "修正表格设置导入", ["编辑CSV后打开MoArt表格设置也能显示单元格。未指定输入模式的文件会根据自身命令选择模式，不再沿用上一份工作的模式。"]],
@@ -6597,6 +6602,34 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       out.w = Math.round(out.w);
       out.h = Math.round(out.h);
       return out;
+    }
+
+    // 자동정렬이 찾은 용지 칸선(state.layoutGrid). 칸 상자 기준 0~1 비율이라 상자를 옮기거나 늘려도 따라간다.
+    // rows는 본문 가로선, cols.<left|right|main>은 원화칸 세로선이다. 개수가 출력 칸 수와 맞을 때만 쓰고,
+    // 없거나 다르면 등분한다(예전 파일, 자동정렬 뒤 바꾼 열 수).
+    function sanitizeLayoutGridLines(list) {
+      if (!Array.isArray(list) || list.length < 2) return null;
+      const values = list.map(Number);
+      if (values[0] !== 0 || values[values.length - 1] !== 1) return null;
+      for (let i = 1; i < values.length; i++) if (!(values[i] > values[i - 1])) return null;
+      return values;
+    }
+
+    function sanitizeLayoutGrid(value) {
+      if (!value || typeof value !== 'object') return null;
+      const rows = sanitizeLayoutGridLines(value.rows);
+      const cols = {};
+      ['left', 'right', 'main'].forEach(function(side){
+        const lines = sanitizeLayoutGridLines(value.cols && value.cols[side]);
+        if (lines) cols[side] = lines;
+      });
+      return rows || Object.keys(cols).length ? { rows:rows, cols:cols } : null;
+    }
+
+    function getLayoutGridLines(side, count) {
+      const grid = state.layoutGrid;
+      const lines = grid ? (side ? grid.cols && grid.cols[side] : grid.rows) : null;
+      return Array.isArray(lines) && lines.length === count + 1 ? lines : null;
     }
 
     function getLayoutBoxRect(key, baseRect) {
@@ -11723,6 +11756,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     function makePaperAutoAlignLayoutResult(analysis, bodyGrid, variantName) {
       let pair = null;
       let pairError = null;
+      let pairLines = analysis.xLines;
       // 용지 구조로 먼저 가른다. 3초 용지는 좌우 짝 조건을 **우연히 통과**하므로(실측), 짝짓기
       // 실패를 기다리면 영영 1블록 경로에 못 간다.
       const singleBlockPaper = isPaperAutoAlignSingleBlockPaper(analysis, bodyGrid);
@@ -11738,6 +11772,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         // 블록이 하나뿐인 용지(3초 시트). 여기서만 열 수 상한을 넓혀 후보를 다시 만든다.
         // 점선 탓에 빠진 세로선을 여기서만 채운다 — 좌우 2블록 경로가 받는 선은 손대지 않는다.
         const singleLines = fillPaperAutoAlignVerticalGaps(analysis.xLines);
+        pairLines = singleLines;
         const wideGroups = makePaperAutoAlignColumnGroups(singleLines, analysis.xDetailed, bodyGrid, analysis, PAPER_AUTO_ALIGN_SINGLE_MAX_COLUMNS);
         pair = choosePaperAutoAlignSingleBlock(wideGroups, singleLines, analysis.xDetailed);
         if (!pair) throw pairError || new Error('Left/right matching column groups were not found');
@@ -11804,8 +11839,13 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const walkPenalty = (Number(bodyGrid.missingLineCount) || 0) * 4 + (bodyGrid.topAdjusted ? 3 : 0);
       const rawConfidence = Math.round(30 + pairQuality * 40 + gridQuality * 28);
       const confidence = Math.max(15, Math.min(98, rawConfidence - sanity.penalty - walkPenalty));
+      const cellSides = singleBlock ? [['main', pair.left]] : [['left', pair.left], ['right', pair.right]];
+      const layoutGrid = makePaperAutoAlignLayoutGrid(boxes, bodyGrid.lines, cellSides.map(function(item){
+        return { side:item[0], columns:columns, lines:pairLines.slice(item[1].leftIndex, item[1].rightIndex + 1) };
+      }));
       return {
         layoutBoxes:boxes,
+        layoutGrid:layoutGrid,
         cellColumnCount:columns,
         confidence:confidence,
         overlay:{
@@ -11839,6 +11879,36 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           dottedVerticalLineCount:dottedVerticalLineCount
         }
       };
+    }
+
+    // 상자를 칸 수로 등분한 위치마다 반 칸 안의 가장 가까운 검출선을 고른다. 선이 안 보이는 자리(흐린 선)는
+    // 등분 위치를 그대로 쓴다. 결과는 상자 기준 0~1 비율이다(sanitizeLayoutGrid 형식).
+    function snapPaperAutoAlignGridLines(start, size, count, detected) {
+      const step = size / count;
+      const out = [0];
+      for (let i = 1; i < count; i++) {
+        const ideal = start + step * i;
+        let best = null;
+        (detected || []).forEach(function(pos){
+          if (Math.abs(pos - ideal) <= step * 0.5 && (best === null || Math.abs(pos - ideal) < Math.abs(best - ideal))) best = pos;
+        });
+        out.push(Math.round(((best === null ? ideal : best) - start) / size * 1e5) / 1e5);
+      }
+      out.push(1);
+      return sanitizeLayoutGridLines(out);
+    }
+
+    function makePaperAutoAlignLayoutGrid(boxes, rowLines, cellSides) {
+      const firstCell = boxes['cell-' + cellSides[0].side];
+      const grid = {
+        rows:firstCell ? snapPaperAutoAlignGridLines(firstCell.y, firstCell.h, PAPER_AUTO_ALIGN_TARGET_BODY_LINES - 1, rowLines) : null,
+        cols:{}
+      };
+      cellSides.forEach(function(item){
+        const box = boxes['cell-' + item.side];
+        if (box && item.columns > 0) grid.cols[item.side] = snapPaperAutoAlignGridLines(box.x, box.w, item.columns, item.lines);
+      });
+      return sanitizeLayoutGrid(grid);
     }
 
     function isStableStandardPaperAutoAlignResult(result) {
@@ -12001,6 +12071,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const templateMatch = matchPaperTemplateFingerprint(result, analysis);
         state.layoutBoxes = result.layoutBoxes;
         state.layoutBoxBaseRects = {};
+        state.layoutGrid = result.layoutGrid;
         state.cellColumnCount = clampCellColumnCount(result.cellColumnCount);
         state.paperAutoAlignOverlay = result.overlay;
         // 동화 델타는 검출된 격자에서 바로 낸다 — handlePaperImageUpload 가 새 용지에 넣어 둔 0 을
@@ -14833,13 +14904,13 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const startFrame = group ? Math.max(1, Math.round(Number(frame || 1)) - Math.max(0, Math.round(Number(group.offset) || 0))) : frame;
       const length = group && Array.isArray(group.tokens) ? Math.max(1, group.tokens.length) : 1;
       const y = getOutputRowTop(block, startFrame, 'cell');
-      const h = getOutputRowH(block, 'cell');
+      const h = getOutputRowTop(block, startFrame + length, 'cell') - y;
       const g = el('g', { id:'cellTokenDragPreview', 'pointer-events':'none' });
       g.appendChild(el('rect', {
         x:bounds.x1 + 1,
         y:y + 1,
         width:Math.max(1, bounds.x2 - bounds.x1 - 2),
-        height:Math.max(1, h * length - 2),
+        height:Math.max(1, h - 2),
         fill:'rgba(31,111,235,.12)',
         stroke:SHAKU_BLUE,
         'stroke-width':3,
@@ -14863,8 +14934,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const block = findTimelineDragPreviewBlock(frame, drag.blockType);
       if (!block) return;
       const area = drag.blockType === 'camera' ? getCameraArea(block) : getDialogArea(block);
-      const rowTop = getOutputRowTop(block, frame, drag.blockType);
-      const y = drag.edge === 'from' ? rowTop : rowTop + getOutputRowH(block, drag.blockType);
+      const y = getOutputRowTop(block, drag.edge === 'from' ? frame : frame + 1, drag.blockType);
       const g = el('g', { id:'timelineEdgeDragPreview', 'pointer-events':'none' });
       g.appendChild(el('line', {
         x1:area.x,
@@ -15179,9 +15249,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         if (result || !entries.length) return;
         const area = getCellArea(tempBlock);
         if (p.x < area.x || p.x > area.x + area.w || p.y < area.y || p.y > area.y + area.h) return;
-        const areaRowH = getOutputRowH(tempBlock, 'cell');
-        const yClamped = Math.max(area.y, Math.min(area.y + area.h - 0.01, p.y));
-        const frame = Math.max(tempBlock.start, Math.min(tempBlock.end, tempBlock.start + Math.floor((yClamped - area.y) / areaRowH)));
+        const frame = Math.min(tempBlock.end, getOutputFrameAtY(tempBlock, 'cell', p.y));
         let colIndex = -1;
         for (let ci = 0; ci < entries.length; ci++) {
           const b = getOutputCellBounds(tempBlock, ci);
@@ -15726,7 +15794,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (to < from) return null;
       const bounds = getOutputCellBounds(block, colIndex);
       const y = getOutputRowTop(block, from, 'cell');
-      const h = getOutputRowTop(block, to, 'cell') + getOutputRowH(block, 'cell') - y;
+      const h = getOutputRowTop(block, to + 1, 'cell') - y;
       return { x:bounds.x1, y:y, w:bounds.x2 - bounds.x1, h:h, from:from, to:to };
     }
 
@@ -16382,12 +16450,12 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         if (to <= from) return;
         const lane = mine[0].lane || 0;
         const laneX = getDistributedLaneX(area.x, area.w, lane, cameraLaneCount, 12);
-        const yTop = getOutputRowTop(block, from, 'camera') + rowH / 2;
-        const yBottom = getOutputRowTop(block, to, 'camera') + rowH / 2;
+        const yTop = getOutputRowTop(block, from, 'camera') + getOutputRowH(block, 'camera', from) / 2;
+        const yBottom = getOutputRowTop(block, to, 'camera') + getOutputRowH(block, 'camera', to) / 2;
         // the name goes in the block that holds the series' own middle, so it is written once
         const globalMid = wholeFrom + (wholeTo - wholeFrom) / 2;
         const label = (globalMid >= from && globalMid <= to) ? name : '';
-        drawCameraBow(laneX, yTop, yBottom, (to - from + 1) * rowH, rowH, label, laneGap, null);
+        drawCameraBow(laneX, yTop, yBottom, getOutputRowTop(block, to + 1, 'camera') - getOutputRowTop(block, from, 'camera'), rowH, label, laneGap, null);
       });
     }
 
@@ -16714,8 +16782,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       withDrawLayer('output', function(){
         for (let r = 0; r <= block.frameCount; r++) {
           const boundaryFrame = block.start + r;
-          const y = getOutputRowTop(block, Math.min(block.end, Math.max(block.start, boundaryFrame)), 'cell');
-          const drawY = r === block.frameCount ? getOutputRowTop(block, block.end, 'cell') + getOutputRowH(block, 'cell') : y;
+          const drawY = getOutputRowTop(block, boundaryFrame, 'cell');
           const is24FrameBoundary = r > 0 && r % 24 === 0;
           const is6FrameBoundary = r > 0 && r % 6 === 0;
           const strokeW = is24FrameBoundary ? 6.0 : (is6FrameBoundary ? 4.0 : 1.25);
@@ -16810,7 +16877,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           const panelW = 188;
           const panelH = 48;
           const px = Math.max(block.blockX + 4, Math.min(block.blockX + block.blockW - panelW - 4, box.x + box.w - panelW - 4));
-          const py = Math.max(getOutputRowTop(block, block.start, 'cell') + 4, Math.min(getOutputRowTop(block, block.end, 'cell') + getOutputRowH(block, 'cell') - panelH - 4, box.y + box.h + 6));
+          const py = Math.max(getOutputRowTop(block, block.start, 'cell') + 4, Math.min(getOutputRowTop(block, block.end + 1, 'cell') - panelH - 4, box.y + box.h + 6));
           appendSvgNode(el('rect', { x:px, y:py, width:panelW, height:panelH, fill:'white', stroke:SHAKU_BLUE, 'stroke-width':1.6, rx:9, ry:9 }));
           const durationText = framesToShakuLength(sel.frameCount || (to - from + 1));
           appendSvgNode(el('text', { x:px + 10, y:py + 15, fill:SHAKU_BLUE, 'font-size':13, 'font-family':'Arial, Helvetica, sans-serif', 'font-weight':'800', 'dominant-baseline':'middle' }, durationText));
@@ -18279,16 +18346,44 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       else if (laneKind === 'camera') area = getCameraArea(block);
       else area = getCellArea(block);
       const frameCount = Math.max(1, (block.end && block.start) ? (block.end - block.start + 1) : (block.frameCount || 72));
-      return { area:area, rowH:Math.max(2, area.h / frameCount) };
+      return { area:area, rowH:Math.max(2, area.h / frameCount), rows:getLayoutGridLines(null, frameCount), frameCount:frameCount };
     }
 
-    function getOutputRowH(block, laneKind) {
-      return getOutputRowGeometry(block, laneKind).rowH;
+    // frame 을 주면 그 프레임 칸의 높이, 없으면 평균 칸 높이다. 용지 칸선을 따르는 시트는 칸마다 높이가 다르다.
+    function getOutputRowH(block, laneKind, frame) {
+      if (frame == null) return getOutputRowGeometry(block, laneKind).rowH;
+      return getOutputRowTop(block, frame + 1, laneKind) - getOutputRowTop(block, frame, laneKind);
     }
 
+    // frame 칸의 위 경계. block.end + 1 은 마지막 칸의 아래 경계다. 블록 밖은 평균 칸 높이로 잇는다.
     function getOutputRowTop(block, frame, laneKind) {
+      return getOutputRowEdge(getOutputRowGeometry(block, laneKind), frame - block.start);
+    }
+
+    function getOutputRowEdge(geometry, index) {
+      const rows = geometry.rows;
+      if (!rows || !Number.isInteger(index)) return geometry.area.y + index * geometry.rowH;
+      if (index < 0) return geometry.area.y + index * geometry.rowH;
+      if (index > geometry.frameCount) return geometry.area.y + geometry.area.h + (index - geometry.frameCount) * geometry.rowH;
+      return geometry.area.y + rows[index] * geometry.area.h;
+    }
+
+    // y 가 든 칸의 프레임(블록 안으로 제한).
+    function getOutputFrameAtY(block, laneKind, y) {
       const geometry = getOutputRowGeometry(block, laneKind);
-      return geometry.area.y + (frame - block.start) * geometry.rowH;
+      let index = 0;
+      while (index < geometry.frameCount - 1 && y >= getOutputRowEdge(geometry, index + 1)) index++;
+      return block.start + index;
+    }
+
+    // y 에 가장 가까운 칸 경계의 번호(0 = 첫 칸 위, frameCount = 마지막 칸 아래).
+    function getOutputRowBoundaryAtY(block, laneKind, y) {
+      const geometry = getOutputRowGeometry(block, laneKind);
+      let best = 0;
+      for (let index = 1; index <= geometry.frameCount; index++) {
+        if (Math.abs(getOutputRowEdge(geometry, index) - y) < Math.abs(getOutputRowEdge(geometry, best) - y)) best = index;
+      }
+      return best;
     }
 
     function getCellArea(block) {
@@ -18317,6 +18412,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     function getOutputCellBounds(block, colIndex) {
       const area = getCellArea(block);
       const colCount = Math.max(1, getCellColumnCount(), block.originalEntriesCount || block.originalColCount || 8);
+      const cols = getLayoutGridLines(getBlockSideKey(block), colCount);
+      if (cols && colIndex >= 0 && colIndex < colCount) return { x1:area.x + cols[colIndex] * area.w, x2:area.x + cols[colIndex + 1] * area.w };
       const colW = area.w / colCount;
       const x1 = area.x + colIndex * colW;
       return { x1:x1, x2:x1 + colW };
@@ -18703,8 +18800,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const from = Math.max(seg.from, block.start);
         const to = Math.min(seg.to, block.end);
         if (to < from) return;
-        const rowTop = (dialogArea.y + (from - block.start) * dialogRowH);
-        const height = (to - from + 1) * dialogRowH;
+        const rowTop = getOutputRowEdge(dialogRows, from - block.start);
+        const height = getOutputRowEdge(dialogRows, to + 1 - block.start) - rowTop;
         const showsSegmentStart = seg.from >= block.start && seg.from <= block.end;
         const showsSegmentEnd = seg.to >= block.start && seg.to <= block.end;
         const x = dialogArea.x;
@@ -18738,8 +18835,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const from = Math.max(seg.from, block.start);
         const to = Math.min(seg.to, block.end);
         if (to < from) return;
-        const rowTop = (cameraArea.y + (from - block.start) * cameraRowH);
-        const height = (to - from + 1) * cameraRowH;
+        const rowTop = getOutputRowEdge(cameraRows, from - block.start);
+        const height = getOutputRowEdge(cameraRows, to + 1 - block.start) - rowTop;
         const rowH = cameraRowH;
         const showsSegmentStart = seg.from >= block.start && seg.from <= block.end;
         const showsSegmentEnd = seg.to >= block.start && seg.to <= block.end;
@@ -18788,7 +18885,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           drawCameraMarkerEndpoint(x, w, rowTop, rowH, seg.lane || 0, cameraLaneCount, cameraMarkerStyle, 'start', seg.label);
         }
         if (!withinCutOl && !cameraTargetShape && seg.endLabel && showsSegmentEnd) {
-          const endRowTop = (cameraArea.y + (seg.to - block.start) * cameraRowH);
+          const endRowTop = getOutputRowEdge(cameraRows, seg.to - block.start);
           drawCameraMarkerEndpoint(x, w, endRowTop, rowH, seg.lane || 0, cameraLaneCount, cameraMarkerStyle, 'end', seg.endLabel);
         }
         if (interactive !== false && showsSegmentStart) addTimelineEdgeHandle(block, rowTop, 'camera', seg, 'from', cameraLaneBounds.x, cameraLaneBounds.w, cameraStartEdgeGuide);
@@ -18806,16 +18903,16 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return Math.max(frame, Math.round(Number(entry && entry.to) || frame));
     }
 
-    function renderDougaHoldLine(x, fromFrame, toFrame, block, area, rowH, wavy) {
+    function renderDougaHoldLine(x, fromFrame, toFrame, block, rows, wavy) {
       const start = Math.max(block.start, Math.round(Number(fromFrame) || 0));
       const end = Math.min(block.end, Math.round(Number(toFrame) || 0));
       if (end < start) return;
-      const y1 = area.y + (start - block.start) * rowH + 1.5;
-      const y2 = area.y + (end - block.start + 1) * rowH - 1.5;
+      const y1 = getOutputRowEdge(rows, start - block.start) + 1.5;
+      const y2 = getOutputRowEdge(rows, end + 1 - block.start) - 1.5;
       if (y2 > y1) renderCellContinuationLine(x, y1, y2, '#111', cellOutputStroke(1), wavy);
     }
 
-    function renderDougaHoldLineSkippingFrames(x, fromFrame, toFrame, block, area, rowH, skipFrames, wavy) {
+    function renderDougaHoldLineSkippingFrames(x, fromFrame, toFrame, block, rows, skipFrames, wavy) {
       const start = Math.max(block.start, Math.round(Number(fromFrame) || 0));
       const end = Math.min(block.end, Math.round(Number(toFrame) || 0));
       if (end < start) return;
@@ -18825,7 +18922,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         if (!shouldBreak) continue;
         const segmentEnd = frame - 1;
         if (segmentEnd >= segmentStart) {
-          renderDougaHoldLine(x, segmentStart, segmentEnd, block, area, rowH, wavy);
+          renderDougaHoldLine(x, segmentStart, segmentEnd, block, rows, wavy);
         }
         segmentStart = frame + 1;
       }
@@ -18836,7 +18933,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const area = getInbetweenArea(block);
       if (!area || area.w <= 1 || area.h <= 1) return;
       const colW = area.w / Math.max(1, originalEntries.length);
-      const rowH = area.h / Math.max(1, block.frameCount || 72);
+      // 동화란은 대사란과 같은 높이에 있으므로 그 칸 경계를 쓴다.
+      const rows = getOutputRowGeometry(block, 'dialog');
       withDrawLayer('output', function(){
         originalEntries.forEach(function(entry, colIndex){
           if (!entry) return;
@@ -18851,19 +18949,19 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           events.forEach(function(eventValue, index){
             const eventFrame = Math.round(Number(eventValue.frame) || 0);
             const holdEnd = getDougaHoldEnd(eventValue, getNextDougaHoldEntry(events, index), targetEnd);
-            if (holdEnd - eventFrame >= 3) renderDougaHoldLineSkippingFrames(x, eventFrame + 1, holdEnd, block, area, rowH, crossFrames, isDougaCrossEntry(eventValue));
+            if (holdEnd - eventFrame >= 3) renderDougaHoldLineSkippingFrames(x, eventFrame + 1, holdEnd, block, rows, crossFrames, isDougaCrossEntry(eventValue));
           });
           const lastEvent = events.length ? events[events.length - 1] : null;
           if (lastEvent) {
             const lastEventIndex = events.indexOf(lastEvent);
             const lastHoldEnd = getDougaHoldEnd(lastEvent, getNextDougaHoldEntry(events, lastEventIndex), targetEnd);
             const lastEventFrame = Math.round(Number(lastEvent.frame) || 0);
-            if (lastHoldEnd < targetEnd && targetEnd - lastEventFrame >= 3) renderDougaHoldLineSkippingFrames(x, lastHoldEnd + 1, targetEnd, block, area, rowH, crossFrames, isDougaCrossEntry(lastEvent));
+            if (lastHoldEnd < targetEnd && targetEnd - lastEventFrame >= 3) renderDougaHoldLineSkippingFrames(x, lastHoldEnd + 1, targetEnd, block, rows, crossFrames, isDougaCrossEntry(lastEvent));
           }
           events.forEach(function(eventValue){
             const frame = Math.round(Number(eventValue.frame) || 0);
             if (frame < block.start || frame > block.end) return;
-            const y = area.y + (frame - block.start) * rowH + rowH / 2;
+            const y = (getOutputRowEdge(rows, frame - block.start) + getOutputRowEdge(rows, frame + 1 - block.start)) / 2;
             text(x, y, eventValue.value, cellOutputSize(10), 'middle', '800', '#111');
           });
         });
@@ -19063,8 +19161,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
       withStaticLayer(function(){ withDrawLayer('output', function(){
       const cellBlock = { blockX:params.blockX, blockW:params.blockW, originalColW:originalColW, originalAreaW:params.originalAreaW, originalEntriesCount:params.originalEntries.length, top:top, nameStripH:nameStripH, rowH:rowH, frameCount:frameCountForBox, start:params.startFrame };
-      const cellRowH = getOutputRowH(cellBlock, 'cell');
-      const cellTop = getOutputRowTop(cellBlock, params.startFrame, 'cell');
       const holdTargetEnd = Math.max(0, Math.round(Number(params.durationFrame) || 0));
       params.originalEntries.forEach(function(entry, colIndex){
         const layer = params.layersById.get(entry.uid);
@@ -19077,8 +19173,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         for (let i = 0; i < params.frameCount; i++) {
           const absFrame = params.startFrame + i;
           const tempBlock = cellBlock;
-          const y1 = cellTop + (absFrame - cellBlock.start) * cellRowH;
-          const y2 = y1 + cellRowH;
+          const y1 = getOutputRowTop(cellBlock, absFrame, 'cell');
+          const y2 = getOutputRowTop(cellBlock, absFrame + 1, 'cell');
           const frameRow = frameRows[i];
           const seg = frameRow.seg;
           const repeatMark = frameRow.repeat;
@@ -19311,11 +19407,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       previewSelectionBlocks.forEach(function(item){
         const tempBlock = item.block;
         const boundaryArea = getDurationBoundaryArea(tempBlock);
-        const cellArea = getCellArea(tempBlock);
-        const rowH = getOutputRowH(tempBlock, 'cell');
         if (p.x < boundaryArea.x || p.x > boundaryArea.x + boundaryArea.w) return;
-        const y = clampNumber(p.y, cellArea.y, cellArea.y + cellArea.h);
-        const r = Math.max(1, Math.min(tempBlock.frameCount, Math.round((y - cellArea.y) / rowH)));
+        const r = Math.max(1, Math.min(tempBlock.frameCount, getOutputRowBoundaryAtY(tempBlock, 'cell', p.y)));
         candidate = tempBlock.start + r - 1;
       });
       return candidate;
@@ -19354,8 +19447,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     function addRepeatContinuationDotHit(entry, baseLayer, frame, bounds, block, columnIndex, geometry) {
       if (!entry || !baseLayer || currentSvgTarget !== svg || state.memoMode || state.positionMode || state.textMemoEditMode || state.shakuMode) return;
-      const rowH = geometry.rowH;
-      const rowTop = geometry.area.y + (frame - block.start) * rowH;
+      const rowTop = getOutputRowEdge(geometry, frame - block.start);
+      const rowH = getOutputRowEdge(geometry, frame + 1 - block.start) - rowTop;
       const hit = el('rect', { x:bounds.x1, y:rowTop, width:bounds.x2 - bounds.x1, height:rowH, fill:'transparent', stroke:'transparent', 'pointer-events':'all' });
       hit.style.cursor = 'pointer';
       markCellFrameHit(hit);
@@ -19399,8 +19492,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           const fromFrame = Math.max(mark.frame + 1, block.start);
           const toFrame = Math.min(targetFrame || 0, block.end);
           if (toFrame < fromFrame) return;
-          const y1 = (geometry.area.y + (fromFrame - block.start) * geometry.rowH) + 1.5;
-          const y2 = (geometry.area.y + (toFrame + 1 - block.start) * geometry.rowH) - 1.5;
+          const y1 = getOutputRowEdge(geometry, fromFrame - block.start) + 1.5;
+          const y2 = getOutputRowEdge(geometry, toFrame + 1 - block.start) - 1.5;
           line(xCenter, y1, xCenter, y2, '#111', 1);
           if (interactive !== false) {
             for (let frame = fromFrame; frame <= toFrame; frame++) {
@@ -19422,7 +19515,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           if (!endFrame || endFrame < block.start || endFrame > block.end) return;
           const bounds = getOutputCellBounds(block, columnIndex);
           const rowTop = getOutputRowTop(block, endFrame, 'cell');
-          const rowH = getOutputRowH(block, 'cell');
+          const rowH = getOutputRowH(block, 'cell', endFrame);
           const node = text(getCellTextX(bounds.x1, bounds.x2), rowTop + rowH / 2, '止メ', cellOutputSize(8), getCellTextAnchor(), '800', '#111');
           node.setAttribute('pointer-events', 'none');
         });
@@ -19465,7 +19558,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const targetDuration = Math.round(Number(durationFrame) || 0);
       if (!targetDuration || targetDuration < block.start) return;
       withDrawLayer('output', function(){
-        const geometry = getOutputRowGeometry(block, 'cell'), rowH = geometry.rowH;
+        const geometry = getOutputRowGeometry(block, 'cell');
         (originalEntries || []).forEach(function(entry, columnIndex){
           if (!entry || !entry.isActual || !layersById || !layersById.has(entry.uid)) return;
           const layer = layersById.get(entry.uid);
@@ -19489,9 +19582,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           const strokeWidth = lastSeg.kind === 'cross' ? 1.4 : 1;
           for (let frame = fromFrame; frame <= toFrame; frame++) {
             if (previewEndFrame && frame === previewEndFrame) continue;
-            const rowTop = geometry.area.y + (frame - block.start) * rowH;
-            const y1 = rowTop + 1.5;
-            const y2 = rowTop + rowH - 1.5;
+            const y1 = getOutputRowEdge(geometry, frame - block.start) + 1.5;
+            const y2 = getOutputRowEdge(geometry, frame + 1 - block.start) - 1.5;
             if (y2 > y1) renderCellContinuationLine(xCenter, y1, y2, strokeColor, strokeWidth, lastSeg.kind === 'cross');
           }
         });
@@ -21501,16 +21593,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       previewSelectionBlocks.forEach(function(item){
         const tempBlock = item.block;
         const area = dragType === 'camera' ? getCameraArea(tempBlock) : (dragType === 'dialog' ? getDialogArea(tempBlock) : getCellArea(tempBlock));
-        const areaRowH = getOutputRowH(tempBlock, dragType);
-        const bodyTop = area.y;
-        const bodyBottom = area.y + area.h;
         const xInsideArea = p.x >= area.x && p.x <= area.x + area.w;
         const xInsideBlock = p.x >= tempBlock.blockX && p.x <= tempBlock.blockX + tempBlock.blockW;
-        const yClamped = Math.max(bodyTop, Math.min(bodyBottom - 0.01, p.y));
-        const frame = tempBlock.start + Math.floor((yClamped - bodyTop) / areaRowH);
-        const candidate = Math.max(tempBlock.start, Math.min(tempBlock.end, frame));
+        const candidate = Math.min(tempBlock.end, getOutputFrameAtY(tempBlock, dragType, p.y));
         if (xInsideBlock) nearestFrame = candidate;
-        if ((xInsideArea || xInsideBlock) && p.y >= bodyTop && p.y <= bodyBottom) nearestFrame = candidate;
+        if ((xInsideArea || xInsideBlock) && p.y >= area.y && p.y <= area.y + area.h) nearestFrame = candidate;
       });
       if (nearestFrame !== null) return nearestFrame;
       return null;
@@ -25074,7 +25161,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         showCellLabelOutput:!!state.showCellLabelOutput,
         showPsdMemo:!!state.showPsdMemo,
         layoutBoxes:cloneSheetData(state.layoutBoxes || {}),
-        layoutBoxBaseRects:cloneSheetData(state.layoutBoxBaseRects || {})
+        layoutBoxBaseRects:cloneSheetData(state.layoutBoxBaseRects || {}),
+        layoutGrid:cloneSheetData(state.layoutGrid || null)
       };
     }
 
@@ -25101,6 +25189,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       });
       state.layoutBoxes = cloneSheetData(paper.layoutBoxes || {});
       state.layoutBoxBaseRects = cloneSheetData(paper.layoutBoxBaseRects || {});
+      state.layoutGrid = sanitizeLayoutGrid(paper.layoutGrid);
     }
 
     function restorePaperStateSnapshot(snapshot, options) {
@@ -25361,6 +25450,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       state.showPsdMemo = true;
       state.layoutBoxes = {};
       state.layoutBoxBaseRects = {};
+      state.layoutGrid = null;
       state.layoutDrag = null;
       clearLayoutDragPreview();
       document.documentElement.classList.remove('position-edit-dragging');
@@ -25406,6 +25496,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       cancelPendingPaperAutoAlign();
       state.layoutBoxes = {};
       state.layoutBoxBaseRects = {};
+      state.layoutGrid = null;
       state.layoutDrag = null;
       clearLayoutDragPreview();
       document.documentElement.classList.remove('position-edit-dragging');
