@@ -2608,7 +2608,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '968';
+    const APP_VERSION = '969';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3917,6 +3917,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver969", "Seconds, frames and sheet numbers around printed marks", ["On aligned paper, seconds and frames sit at the same height and distance on either side of the printed +, and sheet numbers beside a short slash are balanced around it."]],
         ["ver968", "Header + and sheet numbers on paper", ["After Auto Align, the + between seconds and frames sits on the printed +. The current and total sheet numbers go on either side of the printed slash; the side marked with the two-character label counts as the current sheet. Header boxes no longer stretch to the page edge or logos."]],
         ["ver967", "Header boxes on paper", ["After Auto Align, every header box now fills its printed cell with the same small margin. On paper with a faint sheet-count slash, the sheet-count box no longer lands in the next cell."]],
         ["ver966", "Last cel column on paper with a frame-number column", ["When the last cel column is widened to hold printed frame numbers, it now gets the same width as the other columns, and the dialog area starts at the printed boundary beyond the numbers."]],
@@ -4027,6 +4028,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver969", "印刷記号に合わせた秒・コマ・枚数", ["自動整列した用紙で、秒とコマが印刷された＋の左右に同じ高さ・同じ距離で並び、短い斜線の枚数も斜線を中心に釣り合います。"]],
         ["ver968", "用紙のヘッダーの＋と枚数", ["自動整列後、秒とコマの間の＋が印刷された＋に重なります。枚数は印刷された斜線の両側に分けて書き、「枚目」側を現在の枚数とします。ヘッダー欄が紙の端やロゴまで広がらなくなりました。"]],
         ["ver967", "用紙のヘッダー欄", ["自動整列後のヘッダー欄が、どれも印刷された枠いっぱいに同じ余白でそろいます。シート欄の斜線が薄い用紙で、枚数欄が隣の枠にずれなくなりました。"]],
         ["ver966", "コマ番号欄付き用紙の最後のセル列", ["最後のセル列が印刷されたコマ番号の分だけ広い用紙で、その列も他の列と同じ幅にそろえ、台詞欄は番号の外側の印刷線から始めます。"]],
@@ -4137,6 +4139,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver969", "인쇄 기호에 맞춘 초·コマ·매수", ["자동정렬한 용지에서 초와 コマ 숫자가 인쇄된 + 좌우에 같은 높이·같은 거리로 놓이고, 짧은 사선의 매수도 사선을 중심으로 균형 있게 놓입니다."]],
         ["ver968", "용지 헤더의 +와 매수", ["자동정렬 뒤 초와 프레임 사이의 +가 인쇄된 +에 겹칩니다. 매수는 인쇄된 사선 양쪽에 나눠 쓰고, 「枚目」 쪽을 현재 매수로 봅니다. 헤더 칸이 종이 가장자리나 로고까지 늘어나지 않습니다."]],
         ["ver967", "용지의 헤더 칸", ["자동정렬 뒤 헤더 칸이 모두 인쇄된 칸을 같은 여백으로 채웁니다. 시트 칸의 사선이 옅은 용지에서 매수 칸이 옆 칸으로 가지 않습니다."]],
         ["ver966", "프레임 번호 칸이 붙은 용지의 마지막 셀 열", ["마지막 셀 열이 인쇄된 프레임 번호만큼 넓은 용지에서 그 열도 다른 열과 같은 폭으로 맞추고, 대사 칸은 번호 바깥의 인쇄선에서 시작합니다."]],
@@ -4247,6 +4250,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver969", "按印刷符号排列秒·帧·张数", ["自动对齐的用纸上，秒和帧在印刷的＋左右同高同距，短斜线两侧的张数也以斜线为中心对称。"]],
         ["ver968", "用纸表头的＋和张数", ["自动对齐后，秒和帧之间的＋与印刷的＋重合。张数分写在印刷斜线两侧，标有「枚目」的一侧为当前张数。表头栏不再延伸到纸边或标志。"]],
         ["ver967", "用纸的表头栏", ["自动对齐后，所有表头栏都以相同的小边距填满印刷格。表单张数斜线较淡的用纸，张数栏不再落到相邻格。"]],
         ["ver966", "带帧号栏用纸的最后一列", ["最后一列因印刷帧号而变宽的用纸，该列现在与其他列同宽，台词栏从帧号外侧的印刷线开始。"]],
@@ -18205,10 +18209,23 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           headerText('episode', hx + wEp / 2, hy + 68, ep, 24, 'middle', '700', '#111', { get:function(){ return getSheetInputValue('episode'); }, set:function(v){ setRememberedHeaderValue('episode', v); } }, boxes.episode);
           headerText('title', x1 + wTitle / 2, hy + 68, titleValue, 24, 'middle', '700', '#111', { get:function(){ return getSheetInputValue('title'); }, set:function(v){ setRememberedHeaderValue('title', v); } }, boxes.title);
           headerText('cutNo', x2 + wCut / 2, hy + 68, cutNo, 22, 'middle', '700', '#111', { get:function(){ return getSheetInputValue('cutNo'); }, set:function(v){ document.getElementById('cutNo').value = v; } }, boxes.cutNo);
-          headerText('seconds', x3 + wDuration / 2 - 16, hy + 68, String(sec), 22, 'middle', '700', '#111', { durationStepper:'seconds', get:function(){ return getSheetInputValue('seconds'); }, set:function(v){ document.getElementById('seconds').value = v; normalizeDurationInputs(); } }, boxes.seconds);
-          headerText('frames', x3 + wDuration / 2 + 16, hy + 68, String(frame), 22, 'middle', '700', '#111', { durationStepper:'frames', get:function(){ return getSheetInputValue('frames'); }, set:function(v){ document.getElementById('frames').value = v; normalizeDurationInputs(); } }, boxes.frames);
+          const secondsEdit = { durationStepper:'seconds', get:function(){ return getSheetInputValue('seconds'); }, set:function(v){ document.getElementById('seconds').value = v; normalizeDurationInputs(); } };
+          const framesEdit = { durationStepper:'frames', get:function(){ return getSheetInputValue('frames'); }, set:function(v){ document.getElementById('frames').value = v; normalizeDurationInputs(); } };
           const secBox = getHeaderFieldRect('seconds', boxes.seconds);
           const frameBox = getHeaderFieldRect('frames', boxes.frames);
+          const printedPlusMark = useAdjustedHeader && state.layoutGrid && state.layoutGrid.plus;
+          if (printedPlusMark) {
+            // 인쇄된 「+」가 있으면 초·コマ 숫자를 그 중심에서 같은 거리·같은 높이에 둔다(두 칸 가운데까지 거리의 평균).
+            const reach = ((printedPlusMark.x - (secBox.x + secBox.w / 2)) + ((frameBox.x + frameBox.w / 2) - printedPlusMark.x)) / 2;
+            const digitY = printedPlusMark.y + 22 * 0.07;
+            text(printedPlusMark.x - reach, digitY, String(sec), 22, 'middle', '700', '#111', secondsEdit);
+            addHeaderInlineEditHit('seconds', secBox, secondsEdit, 22, 'middle', '700');
+            text(printedPlusMark.x + reach, digitY, String(frame), 22, 'middle', '700', '#111', framesEdit);
+            addHeaderInlineEditHit('frames', frameBox, framesEdit, 22, 'middle', '700');
+          } else {
+            headerText('seconds', x3 + wDuration / 2 - 16, hy + 68, String(sec), 22, 'middle', '700', '#111', secondsEdit, boxes.seconds);
+            headerText('frames', x3 + wDuration / 2 + 16, hy + 68, String(frame), 22, 'middle', '700', '#111', framesEdit, boxes.frames);
+          }
           if (state.showDurationPlusOutput !== false) {
             const printedPlus = useAdjustedHeader && state.layoutGrid && state.layoutGrid.plus;
             const plusX = printedPlus ? printedPlus.x : (secBox.x + secBox.w + frameBox.x) / 2;
@@ -18243,9 +18260,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       }
       // 칸 가운데의 짧은 「/」(studiobono·clw·SARU)는 숫자를 사선 양 끝 높이에 맞춰 바로 옆에 둔다 — 위 끝 왼쪽·아래 끝 오른쪽.
       if (diagonal.x2 - diagonal.x1 < box.w * 0.6 && diagonal.y1 - diagonal.y2 < box.h * 0.7) {
-        const gap = 28;
-        centers.upper = { x:diagonal.x2 - gap, y:diagonal.y2, n:1 };
-        centers.lower = { x:diagonal.x1 + gap, y:diagonal.y1, n:1 };
+        // 사선 가운데를 중심으로 두 숫자를 점대칭으로 둔다. 숫자 잉크는 기준점보다 0.07em 위에 그려져 그만큼 내린다.
+        const gap = 28, lift = 20 * 0.07;
+        centers.upper = { x:diagonal.x2 - gap, y:diagonal.y2 + lift, n:1 };
+        centers.lower = { x:diagonal.x1 + gap, y:diagonal.y1 + lift, n:1 };
       }
       const other = diagonal.current === 'lower' ? 'upper' : 'lower';
       [[diagonal.current, current, editConfig], [other, total, null]].forEach(function(item){
