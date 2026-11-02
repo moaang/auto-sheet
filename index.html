@@ -2608,7 +2608,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '970';
+    const APP_VERSION = '971';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3917,6 +3917,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver971", "XDTS import", ["Opening an XDTS file sets the sheet length to the file and clears inbetween marks, cel order and generated dialogue or camera lines left from the previous sheet, as CLIP and TVPaint imports do."]],
         ["ver969", "Seconds, frames and sheet numbers around printed marks", ["On aligned paper, seconds and frames sit at the same height and distance on either side of the printed +, and sheet numbers beside a short slash are balanced around it."]],
         ["ver968", "Header + and sheet numbers on paper", ["After Auto Align, the + between seconds and frames sits on the printed +. The current and total sheet numbers go on either side of the printed slash; the side marked with the two-character label counts as the current sheet. Header boxes no longer stretch to the page edge or logos."]],
         ["ver967", "Header boxes on paper", ["After Auto Align, every header box now fills its printed cell with the same small margin. On paper with a faint sheet-count slash, the sheet-count box no longer lands in the next cell."]],
@@ -4028,6 +4029,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver971", "XDTSの読み込み", ["XDTSを開くと、CLIP・TVPaintと同じく尺がファイルに合い、前のシートの中割り記号・セルの並び・自動で入った台詞やカメラの行が残りません。"]],
         ["ver969", "印刷記号に合わせた秒・コマ・枚数", ["自動整列した用紙で、秒とコマが印刷された＋の左右に同じ高さ・同じ距離で並び、短い斜線の枚数も斜線を中心に釣り合います。"]],
         ["ver968", "用紙のヘッダーの＋と枚数", ["自動整列後、秒とコマの間の＋が印刷された＋に重なります。枚数は印刷された斜線の両側に分けて書き、「枚目」側を現在の枚数とします。ヘッダー欄が紙の端やロゴまで広がらなくなりました。"]],
         ["ver967", "用紙のヘッダー欄", ["自動整列後のヘッダー欄が、どれも印刷された枠いっぱいに同じ余白でそろいます。シート欄の斜線が薄い用紙で、枚数欄が隣の枠にずれなくなりました。"]],
@@ -4139,6 +4141,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver971", "XDTS 불러오기", ["XDTS를 열면 CLIP·TVPaint처럼 시트 길이가 파일에 맞고, 앞 시트의 동화점·셀 순서·자동으로 들어간 대사와 카메라 줄이 남지 않습니다."]],
         ["ver969", "인쇄 기호에 맞춘 초·コマ·매수", ["자동정렬한 용지에서 초와 コマ 숫자가 인쇄된 + 좌우에 같은 높이·같은 거리로 놓이고, 짧은 사선의 매수도 사선을 중심으로 균형 있게 놓입니다."]],
         ["ver968", "용지 헤더의 +와 매수", ["자동정렬 뒤 초와 프레임 사이의 +가 인쇄된 +에 겹칩니다. 매수는 인쇄된 사선 양쪽에 나눠 쓰고, 「枚目」 쪽을 현재 매수로 봅니다. 헤더 칸이 종이 가장자리나 로고까지 늘어나지 않습니다."]],
         ["ver967", "용지의 헤더 칸", ["자동정렬 뒤 헤더 칸이 모두 인쇄된 칸을 같은 여백으로 채웁니다. 시트 칸의 사선이 옅은 용지에서 매수 칸이 옆 칸으로 가지 않습니다."]],
@@ -4250,6 +4253,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver971", "XDTS 导入", ["打开 XDTS 时，与 CLIP、TVPaint 一样按文件设置摄影表长度，不再残留上一张表的中间画标记、赛璐珞顺序以及自动生成的台词和摄影机行。"]],
         ["ver969", "按印刷符号排列秒·帧·张数", ["自动对齐的用纸上，秒和帧在印刷的＋左右同高同距，短斜线两侧的张数也以斜线为中心对称。"]],
         ["ver968", "用纸表头的＋和张数", ["自动对齐后，秒和帧之间的＋与印刷的＋重合。张数分写在印刷斜线两侧，标有「枚目」的一侧为当前张数。表头栏不再延伸到纸边或标志。"]],
         ["ver967", "用纸的表头栏", ["自动对齐后，所有表头栏都以相同的小边距填满印刷格。表单张数斜线较淡的用纸，张数栏不再落到相邻格。"]],
@@ -25849,12 +25853,13 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return sheetSparseEntriesToTokens(entries, duration);
     }
 
-    function buildTextCommandsFromXdts(xdtsJson) {
+    // 커맨드 텍스트와 시트 길이(칸 수)를 함께 돌려준다 — 적용은 CLIP·TVPaint 와 같은 applyClipSheetStages 가 한다.
+    function readXdtsSheet(xdtsJson) {
       const timeTable = xdtsJson && Array.isArray(xdtsJson.timeTables) ? xdtsJson.timeTables[0] : null;
-      if (!timeTable) return '';
+      if (!timeTable) return null;
       const fields = Array.isArray(timeTable.fields) ? timeTable.fields : [];
       const cellField = fields.find(function(f){ return Number(f && f.fieldId) === 0; });
-      if (!cellField || !Array.isArray(cellField.tracks) || !cellField.tracks.length) return '';
+      if (!cellField || !Array.isArray(cellField.tracks) || !cellField.tracks.length) return null;
 
       let duration = Number(timeTable.duration) || 0;
       if (duration <= 0) {
@@ -25875,7 +25880,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         });
         if (maxFrame >= 0) duration = maxFrame + (tailRaw === 'SYMBOL_HYPHEN' || tailRaw === '' ? 0 : 1);
       }
-      if (duration <= 0) return '';
+      if (duration <= 0) return null;
 
       const headerEntry = (Array.isArray(timeTable.timeTableHeaders) ? timeTable.timeTableHeaders : [])
         .find(function(h){ return Number(h && h.fieldId) === 0; });
@@ -25893,7 +25898,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const tokens = track ? xdtsTrackToTokens(track, duration) : new Array(duration).fill('_');
         lines.push(label + ': ' + tokens.join(' '));
       }
-      return lines.join('\n');
+      return { text:lines.join('\n'), duration:duration };
     }
 
     function confirmXdtsImport() {
@@ -25923,13 +25928,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const braceIndex = text.indexOf('{');
         if (braceIndex < 0) throw new Error('Not an XDTS file');
         const json = JSON.parse(text.slice(braceIndex));
-        const commandText = buildTextCommandsFromXdts(json);
-        if (!commandText) throw new Error('No Cell field found in this XDTS file');
+        const sheet = readXdtsSheet(json);
+        if (!sheet) throw new Error('No Cell field found in this XDTS file');
         if (!(await confirmXdtsImport()) || generation !== documentLoadGeneration) return false;
-        const modeSelect = document.getElementById('cellInputMode');
-        if (modeSelect) modeSelect.value = 'text';
-        setCommandTextValue('text', commandText);
-        updateModeUI();
+        applyClipSheetStages([{ text:sheet.text, read:{ duration:sheet.duration }, label:'' }], null);
         setExportStatus(ioText('fileLoaded', { name:file.name || 'dropped.xdts' }));
         return true;
       } catch (err) {
@@ -26970,6 +26972,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         undo: (state.contentUndoStack || []).slice(),
         redo: (state.contentRedoStack || []).slice(),
         baseline: contentHistoryBaseline,
+        // 내용 스냅샷 밖에 사는 것 — 취입이 비우거나(대사 가이드) 덮어쓰는(생성 줄 기록, 카메라 메모) 상태다.
+        serifuSheetGuides: cloneSheetData(state.serifuSheetGuides || []),
+        dialogLines: state.lastCsvGeneratedDialogLines,
+        cameraLines: state.lastCsvGeneratedCameraLines,
+        textMemoPages: cloneSheetData(state.textMemoPages || {}),
         // 실패 시 화면과 저장된 헤더 기억을 함께 되돌리기 위한 입력값이다.
         header: SHEET_HEADER_INPUTS.reduce(function(acc, id) { acc[id] = getSheetInputValue(id); return acc; }, {})
       };
@@ -26997,6 +27004,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         });
         saveHeaderMemoryNow();
         applyContentSnapshot(backup.content, { render:false });
+        state.serifuSheetGuides = backup.serifuSheetGuides;
+        state.lastCsvGeneratedDialogLines = backup.dialogLines;
+        state.lastCsvGeneratedCameraLines = backup.cameraLines;
+        state.textMemoPages = backup.textMemoPages;
         // 이력은 화면을 되돌린 **뒤에** 되돌린다 — applyContentSnapshot 이 기준점을 다시 잡기 때문이다.
         state.contentUndoStack = backup.undo;
         state.contentRedoStack = backup.redo;
