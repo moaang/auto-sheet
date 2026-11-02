@@ -2612,7 +2612,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '966';
+    const APP_VERSION = '967';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3921,6 +3921,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver967", "Header boxes on paper", ["After Auto Align, every header box now fills its printed cell with the same small margin. On paper with a faint sheet-count slash, the sheet-count box no longer lands in the next cell."]],
         ["ver966", "Last cel column on paper with a frame-number column", ["When the last cel column is widened to hold printed frame numbers, it now gets the same width as the other columns, and the dialog area starts at the printed boundary beyond the numbers."]],
         ["ver965", "Double rules above the sheet body", ["On paper with a double rule under the cel labels, the first frame starts at the lower rule and the label row ends at the upper one. Cel labels follow the printed columns."]],
         ["ver964", "Cells follow paper lines", ["After Auto Align, cels, dialogue and camera marks sit on the printed lines even where the paper's rows or columns are unevenly spaced."]],
@@ -4029,6 +4030,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver967", "用紙のヘッダー欄", ["自動整列後のヘッダー欄が、どれも印刷された枠いっぱいに同じ余白でそろいます。シート欄の斜線が薄い用紙で、枚数欄が隣の枠にずれなくなりました。"]],
         ["ver966", "コマ番号欄付き用紙の最後のセル列", ["最後のセル列が印刷されたコマ番号の分だけ広い用紙で、その列も他の列と同じ幅にそろえ、台詞欄は番号の外側の印刷線から始めます。"]],
         ["ver965", "本文上の二重線", ["セル名の下が二重線の用紙で、1コマ目を下の線から、セル名の欄を上の線までに合わせます。セル名も印刷された列に揃います。"]],
         ["ver964", "用紙の罫線に合わせて配置", ["自動位置合わせ後は、行や列の間隔が均一でない用紙でも、セル・台詞・カメラ指示が印刷された罫線の位置に入ります。"]],
@@ -4137,6 +4139,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver967", "용지의 헤더 칸", ["자동정렬 뒤 헤더 칸이 모두 인쇄된 칸을 같은 여백으로 채웁니다. 시트 칸의 사선이 옅은 용지에서 매수 칸이 옆 칸으로 가지 않습니다."]],
         ["ver966", "프레임 번호 칸이 붙은 용지의 마지막 셀 열", ["마지막 셀 열이 인쇄된 프레임 번호만큼 넓은 용지에서 그 열도 다른 열과 같은 폭으로 맞추고, 대사 칸은 번호 바깥의 인쇄선에서 시작합니다."]],
         ["ver965", "본문 위 이중선", ["열 이름 아래가 이중선인 용지에서 첫 칸은 아래 선부터, 열 이름 칸은 위 선까지로 맞춥니다. 열 이름도 인쇄된 칸에 맞춰 놓입니다."]],
         ["ver964", "용지 칸선에 맞춰 배치", ["자동정렬한 용지는 행·열 간격이 고르지 않아도 셀·대사·카메라 표시가 인쇄된 칸선 위치에 들어갑니다."]],
@@ -4245,6 +4248,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver967", "用纸的表头栏", ["自动对齐后，所有表头栏都以相同的小边距填满印刷格。表单张数斜线较淡的用纸，张数栏不再落到相邻格。"]],
         ["ver966", "带帧号栏用纸的最后一列", ["最后一列因印刷帧号而变宽的用纸，该列现在与其他列同宽，台词栏从帧号外侧的印刷线开始。"]],
         ["ver965", "正文上方的双线", ["赛璐珞名称下方为双线的用纸，第一格从下方的线开始，名称栏止于上方的线。名称也会对齐印刷的列。"]],
         ["ver964", "按用纸格线排布", ["自动对齐后，即使用纸的行列间距不均匀，赛璐珞、台词和镜头标记也会落在印刷格线的位置。"]],
@@ -9945,6 +9949,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     // ══ 용지 인식 ⑥B 헤더 필드 추론 — 선택한 외곽에서 구분선·사선·필드 박스를 확정한다 ═════════════════════
+    const HEADER_FIELD_INSET = 2;
+
     function inferPaperAutoAlignHeaderBoxes(analysis, bodyGrid, sides) {
       const xLines = analysis && Array.isArray(analysis.xLines) ? analysis.xLines : [];
       const yLines = analysis && Array.isArray(analysis.yLines) ? analysis.yLines : [];
@@ -10618,8 +10624,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const h = Math.max(24, Math.round(headerBottom - y - 2));
       const fullHeaderBoxY = y;
       const fullHeaderBoxH = h;
-      let headerBoxY = y;
-      let headerBoxH = h;
       let headerLines = [];
       let confirmedHeaderEndpointLeft = null;
       let confirmedHeaderEndpointRight = null;
@@ -10913,19 +10917,15 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         }, null);
       }
 
-      function boxFromBounds(left, right, pad, inputBandOnly) {
-        const p = Number(pad) === 0 ? 0 : Math.max(2, Number(pad) || 0);
-        return {
-          x:left + p,
-          y:inputBandOnly ? headerBoxY : fullHeaderBoxY,
-          w:Math.max(18, right - left - p * 2),
-          h:inputBandOnly ? headerBoxH : fullHeaderBoxH
-        };
-      }
-
-      function boxFromInterval(interval, pad, inputBandOnly) {
+      // 헤더 칸은 모두 인쇄선 안쪽 같은 여백으로 둔다(본문 칸·매수 칸과 같은 2px).
+      function boxFromInterval(interval) {
         if (!interval) return null;
-        return boxFromBounds(interval.left, interval.right, pad, inputBandOnly);
+        return {
+          x:interval.left + HEADER_FIELD_INSET,
+          y:fullHeaderBoxY,
+          w:Math.max(18, interval.right - interval.left - HEADER_FIELD_INSET * 2),
+          h:fullHeaderBoxH
+        };
       }
 
       function getHeaderSegmentEndpointNearY(y, side) {
@@ -11074,16 +11074,12 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           inferred:true
         };
       }
-      const headerInputBaselineY = Math.max(headerTop + 4, Math.min(headerBottom - 4, Number(durationPlus && durationPlus.y) || (inputY + inputH / 2)));
-      headerBoxH = Math.max(24, Math.min(h, Math.round(inputH)));
-      headerBoxY = Math.round(headerInputBaselineY - headerBoxH / 2);
-      headerBoxY = Math.max(headerTop + 2, Math.min(headerBottom - headerBoxH - 2, headerBoxY));
       const durationLeft = durationInterval ? durationInterval.left : headerLeft + (headerRight - headerLeft) * 0.50;
       const durationRight = durationInterval ? durationInterval.right : headerLeft + (headerRight - headerLeft) * 0.64;
       const plusX = durationPlus ? durationPlus.x : (durationLeft + durationRight) / 2;
       const gap = Math.max(5, Math.min(16, (durationRight - durationLeft) * 0.07));
-      const secondsBox = { x:durationLeft + 4, y:fullHeaderBoxY, w:Math.max(26, plusX - gap - durationLeft - 4), h:fullHeaderBoxH };
-      const framesBox = { x:plusX + gap, y:fullHeaderBoxY, w:Math.max(26, durationRight - plusX - gap - 4), h:fullHeaderBoxH };
+      const secondsBox = { x:durationLeft + HEADER_FIELD_INSET, y:fullHeaderBoxY, w:Math.max(26, plusX - gap - durationLeft - HEADER_FIELD_INSET), h:fullHeaderBoxH };
+      const framesBox = { x:plusX + gap, y:fullHeaderBoxY, w:Math.max(26, durationRight - plusX - gap - HEADER_FIELD_INSET), h:fullHeaderBoxH };
 
       function findAlignedHeaderRightEndpointXAfterDuration() {
         if (!splitYDetected) return null;
@@ -11198,7 +11194,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const bestSlash = choosePaperAutoAlignPageSlashCandidate(slashCandidates);
         if (bestSlash) {
           pageInterval = bestSlash.interval || { left:bestSlash.left, right:bestSlash.right, w:bestSlash.right - bestSlash.left };
-          pageBox = boxFromInterval(pageInterval, 2);
+          pageBox = boxFromInterval(pageInterval);
           selectedSlash = bestSlash;
         }
         if (!selectedSlash) {
@@ -11226,6 +11222,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
               const strokeEvidence = hasPaperAutoAlignDiagonalStrokeEvidence(slashInfo);
               if (durationPlus && left <= durationPlus.x + Math.max(24, headerWidth * 0.025)) continue;
               if (slashRightLimit - right < 30 && width <= 90) continue;
+              // 매수 사선은 한 칸 안에 있다. 칸 경계를 가로지른 창은 세로선과 글자를 사선으로 읽는다(MAD: 시트·촬영 사이 이중선과 「枚目」).
+              if (headerLines.some(function(x){ return x > left + 4 && x < right - 4; })) continue;
               if (!strokeEvidence) continue;
               if (overlapRatio < 0.16 && cornerScore < 240 && centerScore < 120) continue;
               if (rawScore < 88 && cornerScore < 118 && centerScore < 72) continue;
@@ -11252,7 +11250,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           if (bestSlidingSlash && (bestSlidingSlash.cornerConnected || bestSlidingSlash.slashScore > 112 || bestSlidingSlash.centerScore > 92)) {
             const containing = intervalContaining((bestSlidingSlash.left + bestSlidingSlash.right) / 2);
             pageInterval = containing || { left:bestSlidingSlash.left, right:bestSlidingSlash.right, w:bestSlidingSlash.right - bestSlidingSlash.left };
-            pageBox = boxFromInterval(pageInterval, 2);
+            pageBox = boxFromInterval(pageInterval);
             selectedSlash = bestSlidingSlash;
             if (containing) {
               const fullIntervalSlashInfo = getIntervalSlashInfo(containing);
@@ -11285,7 +11283,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
             w:Number(confirmed.w || 0),
             index:Number(confirmed.index || -1)
           };
-          pageBox = boxFromInterval(pageInterval, 2);
+          pageBox = boxFromInterval(pageInterval);
           selectedSlash = {
             left:Number(confirmed.left || 0),
             right:Number(confirmed.right || 0),
@@ -11322,7 +11320,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       }
       if (!pageInterval) {
         pageInterval = choosePaperAutoAlignDefaultHeaderPageInterval(slashIntervals, durationRight, slashLeftLimit, slashRightLimit, slashWidth);
-        pageBox = boxFromInterval(pageInterval, 2);
+        pageBox = boxFromInterval(pageInterval);
       }
 
       // ── [헤더] 구간 확정 · 타이틀/화수 분할 · 값 밴드 확정 ────────────
@@ -11491,12 +11489,12 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         });
       }
       const base = {
-        episode:confirmHeaderValueBandBox(boxFromInterval(episodeInterval, 0)),
-        title:confirmHeaderValueBandBox(boxFromInterval(titleInterval, 10)),
-        cutNo:confirmHeaderValueBandBox(boxFromInterval(cutInterval, 10)),
+        episode:confirmHeaderValueBandBox(boxFromInterval(episodeInterval)),
+        title:confirmHeaderValueBandBox(boxFromInterval(titleInterval)),
+        cutNo:confirmHeaderValueBandBox(boxFromInterval(cutInterval)),
         seconds:confirmHeaderValueBandBox(secondsBox),
         frames:confirmHeaderValueBandBox(framesBox),
-        author:confirmHeaderValueBandBox(boxFromInterval(authorInterval, 10)),
+        author:confirmHeaderValueBandBox(boxFromInterval(authorInterval)),
         page:confirmHeaderValueBandBox(pageBox)
       };
       const out = {};
@@ -11518,9 +11516,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           splitY:Number(splitY && splitY.pos || headerTop),
           detected:splitYDetected
         } : null,
-        inputBaselineY:headerInputBaselineY,
-        inputBoxY:headerBoxY,
-        inputBoxH:headerBoxH,
         lines:headerLines.filter(function(x){ return x >= headerLeft - 3 && x <= headerRight + 3; }).slice(0, 80),
         durationPlus:durationPlus ? {
           x:durationPlus.x,
