@@ -2612,7 +2612,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '964';
+    const APP_VERSION = '965';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3921,6 +3921,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver965", "Double rules above the sheet body", ["On paper with a double rule under the cel labels, the first frame starts at the lower rule and the label row ends at the upper one. Cel labels follow the printed columns."]],
         ["ver964", "Cells follow paper lines", ["After Auto Align, cels, dialogue and camera marks sit on the printed lines even where the paper's rows or columns are unevenly spaced."]],
         ["ver958", "Loading and export cancellation", ["Replaced imports no longer overwrite load status or continue scanning and decoding. Stopping during an export retry no longer starts another render or displays a failure."]],
         ["ver956", "Drawing counts", ["Count unique drawings per Cell, excluding reuse and repeats. Show a compact count above or below the header, or save CSV and text."]],
@@ -4027,6 +4028,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver965", "本文上の二重線", ["セル名の下が二重線の用紙で、1コマ目を下の線から、セル名の欄を上の線までに合わせます。セル名も印刷された列に揃います。"]],
         ["ver964", "用紙の罫線に合わせて配置", ["自動位置合わせ後は、行や列の間隔が均一でない用紙でも、セル・台詞・カメラ指示が印刷された罫線の位置に入ります。"]],
         ["ver958", "読込と出力中止の修正", ["新しい読込に置き換わった処理は、状態表示を上書きせず、検索・解読を続けません。出力の再試行待ちで中止すると、余分に描画したり失敗と表示したりしなくなりました。"]],
         ["ver956", "動画枚数", ["セル別の動画枚数を再使用・リピートの重複なしで集計。ヘッダー右上・右下への表示とCSV・テキスト保存に対応。"]],
@@ -4133,6 +4135,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver965", "본문 위 이중선", ["열 이름 아래가 이중선인 용지에서 첫 칸은 아래 선부터, 열 이름 칸은 위 선까지로 맞춥니다. 열 이름도 인쇄된 칸에 맞춰 놓입니다."]],
         ["ver964", "용지 칸선에 맞춰 배치", ["자동정렬한 용지는 행·열 간격이 고르지 않아도 셀·대사·카메라 표시가 인쇄된 칸선 위치에 들어갑니다."]],
         ["ver958", "불러오기·출력 중지 수정", ["새 불러오기로 교체된 처리는 안내를 덮거나 검색·해독을 이어 하지 않습니다. 출력 재시도 대기 중 중지하면 추가로 렌더하거나 실패로 표시하지 않습니다."]],
         ["ver956", "동화 매수 집계", ["셀별 동화 매수를 재사용·리피트 중복 없이 셉니다. 헤더 우상단·우하단 표시와 CSV·텍스트 저장을 지원합니다."]],
@@ -4239,6 +4242,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver965", "正文上方的双线", ["赛璐珞名称下方为双线的用纸，第一格从下方的线开始，名称栏止于上方的线。名称也会对齐印刷的列。"]],
         ["ver964", "按用纸格线排布", ["自动对齐后，即使用纸的行列间距不均匀，赛璐珞、台词和镜头标记也会落在印刷格线的位置。"]],
         ["ver958", "修复导入与停止输出", ["被新导入替换的处理不再覆盖状态提示或继续扫描、解码。在输出重试等待期间停止，不再额外渲染或显示为失败。"]],
         ["ver956", "动画张数统计", ["按层统计独立图画，重复使用和循环不重复计数。支持页眉右上或右下显示，以及CSV和文本保存。"]],
@@ -7622,19 +7626,23 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     // A weighted center can land in the white gap between two nearby rules.
     // Preserve the measured strokes there instead of scoring an unobserved center.
-    function clusterPaperAutoAlignVerticalStrokes(items, height) {
+    // Keep ordinary thick/fragmented candidates unchanged. Only two thin strokes
+    // at least minRun long establish an actual parallel separator.
+    function clusterPaperAutoAlignParallelStrokes(items, gap, minRun) {
       const positions = new Set(items.map(function(item){ return item.pos; }));
-      return clusterPaperAutoAlignPositions(items, 5).flatMap(function(line){
+      return clusterPaperAutoAlignPositions(items, gap).flatMap(function(line){
         if (positions.has(line.pos)) return [line];
         const members = items.filter(function(item){ return item.pos >= line.start && item.pos <= line.end; });
         const strokes = clusterPaperAutoAlignPositions(members, 1);
-        // Keep ordinary thick/fragmented candidates unchanged. Only two thin,
-        // nearly full-height strokes establish an actual parallel separator.
-        if (strokes.length !== 2 || strokes.some(function(stroke){ return stroke.thickness > 6 || stroke.maxRun < height * 0.84; })) return [line];
+        if (strokes.length !== 2 || strokes.some(function(stroke){ return stroke.thickness > 6 || stroke.maxRun < minRun; })) return [line];
         return strokes.map(function(stroke, index){
           return Object.assign(stroke, { parallelBounds:{ left:line.start, right:line.end, peer:strokes[1 - index].pos } });
         });
       });
+    }
+
+    function clusterPaperAutoAlignVerticalStrokes(items, height) {
+      return clusterPaperAutoAlignParallelStrokes(items, 5, height * 0.84);
     }
 
     function getPaperAutoAlignLuma(data, idx) {
@@ -7727,7 +7735,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       }
 
       const xDetailedRaw = clusterPaperAutoAlignPositions(colCandidates, 6);
-      const yDetailed = clusterPaperAutoAlignPositions(rowCandidates, 6);
+      // 본문 위 이중선처럼 6px 안에 붙은 가로 두 줄은 각각 남긴다(실측 Toei: 493·500 → 묶으면 흰 틈 497).
+      // 한 블록 폭에 걸친 줄만 해당한다 — 짧은 획은 글자·로고일 수 있다.
+      const yDetailed = clusterPaperAutoAlignParallelStrokes(rowCandidates, 6, PAGE_W * 0.3);
       const xDetailed = xDetailedRaw.filter(function(line){
         const pos = Number(line.pos || 0);
         const fullHeightRun = Number(line.maxRun || 0) > PAGE_H * 0.90;
@@ -8360,7 +8370,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         // section-title header (or a missing label line) from stretching the label band to two
         // cells, which pushed the label down and misaligned the grid (8bit/SARU/Madhouse/TOHO...).
         const oneCellTop = Math.max(0, bodyTop - rowH);
-        const prevLine = Number(lines[startIndex - 1]);
+        // 본문 위 이중선의 짝 선은 칸 경계가 아니다. 건너뛰고 그 위의 선을 본다.
+        let prevIndex = startIndex - 1;
+        while (prevIndex >= 0 && bodyTop - Number(lines[prevIndex]) < rowH * 0.55) prevIndex--;
+        const prevLine = Number(lines[prevIndex]);
         if (Number.isFinite(prevLine) && Math.abs((bodyTop - prevLine) - rowH) <= Math.max(6, rowH * 0.45)) {
           return Math.max(0, Math.min(bodyTop - 8, prevLine));
         }
@@ -8460,6 +8473,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           best.labelTop = Math.max(0, Math.min(best.bodyTop - 8, lt));
         }
       })();
+      // 본문 위가 이중선이면 열 이름 칸은 위 선에서 끝난다. 두 선 사이 틈은 어느 칸도 아니다.
+      lines.forEach(function(line){
+        if (line > best.labelTop + 8 && line < best.bodyTop && best.bodyTop - line < best.rowH * 0.55) best.labelBottom = line;
+      });
       return best;
     }
 
@@ -11792,7 +11809,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const bodyY = bodyGrid.bodyTop;
       const bodyH = Math.max(24, bodyGrid.bodyBottom - bodyGrid.bodyTop);
       const labelTop = Math.max(0, Math.min(bodyY - 8, bodyGrid.labelTop));
-      const labelH = Math.max(14, bodyY - labelTop);
+      const labelH = Math.max(14, (bodyGrid.labelBottom || bodyY) - labelTop);
       // 1블록이면 렌더·위치조정이 이미 아는 main 키로 낸다(판정 q2=A). left/right 로 내면
       // 1블록 모드의 렌더가 cell-main 을 찾다 못 찾아 자동정렬 결과를 통째로 무시한다.
       const boxes = singleBlock ? {
@@ -17054,9 +17071,21 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     // ══ 셀 라벨 드래그 — 원화란 열 순서 바꾸기 ════════════════════════════════════════════════════════════════════════════════════
+    // 끌기 판정이 그려진 열 이름과 같은 열 경계를 쓰도록 경계 목록을 함께 넘긴다.
+    function getCellLabelDragArea(labelArea, block, count) {
+      const columns = [];
+      for (let i = 0; i < count; i++) columns.push(getOutputColumnBounds(labelArea, block, i));
+      return Object.assign({}, labelArea, { columns:columns });
+    }
+
     function getCellLabelDragTargetIndex(event, labelArea, count) {
       const point = getSvgPointFromPointerEvent(event);
       const c = Math.max(1, Math.round(Number(count) || 1));
+      const columns = labelArea && labelArea.columns;
+      if (Array.isArray(columns) && columns.length === c) {
+        const found = columns.findIndex(function(bounds){ return point.x < bounds.x2; });
+        return found === -1 ? c - 1 : found;
+      }
       const w = Math.max(1, Number(labelArea && labelArea.w) || 1);
       const x = Number(point.x) - (Number(labelArea && labelArea.x) || 0);
       return Math.max(0, Math.min(c - 1, Math.floor(x / (w / c))));
@@ -18405,12 +18434,19 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const key = 'cell-label-' + side;
       const stored = state.layoutBoxes && state.layoutBoxes[key];
       const h = Math.max(12, Math.round(stored && Number(stored.h) ? Number(stored.h) : baseH));
-      const base = { x:cellArea.x, y:cellArea.y - h, w:cellArea.w, h:h };
+      // 열 이름 칸은 원화칸 위에 붙어 다닌다. 자동정렬이 이중선 틈을 남겼으면(저장된 두 상자 사이 간격) 그만큼 띄운다.
+      const storedCell = state.layoutBoxes && state.layoutBoxes['cell-' + side];
+      const gap = stored && storedCell ? Number(storedCell.y) - (Number(stored.y) + Number(stored.h)) : 0;
+      const base = { x:cellArea.x, y:cellArea.y - h - (gap > 0 && gap < h ? gap : 0), w:cellArea.w, h:h };
       return normalizeRect(base, 18, 12);
     }
 
     function getOutputCellBounds(block, colIndex) {
-      const area = getCellArea(block);
+      return getOutputColumnBounds(getCellArea(block), block, colIndex);
+    }
+
+    // 원화칸 열 경계. 열 이름 칸처럼 원화칸과 같은 폭의 다른 영역에도 같은 경계를 쓴다.
+    function getOutputColumnBounds(area, block, colIndex) {
       const colCount = Math.max(1, getCellColumnCount(), block.originalEntriesCount || block.originalColCount || 8);
       const cols = getLayoutGridLines(getBlockSideKey(block), colCount);
       if (cols && colIndex >= 0 && colIndex < colCount) return { x1:area.x + cols[colIndex] * area.w, x2:area.x + cols[colIndex + 1] * area.w };
@@ -19047,7 +19083,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           line(templateDialogArea.x + templateDialogArea.w, templateHeaderY, templateDialogArea.x + templateDialogArea.w, templateHeaderY + templateHeaderH + templateBodyH, '#111', 1);
           line(templateCameraArea.x, templateHeaderY, templateCameraArea.x, templateHeaderY + templateHeaderH + templateBodyH, '#111', 1);
           for (let i = 1; i < params.originalEntries.length; i++) {
-            const gx = templateCellArea.x + templateCellArea.w * i / Math.max(1, params.originalEntries.length);
+            const gx = getOutputCellBounds(templateBlock, i).x1;
             line(gx, templateHeaderY, gx, templateHeaderY + templateHeaderH + templateBodyH, '#111', 1);
           }
           if (templateInbetweenW > 0) {
@@ -19061,12 +19097,12 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           if (state.showCellLabelOutput) {
             params.originalEntries.forEach(function(entry, idx){
               withDrawLayer(entry.isActual ? 'output' : 'paper', function(){
-                const labelColW = templateLabelArea.w / Math.max(1, params.originalEntries.length);
-                const cellNameX = templateLabelArea.x + idx * labelColW + labelColW / 2;
+                const labelBounds = getOutputColumnBounds(templateLabelArea, templateBlock, idx);
+                const cellNameX = (labelBounds.x1 + labelBounds.x2) / 2;
                 const cellNameY = templateLabelArea.y + templateLabelArea.h / 2;
                 if (params.interactive) {
-                  const labelHit = el('rect', { x:templateLabelArea.x + idx * labelColW, y:templateLabelArea.y, width:labelColW, height:templateLabelArea.h, fill:'transparent', stroke:'transparent', 'pointer-events':'all' });
-                  attachCellLabelDrag(labelHit, idx, params.originalEntries, templateLabelArea);
+                  const labelHit = el('rect', { x:labelBounds.x1, y:templateLabelArea.y, width:labelBounds.x2 - labelBounds.x1, height:templateLabelArea.h, fill:'transparent', stroke:'transparent', 'pointer-events':'all' });
+                  attachCellLabelDrag(labelHit, idx, params.originalEntries, getCellLabelDragArea(templateLabelArea, templateBlock, params.originalEntries.length));
                   labelHit.style.cursor = 'pointer';
                   labelHit.setAttribute('title', cellSettingsText('labelHint'));
                   labelHit.addEventListener('click', function(event){ handleCellLabelClick(event, entry, labelHit); });
@@ -19083,8 +19119,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
             if (templateInbetweenW <= 0) return;
             text(templateInbetweenX + templateInbetweenW * (idx + 0.5) / inbetweenColumnCount, templateHeaderY + templateHeaderH / 2, name, 13, 'middle', '700', '#7a7a7a');
           });
+          const templateRows = getOutputRowGeometry(templateBlock, 'cell');
           for (let r = 0; r <= params.frameCount; r++) {
-            const y = templateBodyY + r * templateRowH;
+            const y = getOutputRowEdge(templateRows, r);
             const is24FrameBoundary = r > 0 && r % 24 === 0;
             const is6FrameBoundary = r > 0 && r % 6 === 0;
             const strokeW = is24FrameBoundary ? 3.8 : (is6FrameBoundary ? 2.3 : 0.7);
@@ -19119,12 +19156,12 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
               withDrawLayer(entry.isActual ? 'output' : 'paper', function(){
                 const cellNameTempBlock = { blockX:params.blockX, blockW:params.blockW, originalColW:originalColW, originalAreaW:params.originalAreaW, originalEntriesCount:params.originalEntries.length, top:top, nameStripH:nameStripH, rowH:rowH, frameCount:frameCountForBox, start:params.startFrame };
                 const labelArea = getCellLabelArea(cellNameTempBlock);
-                const labelColW = labelArea.w / Math.max(1, params.originalEntries.length);
-                const cellNameX = labelArea.x + idx * labelColW + labelColW / 2;
+                const labelBounds = getOutputColumnBounds(labelArea, cellNameTempBlock, idx);
+                const cellNameX = (labelBounds.x1 + labelBounds.x2) / 2;
                 const cellNameY = labelArea.y + labelArea.h / 2;
                 if (params.interactive) {
-                  const labelHit = el('rect', { x:labelArea.x + idx * labelColW, y:labelArea.y, width:labelColW, height:labelArea.h, fill:'transparent', stroke:'transparent', 'pointer-events':'all' });
-                  attachCellLabelDrag(labelHit, idx, params.originalEntries, labelArea);
+                  const labelHit = el('rect', { x:labelBounds.x1, y:labelArea.y, width:labelBounds.x2 - labelBounds.x1, height:labelArea.h, fill:'transparent', stroke:'transparent', 'pointer-events':'all' });
+                  attachCellLabelDrag(labelHit, idx, params.originalEntries, getCellLabelDragArea(labelArea, cellNameTempBlock, params.originalEntries.length));
                   labelHit.style.cursor = 'pointer';
                   labelHit.setAttribute('title', cellSettingsText('labelHint'));
                   labelHit.addEventListener('click', function(event){ handleCellLabelClick(event, entry, labelHit); });
