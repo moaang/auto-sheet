@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -2219,8 +2219,6 @@
         </details>
       </div>
 
-
-
       <div class="card header-input-card" aria-hidden="true">
         <h3><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="14" rx="1.5"/><path d="M4 9.5h16"/></svg><span data-ui-text="headerCardTitle">Header</span></h3>
         <div class="grid">
@@ -2254,7 +2252,6 @@
           </div>
         </div>
       </div>
-
 
       <div class="card paper-layout-card" id="paperLayoutCard">
         <details id="paperLayoutDetails">
@@ -2294,7 +2291,6 @@
           </div>
         </details>
       </div>
-
 
       <div class="card manual-card shortcut-card">
         <details>
@@ -2612,7 +2608,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '967';
+    const APP_VERSION = '968';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3921,6 +3917,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver968", "Header + and sheet numbers on paper", ["After Auto Align, the + between seconds and frames sits on the printed +. The current and total sheet numbers go on either side of the printed slash; the side marked with the two-character label counts as the current sheet. Header boxes no longer stretch to the page edge or logos."]],
         ["ver967", "Header boxes on paper", ["After Auto Align, every header box now fills its printed cell with the same small margin. On paper with a faint sheet-count slash, the sheet-count box no longer lands in the next cell."]],
         ["ver966", "Last cel column on paper with a frame-number column", ["When the last cel column is widened to hold printed frame numbers, it now gets the same width as the other columns, and the dialog area starts at the printed boundary beyond the numbers."]],
         ["ver965", "Double rules above the sheet body", ["On paper with a double rule under the cel labels, the first frame starts at the lower rule and the label row ends at the upper one. Cel labels follow the printed columns."]],
@@ -4030,6 +4027,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver968", "用紙のヘッダーの＋と枚数", ["自動整列後、秒とコマの間の＋が印刷された＋に重なります。枚数は印刷された斜線の両側に分けて書き、「枚目」側を現在の枚数とします。ヘッダー欄が紙の端やロゴまで広がらなくなりました。"]],
         ["ver967", "用紙のヘッダー欄", ["自動整列後のヘッダー欄が、どれも印刷された枠いっぱいに同じ余白でそろいます。シート欄の斜線が薄い用紙で、枚数欄が隣の枠にずれなくなりました。"]],
         ["ver966", "コマ番号欄付き用紙の最後のセル列", ["最後のセル列が印刷されたコマ番号の分だけ広い用紙で、その列も他の列と同じ幅にそろえ、台詞欄は番号の外側の印刷線から始めます。"]],
         ["ver965", "本文上の二重線", ["セル名の下が二重線の用紙で、1コマ目を下の線から、セル名の欄を上の線までに合わせます。セル名も印刷された列に揃います。"]],
@@ -4139,6 +4137,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver968", "용지 헤더의 +와 매수", ["자동정렬 뒤 초와 프레임 사이의 +가 인쇄된 +에 겹칩니다. 매수는 인쇄된 사선 양쪽에 나눠 쓰고, 「枚目」 쪽을 현재 매수로 봅니다. 헤더 칸이 종이 가장자리나 로고까지 늘어나지 않습니다."]],
         ["ver967", "용지의 헤더 칸", ["자동정렬 뒤 헤더 칸이 모두 인쇄된 칸을 같은 여백으로 채웁니다. 시트 칸의 사선이 옅은 용지에서 매수 칸이 옆 칸으로 가지 않습니다."]],
         ["ver966", "프레임 번호 칸이 붙은 용지의 마지막 셀 열", ["마지막 셀 열이 인쇄된 프레임 번호만큼 넓은 용지에서 그 열도 다른 열과 같은 폭으로 맞추고, 대사 칸은 번호 바깥의 인쇄선에서 시작합니다."]],
         ["ver965", "본문 위 이중선", ["열 이름 아래가 이중선인 용지에서 첫 칸은 아래 선부터, 열 이름 칸은 위 선까지로 맞춥니다. 열 이름도 인쇄된 칸에 맞춰 놓입니다."]],
@@ -4248,6 +4247,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver968", "用纸表头的＋和张数", ["自动对齐后，秒和帧之间的＋与印刷的＋重合。张数分写在印刷斜线两侧，标有「枚目」的一侧为当前张数。表头栏不再延伸到纸边或标志。"]],
         ["ver967", "用纸的表头栏", ["自动对齐后，所有表头栏都以相同的小边距填满印刷格。表单张数斜线较淡的用纸，张数栏不再落到相邻格。"]],
         ["ver966", "带帧号栏用纸的最后一列", ["最后一列因印刷帧号而变宽的用纸，该列现在与其他列同宽，台词栏从帧号外侧的印刷线开始。"]],
         ["ver965", "正文上方的双线", ["赛璐珞名称下方为双线的用纸，第一格从下方的线开始，名称栏止于上方的线。名称也会对齐印刷的列。"]],
@@ -5552,7 +5552,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       updatePaperImageStatus();
     }
 
-
     // ══ [UI] 용지 패널 ① 이미지 상태 표기 · 토글/버튼 활성 동기화 ══════════════════════════════════════════════════════════════════════
     // 한 줄로 적는다 — 종전에는 상태 줄이 「로드 완료: 이름 · 1754×2480를 1753×2480로 래스터화」,
     // 그 아래 줄이 「원본 픽셀: 1754 × 2480」으로 같은 수를 두 번 말했다. 래스터 크기는 고정값이라
@@ -5565,7 +5564,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ? state.paperImageSourceWidth + ' × ' + state.paperImageSourceHeight : '';
       paperImageStatusEl.textContent = doc.loaded(state.paperImageName || 'paper image', size);
     }
-
 
     function syncPaperLayoutControls() {
       if (showTemplateToggleEl) showTemplateToggleEl.checked = !!state.showTemplate;
@@ -5904,7 +5902,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       saveHeaderMemoryNow();
       render();
     }
-
 
     function frameToShakuPosition(frameNumber) {
       const frame = Math.max(1, Math.round(Number(frameNumber) || 1));
@@ -6364,8 +6361,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       setCommandTextValue(textarea, lines.join('\n'));
     }
 
-
-
     function getCommandTextarea() {
       return isCsvMode(getCurrentInputMode()) ? csvCommandEditEl : document.getElementById('timelineCommandInput');
     }
@@ -6597,7 +6592,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (shouldRender) render();
     }
 
-
     // ══ 위치조정 ① 레이아웃 박스 좌표 모델 — 좌우 타임라인 연동 · 간격 미러링 ═════════════════════════════════════════════════════════════════
     function cloneRect(rect) {
       return { x:Number(rect.x) || 0, y:Number(rect.y) || 0, w:Math.max(1, Number(rect.w) || 1), h:Math.max(1, Number(rect.h) || 1) };
@@ -6635,7 +6629,16 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const lines = sanitizeLayoutGridLines(value.cols && value.cols[side]);
         if (lines) cols[side] = lines;
       });
-      return rows || Object.keys(cols).length ? { rows:rows, cols:cols } : null;
+      const plus = value.plus && Number.isFinite(Number(value.plus.x)) && Number.isFinite(Number(value.plus.y))
+        ? { x:Number(value.plus.x), y:Number(value.plus.y) } : null;
+      const d = value.pageDiagonal;
+      const pageDiagonal = d && ['x1', 'y1', 'x2', 'y2'].every(function(k){ return Number.isFinite(Number(d[k])); })
+        ? { x1:Number(d.x1), y1:Number(d.y1), x2:Number(d.x2), y2:Number(d.y2), current:d.current === 'lower' ? 'lower' : 'upper' } : null;
+      if (!rows && !Object.keys(cols).length && !plus && !pageDiagonal) return null;
+      const grid = { rows:rows, cols:cols };
+      if (plus) grid.plus = plus;
+      if (pageDiagonal) grid.pageDiagonal = pageDiagonal;
+      return grid;
     }
 
     function getLayoutGridLines(side, count) {
@@ -7300,12 +7303,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     function continueHeaderPositionDrag(event) { continueLayoutBoxDrag(event); }
     function endHeaderPositionDrag(event) { endLayoutBoxDrag(event); }
 
-
     // ══ 용지 인식 ① 자동정렬 결과 디버그 오버레이 렌더 ══════════════════════════════════════════════════════════════════
     function renderPaperAutoAlignOverlay() {
       if (currentSvgTarget !== svg || !state.positionMode || !state.paperAutoAlignOverlay) return;
       const overlay = state.paperAutoAlignOverlay;
-      const boxes = overlay.boxes || {};
       withDrawLayer('output', function(){
         const group = el('g', { 'data-paper-auto-align-overlay':'1', 'pointer-events':'none' });
         const yLines = Array.isArray(overlay.yLines) ? overlay.yLines : [];
@@ -7316,19 +7317,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
             stroke:'#1f6feb', 'stroke-width':index === 0 || index === yLines.length - 1 ? 2.4 : 1.1,
             'stroke-dasharray':index === 0 || index === yLines.length - 1 ? 'none' : '5 7',
             opacity:index === 0 || index === yLines.length - 1 ? .72 : .34
-          }));
-        });
-        ['cell-left', 'dialog-left', 'follow-left', 'camera-left', 'cell-right', 'dialog-right', 'follow-right', 'camera-right'].forEach(function(key){
-          const box = boxes[key];
-          if (!box) return;
-          const isDialog = key.indexOf('dialog') === 0;
-          const isCamera = key.indexOf('camera') === 0;
-          const isFollow = key.indexOf('follow') === 0;
-          const stroke = isDialog ? '#cf2a2a' : (isCamera ? '#2f9d50' : (isFollow ? '#b26a00' : '#1f6feb'));
-          const fill = isDialog ? 'rgba(207,42,42,.07)' : (isCamera ? 'rgba(47,157,80,.07)' : (isFollow ? 'rgba(178,106,0,.06)' : 'rgba(31,111,235,.07)'));
-          group.appendChild(el('rect', {
-            x:box.x, y:box.y, width:box.w, height:box.h,
-            fill:fill, stroke:stroke, 'stroke-width':isFollow ? 1.6 : 2.2, 'stroke-dasharray':isFollow ? '3 7' : '9 6', rx:3, ry:3
           }));
         });
         const headerOverlay = overlay.header || null;
@@ -7385,94 +7373,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
               stroke:'#7c3aed', 'stroke-width':1.6, 'stroke-dasharray':'3 5', opacity:.54
             }));
           }
-          const headerDebug = headerOverlay.debugCandidates || null;
-          if (headerDebug) {
-            if (Array.isArray(headerDebug.horizontalSegments)) {
-              headerDebug.horizontalSegments.forEach(function(segment){
-                const y = Number(segment && segment.pos);
-                const x1 = Number(segment && segment.start);
-                const x2 = Number(segment && segment.end);
-                if (![x1, x2, y].every(Number.isFinite) || x2 <= x1) return;
-                const selected = !!segment.selected;
-                const solid = !!segment.solid;
-                group.appendChild(el('line', {
-                  x1:x1, y1:y, x2:x2, y2:y,
-                  stroke:selected ? '#16a34a' : (solid ? '#f97316' : '#0ea5e9'),
-                  'stroke-width':selected ? 2.8 : (solid ? 2.05 : 1.35),
-                  'stroke-dasharray':selected || solid ? 'none' : '5 5',
-                  opacity:selected ? .82 : (solid ? .70 : .42)
-                }));
-              });
-            }
-            if (Array.isArray(headerDebug.verticalLines)) {
-              headerDebug.verticalLines.forEach(function(line){
-                const x = Number(line && line.x);
-                if (!Number.isFinite(x)) return;
-                const y1 = Number.isFinite(Number(line.displayTop))
-                  ? Number(line.displayTop)
-                  : (Number.isFinite(Number(line.spanStart)) ? Number(line.spanStart) : hy);
-                const y2 = Number.isFinite(Number(line.displayBottom))
-                  ? Number(line.displayBottom)
-                  : (Number.isFinite(Number(line.spanEnd)) ? Number(line.spanEnd) : hy + hh);
-                if (y2 <= y1) return;
-                const selected = !!line.selected;
-                const accepted = !!line.accepted;
-                group.appendChild(el('line', {
-                  x1:x, y1:y1, x2:x, y2:y2,
-                  stroke:selected ? '#ef4444' : (accepted ? '#f97316' : '#64748b'),
-                  'stroke-width':selected ? 2.25 : (accepted ? 1.55 : 1.05),
-                  'stroke-dasharray':selected ? 'none' : (accepted ? '4 4' : '2 7'),
-                  opacity:selected ? .84 : (accepted ? .58 : .32)
-                }));
-              });
-            }
-            if (Array.isArray(headerDebug.plusMarks)) {
-              headerDebug.plusMarks.forEach(function(candidate){
-                const x = Number(candidate && candidate.x);
-                const y = Number(candidate && candidate.y);
-                if (![x, y].every(Number.isFinite)) return;
-                const selected = !!candidate.selected;
-                const accepted = !!candidate.accepted;
-                group.appendChild(el('circle', {
-                  cx:x, cy:y, r:selected ? 10 : 7,
-                  fill:'none',
-                  stroke:selected ? '#0f766e' : (accepted ? '#14b8a6' : '#64748b'),
-                  'stroke-width':selected ? 2.4 : 1.5,
-                  'stroke-dasharray':accepted || selected ? 'none' : '2 4',
-                  opacity:selected ? .88 : (accepted ? .58 : .34)
-                }));
-              });
-            }
-            if (Array.isArray(headerOverlay.diagonalDetections)) {
-              headerOverlay.diagonalDetections.forEach(function(item){
-                const line = item && item.selected && headerOverlay.pageSlashBox && headerOverlay.pageSlashBox.line
-                  ? headerOverlay.pageSlashBox.line
-                  : item && item.line;
-                if (!line) return;
-                const x1 = Number(line.x1);
-                const y1 = Number(line.y1);
-                const x2 = Number(line.x2);
-                const y2 = Number(line.y2);
-                if (![x1, y1, x2, y2].every(Number.isFinite)) return;
-                const selected = !!item.selected;
-                const strong = selected || !!item.cornerConnected || Number(item.score || 0) >= 90 || Number(item.centerScore || 0) >= 70;
-                group.appendChild(el('line', {
-                  x1:x1, y1:y1, x2:x2, y2:y2,
-                  stroke:selected ? '#d97706' : (strong ? '#f59e0b' : '#94a3b8'),
-                  'stroke-width':selected ? 2.8 : (strong ? 1.8 : 1.1),
-                  'stroke-dasharray':selected ? 'none' : (strong ? '6 4' : '2 6'),
-                  opacity:selected ? .88 : (strong ? .55 : .30)
-                }));
-              });
-            }
-            group.appendChild(el('text', {
-              x:hx,
-              y:Math.max(12, hy - 12),
-              fill:'#0f766e',
-              'font-size':12,
-              'font-family':'Arial, Helvetica, sans-serif',
-              'font-weight':'900'
-            }, 'Header candidates'));
+          if (headerOverlay.pageDiagonal) {
+            const d = headerOverlay.pageDiagonal;
+            group.appendChild(el('line', { x1:d.x1, y1:d.y1, x2:d.x2, y2:d.y2, stroke:'#d97706', 'stroke-width':2.6, opacity:.9 }));
           }
           if (headerOverlay.durationPlus && !headerOverlay.durationPlus.inferred) {
             const plus = headerOverlay.durationPlus;
@@ -7489,68 +7392,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
               'font-weight':'900'
             }, '+'));
           }
-          if (headerOverlay.pageSlashBox) {
-            const slash = headerOverlay.pageSlashBox;
-            group.appendChild(el('rect', {
-              x:slash.x, y:slash.y, width:slash.w, height:slash.h,
-              fill:'rgba(217,119,6,.08)', stroke:'#d97706', 'stroke-width':2.4,
-              'stroke-dasharray':'5 5', rx:3, ry:3, opacity:.88
-            }));
-          }
-        }
-        const headerLabels = {
-          'header-episode':'Ep',
-          'header-title':'Title',
-          'header-cutNo':'Cut',
-          'header-seconds':'Sec',
-          'header-frames':'Frm',
-          'header-author':'Name',
-          'header-page':'Page'
-        };
-        Object.keys(headerLabels).forEach(function(key){
-          const box = boxes[key];
-          if (!box) return;
-          const isPage = key === 'header-page';
-          const stroke = isPage ? '#d97706' : '#7c3aed';
-          const fill = isPage ? 'rgba(217,119,6,.075)' : 'rgba(124,58,237,.07)';
-          group.appendChild(el('rect', {
-            x:box.x, y:box.y, width:box.w, height:box.h,
-            fill:fill, stroke:stroke, 'stroke-width':2.1, 'stroke-dasharray':'7 5', rx:3, ry:3
-          }));
-          group.appendChild(el('text', {
-            x:box.x + 4,
-            y:Math.max(12, box.y - 5),
-            fill:stroke,
-            'font-size':12,
-            'font-family':'Arial, Helvetica, sans-serif',
-            'font-weight':'900'
-          }, headerLabels[key]));
-        });
-        const labelBox = boxes['cell-left'];
-        if (labelBox) {
-          group.appendChild(el('text', {
-            x:labelBox.x,
-            y:Math.max(18, labelBox.y - 18),
-            fill:'#1f6feb',
-            'font-size':15,
-            'font-family':'Arial, Helvetica, sans-serif',
-            'font-weight':'900'
-          }, 'Auto Align: detected grid match'));
-        }
-        const diagnosticLayer = overlay.diagnosticLayer || null;
-        if (diagnosticLayer && Array.isArray(diagnosticLayer.summary) && diagnosticLayer.summary.length) {
-          const baseX = labelBox ? labelBox.x : 42;
-          const baseY = labelBox ? Math.max(18, labelBox.y - 52) : 42;
-          diagnosticLayer.summary.slice(0, 3).forEach(function(line, index){
-            group.appendChild(el('text', {
-              x:baseX,
-              y:baseY + index * 14,
-              fill:'#0f766e',
-              'font-size':11,
-              'font-family':'Arial, Helvetica, sans-serif',
-              'font-weight':'700'
-            }, 'Diag: ' + line));
-          });
         }
         appendSvgNode(group);
       });
@@ -7989,12 +7830,28 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           }, -Infinity);
           const fullStart = Number.isFinite(spanStart) ? spanStart : strongest.start;
           const fullEnd = Number.isFinite(spanEnd) ? spanEnd : strongest.end;
+          // start/end는 선의 실제 범위다: 묶음의 모든 줄을 x마다 합친 뒤 3px 이하 틈만 잇는다. 한 줄만 보면 기운 스캔에서
+          // 선이 다른 줄로 넘어가 끊기고(KINEMA), 줄의 첫·마지막 잉크(spanStart/spanEnd)는 가장자리·로고까지 간다.
+          let lineStart = strongest.start, lineEnd = strongest.end;
+          (function(){
+            let runFrom = -1, lastDark = -1;
+            for (let x = left; x <= right + 4; x++) {
+              const dark = x <= right && cluster.items.some(function(item){ return !!darkPixels[item.pos * PAGE_W + x]; });
+              if (dark) {
+                if (runFrom < 0) runFrom = x;
+                lastDark = x;
+              } else if (runFrom >= 0 && x - lastDark > 3) {
+                if (lastDark - runFrom > lineEnd - lineStart) { lineStart = runFrom; lineEnd = lastDark; }
+                runFrom = -1;
+              }
+            }
+          })();
           return {
             pos:Math.round(y),
-            start:fullStart,
-            end:fullEnd,
-            runStart:strongest.start,
-            runEnd:strongest.end,
+            start:lineStart,
+            end:lineEnd,
+            runStart:lineStart,
+            runEnd:lineEnd,
             spanStart:fullStart,
             spanEnd:fullEnd,
             maxRun:strongest.maxRun,
@@ -8111,7 +7968,12 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
             if (Math.abs(v.before - v.after) > Math.max(8, v.length * 0.38)) continue;
             if (!isDetachedPlusStroke(x, y, h, v, compact)) continue;
             const score = Math.min(h.length, v.length) * 3 - Math.abs(h.length - v.length) * 0.45;
-            candidates.push({ x:x, y:y, h:h.length, v:v.length, score:score, compact:compact });
+            // 위치는 탐침 점이 아니라 세로획 굵기의 가운데(x)와 가로획 굵기의 가운데(y)다. 탐침 점은 획 양쪽 길이가
+            // 38%까지 달라도 통과해 교차점에서 벗어나고, 팔 끝의 가운데는 번진 스캔에서 한쪽이 덜 잡혀 흔들린다(8bit).
+            const across = function(px, py, axis){ const span = measureDarkSpan(px, py, axis, 12); return span.length > 0 && span.length < 12 ? (span.after - span.before) / 2 : null; };
+            const vx = across(x, y - Math.max(3, v.before * 0.5), 'x');
+            const hy = across(x - Math.max(3, h.before * 0.5), y, 'y');
+            candidates.push({ x:x + (vx === null ? (h.after - h.before) / 2 : vx), y:y + (hy === null ? (v.after - v.before) / 2 : hy), h:h.length, v:v.length, score:score, compact:compact });
           }
         }
         const clustered = [];
@@ -8130,7 +7992,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const bottom = Math.min(PAGE_H - 1, Number(rect && rect.bottom) || PAGE_H);
         const w = right - left;
         const h = bottom - top;
-        const empty = { score:0, rawScore:0, cornerScore:0, centerScore:0, edgeTouchScore:0, hitRatio:0, offRatio:0, runRatio:0, continuityRatio:0, runCount:0, fragmentPenalty:0, mode:'', line:null };
+        const empty = { score:0, rawScore:0, cornerScore:0, centerScore:0, edgeTouchScore:0, hitRatio:0, offRatio:0, runRatio:0, continuityRatio:0, runCount:0, fragmentPenalty:0, mode:'' };
         if (w < 34 || h < 26) return empty;
         function sampleLine(x1, y1, x2, y2, radius) {
           const samples = Math.max(24, Math.round(Math.hypot(x2 - x1, y2 - y1) / 3.5));
@@ -8195,13 +8057,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
             rawScore:rawScore,
             score:score,
             touchCount:touchCount,
-            fragmentPenalty:fragmentPenalty,
-            line:{
-              x1:candidate.x1,
-              y1:candidate.y1,
-              x2:candidate.x2,
-              y2:candidate.y2
-            }
+            fragmentPenalty:fragmentPenalty
           });
           if (candidate.mode === 'corner') {
             cornerScore = Math.max(cornerScore, score);
@@ -8224,8 +8080,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           continuityRatio:best.continuityRatio,
           runCount:best.runCount,
           fragmentPenalty:best.fragmentPenalty,
-          mode:best.mode,
-          line:best.line
+          mode:best.mode
         };
       };
 
@@ -8976,7 +8831,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return best;
     }
 
-
     function adjustPaperAutoAlignFollowerGridForBoldCameraStart(lines, lineDetails, group, follower, searchEndIndex) {
       if (!follower || follower.columns <= 6 || follower.endIndex <= follower.startIndex + 5) return follower;
       const groupColumns = Number(group && group.columns);
@@ -9362,33 +9216,12 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         top:plusSearchTop,
         bottom:plusSearchBottom
       });
-      const plusDebugCandidates = plusMarks.map(function(candidate){
-        const xRatio = (Number(candidate && candidate.x) - headerLeft) / headerWidth;
-        return {
-          x:roundPaperAutoAlignDebugValue(candidate && candidate.x, 1),
-          y:roundPaperAutoAlignDebugValue(candidate && candidate.y, 1),
-          h:roundPaperAutoAlignDebugValue(candidate && candidate.h, 1),
-          v:roundPaperAutoAlignDebugValue(candidate && candidate.v, 1),
-          score:roundPaperAutoAlignDebugValue(candidate && candidate.score, 1),
-          compact:!!(candidate && candidate.compact),
-          xRatio:roundPaperAutoAlignDebugValue(xRatio, 3),
-          accepted:false,
-          selected:false,
-          reject:''
-        };
-      });
       const expectedPlusY = inputY + inputH * 0.50;
       let plus = null;
-      plusMarks.forEach(function(candidate, index){
-        const debug = plusDebugCandidates[index];
-        function reject(reason) {
-          if (debug) debug.reject = reason || 'rejected';
-        }
-        if (candidate.y < plusSearchTop) { reject('above-search-band'); return; }
-        if (candidate.y > plusSearchBottom) { reject('below-search-band'); return; }
+      plusMarks.forEach(function(candidate){
+        if (candidate.y < plusSearchTop || candidate.y > plusSearchBottom) return;
         const xRatio = (candidate.x - headerLeft) / headerWidth;
-        if (xRatio < 0.34) { reject('left-of-duration-range'); return; }
-        if (xRatio > 0.74) { reject('right-of-duration-range'); return; }
+        if (xRatio < 0.34 || xRatio > 0.74) return;
         const candidateInterval = intervalContaining(candidate.x);
         const intervalCenterRatio = candidateInterval ? (((candidateInterval.left + candidateInterval.right) / 2) - headerLeft) / headerWidth : xRatio;
         let centerBias = xRatio >= 0.42 && xRatio <= 0.76 ? 52 : -96;
@@ -9401,24 +9234,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const lowerDriftPenalty = Math.max(0, candidate.y - (inputY + inputH * 0.58)) * 0.42;
         const distancePenalty = Math.abs(candidate.y - expectedPlusY) * 0.34 + lowerDriftPenalty;
         const score = Number(candidate.score || 0) + centerBias - distancePenalty;
-        if (debug) {
-          debug.accepted = true;
-          debug.finalScore = roundPaperAutoAlignDebugValue(score, 1);
-          debug.intervalLeft = candidateInterval ? roundPaperAutoAlignDebugValue(candidateInterval.left, 1) : null;
-          debug.intervalRight = candidateInterval ? roundPaperAutoAlignDebugValue(candidateInterval.right, 1) : null;
-        }
-        if (!plus || score > plus.finalScore) plus = Object.assign({}, candidate, { finalScore:score, debugIndex:index });
+        if (!plus || score > plus.finalScore) plus = Object.assign({}, candidate, { finalScore:score });
       });
-      if (plus) {
-        plusDebugCandidates.forEach(function(candidate, index){
-          candidate.selected = index === plus.debugIndex ||
-            (Math.abs(Number(candidate.x || 0) - plus.x) <= 2 && Math.abs(Number(candidate.y || 0) - plus.y) <= 2);
-        });
-      }
       return {
         plus:plus,
-        interval:plus ? intervalAroundPoint(plus.x, Math.max(28, headerH * 0.38), Math.max(90, headerWidth * 0.075)) : null,
-        candidates:plusDebugCandidates.slice(0, 24)
+        interval:plus ? intervalAroundPoint(plus.x, Math.max(28, headerH * 0.38), Math.max(90, headerWidth * 0.075)) : null
       };
     }
 
@@ -9480,116 +9300,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return Math.round((Number(value) || 0) * scale) / scale;
     }
 
-    function normalizePaperAutoAlignDebugLine(line) {
-      if (!line) return null;
-      const x1 = Number(line.x1);
-      const y1 = Number(line.y1);
-      const x2 = Number(line.x2);
-      const y2 = Number(line.y2);
-      if (![x1, y1, x2, y2].every(Number.isFinite)) return null;
-      return {
-        x1:roundPaperAutoAlignDebugValue(x1, 1),
-        y1:roundPaperAutoAlignDebugValue(y1, 1),
-        x2:roundPaperAutoAlignDebugValue(x2, 1),
-        y2:roundPaperAutoAlignDebugValue(y2, 1)
-      };
-    }
-
-    // 디버그 선분과 세로선 후보가 공유하는 8필드 — 두 정규화가 같은 정밀도로 각자 반올림하던 것을
-    // 한 벌로 모은다. **키 순서는 그대로 둬야 하므로** 값만 여기서 만들고 배치는 호출부가 한다.
-    function makePaperAutoAlignDebugLineMetrics(src, flags) {
-      const s = src || {};
-      return {
-        runStart:Number.isFinite(Number(s.runStart)) ? roundPaperAutoAlignDebugValue(s.runStart, 1) : null,
-        runEnd:Number.isFinite(Number(s.runEnd)) ? roundPaperAutoAlignDebugValue(s.runEnd, 1) : null,
-        maxRun:roundPaperAutoAlignDebugValue(s.maxRun, 1),
-        straightness:roundPaperAutoAlignDebugValue(s.straightness, 3),
-        centerHitRatio:roundPaperAutoAlignDebugValue(s.centerHitRatio, 3),
-        straightRunRatio:roundPaperAutoAlignDebugValue(s.straightRunRatio, 3),
-        fragments:roundPaperAutoAlignDebugValue(s.fragments, 0),
-        source:String((flags && flags.source) || s.source || '')
-      };
-    }
-
-    function normalizePaperAutoAlignDebugSegment(segment, selected, flags) {
-      if (!segment) return null;
-      flags = flags || {};
-      const pos = Number(segment.pos);
-      const start = Number(segment.start);
-      const end = Number(segment.end);
-      if (![pos, start, end].every(Number.isFinite) || end <= start) return null;
-      const shared = makePaperAutoAlignDebugLineMetrics(segment, flags);
-      return {
-        pos:roundPaperAutoAlignDebugValue(pos, 1),
-        start:roundPaperAutoAlignDebugValue(start, 1),
-        end:roundPaperAutoAlignDebugValue(end, 1),
-        runStart:shared.runStart,
-        runEnd:shared.runEnd,
-        spanStart:Number.isFinite(Number(segment.spanStart)) ? roundPaperAutoAlignDebugValue(segment.spanStart, 1) : null,
-        spanEnd:Number.isFinite(Number(segment.spanEnd)) ? roundPaperAutoAlignDebugValue(segment.spanEnd, 1) : null,
-        maxRun:shared.maxRun,
-        straightness:shared.straightness,
-        centerHitRatio:shared.centerHitRatio,
-        straightRunRatio:shared.straightRunRatio,
-        fragments:shared.fragments,
-        source:shared.source,
-        solid:!!flags.solid || !!segment.solid,
-        selected:!!selected
-      };
-    }
-
-    function normalizePaperAutoAlignDebugVerticalCandidate(line, headerTop, headerBottom, flags) {
-      if (!line) return null;
-      flags = flags || {};
-      const x = Number(line.pos);
-      if (!Number.isFinite(x)) return null;
-      const spanStart = Number.isFinite(Number(line.spanStart))
-        ? Number(line.spanStart)
-        : (Number.isFinite(Number(line.runStart)) ? Number(line.runStart) : headerTop);
-      const spanEnd = Number.isFinite(Number(line.spanEnd))
-        ? Number(line.spanEnd)
-        : (Number.isFinite(Number(line.runEnd)) ? Number(line.runEnd) : headerBottom);
-      const shared = makePaperAutoAlignDebugLineMetrics(line, flags);
-      return {
-        x:roundPaperAutoAlignDebugValue(x, 1),
-        spanStart:roundPaperAutoAlignDebugValue(spanStart, 1),
-        spanEnd:roundPaperAutoAlignDebugValue(spanEnd, 1),
-        runStart:shared.runStart,
-        runEnd:shared.runEnd,
-        maxRun:shared.maxRun,
-        ink:roundPaperAutoAlignDebugValue(line.ink, 1),
-        thickness:roundPaperAutoAlignDebugValue(line.thickness || 1, 1),
-        source:shared.source,
-        accepted:!!flags.accepted,
-        selected:!!flags.selected,
-        edge:!!flags.edge,
-        loose:!!flags.loose,
-        straightness:shared.straightness,
-        centerHitRatio:shared.centerHitRatio,
-        nearHitRatio:roundPaperAutoAlignDebugValue(line.nearHitRatio, 3),
-        straightRunRatio:shared.straightRunRatio,
-        fragments:shared.fragments,
-        displayTop:roundPaperAutoAlignDebugValue(Math.max(0, Number(headerTop || 0) - 36), 1),
-        displayBottom:roundPaperAutoAlignDebugValue(Math.min(PAGE_H - 1, Number(headerBottom || 0) + 42), 1)
-      };
-    }
-
-    function makePaperAutoAlignDisplaySlashLine(left, right, top, bottom) {
-      const l = Number(left);
-      const r = Number(right);
-      const t = Number(top);
-      const b = Number(bottom);
-      if (![l, r, t, b].every(Number.isFinite) || r <= l || b <= t) return null;
-      const w = r - l;
-      const h = b - t;
-      return normalizePaperAutoAlignDebugLine({
-        x1:l + w * 0.06,
-        y1:b - h * 0.06,
-        x2:r - w * 0.06,
-        y2:t + h * 0.06
-      });
-    }
-
     function isPaperAutoAlignContinuousSlashInfo(slashInfo) {
       const runRatio = Number(slashInfo && slashInfo.runRatio || 0);
       const continuityRatio = Number(slashInfo && slashInfo.continuityRatio || 0);
@@ -9636,8 +9346,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const continuityRatio = Number(slashInfo.continuityRatio || 0);
       const runCount = Number(slashInfo.runCount || 0);
       const fragmentPenalty = Number(slashInfo.fragmentPenalty || 0);
-      const line = normalizePaperAutoAlignDebugLine(slashInfo.line);
-      if (!line) return null;
+      if (!slashInfo.mode) return null;
       if (score < 8 && cornerScore < 18 && centerScore < 14 && hitRatio < 0.035) return null;
       const strokeEvidence = hasPaperAutoAlignDiagonalStrokeEvidence(slashInfo);
       if (!strokeEvidence) return null;
@@ -9665,71 +9374,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         runCount:roundPaperAutoAlignDebugValue(runCount, 0),
         fragmentPenalty:roundPaperAutoAlignDebugValue(fragmentPenalty, 1),
         mode:slashInfo.mode || '',
-        line:line,
         strokeEvidence:strokeEvidence,
         cornerConnected:!!slashInfo.cornerConnected || inferredCornerConnected,
         centerSlash:!!slashInfo.centerSlash || inferredCenterSlash,
         selected:false
       };
-    }
-
-    function markPaperAutoAlignSelectedHeaderDiagonal(headerDiagonalDetections, selectedSlash, addHeaderDiagonalDetection) {
-      if (!selectedSlash) return;
-      let matchedSelectedDiagonal = false;
-      headerDiagonalDetections.forEach(function(item){
-        const overlap = Math.max(0, Math.min(Number(item.right || 0), selectedSlash.right) - Math.max(Number(item.left || 0), selectedSlash.left));
-        const selectedW = Math.max(1, selectedSlash.right - selectedSlash.left);
-        const itemW = Math.max(1, Number(item.w || 0));
-        if (overlap / Math.min(selectedW, itemW) >= 0.55) {
-          item.selected = true;
-          item.selectedScore = roundPaperAutoAlignDebugValue(selectedSlash.score || selectedSlash.slashScore || item.score || 0, 1);
-          item.selectedMode = selectedSlash.mode || item.mode || '';
-          item.cornerConnected = item.cornerConnected || !!selectedSlash.cornerConnected;
-          item.centerSlash = item.centerSlash || !!selectedSlash.centerSlash;
-          matchedSelectedDiagonal = true;
-        }
-      });
-      if (matchedSelectedDiagonal) return;
-      const selectedItem = addHeaderDiagonalDetection({
-        left:selectedSlash.left,
-        right:selectedSlash.right,
-        w:selectedSlash.right - selectedSlash.left,
-        index:-1
-      }, {
-        score:Number(selectedSlash.slashScore || selectedSlash.score || 0),
-        rawScore:Number(selectedSlash.rawScore || selectedSlash.slashScore || selectedSlash.score || 0),
-        cornerScore:Number(selectedSlash.cornerScore || 0),
-        centerScore:Number(selectedSlash.centerScore || 0),
-        edgeTouchScore:Number(selectedSlash.edgeTouchScore || 0),
-        hitRatio:Number(selectedSlash.hitRatio || 0),
-        offRatio:Number(selectedSlash.offRatio || 0),
-        runRatio:Number(selectedSlash.runRatio || 0),
-        continuityRatio:Number(selectedSlash.continuityRatio || 0),
-        runCount:Number(selectedSlash.runCount || 0),
-        fragmentPenalty:Number(selectedSlash.fragmentPenalty || 0),
-        mode:selectedSlash.mode || 'selected',
-        line:selectedSlash.line || null,
-        cornerConnected:!!selectedSlash.cornerConnected,
-        centerSlash:!!selectedSlash.centerSlash
-      }, 'selected-scan');
-      if (selectedItem) {
-        selectedItem.selected = true;
-        selectedItem.selectedScore = roundPaperAutoAlignDebugValue(selectedSlash.score || selectedSlash.slashScore || selectedItem.score || 0, 1);
-        selectedItem.selectedMode = selectedSlash.mode || selectedItem.mode || '';
-      }
-    }
-
-    function sortPaperAutoAlignHeaderDiagonalDetectionsForDebug(headerDiagonalDetections) {
-      headerDiagonalDetections.sort(function(a,b){
-        if (!!a.selected !== !!b.selected) return a.selected ? -1 : 1;
-        const aStrong = !!a.cornerConnected || Number(a.score || 0) >= 90 || Number(a.centerScore || 0) >= 70;
-        const bStrong = !!b.cornerConnected || Number(b.score || 0) >= 90 || Number(b.centerScore || 0) >= 70;
-        if (aStrong !== bStrong) return aStrong ? -1 : 1;
-        const scoreDiff = Number(b.selectedScore || b.score || 0) - Number(a.selectedScore || a.score || 0);
-        if (Math.abs(scoreDiff) > 0.5) return scoreDiff;
-        return Number(a.left || 0) - Number(b.left || 0);
-      });
-      return headerDiagonalDetections;
     }
 
     // Candidate scoring reads only measured slash data and the search range.
@@ -9750,7 +9399,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (cornerConnected && right > range.right - range.width * 0.20) score += 82;
       if (centerSlash) score += 36;
       if (strokeEvidence && (Number(slashInfo.score || 0) > 42 || cornerConnected || centerSlash)) {
-        return { left:left, right:right, interval:interval, score:score, slashScore:Number(slashInfo.score || 0), rawScore:Number(slashInfo.rawScore || 0), cornerScore:Number(slashInfo.cornerScore || 0), centerScore:Number(slashInfo.centerScore || 0), edgeTouchScore:Number(slashInfo.edgeTouchScore || 0), hitRatio:Number(slashInfo.hitRatio || 0), offRatio:Number(slashInfo.offRatio || 0), runRatio:Number(slashInfo.runRatio || 0), continuityRatio:Number(slashInfo.continuityRatio || 0), runCount:Number(slashInfo.runCount || 0), fragmentPenalty:Number(slashInfo.fragmentPenalty || 0), strokeEvidence:strokeEvidence, cornerConnected:cornerConnected, centerSlash:centerSlash, mode:slashInfo.mode || '', line:slashInfo.line || null };
+        return { left:left, right:right, interval:interval, score:score, slashScore:Number(slashInfo.score || 0), rawScore:Number(slashInfo.rawScore || 0), cornerScore:Number(slashInfo.cornerScore || 0), centerScore:Number(slashInfo.centerScore || 0), edgeTouchScore:Number(slashInfo.edgeTouchScore || 0), hitRatio:Number(slashInfo.hitRatio || 0), offRatio:Number(slashInfo.offRatio || 0), runRatio:Number(slashInfo.runRatio || 0), continuityRatio:Number(slashInfo.continuityRatio || 0), runCount:Number(slashInfo.runCount || 0), fragmentPenalty:Number(slashInfo.fragmentPenalty || 0), strokeEvidence:strokeEvidence, cornerConnected:cornerConnected, centerSlash:centerSlash, mode:slashInfo.mode || '' };
       }
       return null;
     }
@@ -9895,21 +9544,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           const bottomSeg = segments[j];
           const height = bottomSeg.pos - topSeg.pos;
           if (height < 46 || height > 210) continue;
-          const overlapLeft = Math.max(topSeg.start, bottomSeg.start);
-          const overlapRight = Math.min(topSeg.end, bottomSeg.end);
-          const overlap = overlapRight - overlapLeft;
+          const overlap = Math.min(topSeg.end, bottomSeg.end) - Math.max(topSeg.start, bottomSeg.start);
           const left = Math.min(topSeg.start, bottomSeg.start);
           const right = Math.max(topSeg.end, bottomSeg.end);
           const width = right - left;
           if (overlap < 360 || width < 520) continue;
-          const runLeft = Math.min(getHeaderSegmentRunStart(topSeg), getHeaderSegmentRunStart(bottomSeg));
-          const runRight = Math.max(getHeaderSegmentRunEnd(topSeg), getHeaderSegmentRunEnd(bottomSeg));
-          const runWidth = runRight - runLeft;
-          const useRunEndpointScore = Number.isFinite(runLeft) && Number.isFinite(runRight) &&
-            runWidth >= Math.max(360, width * 0.42) &&
-            runWidth <= width + Math.max(12, width * 0.04);
-          const leftScoreX = useRunEndpointScore ? runLeft : left;
-          const rightScoreX = useRunEndpointScore ? runRight : right;
           const middleBonus = segments.some(function(seg){
             return seg.pos > topSeg.pos + 14 && seg.pos < bottomSeg.pos - 12 && Math.min(seg.end, right) - Math.max(seg.start, left) > width * 0.45;
           }) ? 80 : 0;
@@ -9937,13 +9576,32 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           if (topSeg.pos > 90 && complexity.dividerCount > 11) score -= Math.min(230, (topSeg.pos - 90) * 0.95 + (complexity.dividerCount - 11) * 26);
           if (left > 8 && left < PAGE_W * 0.22) score += 45;
           if (right > PAGE_W * 0.55 && right < PAGE_W - 8) score += 45;
-          const leftEndpointScore = scoreHeaderRectEndpoint(leftScoreX, topSeg.pos, bottomSeg.pos, 1);
-          const rightEndpointScore = scoreHeaderRectEndpoint(rightScoreX, topSeg.pos, bottomSeg.pos, -1);
+          const leftEndpointScore = scoreHeaderRectEndpoint(left, topSeg.pos, bottomSeg.pos, 1);
+          const rightEndpointScore = scoreHeaderRectEndpoint(right, topSeg.pos, bottomSeg.pos, -1);
           score += Math.min(190, leftEndpointScore) + Math.min(190, rightEndpointScore);
           score -= Math.max(0, 72 - leftEndpointScore) * 1.15;
           score -= Math.max(0, 72 - rightEndpointScore) * 1.15;
           if (!best || score > best.score) best = { left:left, right:right, top:topSeg.pos, bottom:bottomSeg.pos, score:score, segments:segments, selectedTopSegment:topSeg.pos, selectedBottomSegment:bottomSeg.pos, leftEndpointScore:leftEndpointScore, rightEndpointScore:rightEndpointScore };
         }
+      }
+      if (best && typeof analysis.findVerticalSegments === 'function') {
+        // 가로선이 옅어 끊긴 곳(MAD)은 헤더 높이를 모두 잇는 세로선을 이웃한 것만 따라가 범위를 넓힌다.
+        const height = best.bottom - best.top;
+        const step = Math.max(60, height * 2.4);
+        const edges = analysis.findVerticalSegments({
+          left:best.left - step * 3,
+          right:best.right + step * 3,
+          top:best.top - 4,
+          bottom:best.bottom + 4,
+          minRun:height * 0.85,
+          minCoverage:0.85
+        }).filter(function(line){
+          // 인쇄 칸선은 가늘고 곧다. 로고 원 테두리(TOHO)는 굵기 7~8px·곧기 0.9 정도라 걸러진다.
+          return line.runStart <= best.top + 6 && line.runEnd >= best.bottom - 6 && Number(line.thickness || 1) <= 5 &&
+            Number(line.straightness || 0) >= 0.95 && !isPaperAutoAlignHeaderEdgeNoiseX(line.pos);
+        }).map(function(line){ return line.pos; }).sort(function(a,b){ return a - b; });
+        edges.forEach(function(x){ if (x > best.right && x - best.right <= step) best.right = x; });
+        edges.slice().reverse().forEach(function(x){ if (x < best.left && best.left - x <= step) best.left = x; });
       }
       return best;
     }
@@ -9951,87 +9609,73 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     // ══ 용지 인식 ⑥B 헤더 필드 추론 — 선택한 외곽에서 구분선·사선·필드 박스를 확정한다 ═════════════════════
     const HEADER_FIELD_INSET = 2;
 
+    // 매수 칸에 인쇄된 사선을 실제로 찾는다. 각도(8~86°)와 칸 가운데 높이를 지나는 x를 바꿔 가며 직선을 대 보고
+    // 잉크가 가장 길게 이어진 선을 고른다(끊김 8px까지 잇는다). 모서리를 잇는 사선과 가운데 작은 「/」를 함께 찾는다.
+    // 사선 양쪽 글자(枚目·枚)의 폭으로 현재 매수 쪽을 정한다 — 두 글자인 「枚目」 쪽이 현재다. 글자가 없으면 왼쪽 위.
+    function findPaperAutoAlignPageDiagonal(analysis, box) {
+      if (!analysis || typeof analysis.isDarkNear !== 'function' || !box) return null;
+      const inset = 4;
+      const left = box.x + inset, right = box.x + box.w - inset, top = box.y + inset, bottom = box.y + box.h - inset;
+      const w = right - left, h = bottom - top, midY = (top + bottom) / 2;
+      if (w < 30 || h < 20) return null;
+      // 가운데 작은 「/」는 칸 높이와 상관없이 30px·오름 24px이면 받는다(studiobono·clw). 기준을 넘는 선 중 가장 긴 것을 고른다 —
+      // 가장 긴 선을 먼저 고르면 글자 세로획이 뽑혀 사선을 놓친다.
+      const minLen = Math.min(h * 0.45, 30), minRise = Math.min(h * 0.4, 24);
+      let best = null;
+      for (let deg = 8; deg <= 86; deg += 2) {
+        const slope = Math.tan(deg * Math.PI / 180);   // y가 줄어드는 만큼 x가 는다: 왼쪽 아래 → 오른쪽 위
+        const dx = 2 / Math.sqrt(1 + slope * slope), dy = dx * slope;
+        for (let xc = left - w * 0.5; xc <= right + w * 0.5; xc += 2) {
+          // 칸 안에서 이 선이 지나는 구간을 아래(왼쪽)에서 위(오른쪽)로 2px씩 걷는다
+          let x = xc - (bottom - midY) / slope, y = bottom;
+          if (x < left) { y = midY - (left - xc) * slope; x = left; }
+          let runFrom = null, last = null;
+          for (; x <= right && y >= top; x += dx, y -= dy) {
+            if (!analysis.isDarkNear(x, y, 1)) continue;
+            if (!runFrom || Math.hypot(x - last.x, y - last.y) > 8) runFrom = { x:x, y:y };
+            last = { x:x, y:y };
+            const len = Math.hypot(last.x - runFrom.x, last.y - runFrom.y);
+            if (len >= minLen && runFrom.y - last.y >= minRise && (!best || len > best.len)) best = { slope:slope, xc:xc, len:len, from:runFrom, to:last };
+          }
+        }
+      }
+      if (!best) return null;
+      const lineAt = function(x){ return midY - (x - best.xc) * best.slope; };
+      // 사선과 테두리 근처를 뺀 잉크를 양쪽으로 나눠, 잉크가 있는 열 수로 글자 폭을 잰다
+      const sideColumns = { upper:new Set(), lower:new Set() };
+      for (let x = left; x <= right; x++) {
+        for (let y = top; y <= bottom; y++) {
+          const d = y - lineAt(x);
+          if (Math.abs(d) <= 4 || !analysis.isDarkNear(x, y, 0)) continue;
+          sideColumns[d < 0 ? 'upper' : 'lower'].add(x);
+        }
+      }
+      const upper = sideColumns.upper.size, lower = sideColumns.lower.size;
+      const round = function(v){ return Math.round(v * 10) / 10; };
+      return {
+        x1:round(best.from.x), y1:round(best.from.y), x2:round(best.to.x), y2:round(best.to.y),
+        current:lower > upper * 1.4 && lower >= 8 ? 'lower' : 'upper'
+      };
+    }
+
+
     function inferPaperAutoAlignHeaderBoxes(analysis, bodyGrid, sides) {
       const xLines = analysis && Array.isArray(analysis.xLines) ? analysis.xLines : [];
       const yLines = analysis && Array.isArray(analysis.yLines) ? analysis.yLines : [];
       const bodyTop = Number(bodyGrid && bodyGrid.bodyTop) || PAGE_H;
       const upperYLimit = Math.max(140, Math.min(bodyTop - 55, 360));
       const upperY = (yLines || []).filter(function(y){ return y > 20 && y < upperYLimit; }).sort(function(a,b){ return a-b; });
-      let headerDebugVerticalCandidates = [];
-      let headerDebugPlusCandidates = [];
 
       // ── [헤더] 가로 선분 수집 · 종이 가장자리 잡음 제외 ────────────
 
       const headerRect = findPaperAutoAlignHeaderRect(analysis, bodyTop, upperYLimit);
       if (!headerRect) return {};
-      const headerRawHorizontalSegments = headerRect.segments;
-      const headerDebugHorizontalSegments = headerRawHorizontalSegments.map(function(segment){
-        return normalizePaperAutoAlignDebugSegment(segment, false);
-      }).filter(Boolean).slice(0, 96);
       let headerLeft = Math.max(0, Math.round(headerRect.left));
       let headerRight = Math.min(PAGE_W - 1, Math.round(headerRect.right));
       const headerTop = Math.max(0, Math.round(headerRect.top));
       const headerBottom = Math.min(PAGE_H - 1, Math.round(headerRect.bottom));
       if (headerRight - headerLeft < 520 || headerBottom - headerTop < 44) return {};
       const headerH = headerBottom - headerTop;
-
-      function addHeaderDebugHorizontalSegment(segment, selected, flags) {
-        const normalized = normalizePaperAutoAlignDebugSegment(segment, selected, flags);
-        if (!normalized) return;
-        const key = [
-          Math.round(Number(normalized.pos || 0)),
-          Math.round(Number(normalized.start || 0)),
-          Math.round(Number(normalized.end || 0))
-        ].join(':');
-        const existing = headerDebugHorizontalSegments.find(function(item){
-          return [
-            Math.round(Number(item.pos || 0)),
-            Math.round(Number(item.start || 0)),
-            Math.round(Number(item.end || 0))
-          ].join(':') === key;
-        });
-        if (existing) {
-          existing.selected = existing.selected || normalized.selected;
-          existing.solid = existing.solid || normalized.solid;
-          existing.source = String(existing.source || '').indexOf(normalized.source) >= 0
-            ? existing.source
-            : [existing.source, normalized.source].filter(Boolean).join('+');
-          return;
-        }
-        headerDebugHorizontalSegments.push(normalized);
-      }
-
-      function addSolidParallelHeaderHorizontalDebugSegments() {
-        const yMin = headerTop - Math.max(68, headerH * 0.80);
-        const yMax = headerBottom + Math.max(28, headerH * 0.36);
-        const minRun = Math.max(360, Math.min(headerRight - headerLeft, Math.max(420, (headerRight - headerLeft) * 0.42)));
-        (headerRawHorizontalSegments || []).forEach(function(segment){
-          const y = Number(segment && segment.pos);
-          if (!Number.isFinite(y) || y < yMin || y > yMax) return;
-          const runStart = getHeaderSegmentRunStart(segment);
-          const runEnd = getHeaderSegmentRunEnd(segment);
-          if (![runStart, runEnd].every(Number.isFinite) || runEnd <= runStart) return;
-          const runW = runEnd - runStart;
-          const headerOverlap = Math.min(runEnd, headerRight) - Math.max(runStart, headerLeft);
-          if (runW < minRun) return;
-          if (headerOverlap < Math.min(runW, headerRight - headerLeft) * 0.48) return;
-          if (Number(segment.fragments || 0) > 5 && Number(segment.straightRunRatio || 0) < 0.58) return;
-          addHeaderDebugHorizontalSegment(Object.assign({}, segment, {
-            start:runStart,
-            end:runEnd,
-            spanStart:Number(segment.spanStart),
-            spanEnd:Number(segment.spanEnd),
-            solid:true,
-            source:'solid-parallel'
-          }), false, { solid:true, source:'solid-parallel' });
-        });
-        headerDebugHorizontalSegments.sort(function(a,b){
-          const yDiff = Number(a.pos || 0) - Number(b.pos || 0);
-          if (Math.abs(yDiff) > 0.5) return yDiff;
-          return Number(a.start || 0) - Number(b.start || 0);
-        });
-      }
-      addSolidParallelHeaderHorizontalDebugSegments();
 
       function findSelectedHeaderHorizontalSegment(pos) {
         const target = Number(pos);
@@ -10627,14 +10271,14 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       let headerLines = [];
       let confirmedHeaderEndpointLeft = null;
       let confirmedHeaderEndpointRight = null;
-      const headerDebugCandidateMap = new Map();
+      const headerVerticalCandidateMap = new Map();
 
       // ── [헤더] 세로선 수집 · 종이 가장자리 정리 ────────────
-      function addHeaderDebugVerticalCandidate(line, source) {
+      function addHeaderVerticalCandidate(line, source) {
         if (!line) return;
         const key = Math.round(Number(line.pos || 0));
         if (!Number.isFinite(key)) return;
-        const previous = headerDebugCandidateMap.get(key);
+        const previous = headerVerticalCandidateMap.get(key);
         // The loose test includes the strict test; classify this line only once.
         const qualified = !!(previous && previous.accepted && previous.loose) || isLooseHeaderDividerLine(line);
         if (previous) {
@@ -10643,7 +10287,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           previous.loose = previous.loose || qualified;
           return;
         }
-        headerDebugCandidateMap.set(key, Object.assign({}, line, {
+        headerVerticalCandidateMap.set(key, Object.assign({}, line, {
           source:source,
           accepted:qualified,
           loose:qualified
@@ -10723,7 +10367,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           minRun:Math.max(34, headerH * 0.56),
           minCoverage:0.34
         });
-        strictHeaderLineInfos.forEach(function(line){ addHeaderDebugVerticalCandidate(line, 'strict'); });
+        strictHeaderLineInfos.forEach(function(line){ addHeaderVerticalCandidate(line, 'strict'); });
         const strictHeaderLines = strictHeaderLineInfos.filter(function(line){
           return isHeaderDividerLine(line.pos, line);
         }).map(function(line){ return line.pos; });
@@ -10738,13 +10382,13 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
             minRun:Math.max(12, headerH * 0.30),
             minCoverage:0.10
           });
-          looseHeaderLineInfos.forEach(function(line){ addHeaderDebugVerticalCandidate(line, 'loose'); });
+          looseHeaderLineInfos.forEach(function(line){ addHeaderVerticalCandidate(line, 'loose'); });
           headerLines = looseHeaderLineInfos.filter(function(line){
             return isLooseHeaderDividerLine(line);
           }).map(function(line){ return line.pos; });
         }
         const endpointHeaderLineInfos = findHeaderEndpointVerticalLines();
-        endpointHeaderLineInfos.forEach(function(line){ addHeaderDebugVerticalCandidate(line, 'endpoint'); });
+        endpointHeaderLineInfos.forEach(function(line){ addHeaderVerticalCandidate(line, 'endpoint'); });
         const confirmedEndpointLineInfos = endpointHeaderLineInfos.filter(function(line){
           return isLooseHeaderDividerLine(line);
         });
@@ -10762,7 +10406,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         }
         headerLines = headerLines.concat(confirmedEndpointLineInfos.map(function(line){ return line.pos; }));
         const bandJointHeaderLineInfos = findHeaderBandJointVerticalLines();
-        bandJointHeaderLineInfos.forEach(function(line){ addHeaderDebugVerticalCandidate(line, 'band-joint'); });
+        bandJointHeaderLineInfos.forEach(function(line){ addHeaderVerticalCandidate(line, 'band-joint'); });
         headerLines = headerLines.concat(bandJointHeaderLineInfos.filter(function(line){
           return isLooseHeaderDividerLine(line);
         }).map(function(line){ return line.pos; }));
@@ -10775,14 +10419,14 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
       function expandHeaderBoundsFromEndpointLines(lines) {
         function endpointItemForLine(x) {
-          return Array.from(headerDebugCandidateMap.values()).find(function(line){
+          return Array.from(headerVerticalCandidateMap.values()).find(function(line){
             return Math.abs(Number(line.pos || 0) - Number(x || 0)) <= 5 &&
               String(line.source || '').indexOf('endpoint') >= 0 &&
               (isHeaderDividerLine(x, line) || isLooseHeaderDividerLine(line));
           }) || null;
         }
         const endpointLines = (lines || []).map(function(x){
-          const item = Array.from(headerDebugCandidateMap.values()).find(function(line){
+          const item = Array.from(headerVerticalCandidateMap.values()).find(function(line){
             return Math.abs(Number(line.pos || 0) - Number(x || 0)) <= 5;
           });
           return { x:x, item:endpointItemForLine(x) || item };
@@ -10817,8 +10461,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       }
       headerLines = trimPaperEdgeHeaderLines(headerLines);
 
-      function findHeaderDebugCandidateForX(x) {
-        return Array.from(headerDebugCandidateMap.values()).find(function(line){
+      function findHeaderVerticalCandidateForX(x) {
+        return Array.from(headerVerticalCandidateMap.values()).find(function(line){
           return Math.abs(Number(line.pos || 0) - Number(x || 0)) <= 5;
         }) || null;
       }
@@ -10827,7 +10471,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const sorted = (lines || []).slice().sort(function(a,b){ return a-b; });
         if (sorted.length < 6) return sorted;
         const items = sorted.map(function(x){
-          const line = findHeaderDebugCandidateForX(x) || findPaperAutoAlignLineInfo(analysis && analysis.xDetailed, x);
+          const line = findHeaderVerticalCandidateForX(x) || findPaperAutoAlignLineInfo(analysis && analysis.xDetailed, x);
           return { x:x, line:line, full:isHeaderVerticalFullyConnected(x, line) };
         });
         const fullCount = items.filter(function(item){ return item.full; }).length;
@@ -10836,16 +10480,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         return kept.length >= Math.max(5, Math.ceil(fullCount * 0.90)) ? kept : sorted;
       }
       headerLines = filterHeaderLinesByMajorityFullConnection(headerLines);
-      headerDebugVerticalCandidates = Array.from(headerDebugCandidateMap.values()).map(function(line){
-        const selected = headerLines.some(function(x){ return Math.abs(Number(x || 0) - Number(line.pos || 0)) <= 5; });
-        const edge = Math.abs(Number(line.pos || 0) - headerLeft) <= 5 || Math.abs(Number(line.pos || 0) - headerRight) <= 5;
-        return normalizePaperAutoAlignDebugVerticalCandidate(line, headerTop, headerBottom, {
-          source:line.source || '',
-          accepted:!!line.accepted,
-          selected:selected,
-          edge:edge
-        });
-      }).filter(Boolean).sort(function(a,b){ return Number(a.x || 0) - Number(b.x || 0); }).slice(0, 140);
       let intervals = makePaperAutoAlignHeaderIntervals(headerLines);
       const endpointPad = Math.max(5, Math.min(14, headerH * 0.12));
       let slashLeftLimit = Number.isFinite(Number(confirmedHeaderEndpointLeft))
@@ -10981,24 +10615,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         return x;
       }
 
-      function pushAlignedHeaderEndpointDebugCandidate(virtualLine, alignedX, source) {
-        const normalized = normalizePaperAutoAlignDebugVerticalCandidate(virtualLine, headerTop, headerBottom, {
-          source:source,
-          accepted:true,
-          selected:true,
-          edge:Math.abs(alignedX - headerLeft) <= 5 || Math.abs(alignedX - headerRight) <= 5,
-          loose:true
-        });
-        if (normalized) {
-          headerDebugVerticalCandidates.push(normalized);
-          headerDebugVerticalCandidates.sort(function(a,b){ return Number(a.x || 0) - Number(b.x || 0); });
-          headerDebugVerticalCandidates = headerDebugVerticalCandidates.slice(0, 140);
-        }
-      }
-
       function maybeAddAlignedLeftEndpointClosure() {
         const alignedX = findAlignedHeaderHorizontalEndpointX('left');
-        if (!Number.isFinite(Number(alignedX))) return;
+        // 끝점이 없으면 null이다. Number(null)은 0이라 예전 검사는 x=0에 가상 세로선을 만들었다.
+        if (alignedX === null) return;
         if (headerLines.some(function(line){ return Math.abs(Number(line || 0) - alignedX) <= 5; })) return;
         const currentHeaderWidth = Math.max(1, headerRight - headerLeft);
         const alignTol = Math.max(5, Math.min(14, currentHeaderWidth * 0.01));
@@ -11025,7 +10645,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           endpointInferred:true
         };
         const key = Math.round(alignedX);
-        headerDebugCandidateMap.set(key, virtualLine);
+        headerVerticalCandidateMap.set(key, virtualLine);
         headerLines = headerLines.concat([alignedX]);
         if (alignedX < headerLeft) {
           headerLeft = Math.max(PAPER_HEADER_EDGE_MARGIN + 1, Math.round(alignedX));
@@ -11034,7 +10654,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const previousLeft = Number(confirmedHeaderEndpointLeft);
         confirmedHeaderEndpointLeft = Number.isFinite(previousLeft) ? Math.min(previousLeft, alignedX) : alignedX;
         refreshHeaderIntervalsForVirtualLines();
-        pushAlignedHeaderEndpointDebugCandidate(virtualLine, alignedX, 'aligned-horizontal-left-endpoint');
       }
       maybeAddAlignedLeftEndpointClosure();
       const headerWidth = Math.max(1, headerRight - headerLeft);
@@ -11050,7 +10669,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         inputH:inputH,
         headerWidth:headerWidth
       }, intervalContaining, intervalAroundPoint);
-      headerDebugPlusCandidates = Array.isArray(durationPlusResult.candidates) ? durationPlusResult.candidates : [];
       let durationPlus = durationPlusResult.plus;
       let durationInterval = durationPlusResult.interval;
       if (!durationInterval) {
@@ -11104,7 +10722,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       function maybeAddAlignedRightEndpointClosureAfterDuration() {
         if (!durationPlus || durationPlus.inferred || !durationInterval) return;
         const alignedX = findAlignedHeaderRightEndpointXAfterDuration();
-        if (!Number.isFinite(Number(alignedX))) return;
+        // 끝점이 없으면 null이다. Number(null)은 0이라 예전 검사는 x=0에 가상 세로선을 만들었다.
+        if (alignedX === null) return;
         if (headerLines.some(function(line){ return Math.abs(Number(line || 0) - alignedX) <= 5; })) return;
         const lineGap = Math.max(8, headerWidth * 0.006);
         const innerRightLines = headerLines.filter(function(line){
@@ -11133,23 +10752,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           endpointInferred:true
         };
         const key = Math.round(alignedX);
-        headerDebugCandidateMap.set(key, virtualLine);
+        headerVerticalCandidateMap.set(key, virtualLine);
         headerLines = headerLines.concat([alignedX]);
         confirmedHeaderEndpointRight = Math.max(Number(confirmedHeaderEndpointRight) || -Infinity, alignedX);
         if (!Number.isFinite(confirmedHeaderEndpointRight)) confirmedHeaderEndpointRight = alignedX;
         refreshHeaderIntervalsForVirtualLines();
-        const normalized = normalizePaperAutoAlignDebugVerticalCandidate(virtualLine, headerTop, headerBottom, {
-          source:'aligned-horizontal-endpoint',
-          accepted:true,
-          selected:true,
-          edge:Math.abs(alignedX - headerRight) <= 5,
-          loose:true
-        });
-        if (normalized) {
-          headerDebugVerticalCandidates.push(normalized);
-          headerDebugVerticalCandidates.sort(function(a,b){ return Number(a.x || 0) - Number(b.x || 0); });
-          headerDebugVerticalCandidates = headerDebugVerticalCandidates.slice(0, 140);
-        }
       }
       maybeAddAlignedRightEndpointClosureAfterDuration();
       let pageInterval = null;
@@ -11236,7 +10843,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
               if (cornerConnected) score += 54;
               if (centerSlash) score += 28;
               if (right > slashRightLimit - slashWidth * 0.20 && cornerConnected) score += 26;
-              const candidate = { left:left, right:right, score:score, slashScore:rawScore, rawScore:Number(slashInfo.rawScore || rawScore), cornerScore:cornerScore, centerScore:centerScore, edgeTouchScore:edgeScore, hitRatio:Number(slashInfo.hitRatio || 0), offRatio:Number(slashInfo.offRatio || 0), runRatio:runRatio, continuityRatio:continuityRatio, runCount:Number(slashInfo.runCount || 0), fragmentPenalty:Number(slashInfo.fragmentPenalty || 0), strokeEvidence:strokeEvidence, cornerConnected:cornerConnected, centerSlash:centerSlash, mode:slashInfo.mode || 'sliding', line:slashInfo.line || null };
+              const candidate = { left:left, right:right, score:score, slashScore:rawScore, rawScore:Number(slashInfo.rawScore || rawScore), cornerScore:cornerScore, centerScore:centerScore, edgeTouchScore:edgeScore, hitRatio:Number(slashInfo.hitRatio || 0), offRatio:Number(slashInfo.offRatio || 0), runRatio:runRatio, continuityRatio:continuityRatio, runCount:Number(slashInfo.runCount || 0), fragmentPenalty:Number(slashInfo.fragmentPenalty || 0), strokeEvidence:strokeEvidence, cornerConnected:cornerConnected, centerSlash:centerSlash, mode:slashInfo.mode || 'sliding' };
               addHeaderDiagonalDetection(candidate, Object.assign({}, slashInfo, {
                 score:rawScore,
                 strokeEvidence:strokeEvidence,
@@ -11261,7 +10868,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
                   right:containing.right,
                   interval:containing,
                   mode:(bestSlidingSlash.mode || 'sliding') + ':full-interval',
-                  line:fullIntervalSlashInfo && fullIntervalSlashInfo.line ? fullIntervalSlashInfo.line : bestSlidingSlash.line,
                   fullIntervalScore:Number(fullIntervalSlashInfo && fullIntervalSlashInfo.score || 0),
                   fullIntervalHitRatio:Number(fullIntervalSlashInfo && fullIntervalSlashInfo.hitRatio || 0),
                   fullIntervalRunRatio:Number(fullIntervalSlashInfo && fullIntervalSlashInfo.runRatio || 0)
@@ -11302,7 +10908,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
             cornerConnected:!!confirmed.cornerConnected,
             centerSlash:!!confirmed.centerSlash,
             mode:(confirmed.mode || 'interval') + ':right-single',
-            line:confirmed.line || null,
             interval:pageInterval
           };
           forcedPageSlash = true;
@@ -11474,8 +11079,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         });
         if (refreshedAuthorCandidates.length) authorInterval = refreshedAuthorCandidates[0];
       }
-      markPaperAutoAlignSelectedHeaderDiagonal(headerDiagonalDetections, selectedSlash, addHeaderDiagonalDetection);
-      sortPaperAutoAlignHeaderDiagonalDetectionsForDebug(headerDiagonalDetections);
       const confirmedHeaderValueBand = splitYDetected ? {
         y:Math.round(inputY),
         h:Math.max(18, Math.round(headerBottom - inputY - 2))
@@ -11501,6 +11104,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       Object.keys(base).forEach(function(field){
         if (base[field]) out['header-' + field] = normalizeRect(base[field], 18, 18);
       });
+      const pageDiagonal = findPaperAutoAlignPageDiagonal(analysis, out['header-page']);
       out.__headerOverlay = {
         x:headerLeft,
         y:headerTop,
@@ -11531,20 +11135,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           h:fullHeaderBoxH,
           score:selectedSlash.score,
           mode:selectedSlash.mode,
-          forced:forcedPageSlash,
-          line:normalizePaperAutoAlignDebugLine(selectedSlash.line) || makePaperAutoAlignDisplaySlashLine(selectedSlash.left, selectedSlash.right, fullHeaderBoxY, fullHeaderBoxY + fullHeaderBoxH)
+          forced:forcedPageSlash
         } : null,
-        diagonalDetections:headerDiagonalDetections.slice(0, 192),
-        debugCandidates:{
-          horizontalSegments:headerDebugHorizontalSegments.map(function(segment){
-            return Object.assign({}, segment, {
-              selected:Math.abs(Number(segment.pos || 0) - headerTop) <= 4 || Math.abs(Number(segment.pos || 0) - headerBottom) <= 4
-            });
-          }),
-          verticalLines:headerDebugVerticalCandidates,
-          plusMarks:headerDebugPlusCandidates,
-          threshold:Number(analysis && analysis.darkThreshold || 0)
-        },
+        pageDiagonal:pageDiagonal,
         headerScore:headerRect.score || 0,
         mechanisms:{
           rightBreakBeforePageField:!!rightBreakBeforePageField,
@@ -11709,67 +11302,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return { penalty:Math.min(70, penalty), notes:notes };
     }
 
-    function makePaperAutoAlignDiagnosticLayer(pair, leftSide, rightSide, headerOverlay, sanity, columns, variantName) {
-      const mechanisms = [];
-      const mechanismSeen = new Set();
-      function add(name, active, meta) {
-        if (!active) return;
-        if (mechanismSeen.has(name)) return;
-        mechanismSeen.add(name);
-        mechanisms.push(Object.assign({ name:name }, meta || {}));
-      }
-      function sideFlags(side, prefix) {
-        if (!side) return;
-        add(prefix + '-follower-grid', !!side.follow, side.follow ? { columns:side.follow.columns } : null);
-        add(prefix + '-bold-camera-start', !!(side.follow && side.follow.adjustedByBoldCameraStart));
-        add(prefix + '-absorbed-camera-column', !!(side.follow && side.follow.adjustedByAbsorbedCameraColumn));
-        add(prefix + '-recovered-camera-expand', !!side.expandedRecoveredCamera);
-      }
-      function groupFlags(group, prefix) {
-        if (!group) return;
-        add(prefix + '-sparse-grid', !!group.sparseGrid);
-        add(prefix + '-variable-tail', !!group.variableTail);
-        add(prefix + '-narrow-tail-dropped', !!group.narrowTail);
-        (group.scoreReasons || []).forEach(function(reason){
-          add(prefix + '-' + reason, true);
-        });
-      }
-      const headerMechanisms = headerOverlay && headerOverlay.mechanisms ? headerOverlay.mechanisms : {};
-      add('dotted-result', variantName === 'dotted');
-      groupFlags(pair && pair.left, 'left-group');
-      groupFlags(pair && pair.right, 'right-group');
-      sideFlags(leftSide, 'left');
-      sideFlags(rightSide, 'right');
-      add('header-right-break-before-page', !!headerMechanisms.rightBreakBeforePageField);
-      add('header-ordered-title-duration', !!headerMechanisms.orderedTitleHeader);
-      add('header-page-slash', !!(headerOverlay && headerOverlay.pageSlashBox), headerMechanisms.pageSlashMode ? { mode:headerMechanisms.pageSlashMode } : null);
-      add('sanity-penalty', !!(sanity && sanity.penalty), sanity ? { penalty:sanity.penalty, notes:sanity.notes || [] } : null);
-      const summary = [
-        'variant=' + (variantName || 'standard'),
-        'columns=' + columns,
-        'pairScore=' + Math.round(Number(pair && pair.score || 0)),
-        'leftDialog=' + Math.round(Number(leftSide && leftSide.dialog && leftSide.dialog.w || 0)),
-        'rightDialog=' + Math.round(Number(rightSide && rightSide.dialog && rightSide.dialog.w || 0)),
-        'mechanisms=' + mechanisms.length
-      ];
-      return {
-        summary:summary,
-        mechanisms:mechanisms,
-        selected:{
-          leftGroup:{
-            columns:pair && pair.left ? pair.left.columns : 0,
-            score:Math.round(Number(pair && pair.left && pair.left.score || 0) * 10) / 10,
-            reasons:pair && pair.left ? (pair.left.scoreReasons || []) : []
-          },
-          rightGroup:{
-            columns:pair && pair.right ? pair.right.columns : 0,
-            score:Math.round(Number(pair && pair.right && pair.right.score || 0) * 10) / 10,
-            reasons:pair && pair.right ? (pair.right.scoreReasons || []) : []
-          }
-        }
-      };
-    }
-
     // ══ 용지 인식 ⑧ 레이아웃 결과 조립 · 자동정렬 실행 진입점 ═════════════════════════════════════════════════════════════
     function resolvePaperAutoAlignDisplayColumnCount(pair, leftSide, rightSide) {
       const leftColumns = Number(pair && pair.left && pair.left.columns);
@@ -11853,7 +11385,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (leftSide.follow) overlayBoxes['follow-left'] = normalizeRect({ x:leftSide.follow.left, y:bodyY, w:leftSide.follow.right - leftSide.follow.left, h:bodyH }, 18, 18);
       if (rightSide.follow) overlayBoxes['follow-right'] = normalizeRect({ x:rightSide.follow.left, y:bodyY, w:rightSide.follow.right - rightSide.follow.left, h:bodyH }, 18, 18);
       const sanity = assessPaperAutoAlignSanity(boxes, headerOverlay, leftSide, rightSide, columns);
-      const diagnosticLayer = makePaperAutoAlignDiagnosticLayer(pair, leftSide, rightSide, headerOverlay, sanity, columns, variantName || 'standard');
       const dottedVerticalLineCount = Number(analysis.dottedVerticalLineCount || 0);
       const headerMechanisms = headerOverlay && headerOverlay.mechanisms ? headerOverlay.mechanisms : {};
       const actualDurationPlusDetected = !!(headerOverlay && headerOverlay.durationPlus && !headerOverlay.durationPlus.inferred);
@@ -11874,9 +11405,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const rawConfidence = Math.round(30 + pairQuality * 40 + gridQuality * 28);
       const confidence = Math.max(15, Math.min(98, rawConfidence - sanity.penalty - walkPenalty));
       const cellSides = singleBlock ? [['main', pair.left]] : [['left', pair.left], ['right', pair.right]];
+      const printedPlus = headerOverlay && headerOverlay.durationPlus && !headerOverlay.durationPlus.inferred ? headerOverlay.durationPlus : null;
       const layoutGrid = makePaperAutoAlignLayoutGrid(boxes, bodyGrid.lines, cellSides.map(function(item){
         return { side:item[0], columns:columns, lines:pairLines.slice(item[1].leftIndex, item[1].rightIndex + 1) };
-      }));
+      }), printedPlus, headerOverlay && headerOverlay.pageDiagonal);
       return {
         layoutBoxes:boxes,
         layoutGrid:layoutGrid,
@@ -11889,8 +11421,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           bodyBottom:bodyGrid.bodyBottom,
           labelTop:labelTop,
           header:headerOverlay,
-          boxes:overlayBoxes,
-          diagnosticLayer:diagnosticLayer
+          boxes:overlayBoxes
         },
         diagnostics:{
           actionColumns:columns,
@@ -11932,11 +11463,13 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return sanitizeLayoutGridLines(out);
     }
 
-    function makePaperAutoAlignLayoutGrid(boxes, rowLines, cellSides) {
+    function makePaperAutoAlignLayoutGrid(boxes, rowLines, cellSides, printedPlus, pageDiagonal) {
       const firstCell = boxes['cell-' + cellSides[0].side];
       const grid = {
         rows:firstCell ? snapPaperAutoAlignGridLines(firstCell.y, firstCell.h, PAPER_AUTO_ALIGN_TARGET_BODY_LINES - 1, rowLines) : null,
-        cols:{}
+        cols:{},
+        plus:printedPlus ? { x:printedPlus.x, y:printedPlus.y } : null,
+        pageDiagonal:pageDiagonal || null
       };
       cellSides.forEach(function(item){
         const box = boxes['cell-' + item.side];
@@ -12479,7 +12012,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return node;
     }
 
-
     function addEmptyCellInlineEditHit(entry, absFrame, bounds, options) {
       if (!entry || !bounds || !shouldDrawCurrentLayer()) return;
       options = options || {};
@@ -12576,7 +12108,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       appendSvgNode(hit);
       return hit;
     }
-
 
     function parseTimecode(value) {
       const parts = String(value || '').split('+');
@@ -13274,7 +12805,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       }
       return normalized;
     }
-
 
     function normalizeLeadingCrossGapCommandTextValue(raw) {
       return String(raw || '').replace(/\r/g, '').split('\n').map(function(lineText){
@@ -15404,8 +14934,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       unmountAppDialog(modal.el);
     }
 
-
-
     function openSerifuRangeContextMenu(event) {
       const texts = getSerifuSheetTexts();
       if (!state.serifuRangeSelection) return;
@@ -16316,7 +15844,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return startsWithDigit(seg.label) || startsWithDigit(seg.endLabel);
     }
 
-
     // ══ 카메라란 ② 출력 표기 — 마크 · 원 라벨 · 持続線 곡선 · F.I/F.O/O.L 쐐기 ═══════════════════════════════════════════
     function getCameraMarkerStyle(seg, segments, connections) {
       if (!seg || getCameraSpecialShapeInfo(seg)) return '';
@@ -16664,8 +16191,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     // preview (never in an export) and stays invisible until the pointer is actually on
     // that handle, so the printed sheet and the resting preview both show just the camera
     // work itself. Returns the node so addTimelineEdgeHandle can reveal it on hover.
-
-
 
     // ══ ▲ 카메라란 ② 끝 ▲  아래부터는 尺(shaku) 편집 ════════════════════════════════════════════════════════════════════════════
     function updateShakuEditUI() {
@@ -17604,7 +17129,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       document.body.appendChild(backdrop);draw();mountAppDialog(backdrop,{onRequestClose:close,initialFocus:cancel});
       if(selectedKey)select(selectedKey);
     }
-
 
     // ══ 레이어 네임태그 — 개별 데이터 · 경계별 묶음 · 공용 배치와 렌더 ═══════════════════════════════════════════════════════════════
     function makeLayerNameTagId() {
@@ -18676,7 +18200,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const author = getSheetInputValue('author');
       const page = pageCount > 1 ? (pageIndex + 1) + '/' + pageCount : getSheetInputValue('page');
 
-
       withDrawLayer('output', function(){
         if (state.showHeaderOutput) {
           headerText('episode', hx + wEp / 2, hy + 68, ep, 24, 'middle', '700', '#111', { get:function(){ return getSheetInputValue('episode'); }, set:function(v){ setRememberedHeaderValue('episode', v); } }, boxes.episode);
@@ -18686,13 +18209,51 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           headerText('frames', x3 + wDuration / 2 + 16, hy + 68, String(frame), 22, 'middle', '700', '#111', { durationStepper:'frames', get:function(){ return getSheetInputValue('frames'); }, set:function(v){ document.getElementById('frames').value = v; normalizeDurationInputs(); } }, boxes.frames);
           const secBox = getHeaderFieldRect('seconds', boxes.seconds);
           const frameBox = getHeaderFieldRect('frames', boxes.frames);
-          if (state.showDurationPlusOutput !== false) text((secBox.x + secBox.w + frameBox.x) / 2, (secBox.y + secBox.h / 2 + frameBox.y + frameBox.h / 2) / 2, '+', 22, 'middle', '700');
+          if (state.showDurationPlusOutput !== false) {
+            const printedPlus = useAdjustedHeader && state.layoutGrid && state.layoutGrid.plus;
+            const plusX = printedPlus ? printedPlus.x : (secBox.x + secBox.w + frameBox.x) / 2;
+            const plusY = printedPlus ? printedPlus.y : (secBox.y + secBox.h / 2 + frameBox.y + frameBox.h / 2) / 2;
+            text(plusX, plusY + 22 * 0.07, '+', 22, 'middle', '700');
+          }
           headerText('author', x4 + wName / 2, hy + 68, author, 22, 'middle', '700', '#111', { get:function(){ return getSheetInputValue('author'); }, set:function(v){ setRememberedHeaderValue('author', v); } }, boxes.author);
-          headerText('page', x5 + wPage / 2, hy + 68, page, 22, 'middle', '700', '#111', { get:function(){ return getSheetInputValue('page'); }, set:function(v){ document.getElementById('page').value = v; } }, boxes.page);
+          const pageEdit = { get:function(){ return getSheetInputValue('page'); }, set:function(v){ document.getElementById('page').value = v; } };
+          const pageDiagonal = useAdjustedHeader && state.layoutGrid && state.layoutGrid.pageDiagonal;
+          if (pageDiagonal) drawPageNumbersAcrossDiagonal(getHeaderFieldRect('page', boxes.page), pageDiagonal, page, pageEdit);
+          else headerText('page', x5 + wPage / 2, hy + 68, page, 22, 'middle', '700', '#111', pageEdit, boxes.page);
         }
         Object.keys(boxes).forEach(function(field){ addPositionEditBox('header-' + field, boxes[field], 'Header ' + field); });
       });
       renderDrawingCount(drawingCounts,useAdjustedHeader ? paperBoxes.map(function(item){return item.box;}) : [{x:hx,y:hy,w:hw,h:hh}]);
+    }
+
+    // 용지 매수 칸의 사선 양쪽에 현재·전체 매수를 하나씩 쓴다. 「a/b」는 a가 현재, 숫자 하나는 현재만이다.
+    // 자리는 사선이 나눈 칸 안 두 영역 각각의 무게중심이다. 현재 쪽은 인쇄된 「枚目」을 따른 자동정렬 판정이다.
+    function drawPageNumbersAcrossDiagonal(box, diagonal, value, editConfig) {
+      const parts = String(value || '').split('/');
+      const current = parts[0].trim(), total = parts.length > 1 ? parts.slice(1).join('/').trim() : '';
+      const slope = (diagonal.y2 - diagonal.y1) / Math.max(1, diagonal.x2 - diagonal.x1);
+      const centers = { upper:{ x:0, y:0, n:0 }, lower:{ x:0, y:0, n:0 } };
+      for (let y = box.y + 3; y <= box.y + box.h - 3; y += 3) {
+        for (let x = box.x + 3; x <= box.x + box.w - 3; x += 3) {
+          const d = y - (diagonal.y1 + (x - diagonal.x1) * slope);
+          if (Math.abs(d) < 6) continue;
+          const c = centers[d < 0 ? 'upper' : 'lower'];
+          c.x += x; c.y += y; c.n += 1;
+        }
+      }
+      // 칸 가운데의 짧은 「/」(studiobono·clw·SARU)는 숫자를 사선 양 끝 높이에 맞춰 바로 옆에 둔다 — 위 끝 왼쪽·아래 끝 오른쪽.
+      if (diagonal.x2 - diagonal.x1 < box.w * 0.6 && diagonal.y1 - diagonal.y2 < box.h * 0.7) {
+        const gap = 28;
+        centers.upper = { x:diagonal.x2 - gap, y:diagonal.y2, n:1 };
+        centers.lower = { x:diagonal.x1 + gap, y:diagonal.y1, n:1 };
+      }
+      const other = diagonal.current === 'lower' ? 'upper' : 'lower';
+      [[diagonal.current, current, editConfig], [other, total, null]].forEach(function(item){
+        const c = centers[item[0]];
+        if (!item[1] || !c.n) return;
+        text(c.x / c.n, c.y / c.n, item[1], 20, 'middle', '700', '#111', item[2]);
+      });
+      addHeaderInlineEditHit('page', box, editConfig, 20, 'middle', '700');
     }
 
     function drawCompactText(x, y, value, size, anchor, weight, fill, editConfig) {
@@ -19576,7 +19137,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       });
     }
 
-
     function getLayerLastExposureSegment(layer) {
       let last = null;
       (layer && layer.segments ? layer.segments : []).forEach(function(seg){
@@ -19678,7 +19238,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         singleMetrics:makeCellMetrics(120, 140, 1636 - 120 - 240 - 140, 240)
       };
     }
-
 
     function durationInputsHavePositiveExplicitValue() {
       const secEl = document.getElementById('seconds');
@@ -21628,8 +21187,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       hideTextMemoControls();
     }
 
-
-
     // ══ 포인터 좌표 변환 공용 유틸 — client→SVG 점→프레임 번호 (위 메모·아래 타임라인 공용) ════════════════════════════════════════════════════
     function getSvgPointFromPointerEvent(event, cachedRectBox) {
       const rectBox = cachedRectBox || svg.getBoundingClientRect();
@@ -22473,8 +22030,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       },true);
     }
 
-
-
     // ══ 단계(段階) — 한 파일 안에 원화 / 연출수정 을 나눠 담는다 ══════════════════════════════════════════════════════════════════
     // 단계의 content는 기존 파일 스키마(getContentSnapshot)를 유지한다. 용지·메모는 단계 공통이고,
     // 단계 목록과 활성 id까지 포함하는 문서 실행 이력은 그 바깥에 있다. 활성 단계의 내용은 DOM 이
@@ -23042,7 +22597,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       setSheetZoom(Number(state.gestureStartZoom || 1) * Number(event.scale || 1), anchorX, anchorY);
     }
 
-
     // ══ [입력] 단축키 ① 키 정규화 · 표기 · localStorage 저장/복원 ═════════════════════════════════════════════════════════════════
     function normalizeShortcutKeyFromEvent(event) {
       if (!event) return '';
@@ -23351,7 +22905,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return !!(node.closest && node.closest('input, textarea, select, option, [contenteditable="true"], .inline-text-editor, .speaker-suffix-menu'));
     }
 
-
     function updatePreviewSpacePanCursor() {
       if (!previewWrapEl) return;
       previewWrapEl.classList.toggle('space-pan-ready', !!state.previewSpacePanKey);
@@ -23361,13 +22914,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return !!state.previewSpacePanKey;
     }
 
-
     function setPreviewSpacePanKey(active) {
       state.previewSpacePanKey = !!active;
       updatePreviewSpacePanCursor();
       if (!state.previewSpacePanKey && state.previewPan && state.previewPan.spacePan) cancelPreviewPan();
     }
-
 
     function handlePreviewSpacePanKeydown(event) {
       if (!event || (event.key !== ' ' && event.code !== 'Space')) return false;
@@ -26043,7 +25594,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return '';
     }
 
-
     function resetCsvStateForSheetClear() {
       resetImportedTimelineState();
       clearCsvGeneratedTimelineBlocks();
@@ -26719,7 +26269,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (clipSheetIsReferenceName(item.name)) return false;
       return defaultLayerNameRole(item.name) !== 'hidden';
     }
-
 
     // ══ [입력] 파일 이름에서 작품·화수·컷·공정 읽기 ═══════════════════════════════════════════════════════════════
     // `JDG_12_114_lo.clip` 은 **작품 JDG · 12화 · 컷 114 · 공정 LO** 를 이미 이름에 담고 있다.
@@ -27756,7 +27305,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       updateExportDirectoryButton();
     }
 
-
     function makeLoadedFolderJsonId(prefix, filename, index) {
       return String(prefix || 'json') + ':' + String(filename || index || 0);
     }
@@ -28435,8 +27983,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     }
 
-
-
     function setExportReviewJobData(job, snapshot) {
       job.savedFormat = snapshot.format; job.size = snapshot.size; job.baseNames = snapshot.names.slice();
       job.savedOptions = {};
@@ -28677,7 +28223,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (kind === 'library') prepareExportReviewJobs(session);
 
     }
-
 
     function fitExportReviewImage(session) {
       if (session !== exportPreflightSession || !session.snapshot) return;
