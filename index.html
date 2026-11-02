@@ -2608,7 +2608,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '969';
+    const APP_VERSION = '970';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -9299,7 +9299,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         (Number((raw && raw.hitRatio) || 0) < hitLimit && Number((raw && raw.avgDarkRatio) || 0) < darkLimit);
     }
 
-    function roundPaperAutoAlignDebugValue(value, precision) {
+    function roundPaperAutoAlignValue(value, precision) {
       const scale = Math.pow(10, precision == null ? 1 : precision);
       return Math.round((Number(value) || 0) * scale) / scale;
     }
@@ -9360,23 +9360,23 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return {
         source:source || 'header-cell',
         index:Number.isFinite(Number(interval.index)) ? Number(interval.index) : -1,
-        x:roundPaperAutoAlignDebugValue(left, 1),
-        y:roundPaperAutoAlignDebugValue(inputY, 1),
-        w:roundPaperAutoAlignDebugValue(Math.max(18, right - left), 1),
-        h:roundPaperAutoAlignDebugValue(inputH, 1),
-        left:roundPaperAutoAlignDebugValue(left, 1),
-        right:roundPaperAutoAlignDebugValue(right, 1),
-        score:roundPaperAutoAlignDebugValue(score, 1),
-        rawScore:roundPaperAutoAlignDebugValue(slashInfo.rawScore || score, 1),
-        cornerScore:roundPaperAutoAlignDebugValue(cornerScore, 1),
-        centerScore:roundPaperAutoAlignDebugValue(centerScore, 1),
-        edgeTouchScore:roundPaperAutoAlignDebugValue(edgeTouchScore, 1),
-        hitRatio:roundPaperAutoAlignDebugValue(hitRatio, 3),
-        offRatio:roundPaperAutoAlignDebugValue(slashInfo.offRatio || 0, 3),
-        runRatio:roundPaperAutoAlignDebugValue(runRatio, 3),
-        continuityRatio:roundPaperAutoAlignDebugValue(continuityRatio, 3),
-        runCount:roundPaperAutoAlignDebugValue(runCount, 0),
-        fragmentPenalty:roundPaperAutoAlignDebugValue(fragmentPenalty, 1),
+        x:roundPaperAutoAlignValue(left, 1),
+        y:roundPaperAutoAlignValue(inputY, 1),
+        w:roundPaperAutoAlignValue(Math.max(18, right - left), 1),
+        h:roundPaperAutoAlignValue(inputH, 1),
+        left:roundPaperAutoAlignValue(left, 1),
+        right:roundPaperAutoAlignValue(right, 1),
+        score:roundPaperAutoAlignValue(score, 1),
+        rawScore:roundPaperAutoAlignValue(slashInfo.rawScore || score, 1),
+        cornerScore:roundPaperAutoAlignValue(cornerScore, 1),
+        centerScore:roundPaperAutoAlignValue(centerScore, 1),
+        edgeTouchScore:roundPaperAutoAlignValue(edgeTouchScore, 1),
+        hitRatio:roundPaperAutoAlignValue(hitRatio, 3),
+        offRatio:roundPaperAutoAlignValue(slashInfo.offRatio || 0, 3),
+        runRatio:roundPaperAutoAlignValue(runRatio, 3),
+        continuityRatio:roundPaperAutoAlignValue(continuityRatio, 3),
+        runCount:roundPaperAutoAlignValue(runCount, 0),
+        fragmentPenalty:roundPaperAutoAlignValue(fragmentPenalty, 1),
         mode:slashInfo.mode || '',
         strokeEvidence:strokeEvidence,
         cornerConnected:!!slashInfo.cornerConnected || inferredCornerConnected,
@@ -10766,7 +10766,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       let pageInterval = null;
       let pageBox = null;
       let selectedSlash = null;
-      let forcedPageSlash = false;
       const headerDiagonalDetections = [];
 
       // ── [헤더] 사선(Page/화수) 검출 ────────────
@@ -10914,7 +10913,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
             mode:(confirmed.mode || 'interval') + ':right-single',
             interval:pageInterval
           };
-          forcedPageSlash = true;
         }
       }
       if (pageBox && selectedSlash) {
@@ -11128,27 +11126,16 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         durationPlus:durationPlus ? {
           x:durationPlus.x,
           y:durationPlus.y,
-          h:Number(durationPlus.h || 0),
-          v:Number(durationPlus.v || 0),
           inferred:!!durationPlus.inferred
         } : null,
         pageSlashBox:selectedSlash ? {
           x:selectedSlash.left,
           y:fullHeaderBoxY,
           w:Math.max(18, selectedSlash.right - selectedSlash.left),
-          h:fullHeaderBoxH,
-          score:selectedSlash.score,
-          mode:selectedSlash.mode,
-          forced:forcedPageSlash
+          h:fullHeaderBoxH
         } : null,
         pageDiagonal:pageDiagonal,
-        headerScore:headerRect.score || 0,
-        mechanisms:{
-          rightBreakBeforePageField:!!rightBreakBeforePageField,
-          orderedTitleHeader:durationIntervalInferredFromOrderedHeader,
-          titleEpisodePattern:titleEpisodePattern,
-          pageSlashMode:selectedSlash ? ((selectedSlash.mode || 'interval') + (forcedPageSlash ? ':forced' : '')) : ''
-        }
+        titleEpisodePattern:titleEpisodePattern
       };
       return out;
     }
@@ -11390,7 +11377,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (rightSide.follow) overlayBoxes['follow-right'] = normalizeRect({ x:rightSide.follow.left, y:bodyY, w:rightSide.follow.right - rightSide.follow.left, h:bodyH }, 18, 18);
       const sanity = assessPaperAutoAlignSanity(boxes, headerOverlay, leftSide, rightSide, columns);
       const dottedVerticalLineCount = Number(analysis.dottedVerticalLineCount || 0);
-      const headerMechanisms = headerOverlay && headerOverlay.mechanisms ? headerOverlay.mechanisms : {};
       const actualDurationPlusDetected = !!(headerOverlay && headerOverlay.durationPlus && !headerOverlay.durationPlus.inferred);
       const inferredDurationPlusUsed = !!(headerOverlay && headerOverlay.durationPlus && headerOverlay.durationPlus.inferred);
       const dialogPattern = getPaperAutoAlignDialogPatternName(pair, analysis, variantName || 'standard');
@@ -11434,7 +11420,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           durationPlusDetected:actualDurationPlusDetected,
           durationPlusInferred:inferredDurationPlusUsed,
           pageDiagonalDetected:!!(headerOverlay && headerOverlay.pageSlashBox),
-          headerTitleEpisodePattern:headerMechanisms.titleEpisodePattern || 'unknown',
+          headerTitleEpisodePattern:headerOverlay && headerOverlay.titleEpisodePattern || 'unknown',
           columns:columns,
           leftColumns:pair.left.columns,
           rightColumns:pair.right.columns,
@@ -18217,7 +18203,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           if (printedPlusMark) {
             // 인쇄된 「+」가 있으면 초·コマ 숫자를 그 중심에서 같은 거리·같은 높이에 둔다(두 칸 가운데까지 거리의 평균).
             const reach = ((printedPlusMark.x - (secBox.x + secBox.w / 2)) + ((frameBox.x + frameBox.w / 2) - printedPlusMark.x)) / 2;
-            const digitY = printedPlusMark.y + 22 * 0.07;
+            const digitY = printedPlusMark.y + 22 * TEXT_INK_LIFT_EM;
             text(printedPlusMark.x - reach, digitY, String(sec), 22, 'middle', '700', '#111', secondsEdit);
             addHeaderInlineEditHit('seconds', secBox, secondsEdit, 22, 'middle', '700');
             text(printedPlusMark.x + reach, digitY, String(frame), 22, 'middle', '700', '#111', framesEdit);
@@ -18230,7 +18216,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
             const printedPlus = useAdjustedHeader && state.layoutGrid && state.layoutGrid.plus;
             const plusX = printedPlus ? printedPlus.x : (secBox.x + secBox.w + frameBox.x) / 2;
             const plusY = printedPlus ? printedPlus.y : (secBox.y + secBox.h / 2 + frameBox.y + frameBox.h / 2) / 2;
-            text(plusX, plusY + 22 * 0.07, '+', 22, 'middle', '700');
+            text(plusX, plusY + 22 * TEXT_INK_LIFT_EM, '+', 22, 'middle', '700');
           }
           headerText('author', x4 + wName / 2, hy + 68, author, 22, 'middle', '700', '#111', { get:function(){ return getSheetInputValue('author'); }, set:function(v){ setRememberedHeaderValue('author', v); } }, boxes.author);
           const pageEdit = { get:function(){ return getSheetInputValue('page'); }, set:function(v){ document.getElementById('page').value = v; } };
@@ -18243,33 +18229,37 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       renderDrawingCount(drawingCounts,useAdjustedHeader ? paperBoxes.map(function(item){return item.box;}) : [{x:hx,y:hy,w:hw,h:hh}]);
     }
 
+    // Arial 굵은 숫자·「+」의 잉크는 dominant-baseline middle 기준점보다 0.07em 위에 그려진다. 인쇄 기호에 겹칠 때 그만큼 내린다.
+    const TEXT_INK_LIFT_EM = 0.07;
+
     // 용지 매수 칸의 사선 양쪽에 현재·전체 매수를 하나씩 쓴다. 「a/b」는 a가 현재, 숫자 하나는 현재만이다.
-    // 자리는 사선이 나눈 칸 안 두 영역 각각의 무게중심이다. 현재 쪽은 인쇄된 「枚目」을 따른 자동정렬 판정이다.
+    // 현재 쪽은 인쇄된 「枚目」을 따른 자동정렬 판정이다. 칸 가운데의 짧은 「/」(studiobono·clw·SARU)는 숫자를
+    // 사선 위 끝 왼쪽·아래 끝 오른쪽에 두고, 모서리를 잇는 사선은 사선이 나눈 두 영역 각각의 무게중심에 둔다.
     function drawPageNumbersAcrossDiagonal(box, diagonal, value, editConfig) {
       const parts = String(value || '').split('/');
       const current = parts[0].trim(), total = parts.length > 1 ? parts.slice(1).join('/').trim() : '';
-      const slope = (diagonal.y2 - diagonal.y1) / Math.max(1, diagonal.x2 - diagonal.x1);
-      const centers = { upper:{ x:0, y:0, n:0 }, lower:{ x:0, y:0, n:0 } };
-      for (let y = box.y + 3; y <= box.y + box.h - 3; y += 3) {
-        for (let x = box.x + 3; x <= box.x + box.w - 3; x += 3) {
-          const d = y - (diagonal.y1 + (x - diagonal.x1) * slope);
-          if (Math.abs(d) < 6) continue;
-          const c = centers[d < 0 ? 'upper' : 'lower'];
-          c.x += x; c.y += y; c.n += 1;
-        }
-      }
-      // 칸 가운데의 짧은 「/」(studiobono·clw·SARU)는 숫자를 사선 양 끝 높이에 맞춰 바로 옆에 둔다 — 위 끝 왼쪽·아래 끝 오른쪽.
+      let centers;
       if (diagonal.x2 - diagonal.x1 < box.w * 0.6 && diagonal.y1 - diagonal.y2 < box.h * 0.7) {
-        // 사선 가운데를 중심으로 두 숫자를 점대칭으로 둔다. 숫자 잉크는 기준점보다 0.07em 위에 그려져 그만큼 내린다.
-        const gap = 28, lift = 20 * 0.07;
-        centers.upper = { x:diagonal.x2 - gap, y:diagonal.y2 + lift, n:1 };
-        centers.lower = { x:diagonal.x1 + gap, y:diagonal.y1 + lift, n:1 };
+        const gap = 28, lift = 20 * TEXT_INK_LIFT_EM;
+        centers = { upper:{ x:diagonal.x2 - gap, y:diagonal.y2 + lift }, lower:{ x:diagonal.x1 + gap, y:diagonal.y1 + lift } };
+      } else {
+        const slope = (diagonal.y2 - diagonal.y1) / Math.max(1, diagonal.x2 - diagonal.x1);
+        const sums = { upper:{ x:0, y:0, n:0 }, lower:{ x:0, y:0, n:0 } };
+        for (let y = box.y + 3; y <= box.y + box.h - 3; y += 3) {
+          for (let x = box.x + 3; x <= box.x + box.w - 3; x += 3) {
+            const d = y - (diagonal.y1 + (x - diagonal.x1) * slope);
+            if (Math.abs(d) < 6) continue;
+            const c = sums[d < 0 ? 'upper' : 'lower'];
+            c.x += x; c.y += y; c.n += 1;
+          }
+        }
+        centers = {};
+        Object.keys(sums).forEach(function(side){ const c = sums[side]; if (c.n) centers[side] = { x:c.x / c.n, y:c.y / c.n }; });
       }
       const other = diagonal.current === 'lower' ? 'upper' : 'lower';
       [[diagonal.current, current, editConfig], [other, total, null]].forEach(function(item){
         const c = centers[item[0]];
-        if (!item[1] || !c.n) return;
-        text(c.x / c.n, c.y / c.n, item[1], 20, 'middle', '700', '#111', item[2]);
+        if (item[1] && c) text(c.x, c.y, item[1], 20, 'middle', '700', '#111', item[2]);
       });
       addHeaderInlineEditHit('page', box, editConfig, 20, 'middle', '700');
     }
