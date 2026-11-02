@@ -2608,7 +2608,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '973';
+    const APP_VERSION = '974';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -2791,9 +2791,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     const PAPER_AUTO_ALIGN_TARGET_BODY_LINES = 73;
     const PAPER_AUTO_ALIGN_PAIR_CANDIDATE_LIMIT = 72;
     const PAPER_AUTO_ALIGN_PAIR_CENTER_TOLERANCE = PAGE_W * 0.20;
-    // 칠한 면으로 볼 최소 폭(px, 굵은 인쇄선·연필 획보다 넓게)과, 종이 밝기보다 이만큼 어두워야 칠한 면으로 본다.
-    const PAPER_AUTO_ALIGN_SHADE_SIZE = 15;
-    const PAPER_AUTO_ALIGN_SHADE_DROP = 40;
     const MEMO_MIN_POINT_DISTANCE = 1.5;
     const SHORTCUT_ACTIONS = ['brushCycle', 'eraserToggle', 'sizeDown', 'sizeUp', 'memoOff'];
     const SHORTCUT_DEFAULTS = { brushCycle:'b', eraserToggle:'e', sizeDown:'[', sizeUp:']', memoOff:'backspace' };
@@ -3920,6 +3917,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver974", "Auto Align on marked-up paper restored", ["Auto Align on paper with shaded frames or hand-drawn lines works as it did before ver972. The two earlier changes are withdrawn while a sturdier approach is prepared."]],
         ["ver973", "Auto Align beside hand-drawn lines", ["Auto Align no longer shifts the cel columns by one when a line is drawn by hand right next to a printed column border."]],
         ["ver972", "Auto Align on marked-up paper", ["Auto Align now finds the printed rows and columns on paper where unused frames are shaded dark or long hold lines are drawn through the cels."]],
         ["ver971", "XDTS import", ["Opening an XDTS file sets the sheet length to the file and clears inbetween marks, cel order and generated dialogue or camera lines left from the previous sheet, as CLIP and TVPaint imports do."]],
@@ -4034,6 +4032,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver974", "書き込みのある用紙の自動整列を元に戻しました", ["塗りつぶしや手描き線のある用紙の自動整列を ver972 より前の動作に戻しました。より確かな方法を準備するため、前の2つの変更を取り下げます。"]],
         ["ver973", "手描き線のそばの自動整列", ["印刷された列の境界線のすぐ横に手で線を引いた用紙でも、自動整列がセル列を1列ずらさなくなりました。"]],
         ["ver972", "書き込みのある用紙の自動整列", ["使わないコマを濃く塗った用紙や、セル欄に長い線を引いた用紙でも、自動整列が印刷された行と列を正しく見つけます。"]],
         ["ver971", "XDTSの読み込み", ["XDTSを開くと、CLIP・TVPaintと同じく尺がファイルに合い、前のシートの中割り記号・セルの並び・自動で入った台詞やカメラの行が残りません。"]],
@@ -4148,6 +4147,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver974", "기입이 있는 용지의 자동정렬 되돌림", ["칠한 칸이나 손으로 그은 선이 있는 용지의 자동정렬을 ver972 이전 동작으로 되돌렸습니다. 더 확실한 방법을 준비하는 동안 앞의 두 변경을 거둡니다."]],
         ["ver973", "손으로 그은 선 옆의 자동정렬", ["인쇄된 열 경계선 바로 옆에 손으로 선을 그은 용지에서도 자동정렬이 셀 열을 한 칸 밀어 잡지 않습니다."]],
         ["ver972", "기입이 있는 용지의 자동정렬", ["쓰지 않는 칸을 짙게 칠한 용지나 셀 칸에 긴 선을 그은 용지에서도 자동정렬이 인쇄된 행과 열을 제대로 찾습니다."]],
         ["ver971", "XDTS 불러오기", ["XDTS를 열면 CLIP·TVPaint처럼 시트 길이가 파일에 맞고, 앞 시트의 동화점·셀 순서·자동으로 들어간 대사와 카메라 줄이 남지 않습니다."]],
@@ -4262,6 +4262,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver974", "恢复有书写内容的用纸自动对齐", ["有涂色格子或手绘线条的用纸，自动对齐恢复为 ver972 之前的行为。在准备更可靠的方法期间，撤回前两项更改。"]],
         ["ver973", "手绘线旁的自动对齐", ["在印刷的列边界线旁边手绘线条的用纸上，自动对齐不再把赛璐珞列错开一列。"]],
         ["ver972", "有书写内容的用纸自动对齐", ["即使用纸上未使用的格子被涂深，或在赛璐珞栏里画了长线，自动对齐也能正确找到印刷的行和列。"]],
         ["ver971", "XDTS 导入", ["打开 XDTS 时，与 CLIP、TVPaint 一样按文件设置摄影表长度，不再残留上一张表的中间画标记、赛璐珞顺序以及自动生成的台词和摄影机行。"]],
@@ -7509,123 +7510,12 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       });
     }
 
-    // 인쇄 세로선 바로 옆(묶음 간격 안)에 손으로 그은 선이 붙으면 두 획이 한 선으로 묶여 위치가 그 사이로 밀린다
-    // (실측 G07 c317: 인쇄선 327 + 빨간 대사선 335 → 330, 셀 상자가 한 열 밀림). 묶음 안에서 흰 틈으로 갈린 획 중
-    // 가장 긴 획보다 확연히 짧은 획이 섞였으면 위치만 긴 획에 둔다. 두께·잉크는 묶음 그대로다 — 열 점수의 선 세기가
-    // 이를 쓰며, 줄이면 굵은 인쇄선이 약해져 템플릿 열 수가 바뀌었다(TS_8bit 8→9). 길이가 비슷한 획들(흐린 굵은 선·이중선)은 종전대로다.
-    function clusterPaperAutoAlignColumnLines(items, gap) {
-      return clusterPaperAutoAlignPositions(items, gap).map(function(line){
-        // 흰 틈이 2px 이하인 열끼리 한 획이다 — 흐린 인쇄선은 1~2px 틈으로 갈라지며, 이를 나누면 템플릿 칸선이 움직였다
-        // (TS_MAD 133→131, TS_cygamespictures 1002→1003). 공용 묶음은 5px 안의 후보를 버려 긴 획이 비교 전에 사라질 수 있어 따로 나눈다.
-        const strokes = [];
-        items.filter(function(item){ return item.pos >= line.start && item.pos <= line.end; })
-          .sort(function(a, b){ return a.pos - b.pos; })
-          .forEach(function(item){
-            const last = strokes[strokes.length - 1];
-            const weight = Math.max(1, item.maxRun || 1);
-            if (last && item.pos <= last.end + 3) {
-              last.end = item.pos;
-              last.maxRun = Math.max(last.maxRun, item.maxRun || 0);
-              last.weighted += item.pos * weight;
-              last.weight += weight;
-            } else {
-              strokes.push({ end:item.pos, maxRun:item.maxRun || 0, weighted:item.pos * weight, weight:weight });
-            }
-          });
-        if (strokes.length < 2) return line;
-        const main = strokes.reduce(function(a, b){ return b.maxRun > a.maxRun ? b : a; });
-        if (strokes.some(function(s){ return s !== main && s.maxRun >= main.maxRun * 0.9; })) return line;
-        return Object.assign(line, { pos:Math.round(main.weighted / main.weight) });
-      });
-    }
-
     function clusterPaperAutoAlignVerticalStrokes(items, height) {
       return clusterPaperAutoAlignParallelStrokes(items, 5, height * 0.84);
     }
 
     function getPaperAutoAlignLuma(data, idx) {
       return data[idx] * 0.299 + data[idx + 1] * 0.587 + data[idx + 2] * 0.114;
-    }
-
-    // 칸 안에 손으로 그은 긴 홀드선을 인쇄선에서 뺀다. 인쇄된 칸 세로선은 같은 간격으로 늘어서고 위아래 끝이
-    // 서로 같다. 손 선은 그 간격 한가운데 끼어들고 끝이 제멋대로다 — 실측(G07 c317·c206)에서 A열 가운데
-    // 홀드선을 칸 경계로 읽어 열이 한 칸 밀렸다. 바로 옆 칸에도 손 선이 있으면 바깥 간격이 어긋나 첫 회에는
-    // 남으므로 빠지는 선이 없을 때까지 다시 본다(c317 오른쪽 블록: 931·1021을 걷은 뒤에야 903·991이 빠졌다).
-    function dropPaperAutoAlignHandVerticalLines(lines) {
-      let kept = lines;
-      for (let pass = 0; pass < 4; pass++) {
-        const next = kept.filter(isPaperAutoAlignPrintedVerticalLine);
-        if (next.length === kept.length) break;
-        kept = next;
-      }
-      return kept;
-    }
-
-    function isPaperAutoAlignPrintedVerticalLine(line, index, lines) {
-      const prev = lines[index - 1], next = lines[index + 1];
-      if (!prev || !next) return true;
-      const gap = next.pos - prev.pos;
-      const outer = lines[index + 2] ? lines[index + 2].pos - next.pos : (lines[index - 2] ? prev.pos - lines[index - 2].pos : null);
-      if (outer === null || Math.abs(gap - outer) > Math.max(3, outer * 0.15)) return true;
-      if (Math.abs(prev.runStart - next.runStart) > gap || Math.abs(prev.runEnd - next.runEnd) > gap) return true;
-      if (line.maxRun >= Math.min(prev.maxRun, next.maxRun)) return true;
-      // 끝점은 가장 긴 연속 구간의 것이라, 스캔에서 중간이 끊긴 인쇄선도 짧아 보인다. 조각을 합친 잉크가
-      // 이웃 인쇄선만큼 있으면 인쇄선이다(손 선은 실측 0.46~0.77배).
-      const coverage = function(l){ return l.ink / Math.max(1, l.thickness); };
-      if (coverage(line) >= Math.min(coverage(prev), coverage(next)) * 0.85) return true;
-      // 칸 안의 손 선은 양옆 인쇄선의 위아래 범위 안에 있다. 범위 밖(헤더 칸 선 등)은 다른 인쇄선이다.
-      const top = (prev.runStart + next.runStart) / 2, bottom = (prev.runEnd + next.runEnd) / 2;
-      if (line.runStart < top - gap || line.runEnd > bottom + gap) return true;
-      return Math.abs(line.runStart - top) + Math.abs(line.runEnd - bottom) <= gap * 2;
-    }
-
-    // 칠한 면의 국소 배경(PAGE_W×PAGE_H 밝기), 칠한 면이 없으면 null. 먼저 4×4 블록마다 가장 밝은 값으로 줄인
-    // 그림을 닫아 보고 shadeLimit 보다 어두운 면이 있을 때만 전체 크기로 계산한다. 가장 밝은 값을 쓰는 것은
-    // 로고처럼 획이 빽빽한 곳이 평균으로는 어둡게 나와 거의 모든 용지에서 걸렸기 때문이다(G07 머리 로고).
-    function findPaperAutoAlignShadeBackground(data, shadeLimit) {
-      const scale = 4, w = Math.ceil(PAGE_W / scale), h = Math.ceil(PAGE_H / scale);
-      const small = new Uint8Array(w * h);
-      for (let y = 0; y < h; y++) {
-        for (let x = 0; x < w; x++) {
-          let brightest = 0;
-          for (let py = y * scale; py < Math.min(PAGE_H, y * scale + scale); py++) {
-            for (let px = x * scale; px < Math.min(PAGE_W, x * scale + scale); px++) {
-              brightest = Math.max(brightest, getPaperAutoAlignLuma(data, (py * PAGE_W + px) * 4));
-            }
-          }
-          small[y * w + x] = brightest;
-        }
-      }
-      // 전체 크기에서 칠한 면으로 남는 15×15 창은 작은 쪽의 온전한 3×3 블록을 품는다 — 그래서 놓치지 않는다.
-      const coarse = closePaperAutoAlignLuma(small, w, h, Math.floor(PAPER_AUTO_ALIGN_SHADE_SIZE / scale));
-      if (!coarse.some(function(v){ return v < shadeLimit; })) return null;
-      const luma = new Uint8Array(PAGE_W * PAGE_H);
-      for (let i = 0; i < luma.length; i++) luma[i] = getPaperAutoAlignLuma(data, i * 4);
-      return closePaperAutoAlignLuma(luma, PAGE_W, PAGE_H, PAPER_AUTO_ALIGN_SHADE_SIZE);
-    }
-
-    // 밝기의 회색조 닫힘(최대 → 최소, size×size 정사각형). 선·글자처럼 size 보다 가는 어두운 것은 지우고,
-    // 그보다 넓은 어두운 면(쓰지 않는 칸을 칠한 띠 등)은 경계까지 그대로 남긴다 — 그 면이 「국소 배경」이다.
-    function closePaperAutoAlignLuma(lum, width, height, size) {
-      const pass = function(src, pick, horizontal) {
-        const out = new Uint8Array(src.length);
-        const n = horizontal ? width : height, lines = horizontal ? height : width;
-        const step = horizontal ? 1 : width, r = size >> 1;
-        // van Herk/Gil-Werman: size 칸 블록마다 앞쪽·뒤쪽 누적값을 두면 창 하나는 두 값의 비교로 끝난다.
-        // 창을 그대로 훑으면 쪽당 수 초가 걸렸다(실측 3~12초).
-        const pad = n + 2 * r, ahead = new Uint8Array(pad), behind = new Uint8Array(pad), buf = new Uint8Array(pad);
-        for (let line = 0; line < lines; line++) {
-          const base = horizontal ? line * width : line;
-          // 쪽 밖은 종이(255)로 본다. 끝을 복제하면 가장자리에 붙은 좁은 띠가 칠한 면으로 남는다.
-          for (let i = 0; i < pad; i++) buf[i] = i < r || i >= n + r ? 255 : src[base + (i - r) * step];
-          for (let i = 0; i < pad; i++) ahead[i] = i % size ? pick(ahead[i - 1], buf[i]) : buf[i];
-          for (let i = pad - 1; i >= 0; i--) behind[i] = (i + 1) % size && i + 1 < pad ? pick(behind[i + 1], buf[i]) : buf[i];
-          for (let i = 0; i < n; i++) out[base + i * step] = pick(behind[i], ahead[i + size - 1]);
-        }
-        return out;
-      };
-      const max = function(a, b){ return a > b ? a : b; }, min = function(a, b){ return a < b ? a : b; };
-      return pass(pass(pass(pass(lum, max, true), max, false), min, true), min, false);
     }
 
     function loadPaperAutoAlignImage(source) {
@@ -7662,12 +7552,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       }
       const median = medianPaperAutoAlignNumber(samples);
       const darkThreshold = Math.min(240, Math.max(140, median - 15));
-      // 쓰지 않는 칸을 짙게 칠한 띠 안에서는 한 기준으로 보면 면 전체가 「선」이 되고 그 안의 인쇄선은
-      // 사라진다(실측: 띠가 걸린 블록을 통째로 놓쳤다). 종이보다 확연히 어두운 넓은 면에서만 그 면의
-      // 밝기를 배경으로 삼아 더 어두운 것만 잉크로 본다. 보통 종이에서는 종전 기준 그대로다.
-      // 칠한 면이 없는 보통 용지(대부분)는 전체 크기 계산을 건너뛴다 — PSD 는 레이어마다 이 분석을 다시 돈다.
-      const shadeLimit = median - PAPER_AUTO_ALIGN_SHADE_DROP;
-      const background = findPaperAutoAlignShadeBackground(data, shadeLimit);
       const rowCandidates = [];
       const colCandidates = [];
       const rowRunThreshold = PAGE_W * 0.04;
@@ -7683,8 +7567,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const rowBase = y * PAGE_W * 4;
         for (let x = 0; x < PAGE_W; x++) {
           const lum = getPaperAutoAlignLuma(data, rowBase + x * 4);
-          const bg = background ? background[y * PAGE_W + x] : 255;
-          if (lum < (bg < shadeLimit ? bg - 15 : darkThreshold)) {
+          if (lum < darkThreshold) {
             darkPixels[y * PAGE_W + x] = 1;
             ink += 1;
             run += 1;
@@ -7720,17 +7603,17 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         if (maxRun >= colRunThreshold) colCandidates.push({ pos:x, maxRun:maxRun, ink:ink, runStart:bestRunStart, runEnd:bestRunEnd });
       }
 
-      const xDetailedRaw = clusterPaperAutoAlignColumnLines(colCandidates, 6);
+      const xDetailedRaw = clusterPaperAutoAlignPositions(colCandidates, 6);
       // 본문 위 이중선처럼 6px 안에 붙은 가로 두 줄은 각각 남긴다(실측 Toei: 493·500 → 묶으면 흰 틈 497).
       // 한 블록 폭에 걸친 줄만 해당한다 — 짧은 획은 글자·로고일 수 있다.
       const yDetailed = clusterPaperAutoAlignParallelStrokes(rowCandidates, 6, PAGE_W * 0.3);
-      const xDetailed = dropPaperAutoAlignHandVerticalLines(xDetailedRaw.filter(function(line){
+      const xDetailed = xDetailedRaw.filter(function(line){
         const pos = Number(line.pos || 0);
         const fullHeightRun = Number(line.maxRun || 0) > PAGE_H * 0.90;
         const nearPageEdge = pos <= 3 || pos >= PAGE_W - 4;
         const thickEdgeShadow = (pos <= 6 || pos >= PAGE_W - 7) && Number(line.thickness || 1) >= 12;
         return !(nearPageEdge || thickEdgeShadow || (pos >= PAGE_W - 3 && fullHeightRun));
-      }));
+      });
 
       // ── [스캔] 픽셀 샘플링 — 대역 평균 · 어두움 판정 · 폭 측정 ────────────
       const sampleHorizontalBand = function(x1, x2, yPositions) {
