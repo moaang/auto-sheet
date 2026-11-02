@@ -2612,7 +2612,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '965';
+    const APP_VERSION = '966';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3921,6 +3921,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver966", "Last cel column on paper with a frame-number column", ["When the last cel column is widened to hold printed frame numbers, it now gets the same width as the other columns, and the dialog area starts at the printed boundary beyond the numbers."]],
         ["ver965", "Double rules above the sheet body", ["On paper with a double rule under the cel labels, the first frame starts at the lower rule and the label row ends at the upper one. Cel labels follow the printed columns."]],
         ["ver964", "Cells follow paper lines", ["After Auto Align, cels, dialogue and camera marks sit on the printed lines even where the paper's rows or columns are unevenly spaced."]],
         ["ver958", "Loading and export cancellation", ["Replaced imports no longer overwrite load status or continue scanning and decoding. Stopping during an export retry no longer starts another render or displays a failure."]],
@@ -4028,6 +4029,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver966", "コマ番号欄付き用紙の最後のセル列", ["最後のセル列が印刷されたコマ番号の分だけ広い用紙で、その列も他の列と同じ幅にそろえ、台詞欄は番号の外側の印刷線から始めます。"]],
         ["ver965", "本文上の二重線", ["セル名の下が二重線の用紙で、1コマ目を下の線から、セル名の欄を上の線までに合わせます。セル名も印刷された列に揃います。"]],
         ["ver964", "用紙の罫線に合わせて配置", ["自動位置合わせ後は、行や列の間隔が均一でない用紙でも、セル・台詞・カメラ指示が印刷された罫線の位置に入ります。"]],
         ["ver958", "読込と出力中止の修正", ["新しい読込に置き換わった処理は、状態表示を上書きせず、検索・解読を続けません。出力の再試行待ちで中止すると、余分に描画したり失敗と表示したりしなくなりました。"]],
@@ -4135,6 +4137,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver966", "프레임 번호 칸이 붙은 용지의 마지막 셀 열", ["마지막 셀 열이 인쇄된 프레임 번호만큼 넓은 용지에서 그 열도 다른 열과 같은 폭으로 맞추고, 대사 칸은 번호 바깥의 인쇄선에서 시작합니다."]],
         ["ver965", "본문 위 이중선", ["열 이름 아래가 이중선인 용지에서 첫 칸은 아래 선부터, 열 이름 칸은 위 선까지로 맞춥니다. 열 이름도 인쇄된 칸에 맞춰 놓입니다."]],
         ["ver964", "용지 칸선에 맞춰 배치", ["자동정렬한 용지는 행·열 간격이 고르지 않아도 셀·대사·카메라 표시가 인쇄된 칸선 위치에 들어갑니다."]],
         ["ver958", "불러오기·출력 중지 수정", ["새 불러오기로 교체된 처리는 안내를 덮거나 검색·해독을 이어 하지 않습니다. 출력 재시도 대기 중 중지하면 추가로 렌더하거나 실패로 표시하지 않습니다."]],
@@ -4242,6 +4245,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver966", "带帧号栏用纸的最后一列", ["最后一列因印刷帧号而变宽的用纸，该列现在与其他列同宽，台词栏从帧号外侧的印刷线开始。"]],
         ["ver965", "正文上方的双线", ["赛璐珞名称下方为双线的用纸，第一格从下方的线开始，名称栏止于上方的线。名称也会对齐印刷的列。"]],
         ["ver964", "按用纸格线排布", ["自动对齐后，即使用纸的行列间距不均匀，赛璐珞、台词和镜头标记也会落在印刷格线的位置。"]],
         ["ver958", "修复导入与停止输出", ["被新导入替换的处理不再覆盖状态提示或继续扫描、解码。在输出重试等待期间停止，不再额外渲染或显示为失败。"]],
@@ -8281,6 +8285,13 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           }
         }
         return clusterPaperAutoAlignPositions(candidates, 6).map(function(line){
+          // 점선은 같은 x에 계속 찍힌다. 묶음 안에서 잉크가 가장 진한 열을 위치로 쓴다 — 길이 가중 평균은
+          // 칸 안의 프레임 번호 숫자 열(SARU·clw·JDG의 291~303px)에 끌려 옆 점선(약 307px)을 8px 안쪽으로 옮겼다.
+          let peak = null;
+          candidates.forEach(function(item){
+            if (item.pos >= line.start && item.pos <= line.end && (!peak || item.ink > peak.ink)) peak = item;
+          });
+          if (peak) line.pos = peak.pos;
           line.dotted = true;
           line.hitRatio = Number(line.ink || 0) / Math.max(1, validRows * Math.max(1, Number(line.thickness || 1)));
           return line;
@@ -8615,8 +8626,19 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         if (displayColumns < PAPER_AUTO_ALIGN_MIN_COLUMNS || displayColumns > columnCeiling) return;
         if (cellW < minCellW || cellW > maxCellW) return;
         const actualActionW = lines[rightIndex] - lines[startIndex];
-        const cellRight = options.variableTail ? lines[startIndex] + cellW * displayColumns : lines[rightIndex];
         const baseGaps = options.baseGaps || [];
+        // 넓은 꼬리 칸(프레임 번호 칸)은 무효로 하고 마지막 칸도 앞 칸들의 평균 폭으로 끊는다. 블록 왼쪽 끝에서
+        // 칸 수만큼 곱하면 인쇄 간격의 작은 오차가 마지막 칸에 몰려 그 칸만 넓거나 좁아진다(8bit 30/23px).
+        // 칸마다 선이 있는 후보면 어느 경로(균일·점선 희소 격자)든 같다.
+        const tailCellRight = (function(){
+          if (options.narrowTail || rightIndex - startIndex !== displayColumns || displayColumns < 7) return null;
+          const gaps = [];
+          for (let g = startIndex; g < rightIndex - 1; g++) gaps.push(lines[g + 1] - lines[g]);
+          const meanW = gaps.reduce(function(a,b){ return a + b; }, 0) / gaps.length;
+          const evenBase = gaps.every(function(gap){ return Math.abs(gap - meanW) <= Math.max(3, meanW * 0.12); });
+          return evenBase && lines[rightIndex] - lines[rightIndex - 1] > meanW * 1.18 ? lines[rightIndex - 1] + meanW : null;
+        })();
+        const cellRight = tailCellRight !== null ? tailCellRight : options.variableTail ? lines[startIndex] + cellW * displayColumns : lines[rightIndex];
         const gapDeviation = baseGaps.length ? averageAbsDeviation(baseGaps, cellW) : (options.matchRatio ? Math.max(0, 1 - options.matchRatio) * cellW : 0);
         const leftStrength = getPaperAutoAlignLineStrength(xDetailed, lines[startIndex]);
         const cellEndStrength = getPaperAutoAlignLineStrength(xDetailed, lines[rightIndex]);
