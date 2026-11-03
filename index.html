@@ -2612,7 +2612,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '976';
+    const APP_VERSION = '977';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3921,6 +3921,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver977", "PSD paper: keep the original layer order", ["Fixed paper grids and text disappearing behind the background when importing a layered PSD."]],
         ["ver976", "Cut folder check: a cel inside a BG/BOOK file name counts", ["A file such as _Book1_A1.jpg is counted as cel A1 (a background that doubles as a cel), so A1 is no longer reported as missing."]],
         ["ver975", "Drop a whole cut folder to open its sheet and check the cel files", ["Drag a cut folder onto the sheet. The sheet file inside it (settings JSON, .xdts, .clip, .tvpp, CSV or the paper image) opens the usual way; when there are several you choose one.", "A report then shows, for each cel column, numbers on the sheet that have no image file, image files whose number is not on the sheet, and gaps between file numbers. BG/BOOK, references and other files are listed apart, and old or pool folders are skipped. The sheet itself is not changed.", "When only a paper image is found, numbers are not compared."]],
         ["ver974", "Auto Align on marked-up paper restored", ["Auto Align on paper with shaded frames or hand-drawn lines works as it did before ver972. The two earlier changes are withdrawn while a sturdier approach is prepared."]],
@@ -4038,6 +4039,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver977", "PSD用紙：元のレイヤー順で読み込み", ["PSDの読み込み時に、用紙の罫線や文字が背景の裏に隠れる問題を修正しました。"]],
         ["ver976", "カットフォルダ照合：BG・BOOK名の中のセル番号を数えます", ["_Book1_A1.jpg のようなファイルを A1 のセルとして数えます（セルを兼ねる背景）。A1 がファイルなしと出なくなりました。"]],
         ["ver975", "カットフォルダごとドロップしてシートを開き、セルファイルを照合", ["カットフォルダをシートにドラッグすると、中のシートファイル（設定JSON・.xdts・.clip・.tvpp・CSV・用紙画像）をいつもどおり開きます。複数あるときは選べます。", "続いて、セルの列ごとに「シートにあってファイルがない番号」「シートにない番号のファイル」「ファイル番号の抜け」を報告します。BG・BOOK、参考、その他のファイルは別にまとめ、old・pool などのフォルダは読み飛ばします。シート自体は変更しません。", "用紙画像しか見つからないときは番号を照合しません。"]],
         ["ver974", "書き込みのある用紙の自動整列を元に戻しました", ["塗りつぶしや手描き線のある用紙の自動整列を ver972 より前の動作に戻しました。より確かな方法を準備するため、前の2つの変更を取り下げます。"]],
@@ -4155,6 +4157,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver977", "PSD 용지: 원래 레이어 순서로 불러오기", ["PSD를 불러올 때 용지의 격자와 글자가 배경 뒤에 가려지던 문제를 고쳤습니다."]],
         ["ver976", "컷 폴더 대조: BG·BOOK 이름 안의 셀 번호를 셉니다", ["_Book1_A1.jpg 같은 파일을 A1 셀로 셉니다(셀을 겸하는 배경). A1이 파일 없음으로 나오지 않습니다."]],
         ["ver975", "컷 폴더째 드롭해서 시트를 열고 셀 파일을 대조", ["컷 폴더를 시트에 끌어다 놓으면 안의 시트 파일(설정 JSON·.xdts·.clip·.tvpp·CSV·용지 이미지)을 평소처럼 엽니다. 여럿이면 고를 수 있습니다.", "이어서 셀 열마다 「시트에 있고 파일 없는 번호」「시트에 없는 번호의 파일」「파일 번호의 빈 곳」을 보고합니다. BG·BOOK, 참고, 기타 파일은 따로 묶고, old·pool 같은 폴더는 건너뜁니다. 시트 자체는 바꾸지 않습니다.", "용지 이미지만 있으면 번호는 대조하지 않습니다."]],
         ["ver974", "기입이 있는 용지의 자동정렬 되돌림", ["칠한 칸이나 손으로 그은 선이 있는 용지의 자동정렬을 ver972 이전 동작으로 되돌렸습니다. 더 확실한 방법을 준비하는 동안 앞의 두 변경을 거둡니다."]],
@@ -4272,6 +4275,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver977", "PSD纸张：保留原始图层顺序", ["修复导入分层PSD时，纸张网格和文字被背景遮住的问题。"]],
         ["ver976", "镜头文件夹核对：计入 BG・BOOK 名称中的层编号", ["像 _Book1_A1.jpg 这样的文件会算作 A1 层（兼作层的背景），A1 不再显示为没有文件。"]],
         ["ver975", "整个镜头文件夹拖入即可打开摄影表并核对层文件", ["把镜头文件夹拖到摄影表上，会按平常方式打开其中的摄影表文件（设置 JSON、.xdts、.clip、.tvpp、CSV 或用纸图像）；有多个时可以选择。", "随后按每个层列报告：摄影表上有但没有文件的编号、摄影表上没有的编号的文件、文件编号的缺号。BG・BOOK、参考和其他文件单独列出，old、pool 等文件夹会跳过。摄影表本身不会被修改。", "只找到用纸图像时不核对编号。"]],
         ["ver974", "恢复有书写内容的用纸自动对齐", ["有涂色格子或手绘线条的用纸，自动对齐恢复为 ver972 之前的行为。在准备更可靠的方法期间，撤回前两项更改。"]],
@@ -24056,7 +24060,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       }
       o = layerMaskEnd;
       if (records.length) {
-        const visibleRecordsTopToBottom = records.map(function(record){
+        const visibleRecordsBottomToTop = records.map(function(record){
           if (!record || record.hidden || !record.width || !record.height) return null;
           try {
             record.layerCanvas = decodePsdLayerToCanvas(record);
@@ -24067,7 +24071,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
             return null;
           }
         }).filter(Boolean);
-        const visibleRecordsBottomToTop = visibleRecordsTopToBottom.slice().reverse();
         await classifyPsdPaperLayers(visibleRecordsBottomToTop, width, height);
         const result = options && options.review ? {} : composePsdPaperLayers(visibleRecordsBottomToTop, width, height);
         // Decoded pixels live only during this import; never enter persisted paper state.
@@ -25565,9 +25568,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     // ══ 컷 폴더 드롭 ① 파일 판별 ════════════════════════════════════════════════════════════════════════════
-    // 컷 폴더 안 파일 하나의 역할과 셀 번호를 정한다. 파일 이름 규칙은 MoArt 폴더 가져오기(gengaScanSheetFolder 계열)의
-    // 정규화를 따르되, 점수·순서 배정은 쓰지 않는다 — 번호 목록을 만드는 데 쓰면 다른 열·가이드·시트 이미지를 셀로 잡았다
-    // (실제 폴더 판례: tools/test_cut_folder.cjs). 셀 이름은 시트 열 이름과 대조하고, 시트에 없는 이름은 버리지 않고 보고한다.
+    // 컷 폴더 안 파일 하나의 역할과 셀 번호를 정한다. 파일 이름 규칙은 MoArt 시트 폴더 가져오기(gengaSheetFileKeyForLayer)와
+    // 같은 판례 tools/test_cut_folder.cjs로 맞춘다(두 앱 모두 전 행 일치). 셀 이름은 시트 열 이름과 대조하고,
+    // 시트에 없는 이름은 버리지 않고 보고한다.
     const CUT_FOLDER_SKIP_DIRS = /^(OLD|POOL|X|参考|SANKO|SANNKOU|SANKOU|BACKUP|BACKUPS|ASSETS|\.GIT)$/;
     const CUT_FOLDER_IMAGE_EXT = /^(jpe?g|png|webp|gif|bmp|avif|tiff?|psd)$/;
     const CUT_FOLDER_SHEET_EXT = /^(clip|tvpp|xdts|csv|json)$/;
@@ -25622,7 +25625,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const label = plate[1].toUpperCase() + plate[2];
         if (!plate[3]) return Object.assign(out, { kind:'plate', layer:label });
         if (/^[A-Za-z][A-Za-z0-9]{0,7}$/.test(plate[3])) return Object.assign(out, { kind:'plate', layer:label, revision:plate[3] });
-        // 판 이름 뒤 꼬리에 셀 토큰이 있으면 그 셀 그림이다(BOOK1 겸 A1, 사용자 결정 2026-11-04).
+        // 판 이름 뒤 꼬리에 셀 토큰이 있으면 그 셀 그림이다(BOOK1 겸 A1, 사용자 결정 2026-11-03).
         // 판 이름 자체(BG1)는 BG 열의 1번으로 읽지 않도록 꼬리만 본다.
         const shared = embeddedCel(plate[3]);
         if (shared) return Object.assign(out, { kind:'cel', layer:shared.layer, number:shared.number, tail:plate[3] });
