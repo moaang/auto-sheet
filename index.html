@@ -2612,7 +2612,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '980';
+    const APP_VERSION = '981';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3921,6 +3921,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver981", "Paper Auto Align: label borders and blank auxiliary cells", ["Finds slightly offset label borders while keeping the body grid in place. Recognizes a wider last named cell when its remaining space is blank."]],
         ["ver980", "Paper Auto Align: faint header borders and field placement", ["Recovers faint printed header borders to place episode, title, cut, duration, name and page fields in their own cells.", "Recognizes a duration plus near the right edge when a separate field follows it, and a confirmed name field immediately before the cut field."]],
         ["ver979", "Paper Auto Align: preserve 3-second and 6-second sheet layouts", ["Detected 3-second and 6-second paper layouts now take precedence over the number of input layers. Frame numbering and pagination continue correctly after saving and reopening.", "Improved recognition of short label borders and narrow printed letters without merging cells whose borders are missing."]],
         ["ver978", "Paper Auto Align: separate named cel columns from blank auxiliary columns", ["Reads the full printed label cells and excludes confirmed blank edge columns from cel placement. Ambiguous borders keep the previous column count.", "Improved faint-line recovery and two-block detection. Existing input that exceeds the detected named columns is preserved and Auto Align is not applied."]],
@@ -4042,6 +4043,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver981", "用紙自動整列：名前欄の罫線と空の補助欄を改善", ["本文の位置を保ったまま、名前欄のわずかにずれた罫線を認識します。最後の名前欄が広く、残りが空白の場合にも対応します。"]],
         ["ver980", "用紙自動整列：薄いヘッダー罫線と項目配置を改善", ["薄い印刷罫線を補い、話数・タイトル・カット・秒数・担当者・枚数をそれぞれの欄に配置します。", "右寄りの秒数の＋と、カット欄の直前にある担当者欄にも対応します。"]],
         ["ver979", "用紙自動整列：3秒・6秒シートの配置を維持", ["検出した3秒・6秒の用紙構造を入力レイヤー数より優先します。保存して開き直してもコマ番号とページの続きが保たれます。", "短い名前枠の罫線と細い印刷文字の認識を改善。境界線が欠けたセルを誤ってまとめません。"]],
         ["ver978", "用紙自動整列：セル名のある列と空の補助列を区別", ["印刷された名前枠全体を調べ、確定した端の空欄をセル配置から除きます。境界が曖昧な場合は従来の列数を保ちます。", "薄い罫線と左右2ブロックの認識を改善。既存の入力が検出列数を超える場合は入力を保持し、自動整列は適用しません。"]],
@@ -4163,6 +4165,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver981", "용지 자동정렬: 이름 칸 경계와 빈 보조칸 판정 개선", ["본문 위치를 유지하며 이름 행의 조금 어긋난 인쇄선을 인식합니다. 마지막 이름 칸이 넓고 나머지가 비어 있는 양식도 구분합니다."]],
         ["ver980", "용지 자동정렬: 흐린 헤더선과 항목 배정 개선", ["흐린 인쇄선을 보완해 화수·타이틀·컷·시간·담당자·매수를 각각의 칸에 배치합니다.", "오른쪽에 있는 시간 표시 +와 컷 번호 바로 앞의 담당자 칸에도 대응합니다."]],
         ["ver979", "용지 자동정렬: 3초·6초 시트 구조 유지", ["인식한 3초·6초 용지 구조를 입력 층 수보다 우선합니다. 저장하고 다시 열어도 프레임 번호와 페이지 연결을 유지합니다.", "짧은 이름 칸 경계와 가는 인쇄 글자 인식을 개선했습니다. 경계가 빠진 칸을 잘못 합쳐 확정하지 않습니다."]],
         ["ver978", "용지 자동정렬: 셀 이름 칸과 빈 보조칸 구분", ["인쇄된 이름 칸 전체를 읽고, 확정된 양끝 빈 보조칸을 셀 배치에서 제외합니다. 경계가 불명확하면 기존 열 수를 유지합니다.", "흐린 선과 좌우 두 블록 인식을 개선했습니다. 기존 입력이 검출한 셀 열 수를 넘으면 입력을 보존하고 자동정렬을 적용하지 않습니다."]],
@@ -4284,6 +4287,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver981", "纸张自动对齐：改进名称栏边线与空白辅助栏识别", ["保持正文位置，识别名称行略微偏移的印刷边线；支持最后一个名称栏较宽且余部空白的格式。"]],
         ["ver980", "纸张自动对齐：改进浅色标题栏边线和字段布局", ["补足浅色印刷边线，将集数、标题、镜头、时间、署名和页码放在各自栏内。", "支持靠右的时间加号，以及紧邻镜头编号栏之前的署名栏。"]],
         ["ver979", "纸张自动对齐：保持3秒和6秒纸张布局", ["识别出的3秒或6秒纸张结构优先于输入图层数量。保存并重新打开后，帧编号和分页保持连续。", "改进短名称框边线和细印刷字符的识别，避免将缺少边界的单元格错误合并。"]],
         ["ver978", "纸张自动对齐：区分命名单元格列与空白辅助列", ["识别完整的印刷名称框，将确认的两端空白辅助列排除在层排列之外。边界不明确时保留原列数。", "改进浅色线条和左右双区块识别。现有输入超出检测列数时保留输入，不应用自动对齐。"]],
@@ -11398,12 +11402,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     // ══ 용지 인식 ⑧ 레이아웃 결과 조립 · 자동정렬 실행 진입점 ═════════════════════════════════════════════════════════════
-    function detectPaperAutoAlignCellLabels(analysis, bodyGrid, left, right) {
+    function detectPaperAutoAlignCellLabels(analysis, bodyGrid, left, right, bodyLines) {
       const inner = analysis.xLines.filter(function(x){ return x >= left-2 && x <= right+2; });
       if (inner.length < 3) return null;
       const pitch = medianPaperAutoAlignNumber(inner.slice(1).map(function(x,i){return x-inner[i];}));
       const nearby = fillPaperAutoAlignVerticalGaps(analysis.xLines).filter(function(x){return x>=left-pitch-2 && x<=right+pitch+2;});
-      let edges = null;
       const bottom = Math.min.apply(null,[bodyGrid.bodyTop].concat(analysis.yLines.filter(function(y){return y<=bodyGrid.bodyTop && y>=bodyGrid.bodyTop-bodyGrid.rowH*0.5;})));
       const starts=analysis.xDetailed.filter(function(line){return nearby.some(function(x){return Math.abs(x-line.pos)<=2;})&&Number.isFinite(line.runStart);}).map(function(line){return line.runStart;});
       const limit=Math.min.apply(null,starts.concat(bodyGrid.labelTop))-bodyGrid.rowH;
@@ -11424,44 +11427,84 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const found=!!row&&row.coverage>=0.90;
         borderCache.set(key,found);return found;
       }
-      const top = tops.find(function(y){
-        const borders=nearby.filter(function(x){return hasPrintedBorder('x',y,bottom,x);});
-        let run=[],best=[];
-        for(let i=1;i<borders.length;i++){
-          if(hasPrintedBorder('y',borders[i-1],borders[i],y)&&hasPrintedBorder('y',borders[i-1],borders[i],bottom)){
-            if(!run.length)run.push(borders[i-1]);
-            run.push(borders[i]);
-            if(run.length>best.length)best=run.slice();
+      function readCells(nearby,tops,bottom){
+        let edges=null;
+        const top = tops.find(function(y){
+          const borders=nearby.filter(function(x){return hasPrintedBorder('x',y,bottom,x);});
+          let run=[],best=[];
+          for(let i=1;i<borders.length;i++){
+            if(hasPrintedBorder('y',borders[i-1],borders[i],y)&&hasPrintedBorder('y',borders[i-1],borders[i],bottom)){
+              if(!run.length)run.push(borders[i-1]);
+              run.push(borders[i]);
+              if(run.length>best.length)best=run.slice();
+            }
+            else run=[];
           }
-          else run=[];
+          if(best.length<3)return false;
+          edges=best;return true;
+        });
+        if (!Number.isFinite(top)) return null;
+        const inkTop = top+3;
+        function measureInkWithin(x1,x2,includeStart){
+          const margin=Math.max(3,Math.min(5,(x2-x1)*0.15));
+          let count=0,minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;
+          for(let y=Math.ceil(inkTop);y<bottom-3;y++)for(let x=Math.ceil(x1+(includeStart?0:margin));x<x2-margin;x++){
+            if(!analysis.isDarkNear(x,y,0))continue;
+            count++;minX=Math.min(minX,x);maxX=Math.max(maxX,x);minY=Math.min(minY,y);maxY=Math.max(maxY,y);
+          }
+          const hasInk=count>=6 && (includeStart||maxX-minX>=1) && maxY-minY>=3;
+          return {hasInk:hasInk,inkTop:hasInk?minY:null,inkBottom:hasInk?maxY:null};
         }
-        if(best.length<3)return false;
-        edges=best;return true;
-      });
-      if (!Number.isFinite(top)) return null;
-      const inkTop = top+3;
-      function measureInkWithin(x1,x2){
-        const margin=Math.max(3,Math.min(5,(x2-x1)*0.15));
-        let count=0,minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;
-        for(let y=Math.ceil(inkTop);y<bottom-3;y++)for(let x=Math.ceil(x1+margin);x<x2-margin;x++){
-          if(!analysis.isDarkNear(x,y,0))continue;
-          count++;minX=Math.min(minX,x);maxX=Math.max(maxX,x);minY=Math.min(minY,y);maxY=Math.max(maxY,y);
+        const cells = edges.slice(1).map(function(x2,index){
+          const x1=edges[index];return Object.assign({x:x1,y:top,w:x2-x1,h:bottom-top},measureInkWithin(x1,x2));
+        });
+        const occupied = cells.map(function(c,i){return c.hasInk?i:-1;}).filter(function(i){return i>=0;});
+        if(occupied.length<2)return {cells:cells,top:top,known:false};
+        const first=occupied[0],last=occupied[occupied.length-1];
+        const activeWidths=occupied.map(function(i){return cells[i].w;});
+        const width=medianPaperAutoAlignNumber(activeWidths);
+        const complete=!measureInkWithin(left,edges[0]).hasInk&&!measureInkWithin(edges[edges.length-1],right).hasInk;
+        const shape=cells[last].w>pitch*1.2 ? evaluatePaperAutoAlignCellGaps(activeWidths,occupied.length,false) : null;
+        let end=cells[last].x+cells[last].w;
+        if(shape&&shape.ok&&shape.variableTail&&
+            measureInkWithin(cells[last].x,cells[last].x+shape.cellW).hasInk&&
+            !measureInkWithin(cells[last].x+shape.cellW,end,true).hasInk){
+          activeWidths[activeWidths.length-1]=shape.cellW;
+          end=cells[last].x+shape.cellW;
+          if(Math.abs(end-right)<=3)end=right;
         }
-        const hasInk=count>=6 && maxX-minX>=1 && maxY-minY>=3;
-        return {hasInk:hasInk,inkTop:hasInk?minY:null,inkBottom:hasInk?maxY:null};
+        const lines=occupied.map(function(i){return cells[i].x;}).concat(end);
+        return {cells:cells,top:top,lines:lines,known:complete && occupied.length===last-first+1 && activeWidths.every(function(w){return Math.abs(w-width)<=Math.max(2,width*0.2)&&Math.abs(w-pitch)<=Math.max(2,pitch*0.2);}),
+          signature:cells.map(function(c){return c.hasInk?'1':'0';}).join(''),
+          columns:occupied.length,left:cells[first].x,right:end};
       }
-      const cells = edges.slice(1).map(function(x2,index){
-        const x1=edges[index];return Object.assign({x:x1,y:top,w:x2-x1,h:bottom-top},measureInkWithin(x1,x2));
-      });
-      const occupied = cells.map(function(c,i){return c.hasInk?i:-1;}).filter(function(i){return i>=0;});
-      if(occupied.length<2)return {cells:cells,top:top,known:false};
-      const first=occupied[0],last=occupied[occupied.length-1];
-      const activeWidths=occupied.map(function(i){return cells[i].w;});
-      const width=medianPaperAutoAlignNumber(activeWidths);
-      const complete=!measureInkWithin(left,edges[0]).hasInk&&!measureInkWithin(edges[edges.length-1],right).hasInk;
-      return {cells:cells,top:top,known:complete && occupied.length===last-first+1 && activeWidths.every(function(w){return Math.abs(w-width)<=Math.max(2,width*0.2)&&Math.abs(w-pitch)<=Math.max(2,pitch*0.2);}),
-        signature:cells.map(function(c){return c.hasInk?'1':'0';}).join(''),
-        columns:occupied.length,left:cells[first].x,right:cells[last].x+cells[last].w};
+      const original=readCells(nearby,tops,bottom);
+      if(original&&(original.known||original.cells.every(function(c){return !c.hasInk;})))return original;
+      const horizontals=analysis.findHorizontalSegments({left:left,right:right,top:limit,bottom:bottom+3,
+        minRun:Math.max(12,(right-left)*0.35)}).map(function(line){return line.pos;});
+      function snap(position,lines){
+        let best=position,distance=4;
+        for(const x of lines){const delta=Math.abs(x-position);if(delta<=3&&delta<distance){best=x;distance=delta;}}
+        return best;
+      }
+      for(const expectedTop of tops){
+        const localTop=snap(expectedTop,horizontals);
+        const localBottom=horizontals.concat(snap(bottom,horizontals)).filter(function(y){return y>=localTop+12&&y<=bottom+3;})
+          .sort(function(a,b){return a-b;})[0];
+        if(!Number.isFinite(localBottom)||!hasPrintedBorder('y',left,right,localBottom))continue;
+        const verticals=analysis.findVerticalSegments({left:nearby[0]-3,right:nearby[nearby.length-1]+3,
+          top:localTop,bottom:localBottom,minRun:(localBottom-localTop)*0.85,minCoverage:0.85}).map(function(line){return line.pos;});
+        const localEdges=Array.from(new Set(nearby.map(function(x){return snap(x,verticals);}))).sort(function(a,b){return a-b;});
+        const recovered=readCells(localEdges,[localTop],localBottom);
+        if(!recovered||!recovered.known)continue;
+        // 이름 행의 물리 선과 본문 평균 선을 구분한다. 본문은 원래 격자에 고정한다.
+        const stations=bodyLines||inner;
+        if(recovered.lines.some(function(x){return stations.filter(function(s){return Math.abs(s-x)<=3;}).length!==1;}))continue;
+        recovered.lines=recovered.lines.map(function(x){return snap(x,stations);});
+        recovered.left=recovered.lines[0];recovered.right=recovered.lines[recovered.lines.length-1];
+        return recovered;
+      }
+      return original;
     }
 
     function refinePaperAutoAlignCellLabels(result, analysis) {
@@ -11469,14 +11512,14 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const body={bodyTop:result.overlay.bodyTop,labelTop:result.overlay.labelTop,
         rowH:(result.overlay.bodyBottom-result.overlay.bodyTop)/72};
       analysis=Object.assign({},analysis,{xLines:result.overlay.xLines});
-      const runs=sides.map(function(side){const box=result.layoutBoxes['cell-'+side];return detectPaperAutoAlignCellLabels(analysis,body,box.x,box.x+box.w);});
+      const runs=sides.map(function(side){const box=result.layoutBoxes['cell-'+side];return detectPaperAutoAlignCellLabels(analysis,body,box.x,box.x+box.w,result.layoutGrid.cols[side].map(function(frac){return box.x+frac*box.w;}));});
       const known=runs.every(function(run){return run&&run.known&&run.signature===runs[0].signature;});
       const followRuns=sides.map(function(side){
         const dialog=result.layoutBoxes['dialog-'+side],camera=result.layoutBoxes['camera-'+side];
         return dialog&&camera ? detectPaperAutoAlignCellLabels(analysis,body,dialog.x+dialog.w,camera.x) : null;
       });
       const followNamesKnown=followRuns.every(function(run){return run&&run.known&&run.signature===followRuns[0].signature;});
-      const followKnown=followNamesKnown&&followRuns.every(function(run){const active=run.cells.filter(function(c){return c.hasInk;});return active.every(function(cell,i){return Math.abs(cell.x-(run.left+(run.right-run.left)*i/run.columns))<=2&&Math.abs(cell.x+cell.w-(run.left+(run.right-run.left)*(i+1)/run.columns))<=2;});});
+      const followKnown=followNamesKnown&&followRuns.every(function(run){return run.lines.every(function(x,i){return Math.abs(x-(run.left+(run.right-run.left)*i/run.columns))<=2;});});
       const representable=!known||!followNamesKnown||[0,-1].includes(followRuns[0].columns-runs[0].columns);
       const apply=known&&representable;
       result.overlay.cellLabelCells=[];
@@ -11491,7 +11534,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         result.layoutBoxes['cell-label-'+side]={x:run.left,y:upperPrint?previous.y:run.top,w:run.right-run.left,h:upperPrint?previous.h:run.cells[0].h};
         result.overlay.boxes['cell-'+side]=box;
         result.overlay.boxes['cell-label-'+side]=result.layoutBoxes['cell-label-'+side];
-        result.layoutGrid.cols[side]=active.map(function(c){return (c.x-run.left)/(run.right-run.left);}).concat(1);
+        result.layoutGrid.cols[side]=run.lines.map(function(x){return (x-run.left)/(run.right-run.left);});
       });
       followRuns.forEach(function(run,i){
         if(run)result.overlay.cellLabelCells.push({side:sides[i],kind:'follow',known:apply&&followKnown,cells:run.cells});
