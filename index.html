@@ -2612,7 +2612,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '977';
+    const APP_VERSION = '978';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3921,6 +3921,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver978", "Paper Auto Align: separate named cel columns from blank auxiliary columns", ["Reads the full printed label cells and excludes confirmed blank edge columns from cel placement. Ambiguous borders keep the previous column count.", "Improved faint-line recovery and two-block detection. Existing input that exceeds the detected named columns is preserved and Auto Align is not applied."]],
         ["ver977", "PSD paper: keep the original layer order", ["Fixed paper grids and text disappearing behind the background when importing a layered PSD."]],
         ["ver976", "Cut folder check: a cel inside a BG/BOOK file name counts", ["A file such as _Book1_A1.jpg is counted as cel A1 (a background that doubles as a cel), so A1 is no longer reported as missing."]],
         ["ver975", "Drop a whole cut folder to open its sheet and check the cel files", ["Drag a cut folder onto the sheet. The sheet file inside it (settings JSON, .xdts, .clip, .tvpp, CSV or the paper image) opens the usual way; when there are several you choose one.", "A report then shows, for each cel column, numbers on the sheet that have no image file, image files whose number is not on the sheet, and gaps between file numbers. BG/BOOK, references and other files are listed apart, and old or pool folders are skipped. The sheet itself is not changed.", "When only a paper image is found, numbers are not compared."]],
@@ -4039,6 +4040,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver978", "用紙自動整列：セル名のある列と空の補助列を区別", ["印刷された名前枠全体を調べ、確定した端の空欄をセル配置から除きます。境界が曖昧な場合は従来の列数を保ちます。", "薄い罫線と左右2ブロックの認識を改善。既存の入力が検出列数を超える場合は入力を保持し、自動整列は適用しません。"]],
         ["ver977", "PSD用紙：元のレイヤー順で読み込み", ["PSDの読み込み時に、用紙の罫線や文字が背景の裏に隠れる問題を修正しました。"]],
         ["ver976", "カットフォルダ照合：BG・BOOK名の中のセル番号を数えます", ["_Book1_A1.jpg のようなファイルを A1 のセルとして数えます（セルを兼ねる背景）。A1 がファイルなしと出なくなりました。"]],
         ["ver975", "カットフォルダごとドロップしてシートを開き、セルファイルを照合", ["カットフォルダをシートにドラッグすると、中のシートファイル（設定JSON・.xdts・.clip・.tvpp・CSV・用紙画像）をいつもどおり開きます。複数あるときは選べます。", "続いて、セルの列ごとに「シートにあってファイルがない番号」「シートにない番号のファイル」「ファイル番号の抜け」を報告します。BG・BOOK、参考、その他のファイルは別にまとめ、old・pool などのフォルダは読み飛ばします。シート自体は変更しません。", "用紙画像しか見つからないときは番号を照合しません。"]],
@@ -4157,6 +4159,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver978", "용지 자동정렬: 셀 이름 칸과 빈 보조칸 구분", ["인쇄된 이름 칸 전체를 읽고, 확정된 양끝 빈 보조칸을 셀 배치에서 제외합니다. 경계가 불명확하면 기존 열 수를 유지합니다.", "흐린 선과 좌우 두 블록 인식을 개선했습니다. 기존 입력이 검출한 셀 열 수를 넘으면 입력을 보존하고 자동정렬을 적용하지 않습니다."]],
         ["ver977", "PSD 용지: 원래 레이어 순서로 불러오기", ["PSD를 불러올 때 용지의 격자와 글자가 배경 뒤에 가려지던 문제를 고쳤습니다."]],
         ["ver976", "컷 폴더 대조: BG·BOOK 이름 안의 셀 번호를 셉니다", ["_Book1_A1.jpg 같은 파일을 A1 셀로 셉니다(셀을 겸하는 배경). A1이 파일 없음으로 나오지 않습니다."]],
         ["ver975", "컷 폴더째 드롭해서 시트를 열고 셀 파일을 대조", ["컷 폴더를 시트에 끌어다 놓으면 안의 시트 파일(설정 JSON·.xdts·.clip·.tvpp·CSV·용지 이미지)을 평소처럼 엽니다. 여럿이면 고를 수 있습니다.", "이어서 셀 열마다 「시트에 있고 파일 없는 번호」「시트에 없는 번호의 파일」「파일 번호의 빈 곳」을 보고합니다. BG·BOOK, 참고, 기타 파일은 따로 묶고, old·pool 같은 폴더는 건너뜁니다. 시트 자체는 바꾸지 않습니다.", "용지 이미지만 있으면 번호는 대조하지 않습니다."]],
@@ -4275,6 +4278,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver978", "纸张自动对齐：区分命名单元格列与空白辅助列", ["识别完整的印刷名称框，将确认的两端空白辅助列排除在层排列之外。边界不明确时保留原列数。", "改进浅色线条和左右双区块识别。现有输入超出检测列数时保留输入，不应用自动对齐。"]],
         ["ver977", "PSD纸张：保留原始图层顺序", ["修复导入分层PSD时，纸张网格和文字被背景遮住的问题。"]],
         ["ver976", "镜头文件夹核对：计入 BG・BOOK 名称中的层编号", ["像 _Book1_A1.jpg 这样的文件会算作 A1 层（兼作层的背景），A1 不再显示为没有文件。"]],
         ["ver975", "整个镜头文件夹拖入即可打开摄影表并核对层文件", ["把镜头文件夹拖到摄影表上，会按平常方式打开其中的摄影表文件（设置 JSON、.xdts、.clip、.tvpp、CSV 或用纸图像）；有多个时可以选择。", "随后按每个层列报告：摄影表上有但没有文件的编号、摄影表上没有的编号的文件、文件编号的缺号。BG・BOOK、参考和其他文件单独列出，old、pool 等文件夹会跳过。摄影表本身不会被修改。", "只找到用纸图像时不核对编号。"]],
@@ -5362,6 +5366,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           ready:'Auto Align compares the detected paper grid with the sheet UI.',
           working:'Analyzing paper lines and matching the sheet boxes...',
           noPaper:'Load a paper image before Auto Align.',
+          columnConflict:function(n){ return "The paper has {n} named columns, but existing input uses more. Auto Align was not applied.".replace('{n}',n); },
           done:'Auto Align applied',
           failed:function(msg){ return 'Auto Align failed: ' + msg; },
         },
@@ -5391,6 +5396,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           ready:'自動整列は、検出した用紙グリッドとシートUIを照合する。',
           working:'用紙の線を解析し、シートの位置ボックスと照合中...',
           noPaper:'自動整列の前に用紙画像を読み込む。',
+          columnConflict:function(n){ return "用紙のセル名は{n}列ですが、既存の入力はそれより多い列を使っています。自動整列は適用していません。".replace('{n}',n); },
           done:'自動整列を適用',
           failed:function(msg){ return '自動整列失敗: ' + msg; },
         },
@@ -5420,6 +5426,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           ready:'자동 정렬은 감지한 용지 격자와 시트 UI를 대조한다.',
           working:'용지 선을 분석하고 시트 위치 박스와 대조 중...',
           noPaper:'자동 정렬 전에 용지 이미지를 먼저 불러온다.',
+          columnConflict:function(n){ return "용지 셀 이름은 {n}열이지만 기존 입력은 더 많은 열을 사용합니다. 자동정렬을 적용하지 않았습니다.".replace('{n}',n); },
           done:'자동 정렬 적용',
           failed:function(msg){ return '자동 정렬 실패: ' + msg; },
         },
@@ -5449,6 +5456,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           ready:'自动对齐会比较检测到的纸张网格和 Sheet UI。',
           working:'正在分析纸张线条并匹配 Sheet 位置框...',
           noPaper:'请先载入纸张图像，再使用自动对齐。',
+          columnConflict:function(n){ return "纸张有{n}个命名列，但现有输入使用了更多列，未应用自动对齐。".replace('{n}',n); },
           done:'已应用自动对齐',
           failed:function(msg){ return '自动对齐失败: ' + msg; },
         },
@@ -5690,6 +5698,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           actionColumns:function(n){ return 'ACTION columns: ' + n + ' detected'; },
           dialog:function(pattern){ return 'Dialog area: ' + pattern; },
           dougaColumns:function(n){ return 'CELL columns: ' + n + ' detected'; },
+          dougaUnknown:'CELL column labels: undetermined',
           camera:function(pattern){ return 'Camera area: ' + pattern; },
           durationPlus:function(found){ return 'Duration plus mark: ' + (found ? 'detected' : 'not detected'); },
           pageDiagonal:function(found){ return 'Page diagonal: ' + (found ? 'detected' : 'not detected'); },
@@ -5709,6 +5718,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           actionColumns:function(n){ return '\u539f\u753b\u6b04 ' + n + '\u5217\u691c\u51fa'; },
           dialog:function(pattern){ return '\u30bb\u30ea\u30d5\u6b04\uff08' + pattern + '\uff09'; },
           dougaColumns:function(n){ return '\u52d5\u753b\u6b04 ' + n + '\u5217\u691c\u51fa'; },
+          dougaUnknown:'CELLの列名：未判定',
           camera:function(pattern){ return '\u30ab\u30e1\u30e9\u6b04\uff08' + pattern + '\uff09'; },
           durationPlus:function(found){ return 'Duration\u306e\uff0b\u30de\u30fc\u30af: ' + (found ? '\u691c\u51fa' : '\u672a\u691c\u51fa'); },
           pageDiagonal:function(found){ return '\u679a\u6570\u6b04\u306e\u659c\u7dda: ' + (found ? '\u691c\u51fa' : '\u672a\u691c\u51fa'); },
@@ -5728,6 +5738,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           actionColumns:function(n){ return '\uc6d0\ud654\uce78 ' + n + '\uce78 \uac80\ucd9c'; },
           dialog:function(pattern){ return '\ub300\uc0ac\ub780 (' + pattern + ')'; },
           dougaColumns:function(n){ return '\ub3d9\ud654\uce78 ' + n + '\uce78 \uac80\ucd9c'; },
+          dougaUnknown:'CELL 열 이름: 미확정',
           camera:function(pattern){ return '\uce74\uba54\ub77c\ub780 (' + pattern + ')'; },
           durationPlus:function(found){ return 'Duration +\ub9c8\ud06c: ' + (found ? '\uac80\ucd9c' : '\ubbf8\uac80\ucd9c'); },
           pageDiagonal:function(found){ return '\ub9e4\uc218\ub780 \ub300\uac01\uc120: ' + (found ? '\uac80\ucd9c' : '\ubbf8\uac80\ucd9c'); },
@@ -5747,6 +5758,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           actionColumns:function(n){ return '\u539f\u753b\u680f ' + n + ' \u5217\u5df2\u68c0\u6d4b'; },
           dialog:function(pattern){ return '\u5bf9\u767d\u680f\uff08' + pattern + '\uff09'; },
           dougaColumns:function(n){ return '\u52a8\u753b\u680f ' + n + ' \u5217\u5df2\u68c0\u6d4b'; },
+          dougaUnknown:'CELL列名：未判定',
           camera:function(pattern){ return '\u6444\u5f71\u680f\uff08' + pattern + '\uff09'; },
           durationPlus:function(found){ return 'Duration + \u6807\u8bb0: ' + (found ? '\u5df2\u68c0\u6d4b' : '\u672a\u68c0\u6d4b'); },
           pageDiagonal:function(found){ return '\u9875\u6570\u680f\u659c\u7ebf: ' + (found ? '\u5df2\u68c0\u6d4b' : '\u672a\u68c0\u6d4b'); },
@@ -5795,7 +5807,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const titleEpisodePattern = patterns[d.headerTitleEpisodePattern] || patterns.unknown || d.headerTitleEpisodePattern || 'unknown';
       lines.push(labels.actionColumns(actionColumns));
       lines.push(labels.dialog(dialogPattern));
-      lines.push(labels.dougaColumns(dougaColumns));
+      lines.push(d.followLabelsUnknown ? labels.dougaUnknown : labels.dougaColumns(dougaColumns));
       lines.push(labels.camera(cameraPattern));
       lines.push(labels.durationPlus(!!d.durationPlusDetected));
       lines.push(labels.pageDiagonal(!!d.pageDiagonalDetected));
@@ -6783,14 +6795,14 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     function getLinkedTimelineBoxInfo(key) {
-      const match = String(key || '').match(/^(cell|dialog|camera)-(left|right|main)$/);
+      const match = String(key || '').match(/^(cell|dialog|camera|follow)-(left|right|main)$/);
       if (!match) return null;
       return { kind:match[1], side:match[2], peerKey:match[2] === 'main' ? null : match[1] + '-' + (match[2] === 'left' ? 'right' : 'left') };
     }
 
     function getRightTimelineGroupMoveKeys() {
       if (!state.layoutBoxBaseRects) return [];
-      return ['cell-right', 'dialog-right', 'camera-right', 'cell-label-right'].filter(function(groupKey){
+      return ['cell-right', 'dialog-right', 'camera-right', 'follow-right', 'cell-label-right'].filter(function(groupKey){
         return !!state.layoutBoxBaseRects[groupKey];
       });
     }
@@ -6829,7 +6841,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     function isTimelineBodyBoxKey(key) {
-      return /^(cell|dialog|camera)-(left|right|main)$/.test(String(key || ''));
+      return /^(cell|dialog|camera|follow)-(left|right|main)$/.test(String(key || ''));
     }
 
     function isCellLabelBoxKey(key) {
@@ -6874,7 +6886,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const srcBase = state.layoutBoxBaseRects[key];
       if (!srcBase) return;
       const src = getLayoutBoxRect(key, srcBase);
-      ['cell', 'dialog', 'camera'].forEach(function(kind){
+      ['cell', 'dialog', 'camera', 'follow'].forEach(function(kind){
         ['left', 'right', 'main'].forEach(function(side){
           const targetKey = kind + '-' + side;
           const base = state.layoutBoxBaseRects[targetKey];
@@ -7062,7 +7074,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       };
       const key = drag && drag.key ? drag.key : '';
       if (drag && Array.isArray(drag.groupMoveKeys) && drag.groupMoveKeys.length) {
-        ['cell', 'dialog', 'camera'].forEach(function(kind){
+        ['cell', 'dialog', 'camera', 'follow'].forEach(function(kind){
           ['left', 'right', 'main'].forEach(function(side){ add(kind + '-' + side); });
         });
         add('cell-label-left');
@@ -7084,7 +7096,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         return keys;
       }
       if (isTimelineBodyBoxKey(key)) {
-        ['cell', 'dialog', 'camera'].forEach(function(kind){
+        ['cell', 'dialog', 'camera', 'follow'].forEach(function(kind){
           ['left', 'right', 'main'].forEach(function(side){ add(kind + '-' + side); });
         });
         return keys;
@@ -7355,6 +7367,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
             opacity:index === 0 || index === yLines.length - 1 ? .72 : .34
           }));
         });
+        (overlay.cellLabelCells || []).forEach(function(run){run.cells.forEach(function(cell){
+        group.appendChild(el('rect',{x:cell.x,y:cell.y,width:cell.w,height:cell.h,fill:'none',
+          stroke:run.known?(cell.hasInk?'#1f6feb':'#f97316'):'#64748b','stroke-width':2}));
+      });});
         const headerOverlay = overlay.header || null;
         if (headerOverlay) {
           const hx = Number(headerOverlay.x || 0);
@@ -8195,53 +8211,46 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           return pos > 12 && pos < PAGE_W - 12 && Number(line.hitRatio || 0) >= 0.10;
         });
       };
-      // Column-relative row scan for FAINT full-width lines that never cross darkThreshold
+      // Axis-relative scan for faint lines that never cross darkThreshold
       // (e.g. Madhouse's light caption/value separator). Each column is compared against its
       // OWN median over the scanned band, so a solid faint line shows a small dip across most
       // columns (high coverage), while text or a logo dips deeply but only in its few columns.
 
-      function columnRelativeRowScan(left, right, top, bottom, step) {
+      function scanRelativeLines(axis, left, right, top, bottom, step) {
         const l = Math.max(0, Math.round(left));
         const r = Math.min(PAGE_W - 1, Math.round(right));
         const t = Math.max(0, Math.round(top));
         const b = Math.min(PAGE_H - 1, Math.round(bottom));
         const st = Math.max(1, Math.round(step || 3));
         if (r <= l || b <= t) return [];
-        const cols = [];
-        for (let x = l; x <= r; x += st) cols.push(x);
-        const rowsN = b - t + 1;
-        const lums = new Array(rowsN);
-        for (let yy = t; yy <= b; yy++) {
-          const base = yy * PAGE_W * 4;
-          const row = new Array(cols.length);
-          for (let c = 0; c < cols.length; c++) row[c] = getPaperAutoAlignLuma(data, base + cols[c] * 4);
-          lums[yy - t] = row;
+        const vertical = axis === 'x';
+        const samples = [];
+        for (let cross = vertical ? t : l; cross <= (vertical ? b : r); cross += st) samples.push(cross);
+        const start = vertical ? l : t, count = (vertical ? r : b) - start + 1;
+        const lums = new Array(count);
+        for (let i = 0; i < count; i++) {
+          const pos = start + i;
+          lums[i] = samples.map(function(cross){
+            return getPaperAutoAlignLuma(data, (vertical ? cross * PAGE_W + pos : pos * PAGE_W + cross) * 4);
+          });
         }
-        const colMed = new Array(cols.length);
-        const tmp = new Array(rowsN);
-        for (let c = 0; c < cols.length; c++) {
-          for (let ri = 0; ri < rowsN; ri++) tmp[ri] = lums[ri][c];
-          tmp.sort(function(a, b2){ return a - b2; });
-          colMed[c] = tmp[Math.floor(rowsN / 2)];
+        const medians = new Array(samples.length), tmp = new Array(count);
+        for (let c = 0; c < samples.length; c++) {
+          for (let i = 0; i < count; i++) tmp[i] = lums[i][c];
+          tmp.sort(function(a,b2){ return a-b2; });
+          medians[c] = tmp[Math.floor(count / 2)];
         }
-        const out = [];
-        for (let ri = 0; ri < rowsN; ri++) {
-          let dipSum = 0, cov = 0;
-          const rowPrev = lums[Math.max(0, ri - 1)];
-          const row = lums[ri];
-          const rowNext = lums[Math.min(rowsN - 1, ri + 1)];
-          for (let c = 0; c < cols.length; c++) {
-            // ±1-row window: an anti-aliased faint line spreads its ink over 2-3 rows, so per
-            // single row only part of the columns dip — the 3-row minimum catches the line core
-            // in every column, while text/logo columns are unaffected (already at their minimum).
-            const lum = Math.min(rowPrev[c], row[c], rowNext[c]);
-            const d = colMed[c] - lum;
-            if (d > 2.2) cov += 1;
-            if (d > 0) dipSum += d;
+        return lums.map(function(row,i){
+          let dipSum = 0, coverage = 0;
+          const previous = lums[Math.max(0,i-1)], next = lums[Math.min(count-1,i+1)];
+          for (let c = 0; c < samples.length; c++) {
+            const dip = medians[c] - Math.min(previous[c],row[c],next[c]);
+            if (dip > 2.2) coverage++;
+            if (dip > 0) dipSum += dip;
           }
-          out.push({ y:t + ri, relDip:dipSum / cols.length, coverage:cov / cols.length });
-        }
-        return out;
+          return { x:vertical ? start+i : undefined, y:vertical ? undefined : start+i,
+            relDip:dipSum/samples.length, coverage:coverage/samples.length };
+        });
       }
       return {
         xDetailed:xDetailed,
@@ -8250,7 +8259,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         yLines:yDetailed.map(function(line){ return line.pos; }),
         medianLum:median,
         darkThreshold:Math.round(darkThreshold),
-        columnRelativeRowScan:columnRelativeRowScan,
+        scanRelativeLines:scanRelativeLines,
         sampleHorizontalBand:sampleHorizontalBand,
         isDarkNear:isDarkNear,
         measureDarkSpan:measureDarkSpan,
@@ -9034,7 +9043,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         }
         return true;
       }
-      return crossesMiddle(bodyGrid.bodyTop) && crossesMiddle(bodyGrid.bodyBottom);
+      return crossesMiddle(bodyGrid.bodyTop) && crossesMiddle(bodyGrid.lines[Math.floor(bodyGrid.lines.length / 2)]) && crossesMiddle(bodyGrid.bodyBottom);
     }
 
     // 좌우 한 쌍을 못 찾았을 때의 재해석 — 블록이 하나뿐인 용지(3초 시트)를 위한 길이다.
@@ -9824,7 +9833,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       let splitY = segmentLines.filter(function(segment){
         return segment.pos > headerTop + 14 && segment.pos < headerBottom - 12 && Math.min(segment.end, headerRight) - Math.max(segment.start, headerLeft) > (headerRight - headerLeft) * 0.42;
       }).sort(function(a,b){ return Math.abs(a.pos - (headerTop + headerH * 0.42)) - Math.abs(b.pos - (headerTop + headerH * 0.42)); })[0];
-      if (!splitY && analysis && typeof analysis.columnRelativeRowScan === 'function') {
+      if (!splitY && analysis && typeof analysis.scanRelativeLines === 'function') {
         // Faint caption separator (Madhouse): printed so light that not a single pixel crosses
         // the global dark threshold. Column-relative scan: a solid separator dips slightly below
         // each column's own background across MOST of the width (high coverage), while caption
@@ -9834,7 +9843,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const sx = Math.round(headerLeft + 8);
         const ex = Math.round(headerRight - 8);
         if (scanBottom > scanTop + 4 && ex > sx + 120) {
-          const rows = analysis.columnRelativeRowScan(sx, ex, scanTop, scanBottom, 3);
+          const rows = analysis.scanRelativeLines('y',sx, ex, scanTop, scanBottom, 3);
           let bestRow = null;
           for (let i = 0; i < rows.length; i++) {
             const row = rows[i];
@@ -11326,6 +11335,120 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     // ══ 용지 인식 ⑧ 레이아웃 결과 조립 · 자동정렬 실행 진입점 ═════════════════════════════════════════════════════════════
+    function detectPaperAutoAlignCellLabels(analysis, bodyGrid, left, right) {
+      const inner = analysis.xLines.filter(function(x){ return x >= left-2 && x <= right+2; });
+      if (inner.length < 3) return null;
+      const pitch = medianPaperAutoAlignNumber(inner.slice(1).map(function(x,i){return x-inner[i];}));
+      const nearby = analysis.xLines.filter(function(x){return x>=left-pitch-2 && x<=right+pitch+2;});
+      let edges = null;
+      const bottom = Math.min.apply(null,[bodyGrid.bodyTop].concat(analysis.yLines.filter(function(y){return y<=bodyGrid.bodyTop && y>=bodyGrid.bodyTop-bodyGrid.rowH*0.5;})));
+      const starts=analysis.xDetailed.filter(function(line){return nearby.some(function(x){return Math.abs(x-line.pos)<=2;})&&Number.isFinite(line.runStart);}).map(function(line){return line.runStart;});
+      const limit=Math.min.apply(null,starts.concat(bodyGrid.labelTop))-bodyGrid.rowH;
+      const tops = analysis.yLines.filter(function(y){ return y <= bottom-12 && y >= limit-2; }).sort(function(a,b){return b-a;});
+      const borderCache=new Map();
+      function hasPrintedBorder(axis,start,end,position){
+        const key=[axis,start,end,position].join(':');
+        if(borderCache.has(key))return borderCache.get(key);
+        let hits=0,total=0;
+        for(let cross=start+3;cross<end-3;cross+=2){
+          total++;
+          if(analysis.isDarkNear(axis==='y'?cross:position,axis==='y'?position:cross,1))hits++;
+        }
+        if(total&&hits/total>=0.90){borderCache.set(key,true);return true;}
+        const rows=axis==='y' ? analysis.scanRelativeLines(axis,start+3,end-3,position-4,position+4,2) :
+          analysis.scanRelativeLines(axis,position-4,position+4,start+3,end-3,2);
+        const row=rows.find(function(r){return r[axis]===Math.round(position);});
+        const found=!!row&&row.coverage>=0.90;
+        borderCache.set(key,found);return found;
+      }
+      const top = tops.find(function(y){
+        let run=[],best=[];
+        for(let i=1;i<nearby.length;i++){
+          if(hasPrintedBorder('y',nearby[i-1],nearby[i],y)&&hasPrintedBorder('y',nearby[i-1],nearby[i],bottom)&&
+             hasPrintedBorder('x',y,bottom,nearby[i-1])&&hasPrintedBorder('x',y,bottom,nearby[i])){
+            if(!run.length)run.push(nearby[i-1]);
+            run.push(nearby[i]);
+            if(run.length>best.length)best=run.slice();
+          }
+          else run=[];
+        }
+        if(best.length<3)return false;
+        edges=best;return true;
+      });
+      if (!Number.isFinite(top)) return null;
+      const inkTop = top+3;
+      function measureInkWithin(x1,x2){
+        const margin=Math.max(3,Math.min(5,(x2-x1)*0.15));
+        let count=0,minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;
+        for(let y=Math.ceil(inkTop);y<bottom-3;y++)for(let x=Math.ceil(x1+margin);x<x2-margin;x++){
+          if(!analysis.isDarkNear(x,y,0))continue;
+          count++;minX=Math.min(minX,x);maxX=Math.max(maxX,x);minY=Math.min(minY,y);maxY=Math.max(maxY,y);
+        }
+        const hasInk=count>=6 && maxX-minX>=2 && maxY-minY>=3;
+        return {hasInk:hasInk,inkTop:hasInk?minY:null,inkBottom:hasInk?maxY:null};
+      }
+      const cells = edges.slice(1).map(function(x2,index){
+        const x1=edges[index];return Object.assign({x:x1,y:top,w:x2-x1,h:bottom-top},measureInkWithin(x1,x2));
+      });
+      const occupied = cells.map(function(c,i){return c.hasInk?i:-1;}).filter(function(i){return i>=0;});
+      if(occupied.length<2)return {cells:cells,top:top,known:false};
+      const first=occupied[0],last=occupied[occupied.length-1];
+      const activeWidths=occupied.map(function(i){return cells[i].w;});
+      const width=medianPaperAutoAlignNumber(activeWidths);
+      const complete=!measureInkWithin(left,edges[0]).hasInk&&!measureInkWithin(edges[edges.length-1],right).hasInk;
+      return {cells:cells,top:top,known:complete && occupied.length===last-first+1 && activeWidths.every(function(w){return Math.abs(w-width)<=Math.max(2,width*0.2);}),
+        signature:cells.map(function(c){return c.hasInk?'1':'0';}).join(''),
+        columns:occupied.length,left:cells[first].x,right:cells[last].x+cells[last].w};
+    }
+
+    function refinePaperAutoAlignCellLabels(result, analysis) {
+      const sides=result.diagnostics.singleBlock?['main']:['left','right'];
+      const body={bodyTop:result.overlay.bodyTop,labelTop:result.overlay.labelTop,
+        rowH:(result.overlay.bodyBottom-result.overlay.bodyTop)/72};
+      analysis=Object.assign({},analysis,{xLines:result.overlay.xLines});
+      const runs=sides.map(function(side){const box=result.layoutBoxes['cell-'+side];return detectPaperAutoAlignCellLabels(analysis,body,box.x,box.x+box.w);});
+      const known=runs.every(function(run){return run&&run.known&&run.signature===runs[0].signature;});
+      const followRuns=sides.map(function(side){
+        const dialog=result.layoutBoxes['dialog-'+side],camera=result.layoutBoxes['camera-'+side];
+        return dialog&&camera ? detectPaperAutoAlignCellLabels(analysis,body,dialog.x+dialog.w,camera.x) : null;
+      });
+      const followKnown=followRuns.every(function(run){return run&&run.known&&run.signature===followRuns[0].signature;});
+      const uniform=followKnown&&followRuns.every(function(run){const active=run.cells.filter(function(c){return c.hasInk;});return active.every(function(cell,i){return Math.abs(cell.x-(run.left+(run.right-run.left)*i/run.columns))<=2&&Math.abs(cell.x+cell.w-(run.left+(run.right-run.left)*(i+1)/run.columns))<=2;});});
+      const representable=!known||!followKnown||(uniform&&[0,-1].includes(followRuns[0].columns-runs[0].columns));
+      const apply=known&&representable;
+      result.overlay.cellLabelCells=[];
+      runs.forEach(function(run,i){
+        if(!run)return;
+        const side=sides[i];
+        result.overlay.cellLabelCells.push({side:side,kind:'cell',known:apply,cells:run.cells});
+        if(!apply)return;
+        const box=result.layoutBoxes['cell-'+side];box.x=run.left;box.w=run.right-run.left;
+        const previous=result.layoutBoxes['cell-label-'+side],active=run.cells.filter(function(c){return c.hasInk;});
+        const upperPrint=run.cells[0].h>previous.h && active.every(function(c){return c.inkBottom<run.top+run.cells[0].h/2;});
+        result.layoutBoxes['cell-label-'+side]={x:run.left,y:upperPrint?previous.y:run.top,w:run.right-run.left,h:upperPrint?previous.h:run.cells[0].h};
+        result.overlay.boxes['cell-'+side]=box;
+        result.overlay.boxes['cell-label-'+side]=result.layoutBoxes['cell-label-'+side];
+        result.layoutGrid.cols[side]=active.map(function(c){return (c.x-run.left)/(run.right-run.left);}).concat(1);
+      });
+      followRuns.forEach(function(run,i){
+        if(run)result.overlay.cellLabelCells.push({side:sides[i],kind:'follow',known:apply&&followKnown,cells:run.cells});
+        if(!apply||!followKnown)return;
+        const box={x:run.left,y:body.bodyTop,w:run.right-run.left,h:result.overlay.bodyBottom-body.bodyTop};
+        result.layoutBoxes['follow-'+sides[i]]=box;
+        result.overlay.boxes['follow-'+(sides[i]==='main'?'left':sides[i])]=box;
+      });
+      result.diagnostics.cellLabelsKnown=apply;
+      if(!apply)return result;
+      const columns=runs[0].columns;
+      result.cellColumnCount=columns;
+      Object.assign(result.diagnostics,{columns:columns,actionColumns:columns,leftColumns:columns,rightColumns:columns,
+        cellW:runs.reduce(function(sum,r){return sum+(r.right-r.left)/columns;},0)/runs.length,
+        leftFollowColumns:followKnown?followRuns[0].columns:0,rightFollowColumns:followKnown?followRuns[followRuns.length-1].columns:0,
+        followLabelsUnknown:!followKnown});
+      result.overlay.labelTop=Math.min.apply(null,runs.map(function(run){return run.top;}));
+      return result;
+    }
+
     function resolvePaperAutoAlignDisplayColumnCount(pair, leftSide, rightSide) {
       const leftColumns = Number(pair && pair.left && pair.left.columns);
       const rightColumns = Number(pair && pair.right && pair.right.columns);
@@ -11548,7 +11671,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     // 어두워지고 글자·로고는 few 열에서만 깊게 어두워진다는, 헤더 흐린 선 탐색과 같은 성질이다.
     // 균일 간격 판정은 findPaperAutoAlignBodyGrid 가 그대로 하므로 여기서는 후보만 넉넉히 낸다.
     function findPaperAutoAlignDottedRowLines(analysis) {
-      if (!analysis || typeof analysis.columnRelativeRowScan !== 'function') return null;
+      if (!analysis || typeof analysis.scanRelativeLines !== 'function') return null;
       const left = Math.round(PAGE_W * 0.04);
       const right = Math.round(PAGE_W * 0.96);
       const top = 240;
@@ -11556,7 +11679,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (right - left < 200 || bottom - top < 400) return null;
       let rows;
       try {
-        rows = analysis.columnRelativeRowScan(left, right, top, bottom, 3);
+        rows = analysis.scanRelativeLines('y',left, right, top, bottom, 3);
       } catch (err) {
         sendClientErrorEvent('paper_auto_align_dotted_rows', err);
         return null;
@@ -11619,11 +11742,20 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         // 둘 다 통짜가 아니면 기존 격자 그대로다 — 좌우 2블록 용지는 여기서 안 갈린다.
         usePaperAutoAlignDottedGrid();
       }
-      const baseResult = makePaperAutoAlignLayoutResult(analysis, bodyGrid, 'standard');
-      if (isStableStandardPaperAutoAlignResult(baseResult)) return baseResult;
-      const dottedBoundaryResult = makePaperAutoAlignDottedBoundaryResult(analysis, bodyGrid, baseResult);
-      if (dottedBoundaryResult) return dottedBoundaryResult;
-      return baseResult;
+      let baseResult;
+      try { baseResult = makePaperAutoAlignLayoutResult(analysis, bodyGrid, 'standard'); }
+      catch (error) {
+        if(typeof analysis.scanRelativeLines!=='function')throw error;
+        const scan = analysis.scanRelativeLines('x', 12, PAGE_W-12, bodyGrid.bodyTop, bodyGrid.bodyBottom, 8);
+        const hits = scan.filter(function(line){ return line.coverage >= 0.65 && line.relDip >= 1.6; }).map(function(line){return {pos:line.x,maxRun:1,ink:1};});
+        const faint = clusterPaperAutoAlignPositions(hits,6).filter(function(line){return line.thickness <= 8 && !analysis.xLines.some(function(x){return Math.abs(x-line.pos)<=6;});});
+        const recovered = Object.assign({},analysis,{xLines:analysis.xLines.concat(faint.map(function(l){return l.pos;})).sort(function(a,b){return a-b;}),xDetailed:analysis.xDetailed.concat(faint).sort(function(a,b){return a.pos-b.pos;})});
+        try { baseResult=makePaperAutoAlignLayoutResult(recovered,bodyGrid,'faint'); analysis=recovered; }
+        catch (_) { throw error; }
+      }
+      const selected = isStableStandardPaperAutoAlignResult(baseResult) ? baseResult :
+        makePaperAutoAlignDottedBoundaryResult(analysis, bodyGrid, baseResult) || baseResult;
+      return refinePaperAutoAlignCellLabels(selected,analysis);
     }
 
     // 동화 열 수는 자동정렬이 이미 격자로 찾아 둔다(`findPaperAutoAlignFollowerGrid`). 원화 열 수와의
@@ -11657,6 +11789,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const analysis = await analyzePaperAutoAlignLines(state.paperImageDataUrl);
         if (token !== state.paperAutoAlignToken) return;
         const result = inferPaperAutoAlignLayoutFromLines(analysis);
+        const used=getInputLayers();
+        if(result.diagnostics.cellLabelsKnown && (computeOriginalDisplayEntries(used,result.cellColumnCount).length>result.cellColumnCount || used.some(function(layer){return cellColumnLabelToIndex(layer.name)>=result.cellColumnCount;})))
+          throw taggedExportError(doc.columnConflict(result.cellColumnCount),'paper-columns-conflict');
         const templateMatch = matchPaperTemplateFingerprint(result, analysis);
         state.layoutBoxes = result.layoutBoxes;
         state.layoutBoxBaseRects = {};
@@ -15673,11 +15808,12 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return out;
     }
 
-    function computeOriginalDisplayEntries(layers) {
+    function computeOriginalDisplayEntries(layers, columnCount) {
+      const minimumColumns = columnCount == null ? getCellColumnCount() : clampCellColumnCount(columnCount);
       const actualEntries = (layers || []).map(function(layer){ return { uid:layer.uid, label:layer.name, isActual:true }; });
       const hasCsvSourceEntries = actualEntries.some(function(entry){ return /^csv-/.test(String(entry.uid || '')); });
       if (hasCsvSourceEntries) {
-        const targetCount = Math.max(getCellColumnCount(), actualEntries.length, 1);
+        const targetCount = Math.max(minimumColumns, actualEntries.length, 1);
         const sourceOrderEntries = actualEntries.slice();
         for (let i = sourceOrderEntries.length; i < targetCount; i++) {
           sourceOrderEntries.push({ uid:'filler-' + makeCellColumnLabel(i), label:makeCellColumnLabel(i), isActual:false });
@@ -15687,7 +15823,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       let maxLabelIndex = -1;
       actualEntries.forEach(function(entry){ maxLabelIndex = Math.max(maxLabelIndex, cellColumnLabelToIndex(entry.label)); });
       const placementCount = maxLabelIndex >= 0 ? Math.min(maxLabelIndex + 1, MAX_CELL_COLUMN_PLACEMENT_COUNT) : 0;
-      const targetCount = Math.max(getCellColumnCount(), actualEntries.length, placementCount, 1);
+      const targetCount = Math.max(minimumColumns, actualEntries.length, placementCount, 1);
       const entries = [];
       for (let i = 0; i < targetCount; i++) entries.push({ uid:'filler-' + makeCellColumnLabel(i), label:makeCellColumnLabel(i), isActual:false });
       const overflow = [];
@@ -18045,12 +18181,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const dialogArea = getDialogArea(block);
       const cameraArea = getCameraArea(block);
       const x = dialogArea.x + dialogArea.w;
-      return {
-        x:x,
-        y:dialogArea.y,
-        w:Math.max(0, cameraArea.x - x),
-        h:dialogArea.h
-      };
+      const area = { x:x, y:dialogArea.y, w:Math.max(0,cameraArea.x-x), h:dialogArea.h };
+      const key = 'follow-' + getBlockSideKey(block);
+      return state.layoutBoxes && state.layoutBoxes[key] ? getLayoutBoxRect(key,area) : area;
     }
 
     function addPaperImageLayer() {
@@ -18996,6 +19129,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         addPositionEditBox('cell-label-' + blockSide, labelArea, 'Cell label ' + blockSide, { grips:['n'], lockMove:true });
         addPositionEditBox('cell-' + blockSide, { x:params.blockX, y:top + nameStripH, w:params.originalAreaW, h:bodyH }, 'Cell ' + blockSide, { columnGuideCount:params.originalEntries.length });
         addPositionEditBox('dialog-' + blockSide, { x:xOriginalRight, y:top + nameStripH, w:params.dialogW, h:bodyH }, 'Dialog ' + blockSide);
+        if(state.layoutBoxes['follow-'+blockSide]) addPositionEditBox('follow-'+blockSide,getInbetweenArea(params),'Inbetween '+blockSide);
         addPositionEditBox('camera-' + blockSide, { x:xInbetweenRight, y:top + nameStripH, w:params.cameraW, h:bodyH }, 'Camera ' + blockSide);
       });
       renderShakuFrameLines(returnedBlock, params.interactive);
