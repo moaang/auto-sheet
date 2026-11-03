@@ -283,6 +283,10 @@
     .app-dialog-header button { flex:none; }
     .app-dialog-body { min-width:0; }
     .drawing-count-dialog { width:min(550px,calc(100vw - 24px)); max-height:calc(100dvh - 32px); overflow:auto; }
+    .cut-folder-dialog { width:min(640px,calc(100vw - 24px)); max-height:calc(100dvh - 32px); overflow:auto; }
+    .cut-folder-report { margin:0; white-space:pre-wrap; word-break:break-all; font-size:12px; line-height:1.5; max-height:60dvh; overflow:auto; }
+    .cut-folder-choices { display:flex; flex-direction:column; gap:6px; align-items:stretch; }
+    .cut-folder-choices .toolbar-btn { text-align:left; overflow-wrap:anywhere; }
     .drawing-count-table { width:100%; border-collapse:collapse; text-align:right; font-variant-numeric:tabular-nums; }
     .drawing-count-table th,.drawing-count-table td { padding:12px 8px; border-bottom:1px solid var(--line,#ddd); overflow-wrap:anywhere; }
     .drawing-count-table th:first-child { text-align:left; }
@@ -2608,7 +2612,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '974';
+    const APP_VERSION = '975';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3196,7 +3200,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     const uiTexts = {
       en: {
         languageLabel:'Language', headerCardTitle:'Header', episodeLabel:'Ep.no', titleLabel:'Title', cutNoLabel:'Cut.no', secondsLabel:'Duration sec', framesLabel:'Duration frame', authorLabel:'name', pageLabel:'Page',
-        drawingCountTitle:"Drawing count", drawingCountCell:"Cell", drawingCountNumbered:"Numbered drawings", drawingCountInbetweens:"Inbetweens", drawingCountTotal:"Total", drawingCountPending:"Check required", drawingCountDisplay:"Display", drawingCountOff:"Off", drawingCountBottom:"Header bottom right", drawingCountTop:"Header top right", drawingCountCsv:"Save CSV", drawingCountText:"Save text", drawingCountClose:"Close", drawingCountHint:"Reused drawings and repeats count once. Unplaced ranges require checking.", drawingCountWork:"Work", drawingCountEpisode:"Episode", drawingCountCut:"Cut",
+        drawingCountTitle:"Drawing count", drawingCountCell:"Cell", drawingCountNumbered:"Numbered drawings", drawingCountInbetweens:"Inbetweens", drawingCountTotal:"Total", drawingCountPending:"Check required", drawingCountDisplay:"Display", drawingCountOff:"Off", drawingCountBottom:"Header bottom right", drawingCountTop:"Header top right", drawingCountCsv:"Save CSV", drawingCountText:"Save text", drawingCountClose:"Close", drawingCountHint:"Reused drawings and repeats count once. Unplaced ranges require checking.", drawingCountWork:"Work", drawingCountEpisode:"Episode", drawingCountCut:"Cut", cutFolderTitle:"Cut folder check", cutFolderOpened:"Opened sheet", cutFolderNone:"none", cutFolderReading:"Reading folder…", cutFolderPartial:"Only the first 5,000 files were read.", cutFolderPaperOnly:"Only a paper image was opened, so cel numbers were not compared.", cutFolderNoSheet:"No sheet file was found, so cel numbers were not compared.", cutFolderSheetCount:"sheet", cutFolderFileCount:"files", cutFolderSheetOnly:"On the sheet, no file", cutFolderFileOnly:"File only, not on the sheet", cutFolderGaps:"Missing numbers between files", cutFolderUnresolved:"Cel file without a number", cutFolderUnmapped:"Names not on the sheet", cutFolderPlates:"BG / BOOK", cutFolderReferences:"References and guides", cutFolderOther:"Other files", cutFolderCopy:"Copy", cutFolderChoose:"Choose the sheet file", cutFolderCancel:"Cancel", cutFolderOneOnly:"Drop one cut folder at a time.",
         originalCellTitle:'Sheet Input', inputModeLabel:'Input Mode', inputModeTextCommands:'Edit', inputModeCsv:'Import file', csvReadSettings:'CSV read settings', tvpPanelDownload:'TVPaint panel', csvSettingsExportBtn:'Save Project', shakuEditBtn:'Length Edit', shakuEditHint:'Drag a blue frame line to select a range.', shakuCutBtn:'Cut', shakuStretchBtn:'Extend', shakuUndoBtn:'Undo', shakuRedoBtn:'Redo', shakuFlashCut:'Cut applied', shakuFlashStretch:'Extend applied', dougaSheetCreate:'Make Douga', dougaSheetRefresh:'Refresh Douga', dougaSheetTitle:'Generate a read-only douga sheet from Cell numbers and dot marks', cellReadabilityTitle:'Large Cell text',
         textCommandsLabel:'Text Commands', csvFileLabel:'CLIP / TVPaint · Choose or drop a file', csvCommandEditLabel:'Editable Commands from CSV',
         dialogBlocksTitle:'Dialog Area', dialogFormatLabel:'Ex: 0+01 | 1+00 | speaker | line  (start | end | who | what)', cameraBlocksTitle:'Camera Area', cameraFormatLabel:'Ex: 0+01 | 1+00 | A | PAN | B  (start | end | from | move | to)', cameraExamplesTitle:'Examples',
@@ -3206,7 +3210,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       },
       ja: {
         languageLabel:'言語', headerCardTitle:'ヘッダー', episodeLabel:'話数', titleLabel:'タイトル', cutNoLabel:'カット番号', secondsLabel:'尺 秒', framesLabel:'尺 コマ', authorLabel:'名前', pageLabel:'ページ',
-        drawingCountTitle:"動画枚数", drawingCountCell:"セル", drawingCountNumbered:"番号絵", drawingCountInbetweens:"中割り", drawingCountTotal:"合計", drawingCountPending:"要確認", drawingCountDisplay:"表示", drawingCountOff:"非表示", drawingCountBottom:"ヘッダー右下", drawingCountTop:"ヘッダー右上", drawingCountCsv:"CSV保存", drawingCountText:"テキスト保存", drawingCountClose:"閉じる", drawingCountHint:"同じ絵の再使用・リピートは1枚として集計。仮置き区間は要確認。", drawingCountWork:"作品", drawingCountEpisode:"話数", drawingCountCut:"カット",
+        drawingCountTitle:"動画枚数", drawingCountCell:"セル", drawingCountNumbered:"番号絵", drawingCountInbetweens:"中割り", drawingCountTotal:"合計", drawingCountPending:"要確認", drawingCountDisplay:"表示", drawingCountOff:"非表示", drawingCountBottom:"ヘッダー右下", drawingCountTop:"ヘッダー右上", drawingCountCsv:"CSV保存", drawingCountText:"テキスト保存", drawingCountClose:"閉じる", drawingCountHint:"同じ絵の再使用・リピートは1枚として集計。仮置き区間は要確認。", drawingCountWork:"作品", drawingCountEpisode:"話数", drawingCountCut:"カット", cutFolderTitle:"カットフォルダ照合", cutFolderOpened:"開いたシート", cutFolderNone:"なし", cutFolderReading:"フォルダを読み込み中…", cutFolderPartial:"先頭の5,000ファイルだけ読み込みました。", cutFolderPaperOnly:"用紙画像だけを開いたため、セル番号は照合していません。", cutFolderNoSheet:"シートファイルが見つからないため、セル番号は照合していません。", cutFolderSheetCount:"シート", cutFolderFileCount:"ファイル", cutFolderSheetOnly:"シートにあってファイルがない", cutFolderFileOnly:"ファイルだけでシートにない", cutFolderGaps:"ファイル番号の抜け", cutFolderUnresolved:"番号のないセルファイル", cutFolderUnmapped:"シートにない名前", cutFolderPlates:"BG・BOOK", cutFolderReferences:"参考・ガイド", cutFolderOther:"その他のファイル", cutFolderCopy:"コピー", cutFolderChoose:"シートファイルを選択", cutFolderCancel:"キャンセル", cutFolderOneOnly:"カットフォルダは1つずつドロップしてください。",
         originalCellTitle:'シート入力', inputModeLabel:'入力モード', inputModeTextCommands:'直接入力', inputModeCsv:'ファイル読込', csvReadSettings:'CSV読み込み設定', tvpPanelDownload:'TVPaint用パネル', csvSettingsExportBtn:'プロジェクト保存', shakuEditBtn:'尺編集(演出向け)', shakuEditHint:'青いフレーム線をドラッグして尺を選択', shakuCutBtn:'切る', shakuStretchBtn:'伸ばす', shakuUndoBtn:'取り消し', shakuRedoBtn:'やり直し', shakuFlashCut:'切る 反映', shakuFlashStretch:'伸ばす 反映', dougaSheetCreate:'動画作成', dougaSheetRefresh:'動画更新', dougaSheetTitle:'Cell番号と動画点から編集不可の動画欄を生成', cellReadabilityTitle:'Cell文字を大きく表示',
         textCommandsLabel:'テキストコマンド', csvFileLabel:'CLIP / TVPaint · 選択またはドロップ', csvCommandEditLabel:'CSVから生成された編集可能コマンド',
         dialogBlocksTitle:'セリフ欄', dialogFormatLabel:'例: 0+01 | 1+00 | 話者 | セリフ（始まり｜終わり｜だれ｜なに）', cameraBlocksTitle:'カメラ欄', cameraFormatLabel:'例: 0+01 | 1+00 | A | PAN | B（始まり｜終わり｜前｜動き｜後）', cameraExamplesTitle:'例',
@@ -3216,7 +3220,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       },
       ko: {
         languageLabel:'언어', headerCardTitle:'헤더', episodeLabel:'화수', titleLabel:'제목', cutNoLabel:'컷 번호', secondsLabel:'길이 초', framesLabel:'길이 프레임', authorLabel:'이름', pageLabel:'페이지',
-        drawingCountTitle:"동화 매수", drawingCountCell:"셀", drawingCountNumbered:"번호 그림", drawingCountInbetweens:"중간그림", drawingCountTotal:"합계", drawingCountPending:"확인 필요", drawingCountDisplay:"표시", drawingCountOff:"표시 안 함", drawingCountBottom:"헤더 우하단", drawingCountTop:"헤더 우상단", drawingCountCsv:"CSV 저장", drawingCountText:"텍스트 저장", drawingCountClose:"닫기", drawingCountHint:"재사용·리피트는 한 번만 셉니다. 가배치 구간은 확인이 필요합니다.", drawingCountWork:"작품", drawingCountEpisode:"화수", drawingCountCut:"컷",
+        drawingCountTitle:"동화 매수", drawingCountCell:"셀", drawingCountNumbered:"번호 그림", drawingCountInbetweens:"중간그림", drawingCountTotal:"합계", drawingCountPending:"확인 필요", drawingCountDisplay:"표시", drawingCountOff:"표시 안 함", drawingCountBottom:"헤더 우하단", drawingCountTop:"헤더 우상단", drawingCountCsv:"CSV 저장", drawingCountText:"텍스트 저장", drawingCountClose:"닫기", drawingCountHint:"재사용·리피트는 한 번만 셉니다. 가배치 구간은 확인이 필요합니다.", drawingCountWork:"작품", drawingCountEpisode:"화수", drawingCountCut:"컷", cutFolderTitle:"컷 폴더 대조", cutFolderOpened:"연 시트", cutFolderNone:"없음", cutFolderReading:"폴더를 읽는 중…", cutFolderPartial:"앞의 5,000개 파일만 읽었습니다.", cutFolderPaperOnly:"용지 이미지만 열어서 셀 번호는 대조하지 않았습니다.", cutFolderNoSheet:"시트 파일을 찾지 못해 셀 번호는 대조하지 않았습니다.", cutFolderSheetCount:"시트", cutFolderFileCount:"파일", cutFolderSheetOnly:"시트에 있고 파일 없음", cutFolderFileOnly:"파일만 있고 시트에 없음", cutFolderGaps:"파일 번호의 빈 곳", cutFolderUnresolved:"번호 없는 셀 파일", cutFolderUnmapped:"시트에 없는 이름", cutFolderPlates:"BG·BOOK", cutFolderReferences:"참고·가이드", cutFolderOther:"기타 파일", cutFolderCopy:"복사", cutFolderChoose:"시트 파일 선택", cutFolderCancel:"취소", cutFolderOneOnly:"컷 폴더는 하나씩 놓아 주세요.",
         originalCellTitle:'시트 입력', inputModeLabel:'입력 방식', inputModeTextCommands:'직접 입력', inputModeCsv:'파일에서 가져오기', csvReadSettings:'CSV 읽기 설정', tvpPanelDownload:'TVPaint용 패널', csvSettingsExportBtn:'프로젝트 저장', shakuEditBtn:'연출용 편집툴', shakuEditHint:'파란 프레임선을 드래그해 길이를 선택', shakuCutBtn:'자르기', shakuStretchBtn:'늘리기', shakuUndoBtn:'되돌리기', shakuRedoBtn:'다시 실행', shakuFlashCut:'자르기 반영', shakuFlashStretch:'늘리기 반영', dougaSheetCreate:'동화시트 작성', dougaSheetRefresh:'동화시트 갱신', dougaSheetTitle:'셀 번호와 동화점으로 수정 불가능한 동화칸 생성', cellReadabilityTitle:'셀 글자 크게 보기',
         textCommandsLabel:'텍스트 커맨드', csvFileLabel:'CLIP / TVPaint · 선택 또는 드롭', csvCommandEditLabel:'CSV에서 생성된 편집 가능 커맨드',
         dialogBlocksTitle:'대사란', dialogFormatLabel:'예: 0+01 | 1+00 | 화자 | 대사（시작｜끝｜누가｜무엇）', cameraBlocksTitle:'카메라란', cameraFormatLabel:'예: 0+01 | 1+00 | A | PAN | B（시작｜끝｜이전｜움직임｜이후）', cameraExamplesTitle:'예시',
@@ -3226,7 +3230,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       },
       zh: {
         languageLabel:'语言', headerCardTitle:'页眉', episodeLabel:'集数', titleLabel:'标题', cutNoLabel:'镜头编号', secondsLabel:'时长 秒', framesLabel:'时长 帧', authorLabel:'姓名', pageLabel:'页码',
-        drawingCountTitle:"动画张数", drawingCountCell:"层", drawingCountNumbered:"编号图", drawingCountInbetweens:"中间画", drawingCountTotal:"合计", drawingCountPending:"需确认", drawingCountDisplay:"显示", drawingCountOff:"不显示", drawingCountBottom:"页眉右下", drawingCountTop:"页眉右上", drawingCountCsv:"保存CSV", drawingCountText:"保存文本", drawingCountClose:"关闭", drawingCountHint:"重复使用和循环只计一次。临时区间需确认。", drawingCountWork:"作品", drawingCountEpisode:"集数", drawingCountCut:"镜头",
+        drawingCountTitle:"动画张数", drawingCountCell:"层", drawingCountNumbered:"编号图", drawingCountInbetweens:"中间画", drawingCountTotal:"合计", drawingCountPending:"需确认", drawingCountDisplay:"显示", drawingCountOff:"不显示", drawingCountBottom:"页眉右下", drawingCountTop:"页眉右上", drawingCountCsv:"保存CSV", drawingCountText:"保存文本", drawingCountClose:"关闭", drawingCountHint:"重复使用和循环只计一次。临时区间需确认。", drawingCountWork:"作品", drawingCountEpisode:"集数", drawingCountCut:"镜头", cutFolderTitle:"镜头文件夹核对", cutFolderOpened:"已打开的摄影表", cutFolderNone:"无", cutFolderReading:"正在读取文件夹…", cutFolderPartial:"只读取了前 5,000 个文件。", cutFolderPaperOnly:"只打开了用纸图像，因此未核对层编号。", cutFolderNoSheet:"未找到摄影表文件，因此未核对层编号。", cutFolderSheetCount:"摄影表", cutFolderFileCount:"文件", cutFolderSheetOnly:"摄影表有、文件没有", cutFolderFileOnly:"只有文件、摄影表没有", cutFolderGaps:"文件编号的缺号", cutFolderUnresolved:"没有编号的层文件", cutFolderUnmapped:"摄影表中没有的名称", cutFolderPlates:"BG・BOOK", cutFolderReferences:"参考・指南", cutFolderOther:"其他文件", cutFolderCopy:"复制", cutFolderChoose:"选择摄影表文件", cutFolderCancel:"取消", cutFolderOneOnly:"请一次只拖入一个镜头文件夹。",
         originalCellTitle:'表格输入', inputModeLabel:'输入模式', inputModeTextCommands:'直接输入', inputModeCsv:'从文件导入', csvReadSettings:'CSV读取设置', tvpPanelDownload:'TVPaint 面板', csvSettingsExportBtn:'保存项目', shakuEditBtn:'时长编辑', shakuEditHint:'拖动蓝色帧线选择范围', shakuCutBtn:'切除', shakuStretchBtn:'延长', shakuUndoBtn:'撤销', shakuRedoBtn:'重做', shakuFlashCut:'切除已应用', shakuFlashStretch:'延长已应用', dougaSheetCreate:'生成动画栏', dougaSheetRefresh:'刷新动画栏', dougaSheetTitle:'由 Cell 编号和动画点生成只读动画栏', cellReadabilityTitle:'放大 Cell 文字',
         textCommandsLabel:'文本命令', csvFileLabel:'CLIP / TVPaint · 选择或拖放', csvCommandEditLabel:'从 CSV 生成的可编辑命令',
         dialogBlocksTitle:'对白栏', dialogFormatLabel:'例: 0+01 | 1+00 | 说话人 | 台词（起始｜结束｜谁｜内容）', cameraBlocksTitle:'摄影机栏', cameraFormatLabel:'例: 0+01 | 1+00 | A | PAN | B（起始｜结束｜之前｜运动｜之后）', cameraExamplesTitle:'示例',
@@ -3917,6 +3921,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver975", "Drop a whole cut folder to open its sheet and check the cel files", ["Drag a cut folder onto the sheet. The sheet file inside it (settings JSON, .xdts, .clip, .tvpp, CSV or the paper image) opens the usual way; when there are several you choose one.", "A report then shows, for each cel column, numbers on the sheet that have no image file, image files whose number is not on the sheet, and gaps between file numbers. BG/BOOK, references and other files are listed apart, and old or pool folders are skipped. The sheet itself is not changed.", "When only a paper image is found, numbers are not compared."]],
         ["ver974", "Auto Align on marked-up paper restored", ["Auto Align on paper with shaded frames or hand-drawn lines works as it did before ver972. The two earlier changes are withdrawn while a sturdier approach is prepared."]],
         ["ver973", "Auto Align beside hand-drawn lines", ["Auto Align no longer shifts the cel columns by one when a line is drawn by hand right next to a printed column border."]],
         ["ver972", "Auto Align on marked-up paper", ["Auto Align now finds the printed rows and columns on paper where unused frames are shaded dark or long hold lines are drawn through the cels."]],
@@ -4032,6 +4037,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver975", "カットフォルダごとドロップしてシートを開き、セルファイルを照合", ["カットフォルダをシートにドラッグすると、中のシートファイル（設定JSON・.xdts・.clip・.tvpp・CSV・用紙画像）をいつもどおり開きます。複数あるときは選べます。", "続いて、セルの列ごとに「シートにあってファイルがない番号」「シートにない番号のファイル」「ファイル番号の抜け」を報告します。BG・BOOK、参考、その他のファイルは別にまとめ、old・pool などのフォルダは読み飛ばします。シート自体は変更しません。", "用紙画像しか見つからないときは番号を照合しません。"]],
         ["ver974", "書き込みのある用紙の自動整列を元に戻しました", ["塗りつぶしや手描き線のある用紙の自動整列を ver972 より前の動作に戻しました。より確かな方法を準備するため、前の2つの変更を取り下げます。"]],
         ["ver973", "手描き線のそばの自動整列", ["印刷された列の境界線のすぐ横に手で線を引いた用紙でも、自動整列がセル列を1列ずらさなくなりました。"]],
         ["ver972", "書き込みのある用紙の自動整列", ["使わないコマを濃く塗った用紙や、セル欄に長い線を引いた用紙でも、自動整列が印刷された行と列を正しく見つけます。"]],
@@ -4147,6 +4153,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver975", "컷 폴더째 드롭해서 시트를 열고 셀 파일을 대조", ["컷 폴더를 시트에 끌어다 놓으면 안의 시트 파일(설정 JSON·.xdts·.clip·.tvpp·CSV·용지 이미지)을 평소처럼 엽니다. 여럿이면 고를 수 있습니다.", "이어서 셀 열마다 「시트에 있고 파일 없는 번호」「시트에 없는 번호의 파일」「파일 번호의 빈 곳」을 보고합니다. BG·BOOK, 참고, 기타 파일은 따로 묶고, old·pool 같은 폴더는 건너뜁니다. 시트 자체는 바꾸지 않습니다.", "용지 이미지만 있으면 번호는 대조하지 않습니다."]],
         ["ver974", "기입이 있는 용지의 자동정렬 되돌림", ["칠한 칸이나 손으로 그은 선이 있는 용지의 자동정렬을 ver972 이전 동작으로 되돌렸습니다. 더 확실한 방법을 준비하는 동안 앞의 두 변경을 거둡니다."]],
         ["ver973", "손으로 그은 선 옆의 자동정렬", ["인쇄된 열 경계선 바로 옆에 손으로 선을 그은 용지에서도 자동정렬이 셀 열을 한 칸 밀어 잡지 않습니다."]],
         ["ver972", "기입이 있는 용지의 자동정렬", ["쓰지 않는 칸을 짙게 칠한 용지나 셀 칸에 긴 선을 그은 용지에서도 자동정렬이 인쇄된 행과 열을 제대로 찾습니다."]],
@@ -4262,6 +4269,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver975", "整个镜头文件夹拖入即可打开摄影表并核对层文件", ["把镜头文件夹拖到摄影表上，会按平常方式打开其中的摄影表文件（设置 JSON、.xdts、.clip、.tvpp、CSV 或用纸图像）；有多个时可以选择。", "随后按每个层列报告：摄影表上有但没有文件的编号、摄影表上没有的编号的文件、文件编号的缺号。BG・BOOK、参考和其他文件单独列出，old、pool 等文件夹会跳过。摄影表本身不会被修改。", "只找到用纸图像时不核对编号。"]],
         ["ver974", "恢复有书写内容的用纸自动对齐", ["有涂色格子或手绘线条的用纸，自动对齐恢复为 ver972 之前的行为。在准备更可靠的方法期间，撤回前两项更改。"]],
         ["ver973", "手绘线旁的自动对齐", ["在印刷的列边界线旁边手绘线条的用纸上，自动对齐不再把赛璐珞列错开一列。"]],
         ["ver972", "有书写内容的用纸自动对齐", ["即使用纸上未使用的格子被涂深，或在赛璐珞栏里画了长线，自动对齐也能正确找到印刷的行和列。"]],
@@ -25552,6 +25560,320 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return name.endsWith('.json') || type === 'application/json';
     }
 
+    // ══ 컷 폴더 드롭 ① 파일 판별 ════════════════════════════════════════════════════════════════════════════
+    // 컷 폴더 안 파일 하나의 역할과 셀 번호를 정한다. 파일 이름 규칙은 MoArt 폴더 가져오기(gengaScanSheetFolder 계열)의
+    // 정규화를 따르되, 점수·순서 배정은 쓰지 않는다 — 번호 목록을 만드는 데 쓰면 다른 열·가이드·시트 이미지를 셀로 잡았다
+    // (실제 폴더 판례: tools/test_cut_folder.cjs). 셀 이름은 시트 열 이름과 대조하고, 시트에 없는 이름은 버리지 않고 보고한다.
+    const CUT_FOLDER_SKIP_DIRS = /^(OLD|POOL|X|参考|SANKO|SANNKOU|SANKOU|BACKUP|BACKUPS|ASSETS|\.GIT)$/;
+    const CUT_FOLDER_IMAGE_EXT = /^(jpe?g|png|webp|gif|bmp|avif|tiff?|psd)$/;
+    const CUT_FOLDER_SHEET_EXT = /^(clip|tvpp|xdts|csv|json)$/;
+    const CUT_FOLDER_REFERENCE_TOKENS = new Set(['GUIDE', 'SANKOU', 'SANKO', '参考', 'REF', 'REFERENCE']);
+    const CUT_FOLDER_REFERENCE_NAMES = new Set(['LO', 'PAN', 'ALL']);
+
+    function cutFolderCompactKey(text) {
+      return String(text || '').normalize('NFKC').toUpperCase().replace(/[\s_\-]+/g, '');
+    }
+
+    function cutFolderTokens(text) {
+      return String(text || '').normalize('NFKC').toUpperCase().split(/[\s_\-]+/).filter(Boolean);
+    }
+
+    function classifyCutFolderFile(relPath, layerNames) {
+      const parts = String(relPath || '').replace(/\\/g, '/').split('/').filter(Boolean);
+      const fileName = parts.pop() || '';
+      const dot = fileName.lastIndexOf('.');
+      const ext = dot > 0 ? fileName.slice(dot + 1).toLowerCase() : '';
+      const rawBase = (dot > 0 ? fileName.slice(0, dot) : fileName).normalize('NFKC');
+      const out = { path:String(relPath || ''), kind:'other', layer:null, number:null, revision:'', tail:'' };
+      if (parts.some(function(dir){ return CUT_FOLDER_SKIP_DIRS.test(cutFolderCompactKey(dir)); })) return Object.assign(out, { kind:'ignored' });
+      if (CUT_FOLDER_SHEET_EXT.test(ext)) return Object.assign(out, { kind:'sheet' });
+      if (!CUT_FOLDER_IMAGE_EXT.test(ext)) return out;
+      // 시트 용지: 이름에 ts·sheet 토큰(압축 키로는 _ts_ 구분자가 사라지므로 원래 이름으로 본다)
+      if (/(^|[_\-\s.])(ts|sheet|timesheet)(?=$|[_\-\s.\d])/i.test(rawBase)) return Object.assign(out, { kind:'paper' });
+      const base = rawBase.replace(/\s*\(\d+\)$/, '').replace(/_\d+%$/, '');
+      const stripped = base.replace(/^_+/, '');
+      const tokens = cutFolderTokens(base);
+      const dirTokens = parts.flatMap(cutFolderTokens);
+      if (tokens.concat(dirTokens).some(function(t){ return CUT_FOLDER_REFERENCE_TOKENS.has(t); })
+        || CUT_FOLDER_REFERENCE_NAMES.has(stripped.toUpperCase())) return Object.assign(out, { kind:'reference' });
+      // BG·BOOK 판: 숫자는 판 이름의 일부다(BOOK2는 BOOK의 2번 그림이 아니다). 「BG1__0001」은 판 BG1의 1번.
+      // MoArt gengaSheetCanonicalBgBook과 같이 BACKGROUND는 BG, 붙은 영문 접미사(BGs)는 수정본으로 본다.
+      const explicitPlate = /^((?:BGBOOK|BOOK|BG)\d*)__0*(\d+(?:\.\d+)?)$/i.exec(stripped);
+      if (explicitPlate) return Object.assign(out, { kind:'plate', layer:explicitPlate[1].toUpperCase(), number:explicitPlate[2] });
+      if (stripped.toUpperCase() === 'BACKGROUND') return Object.assign(out, { kind:'plate', layer:'BG' });
+      const plate = /^(BGBOOK|BOOK|BG)(\d*)(.*)$/i.exec(stripped);
+      if (plate && (!plate[3] || !/^\d/.test(plate[3]))) {
+        const label = plate[1].toUpperCase() + plate[2];
+        if (!plate[3]) return Object.assign(out, { kind:'plate', layer:label });
+        if (/^[A-Za-z][A-Za-z0-9]{0,7}$/.test(plate[3])) return Object.assign(out, { kind:'plate', layer:label, revision:plate[3] });
+        return Object.assign(out, { kind:'unmapped', layer:label + plate[3] });
+      }
+      const labels = (layerNames || []).map(function(name){ return String(name || '').normalize('NFKC').toUpperCase(); })
+        .filter(Boolean).sort(function(a, b){ return b.length - a.length; });
+      const parent = parts.length ? parts[parts.length - 1].normalize('NFKC') : '';
+      const folderRevision = /^(.+?)[_\-]([A-Za-z][A-Za-z0-9]{0,7})$/.exec(parent);
+      const parentLabel = labels.indexOf(parent.toUpperCase()) >= 0 ? parent.toUpperCase()
+        : folderRevision && labels.indexOf(folderRevision[1].toUpperCase()) >= 0 ? folderRevision[1].toUpperCase() : null;
+      const parentSuffix = parentLabel && folderRevision && folderRevision[1].toUpperCase() === parentLabel ? folderRevision[2] : '';
+      const NUM = '0*(\\d+(?:\\.\\d+)?)';
+      function cel(layer, number, suffix, tail) {
+        return Object.assign(out, { kind:'cel', layer:layer, number:number, revision:suffix || (layer === parentLabel ? parentSuffix : ''), tail:tail || '' });
+      }
+      const upper = base.toUpperCase();
+      // 셀 이름으로 시작: 이름 바로 뒤가 숫자여야 한다(CE1을 C의 1로 읽지 않는다). 붙은 접미사(12s·12les2)는 수정본,
+      // 띄어 쓰거나 _로 이은 꼬리(A1 PDF·A6_C1)는 tail로 남긴다.
+      for (let i = 0; i < labels.length; i++) {
+        if (!upper.startsWith(labels[i])) continue;
+        const rest = base.slice(labels[i].length);
+        if (!rest) return Object.assign(out, { kind:'unresolved', layer:labels[i] });
+        const m = new RegExp('^[_\\-\\s]?' + NUM + '([A-Za-z][A-Za-z0-9]{0,7})?(.*)$').exec(rest);
+        if (m && (m[2] === undefined || !m[3] || /^[_\-\s]/.test(m[3]))) return cel(labels[i], m[1], m[2], m[3]);
+      }
+      if (parentLabel) {
+        const m = new RegExp('^' + NUM + '([A-Za-z][A-Za-z0-9]{0,7})?$').exec(base);
+        if (m) return cel(parentLabel, m[1], m[2], '');
+      }
+      for (let i = 0; i < labels.length; i++) {
+        if (labels[i].length > 2) continue;
+        const m = new RegExp('(?:^|[_\\-\\s])' + labels[i] + NUM + '(?=$|[_\\-\\s])', 'i').exec(base);
+        if (m) return cel(labels[i], m[1], '', '');
+      }
+      const unknown = /^([A-Za-z]{1,4})[_\-\s]?0*(\d+(?:\.\d+)?)/.exec(stripped);
+      if (unknown) return Object.assign(out, { kind:'unmapped', layer:unknown[1].toUpperCase(), number:unknown[2] });
+      return out;
+    }
+
+    // ══ 컷 폴더 드롭 ② 폴더 읽기 · 시트 열기 · 셀 번호 대조 ══════════════════════════════════════════════════════════
+    // 폴더를 드롭하면 시트 자료를 골라 기존 로더로 열고, 셀 그림으로 셀별 번호 목록을 만들어 시트의 원문 셀 라벨과 대조한다.
+    // 시트는 바꾸지 않는다. 읽기·선택·열기·보고는 작업 번호 하나로 추적해, 진행 중에 다른 입력이 오면 결과를 버린다.
+    const CUT_FOLDER_FILE_LIMIT = 5000;
+    const CUT_FOLDER_GAP_LIMIT = 50;
+    let cutFolderJob = 0;
+
+    // webkitGetAsEntry()는 drop 이벤트 안에서만 쓸 수 있으므로 먼저 꺼내 둔다.
+    function getDroppedCutFolderEntries(event) {
+      const items = event && event.dataTransfer && event.dataTransfer.items;
+      if (!items) return [];
+      // 폴더가 하나라도 있으면 함께 놓은 낱개 파일도 같은 컷 자료로 넘긴다.
+      const entries = Array.from(items).map(function(item){
+        return item && item.kind === 'file' && typeof item.webkitGetAsEntry === 'function' ? item.webkitGetAsEntry() : null;
+      }).filter(Boolean);
+      return entries.some(function(entry){ return entry.isDirectory; }) ? entries : [];
+    }
+
+    async function readCutFolderEntries(roots, job) {
+      const files = [], skippedDirs = [];
+      let partial = false;
+      // readEntries()는 한 번에 일부만 돌려준다. 빈 배열이 나올 때까지 부르되, 작업이 바뀌거나 상한을 넘으면 멈춘다.
+      function readAll(dir) {
+        return new Promise(function(resolve, reject){
+          const reader = dir.createReader(), out = [];
+          let fileCount = 0;  // 파일만 센다(폴더 항목은 상한에 넣지 않는다)
+          (function next(){
+            if (job !== cutFolderJob) { resolve([]); return; }
+            if (files.length + fileCount > CUT_FOLDER_FILE_LIMIT) { resolve(out); return; }  // 넘친 몫은 walk가 잘림으로 표시한다
+            reader.readEntries(function(batch){
+              if (!batch.length) { resolve(out); return; }
+              out.push.apply(out, batch);
+              fileCount += batch.filter(function(entry){ return entry.isFile; }).length;
+              next();
+            }, reject);
+          })();
+        });
+      }
+      function fileOf(entry) { return new Promise(function(resolve, reject){ entry.file(resolve, reject); }); }
+      async function walk(entry, prefix) {
+        if (job !== cutFolderJob) return;
+        if (files.length >= CUT_FOLDER_FILE_LIMIT) { partial = true; return; }
+        if (entry.isFile) {
+          files.push({ path:prefix + entry.name, file:await fileOf(entry) });
+          return;
+        }
+        if (CUT_FOLDER_SKIP_DIRS.test(cutFolderCompactKey(entry.name))) { skippedDirs.push(prefix + entry.name); return; }
+        const children = await readAll(entry);
+        for (let i = 0; i < children.length; i++) await walk(children[i], prefix + entry.name + '/');
+      }
+      // 컷 폴더는 하나만 받는다(handleCutFolderDrop이 확인). 함께 놓은 낱개 파일은 그 컷의 자료로 본다.
+      const dir = roots.find(function(r){ return r.isDirectory; });
+      for (let r = 0; r < roots.length; r++) {
+        if (roots[r].isFile) { await walk(roots[r], ''); continue; }
+        const children = await readAll(roots[r]);
+        for (let i = 0; i < children.length; i++) await walk(children[i], '');
+      }
+      return { files:files, skippedDirs:skippedDirs, partial:partial, root:dir ? dir.name : '' };
+    }
+
+    async function isAutoSheetSettingsFile(file) {
+      try { return JSON.parse(await readDroppedTextFile(file)).schema === 'auto-sheet-current-settings'; } catch (err) { return false; }
+    }
+
+    // 시트 자료 우선순위: 설정 JSON > XDTS > CLIP > TVPaint > CSV > 용지 이미지. 같은 순위가 여럿이면 고르게 한다.
+    async function pickCutFolderSheet(entries, rootName, job) {
+      const rank = [
+        { kind:'json', test:function(e){ return /\.json$/i.test(e.path); } },
+        { kind:'xdts', test:function(e){ return isXdtsDropFile(e.file); } },
+        { kind:'clip', test:function(e){ return isClipDropFile(e.file); } },
+        { kind:'tvpp', test:function(e){ return isTvppDropFile(e.file); } },
+        { kind:'csv', test:function(e){ return isCsvDropFile(e.file); } },
+        { kind:'paper', test:function(e){ return e.info.kind === 'paper'; } }
+      ];
+      for (let i = 0; i < rank.length; i++) {
+        let found = entries.filter(function(e){ return (e.info.kind === 'sheet' || e.info.kind === 'paper') && rank[i].test(e); });
+        if (rank[i].kind === 'json') {
+          const checked = [];
+          for (let k = 0; k < found.length; k++) if (await isAutoSheetSettingsFile(found[k].file)) checked.push(found[k]);
+          found = checked;
+        }
+        if (job !== cutFolderJob) return null;
+        if (!found.length) continue;
+        // 폴더 이름의 컷 번호가 든 파일을 앞에 둔다
+        const cutKey = (String(rootName || '').match(/\d{2,}/g) || []).pop() || '';
+        found.sort(function(a, b){ return (b.path.indexOf(cutKey) >= 0) - (a.path.indexOf(cutKey) >= 0) || a.path.length - b.path.length; });
+        const chosen = found.length === 1 ? found[0] : await chooseCutFolderSheet(found);
+        return chosen ? { entry:chosen, kind:rank[i].kind } : null;
+      }
+      return { entry:null, kind:null };
+    }
+
+    function chooseCutFolderSheet(candidates) {
+      const doc = uiTexts[state.lang] || uiTexts.en;
+      return new Promise(function(resolve){
+        const backdrop = document.createElement('div'); backdrop.className = 'app-dialog-backdrop';
+        const box = document.createElement('section'); box.className = 'app-dialog cut-folder-dialog'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); box.setAttribute('aria-label', doc.cutFolderChoose);
+        const header = document.createElement('header'); header.className = 'app-dialog-header';
+        const title = document.createElement('h3'); title.textContent = doc.cutFolderChoose; header.appendChild(title); box.appendChild(header);
+        const body = document.createElement('div'); body.className = 'app-dialog-body cut-folder-choices';
+        let done = false;
+        function finish(value) { if (done) return; done = true; unmountAppDialog(backdrop); backdrop.remove(); resolve(value); }
+        candidates.forEach(function(c){
+          const button = document.createElement('button'); button.type = 'button'; button.className = 'toolbar-btn'; button.textContent = c.path;
+          button.addEventListener('click', function(){ finish(c); }); body.appendChild(button);
+        });
+        box.appendChild(body);
+        const actions = document.createElement('div'); actions.className = 'app-dialog-actions';
+        const cancel = document.createElement('button'); cancel.type = 'button'; cancel.className = 'toolbar-btn'; cancel.textContent = doc.cutFolderCancel;
+        cancel.addEventListener('click', function(){ finish(null); }); actions.appendChild(cancel); box.appendChild(actions);
+        backdrop.appendChild(box); document.body.appendChild(backdrop);
+        mountAppDialog(backdrop, { onRequestClose:function(){ finish(null); }, initialFocus:body.querySelector('button') || cancel });
+      });
+    }
+
+    function compareCutFolderNumbers(a, b) {
+      const na = parseFloat(a), nb = parseFloat(b);
+      return (isNaN(na) ? Infinity : na) - (isNaN(nb) ? Infinity : nb) || String(a).localeCompare(String(b));
+    }
+
+    // 시트의 원문 셀 라벨(× 아님)과 파일의 번호를 열별로 대조한다. 동화 매수는 번호를 다시 매기므로 쓰지 않는다.
+    function buildCutFolderReport(layers, entries) {
+      const rows = (layers || []).map(function(layer){
+        const name = String(layer.name || '').normalize('NFKC').toUpperCase();
+        const sheet = new Set();
+        (layer.segments || []).forEach(function(seg){
+          const label = String(seg && seg.label || '').trim().normalize('NFKC');
+          // 파일 번호와 같이 앞자리 0을 뗀 값으로 대조한다(시트 001 = A0001.png)
+          if (seg && seg.kind !== 'cross' && label && label.toLowerCase() !== 'x') sheet.add(/^\d+(\.\d+)?$/.test(label) ? label.replace(/^0+(?=\d)/, '') : label);
+        });
+        const files = new Map();
+        entries.forEach(function(e){
+          if (e.info.kind === 'cel' && e.info.layer === name && e.info.number !== null) {
+            if (!files.has(e.info.number)) files.set(e.info.number, []);
+            files.get(e.info.number).push(e.path);
+          }
+        });
+        const fileNumbers = Array.from(files.keys()).sort(compareCutFolderNumbers);
+        // 빈 번호는 이웃한 번호 사이를 범위로 적는다(번호 범위를 한 칸씩 돌지 않는다)
+        const ints = Array.from(new Set(fileNumbers.map(Number).filter(Number.isSafeInteger))).sort(function(a, b){ return a - b; });
+        const gaps = [];
+        for (let i = 1; i < ints.length && gaps.length < CUT_FOLDER_GAP_LIMIT; i++) {
+          const lo = ints[i - 1] + 1, hi = ints[i] - 1;
+          if (lo <= hi) gaps.push(lo === hi ? String(lo) : lo + '–' + hi);
+        }
+        if (gaps.length >= CUT_FOLDER_GAP_LIMIT) gaps.push('…');
+        return {
+          name:layer.name, sheetCount:sheet.size, fileCount:fileNumbers.length,
+          sheetOnly:Array.from(sheet).filter(function(v){ return !files.has(v); }).sort(compareCutFolderNumbers),
+          fileOnly:fileNumbers.filter(function(v){ return !sheet.has(v); }),
+          gaps:gaps,
+          unresolved:entries.filter(function(e){ return e.info.kind === 'unresolved' && e.info.layer === name; }).map(function(e){ return e.path; })
+        };
+      });
+      const known = new Set(rows.map(function(r){ return String(r.name).normalize('NFKC').toUpperCase(); }));
+      const pick = function(kind){ return entries.filter(function(e){ return e.info.kind === kind; }).map(function(e){ return e.path; }); };
+      return {
+        rows:rows,
+        unmapped:entries.filter(function(e){ return e.info.kind === 'unmapped' || (e.info.kind === 'cel' && !known.has(e.info.layer)); }).map(function(e){ return e.path; }),
+        plates:pick('plate'), references:pick('reference'), other:pick('other')
+      };
+    }
+
+    function cutFolderReportText(report, meta) {
+      const doc = uiTexts[state.lang] || uiTexts.en;
+      const lines = [doc.cutFolderTitle + ': ' + meta.root, doc.cutFolderOpened + ': ' + (meta.sheet || doc.cutFolderNone)];
+      if (meta.partial) lines.push(doc.cutFolderPartial);
+      if (!report) { lines.push(meta.sheet ? doc.cutFolderPaperOnly : doc.cutFolderNoSheet); return lines.join('\n'); }
+      report.rows.forEach(function(r){
+        lines.push('');
+        lines.push(r.name + ' — ' + doc.cutFolderSheetCount + ' ' + r.sheetCount + ' · ' + doc.cutFolderFileCount + ' ' + r.fileCount);
+        if (r.sheetOnly.length) lines.push('  ' + doc.cutFolderSheetOnly + ': ' + r.sheetOnly.join(', '));
+        if (r.fileOnly.length) lines.push('  ' + doc.cutFolderFileOnly + ': ' + r.fileOnly.join(', '));
+        if (r.gaps.length) lines.push('  ' + doc.cutFolderGaps + ': ' + r.gaps.join(', '));
+        if (r.unresolved.length) lines.push('  ' + doc.cutFolderUnresolved + ': ' + r.unresolved.join(', '));
+      });
+      [['unmapped', doc.cutFolderUnmapped], ['plates', doc.cutFolderPlates], ['references', doc.cutFolderReferences], ['other', doc.cutFolderOther]].forEach(function(item){
+        if (report[item[0]].length) { lines.push(''); lines.push(item[1] + ' (' + report[item[0]].length + ')'); report[item[0]].forEach(function(p){ lines.push('  ' + p); }); }
+      });
+      return lines.join('\n');
+    }
+
+    function openCutFolderReportDialog(text) {
+      const doc = uiTexts[state.lang] || uiTexts.en;
+      const backdrop = document.createElement('div'); backdrop.className = 'app-dialog-backdrop';
+      const box = document.createElement('section'); box.className = 'app-dialog cut-folder-dialog'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); box.setAttribute('aria-label', doc.cutFolderTitle);
+      const header = document.createElement('header'); header.className = 'app-dialog-header';
+      const title = document.createElement('h3'); title.textContent = doc.cutFolderTitle; header.appendChild(title);
+      const close = document.createElement('button'); close.type = 'button'; close.className = 'toolbar-btn'; close.textContent = doc.drawingCountClose; header.appendChild(close); box.appendChild(header);
+      const body = document.createElement('div'); body.className = 'app-dialog-body';
+      const pre = document.createElement('pre'); pre.className = 'cut-folder-report'; pre.textContent = text; body.appendChild(pre); box.appendChild(body);
+      const actions = document.createElement('div'); actions.className = 'app-dialog-actions';
+      const copy = document.createElement('button'); copy.type = 'button'; copy.className = 'toolbar-btn'; copy.textContent = doc.cutFolderCopy;
+      copy.addEventListener('click', function(){ if (navigator.clipboard) navigator.clipboard.writeText(text).catch(function(){}); });
+      actions.appendChild(copy); box.appendChild(actions);
+      function finish() { unmountAppDialog(backdrop); backdrop.remove(); }
+      close.addEventListener('click', finish); backdrop.addEventListener('click', function(event){ if (event.target === backdrop) finish(); });
+      backdrop.appendChild(box); document.body.appendChild(backdrop); mountAppDialog(backdrop, { onRequestClose:finish, initialFocus:close });
+    }
+
+    async function handleCutFolderDrop(roots) {
+      const job = ++cutFolderJob;
+      const doc = uiTexts[state.lang] || uiTexts.en;
+      // 여러 컷 폴더를 합치면 한 컷의 빠진 파일을 다른 컷 파일이 가린다
+      if (roots.filter(function(r){ return r.isDirectory; }).length > 1) { setExportStatus(doc.cutFolderOneOnly, { level:'error' }); return; }
+      // 진행 중인 시트·용지 불러오기를 무효화하고, 폴더를 읽는 동안 다른 불러오기가 시작되면 이 작업을 버린다
+      const docGen = ++documentLoadGeneration, paperGen = ++paperLoadGeneration;
+      const current = function(){ return job === cutFolderJob && docGen === documentLoadGeneration && paperGen === paperLoadGeneration; };
+      setExportStatus(doc.cutFolderReading);
+      let scan;
+      try { scan = await readCutFolderEntries(roots, job); }
+      catch (err) { if (job === cutFolderJob) setExportStatus(ioText('loadFailed', { error:err.message || err }), { level:'error' }); return; }
+      if (!current()) return;
+      const entries = scan.files.map(function(f){ return { path:f.path, file:f.file, info:classifyCutFolderFile(f.path, []) }; });
+      const picked = await pickCutFolderSheet(entries, scan.root, job);
+      if (!current() || !picked) { if (job === cutFolderJob) setExportStatus(''); return; }
+      const meta = { root:scan.root, sheet:picked.entry ? picked.entry.path : '', partial:scan.partial };
+      if (picked.entry) {
+        const ok = picked.kind === 'json' ? await loadDroppedSettingsJsonFile(picked.entry.file)
+          : picked.kind === 'paper' ? (await handlePaperImageUpload(picked.entry.file)) === 'loaded'
+          : await loadSheetImportFile(picked.entry.file);
+        if (job !== cutFolderJob || !ok) return;
+      } else setExportStatus('');
+      // 용지 이미지만 열었으면 시트 명령이 앞 컷의 것일 수 있으므로 번호 대조는 하지 않는다.
+      const layers = picked.kind && picked.kind !== 'paper' ? getInputLayers() : null;
+      const names = layers ? layers.map(function(l){ return l.name; }) : [];
+      entries.forEach(function(e){ e.info = classifyCutFolderFile(e.path, names); });
+      const report = layers ? buildCutFolderReport(layers, entries) : null;
+      openCutFolderReportDialog(cutFolderReportText(report, meta));
+    }
+
     function isCsvDropFile(file) {
       if (!file) return false;
       const name = String(file.name || '').toLowerCase();
@@ -27118,6 +27440,15 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     async function handlePreviewFileDrop(event) {
+      const cutEntries = getDroppedCutFolderEntries(event);
+      if (cutEntries.length) {
+        event.preventDefault();
+        event.stopPropagation();
+        clearPreviewFileDropActive();
+        await handleCutFolderDrop(cutEntries);
+        return;
+      }
+      cutFolderJob++;  // 진행 중인 폴더 작업이 있으면 그 결과를 버린다
       const files = getDroppedFiles(event);
       if (!files.length) {
         clearPreviewFileDropActive();
