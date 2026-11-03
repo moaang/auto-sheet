@@ -2612,7 +2612,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '978';
+    const APP_VERSION = '979';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3921,6 +3921,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver979", "Paper Auto Align: preserve 3-second and 6-second sheet layouts", ["Detected 3-second and 6-second paper layouts now take precedence over the number of input layers. Frame numbering and pagination continue correctly after saving and reopening.", "Improved recognition of short label borders and narrow printed letters without merging cells whose borders are missing."]],
         ["ver978", "Paper Auto Align: separate named cel columns from blank auxiliary columns", ["Reads the full printed label cells and excludes confirmed blank edge columns from cel placement. Ambiguous borders keep the previous column count.", "Improved faint-line recovery and two-block detection. Existing input that exceeds the detected named columns is preserved and Auto Align is not applied."]],
         ["ver977", "PSD paper: keep the original layer order", ["Fixed paper grids and text disappearing behind the background when importing a layered PSD."]],
         ["ver976", "Cut folder check: a cel inside a BG/BOOK file name counts", ["A file such as _Book1_A1.jpg is counted as cel A1 (a background that doubles as a cel), so A1 is no longer reported as missing."]],
@@ -4040,6 +4041,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver979", "用紙自動整列：3秒・6秒シートの配置を維持", ["検出した3秒・6秒の用紙構造を入力レイヤー数より優先します。保存して開き直してもコマ番号とページの続きが保たれます。", "短い名前枠の罫線と細い印刷文字の認識を改善。境界線が欠けたセルを誤ってまとめません。"]],
         ["ver978", "用紙自動整列：セル名のある列と空の補助列を区別", ["印刷された名前枠全体を調べ、確定した端の空欄をセル配置から除きます。境界が曖昧な場合は従来の列数を保ちます。", "薄い罫線と左右2ブロックの認識を改善。既存の入力が検出列数を超える場合は入力を保持し、自動整列は適用しません。"]],
         ["ver977", "PSD用紙：元のレイヤー順で読み込み", ["PSDの読み込み時に、用紙の罫線や文字が背景の裏に隠れる問題を修正しました。"]],
         ["ver976", "カットフォルダ照合：BG・BOOK名の中のセル番号を数えます", ["_Book1_A1.jpg のようなファイルを A1 のセルとして数えます（セルを兼ねる背景）。A1 がファイルなしと出なくなりました。"]],
@@ -4159,6 +4161,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver979", "용지 자동정렬: 3초·6초 시트 구조 유지", ["인식한 3초·6초 용지 구조를 입력 층 수보다 우선합니다. 저장하고 다시 열어도 프레임 번호와 페이지 연결을 유지합니다.", "짧은 이름 칸 경계와 가는 인쇄 글자 인식을 개선했습니다. 경계가 빠진 칸을 잘못 합쳐 확정하지 않습니다."]],
         ["ver978", "용지 자동정렬: 셀 이름 칸과 빈 보조칸 구분", ["인쇄된 이름 칸 전체를 읽고, 확정된 양끝 빈 보조칸을 셀 배치에서 제외합니다. 경계가 불명확하면 기존 열 수를 유지합니다.", "흐린 선과 좌우 두 블록 인식을 개선했습니다. 기존 입력이 검출한 셀 열 수를 넘으면 입력을 보존하고 자동정렬을 적용하지 않습니다."]],
         ["ver977", "PSD 용지: 원래 레이어 순서로 불러오기", ["PSD를 불러올 때 용지의 격자와 글자가 배경 뒤에 가려지던 문제를 고쳤습니다."]],
         ["ver976", "컷 폴더 대조: BG·BOOK 이름 안의 셀 번호를 셉니다", ["_Book1_A1.jpg 같은 파일을 A1 셀로 셉니다(셀을 겸하는 배경). A1이 파일 없음으로 나오지 않습니다."]],
@@ -4278,6 +4281,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver979", "纸张自动对齐：保持3秒和6秒纸张布局", ["识别出的3秒或6秒纸张结构优先于输入图层数量。保存并重新打开后，帧编号和分页保持连续。", "改进短名称框边线和细印刷字符的识别，避免将缺少边界的单元格错误合并。"]],
         ["ver978", "纸张自动对齐：区分命名单元格列与空白辅助列", ["识别完整的印刷名称框，将确认的两端空白辅助列排除在层排列之外。边界不明确时保留原列数。", "改进浅色线条和左右双区块识别。现有输入超出检测列数时保留输入，不应用自动对齐。"]],
         ["ver977", "PSD纸张：保留原始图层顺序", ["修复导入分层PSD时，纸张网格和文字被背景遮住的问题。"]],
         ["ver976", "镜头文件夹核对：计入 BG・BOOK 名称中的层编号", ["像 _Book1_A1.jpg 这样的文件会算作 A1 层（兼作层的背景），A1 不再显示为没有文件。"]],
@@ -9028,9 +9032,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return out;
     }
 
-    // 본문 테두리가 페이지 가운데를 관통하는가 = 박스가 통짜인가. 2블록 용지는 좌·우 박스 사이가
-    // 끊겨 있고, 1블록 용지는 이어져 있다. 위·아래 **둘 다** 관통해야 1블록으로 본다 — 상단
-    // 테두리만 페이지를 가로지르는 용지가 실제로 있어(8bit·A1·doga) 한쪽만 보면 오판한다.
+    // 3초 용지는 본문 위·중앙·아래 선이 페이지 가운데를 관통한다. 6초 용지에서도 위·아래
+    // 테두리는 이어질 수 있으므로 본문 중앙 선까지 대조한다.
     function isPaperAutoAlignSingleBlockPaper(analysis, bodyGrid) {
       if (!analysis || typeof analysis.isDarkNear !== 'function' || !bodyGrid) return false;
       function crossesMiddle(y) {
@@ -11339,7 +11342,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const inner = analysis.xLines.filter(function(x){ return x >= left-2 && x <= right+2; });
       if (inner.length < 3) return null;
       const pitch = medianPaperAutoAlignNumber(inner.slice(1).map(function(x,i){return x-inner[i];}));
-      const nearby = analysis.xLines.filter(function(x){return x>=left-pitch-2 && x<=right+pitch+2;});
+      const nearby = fillPaperAutoAlignVerticalGaps(analysis.xLines).filter(function(x){return x>=left-pitch-2 && x<=right+pitch+2;});
       let edges = null;
       const bottom = Math.min.apply(null,[bodyGrid.bodyTop].concat(analysis.yLines.filter(function(y){return y<=bodyGrid.bodyTop && y>=bodyGrid.bodyTop-bodyGrid.rowH*0.5;})));
       const starts=analysis.xDetailed.filter(function(line){return nearby.some(function(x){return Math.abs(x-line.pos)<=2;})&&Number.isFinite(line.runStart);}).map(function(line){return line.runStart;});
@@ -11362,12 +11365,12 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         borderCache.set(key,found);return found;
       }
       const top = tops.find(function(y){
+        const borders=nearby.filter(function(x){return hasPrintedBorder('x',y,bottom,x);});
         let run=[],best=[];
-        for(let i=1;i<nearby.length;i++){
-          if(hasPrintedBorder('y',nearby[i-1],nearby[i],y)&&hasPrintedBorder('y',nearby[i-1],nearby[i],bottom)&&
-             hasPrintedBorder('x',y,bottom,nearby[i-1])&&hasPrintedBorder('x',y,bottom,nearby[i])){
-            if(!run.length)run.push(nearby[i-1]);
-            run.push(nearby[i]);
+        for(let i=1;i<borders.length;i++){
+          if(hasPrintedBorder('y',borders[i-1],borders[i],y)&&hasPrintedBorder('y',borders[i-1],borders[i],bottom)){
+            if(!run.length)run.push(borders[i-1]);
+            run.push(borders[i]);
             if(run.length>best.length)best=run.slice();
           }
           else run=[];
@@ -11384,7 +11387,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           if(!analysis.isDarkNear(x,y,0))continue;
           count++;minX=Math.min(minX,x);maxX=Math.max(maxX,x);minY=Math.min(minY,y);maxY=Math.max(maxY,y);
         }
-        const hasInk=count>=6 && maxX-minX>=2 && maxY-minY>=3;
+        const hasInk=count>=6 && maxX-minX>=1 && maxY-minY>=3;
         return {hasInk:hasInk,inkTop:hasInk?minY:null,inkBottom:hasInk?maxY:null};
       }
       const cells = edges.slice(1).map(function(x2,index){
@@ -11396,7 +11399,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const activeWidths=occupied.map(function(i){return cells[i].w;});
       const width=medianPaperAutoAlignNumber(activeWidths);
       const complete=!measureInkWithin(left,edges[0]).hasInk&&!measureInkWithin(edges[edges.length-1],right).hasInk;
-      return {cells:cells,top:top,known:complete && occupied.length===last-first+1 && activeWidths.every(function(w){return Math.abs(w-width)<=Math.max(2,width*0.2);}),
+      return {cells:cells,top:top,known:complete && occupied.length===last-first+1 && activeWidths.every(function(w){return Math.abs(w-width)<=Math.max(2,width*0.2)&&Math.abs(w-pitch)<=Math.max(2,pitch*0.2);}),
         signature:cells.map(function(c){return c.hasInk?'1':'0';}).join(''),
         columns:occupied.length,left:cells[first].x,right:cells[last].x+cells[last].w};
     }
@@ -11412,9 +11415,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const dialog=result.layoutBoxes['dialog-'+side],camera=result.layoutBoxes['camera-'+side];
         return dialog&&camera ? detectPaperAutoAlignCellLabels(analysis,body,dialog.x+dialog.w,camera.x) : null;
       });
-      const followKnown=followRuns.every(function(run){return run&&run.known&&run.signature===followRuns[0].signature;});
-      const uniform=followKnown&&followRuns.every(function(run){const active=run.cells.filter(function(c){return c.hasInk;});return active.every(function(cell,i){return Math.abs(cell.x-(run.left+(run.right-run.left)*i/run.columns))<=2&&Math.abs(cell.x+cell.w-(run.left+(run.right-run.left)*(i+1)/run.columns))<=2;});});
-      const representable=!known||!followKnown||(uniform&&[0,-1].includes(followRuns[0].columns-runs[0].columns));
+      const followNamesKnown=followRuns.every(function(run){return run&&run.known&&run.signature===followRuns[0].signature;});
+      const followKnown=followNamesKnown&&followRuns.every(function(run){const active=run.cells.filter(function(c){return c.hasInk;});return active.every(function(cell,i){return Math.abs(cell.x-(run.left+(run.right-run.left)*i/run.columns))<=2&&Math.abs(cell.x+cell.w-(run.left+(run.right-run.left)*(i+1)/run.columns))<=2;});});
+      const representable=!known||!followNamesKnown||[0,-1].includes(followRuns[0].columns-runs[0].columns);
       const apply=known&&representable;
       result.overlay.cellLabelCells=[];
       runs.forEach(function(run,i){
@@ -19381,13 +19384,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     // ══ 시트 렌더 ⑨ 렌더 모델 조립(레이아웃 · 페이지 수) ═══════════════════════════════════════════════════════════════
     function computeLayout(layers, baseLayers, maxFrame) {
       const originalEntries = computeOriginalDisplayEntries(layers);
-      // 용지가 1블록으로 인식되면(자동정렬이 `-main` 상자를 냈다) 셀 층 수와 무관하게 1블록으로
-      // 그린다. `layers.length` 는 시트에 든 셀 층의 개수라 **용지 구조와 무관하다** — 1블록 용지를
-      // 불러와도 셀을 적게 쓰면 좌우 2블록으로 그려지고, 자동정렬이 만든 `-main` 상자를 렌더가
-      // 찾지 못해 결과가 통째로 무시된다. `layoutBoxes` 는 기본이 빈 객체라 용지를 안 불러온
-      // 시트는 종전 그대로다.
-      const singleBlockPaperLoaded = !!(state.layoutBoxes && state.layoutBoxes['cell-main']);
-      const singleMode = singleBlockPaperLoaded || layers.length > 10;
+      // 인식·조정한 용지 구조가 층 수보다 우선한다. 저장된 상자가 없을 때만 기존 층 수 기준을 쓴다.
+      const boxes = state.layoutBoxes || {};
+      const singleMode = boxes['cell-main'] ? true : boxes['cell-left'] && boxes['cell-right'] ? false : layers.length > 10;
       const inbetweenColumnCount = Math.max(1, getInbetweenColumnCount() || originalEntries.length);
       // The genga (ACTION/original) and douga (in-between/CELL) grids share one cell width so the
       // two blocks read as one consistent sheet instead of genga cells looking noticeably wider
