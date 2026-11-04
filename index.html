@@ -858,8 +858,7 @@
        gets its own row, the two controls share the row below and stack only when too tight. */
     .paper-cell-label-row { grid-template-columns:repeat(2,minmax(0,1fr)); }
     .paper-psd-memo-row[aria-disabled="true"] { opacity: 0.45; }
-    .paper-check-left { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:var(--ui-gap); grid-column:1 / -1; }
-    .paper-generated-mode { width:auto; min-width:5em; }
+    .paper-check-left { display:grid; grid-template-columns:16px minmax(0,1fr); align-items:center; gap:var(--ui-gap); grid-column:1 / -1; }
     .paper-inline-control { margin:0; color:var(--text); font-weight:700; }
     .paper-inline-control input { text-align:center; }
     /* Diagnostics readout: compact reference block pinned at the card bottom. */
@@ -2285,10 +2284,9 @@
 
             <label class="ui-check-row paper-check-row"><input id="showTemplateToggle" type="checkbox" checked /> <span id="showTemplateText">Show built-in sheet template</span></label>
             <label class="ui-check-row paper-check-row"><input id="showHeaderOutputToggle" type="checkbox" checked /> <span id="showHeaderOutputText">Show header output</span></label>
-            <label id="paperTitleModeRow" class="ui-setting-row paper-check-row" hidden><span id="paperTitleModeText">Generated title</span><select id="paperTitleMode" class="paper-generated-mode"><option value="auto">Auto</option><option value="show">Show</option><option value="hide">Hide</option></select></label>
-            <label class="ui-setting-row paper-check-row"><span id="showDurationPlusOutputText">Show Duration + mark</span><select id="showDurationPlusOutputToggle" class="paper-generated-mode"><option value="auto">Auto</option><option value="show">Show</option><option value="hide">Hide</option></select></label>
+            <label class="ui-check-row paper-check-row"><input id="showDurationPlusOutputToggle" type="checkbox" checked /> <span id="showDurationPlusOutputText">Show Duration + mark</span></label>
             <div class="ui-check-row paper-check-row paper-cell-label-row">
-              <label class="paper-check-left"><span id="showCellLabelOutputText">Show cell label output</span><select id="showCellLabelOutputToggle" class="paper-generated-mode"><option value="auto">Auto</option><option value="show">Show</option><option value="hide">Hide</option></select></label>
+              <label class="paper-check-left"><input id="showCellLabelOutputToggle" type="checkbox" checked /> <span id="showCellLabelOutputText">Show cell label output</span></label>
               <label class="ui-setting-row paper-inline-control"><span id="cellColumnCountLabel">Cell columns</span><input id="cellColumnCountInput" type="number" min="1" max="32" step="1" value="8" /></label>
               <label class="ui-setting-row paper-inline-control"><span id="inbetweenColumnCountLabel">動画列数</span><input id="inbetweenColumnCountInput" type="number" min="-1" max="0" step="1" value="0" title="0 = Cell columns と同じ / -1 = Cell columns − 1" /></label>
             </div>
@@ -2614,7 +2612,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '984';
+    const APP_VERSION = '982';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -2874,7 +2872,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return staticCellRevision;
     }
 
-    function computeStaticSig(pageIndex, model, interactive, generatedDisplay) {
+    function computeStaticSig(pageIndex, model, interactive) {
       const paperSource = state.paperImageDataUrl || '';
       const memoSource = state.showPsdMemo ? state.paperImageMemoDataUrl || '' : '';
       if (paperSource !== staticPaperImageSource || memoSource !== staticPaperMemoSource) {
@@ -2885,7 +2883,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return JSON.stringify({
         p: pageIndex, tp: model.totalPages, single: !!L.singleMode,
         dm: L.dualMetrics || null, sm: L.singleMetrics || null,
-        gd: generatedDisplay.cells, st: !!state.showTemplate, cl: !!state.showCellLabelOutput, cr: !!state.cellReadabilityLarge,
+        st: !!state.showTemplate, cl: !!state.showCellLabelOutput, cr: !!state.cellReadabilityLarge,
         cc: (typeof getCellColumnCount === 'function' ? getCellColumnCount() : state.cellColumnCount),
         ic: (typeof getInbetweenColumnCount === 'function' ? getInbetweenColumnCount() : 0),
         lb: state.layoutBoxes || {}, it: !!interactive, lang: state.lang,
@@ -2957,7 +2955,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       overrides:["markerOverrides","cameraPreviewStyles","cameraEndpointFr","cameraSeries","dotOverrides","layerNameTags","bookNames"],
       paperImage:["paperImageDataUrl","paperImageMemoDataUrl","paperImageMemoLayerCount","paperImageName","paperImageMeta","paperImagePixelInfo","paperImageSourceWidth","paperImageSourceHeight"],
       paperOutput:["showTemplate","showHeaderOutput","showDurationPlusOutput","showCellLabelOutput","showPsdMemo"],
-      paperLayout:["layoutBoxes","layoutBoxBaseRects","layoutGrid","paperGeneratedOutput"],
+      paperLayout:["layoutBoxes","layoutBoxBaseRects","layoutGrid"],
       memo:["memoPages","textMemoPages"],
       pastedImages:["pastedImages"],
       stages:["stages","activeStageId"],
@@ -3100,7 +3098,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       serifuSheetGuides: [],
       layoutBoxes: {},
       layoutGrid: null,
-      paperGeneratedOutput: null,
       layoutBoxBaseRects: {},
       textMemoPages: {},
       pastedImages: {},
@@ -3924,8 +3921,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
-        ["ver984", "File names and cut folders: shared cuts, assistant director checks, archived takes", ["A shared cut written with a hyphen (0150-0152) is read as one cut number when importing a sheet.", "The _ej suffix is read as an assistant director (演助) check in the stage name. It is not treated as a correction layer.", "Dropping a cut folder skips rewind archives (old2, old3 …) and previous-take archives (_t01, _t02 …) like the existing old folder."]],
-        ["ver983", "Paper Auto Align: shaded rows and sideways scans", ["Separates printed row borders connected by shading when neighboring rows support them. Corrects a sideways scan only when one direction has a matching body grid and printed header.", "Keeps paper and memo layers together through alignment, Undo, saving and reopening.", "Avoids duplicate generated titles, plus marks and cell names on recognized printed paper. Auto, Show and Hide preserve the input data."]],
         ["ver982", "Paper Auto Align: body rows and header fields", ["Keeps the first and last body rows aligned on more printed sheets, excludes gaps between separated header boxes, and recognizes wider episode fields enclosed by printed rules."]],
         ["ver981", "Paper Auto Align: label borders and blank auxiliary cells", ["Finds slightly offset label borders while keeping the body grid in place. Recognizes a wider last named cell when its remaining space is blank."]],
         ["ver980", "Paper Auto Align: faint header borders and field placement", ["Recovers faint printed header borders to place episode, title, cut, duration, name and page fields in their own cells.", "Recognizes a duration plus near the right edge when a separate field follows it, and a confirmed name field immediately before the cut field."]],
@@ -4049,8 +4044,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
-        ["ver984", "ファイル名とカットフォルダ：兼用カット・演助チェック・旧テイク", ["ハイフンでつないだ兼用カット（0150-0152）を、シート読み込み時に1つのカット番号として読みます。", "接尾辞 _ej を演助チェックとして段階名に入れます。修正レイヤーとしては扱いません。", "カットフォルダのドロップで、戻し前の保管（old2・old3…）と旧テイクの保管（_t01・_t02…）を、従来の old フォルダと同じく読み飛ばします。"]],
-        ["ver983", "用紙の自動整列：影でつながった行と横向きのスキャン", ["前後の行に根拠がある場合、影でつながった印刷罫線を分離します。本文の格子と印刷ヘッダーが一方向だけで一致する場合に横向きの用紙を補正します。", "整列、元に戻す、保存、再読み込みで用紙とメモレイヤーを一緒に保ちます。", "認識した用紙の印刷と重なる生成タイトル・+・セル名を抑えます。自動・表示・非表示を切り替えても入力データは保持します。"]],
         ["ver982", "用紙自動整列：本文行とヘッダー欄を改善", ["本文の最初と最後の行を正しく合わせ、分かれたヘッダー欄の間の空白を除外し、罫線で囲まれた幅広い話数欄も認識します。"]],
         ["ver981", "用紙自動整列：名前欄の罫線と空の補助欄を改善", ["本文の位置を保ったまま、名前欄のわずかにずれた罫線を認識します。最後の名前欄が広く、残りが空白の場合にも対応します。"]],
         ["ver980", "用紙自動整列：薄いヘッダー罫線と項目配置を改善", ["薄い印刷罫線を補い、話数・タイトル・カット・秒数・担当者・枚数をそれぞれの欄に配置します。", "右寄りの秒数の＋と、カット欄の直前にある担当者欄にも対応します。"]],
@@ -4174,8 +4167,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
-        ["ver984", "파일 이름과 컷 폴더: 겸용 컷·연출조수 체크·이전 테이크", ["하이픈으로 이은 겸용 컷(0150-0152)을 시트를 불러올 때 컷 번호 하나로 읽습니다.", "접미사 _ej를 연출조수(演助) 체크로 단계 이름에 넣습니다. 수정 레이어로는 다루지 않습니다.", "컷 폴더를 드롭하면 되돌리기 전 보관(old2·old3…)과 이전 테이크 보관(_t01·_t02…)을 기존 old 폴더처럼 건너뜁니다."]],
-        ["ver983", "용지 자동정렬: 음영으로 이어진 행과 옆으로 누운 스캔", ["이웃 행의 근거가 있을 때 음영으로 이어진 인쇄 행선을 분리합니다. 본문 격자와 인쇄 헤더가 한 방향에서만 일치하면 옆으로 누운 용지를 바로잡습니다.", "정렬·실행 취소·저장·다시 열기에서 용지와 메모 레이어를 함께 유지합니다.", "인식한 원본 인쇄와 겹치는 생성 제목·+·셀 이름을 줄입니다. 자동·표시·숨김을 바꿔도 입력 데이터는 보존합니다."]],
         ["ver982", "용지 자동정렬: 본문 행과 헤더 칸 개선", ["더 많은 인쇄 용지에서 본문 첫 행과 마지막 행을 맞추고, 분리된 헤더 사이의 빈 간격을 제외하며, 인쇄선으로 닫힌 넓은 화수 칸을 인식합니다."]],
         ["ver981", "용지 자동정렬: 이름 칸 경계와 빈 보조칸 판정 개선", ["본문 위치를 유지하며 이름 행의 조금 어긋난 인쇄선을 인식합니다. 마지막 이름 칸이 넓고 나머지가 비어 있는 양식도 구분합니다."]],
         ["ver980", "용지 자동정렬: 흐린 헤더선과 항목 배정 개선", ["흐린 인쇄선을 보완해 화수·타이틀·컷·시간·담당자·매수를 각각의 칸에 배치합니다.", "오른쪽에 있는 시간 표시 +와 컷 번호 바로 앞의 담당자 칸에도 대응합니다."]],
@@ -4299,8 +4290,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
-        ["ver984", "文件名与镜头文件夹：兼用镜头、演出助理检查、旧版本", ["用连字符连接的兼用镜头（0150-0152）在导入表格时读作一个镜头编号。", "后缀 _ej 作为演出助理（演助）检查写入阶段名，不作为修改图层处理。", "拖入镜头文件夹时，与原有的 old 文件夹一样跳过退回前的保管（old2、old3…）和旧版本保管（_t01、_t02…）。"]],
-        ["ver983", "纸张自动对齐：阴影连接的行与横向扫描", ["当前后行提供依据时，分离被阴影连接的印刷行线。仅当一个方向的正文网格与印刷页眉匹配时，纠正横向纸张。", "对齐、撤销、保存和重新打开时，纸张与备注图层保持一致。", "抑制与已识别纸张印刷重复的生成标题、+和单元名称。切换自动、显示或隐藏时保留输入数据。"]],
         ["ver982", "纸张自动对齐：改进正文行与页眉栏", ["改进印刷纸张首行与末行的对齐，排除分离页眉栏之间的空白，并识别由印刷线封闭的较宽集数栏。"]],
         ["ver981", "纸张自动对齐：改进名称栏边线与空白辅助栏识别", ["保持正文位置，识别名称行略微偏移的印刷边线；支持最后一个名称栏较宽且余部空白的格式。"]],
         ["ver980", "纸张自动对齐：改进浅色标题栏边线和字段布局", ["补足浅色印刷边线，将集数、标题、镜头、时间、署名和页码放在各自栏内。", "支持靠右的时间加号，以及紧邻镜头编号栏之前的署名栏。"]],
@@ -5639,15 +5628,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     function syncPaperLayoutControls() {
       if (showTemplateToggleEl) showTemplateToggleEl.checked = !!state.showTemplate;
       if (showHeaderOutputToggleEl) showHeaderOutputToggleEl.checked = !!state.showHeaderOutput;
-      const policy=state.paperGeneratedOutput;
-      const modeText={en:['Auto','Show','Hide','Generated title'],ko:['자동','표시','숨김','생성 제목'],ja:['自動','表示','非表示','生成タイトル'],zh:['自动','显示','隐藏','生成标题']}[state.lang]||['Auto','Show','Hide','Generated title'];
-      document.getElementById('paperTitleModeRow').hidden=!policy;
-      document.getElementById('paperTitleModeText').textContent=modeText[3];
-      [['paperTitleMode','title',true],['showDurationPlusOutputToggle','plus',state.showDurationPlusOutput!==false],['showCellLabelOutputToggle','cellLabel',!!state.showCellLabelOutput]].forEach(function([id,role,legacy]){
-        const select=document.getElementById(id);
-        Array.from(select.options).forEach(function(option,i){option.textContent=modeText[i];});
-        select.value=policy?(policy.modes[role]||'auto'):(legacy?'show':'hide');
-      });
+      if (showDurationPlusOutputToggleEl) showDurationPlusOutputToggleEl.checked = state.showDurationPlusOutput !== false;
+      if (showCellLabelOutputToggleEl) showCellLabelOutputToggleEl.checked = !!state.showCellLabelOutput;
       const hasPaper = !!state.paperImageDataUrl;
       const hasSeparatedPsdMemo = !!state.paperImageMemoDataUrl;
       if (showPsdMemoToggleEl) {
@@ -6750,7 +6732,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         Math.round(Number(current.h) || 0) === next.h
       ) return false;
       state.layoutBoxes[key] = next;
-      invalidatePaperGeneratedFacts();
       return true;
     }
 
@@ -7093,13 +7074,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     function withLayoutBoxesDraft(draft, callback) {
       const previous = state.layoutBoxes;
-      const previousGenerated = state.paperGeneratedOutput;
       state.layoutBoxes = draft || {};
       try {
         return callback();
       } finally {
         state.layoutBoxes = previous;
-        state.paperGeneratedOutput = previousGenerated;
       }
     }
 
@@ -7296,7 +7275,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     function beginLayoutBoxDrag(event, key, mode, baseRect) {
       if (!state.positionMode) return;
-      if (state.paperAutoAlignResult && state.paperAutoAlignResult.status==='working') cancelPendingPaperAutoAlign();
       event.preventDefault();
       event.stopPropagation();
       if (event.stopImmediatePropagation) event.stopImmediatePropagation();
@@ -7372,7 +7350,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         try { captureTarget.releasePointerCapture(event.pointerId); } catch (err) {}
       }
       const changed = !!drag.pendingLayoutBoxes;
-      if (changed) {state.layoutBoxes = drag.pendingLayoutBoxes;invalidatePaperGeneratedFacts();}
+      if (changed) state.layoutBoxes = drag.pendingLayoutBoxes;
       state.layoutDrag = null;
       clearLayoutDragPreview();
       document.documentElement.classList.remove('position-edit-dragging');
@@ -7635,12 +7613,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         let ink = 0;
         let run = 0;
         let maxRun = 0;
-        let strongRuns = [];
-        function finishRun(end) {
-          if (run >= maxRun * 0.65 && run > 0) strongRuns.push([end - run, end]);
-          strongRuns = strongRuns.filter(function(span){ return span[1] - span[0] >= maxRun * 0.65; });
-          run = 0;
-        }
         const rowBase = y * PAGE_W * 4;
         for (let x = 0; x < PAGE_W; x++) {
           const lum = getPaperAutoAlignLuma(data, rowBase + x * 4);
@@ -7650,11 +7622,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
             run += 1;
             if (run > maxRun) maxRun = run;
           } else {
-            if (run) finishRun(x);
+            run = 0;
           }
         }
-        if (run) finishRun(PAGE_W);
-        if (maxRun >= rowRunThreshold) rowCandidates.push({ pos:y, maxRun:maxRun, ink:ink, strongRuns:strongRuns });
+        if (maxRun >= rowRunThreshold) rowCandidates.push({ pos:y, maxRun:maxRun, ink:ink });
       }
 
       for (let x = 0; x < PAGE_W; x++) {
@@ -7696,7 +7667,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return Object.assign({
         xDetailed:xDetailed,
         yDetailed:yDetailed,
-        rowCandidates:rowCandidates,
         xLines:xDetailed.map(function(line){ return line.pos; }),
         yLines:yDetailed.map(function(line){ return line.pos; }),
         medianLum:median,
@@ -8416,11 +8386,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           };
         }
       }
-      if (!best) {
-        const error=new Error('ACTION/대사/CELL/카메라 영역에 필요한 72칸 본문을 인식하지 못했습니다. 4구간 인식범위는 반드시 밑에서부터 73개 가로선으로 이루어진 72칸이어야 합니다. fallback 또는 추정 body는 사용하지 않습니다.');
-        error.paperAutoAlignReason='body-grid-missing';
-        throw error;
-      }
+      if (!best) throw new Error('ACTION/대사/CELL/카메라 영역에 필요한 72칸 본문을 인식하지 못했습니다. 4구간 인식범위는 반드시 밑에서부터 73개 가로선으로 이루어진 72칸이어야 합니다. fallback 또는 추정 body는 사용하지 않습니다.');
       // Bottom-walk resolver: count the 72 cells UP from the reliable bottom line, following the
       // DETECTED lines step by step (≈1×rowH = one cell, ≈2×rowH = one missed light line = two
       // cells, tiny gap = double-line twin → skip). When the paper loses one faint interior line
@@ -9795,7 +9761,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           score += Math.min(190, leftEndpointScore) + Math.min(190, rightEndpointScore);
           score -= Math.max(0, 72 - leftEndpointScore) * 1.15;
           score -= Math.max(0, 72 - rightEndpointScore) * 1.15;
-          if (!best || score > best.score) best = { left:left, right:right, top:topSeg.pos, bottom:bottomSeg.pos, score:score, segments:segments, selectedTopSegment:topSeg.pos, selectedBottomSegment:bottomSeg.pos, selectedSegmentPair:[topSeg,bottomSeg], leftEndpointScore:leftEndpointScore, rightEndpointScore:rightEndpointScore };
+          if (!best || score > best.score) best = { left:left, right:right, top:topSeg.pos, bottom:bottomSeg.pos, score:score, segments:segments, selectedTopSegment:topSeg.pos, selectedBottomSegment:bottomSeg.pos, leftEndpointScore:leftEndpointScore, rightEndpointScore:rightEndpointScore };
         }
       }
       if (best && typeof analysis.findVerticalSegments === 'function') {
@@ -9914,29 +9880,22 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
 
-    function inferPaperAutoAlignHeaderBoxes(analysis, bodyGrid, evidence) {
-      const baseEvidence={};
-      const base = readPaperAutoAlignHeaderBoxes(analysis, bodyGrid, analysis, baseEvidence);
-      if (evidence) evidence.rect=baseEvidence.rect||null;
+    function inferPaperAutoAlignHeaderBoxes(analysis, bodyGrid) {
+      const base = readPaperAutoAlignHeaderBoxes(analysis, bodyGrid);
       const header = base.__headerOverlay;
       if (!header || header.lines.length >= 6 || typeof analysis.withHeaderContrast !== 'function') return base;
       try {
         const contrasted = Object.assign({}, analysis, analysis.withHeaderContrast({ top:header.y, bottom:header.y + header.h }));
-        const recoveredEvidence={};
-        const recovered = readPaperAutoAlignHeaderBoxes(contrasted, bodyGrid, analysis, recoveredEvidence);
+        const recovered = readPaperAutoAlignHeaderBoxes(contrasted, bodyGrid, analysis);
         const recoveredHeader = recovered.__headerOverlay;
-        if (recoveredHeader && recoveredHeader.lines.length >= 6 && recoveredHeader.lines.length > header.lines.length) {
-          if (evidence) evidence.rect=recoveredEvidence.rect||null;
-          return recovered;
-        }
-        return base;
+        return recoveredHeader && recoveredHeader.lines.length >= 6 && recoveredHeader.lines.length > header.lines.length ? recovered : base;
       } catch (err) {
         sendClientErrorEvent('paper_auto_align_header_contrast', err);
         return base;
       }
     }
 
-    function readPaperAutoAlignHeaderBoxes(analysis, bodyGrid, markAnalysis = analysis, evidence) {
+    function readPaperAutoAlignHeaderBoxes(analysis, bodyGrid, markAnalysis = analysis) {
       const yLines = analysis && Array.isArray(analysis.yLines) ? analysis.yLines : [];
       const bodyTop = Number(bodyGrid && bodyGrid.bodyTop) || PAGE_H;
       const upperYLimit = Math.max(140, Math.min(bodyTop - 55, 360));
@@ -9945,7 +9904,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       // ── [헤더] 가로 선분 수집 · 종이 가장자리 잡음 제외 ────────────
 
       const headerRect = findPaperAutoAlignHeaderRect(analysis, bodyTop, upperYLimit);
-      if (evidence) evidence.rect=headerRect;
       if (!headerRect) return {};
       let headerLeft = Math.max(0, Math.round(headerRect.left));
       let headerRight = Math.min(PAGE_W - 1, Math.round(headerRect.right));
@@ -11757,16 +11715,21 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const labelH = Math.max(14, (bodyGrid.labelBottom || bodyY) - labelTop);
       // 1블록이면 렌더·위치조정이 이미 아는 main 키로 낸다(판정 q2=A). left/right 로 내면
       // 1블록 모드의 렌더가 cell-main 을 찾다 못 찾아 자동정렬 결과를 통째로 무시한다.
-      const sides = singleBlock ? [['main', leftSide]] : [['left', leftSide], ['right', rightSide]];
-      const boxes = {};
-      sides.forEach(function([name, side]){
-        ['cell', 'dialog', 'camera'].forEach(function(kind){
-          boxes[kind + '-' + name] = { x:side[kind].x, y:bodyY, w:side[kind].w, h:bodyH };
-        });
-      });
-      sides.forEach(function([name, side]){
-        boxes['cell-label-' + name] = { x:side.cell.x, y:labelTop, w:side.cell.w, h:labelH };
-      });
+      const boxes = singleBlock ? {
+        'cell-main':{ x:leftSide.cell.x, y:bodyY, w:leftSide.cell.w, h:bodyH },
+        'dialog-main':{ x:leftSide.dialog.x, y:bodyY, w:leftSide.dialog.w, h:bodyH },
+        'camera-main':{ x:leftSide.camera.x, y:bodyY, w:leftSide.camera.w, h:bodyH },
+        'cell-label-main':{ x:leftSide.cell.x, y:labelTop, w:leftSide.cell.w, h:labelH }
+      } : {
+        'cell-left':{ x:leftSide.cell.x, y:bodyY, w:leftSide.cell.w, h:bodyH },
+        'dialog-left':{ x:leftSide.dialog.x, y:bodyY, w:leftSide.dialog.w, h:bodyH },
+        'camera-left':{ x:leftSide.camera.x, y:bodyY, w:leftSide.camera.w, h:bodyH },
+        'cell-right':{ x:rightSide.cell.x, y:bodyY, w:rightSide.cell.w, h:bodyH },
+        'dialog-right':{ x:rightSide.dialog.x, y:bodyY, w:rightSide.dialog.w, h:bodyH },
+        'camera-right':{ x:rightSide.camera.x, y:bodyY, w:rightSide.camera.w, h:bodyH },
+        'cell-label-left':{ x:leftSide.cell.x, y:labelTop, w:leftSide.cell.w, h:labelH },
+        'cell-label-right':{ x:rightSide.cell.x, y:labelTop, w:rightSide.cell.w, h:labelH }
+      };
       const { __headerOverlay:headerOverlay = null, ...headerBoxes } = getHeaderBoxes();
       Object.assign(boxes, headerBoxes);
       Object.keys(boxes).forEach(function(key){ boxes[key] = normalizeRect(boxes[key], 18, isCellLabelBoxKey(key) ? 12 : 18); });
@@ -11775,8 +11738,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (rightSide.follow) overlayBoxes['follow-right'] = normalizeRect({ x:rightSide.follow.left, y:bodyY, w:rightSide.follow.right - rightSide.follow.left, h:bodyH }, 18, 18);
       const sanity = assessPaperAutoAlignSanity(boxes, headerOverlay, leftSide, rightSide, columns);
       const dottedVerticalLineCount = Number(analysis.dottedVerticalLineCount || 0);
-      const durationPlus = headerOverlay && headerOverlay.durationPlus;
-      const printedPlus = durationPlus && !durationPlus.inferred ? durationPlus : null;
+      const actualDurationPlusDetected = !!(headerOverlay && headerOverlay.durationPlus && !headerOverlay.durationPlus.inferred);
+      const inferredDurationPlusUsed = !!(headerOverlay && headerOverlay.durationPlus && headerOverlay.durationPlus.inferred);
       const dialogPattern = getPaperAutoAlignDialogPatternName(pair, analysis, variantName || 'standard');
       const cameraPattern = getPaperAutoAlignCameraPatternName(analysis, bodyGrid, leftSide, rightSide, variantName || 'standard');
       // Confidence from MEASURED quality (the old formula mixed in the window-selection score,
@@ -11793,6 +11756,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const rawConfidence = Math.round(30 + pairQuality * 40 + gridQuality * 28);
       const confidence = Math.max(15, Math.min(98, rawConfidence - sanity.penalty - walkPenalty));
       const cellSides = singleBlock ? [['main', pair.left]] : [['left', pair.left], ['right', pair.right]];
+      const printedPlus = headerOverlay && headerOverlay.durationPlus && !headerOverlay.durationPlus.inferred ? headerOverlay.durationPlus : null;
       const layoutGrid = makePaperAutoAlignLayoutGrid(boxes, bodyGrid.lines, cellSides.map(function(item){
         return { side:item[0], columns:columns, lines:pairLines.slice(item[1].leftIndex, item[1].rightIndex + 1) };
       }), printedPlus, headerOverlay && headerOverlay.pageDiagonal);
@@ -11814,8 +11778,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           actionColumns:columns,
           dialogPattern:dialogPattern,
           cameraPattern:cameraPattern,
-          durationPlusDetected:!!printedPlus,
-          durationPlusInferred:!!(durationPlus && durationPlus.inferred),
+          durationPlusDetected:actualDurationPlusDetected,
+          durationPlusInferred:inferredDurationPlusUsed,
           pageDiagonalDetected:!!(headerOverlay && headerOverlay.pageSlashBox),
           headerTitleEpisodePattern:headerOverlay && headerOverlay.titleEpisodePattern || 'unknown',
           columns:columns,
@@ -11887,6 +11851,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const rightCameraW = Number(dotted.rightCameraW || 0);
       const leftFollow = Number(dotted.leftFollowColumns || 0);
       const rightFollow = Number(dotted.rightFollowColumns || 0);
+      if (isStableStandardPaperAutoAlignResult(baseResult)) return false;
       if (Number(dotted.dottedVerticalLineCount || 0) < 2) return false;
       if (dottedColumns < 9 || dottedColumns <= baseColumns) return false;
       if (leftCameraW < cellW * 3.00 || rightCameraW < cellW * 3.00) return false;
@@ -11895,7 +11860,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     function makePaperAutoAlignDottedBoundaryResult(analysis, bodyGrid, baseResult, getHeaderBoxes) {
-      if (isStableStandardPaperAutoAlignResult(baseResult)) return null;
       const dottedAnalysis = augmentPaperAutoAlignDottedVerticalBoundaryLines(analysis, bodyGrid);
       if (dottedAnalysis === analysis) return null;
       try {
@@ -11938,55 +11902,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (hits.length < PAPER_AUTO_ALIGN_TARGET_BODY_LINES) return null;
       const clustered = clusterPaperAutoAlignPositions(hits, 6);
       return clustered.map(function(line){ return Number(line.pos); }).filter(Number.isFinite);
-    }
-
-    function refinePaperAutoAlignBodyRowCandidates(analysis, bodyGrid) {
-      const unchanged = { analysis:analysis, bodyGrid:bodyGrid, changed:false };
-      if (!bodyGrid || !Array.isArray(analysis.rowCandidates)) return unchanged;
-      const raw = analysis.rowCandidates, q = 1;
-      const measured = analysis.yDetailed.filter(function(line){ return line.pos >= bodyGrid.bodyTop && line.pos <= bodyGrid.bodyBottom; });
-      const runs = function(line) {
-        return raw.filter(function(row){ return row.pos >= line.start && row.pos <= line.end && row.maxRun >= line.maxRun * 0.65; })
-          .flatMap(function(row){ return row.strongRuns || []; });
-      };
-      const overlap = function(a,b) {
-        return Math.max(0, Math.min(a[1],b[1])-Math.max(a[0],b[0])) / Math.max(1,Math.min(a[1]-a[0],b[1]-b[0])) >= 0.65;
-      };
-      const replacements = new Map();
-      measured.forEach(function(line,index){
-        const left = measured.slice(Math.max(0,index-3),index), right = measured.slice(index+1,index+4);
-        if (left.length !== 3 || right.length !== 3 || line.start <= bodyGrid.bodyTop || line.end >= bodyGrid.bodyBottom) return;
-        const ds = [left[1].pos-left[0].pos,left[2].pos-left[1].pos,right[1].pos-right[0].pos,right[2].pos-right[1].pos];
-        const pitch = medianPaperAutoAlignNumber(ds), error = Math.max(...ds.map(function(d){return Math.abs(d-pitch);})) + 2*q;
-        const thickness = Math.max(...left.concat(right).map(function(l){return l.thickness;}));
-        if (!(error < pitch/4) || line.thickness <= thickness+2*q) return;
-        // Merged dotted candidates may not have a unique measured counterpart.
-        const matches = analysis.yLines.filter(function(y){return y >= line.start-q && y <= line.end+q;});
-        if (matches.length !== 1 || matches[0] !== line.pos) return;
-        if (analysis.yDetailed.filter(function(l){return Math.abs(l.pos-line.pos)<=q;}).length !== 1) return;
-        const peaks = clusterPaperAutoAlignPositions(raw.filter(function(row){return row.pos>=line.start && row.pos<=line.end && row.maxRun>=line.maxRun*0.65;}),q);
-        if (peaks.length!==2 || peaks.some(function(p){return p.thickness>thickness+2*q;})) return;
-        const gaps=[peaks[0].pos-left[2].pos,peaks[1].pos-peaks[0].pos,right[0].pos-peaks[1].pos];
-        if (!gaps.every(function(d){return Math.abs(d-pitch)<=error;})) return;
-        const supported=peaks.every(function(p){
-          const support=runs(p);
-          return [left,right].every(function(group){
-            return group.some(function(n){return runs(n).some(function(a){return support.some(function(b){return overlap(a,b);});});});
-          });
-        });
-        if (!supported) return;
-        replacements.set(line,peaks);
-      });
-      if (!replacements.size) return unchanged;
-      const detailed=analysis.yDetailed.flatMap(function(line){return replacements.get(line)||[line];});
-      const lines=analysis.yLines.flatMap(function(y){const line=measured.find(function(l){return l.pos===y && replacements.has(l);}); return line?replacements.get(line).map(function(p){return p.pos;}):[y];});
-      const refined=Object.assign({},analysis,{yDetailed:detailed,yLines:lines});
-      let grid;
-      try { grid=findPaperAutoAlignBodyGrid(lines,detailed); } catch (_) { return unchanged; }
-      if (grid.bodyTop!==bodyGrid.bodyTop || grid.bodyBottom!==bodyGrid.bodyBottom || grid.lines.length!==bodyGrid.lines.length || grid.lines.length!==PAPER_AUTO_ALIGN_TARGET_BODY_LINES) return unchanged;
-      // This structural check reads isDarkNear pixels; it is not array-only work.
-      if (isPaperAutoAlignSingleBlockPaper(refined,grid)!==isPaperAutoAlignSingleBlockPaper(analysis,bodyGrid)) return unchanged;
-      return {analysis:refined,bodyGrid:grid,changed:true};
     }
 
     function inferPaperAutoAlignLayoutFromLines(analysis) {
@@ -12033,13 +11948,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         // 둘 다 통짜가 아니면 기존 격자 그대로다 — 좌우 2블록 용지는 여기서 안 갈린다.
         usePaperAutoAlignDottedGrid();
       }
-      const refinedBody=refinePaperAutoAlignBodyRowCandidates(analysis,bodyGrid);
-      analysis=refinedBody.analysis;
-      bodyGrid=refinedBody.bodyGrid;
       let headerBoxes;
-      const headerEvidence={};
       const getHeaderBoxes = function(){
-        if (!headerBoxes) headerBoxes = inferPaperAutoAlignHeaderBoxes(analysis, bodyGrid, headerEvidence);
+        if (!headerBoxes) headerBoxes = inferPaperAutoAlignHeaderBoxes(analysis, bodyGrid);
         return headerBoxes;
       };
       let baseResult;
@@ -12053,10 +11964,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         try { baseResult=makePaperAutoAlignLayoutResult(recovered,bodyGrid,'faint',getHeaderBoxes); analysis=recovered; }
         catch (_) { throw error; }
       }
-      const selected = makePaperAutoAlignDottedBoundaryResult(analysis, bodyGrid, baseResult, getHeaderBoxes) || baseResult;
-      const result=refinePaperAutoAlignCellLabels(selected,analysis);
-      result.sourceEvidence={bodyGrid:bodyGrid,headerRect:headerEvidence.rect||null};
-      return result;
+      const selected = isStableStandardPaperAutoAlignResult(baseResult) ? baseResult :
+        makePaperAutoAlignDottedBoundaryResult(analysis, bodyGrid, baseResult, getHeaderBoxes) || baseResult;
+      return refinePaperAutoAlignCellLabels(selected,analysis);
     }
 
     // 동화 열 수는 자동정렬이 이미 격자로 찾아 둔다(`findPaperAutoAlignFollowerGrid`). 원화 열 수와의
@@ -12075,85 +11985,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return left - columns;
     }
 
-    // ══ 용지 인식 ⑨ 방향 근거 · 작업 지역 회전 · 원자적 적용 ════════════════════════════════════════════
-    function hasPaperAutoAlignOppositeBodyEvidence(analysis) {
-      if (!analysis || typeof analysis.findVerticalSegments!=='function') return false;
-      const ys=PAGE_H/PAGE_W, xs=PAGE_W/PAGE_H;
-      return [-1,1].some(function(sign){
-        const yOf=function(x){return sign<0?PAGE_H-x*ys:x*ys;};
-        const xOf=function(y){return sign<0?y*xs:PAGE_W-y*xs;};
-        const detailed=analysis.xDetailed.map(function(l){return Object.assign({},l,{pos:yOf(l.pos),start:Math.min(yOf(l.start),yOf(l.end)),end:Math.max(yOf(l.start),yOf(l.end)),thickness:l.thickness*ys,maxRun:l.maxRun*xs});}).sort(function(a,b){return a.pos-b.pos;});
-        let body;
-        try {body=findPaperAutoAlignBodyGrid(detailed.map(function(l){return l.pos;}),detailed);} catch (_) {return false;}
-        const upper=Math.max(140,Math.min(body.bodyTop-55,360));
-        const xa=sign<0?(PAGE_H-upper)/ys:6/ys, xb=sign<0?(PAGE_H-6)/ys:upper/ys;
-        const segments=analysis.findVerticalSegments({left:xa,right:xb,top:0,bottom:PAGE_H-1,minRun:360/xs,minCoverage:1})
-          .filter(function(s){return Number.isFinite(s.runStart)&&Number.isFinite(s.runEnd);})
-          .map(function(s){return {pos:yOf(s.pos),start:Math.min(xOf(s.runStart),xOf(s.runEnd)),end:Math.max(xOf(s.runStart),xOf(s.runEnd))};})
-          .sort(function(a,b){return a.pos-b.pos;});
-        // Existing repeated body and continuous header spans in the opposite axis.
-        return segments.some(function(a,i){return segments.slice(i+1).some(function(b){const h=b.pos-a.pos;return h>=46&&h<=210&&b.pos<body.labelTop&&Math.min(a.end,b.end)-Math.max(a.start,b.start)>=360&&Math.max(a.end,b.end)-Math.min(a.start,b.start)>=520;});});
-      });
-    }
-
-    function hasPaperAutoAlignRotationEvidence(result) {
-      const e=result&&result.sourceEvidence, rect=e&&e.headerRect, body=e&&e.bodyGrid;
-      if (!rect||!body||body.lines.length!==PAPER_AUTO_ALIGN_TARGET_BODY_LINES) return false;
-      const pair=rect.selectedSegmentPair;
-      if (!pair||pair.length!==2||!pair.every(function(s){return rect.segments.includes(s);})) return false;
-      const top=pair[0], bottom=pair[1], height=bottom.pos-top.pos;
-      if (!(top.pos<bottom.pos&&bottom.pos<body.labelTop&&body.labelTop<=body.bodyTop&&height>=46&&height<=210)) return false;
-      if (Math.min(top.end,bottom.end)-Math.max(top.start,bottom.start)<360||Math.max(top.end,bottom.end)-Math.min(top.start,bottom.start)<520) return false;
-      return Object.keys(result.layoutBoxes).filter(function(k){return k.indexOf('cell-')===0;}).some(function(k){const b=result.layoutBoxes[k];return Math.min(rect.right,b.x+b.w)>Math.max(rect.left,b.x);});
-    }
-
-    function makePaperAutoAlignPageTransform(width,height,sign) {
-      return sign<0?[0,PAGE_W/height,0,-PAGE_H/width,0,PAGE_H]:sign>0?[0,-PAGE_W/height,PAGE_W,PAGE_H/width,0,0]:[PAGE_W/width,0,0,0,PAGE_H/height,0];
-    }
-
-    function rasterizePaperAutoAlignTransform(image,transform) {
-      const canvas=document.createElement('canvas');canvas.width=PAGE_W;canvas.height=PAGE_H;
-      const ctx=canvas.getContext('2d');
-      if (!ctx) throw new Error('Canvas is unavailable');
-      ctx.setTransform(transform[0],transform[3],transform[1],transform[4],transform[2],transform[5]);
-      ctx.drawImage(image,0,0);
-      return canvas;
-    }
-
-    async function resolvePaperAutoAlignOrientation(source,decodedSource,isCurrent) {
-      const analysis=await analyzePaperAutoAlignLines(source);
-      if (!isCurrent()) return null;
-      let originalError;
-      const width=decodedSource?(decodedSource.naturalWidth||decodedSource.width):PAGE_W;
-      const height=decodedSource?(decodedSource.naturalHeight||decodedSource.height):PAGE_H;
-      const evidence=function(sign){return {inputRasterSize:[PAGE_W,PAGE_H],decodedSize:[width,height],outputSize:[PAGE_W,PAGE_H],sourceToPage:makePaperAutoAlignPageTransform(width,height,sign),rotationDegrees:sign*90,decodedSourceUsed:!!decodedSource};};
-      try {return {analysis:analysis,result:inferPaperAutoAlignLayoutFromLines(analysis),transform:evidence(0),dataUrl:source};}
-      catch (err) {originalError=err;}
-      if (originalError.paperAutoAlignReason!=='body-grid-missing'||!hasPaperAutoAlignOppositeBodyEvidence(analysis)) throw originalError;
-      originalError.paperAutoAlignReason='body-direction-mismatch';
-      const image=decodedSource||await loadPaperAutoAlignImage(source);
-      try {
-        if (!isCurrent()) return null;
-        let selected=null, passes=0;
-        for (const sign of [-1,1]) {
-          if (!isCurrent()) return null;
-          const canvas=rasterizePaperAutoAlignTransform(image,makePaperAutoAlignPageTransform(width,height,sign));
-          try {
-            const candidateAnalysis=await analyzePaperAutoAlignLines(canvas);
-            if (!isCurrent()) return null;
-            let result;
-            try {result=inferPaperAutoAlignLayoutFromLines(candidateAnalysis);} catch (_) {continue;}
-            if (!hasPaperAutoAlignRotationEvidence(result)) continue;
-            passes++;
-            if (passes===1) selected={analysis:candidateAnalysis,result:result,transform:evidence(sign),dataUrl:canvas.toDataURL('image/png')};
-            else selected=null;
-          } finally {canvas.width=canvas.height=0;}
-        }
-        if (passes!==1) throw originalError;
-        return selected;
-      } finally {if (!decodedSource) image.src='';}
-    }
-
     async function runPaperAutoAlign(options) {
       options = options || {};
       const doc = getPaperAutoAlignTexts();
@@ -12162,38 +11993,20 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         return;
       }
       const token = ++state.paperAutoAlignToken;
-      const source=state.paperImageDataUrl, memoSource=state.paperImageMemoDataUrl;
-      const paperGeneration=paperLoadGeneration, documentGeneration=documentLoadGeneration;
-      const isCurrent=function(){return token===state.paperAutoAlignToken&&paperGeneration===paperLoadGeneration&&documentGeneration===documentLoadGeneration&&source===state.paperImageDataUrl&&memoSource===state.paperImageMemoDataUrl;};
       state.paperAutoAlignOverlay = null;
       setPaperAutoAlignResult({ status:'working', steps:[doc.working || 'Analyzing paper lines and matching the sheet boxes...'] });
       syncPaperLayoutControls();
       try {
-        const resolved=await resolvePaperAutoAlignOrientation(source,options.decodedSource,isCurrent);
-        if (!resolved||!isCurrent()) return;
-        const analysis=resolved.analysis, result=resolved.result;
-        let memoDataUrl=memoSource;
-        if (resolved.transform.rotationDegrees&&memoSource) {
-          const memo=await loadPaperAutoAlignImage(memoSource);
-          try {
-            if (!isCurrent()) return;
-            const canvas=rasterizePaperAutoAlignTransform(memo,makePaperAutoAlignPageTransform(memo.naturalWidth,memo.naturalHeight,resolved.transform.rotationDegrees/90));
-            try {memoDataUrl=canvas.toDataURL('image/png');} finally {canvas.width=canvas.height=0;}
-          } finally {memo.src='';}
-        }
-        if (!isCurrent()) return;
+        const analysis = await analyzePaperAutoAlignLines(state.paperImageDataUrl);
+        if (token !== state.paperAutoAlignToken) return;
+        const result = inferPaperAutoAlignLayoutFromLines(analysis);
         const used=getInputLayers();
         if(result.diagnostics.cellLabelsKnown && (computeOriginalDisplayEntries(used,result.cellColumnCount).length>result.cellColumnCount || used.some(function(layer){return cellColumnLabelToIndex(layer.name)>=result.cellColumnCount;})))
           throw taggedExportError(doc.columnConflict(result.cellColumnCount),'paper-columns-conflict');
         const templateMatch = matchPaperTemplateFingerprint(result, analysis);
-        const generatedFacts = state.paperGeneratedOutput ? collectPaperGeneratedFacts(analysis,result) : null;
-        commitPendingContentHistory();
-        state.paperImageDataUrl=resolved.dataUrl;
-        state.paperImageMemoDataUrl=memoDataUrl;
         state.layoutBoxes = result.layoutBoxes;
         state.layoutBoxBaseRects = {};
         state.layoutGrid = result.layoutGrid;
-        if(generatedFacts) state.paperGeneratedOutput=Object.assign({modes:state.paperGeneratedOutput.modes},generatedFacts);
         state.cellColumnCount = clampCellColumnCount(result.cellColumnCount);
         state.paperAutoAlignOverlay = result.overlay;
         // 동화 델타는 검출된 격자에서 바로 낸다 — handlePaperImageUpload 가 새 용지에 넣어 둔 0 을
@@ -12208,9 +12021,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         queueSavePaperMemory();
         sendPaperAutoAlignUsage(result, analysis, templateMatch);
         render();
-        return {transform:resolved.transform};
       } catch (err) {
-        if (!isCurrent()) return;
+        if (token !== state.paperAutoAlignToken) return;
         state.paperAutoAlignOverlay = null;
         setPaperAutoAlignResult({ status:'error', message:err && err.message ? err.message : String(err || 'Unknown error') });
         syncPaperLayoutControls();
@@ -12219,128 +12031,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       }
     }
 
-    // Generated text only: paper owns modes/facts; the selected analysis is never rerun here.
-    function sanitizePaperGeneratedOutput(value) {
-      if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
-      const modes = {}, cells = {};
-      ['title','plus','cellLabel'].forEach(function(key){
-        if (['show','hide'].includes(value.modes && value.modes[key])) modes[key] = value.modes[key];
-      });
-      ['main','left','right'].forEach(function(side){ ['cell','follow'].forEach(function(role){
-        const key = role + '-' + side, slots = value.cells && value.cells[key];
-        if (Array.isArray(slots) && slots.length <= 64) cells[key] = slots.map(function(v){ return v === 'occupied' || v === 'confirmedBlank' ? v : null; });
-      }); });
-      return { modes:modes, titleOccupied:value.titleOccupied === true, cells:cells };
-    }
-
-    function measurePaperGeneratedInk(reader, box, analysis, cell) {
-      if (!reader || typeof reader.isDarkNear !== 'function') return null;
-      if(!box||![box.x,box.y,box.w,box.h].every(Number.isFinite)||box.x<0||box.y<0||box.w<=0||box.h<=0||box.x+box.w>PAGE_W||box.y+box.h>PAGE_H) return null;
-      // Reuse the reader's per-axis border exclusion; thick physical lines can only enlarge it.
-      function inset(lines, position, minimum) {
-        return (lines || []).reduce(function(n,l){ return Math.abs(l.pos-position)<=2 && l.thickness<12 ? Math.max(n,l.thickness/2+1) : n; },minimum);
-      }
-      const mx = cell ? Math.max(3,Math.min(5,box.w*0.15)) : 3;
-      const x0=Math.max(0,Math.ceil(box.x+inset(analysis.xDetailed,box.x,mx)));
-      const x1=Math.min(PAGE_W,Math.ceil(box.x+box.w-inset(analysis.xDetailed,box.x+box.w,mx)));
-      const y0=Math.max(0,Math.ceil(box.y+inset(analysis.yDetailed,box.y,3)));
-      const y1=Math.min(PAGE_H,Math.ceil(box.y+box.h-inset(analysis.yDetailed,box.y+box.h,3)));
-      const W=x1-x0,H=y1-y0;
-      if (W<2 || H<2) return null;
-      const ink=new Uint8Array(W*H);
-      for(let y=0;y<H;y++) for(let x=0;x<W;x++) ink[y*W+x]=reader.isDarkNear(x+x0,y+y0,0)?1:0;
-      let candidate=false,residual=false;
-      for(let seed=0;seed<ink.length;seed++) {
-        if(!ink[seed]) continue;
-        ink[seed]=0; const stack=[seed]; let area=0,minX=W,maxX=-1,minY=H,maxY=-1;
-        while(stack.length) {
-          const k=stack.pop(),x=k%W,y=Math.floor(k/W); area++;
-          minX=Math.min(minX,x);maxX=Math.max(maxX,x);minY=Math.min(minY,y);maxY=Math.max(maxY,y);
-          for(let dy=-1;dy<=1;dy++) for(let dx=-1;dx<=1;dx++) {
-            const nx=x+dx,ny=y+dy;
-            if(nx<0||ny<0||nx>=W||ny>=H) continue;
-            const n=ny*W+nx; if(ink[n]) {ink[n]=0;stack.push(n);}
-          }
-        }
-        const w=maxX-minX+1,h=maxY-minY+1,meaningful=h/H>=.30&&area/(H*H)>=.025;
-        const touches=minX===0||minY===0||maxX===W-1||maxY===H-1;
-        residual=residual||meaningful;
-        candidate=candidate||(meaningful&&w/H>=.08&&area/(w*h)>=.12&&w/h>=.08&&w/h<=8&&!touches);
-      }
-      return {candidate:candidate,residual:residual};
-    }
-
-    function collectPaperGeneratedFacts(analysis, result) {
-      const facts={titleOccupied:false,cells:{}},header=result.overlay.header,title=result.layoutBoxes['header-title'];
-      if(title&&header&&header.inputTopDetected&&header.labelBand&&header.labelBand.detected&&title.y>=header.labelBand.splitY) {
-        const ink=measurePaperGeneratedInk(analysis,title,analysis,false);
-        facts.titleOccupied=!!(ink&&ink.candidate);
-      }
-      (result.overlay.cellLabelCells||[]).forEach(function(run){
-        if(!run.known||!run.cells.length) return;
-        const top=Math.min.apply(null,run.cells.map(function(c){return c.y;}));
-        const bottom=Math.max.apply(null,run.cells.map(function(c){return c.y+c.h;}));
-        const weak=typeof analysis.withHeaderContrast==='function'?analysis.withHeaderContrast({top:top,bottom:bottom}):null;
-        const statuses=run.cells.map(function(c){
-          const normal=measurePaperGeneratedInk(analysis,c,analysis,true);
-          if(normal&&normal.candidate) return 'occupied';
-          const contrast=measurePaperGeneratedInk(weak,c,analysis,true);
-          return normal&&contrast&&!c.hasInk&&!normal.residual&&!contrast.residual?'confirmedBlank':null;
-        });
-        const key=run.kind+'-'+run.side,box=result.layoutBoxes[key];
-        const count=run.kind==='cell'?result.cellColumnCount:result.cellColumnCount+getPaperAutoAlignInbetweenDelta(result);
-        if(!box||count<1) return;
-        const lines=run.kind==='cell'&&result.layoutGrid.cols[run.side];
-        facts.cells[key]=Array.from({length:count},function(_,i){
-          const a=box.x+box.w*(lines&&lines.length===count+1?lines[i]:i/count);
-          const b=box.x+box.w*(lines&&lines.length===count+1?lines[i+1]:(i+1)/count);
-          const slot=run.cells.findIndex(function(c){return Math.abs(c.x-a)<=3&&Math.abs(c.x+c.w-b)<=3;});
-          return slot<0?null:statuses[slot];
-        });
-      });
-      return facts;
-    }
-
-    function resolvePaperGeneratedDisplay(model) {
-      const policy=state.paperGeneratedOutput, modes=policy&&policy.modes||{};
-      const display={title:!policy||modes.title==='show'||(modes.title!=='hide'&&!policy.titleOccupied),
-        plus:policy?(modes.plus==='show'||(modes.plus!=='hide'&&!(state.layoutGrid&&state.layoutGrid.plus))):state.showDurationPlusOutput!==false,cells:{}};
-      const original=model.layout.originalEntries,followCount=Math.max(1,getInbetweenColumnCount()||original.length);
-      ['main','left','right'].forEach(function(side){ ['cell','follow'].forEach(function(role){
-        const key=role+'-'+side,count=role==='cell'?original.length:followCount,mask=policy&&policy.cells[key];
-        display.cells[key]=Array.from({length:count},function(_,i){
-          const entry=original[i],actual=!!(entry&&entry.isActual),mode=modes.cellLabel;
-          const fact=mask&&mask.length===count?mask[i]:null;
-          const layer=role==='cell'&&actual?'output':'paper';
-          if(!policy) return {visible:role==='follow'||!!state.showCellLabelOutput,layer:layer};
-          if(mode==='hide') return {visible:false,layer:layer};
-          if(mode==='show') return {visible:actual||fact!=='confirmedBlank',layer:actual?'output':'paper'};
-          return {visible:fact!=='occupied'&&(!(role==='follow'||!actual)||fact!=='confirmedBlank'),layer:layer};
-        });
-      }); });
-      return display;
-    }
-
-    function invalidatePaperGeneratedFacts() {
-      if(state.paperGeneratedOutput) state.paperGeneratedOutput={modes:state.paperGeneratedOutput.modes,titleOccupied:false,cells:{}};
-    }
-
-    async function setPaperGeneratedMode(role, mode) {
-      if(!['auto','show','hide'].includes(mode)) return;
-      const needsAnalysis=!state.paperGeneratedOutput&&mode==='auto';
-      commitPendingContentHistory();
-      if(!state.paperGeneratedOutput&&mode!=='auto') {
-        if(role==='plus') state.showDurationPlusOutput=mode==='show';
-        if(role==='cellLabel') state.showCellLabelOutput=mode==='show';
-      } else {
-        if(!state.paperGeneratedOutput) state.paperGeneratedOutput={modes:{},titleOccupied:false,cells:{}};
-        if(mode==='auto') delete state.paperGeneratedOutput.modes[role];
-        else state.paperGeneratedOutput.modes[role]=mode;
-      }
-      syncPaperLayoutControls();scheduleContentHistoryCommit();queueSavePaperMemory();render();
-      if(needsAnalysis&&state.paperImageDataUrl) await runPaperAutoAlign();
-    }
-
+    // 예전에 keepStatus 옵션이 있었으나 넘기는 호출부가 한 곳도 없었다(호출 7곳 전수·저장소 전체 검색).
+    // 도달할 수 없는 갈림길이라 걷었다 — 현재 모든 호출의 동작은 그대로다.
     function cancelPendingPaperAutoAlign() {
       state.paperAutoAlignToken += 1;
       state.paperAutoAlignOverlay = null;
@@ -18823,7 +18515,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     // ══ 시트 렌더 ⑤ 헤더란과 타임라인 라벨 박스 ══════════════════════════════════════════════════════════════════════
-    function renderHeader(offsetY, pageIndex, pageCount, drawingCounts, generatedDisplay) {
+    function renderHeader(offsetY, pageIndex, pageCount, drawingCounts) {
       const hx = 60, hy = offsetY + 52, hw = 1636, hh = 120;
       const wEp = 140, wTitle = 610, wCut = 220, wDuration = 220, wName = 260, wPage = 186;
       const x1 = hx + wEp, x2 = x1 + wTitle, x3 = x2 + wCut, x4 = x3 + wDuration, x5 = x4 + wName;
@@ -18877,7 +18569,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       withDrawLayer('output', function(){
         if (state.showHeaderOutput) {
           headerText('episode', hx + wEp / 2, hy + 68, ep, 24, 'middle', '700', '#111', { get:function(){ return getSheetInputValue('episode'); }, set:function(v){ setRememberedHeaderValue('episode', v); } }, boxes.episode);
-          if (generatedDisplay.title) headerText('title', x1 + wTitle / 2, hy + 68, titleValue, 24, 'middle', '700', '#111', { get:function(){ return getSheetInputValue('title'); }, set:function(v){ setRememberedHeaderValue('title', v); } }, boxes.title);
+          headerText('title', x1 + wTitle / 2, hy + 68, titleValue, 24, 'middle', '700', '#111', { get:function(){ return getSheetInputValue('title'); }, set:function(v){ setRememberedHeaderValue('title', v); } }, boxes.title);
           headerText('cutNo', x2 + wCut / 2, hy + 68, cutNo, 22, 'middle', '700', '#111', { get:function(){ return getSheetInputValue('cutNo'); }, set:function(v){ document.getElementById('cutNo').value = v; } }, boxes.cutNo);
           const secondsEdit = { durationStepper:'seconds', get:function(){ return getSheetInputValue('seconds'); }, set:function(v){ document.getElementById('seconds').value = v; normalizeDurationInputs(); } };
           const framesEdit = { durationStepper:'frames', get:function(){ return getSheetInputValue('frames'); }, set:function(v){ document.getElementById('frames').value = v; normalizeDurationInputs(); } };
@@ -18896,9 +18588,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
             headerText('seconds', x3 + wDuration / 2 - 16, hy + 68, String(sec), 22, 'middle', '700', '#111', secondsEdit, boxes.seconds);
             headerText('frames', x3 + wDuration / 2 + 16, hy + 68, String(frame), 22, 'middle', '700', '#111', framesEdit, boxes.frames);
           }
-          if (generatedDisplay.plus) {
-            const plusX = printedPlusMark ? printedPlusMark.x : (secBox.x + secBox.w + frameBox.x) / 2;
-            const plusY = printedPlusMark ? printedPlusMark.y : (secBox.y + secBox.h / 2 + frameBox.y + frameBox.h / 2) / 2;
+          if (state.showDurationPlusOutput !== false) {
+            const printedPlus = useAdjustedHeader && state.layoutGrid && state.layoutGrid.plus;
+            const plusX = printedPlus ? printedPlus.x : (secBox.x + secBox.w + frameBox.x) / 2;
+            const plusY = printedPlus ? printedPlus.y : (secBox.y + secBox.h / 2 + frameBox.y + frameBox.h / 2) / 2;
             text(plusX, plusY + 22 * TEXT_INK_LIFT_EM, '+', 22, 'middle', '700');
           }
           headerText('author', x4 + wName / 2, hy + 68, author, 22, 'middle', '700', '#111', { get:function(){ return getSheetInputValue('author'); }, set:function(v){ setRememberedHeaderValue('author', v); } }, boxes.author);
@@ -19305,10 +18998,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const originalColW = params.originalAreaW / params.originalEntries.length;
       const inbetweenColumnCount = Math.max(1, getInbetweenColumnCount() || params.originalEntries.length);
       const inbetweenColW = params.inbetweenW / inbetweenColumnCount;
-      const inbetweenEntries = [];
+      const inbetweenNames = [];
       for (let ci = 0; ci < inbetweenColumnCount; ci++) {
         const entry = params.originalEntries[ci];
-        inbetweenEntries.push(entry || {label:makeCellColumnLabel(ci),isActual:false});
+        inbetweenNames.push(String(entry && entry.label || makeCellColumnLabel(ci)));
       }
       const xOriginalRight = params.blockX + params.originalAreaW;
       const xDialogRight = xOriginalRight + params.dialogW;
@@ -19363,11 +19056,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           }
           text(templateDialogArea.x + templateDialogArea.w / 2, templateHeaderY + templateHeaderH / 2, 'Dialog', 14, 'middle', '700', '#7a7a7a');
           text(templateCameraArea.x + templateCameraArea.w / 2, templateHeaderY + templateHeaderH / 2, 'CAMERA', 14, 'middle', '700', '#7a7a7a');
-          {
+          if (state.showCellLabelOutput) {
             params.originalEntries.forEach(function(entry, idx){
-              const display=params.generatedDisplay.cells['cell-'+blockSide][idx];
-              if(!display.visible) return;
-              withDrawLayer(display.layer, function(){
+              withDrawLayer(entry.isActual ? 'output' : 'paper', function(){
                 const labelBounds = getOutputColumnBounds(templateLabelArea, templateBlock, idx);
                 const cellNameX = (labelBounds.x1 + labelBounds.x2) / 2;
                 const cellNameY = templateLabelArea.y + templateLabelArea.h / 2;
@@ -19386,10 +19077,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
               });
             });
           }
-          inbetweenEntries.forEach(function(entry, idx){
-            const display=params.generatedDisplay.cells['follow-'+blockSide][idx];
-            if (templateInbetweenW <= 0 || !display.visible) return;
-            withDrawLayer(display.layer,function(){text(templateInbetweenX + templateInbetweenW * (idx + 0.5) / inbetweenColumnCount, templateHeaderY + templateHeaderH / 2, entry.label, 13, 'middle', '700', '#7a7a7a');});
+          inbetweenNames.forEach(function(name, idx){
+            if (templateInbetweenW <= 0) return;
+            text(templateInbetweenX + templateInbetweenW * (idx + 0.5) / inbetweenColumnCount, templateHeaderY + templateHeaderH / 2, name, 13, 'middle', '700', '#7a7a7a');
           });
           const templateRows = getOutputRowGeometry(templateBlock, 'cell');
           for (let r = 0; r <= params.frameCount; r++) {
@@ -19423,11 +19113,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
           text(xOriginalRight + params.dialogW / 2, top + nameStripH / 2, 'Dialog', 14, 'middle', '700', '#7a7a7a');
           text(xInbetweenRight + params.cameraW / 2, top + nameStripH / 2, 'CAMERA', 14, 'middle', '700', '#7a7a7a');
-          {
+          if (state.showCellLabelOutput) {
             params.originalEntries.forEach(function(entry, idx){
-              const display=params.generatedDisplay.cells['cell-'+blockSide][idx];
-              if(!display.visible) return;
-              withDrawLayer(display.layer, function(){
+              withDrawLayer(entry.isActual ? 'output' : 'paper', function(){
                 const cellNameTempBlock = { blockX:params.blockX, blockW:params.blockW, originalColW:originalColW, originalAreaW:params.originalAreaW, originalEntriesCount:params.originalEntries.length, top:top, nameStripH:nameStripH, rowH:rowH, frameCount:frameCountForBox, start:params.startFrame };
                 const labelArea = getCellLabelArea(cellNameTempBlock);
                 const labelBounds = getOutputColumnBounds(labelArea, cellNameTempBlock, idx);
@@ -19448,10 +19136,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
               });
             });
           }
-          inbetweenEntries.forEach(function(entry, idx){
-            const display=params.generatedDisplay.cells['follow-'+blockSide][idx];
-            if(display.visible) withDrawLayer(display.layer,function(){text(xDialogRight + idx * inbetweenColW + inbetweenColW / 2, top + nameStripH / 2, entry.label, 13, 'middle', '700', '#7a7a7a');});
-          });
+          inbetweenNames.forEach(function(name, idx){ text(xDialogRight + idx * inbetweenColW + inbetweenColW / 2, top + nameStripH / 2, name, 13, 'middle', '700', '#7a7a7a'); });
 
           for (let r = 0; r <= params.frameCount; r++) {
             const y = top + nameStripH + r * rowH;
@@ -22212,7 +21897,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         return withSheetSnapshot(renderOptions.snapshot, function(){ return renderPage(targetSvg, pageIndex, model, interactive, options); });
       }
       const isInteractive = interactive !== false;
-      const generatedDisplay = resolvePaperGeneratedDisplay(model);
       const previousSvgTarget = currentSvgTarget;
       const previousStaticValid = __staticValid;
       const previousRenderLayerFilter = currentRenderLayerFilter;
@@ -22223,7 +21907,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       setSvgTarget(targetSvg || svg);
       if (currentSvgTarget === svg) {
         ensureRenderLayers();
-        const sig = computeStaticSig(pageIndex, model, isInteractive, generatedDisplay);
+        const sig = computeStaticSig(pageIndex, model, isInteractive);
         __staticValid = (__staticG.childNodes.length > 0 && sig === __staticSig);
         if (!__staticValid) { clearSvg(__staticG); __staticSig = sig; }
         clearSvg(__dynamicG);
@@ -22237,7 +21921,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       currentSvgTarget.setAttribute('height', PAGE_H);
       withStaticLayer(function(){ withDrawLayer('background', function(){ rect(0, 0, PAGE_W, PAGE_H, 0, 'white', 'none'); }); });
       withStaticLayer(function(){ addPaperImageLayer(); });
-      renderHeader(0, pageIndex, model.totalPages, model.drawingCounts, generatedDisplay);
+      renderHeader(0, pageIndex, model.totalPages, model.drawingCounts);
       const explicitDurationFrame = getDurationFrameCount();
       const durationFrame = explicitDurationFrame || (model && model.hasContent ? model.contentMaxFrame : 0);
       const layersById = new Map(model.layout.layers.map(function(layer){ return [layer.uid, layer]; }));
@@ -22251,7 +21935,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           startFrame:block.start,
           frameCount:block.count,
           originalEntries:model.layout.originalEntries,
-          generatedDisplay:generatedDisplay,
           layersById:layersById,
           baseLayersById:baseLayersById,
           originalAreaW:block.metrics.originalAreaW,
@@ -22403,7 +22086,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       refreshTextCommandColumnPickerIfNeeded();
       state.showTemplate = showTemplateToggleEl ? !!showTemplateToggleEl.checked : true;
       state.showHeaderOutput = showHeaderOutputToggleEl ? !!showHeaderOutputToggleEl.checked : true;
-
+      state.showDurationPlusOutput = showDurationPlusOutputToggleEl ? !!showDurationPlusOutputToggleEl.checked : true;
+      state.showCellLabelOutput = showCellLabelOutputToggleEl ? !!showCellLabelOutputToggleEl.checked : true;
       renderPage(svg, state.currentPreviewPage, model, true);
       redrawMemoCanvas();
       updateMemoUI();
@@ -25342,9 +25026,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     // ══ [입력] 래스터 취입 (블롭·CLIP → 데이터 URL) ══════════════════════════════════════════════════════════════
-    async function loadRasterBlobToDataUrl(blob, makeMeta, retainDecoded) {
+    async function loadRasterBlobToDataUrl(blob, makeMeta) {
       const url = URL.createObjectURL(blob);
-      let retained=false;
       try {
         const img = await loadPaperAutoAlignImage(url);
         const canvas = document.createElement('canvas');
@@ -25354,15 +25037,12 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         if (!ctx) throw new Error('Canvas is unavailable');
         ctx.drawImage(img, 0, 0, PAGE_W, PAGE_H);
         const width = img.naturalWidth || 0, height = img.naturalHeight || 0;
-        const result={ dataUrl:canvas.toDataURL('image/png'), meta:makeMeta ? makeMeta(width, height) : getPaperLayoutTexts().rasterMeta(width, height), width:width, height:height };
-        canvas.width=canvas.height=0;
-        if (retainDecoded) {retained=true;result.decodedSource=img;result.releaseDecoded=function(){img.src='';URL.revokeObjectURL(url);};}
-        return result;
-      } finally { if (!retained) URL.revokeObjectURL(url); }
+        return { dataUrl:canvas.toDataURL('image/png'), meta:makeMeta ? makeMeta(width, height) : getPaperLayoutTexts().rasterMeta(width, height), width:width, height:height };
+      } finally { URL.revokeObjectURL(url); }
     }
 
-    function loadRasterImageFileToDataUrl(file, retainDecoded) {
-      return loadRasterBlobToDataUrl(file, function(w, h){ return getPaperLayoutTexts().rasterMeta(w, h); },retainDecoded);
+    function loadRasterImageFileToDataUrl(file) {
+      return loadRasterBlobToDataUrl(file, function(w, h){ return getPaperLayoutTexts().rasterMeta(w, h); });
     }
 
     async function loadClipFileToDataUrl(file) {
@@ -25467,8 +25147,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         showPsdMemo:!!state.showPsdMemo,
         layoutBoxes:cloneSheetData(state.layoutBoxes || {}),
         layoutBoxBaseRects:cloneSheetData(state.layoutBoxBaseRects || {}),
-        layoutGrid:cloneSheetData(state.layoutGrid || null),
-        generatedOutput:cloneSheetData(state.paperGeneratedOutput)
+        layoutGrid:cloneSheetData(state.layoutGrid || null)
       };
     }
 
@@ -25496,7 +25175,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       state.layoutBoxes = cloneSheetData(paper.layoutBoxes || {});
       state.layoutBoxBaseRects = cloneSheetData(paper.layoutBoxBaseRects || {});
       state.layoutGrid = sanitizeLayoutGrid(paper.layoutGrid);
-      state.paperGeneratedOutput = sanitizePaperGeneratedOutput(paper.generatedOutput);
     }
 
     function restorePaperStateSnapshot(snapshot, options) {
@@ -25523,7 +25201,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     function redoPaperChange() { return contentRedo(); }
 
-    // 자동저장·설정 파일의 공용 paper 스키마. DB 이미지 복원 시점은 각 호출자가 소유한다.
+    // paper 서브스키마 — 수시 자동저장(collectPaperMemoryPayload)과 "저장" 버튼(collectCurrentSettingsPayload)이
+    // 이 부분만은 바이트까지 똑같은 코드를 각자 들고 있었다(2026-08-02 통합, q6-A). 복원 시점(즉시 vs 나머지
+    // state를 다 채운 뒤)은 호출부마다 달라 shouldRestore*FromDb 판단만 반환하고 실행은 각자 한다.
     function collectPaperSubschema(content) {
       const paper = readPaperData(), columns = content || readContentColumns();
       delete paper.layoutBoxBaseRects;
@@ -25670,8 +25350,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       cancelPendingPaperAutoAlign();
       if (paperImageStatusEl) paperImageStatusEl.textContent = getPaperLayoutTexts().loading;
       const lower = String(file.name || '').toLowerCase();
-      let result;
       try {
+        let result;
         if (lower.endsWith('.psd') || file.type === 'image/vnd.adobe.photoshop') {
           const buffer = await file.arrayBuffer();
           const size = readPsdPixelSize(buffer);
@@ -25694,7 +25374,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         } else if (lower.endsWith('.clip')) {
           result = await loadClipFileToDataUrl(file);
         } else {
-          result = await loadRasterImageFileToDataUrl(file,true);
+          result = await loadRasterImageFileToDataUrl(file);
         }
         if (!isCurrent()) return 'stale';
         if (!result) { updatePaperImageStatus(); return 'canceled'; }
@@ -25713,7 +25393,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         state.paperAutoAlignOverlay = null;
         setPaperAutoAlignResult(null);
         state.showTemplate = false;
-        state.paperGeneratedOutput = {modes:{},titleOccupied:false,cells:{}};
+        state.showDurationPlusOutput = false;
+        state.showCellLabelOutput = false;
         state.textMemoEditMode = false;
         state.positionMode = true;
         syncPaperLayoutControls();
@@ -25725,9 +25406,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         scheduleContentHistoryCommit();
         queueSavePaperMemory();
         render();
-        // Alignment owns its error boundary: failure must not roll back the imported source.
-        try {await runPaperAutoAlign({ silent:true, decodedSource:result.decodedSource });}
-        catch (err) {if (isCurrent()) sendClientErrorEvent('paper_auto_align',err,{feature:'paper_auto_align'});}
+        runPaperAutoAlign({ silent:true });
         return 'loaded';
       } catch (err) {
         if (!isCurrent()) return 'stale';
@@ -25735,7 +25414,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         if (paperImageStatusEl) paperImageStatusEl.textContent = getPaperLayoutTexts().failed(err && err.message ? err.message : err);
         render();
         return 'failed';
-      } finally {if (result && result.releaseDecoded) result.releaseDecoded();}
+      }
     }
 
     function clearPaperImage() {
@@ -25757,7 +25436,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       state.layoutBoxes = {};
       state.layoutBoxBaseRects = {};
       state.layoutGrid = null;
-      state.paperGeneratedOutput = null;
       state.layoutDrag = null;
       clearLayoutDragPreview();
       document.documentElement.classList.remove('position-edit-dragging');
@@ -25804,7 +25482,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       state.layoutBoxes = {};
       state.layoutBoxBaseRects = {};
       state.layoutGrid = null;
-      invalidatePaperGeneratedFacts();
       state.layoutDrag = null;
       clearLayoutDragPreview();
       document.documentElement.classList.remove('position-edit-dragging');
@@ -25814,7 +25491,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     function toggleHeaderPositionMode() {
-      if (state.positionMode && state.paperAutoAlignResult && state.paperAutoAlignResult.status==='working') cancelPendingPaperAutoAlign();
       if (state.textMemoEditor) closeTextMemoEditor({ render:false });
       const nextPositionMode = !state.positionMode;
       if (nextPositionMode) {
@@ -26013,13 +25689,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       ['originalText','originalEncoding','loadedMode','loadError'].forEach(function(key){ scalar(csv[key], 'csv.' + key); });
       const paper = copy.paper || {};
       ['imageDataUrl','memoDataUrl','imageName','imageMeta','imagePixelInfo','memoryId'].forEach(function(key){ scalar(paper[key], 'paper.' + key); });
-      record(paper.generatedOutput, 'paper.generatedOutput');
-      if(paper.generatedOutput) {
-        record(paper.generatedOutput.modes, 'paper.generatedOutput.modes');
-        record(paper.generatedOutput.cells, 'paper.generatedOutput.cells');
-        Object.entries(paper.generatedOutput.cells||{}).forEach(function([key,slots]){ array(slots,'paper.generatedOutput.cells.'+key,scalar); });
-        paper.generatedOutput=sanitizePaperGeneratedOutput(paper.generatedOutput);
-      }
       record(paper.layoutBoxes, 'paper.layoutBoxes');
       Object.entries(paper.layoutBoxes || {}).forEach(function(entry){ item(entry[1], 'paper.layoutBoxes.' + entry[0]); });
       array(paper.cellDisplayOrder, 'paper.cellDisplayOrder', scalar);
@@ -26243,9 +25912,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     // 컷 폴더 안 파일 하나의 역할과 셀 번호를 정한다. 파일 이름 규칙은 MoArt 시트 폴더 가져오기(gengaSheetFileKeyForLayer)와
     // 같은 판례 tools/test_cut_folder.cjs로 맞춘다(두 앱 모두 전 행 일치). 셀 이름은 시트 열 이름과 대조하고,
     // 시트에 없는 이름은 버리지 않고 보고한다.
-    // 건너뛸 폴더. 구분자를 뺀 이름으로 본다(`_old`·`old2`). 이전 테이크 보관 폴더(`_t01`)는
-    // 앞의 `_` 까지 있어야 한다 — 구분자를 빼면 `T01` 같은 일반 폴더와 구별되지 않는다. 짝은 MoArt `gengaSheetSkipsDir`.
-    const CUT_FOLDER_SKIP_DIRS = /^(OLD\d*|POOL|X|参考|SANKO|SANNKOU|SANKOU|BACKUP|BACKUPS|ASSETS|\.GIT)$/;
+    const CUT_FOLDER_SKIP_DIRS = /^(OLD|POOL|X|参考|SANKO|SANNKOU|SANKOU|BACKUP|BACKUPS|ASSETS|\.GIT)$/;
     const CUT_FOLDER_IMAGE_EXT = /^(jpe?g|png|webp|gif|bmp|avif|tiff?|psd)$/;
     const CUT_FOLDER_SHEET_EXT = /^(clip|tvpp|xdts|csv|json)$/;
     const CUT_FOLDER_REFERENCE_TOKENS = new Set(['GUIDE', 'SANKOU', 'SANKO', '参考', 'REF', 'REFERENCE']);
@@ -26253,10 +25920,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     function cutFolderCompactKey(text) {
       return String(text || '').normalize('NFKC').toUpperCase().replace(/[\s_\-]+/g, '');
-    }
-
-    function cutFolderSkipsDir(name) {
-      return CUT_FOLDER_SKIP_DIRS.test(cutFolderCompactKey(name)) || /^_t\d+$/i.test(String(name || '').normalize('NFKC'));
     }
 
     function cutFolderTokens(text) {
@@ -26270,7 +25933,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const ext = dot > 0 ? fileName.slice(dot + 1).toLowerCase() : '';
       const rawBase = (dot > 0 ? fileName.slice(0, dot) : fileName).normalize('NFKC');
       const out = { path:String(relPath || ''), kind:'other', layer:null, number:null, revision:'', tail:'' };
-      if (parts.some(cutFolderSkipsDir)) return Object.assign(out, { kind:'ignored' });
+      if (parts.some(function(dir){ return CUT_FOLDER_SKIP_DIRS.test(cutFolderCompactKey(dir)); })) return Object.assign(out, { kind:'ignored' });
       if (CUT_FOLDER_SHEET_EXT.test(ext)) return Object.assign(out, { kind:'sheet' });
       if (!CUT_FOLDER_IMAGE_EXT.test(ext)) return out;
       // 시트 용지: 이름에 ts·sheet 토큰(압축 키로는 _ts_ 구분자가 사라지므로 원래 이름으로 본다)
@@ -26384,7 +26047,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           files.push({ path:prefix + entry.name, file:await fileOf(entry) });
           return;
         }
-        if (cutFolderSkipsDir(entry.name)) { skippedDirs.push(prefix + entry.name); return; }
+        if (CUT_FOLDER_SKIP_DIRS.test(cutFolderCompactKey(entry.name))) { skippedDirs.push(prefix + entry.name); return; }
         const children = await readAll(entry);
         for (let i = 0; i < children.length; i++) await walk(children[i], prefix + entry.name + '/');
       }
@@ -27320,8 +26983,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     const SHEET_NAME_EPISODE_WORDS = /^(OP|ED|SP|PV|MV|NC|[A-E])$/i;
 
     // 컷번호 모양: 숫자 2~4 자리, 앞에 c 가 붙기도 하고(`c003`) 뒤에 글자가 붙기도 한다(`002A`).
-    // 겸용 컷은 `-` 로 잇는다(`0150-0152`). `_` 로 이으면 앞 번호가 작품명 자리와 겹친다(사용자 결정 2026-11-05).
-    const SHEET_NAME_CUT_RE = /^[cC]?\d{2,4}[A-Za-z]{0,2}(?:-[cC]?\d{2,4}[A-Za-z]{0,2})?$/;
+    const SHEET_NAME_CUT_RE = /^[cC]?\d{2,4}[A-Za-z]{0,2}$/;
 
     // 공정 = **바탕 + 체크**다. 공유 계약의 체크 어휘 절,
     // MoArt 의 `GENGA_REVISION_ROLES`(E=演出·K=監督·S=作監·SS=総作監), 그리고 실물 파일의 폴더 트리
@@ -27336,22 +26998,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       { code:'ct', label:'CT', alone:'CT', kind:'material' },      // 컷팅용 소재(컷팅시트)
       { code:'ts', label:'TS', alone:'TS', kind:'material' }       // 타임시트
     ];
-    // 체크 역할 한 벌: 단계 이름에 쓰는 일본어 표기와, 레이어 수정본(그림을 고치는 역할)인지.
-    // 수정 공정 문구는 `revision<코드>` 번역 키로 고른다. 演助(`ej`, OpenToonz PPM 표본의 체크 접미사)는
-    // 체크만 하고 그림을 고치지 않는다.
-    const SHEET_CHECK_ROLES = {
-      E:  { label:'演出',   correction:true },
-      K:  { label:'監督',   correction:true },
-      S:  { label:'作監',   correction:true },
-      SS: { label:'総作監', correction:true },
-      EJ: { label:'演助',   correction:false }
-    };
     const SHEET_PROCESS_CHECKS = [
-      { code:'ssk', role:'SS' }, { code:'ss', role:'SS' },
-      { code:'sk',  role:'S' },  { code:'s',  role:'S' },
-      { code:'ej',  role:'EJ' },
-      { code:'en',  role:'E' },  { code:'e',  role:'E' },
-      { code:'k',   role:'K' }
+      { code:'ssk', label:'総作監' }, { code:'ss', label:'総作監' },
+      { code:'sk',  label:'作監' },   { code:'s',  label:'作監' },
+      { code:'en',  label:'演出' },   { code:'e',  label:'演出' },
+      { code:'k',   label:'監督' }
     ];
 
     // 한 토큰을 바탕+체크로 푼다. **끝까지 풀리지 않으면 통째로 미상**이다 — `LOa` 처럼 바탕만 맞고
@@ -27373,7 +27024,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       while (rest) {
         const hit = SHEET_PROCESS_CHECKS.find(function(item) { return rest.indexOf(item.code) === 0; });
         if (!hit) return null;
-        checks.push(hit.role);
+        checks.push(hit.label);
         rest = rest.slice(hit.code.length);
       }
       if (!base && !checks.length) return null;
@@ -27399,27 +27050,24 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         }
         if (decoded.base && !base) base = decoded.base;
         if (!decoded.base || base === decoded.base) {
-          decoded.checks.forEach(function(role) { if (checks.indexOf(role) === -1) checks.push(role); });
+          decoded.checks.forEach(function(label) { if (checks.indexOf(label) === -1) checks.push(label); });
         }
       });
       if (!base) base = material;
       if (!base) return tokens.join('_');
-      return checks.length ? base.label + checks.map(function(role) { return SHEET_CHECK_ROLES[role].label; }).join('') : base.alone;
+      return checks.length ? base.label + checks.join('') : base.alone;
     }
 
     // 레이어의 공정 접미사. 셀/배경 몸통에만 적용해 임의의 이름 끝을 공정으로 오인하지 않는다.
     // 어휘는 파일명 해독과 공유하며, MoArt처럼 숫자 꼬리는 수정 차수로 읽는다. 자동 병합은 하지 않는다.
-    // 그림을 고치지 않는 체크(演助)만 붙은 이름은 수정본이 아니다.
     function sheetLayerRevisionInfo(name) {
       const match = String(name || '').trim().match(/^(?:[A-Z]{1,3}\d*|BG\d*|BOOK\d*|BGBOOK\d*|BACKGROUND)[_-]([a-z]+)(\d*)$/i);
       if (!match) return null;
       const decoded = sheetProcessDecodeToken(match[1]);
-      if (!decoded || (decoded.base && decoded.base.kind !== 'process')) return null;
-      const checks = decoded.checks.filter(function(role) { return SHEET_CHECK_ROLES[role].correction; });
-      if (!checks.length) return null;
+      if (!decoded || !decoded.checks.length || (decoded.base && decoded.base.kind !== 'process')) return null;
       const generation = match[2] ? Number(match[2]) : 1;
       if (!Number.isSafeInteger(generation) || generation < 1) return null;
-      return { checks:checks, generation:generation, explicitGeneration:Boolean(match[2]) };
+      return { checks:decoded.checks, generation:generation, explicitGeneration:Boolean(match[2]) };
     }
 
     // 이름을 `_` 로 끊어 **뒤에서부터** 컷번호를 찾고, 그 앞을 작품명+화수, 뒤를 공정으로 본다.
@@ -27532,6 +27180,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const chosen = {};     // timelineId → 가져올지
         const parsedName = parseSheetFileNameIdentity(fileName) || {};
         const rowMetadata = new Map();
+        const revisionTextKeys = { '演出':'revisionE', '作監':'revisionS', '総作監':'revisionSS', '監督':'revisionK' };
         reads.forEach(function(read, index) {
           const key = String(read.timeline.MainId);
           chosen[key] = index === 0 && !read.blocked;
@@ -27861,8 +27510,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
               const revisionNote = document.createElement('span');
               revisionNote.className = 'clip-import-revision';
               revisionNote.dataset.revision = 'true';
-              revisionNote.textContent = metadata.revision.checks.map(function(role) {
-                return clipSheetText('revision' + role, null, app);
+              revisionNote.textContent = metadata.revision.checks.map(function(check) {
+                return clipSheetText(revisionTextKeys[check], null, app);
               }).join('・')
                 + (metadata.revision.explicitGeneration
                    ? clipSheetText('revisionGeneration', { count:metadata.revision.generation }, app) : '');
@@ -29058,11 +28707,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       job.savedFormat = snapshot.format; job.size = snapshot.size; job.baseNames = snapshot.names.slice();
       job.savedOptions = {};
       EXPORT_REVIEW_FIELDS.forEach(function(field){ job.savedOptions[field.key] = !!snapshot.state[field.key]; });
-      if(snapshot.state.paperGeneratedOutput) withSheetSnapshot(snapshot,function(){
-        const display=resolvePaperGeneratedDisplay(snapshot.model||getSyncedRenderModel());
-        job.savedOptions.showDurationPlusOutput=display.plus;
-        job.savedOptions.showCellLabelOutput=Object.values(display.cells).some(function(slots){return slots.some(function(s){return s.visible&&(s.layer==='output'||state.showTemplate);});});
-      });
       job.status = 'ready';
     }
 
@@ -29082,13 +28726,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     function getExportReviewJobSnapshot(session, job) {
       const snapshot = session.kind === 'current' ? cloneSheetData(session.currentSnapshot) : prepareBatchWorkSnapshot(job.payload,job.format);
-      const policy=snapshot.state.paperGeneratedOutput;
-      Object.entries(job.options).forEach(function([key,value]){
-        if(!policy||!['showDurationPlusOutput','showCellLabelOutput'].includes(key)) snapshot.state[key]=value;
-      });
-      if(policy) [['showDurationPlusOutput','plus'],['showCellLabelOutput','cellLabel']].forEach(function([key,role]){
-        if(Object.prototype.hasOwnProperty.call(session.outputOverrides,key)) policy.modes[role]=session.outputOverrides[key]?'show':'hide';
-      });
+      Object.assign(snapshot.state,job.options);
       snapshot.state.exportDirectoryHandle = session.handle; snapshot.state.exportDirectoryName = session.folderName || '';
       snapshot.state.exportFilenameOverride = session.kind === 'current' ? sanitizeFilenameBase(session.filename) : '';
       snapshot.format = job.format;
@@ -29244,15 +28882,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (session !== exportPreflightSession || session.backdrop.querySelector('[data-preflight-confirm]').disabled) return;
       if (session.kind === 'library') { runBatchExport(session); return; }
       const snapshot = getExportReviewJobSnapshot(session,session.jobs[0]);
-      if(snapshot.state.paperGeneratedOutput) {
-        commitPendingContentHistory();
-        state.paperGeneratedOutput=cloneSheetData(snapshot.state.paperGeneratedOutput);
-        scheduleContentHistoryCommit();
-      }
       EXPORT_REVIEW_FIELDS.forEach(function(field){ state[field.key] = snapshot.state[field.key]; });
       state.exportFilenameOverride = snapshot.state.exportFilenameOverride; exportFormatSelectEl.value = snapshot.format;
       syncPaperLayoutControls(); queueSavePaperMemory(); closeExportPreflightModal(); downloadAllPages(snapshot);
-      if(state.paperGeneratedOutput) render();
     }
 
     function openExportPreflightModal(options) {
@@ -30050,9 +29682,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     if (clearSheetDataBtn) clearSheetDataBtn.addEventListener('click', clearSheetData);
     if (showTemplateToggleEl) showTemplateToggleEl.addEventListener('change', function(){ state.showTemplate = !!showTemplateToggleEl.checked; queueSavePaperMemory(); render(); });
     if (showHeaderOutputToggleEl) showHeaderOutputToggleEl.addEventListener('change', function(){ state.showHeaderOutput = !!showHeaderOutputToggleEl.checked; queueSavePaperMemory(); render(); });
-    [['paperTitleMode','title'],['showDurationPlusOutputToggle','plus'],['showCellLabelOutputToggle','cellLabel']].forEach(function([id,role]){
-      document.getElementById(id).addEventListener('change',function(event){setPaperGeneratedMode(role,event.target.value);});
-    });
+    if (showDurationPlusOutputToggleEl) showDurationPlusOutputToggleEl.addEventListener('change', function(){ state.showDurationPlusOutput = !!showDurationPlusOutputToggleEl.checked; queueSavePaperMemory(); render(); });
+    if (showCellLabelOutputToggleEl) showCellLabelOutputToggleEl.addEventListener('change', function(){ state.showCellLabelOutput = !!showCellLabelOutputToggleEl.checked; queueSavePaperMemory(); render(); });
     if (showPsdMemoToggleEl) showPsdMemoToggleEl.addEventListener('change', function(){ state.showPsdMemo = !!showPsdMemoToggleEl.checked; queueSavePaperMemory(); render(); });
     svg.addEventListener('pointermove', continueHeaderPositionDrag, { passive:false });
     svg.addEventListener('pointerup', endHeaderPositionDrag, { passive:false });
