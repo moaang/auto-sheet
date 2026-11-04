@@ -2612,7 +2612,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '981';
+    const APP_VERSION = '982';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3921,6 +3921,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver982", "Paper Auto Align: body rows and header fields", ["Keeps the first and last body rows aligned on more printed sheets, excludes gaps between separated header boxes, and recognizes wider episode fields enclosed by printed rules."]],
         ["ver981", "Paper Auto Align: label borders and blank auxiliary cells", ["Finds slightly offset label borders while keeping the body grid in place. Recognizes a wider last named cell when its remaining space is blank."]],
         ["ver980", "Paper Auto Align: faint header borders and field placement", ["Recovers faint printed header borders to place episode, title, cut, duration, name and page fields in their own cells.", "Recognizes a duration plus near the right edge when a separate field follows it, and a confirmed name field immediately before the cut field."]],
         ["ver979", "Paper Auto Align: preserve 3-second and 6-second sheet layouts", ["Detected 3-second and 6-second paper layouts now take precedence over the number of input layers. Frame numbering and pagination continue correctly after saving and reopening.", "Improved recognition of short label borders and narrow printed letters without merging cells whose borders are missing."]],
@@ -4043,6 +4044,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver982", "用紙自動整列：本文行とヘッダー欄を改善", ["本文の最初と最後の行を正しく合わせ、分かれたヘッダー欄の間の空白を除外し、罫線で囲まれた幅広い話数欄も認識します。"]],
         ["ver981", "用紙自動整列：名前欄の罫線と空の補助欄を改善", ["本文の位置を保ったまま、名前欄のわずかにずれた罫線を認識します。最後の名前欄が広く、残りが空白の場合にも対応します。"]],
         ["ver980", "用紙自動整列：薄いヘッダー罫線と項目配置を改善", ["薄い印刷罫線を補い、話数・タイトル・カット・秒数・担当者・枚数をそれぞれの欄に配置します。", "右寄りの秒数の＋と、カット欄の直前にある担当者欄にも対応します。"]],
         ["ver979", "用紙自動整列：3秒・6秒シートの配置を維持", ["検出した3秒・6秒の用紙構造を入力レイヤー数より優先します。保存して開き直してもコマ番号とページの続きが保たれます。", "短い名前枠の罫線と細い印刷文字の認識を改善。境界線が欠けたセルを誤ってまとめません。"]],
@@ -4165,6 +4167,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver982", "용지 자동정렬: 본문 행과 헤더 칸 개선", ["더 많은 인쇄 용지에서 본문 첫 행과 마지막 행을 맞추고, 분리된 헤더 사이의 빈 간격을 제외하며, 인쇄선으로 닫힌 넓은 화수 칸을 인식합니다."]],
         ["ver981", "용지 자동정렬: 이름 칸 경계와 빈 보조칸 판정 개선", ["본문 위치를 유지하며 이름 행의 조금 어긋난 인쇄선을 인식합니다. 마지막 이름 칸이 넓고 나머지가 비어 있는 양식도 구분합니다."]],
         ["ver980", "용지 자동정렬: 흐린 헤더선과 항목 배정 개선", ["흐린 인쇄선을 보완해 화수·타이틀·컷·시간·담당자·매수를 각각의 칸에 배치합니다.", "오른쪽에 있는 시간 표시 +와 컷 번호 바로 앞의 담당자 칸에도 대응합니다."]],
         ["ver979", "용지 자동정렬: 3초·6초 시트 구조 유지", ["인식한 3초·6초 용지 구조를 입력 층 수보다 우선합니다. 저장하고 다시 열어도 프레임 번호와 페이지 연결을 유지합니다.", "짧은 이름 칸 경계와 가는 인쇄 글자 인식을 개선했습니다. 경계가 빠진 칸을 잘못 합쳐 확정하지 않습니다."]],
@@ -4287,6 +4290,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver982", "纸张自动对齐：改进正文行与页眉栏", ["改进印刷纸张首行与末行的对齐，排除分离页眉栏之间的空白，并识别由印刷线封闭的较宽集数栏。"]],
         ["ver981", "纸张自动对齐：改进名称栏边线与空白辅助栏识别", ["保持正文位置，识别名称行略微偏移的印刷边线；支持最后一个名称栏较宽且余部空白的格式。"]],
         ["ver980", "纸张自动对齐：改进浅色标题栏边线和字段布局", ["补足浅色印刷边线，将集数、标题、镜头、时间、署名和页码放在各自栏内。", "支持靠右的时间加号，以及紧邻镜头编号栏之前的署名栏。"]],
         ["ver979", "纸张自动对齐：保持3秒和6秒纸张布局", ["识别出的3秒或6秒纸张结构优先于输入图层数量。保存并重新打开后，帧编号和分页保持连续。", "改进短名称框边线和细印刷字符的识别，避免将缺少边界的单元格错误合并。"]],
@@ -8323,7 +8327,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     // ══ 용지 인식 ③ 본문 그리드 · 컬럼 그룹 · 좌우 타임라인 사이드 판정 ══════════════════════════════════════════════════════
-    function findPaperAutoAlignBodyGrid(yLines) {
+    function findPaperAutoAlignBodyGrid(yLines, yDetailed) {
       const lines = (yLines || []).map(Number).filter(Number.isFinite).sort(function(a,b){ return a-b; });
       let best = null;
       const count = PAPER_AUTO_ALIGN_TARGET_BODY_LINES;
@@ -8441,6 +8445,43 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       lines.forEach(function(line){
         if (line > best.labelTop + 8 && line < best.bodyTop && best.bodyTop - line < best.rowH * 0.55) best.labelBottom = line;
       });
+      if (!Array.isArray(yDetailed) || !yDetailed.length) return best;
+      function actualLine(y) {
+        const matches = yDetailed.filter(function(line){
+          return Math.abs(line.pos - y) <= 2 && Number(line.maxRun) > 1 && Number.isFinite(line.thickness) && line.thickness > 0;
+        });
+        return matches.length === 1 ? matches[0] : null;
+      }
+      function actualRows(grid) {
+        if (grid.missingLineCount || Math.abs(grid.lines[0] - grid.bodyTop) > 2) return null;
+        const rows = grid.lines.map(actualLine);
+        return rows.every(Boolean) ? rows : null;
+      }
+      function hasShortBottom(rows) {
+        return rows[rows.length - 1].maxRun < medianPaperAutoAlignNumber(rows.slice(1, -1).map(function(line){ return line.maxRun; })) * 0.9;
+      }
+      const currentRows = actualRows(best);
+      if (!currentRows || !hasShortBottom(currentRows)) return best;
+      let alternative;
+      try {
+        // 상세선 없이 같은 탐색으로 한 행 위의 창을 얻는다. 재판정은 재귀하지 않는다.
+        alternative = findPaperAutoAlignBodyGrid(lines.filter(function(y){ return y < best.bodyBottom - best.rowH * 0.55; }));
+      } catch (_) { return best; }
+      const oneRowTolerance = Math.max(3, best.rowH * 0.2);
+      if (Math.abs(best.bodyTop - alternative.bodyTop - best.rowH) > oneRowTolerance ||
+          Math.abs(best.bodyBottom - alternative.bodyBottom - best.rowH) > oneRowTolerance) return best;
+      const alternativeRows = actualRows(alternative);
+      if (!alternativeRows || hasShortBottom(alternativeRows)) return best;
+      function majorBoundaryCount(rows) {
+        return [24, 48].filter(function(i){
+          const nearby = [rows[i - 2], rows[i - 1], rows[i + 1], rows[i + 2]];
+          const thickness = medianPaperAutoAlignNumber(nearby.map(function(line){ return line.thickness; }));
+          const run = medianPaperAutoAlignNumber(nearby.map(function(line){ return line.maxRun; }));
+          return rows[i].thickness >= Math.max(thickness + 2, thickness * 1.5) && rows[i].maxRun >= run * 0.9;
+        }).length;
+      }
+      // 짧은 하단만으로 옮기지 않는다. 실제 24/48행 경계가 모두 맞는 창만 선택한다.
+      if (majorBoundaryCount(currentRows) === 0 && majorBoundaryCount(alternativeRows) === 2) return alternative;
       return best;
     }
 
@@ -9571,6 +9612,49 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return Number.isFinite(value) ? value : Number(segment && segment.end);
     }
 
+    function getPaperAutoAlignHeaderVerticalFullConnectionMetric(analysis,x,headerTop,headerBottom) {
+      const headerH=headerBottom-headerTop;
+      if (!analysis || typeof analysis.isDarkNear !== 'function') {
+        return { connected:false, hitRatio:0, topConnected:false, bottomConnected:false };
+      }
+      const xx = Number(x);
+      if (!Number.isFinite(xx)) {
+        return { connected:false, hitRatio:0, topConnected:false, bottomConnected:false };
+      }
+      let samples = 0;
+      let hits = 0;
+      let gap = 0;
+      let maxGap = 0;
+      let topConnected = false;
+      let bottomConnected = false;
+      const topSlack = Math.max(5, Math.round(headerH * 0.08));
+      const bottomSlack = topSlack;
+      for (let y = headerTop; y <= headerBottom; y++) {
+        const dark = analysis.isDarkNear(xx, y, 1);
+        samples += 1;
+        if (dark) {
+          hits += 1;
+          gap = 0;
+          if (y <= headerTop + topSlack) topConnected = true;
+          if (y >= headerBottom - bottomSlack) bottomConnected = true;
+        } else {
+          gap += 1;
+          if (gap > maxGap) maxGap = gap;
+        }
+      }
+      const hitRatio = hits / Math.max(1, samples);
+      const connected = topConnected &&
+        bottomConnected &&
+        hitRatio >= 0.66 &&
+        maxGap <= Math.max(7, Math.round(headerH * 0.10));
+      return {
+        connected:connected,
+        hitRatio:hitRatio,
+        topConnected:topConnected,
+        bottomConnected:bottomConnected
+      };
+    }
+
     function findPaperAutoAlignHeaderRect(analysis, bodyTop, upperYLimit) {
       if (!analysis || typeof analysis.findHorizontalSegments !== 'function') return null;
       const segments = analysis.findHorizontalSegments({
@@ -9681,6 +9765,39 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         }
       }
       if (best && typeof analysis.findVerticalSegments === 'function') {
+        const height=best.bottom-best.top,tolerance=4;
+        const caption=(best.segments||[]).filter(function(s){return s.pos>best.top+14&&s.pos<best.top+height*.45;}).sort(function(a,b){return a.pos-b.pos;})[0];
+        const closedBase=[best.left,best.right].every(x=>getPaperAutoAlignHeaderVerticalFullConnectionMetric(analysis,x,best.top,best.bottom).connected);
+        const spans=[{left:best.left,right:best.right}],extra=[];
+        function sibling(direction){
+          const edge=direction>0?best.right:best.left;
+          const left=direction>0?edge+4:0,right=direction>0?PAGE_W-1:edge-4;
+          if(right-left<56||!caption||!closedBase)return false;
+          const found=analysis.findHorizontalSegments({left:left,right:right,top:best.top-4,bottom:best.bottom+4,minRun:Math.max(56,height*.6)});
+          const top=found.find(function(s){return Math.abs(s.pos-best.top)<=tolerance;}),bottom=found.find(function(s){return Math.abs(s.pos-best.bottom)<=tolerance;});
+          if(!top||!bottom)return false;
+          if(Math.abs(top.start-bottom.start)>tolerance||Math.abs(top.end-bottom.end)>tolerance)return false;
+          const l=Math.min(top.start,bottom.start),r=Math.max(top.end,bottom.end),gap=direction>0?l-edge:edge-r;
+          if(gap<4||gap>Math.max(24,height*.65))return false;
+          const stripe=found.find(function(s){return Math.abs(s.pos-caption.pos)<=tolerance&&Math.abs(s.start-l)<=tolerance&&Math.abs(s.end-r)<=tolerance;});
+          if(!stripe||scoreHeaderRectEndpoint(l,best.top,best.bottom,1)<190||scoreHeaderRectEndpoint(r,best.top,best.bottom,-1)<190||
+            ![l,r].every(x=>getPaperAutoAlignHeaderVerticalFullConnectionMetric(analysis,x,best.top,best.bottom).connected))return false;
+          spans.push({left:l,right:r});extra.push(top,stripe,bottom);
+          if(direction>0)best.right=r;else best.left=l;
+          return true;
+        }
+        for(const direction of [1,-1]){while(sibling(direction)){} }
+        if(spans.length>1){best.joinedSpans=spans.sort(function(a,b){return a.left-b.left;});best.segments=best.segments.concat(extra);}
+      }
+      function crossesClosedHeaderGap(from,to,direction) {
+        const arm=7;
+        if(Math.abs(to-from)<arm*2||!getPaperAutoAlignHeaderVerticalFullConnectionMetric(analysis,from,best.top,best.bottom).connected)return false;
+        return [best.top,best.bottom].every(function(y){
+          return hasHeaderRectOneSidedArm(from,y,-direction,arm) && !hasHeaderRectOneSidedArm(from,y,direction,arm);
+        });
+      }
+
+      if (best && !best.joinedSpans && typeof analysis.findVerticalSegments === 'function') {
         // 가로선이 옅어 끊긴 곳(MAD)은 헤더 높이를 모두 잇는 세로선을 이웃한 것만 따라가 범위를 넓힌다.
         const height = best.bottom - best.top;
         const step = Math.max(60, height * 2.4);
@@ -9696,8 +9813,16 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           return line.runStart <= best.top + 6 && line.runEnd >= best.bottom - 6 && Number(line.thickness || 1) <= 5 &&
             Number(line.straightness || 0) >= 0.95 && !isPaperAutoAlignHeaderEdgeNoiseX(line.pos);
         }).map(function(line){ return line.pos; }).sort(function(a,b){ return a - b; });
-        edges.forEach(function(x){ if (x > best.right && x - best.right <= step) best.right = x; });
-        edges.slice().reverse().forEach(function(x){ if (x < best.left && best.left - x <= step) best.left = x; });
+        for(const x of edges){
+          if(x<=best.right)continue;
+          if(x-best.right>step||crossesClosedHeaderGap(best.right,x,1))break;
+          best.right=x;
+        }
+        for(const x of edges.slice().reverse()){
+          if(x>=best.left)continue;
+          if(best.left-x>step||crossesClosedHeaderGap(best.left,x,-1))break;
+          best.left=x;
+        }
       }
       return best;
     }
@@ -10226,45 +10351,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       }
 
       function getHeaderVerticalFullConnectionMetric(x) {
-        if (!analysis || typeof analysis.isDarkNear !== 'function') {
-          return { connected:false, hitRatio:0, topConnected:false, bottomConnected:false };
-        }
-        const xx = Number(x);
-        if (!Number.isFinite(xx)) {
-          return { connected:false, hitRatio:0, topConnected:false, bottomConnected:false };
-        }
-        let samples = 0;
-        let hits = 0;
-        let gap = 0;
-        let maxGap = 0;
-        let topConnected = false;
-        let bottomConnected = false;
-        const topSlack = Math.max(5, Math.round(headerH * 0.08));
-        const bottomSlack = topSlack;
-        for (let y = headerTop; y <= headerBottom; y++) {
-          const dark = analysis.isDarkNear(xx, y, 1);
-          samples += 1;
-          if (dark) {
-            hits += 1;
-            gap = 0;
-            if (y <= headerTop + topSlack) topConnected = true;
-            if (y >= headerBottom - bottomSlack) bottomConnected = true;
-          } else {
-            gap += 1;
-            if (gap > maxGap) maxGap = gap;
-          }
-        }
-        const hitRatio = hits / Math.max(1, samples);
-        const connected = topConnected &&
-          bottomConnected &&
-          hitRatio >= 0.66 &&
-          maxGap <= Math.max(7, Math.round(headerH * 0.10));
-        return {
-          connected:connected,
-          hitRatio:hitRatio,
-          topConnected:topConnected,
-          bottomConnected:bottomConnected
-        };
+        return getPaperAutoAlignHeaderVerticalFullConnectionMetric(analysis,x,headerTop,headerBottom);
       }
 
       function isHeaderVerticalFullyConnected(x) {
@@ -10588,7 +10675,12 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         return kept.length >= Math.max(5, Math.ceil(fullCount * 0.90)) ? kept : sorted;
       }
       headerLines = filterHeaderLinesByMajorityFullConnection(headerLines);
-      let intervals = makePaperAutoAlignHeaderIntervals(headerLines);
+      function makeSelectedHeaderIntervals(lines) {
+        return makePaperAutoAlignHeaderIntervals(lines).filter(function(interval){
+          return !headerRect.joinedSpans || headerRect.joinedSpans.some(function(span){return interval.left>=span.left-4 && interval.right<=span.right+4;});
+        });
+      }
+      let intervals = makeSelectedHeaderIntervals(headerLines);
       const endpointPad = Math.max(5, Math.min(14, headerH * 0.12));
       let slashLeftLimit = Number.isFinite(Number(confirmedHeaderEndpointLeft))
         ? Math.max(headerLeft, Number(confirmedHeaderEndpointLeft) - endpointPad)
@@ -10615,7 +10707,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         headerLines = mergePaperAutoAlignUniquePositions(headerLines, 5).filter(function(x){
           return !isPaperAutoAlignHeaderEdgeNoiseX(x) && x >= headerLeft - 5 && x <= headerRight + 5;
         });
-        intervals = makePaperAutoAlignHeaderIntervals(headerLines);
+        intervals = makeSelectedHeaderIntervals(headerLines);
         slashLeftLimit = Number.isFinite(Number(confirmedHeaderEndpointLeft))
           ? Math.max(headerLeft, Number(confirmedHeaderEndpointLeft) - endpointPad)
           : headerLeft;
@@ -11119,7 +11211,17 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           const titleFirstWithEpisodeAfter = titleStartsFirst &&
             nextAfterTitle &&
             nextAfterTitle.w >= 42 &&
-            nextAfterTitle.w <= Math.max(165, titleInterval.w * 0.58);
+            (nextAfterTitle.w <= Math.max(165, titleInterval.w * 0.58) ||
+              (candidates.length === 2 && sameInterval(nextAfterTitle, candidates[1]) &&
+                nextAfterTitle.w < titleInterval.w && cutInterval &&
+                Math.abs(nextAfterTitle.left - titleInterval.right) <= 4 &&
+                Math.abs(nextAfterTitle.right - cutInterval.left) <= 4 &&
+                [titleInterval.left, titleInterval.right, nextAfterTitle.right].every(function(x){
+                  return getPaperAutoAlignHeaderVerticalFullConnectionMetric(markAnalysis, x, headerTop, headerBottom).connected;
+                }) && typeof markAnalysis.hasHorizontalLineJoint === 'function' &&
+                [headerTop, headerBottom].every(function(y){
+                  return markAnalysis.hasHorizontalLineJoint(titleInterval.right, y, getHeaderJointMinArm());
+                })));
           let pattern = 'unknown';
           if (titleFirstWithEpisodeAfter) {
             episodeInterval = nextAfterTitle;
@@ -11808,7 +11910,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       let bodyGrid = null;
       let bodyGridError = null;
       try {
-        bodyGrid = findPaperAutoAlignBodyGrid(analysis.yLines);
+        bodyGrid = findPaperAutoAlignBodyGrid(analysis.yLines, analysis.yDetailed);
       } catch (err) {
         bodyGridError = err;
       }
@@ -11823,7 +11925,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           (analysis.yLines || []).concat(dottedRows).map(function(pos){ return { pos:Math.round(pos), maxRun:1, ink:1 }; }), 6
         ).map(function(line){ return Number(line.pos); }).filter(Number.isFinite);
         try {
-          const dottedGrid = findPaperAutoAlignBodyGrid(merged);
+          const dottedGrid = findPaperAutoAlignBodyGrid(merged, analysis.yDetailed);
           return dottedGrid ? { grid:dottedGrid, lines:merged } : null;
         } catch (err) {
           return null;
@@ -24063,7 +24165,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       try {
         const pageCanvas = makePsdLayerPageCanvas(record, psdWidth, psdHeight, '#ffffff');
         const analysis = await analyzePaperAutoAlignLines(pageCanvas);
-        const bodyGrid = findPaperAutoAlignBodyGrid(analysis.yLines);
+        const bodyGrid = findPaperAutoAlignBodyGrid(analysis.yLines, analysis.yDetailed);
         const xCount = (analysis.xLines || []).length;
         const yCount = (analysis.yLines || []).length;
         const strongVerticals = (analysis.xDetailed || []).filter(function(line){
@@ -24117,7 +24219,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (grids.length) {
         const draft = composePsdPaperLayers(records, width, height, { width:PAGE_W, height:PAGE_H });
         analysis = await analyzePaperAutoAlignLines(draft.paperCanvas);
-        try { body = findPaperAutoAlignBodyGrid(analysis.yLines); }
+        try { body = findPaperAutoAlignBodyGrid(analysis.yLines, analysis.yDetailed); }
         catch (err) { console.warn('PSD paper body could not be located; review the layer selection', err); }
       }
       records.forEach(function(record){
