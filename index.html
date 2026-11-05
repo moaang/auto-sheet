@@ -2612,7 +2612,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '986';
+    const APP_VERSION = '987';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -17042,19 +17042,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         shakuEditBtn.classList.toggle('active', !!state.shakuMode);
         shakuEditBtn.textContent = getUiText('shakuEditBtn');
       }
-      if (shakuUndoBtn) {
-        // Icon-only button: localize the tooltip, keep the SVG (don't overwrite textContent).
-        const undoLabel = (uiTexts[state.lang] || uiTexts.en).globalUndo;
-        shakuUndoBtn.setAttribute('title', undoLabel);
-        shakuUndoBtn.setAttribute('aria-label', undoLabel);
-        shakuUndoBtn.disabled = !(state.contentUndoStack && state.contentUndoStack.length);
-      }
-      if (shakuRedoBtn) {
-        const redoLabel = (uiTexts[state.lang] || uiTexts.en).globalRedo;
-        shakuRedoBtn.setAttribute('title', redoLabel);
-        shakuRedoBtn.setAttribute('aria-label', redoLabel);
-        shakuRedoBtn.disabled = !(state.contentRedoStack && state.contentRedoStack.length);
-      }
       if (shakuEditHintEl) shakuEditHintEl.textContent = getUiText('shakuEditHint');
     }
 
@@ -22594,7 +22581,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const __renderMs = performance.now() - __renderT0;
       if (__renderMs > 80) maybeReportSlowRender(__renderMs);
       updateSheetSideStackPosition();
-      updateGlobalHistoryUI();
       scheduleContentHistoryCommit();
     }
 
@@ -22811,10 +22797,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       [[state.contentUndoStack,[globalUndoBtn,shakuUndoBtn,paperUndoBtn],doc.globalUndo],
        [state.contentRedoStack,[globalRedoBtn,shakuRedoBtn,paperRedoBtn],doc.globalRedo]].forEach(function(group){
         const stack = group[0] || [], entry = stack[stack.length - 1];
+        const title = group[2] + (entry ? ' · ' + getHistoryChangeLabel(entry) : '');
         group[1].forEach(function(button){
           if (!button) return;
           button.disabled = !entry || !!state.isExporting;
-          const title = group[2] + (entry ? ' · ' + getHistoryChangeLabel(entry) : '');
           button.title = title; button.setAttribute('aria-label',title);
         });
       });
