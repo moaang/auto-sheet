@@ -2612,7 +2612,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '985';
+    const APP_VERSION = '986';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3922,6 +3922,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver986", "Consistent editing tool switches", ["Switching between position, duration, dialogue and memo tools now ends the previous mode. Brush and eraser shortcuts follow the same rules as the buttons."]],
         ["ver985", "Paper Auto Align: header fields, dialog area and camera start; one export button", ["Splits a title and episode field at a faint printed divider, finds a separate episode box beside the header, and no longer adds a title box to headers without one.", "Keeps the narrow frame-number column out of the dialog area, and treats a wide blank gap next to the dialog as part of it.", "Aligns the camera start line between the two page blocks, and reads two identical abutting blocks as a pair.", "Removed the Review output button. Export opens the same preview; use Expand preview there."]],
         ["ver984", "File names and cut folders: shared cuts, assistant director checks, archived takes", ["A shared cut written with a hyphen (0150-0152) is read as one cut number when importing a sheet.", "The _ej suffix is read as an assistant director (演助) check in the stage name. It is not treated as a correction layer.", "Dropping a cut folder skips rewind archives (old2, old3 …) and previous-take archives (_t01, _t02 …) like the existing old folder."]],
         ["ver983", "Paper Auto Align: shaded rows and sideways scans", ["Separates printed row borders connected by shading when neighboring rows support them. Corrects a sideways scan only when one direction has a matching body grid and printed header.", "Keeps paper and memo layers together through alignment, Undo, saving and reopening.", "Avoids duplicate generated titles, plus marks and cell names on recognized printed paper. Auto, Show and Hide preserve the input data."]],
@@ -4048,6 +4049,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver986", "編集ツールの切り替えを統一", ["位置・尺・セリフ・メモのツールを切り替えると前のモードを終了します。ブラシと消しゴムのショートカットもボタンと同じ切り替えになりました。"]],
         ["ver985", "用紙の自動整列：ヘッダー欄・セリフ欄・カメラ開始／書き出しボタンを1つに", ["タイトルと話数の欄を薄い印刷の区切りで分け、ヘッダー横の独立した話数欄を見つけます。タイトル欄のないヘッダーにタイトル欄を足しません。", "狭いコマ番号列をセリフ欄に含めず、セリフ横の広い空き欄はセリフ欄として扱います。", "左右ブロックのカメラ開始線をそろえ、中央で接する同じ形の2ブロックを1組として読みます。", "「仕上がりを確認」ボタンをなくしました。「書き出し」で同じプレビューが開き、「大きく確認」で拡大できます。"]],
         ["ver984", "ファイル名とカットフォルダ：兼用カット・演助チェック・旧テイク", ["ハイフンでつないだ兼用カット（0150-0152）を、シート読み込み時に1つのカット番号として読みます。", "接尾辞 _ej を演助チェックとして段階名に入れます。修正レイヤーとしては扱いません。", "カットフォルダのドロップで、戻し前の保管（old2・old3…）と旧テイクの保管（_t01・_t02…）を、従来の old フォルダと同じく読み飛ばします。"]],
         ["ver983", "用紙の自動整列：影でつながった行と横向きのスキャン", ["前後の行に根拠がある場合、影でつながった印刷罫線を分離します。本文の格子と印刷ヘッダーが一方向だけで一致する場合に横向きの用紙を補正します。", "整列、元に戻す、保存、再読み込みで用紙とメモレイヤーを一緒に保ちます。", "認識した用紙の印刷と重なる生成タイトル・+・セル名を抑えます。自動・表示・非表示を切り替えても入力データは保持します。"]],
@@ -4174,6 +4176,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver986", "편집 도구 전환 통일", ["위치·尺·대사·메모 도구를 바꾸면 이전 모드를 종료합니다. 브러시와 지우개 단축키도 버튼과 같은 방식으로 전환합니다."]],
         ["ver985", "용지 자동정렬: 헤더 칸·대사 칸·카메라 시작 / 출력 버튼 하나로", ["제목과 화수 칸을 흐린 인쇄 구분선에서 나누고, 헤더 옆의 독립된 화수 칸을 찾습니다. 제목 칸이 없는 헤더에 제목 칸을 만들지 않습니다.", "좁은 프레임 번호 열은 대사 칸에서 빼고, 대사 옆의 넓은 빈칸은 대사 칸으로 봅니다.", "좌우 블록의 카메라 시작선을 맞추고, 가운데서 맞닿은 같은 모양 두 블록을 한 쌍으로 읽습니다.", "「완성본 확인」 버튼을 없앴습니다. 「출력」에서 같은 미리보기가 열리며 「크게 확인」으로 키울 수 있습니다."]],
         ["ver984", "파일 이름과 컷 폴더: 겸용 컷·연출조수 체크·이전 테이크", ["하이픈으로 이은 겸용 컷(0150-0152)을 시트를 불러올 때 컷 번호 하나로 읽습니다.", "접미사 _ej를 연출조수(演助) 체크로 단계 이름에 넣습니다. 수정 레이어로는 다루지 않습니다.", "컷 폴더를 드롭하면 되돌리기 전 보관(old2·old3…)과 이전 테이크 보관(_t01·_t02…)을 기존 old 폴더처럼 건너뜁니다."]],
         ["ver983", "용지 자동정렬: 음영으로 이어진 행과 옆으로 누운 스캔", ["이웃 행의 근거가 있을 때 음영으로 이어진 인쇄 행선을 분리합니다. 본문 격자와 인쇄 헤더가 한 방향에서만 일치하면 옆으로 누운 용지를 바로잡습니다.", "정렬·실행 취소·저장·다시 열기에서 용지와 메모 레이어를 함께 유지합니다.", "인식한 원본 인쇄와 겹치는 생성 제목·+·셀 이름을 줄입니다. 자동·표시·숨김을 바꿔도 입력 데이터는 보존합니다."]],
@@ -4300,6 +4303,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver986", "统一编辑工具切换", ["切换位置、时长、对白和备注工具时会结束原来的模式。画笔和橡皮快捷键与按钮采用相同的切换规则。"]],
         ["ver985", "纸张自动对齐：页眉栏、对白栏与摄影起始／合并为一个导出按钮", ["在浅色印刷分隔线处分开标题与集数栏，识别页眉旁独立的集数框；没有标题栏的页眉不再添加标题框。", "窄的帧号列不计入对白栏，对白旁较宽的空白栏视为对白栏。", "对齐左右两块的摄影起始线，并将在中间相接的两个相同区块读作一对。", "移除了「查看成品」按钮。「导出」会打开同一预览，可在其中「放大查看」。"]],
         ["ver984", "文件名与镜头文件夹：兼用镜头、演出助理检查、旧版本", ["用连字符连接的兼用镜头（0150-0152）在导入表格时读作一个镜头编号。", "后缀 _ej 作为演出助理（演助）检查写入阶段名，不作为修改图层处理。", "拖入镜头文件夹时，与原有的 old 文件夹一样跳过退回前的保管（old2、old3…）和旧版本保管（_t01、_t02…）。"]],
         ["ver983", "纸张自动对齐：阴影连接的行与横向扫描", ["当前后行提供依据时，分离被阴影连接的印刷行线。仅当一个方向的正文网格与印刷页眉匹配时，纠正横向纸张。", "对齐、撤销、保存和重新打开时，纸张与备注图层保持一致。", "抑制与已识别纸张印刷重复的生成标题、+和单元名称。切换自动、显示或隐藏时保留输入数据。"]],
@@ -14646,22 +14650,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     function parseCsvCommandEditText(raw) {
-      const prefix = 'csv-edit';
-      const parsed = parseCommandText(raw, prefix);
-      const byUid = new Map(parsed.map(function(layer){ return [String(layer.uid || ''), layer]; }));
-      const lines = String(raw || '').split(String.fromCharCode(10)).map(function(v){ return v.trim(); }).filter(Boolean);
-      const out = [];
-      lines.forEach(function(lineText, lineIndex){
-        const roleInfo = splitTextCommandRoleSuffix(lineText);
-        if (roleInfo.role !== 'cell') return;
-        const colonIndex = roleInfo.cleanLine.indexOf(':');
-        if (colonIndex === -1) return;
-        const name = roleInfo.cleanLine.slice(0, colonIndex).trim();
-        if (!name) return;
-        const uid = prefix + '-' + lineIndex;
-        out.push(byUid.get(uid) || { uid:uid, name:name, segments:[], marks:[] });
-      });
-      return out;
+      return parseCommandText(raw, 'csv-edit');
     }
 
     function setCommandLineName(cleanLine, nextName) {
@@ -14907,19 +14896,21 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     function applyDotOverrides(baseLayers) {
+      const overridesByUid = new Map();
+      Object.keys(state.dotOverrides).forEach(function(key){
+        const parts = key.split('::'), frame = Number(parts[0]), uid = parts[1];
+        if (!Number.isFinite(frame)) return;
+        if (!overridesByUid.has(uid)) overridesByUid.set(uid, []);
+        overridesByUid.get(uid).push({ key:key, frame:frame });
+      });
       return baseLayers.map(function(layer){
         const segments = (layer.segments || []).map(function(seg){ return { from:seg.from, to:seg.to, label:seg.label, kind:seg.kind, autoLeadingCross:!!seg.autoLeadingCross, explicitCross:!!seg.explicitCross, singleFrameCross:!!seg.singleFrameCross, showCrossMarker:seg.showCrossMarker !== false }; });
         const nonDotMarks = (layer.marks || []).filter(function(mark){ return mark.type !== 'dot'; }).map(function(mark){ return Object.assign({}, mark); });
         const dotSet = new Set((layer.marks || []).filter(function(mark){ return mark.type === 'dot'; }).map(function(mark){ return mark.frame; }));
         const repeatFrames = new Set((layer.marks || []).filter(function(mark){ return mark.type === 'repeat'; }).map(function(mark){ return mark.frame; }));
-        Object.keys(state.dotOverrides).forEach(function(key){
-          const parts = key.split('::');
-          const frame = Number(parts[0]);
-          const layerUid = parts[1];
-          if (layerUid !== layer.uid) return;
-          if (!Number.isFinite(frame)) return;
-          if (state.dotOverrides[key] === 'on') dotSet.add(frame);
-          if (state.dotOverrides[key] === 'off') dotSet.delete(frame);
+        (overridesByUid.get(layer.uid) || []).forEach(function(override){
+          if (state.dotOverrides[override.key] === 'on') dotSet.add(override.frame);
+          if (state.dotOverrides[override.key] === 'off') dotSet.delete(override.frame);
         });
         repeatFrames.forEach(function(frame){ dotSet.delete(frame); });
         const dotMarks = Array.from(dotSet).sort(function(a,b){ return a - b; }).map(function(frame){ return { frame:frame, type:'dot' }; });
@@ -17067,20 +17058,27 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (shakuEditHintEl) shakuEditHintEl.textContent = getUiText('shakuEditHint');
     }
 
+    function exitShakuEditMode() {
+      state.shakuMode = false;
+      state.shakuSelection = null;
+      cancelShakuSelection(state.shakuDrag);
+      document.documentElement.classList.remove('shaku-editing');
+      updateShakuEditUI();
+    }
+
     function toggleShakuEditMode() {
       if (state.textMemoEditor) closeTextMemoEditor({ render:false });
       cancelCellLongPressDrag();
       endTimelineEdgeDrag({ preventDefault:function(){}, stopPropagation:function(){} });
       const nextShakuMode = !state.shakuMode;
+      exitShakuEditMode();
       if (nextShakuMode) {
+        exitHeaderPositionMode();
         exitSerifuMode();
         setMemoModeEnabled(false);
         setTextMemoEditMode(false, { render:false });
       }
       state.shakuMode = nextShakuMode;
-      state.shakuDrag = null;
-      state.shakuSelection = null;
-      document.documentElement.classList.remove('shaku-editing');
       updateShakuEditUI();
       render();
     }
@@ -20893,9 +20891,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       state.textMemoEditMode = next;
       if (next) {
         setMemoModeEnabled(false);
-        state.positionMode = false;
-        if (headerPositionModeBtn) headerPositionModeBtn.classList.toggle('active', false);
-        if (paperToolbarPositionBtn) paperToolbarPositionBtn.classList.toggle('active', false);
+        exitHeaderPositionMode();
+        exitShakuEditMode();
+        exitSerifuMode();
         const list = getTextMemoPageData(state.currentPreviewPage || 0);
         if (list[0]) state.activeTextMemo = { pageIndex:state.currentPreviewPage || 0, id:list[0].id };
       } else {
@@ -23561,7 +23559,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     function activateBrushShortcut() {
       const colors = getPenColorValues();
       if (!colors.length) return;
-      const disabledEditMode = !!(state.positionMode || state.shakuMode || state.textMemoEditMode);
+      const disabledEditMode = !!(state.positionMode || state.shakuMode || state.textMemoEditMode || state.serifuMode);
       if (state.memoMode && state.memoTool === 'pen') {
         let index = colors.indexOf(state.memoColor);
         if (index === -1) index = 0;
@@ -23571,10 +23569,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         updateMemoUI();
         updatePreviewSpacePanCursor();
       } else {
-        state.positionMode = false;
-        state.shakuMode = false;
-        if (headerPositionModeBtn) headerPositionModeBtn.classList.toggle('active', false);
-        updateShakuEditUI();
         state.memoTool = 'pen';
         if (!colors.includes(state.memoColor)) state.memoColor = colors[0];
         setMemoModeEnabled(true);
@@ -23583,11 +23577,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     function activateEraserShortcut() {
-      const disabledEditMode = !!(state.positionMode || state.shakuMode || state.textMemoEditMode);
-      state.positionMode = false;
-      state.shakuMode = false;
-      if (headerPositionModeBtn) headerPositionModeBtn.classList.toggle('active', false);
-      updateShakuEditUI();
+      const disabledEditMode = !!(state.positionMode || state.shakuMode || state.textMemoEditMode || state.serifuMode);
       state.memoTool = 'eraser';
       setMemoModeEnabled(true);
       if (disabledEditMode) render();
@@ -23909,13 +23899,16 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     // ══ 모드 토글 — セリフ시트 · 펜 메모 (서로 배타) ═══════════════════════════════════════════════════════════════════════════════
     function setMemoModeEnabled(enabled) {
-      state.memoMode = !!enabled;
-      if (state.memoMode) {
+      if (enabled) {
+        exitHeaderPositionMode();
+        exitShakuEditMode();
+        exitSerifuMode();
         state.textMemoEditMode = false;
         closeTextMemoContextMenu();
         state.textMemoResize = null;
         document.documentElement.classList.remove('text-memo-dragging');
       }
+      state.memoMode = !!enabled;
       clearMemoPointerState();
       updateMemoUI();
       updatePreviewSpacePanCursor();
@@ -23935,11 +23928,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         if (state.textMemoEditor) closeTextMemoEditor({ render:false });
         setMemoModeEnabled(false);
         setTextMemoEditMode(false, { render:false });
-        state.positionMode = false;
-        state.shakuMode = false;
-        if (headerPositionModeBtn) headerPositionModeBtn.classList.toggle('active', false);
-        if (paperToolbarPositionBtn) paperToolbarPositionBtn.classList.toggle('active', false);
-        updateShakuEditUI();
+        exitHeaderPositionMode();
+        exitShakuEditMode();
       } else {
         clearSerifuRangeSelection({ render:false });
       }
@@ -23952,16 +23942,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     function toggleMemoMode() {
       if (state.textMemoEditor) closeTextMemoEditor({ render:false });
       const nextMemoMode = !state.memoMode;
-      if (nextMemoMode) {
-        exitSerifuMode();
-        trackEvent('memo_used');
-        state.positionMode = false;
-        state.textMemoEditMode = false;
-        closeTextMemoContextMenu();
-        state.shakuMode = false;
-        if (headerPositionModeBtn) headerPositionModeBtn.classList.toggle('active', false);
-        updateShakuEditUI();
-      }
+      if (nextMemoMode) trackEvent('memo_used');
       setMemoModeEnabled(nextMemoMode);
       if (nextMemoMode) render();
     }
@@ -25988,15 +25969,24 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       render();
     }
 
-    function toggleHeaderPositionMode() {
+    function exitHeaderPositionMode() {
       if (state.positionMode && state.paperAutoAlignResult && state.paperAutoAlignResult.status==='working') cancelPendingPaperAutoAlign();
+      const drag = state.layoutDrag;
+      if (drag) endLayoutBoxDrag({ pointerId:drag.pointerId, currentTarget:drag.sourceTarget, preventDefault:function(){}, stopPropagation:function(){} });
+      state.positionMode = false;
+      if (headerPositionModeBtn) headerPositionModeBtn.classList.toggle('active', false);
+      if (paperToolbarPositionBtn) paperToolbarPositionBtn.classList.toggle('active', false);
+    }
+
+    function toggleHeaderPositionMode() {
       if (state.textMemoEditor) closeTextMemoEditor({ render:false });
       const nextPositionMode = !state.positionMode;
       if (nextPositionMode) {
+        exitShakuEditMode();
         exitSerifuMode();
         setMemoModeEnabled(false);
         setTextMemoEditMode(false, { render:false });
-      }
+      } else exitHeaderPositionMode();
       state.positionMode = nextPositionMode;
       if (headerPositionModeBtn) headerPositionModeBtn.classList.toggle('active', !!state.positionMode);
       if (paperToolbarPositionBtn) paperToolbarPositionBtn.classList.toggle('active', !!state.positionMode);
