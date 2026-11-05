@@ -523,7 +523,6 @@
     }
     .manual-summary-hint:empty { display: none; }
     #paperLayoutHint:empty { display: none; }
-    #csvEditHelp, #csvHelp { display: none !important; }
     .manual-chevron {
       width: 15px;
       height: 15px;
@@ -1836,12 +1835,6 @@
     .update-log-panel { width:min(760px,100%); max-height:min(82dvh,760px); }
 
     .update-log-title { margin:0; font-size:var(--ui-fs-title); line-height:1.3; font-weight:800; }
-    .update-log-subtitle {
-      margin: 4px 0 0;
-      color: var(--muted);
-      font-size:var(--ui-fs-body);
-      line-height: 1.5;
-    }
     .update-log-close { width:var(--ui-h-control); padding:0; flex:0 0 auto; }
 
     .update-log-close svg { width:var(--ui-icon-lg); height:var(--ui-icon-lg); }
@@ -2310,27 +2303,27 @@
             <div id="shortcutSummaryHint" class="hint"></div>
             <div class="shortcut-list">
               <div class="shortcut-row">
-                <div class="shortcut-label"><span data-shortcut-label="brushCycle">Brush / Color Cycle</span><span class="shortcut-desc" data-shortcut-desc="brushCycle">OFF → Memo brush. Brush ON → next color. Last color → first color.</span></div>
+                <div class="shortcut-label"><span data-shortcut-label="brushCycle">Brush / Color Cycle</span><span class="shortcut-desc" data-shortcut-desc="brushCycle">Activate the pen · Press again to cycle colors</span></div>
                 <input class="shortcut-input" data-shortcut-action="brushCycle" readonly placeholder="None" />
                 <button class="shortcut-mini-btn" type="button" data-shortcut-clear="brushCycle">Clear</button>
               </div>
               <div class="shortcut-row">
-                <div class="shortcut-label"><span data-shortcut-label="eraserToggle">Eraser</span><span class="shortcut-desc" data-shortcut-desc="eraserToggle">OFF → Memo eraser. Eraser ON keeps eraser active.</span></div>
+                <div class="shortcut-label"><span data-shortcut-label="eraserToggle">Eraser</span><span class="shortcut-desc" data-shortcut-desc="eraserToggle">Activate the eraser · Press again to keep erasing</span></div>
                 <input class="shortcut-input" data-shortcut-action="eraserToggle" readonly placeholder="None" />
                 <button class="shortcut-mini-btn" type="button" data-shortcut-clear="eraserToggle">Clear</button>
               </div>
               <div class="shortcut-row">
-                <div class="shortcut-label"><span data-shortcut-label="sizeDown">Brush Size Down</span><span class="shortcut-desc" data-shortcut-desc="sizeDown">Changes current pen/eraser size while Memo Mode is ON.</span></div>
+                <div class="shortcut-label"><span data-shortcut-label="sizeDown">Smaller pen / eraser</span></div>
                 <input class="shortcut-input" data-shortcut-action="sizeDown" readonly placeholder="None" />
                 <button class="shortcut-mini-btn" type="button" data-shortcut-clear="sizeDown">Clear</button>
               </div>
               <div class="shortcut-row">
-                <div class="shortcut-label"><span data-shortcut-label="sizeUp">Brush Size Up</span><span class="shortcut-desc" data-shortcut-desc="sizeUp">Changes current pen/eraser size while Memo Mode is ON.</span></div>
+                <div class="shortcut-label"><span data-shortcut-label="sizeUp">Larger pen / eraser</span></div>
                 <input class="shortcut-input" data-shortcut-action="sizeUp" readonly placeholder="None" />
                 <button class="shortcut-mini-btn" type="button" data-shortcut-clear="sizeUp">Clear</button>
               </div>
               <div class="shortcut-row">
-                <div class="shortcut-label"><span data-shortcut-label="memoOff">Memo Mode OFF</span><span class="shortcut-desc" data-shortcut-desc="memoOff">Turns Memo Mode OFF.</span></div>
+                <div class="shortcut-label"><span data-shortcut-label="memoOff">Memo off</span></div>
                 <input class="shortcut-input" data-shortcut-action="memoOff" readonly placeholder="None" />
                 <button class="shortcut-mini-btn" type="button" data-shortcut-clear="memoOff">Clear</button>
               </div>
@@ -2415,7 +2408,7 @@
             </svg>
           </button>
           <span id="cellReadabilityNotice" class="toolbar-notice hidden">
-            <span data-ui-text="cellReadabilityNotice">←原画番号（セルの数字）を大きく表示</span>
+            <span data-ui-text="cellReadabilityNotice">原画番号を大きく表示</span>
             <button class="side-notice-close" type="button" aria-label="Close notice"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6.5 6.5 11 11M17.5 6.5l-11 11"/></svg></button>
           </span>
           <div class="zoom-controls" aria-label="Sheet preview zoom controls">
@@ -2491,7 +2484,6 @@
           </label>
           <textarea id="csvCommandEdit"></textarea>
           <textarea id="csvCommandCellView" class="hidden" spellcheck="false"></textarea>
-          <div id="csvEditHelp" class="hint"></div>
           </div>
         </div>
 
@@ -2509,7 +2501,6 @@
           <div id="csvColumnPicker" class="checkbox-list"></div>
           </div>
 
-          <div id="csvHelp" class="hint"></div>
           </div>
         </div>
         <div class="shaku-edit-row">
@@ -2524,13 +2515,13 @@
       </div>
 
       <div class="card">
-        <h3><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7.5h14v9.5h-8.5L7 20v-3H5z"/></svg><span data-ui-text="dialogBlocksTitle">セリフ欄</span><label class="card-h-hint" for="dialogManual" data-ui-text="dialogFormatLabel">Format: 0+01 | 1+00 | SPEAKER | SAMPLE</label></h3>
+        <h3><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7.5h14v9.5h-8.5L7 20v-3H5z"/></svg><span data-ui-text="dialogBlocksTitle">セリフ欄</span><label class="card-h-hint" for="dialogManual" data-ui-text="dialogFormatLabel">Start | End | Speaker | Dialogue</label></h3>
         <textarea id="dialogManual"></textarea>
         <div id="dialogHelp" class="hint"></div>
       </div>
 
       <div class="card">
-        <h3><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="7.5" width="11.5" height="10" rx="1.5"/><path d="m15 11 5.5-3v8L15 13.5"/></svg><span data-ui-text="cameraBlocksTitle">カメラ欄</span><label class="card-h-hint" for="cameraManual" data-ui-text="cameraFormatLabel">Format: start | end | label | camera | label</label></h3>
+        <h3><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="7.5" width="11.5" height="10" rx="1.5"/><path d="m15 11 5.5-3v8L15 13.5"/></svg><span data-ui-text="cameraBlocksTitle">カメラ欄</span><label class="card-h-hint" for="cameraManual" data-ui-text="cameraFormatLabel">Start | End | Label | Instruction | Label</label></h3>
         <div class="camera-manual-wrap">
           <textarea id="cameraManual" wrap="off"></textarea>
           <div id="cameraDirectiveCompleter" class="camera-directive-completer hidden" aria-hidden="false"></div>
@@ -2553,7 +2544,6 @@
       <div class="app-dialog-header">
         <div>
           <h2 id="updateLogTitle" class="update-log-title">Update History</h2>
-          <p id="updateLogSubtitle" class="update-log-subtitle"></p>
         </div>
         <button id="updateLogCloseBtn" class="update-log-close" type="button" aria-label="Close"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6.5 6.5 11 11M17.5 6.5l-11 11"/></svg></button>
       </div>
@@ -2612,7 +2602,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '987';
+    const APP_VERSION = '988';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -2659,7 +2649,6 @@
     const appTitleEl = document.getElementById('appTitle');
     const updateLogModalEl = document.getElementById('updateLogModal');
     const updateLogTitleEl = document.getElementById('updateLogTitle');
-    const updateLogSubtitleEl = document.getElementById('updateLogSubtitle');
     const updateLogContentEl = document.getElementById('updateLogContent');
     const updateLogCloseBtn = document.getElementById('updateLogCloseBtn');
     const csvInfoEl = document.getElementById('csvInfo');
@@ -3111,70 +3100,62 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     // ══ 문서·i18n 블록 A — i18n 사전 · 업데이트로그 목차 · UI 텍스트 ══════════════════════════════════════════════════
     const i18n = {
       en: {
-        textHelp: '1 line = 1 cel row. "A: 1 2 3" puts drawings 1·2·3 in cel A.\nHold the same drawing with n (A: 1 n n 2 → drawing 1 lasts 3 frames).\nOthers: dot = inbetween mark / x = X mark / _ = empty frame / rep = repeat.',
-        csvHelp: 'CSV uses the Frame column as the frame index. Column role can be set to Cell, Hide, Book, Dialog, or Camera. All roles use the same Text Command token rules; the role is kept as a suffix such as (hide), (dialog), (camera), or (book). Column names can be edited before conversion. The original area keeps at least 8 columns, expands up to 10, and switches to a 3-second single-block sheet when actual cel rows exceed 10.',
-        csvEditHelp: 'CSV columns are converted to editable Text Commands. Correct tokens or role suffixes here when needed.',
-        dialogHelp: 'Time only is fine: 0+01 | 1+00 | . Add | speaker | line to include the words.',
-        cameraHelp: 'The right-side picker only changes the preview mark (▲ / - / FI / FO / OL); it never edits your text.',
-        noCsv: 'No CSV loaded.',
-        csvLoaded: count => `CSV loaded. ${count} displayable columns detected.`,
+        textHelp: "One cel per line: A: 1 2 3 → drawings 1, 2, 3 in cel A\nn = hold the drawing (A: 1 n n 2 → drawing 1 for 3 frames)\ndot = inbetween / x = cross / _ = blank / rep = repeat",
+        dialogHelp: "0+01 | 1+00 | → time range only\nSpeaker and dialogue are optional",
+        cameraHelp: "Mark picker: ▲ / - / FI / FO / OL\nEntered text stays unchanged",
+        noCsv: "No CSV loaded",
+        csvLoaded: count => `CSV loaded · ${count} columns`,
         csvError: msg => `CSV read failed: ${msg}`,
-        csvUnsupported: 'Not a CLIP STUDIO or TVPaint CSV.',
+        csvUnsupported: "Not a CLIP STUDIO / TVPaint CSV",
         invalidRepeat: (col, frame) => `Column ${col}, frame ${frame}: there is no drawing before this point to repeat.`,
         exportPreflightTitle: 'Include in the export?',
         exportPreflightFilenameLabel: 'Filename',
-        exportPreflightFilenameHint: 'The last number in this name goes up by 1 per page (page 1 stays as typed).',
+        exportPreflightFilenameHint: "The last number increases by 1 per page; page 1 keeps this name",
         exportPreflightConfirm: 'Export',
         exportPreflightCancel: 'Cancel'
       },
       ja: {
-        textHelp: '1行＝1セル行。「A: 1 2 3」でAセルに絵1・2・3が並ぶ。\n同じ絵を伸ばすときは n（A: 1 n n 2 → 絵1が3コマ）。\nその他: dot＝中割り点 / x＝バツ / _＝空きコマ / rep＝リピート。',
-        csvHelp: 'CSVはFrame列を基準フレームとして使う。列の役割は Cell / Hide / Book / Dialog / Camera から選ぶ。すべての役割で同じText Commandトークン規則を使い、役割は (hide)、(dialog)、(camera)、(book) のような行末suffixで保持する。列名は変換前に編集できる。原画欄は最低8列、必要なら10列まで拡張し、実セル行が10列を超えると3秒単面シートに切り替える。',
-        csvEditHelp: 'CSV列を編集可能なText Commands形式に変換する。必要な場合はここでトークンや役割suffixを修正する。',
-        dialogHelp: '時間だけでもOK（0+01 | 1+00 |）。うしろに | 話者 | セリフ を足すと文字も入る。',
-        cameraHelp: '右の選択UIは表示マークだけを ▲ / - / FI / FO / OL に切り替えます（入力文字は変えません）。',
-        noCsv: 'CSV未読込。',
-        csvLoaded: count => `CSV読込完了。表示可能列 ${count} 個を検出。`,
+        textHelp: "1行に1セル：A: 1 2 3 → Aセルに絵1・2・3\nn = 同じ絵を維持（A: 1 n n 2 → 絵1を3コマ）\ndot = 中割点 / x = バツ / _ = 空コマ / rep = リピート",
+        dialogHelp: "0+01 | 1+00 | → 区間のみ\n話者・セリフは省略可",
+        cameraHelp: "マーク選択：▲ / - / FI / FO / OL\n入力文字はそのまま",
+        noCsv: "CSV未読込",
+        csvLoaded: count => `CSV読込完了 · ${count}列`,
         csvError: msg => `CSV読込失敗: ${msg}`,
-        csvUnsupported: 'CLIP STUDIO / TVPaint CSVではありません。',
+        csvUnsupported: "CLIP STUDIO / TVPaintのCSVではありません",
         invalidRepeat: (col, frame) => `${col}欄 ${frame}コマ目：リピートの前に繰り返す絵がありません。`,
         exportPreflightTitle: '書き出しに含める内容',
         exportPreflightFilenameLabel: 'ファイル名',
-        exportPreflightFilenameHint: 'この名前の最後の数字がページごとに1つずつ増えます（1ページ目はそのまま）。',
+        exportPreflightFilenameHint: "末尾の数字はページごとに+1（1ページ目は変更なし）",
         exportPreflightConfirm: '書き出す',
         exportPreflightCancel: 'キャンセル'
       },
       ko: {
-        textHelp: '한 줄＝셀 한 행. 「A: 1 2 3」이면 A셀에 그림 1·2·3이 놓인다.\n같은 그림을 늘릴 땐 n（A: 1 n n 2 → 그림 1이 3칸）.\n그 외: dot＝중간점 / x＝가위표 / _＝빈 칸 / rep＝반복.',
-        csvHelp: 'CSV는 Frame 열을 기준 프레임으로 사용한다. 각 열의 역할은 Cell / Hide / Book / Dialog / Camera 중에서 선택한다. 모든 역할은 같은 Text Command 토큰 규칙을 쓰고, 역할은 (hide), (dialog), (camera), (book) 같은 행 끝 suffix로 유지한다. 열 이름은 변환 전에 수정할 수 있다. 원화란은 최소 8칸을 유지하고 필요하면 10칸까지 확장하며, 실제 셀 행이 10개를 넘으면 3초 단면 시트로 전환한다.',
-        csvEditHelp: 'CSV 열을 편집 가능한 Text Commands 형식으로 변환한다. 필요하면 여기서 토큰이나 역할 suffix를 수정한다.',
-        dialogHelp: '시간만 써도 OK（0+01 | 1+00 |）. 뒤에 | 화자 | 대사 를 붙이면 글자도 들어간다.',
-        cameraHelp: '오른쪽 선택 UI는 표시 마크(▲ / - / FI / FO / OL)만 바꿉니다. 입력한 텍스트는 그대로예요.',
-        noCsv: 'CSV가 아직 로드되지 않았다.',
-        csvLoaded: count => `CSV 로드 완료. 표시 가능한 열 ${count}개를 인식했다.`,
+        textHelp: "한 줄에 셀 하나: A: 1 2 3 → A셀에 그림 1·2·3\nn = 같은 그림 유지 (A: 1 n n 2 → 그림 1이 3칸)\ndot = 중간점 / x = 가위표 / _ = 빈칸 / rep = 반복",
+        dialogHelp: "0+01 | 1+00 | → 구간만 표시\n화자·대사는 선택 입력",
+        cameraHelp: "마크 선택: ▲ / - / FI / FO / OL\n입력한 텍스트는 유지",
+        noCsv: "불러온 CSV 없음",
+        csvLoaded: count => `CSV 불러오기 완료 · ${count}열`,
         csvError: msg => `CSV 읽기 실패: ${msg}`,
-        csvUnsupported: 'CLIP STUDIO / TVPaint CSV가 아니다.',
+        csvUnsupported: "CLIP STUDIO / TVPaint CSV가 아닙니다",
         invalidRepeat: (col, frame) => `${col}칸 ${frame}코마: 반복하기 전에 반복할 그림이 없습니다.`,
         exportPreflightTitle: '출력에 포함할 항목',
         exportPreflightFilenameLabel: '파일명',
-        exportPreflightFilenameHint: '이 이름의 마지막 숫자가 페이지마다 1씩 올라갑니다(1페이지는 그대로).',
+        exportPreflightFilenameHint: "마지막 숫자는 페이지마다 +1 (1페이지는 그대로)",
         exportPreflightConfirm: '출력하기',
         exportPreflightCancel: '취소'
       },
       zh: {
-        textHelp: '一行＝一个 Cell 行。「A: 1 2 3」把画 1·2·3 放进 A 格。\n用 n 让同一张画延续（A: 1 n n 2 → 画 1 占 3 帧）。\n其他: dot＝中割点 / x＝叉号 / _＝空帧 / rep＝重复。',
-        csvHelp: 'CSV 使用 Frame 列作为帧编号。每列可选择 Cell / Hide / Book / Dialog / Camera。所有角色使用相同的 Text Command token 规则，角色保留为行尾 suffix，例如 (hide)、(dialog)、(camera)、(book)。列名可在转换前编辑。原画栏至少保持 8 列，必要时扩展到 10 列；实际 Cell 行超过 10 时切换为 3 秒单面 Sheet。',
-        csvEditHelp: 'CSV 列会转换为可编辑的 Text Commands 格式。需要时可在这里修正 token 或角色 suffix。',
-        dialogHelp: '只写时间也行（0+01 | 1+00 |）。在后面加 | 说话人 | 台词 就会带上文字。',
-        cameraHelp: '右侧选择 UI 只切换预览标记（▲ / - / FI / FO / OL），不会改动你输入的文字。',
-        noCsv: '尚未读取 CSV。',
-        csvLoaded: count => `CSV 读取完成。检测到 ${count} 个可显示列。`,
+        textHelp: "每行一个 Cell：A: 1 2 3 → A列放入画1、2、3\nn = 保持同一张画（A: 1 n n 2 → 画1占3帧）\ndot = 中割点 / x = 叉号 / _ = 空帧 / rep = 重复",
+        dialogHelp: "0+01 | 1+00 | → 仅显示区间\n说话人和台词可省略",
+        cameraHelp: "标记选择：▲ / - / FI / FO / OL\n输入文字保持不变",
+        noCsv: "尚未读取CSV",
+        csvLoaded: count => `CSV读取完成 · ${count}列`,
         csvError: msg => `CSV 读取失败: ${msg}`,
-        csvUnsupported: '不是 CLIP STUDIO / TVPaint CSV。',
+        csvUnsupported: "不是CLIP STUDIO / TVPaint CSV",
         invalidRepeat: (col, frame) => `第 ${col} 栏第 ${frame} 格：此处之前没有可重复的画面。`,
         exportPreflightTitle: '导出时包含的内容',
         exportPreflightFilenameLabel: '文件名',
-        exportPreflightFilenameHint: '这个名称里最后的数字会按页递增（第 1 页保持原样）。',
+        exportPreflightFilenameHint: "末尾数字每页加1（第1页不变）",
         exportPreflightConfirm: '导出',
         exportPreflightCancel: '取消'
       }
@@ -3183,61 +3164,57 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     const UPDATE_LOG_DOCS = {
       en: {
         title: 'Update History',
-        subtitle: 'Click the Auto Sheet title to open this history. Recent entries keep details; older entries are summarized.'
       },
       ja: {
         title: '更新履歴',
-        subtitle: 'Auto Sheet のタイトルを押すと開きます。最近の変更は詳細、古い変更は要約で表示します。'
       },
       ko: {
         title: '업데이트 내역',
-        subtitle: 'Auto Sheet 제목을 누르면 열립니다. 최근 항목은 상세, 오래된 항목은 요약만 표시합니다.'
       },
       zh: {
         title: '更新记录',
-        subtitle: '点击 Auto Sheet 标题打开。近期项目保留详情，较早项目只显示摘要。'
       }
     };
     const uiTexts = {
       en: {
         languageLabel:'Language', headerCardTitle:'Header', episodeLabel:'Ep.no', titleLabel:'Title', cutNoLabel:'Cut.no', secondsLabel:'Duration sec', framesLabel:'Duration frame', authorLabel:'name', pageLabel:'Page',
-        drawingCountTitle:"Drawing count", drawingCountCell:"Cell", drawingCountNumbered:"Numbered drawings", drawingCountInbetweens:"Inbetweens", drawingCountTotal:"Total", drawingCountPending:"Check required", drawingCountDisplay:"Display", drawingCountOff:"Off", drawingCountBottom:"Header bottom right", drawingCountTop:"Header top right", drawingCountCsv:"Save CSV", drawingCountText:"Save text", drawingCountClose:"Close", drawingCountHint:"Reused drawings and repeats count once. Unplaced ranges require checking.", drawingCountWork:"Work", drawingCountEpisode:"Episode", drawingCountCut:"Cut", cutFolderTitle:"Cut folder check", cutFolderOpened:"Opened sheet", cutFolderNone:"none", cutFolderReading:"Reading folder…", cutFolderPartial:"Only the first 5,000 files were read.", cutFolderPaperOnly:"Only a paper image was opened, so cel numbers were not compared.", cutFolderNoSheet:"No sheet file was found, so cel numbers were not compared.", cutFolderSheetCount:"sheet", cutFolderFileCount:"files", cutFolderSheetOnly:"On the sheet, no file", cutFolderFileOnly:"File only, not on the sheet", cutFolderGaps:"Missing numbers between files", cutFolderUnresolved:"Cel file without a number", cutFolderUnmapped:"Names not on the sheet", cutFolderPlates:"BG / BOOK", cutFolderReferences:"References and guides", cutFolderOther:"Other files", cutFolderCopy:"Copy", cutFolderChoose:"Choose the sheet file", cutFolderCancel:"Cancel", cutFolderOneOnly:"Drop one cut folder at a time.",
-        originalCellTitle:'Sheet Input', inputModeLabel:'Input Mode', inputModeTextCommands:'Edit', inputModeCsv:'Import file', csvReadSettings:'CSV read settings', tvpPanelDownload:'TVPaint panel', csvSettingsExportBtn:'Save Project', shakuEditBtn:'Length Edit', shakuEditHint:'Drag a blue frame line to select a range.', shakuCutBtn:'Cut', shakuStretchBtn:'Extend', shakuUndoBtn:'Undo', shakuRedoBtn:'Redo', shakuFlashCut:'Cut applied', shakuFlashStretch:'Extend applied', dougaSheetCreate:'Make Douga', dougaSheetRefresh:'Refresh Douga', dougaSheetTitle:'Generate a read-only douga sheet from Cell numbers and dot marks', cellReadabilityTitle:'Large Cell text',
-        textCommandsLabel:'Text Commands', csvFileLabel:'CLIP / TVPaint · Choose or drop a file', csvCommandEditLabel:'Editable Commands from CSV',
-        dialogBlocksTitle:'Dialog Area', dialogFormatLabel:'Ex: 0+01 | 1+00 | speaker | line  (start | end | who | what)', cameraBlocksTitle:'Camera Area', cameraFormatLabel:'Ex: 0+01 | 1+00 | A | PAN | B  (start | end | from | move | to)', cameraExamplesTitle:'Examples',
+        drawingCountTitle:"Drawing count", drawingCountCell:"Cell", drawingCountNumbered:"Numbered drawings", drawingCountInbetweens:"Inbetweens", drawingCountTotal:"Total", drawingCountPending:"Check required", drawingCountDisplay:"Display", drawingCountOff:"Off", drawingCountBottom:"Header bottom right", drawingCountTop:"Header top right", drawingCountCsv:"Save CSV", drawingCountText:"Save text", drawingCountClose:"Close", drawingCountHint:"Reused and repeated drawings count once · Check provisional timing", drawingCountWork:"Work", drawingCountEpisode:"Episode", drawingCountCut:"Cut", cutFolderTitle:"Cut folder check", cutFolderOpened:"Opened sheet", cutFolderNone:"none", cutFolderReading:"Reading folder…", cutFolderPartial:"Only the first 5,000 files were read.", cutFolderPaperOnly:"Only a paper image was opened, so cel numbers were not compared.", cutFolderNoSheet:"No sheet file was found, so cel numbers were not compared.", cutFolderSheetCount:"sheet", cutFolderFileCount:"files", cutFolderSheetOnly:"On the sheet, no file", cutFolderFileOnly:"File only, not on the sheet", cutFolderGaps:"Missing numbers between files", cutFolderUnresolved:"Cel file without a number", cutFolderUnmapped:"Names not on the sheet", cutFolderPlates:"BG / BOOK", cutFolderReferences:"References and guides", cutFolderOther:"Other files", cutFolderCopy:"Copy", cutFolderChoose:"Choose the sheet file", cutFolderCancel:"Cancel", cutFolderOneOnly:"Drop one cut folder at a time.",
+        originalCellTitle:'Sheet Input', inputModeLabel:'Input Mode', inputModeTextCommands:'Edit', inputModeCsv:'Import file', csvReadSettings:'CSV read settings', tvpPanelDownload:'TVPaint panel', csvSettingsExportBtn:'Save Project', shakuEditBtn:'Length Edit', shakuEditHint:'Drag a blue frame line to select a range.', shakuCutBtn:'Cut', shakuStretchBtn:'Extend', shakuUndoBtn:'Undo', shakuRedoBtn:'Redo', shakuFlashCut:'Cut applied', shakuFlashStretch:'Extend applied', dougaSheetCreate:'Make Douga', dougaSheetRefresh:'Refresh Douga', dougaSheetTitle:"Create read-only inbetweens from cel numbers and dots", cellReadabilityTitle:'Large Cell text',
+        textCommandsLabel:'Text Commands', csvFileLabel:'CLIP / TVPaint · Choose or drop a file', csvCommandEditLabel:"Imported commands",
+        dialogBlocksTitle:'Dialog Area', dialogFormatLabel:"Start | End | Speaker | Dialogue", cameraBlocksTitle:'Camera Area', cameraFormatLabel:"Start | End | Label | Instruction | Label", cameraExamplesTitle:'Examples',
         cameraExPan:'pan (A → B)', cameraExTu:'track up / push in', cameraExFi:'fade in', cameraExOl:'overlap (switch)',
-        sheetPreviewTitle:'Sheet Preview', chooseExportDirBtn:"Output folder", downloadAllBtn:"Export", memoModeBtn:'Memo Mode', cameraToMemoBtn:'Camera→Memo', memoPenLabel:'Pen', memoEraserLabel:'Eraser', memoRightClickNoticeL1:'Right-click the memo area', memoRightClickNoticeL2:'to create / edit a text box', cellReadabilityNotice:'← Enlarge the genga numbers (cell digits)',
-        unifiedCurrentWork:"Current editing work", unifiedSelection:"{count} selected work files", unifiedExcluded:"Excluded from export", unifiedStopped:"{count} stopped", unifiedExportAction:"Export {count} works · {pages} pages", unifiedWorkList:"Work to export", unifiedSelectAll:"Select all", unifiedAllOptions:"Apply to all export targets", unifiedCurrentOptions:"Current work output settings", unifiedSavedDefaults:"Unchanged options keep each work’s saved settings.", unifiedMixed:"Mixed", unifiedResetOptions:"Restore saved settings", stageHeading:'Stage', stageAddSlotLabel:'Add a stage', stageCustomOption:'Custom…', stageRenameBtn:'Rename', stageDeleteBtn:'Delete', stageDeleteLastHint:'Cannot delete the last remaining stage', hideNonCellCommandsLabel:'Hide non-Cell commands', hideRightPanelBtn:'Hide Dialog/Camera', showRightPanelBtn:'Show Dialog/Camera', settingsExportBtn:"Save work", settingsFileBtn:"Open work", settingsImportBtn:"Work folder", settingsRefreshBtn:'Reload', textMemoApplyBtn:'Apply', textMemoMenuAdd:'Add text box', textMemoMenuDelete:'Delete text box', textMemoMenuEditMode:'Text box position edit', textMemoMenuEditDone:'Finish text box edit', textMemoMenuAutoArrange:'Auto arrange text boxes', textMemoInitialHint:'Right-click to add or edit text boxes.', clearSheetDataBtn:'Reset All', hideSidebarBtn:'Hide UI', showSidebarBtn:'Show UI', feedbackHeading:'Feedback', feedbackFormLink:'Form', feedbackPlaceholder:'Bug report or request', feedbackHint:'Write anything you know: symptom, reproduction steps, CSV/PSD/image format, expected result, actual result, browser/OS. App version and browser info are added automatically.', feedbackSendBtn:'Send', feedbackEmpty:'Write a message first.', feedbackSending:'Sending...', feedbackRequested:'Submission requested. Keep this text until receipt is confirmed.', feedbackFailed:'Could not send. Open the form link.', shortcutSummaryTopHint:'', workPickerCurrent:"Currently opened", workPickerOpened:"Opened work: {name}", workPickerNoMatch:"No matching work files.", workPickerSearch:"Search filename or folder", outputPixels:"Output {width} × {height} px", lastOutputFile:"Last file", firstOutputFile:"First file", outputComposition:"Paper, content and memos", psdLayers:"PSD layers: Memo / Text Output (sheet content, including pasted images) / Template / Paper Image / Background", reviewCaption:"Output preview", reviewRetry:"Retry preview", reviewFailed:"Preview failed: {error}", reviewLoading:"Preparing preview…", showOutputSettings:"Show output settings", focusPreview:"Expand preview", fitWidth:"Fit width", fitPage:"Fit page", reviewNext:"Next page", reviewPrev:"Previous page", reviewPage:"Page {page} / {count}", outputAction:"Export {count} page(s)", outputSize:"Image size", outputLocation:"Output location", outputFormat:"File format", outputCellLabel:"Cel labels", outputDuration:"Duration “+”", outputHeader:"Header", outputTemplate:"Template lines", outputContents:"Include in the output", backToEdit:"Back to editing", reviewTitle:"Review and export", globalRedo:"Redo (Ctrl/Cmd+Shift+Z / Ctrl/Cmd+Y)", globalUndo:"Undo (Ctrl/Cmd+Z)", sheetHistory:"History", outputReview:"Review output", libraryTitle:"Work library", libraryAdd:"Add JSON", librarySelect:"Select results", libraryClear:"Clear", librarySelected:"{count} selected", librarySelectFile:"Select for export: {name}", libraryOpenFile:"Open: {name}", libraryEmpty:"No work files", libraryExport:"Export ({count})", noticeClose:"Dismiss notification", batchSavedFormat:"Saved file format", batchZip:"Download ZIP", batchReady:"{count} ready work files · {pages} pages · {failed} errors", batchRenamed:"{count} duplicate names numbered", batchPreparing:"Checking work {done}/{total}…", batchFinished:"Folder: {folder} files · ZIP download requested: {archive} files · Errors: {failed}", batchProgress:"Processed {done}/{total} files", batchStop:"Stop after this file", batchStopping:"Stopping…", batchPages:"pages", batchState_pending:"Checking", batchState_ready:"Ready", batchState_running:"Exporting", batchState_done:"Complete", batchState_error:"Error", batchState_stopped:"Stopped", batchMissingPaper:"The paper image or memo backup referenced by this JSON is unavailable. Open and save the work with its paper image included.", batchChanged:"Page count changed after preparation.", batchFolderCollision:"Could not create a new output folder.", batchPartial:"{count} files already processed", batchArchiveFailed:"ZIP download failed: {error}", batchZipLimit:"This ZIP exceeds the ZIP32 size or file-count limit. Export to a folder or select fewer work files.", batchRetryFailed:"Export the {count} unfinished work files again from page 1", outputStop:"Stop after this page", cacheImagesOmitted:"Opened from browser memory, so its images are missing. Reload the work folder to get them back.", saveOmittedImagesWarn:"This work was opened from browser memory without its images. Saving now writes a file with no paper image and no pasted images \u2014 if you pick the original file, its images are lost. Reload the work folder first to get them back.", saveOmittedImagesProceed:"Save without images", psdSizeLimit:"This PSD page exceeds the format limit (2GB per file, 30000px per side). The paper image is {width} × {height} px — use a smaller paper image, or export as PNG or JPG.", batchCachedNoImages:"This work was restored from browser memory without its images. Reload the work folder, then export."
+        sheetPreviewTitle:'Sheet Preview', chooseExportDirBtn:"Output folder", downloadAllBtn:"Export", memoModeBtn:'Memo Mode', cameraToMemoBtn:'Camera→Memo', memoPenLabel:'Pen', memoEraserLabel:'Eraser', memoRightClickNoticeL1:'Right-click the memo area', memoRightClickNoticeL2:'to create / edit a text box', cellReadabilityNotice:"Larger drawing numbers",
+        unifiedCurrentWork:"Current editing work", unifiedSelection:"{count} selected work files", unifiedExcluded:"Excluded from export", unifiedStopped:"{count} stopped", unifiedExportAction:"Export {count} works · {pages} pages", unifiedWorkList:"Work to export", unifiedSelectAll:"Select all", unifiedAllOptions:"Apply to all export targets", unifiedCurrentOptions:"Current work output settings", unifiedSavedDefaults:"Unchanged options keep each work’s saved settings.", unifiedMixed:"Mixed", unifiedResetOptions:"Restore saved settings", stageHeading:'Stage', stageAddSlotLabel:'Add a stage', stageCustomOption:'Custom…', stageRenameBtn:'Rename', stageDeleteBtn:'Delete', stageDeleteLastHint:'Cannot delete the last remaining stage', hideNonCellCommandsLabel:'Hide non-Cell commands', hideRightPanelBtn:'Hide Dialog/Camera', showRightPanelBtn:'Show Dialog/Camera', settingsExportBtn:"Save work", settingsFileBtn:"Open work", settingsImportBtn:"Work folder", settingsRefreshBtn:'Reload', textMemoApplyBtn:'Apply', textMemoMenuAdd:'Add text box', textMemoMenuDelete:'Delete text box', textMemoMenuEditMode:'Text box position edit', textMemoMenuEditDone:'Finish text box edit', textMemoMenuAutoArrange:'Auto arrange text boxes', textMemoInitialHint:"Right-click to add or edit a text box", clearSheetDataBtn:'Reset All', hideSidebarBtn:'Hide UI', showSidebarBtn:'Show UI', feedbackHeading:'Feedback', feedbackFormLink:'Form', feedbackPlaceholder:'Bug report or request', feedbackHint:"Include the issue and steps to reproduce. App version and browser details are attached automatically.", feedbackSendBtn:'Send', feedbackEmpty:'Write a message first.', feedbackSending:'Sending...', feedbackRequested:'Submission requested. Keep this text until receipt is confirmed.', feedbackFailed:'Could not send. Open the form link.', shortcutSummaryTopHint:'', workPickerCurrent:"Currently opened", workPickerOpened:"Opened work: {name}", workPickerNoMatch:"No matching work files.", workPickerSearch:"Search filename or folder", outputPixels:"Output {width} × {height} px", lastOutputFile:"Last file", firstOutputFile:"First file", outputComposition:"Paper, content and memos", psdLayers:"PSD layers: Memo / Text Output (sheet content, including pasted images) / Template / Paper Image / Background", reviewCaption:"Output preview", reviewRetry:"Retry preview", reviewFailed:"Preview failed: {error}", reviewLoading:"Preparing preview…", showOutputSettings:"Show output settings", focusPreview:"Expand preview", fitWidth:"Fit width", fitPage:"Fit page", reviewNext:"Next page", reviewPrev:"Previous page", reviewPage:"Page {page} / {count}", outputAction:"Export {count} page(s)", outputSize:"Image size", outputLocation:"Output location", outputFormat:"File format", outputCellLabel:"Cel labels", outputDuration:"Duration “+”", outputHeader:"Header", outputTemplate:"Template lines", outputContents:"Include in the output", backToEdit:"Back to editing", reviewTitle:"Review and export", globalRedo:"Redo (Ctrl/Cmd+Shift+Z / Ctrl/Cmd+Y)", globalUndo:"Undo (Ctrl/Cmd+Z)", sheetHistory:"History", outputReview:"Review output", libraryTitle:"Work library", libraryAdd:"Add JSON", librarySelect:"Select results", libraryClear:"Clear", librarySelected:"{count} selected", librarySelectFile:"Select for export: {name}", libraryOpenFile:"Open: {name}", libraryEmpty:"No work files", libraryExport:"Export ({count})", noticeClose:"Dismiss notification", batchSavedFormat:"Saved file format", batchZip:"Download ZIP", batchReady:"{count} ready work files · {pages} pages · {failed} errors", batchRenamed:"{count} duplicate names numbered", batchPreparing:"Checking work {done}/{total}…", batchFinished:"Folder: {folder} files · ZIP download requested: {archive} files · Errors: {failed}", batchProgress:"Processed {done}/{total} files", batchStop:"Stop after this file", batchStopping:"Stopping…", batchPages:"pages", batchState_pending:"Checking", batchState_ready:"Ready", batchState_running:"Exporting", batchState_done:"Complete", batchState_error:"Error", batchState_stopped:"Stopped", batchMissingPaper:"The paper image or memo backup referenced by this JSON is unavailable. Open and save the work with its paper image included.", batchChanged:"Page count changed after preparation.", batchFolderCollision:"Could not create a new output folder.", batchPartial:"{count} files already processed", batchArchiveFailed:"ZIP download failed: {error}", batchZipLimit:"This ZIP exceeds the ZIP32 size or file-count limit. Export to a folder or select fewer work files.", batchRetryFailed:"Export the {count} unfinished work files again from page 1", outputStop:"Stop after this page", cacheImagesOmitted:"Opened from browser memory, so its images are missing. Reload the work folder to get them back.", saveOmittedImagesWarn:"This work was opened from browser memory without its images. Saving now writes a file with no paper image and no pasted images \u2014 if you pick the original file, its images are lost. Reload the work folder first to get them back.", saveOmittedImagesProceed:"Save without images", psdSizeLimit:"This PSD page exceeds the format limit (2GB per file, 30000px per side). The paper image is {width} × {height} px — use a smaller paper image, or export as PNG or JPG.", batchCachedNoImages:"This work was restored from browser memory without its images. Reload the work folder, then export."
       },
       ja: {
         languageLabel:'言語', headerCardTitle:'ヘッダー', episodeLabel:'話数', titleLabel:'タイトル', cutNoLabel:'カット番号', secondsLabel:'尺 秒', framesLabel:'尺 コマ', authorLabel:'名前', pageLabel:'ページ',
-        drawingCountTitle:"動画枚数", drawingCountCell:"セル", drawingCountNumbered:"番号絵", drawingCountInbetweens:"中割り", drawingCountTotal:"合計", drawingCountPending:"要確認", drawingCountDisplay:"表示", drawingCountOff:"非表示", drawingCountBottom:"ヘッダー右下", drawingCountTop:"ヘッダー右上", drawingCountCsv:"CSV保存", drawingCountText:"テキスト保存", drawingCountClose:"閉じる", drawingCountHint:"同じ絵の再使用・リピートは1枚として集計。仮置き区間は要確認。", drawingCountWork:"作品", drawingCountEpisode:"話数", drawingCountCut:"カット", cutFolderTitle:"カットフォルダ照合", cutFolderOpened:"開いたシート", cutFolderNone:"なし", cutFolderReading:"フォルダを読み込み中…", cutFolderPartial:"先頭の5,000ファイルだけ読み込みました。", cutFolderPaperOnly:"用紙画像だけを開いたため、セル番号は照合していません。", cutFolderNoSheet:"シートファイルが見つからないため、セル番号は照合していません。", cutFolderSheetCount:"シート", cutFolderFileCount:"ファイル", cutFolderSheetOnly:"シートにあってファイルがない", cutFolderFileOnly:"ファイルだけでシートにない", cutFolderGaps:"ファイル番号の抜け", cutFolderUnresolved:"番号のないセルファイル", cutFolderUnmapped:"シートにない名前", cutFolderPlates:"BG・BOOK", cutFolderReferences:"参考・ガイド", cutFolderOther:"その他のファイル", cutFolderCopy:"コピー", cutFolderChoose:"シートファイルを選択", cutFolderCancel:"キャンセル", cutFolderOneOnly:"カットフォルダは1つずつドロップしてください。",
-        originalCellTitle:'シート入力', inputModeLabel:'入力モード', inputModeTextCommands:'直接入力', inputModeCsv:'ファイル読込', csvReadSettings:'CSV読み込み設定', tvpPanelDownload:'TVPaint用パネル', csvSettingsExportBtn:'プロジェクト保存', shakuEditBtn:'尺編集(演出向け)', shakuEditHint:'青いフレーム線をドラッグして尺を選択', shakuCutBtn:'切る', shakuStretchBtn:'伸ばす', shakuUndoBtn:'取り消し', shakuRedoBtn:'やり直し', shakuFlashCut:'切る 反映', shakuFlashStretch:'伸ばす 反映', dougaSheetCreate:'動画作成', dougaSheetRefresh:'動画更新', dougaSheetTitle:'Cell番号と動画点から編集不可の動画欄を生成', cellReadabilityTitle:'Cell文字を大きく表示',
-        textCommandsLabel:'テキストコマンド', csvFileLabel:'CLIP / TVPaint · 選択またはドロップ', csvCommandEditLabel:'CSVから生成された編集可能コマンド',
-        dialogBlocksTitle:'セリフ欄', dialogFormatLabel:'例: 0+01 | 1+00 | 話者 | セリフ（始まり｜終わり｜だれ｜なに）', cameraBlocksTitle:'カメラ欄', cameraFormatLabel:'例: 0+01 | 1+00 | A | PAN | B（始まり｜終わり｜前｜動き｜後）', cameraExamplesTitle:'例',
+        drawingCountTitle:"動画枚数", drawingCountCell:"セル", drawingCountNumbered:"番号絵", drawingCountInbetweens:"中割り", drawingCountTotal:"合計", drawingCountPending:"要確認", drawingCountDisplay:"表示", drawingCountOff:"非表示", drawingCountBottom:"ヘッダー右下", drawingCountTop:"ヘッダー右上", drawingCountCsv:"CSV保存", drawingCountText:"テキスト保存", drawingCountClose:"閉じる", drawingCountHint:"再使用・リピートは1枚として集計 · 仮配置は要確認", drawingCountWork:"作品", drawingCountEpisode:"話数", drawingCountCut:"カット", cutFolderTitle:"カットフォルダ照合", cutFolderOpened:"開いたシート", cutFolderNone:"なし", cutFolderReading:"フォルダを読み込み中…", cutFolderPartial:"先頭の5,000ファイルだけ読み込みました。", cutFolderPaperOnly:"用紙画像だけを開いたため、セル番号は照合していません。", cutFolderNoSheet:"シートファイルが見つからないため、セル番号は照合していません。", cutFolderSheetCount:"シート", cutFolderFileCount:"ファイル", cutFolderSheetOnly:"シートにあってファイルがない", cutFolderFileOnly:"ファイルだけでシートにない", cutFolderGaps:"ファイル番号の抜け", cutFolderUnresolved:"番号のないセルファイル", cutFolderUnmapped:"シートにない名前", cutFolderPlates:"BG・BOOK", cutFolderReferences:"参考・ガイド", cutFolderOther:"その他のファイル", cutFolderCopy:"コピー", cutFolderChoose:"シートファイルを選択", cutFolderCancel:"キャンセル", cutFolderOneOnly:"カットフォルダは1つずつドロップしてください。",
+        originalCellTitle:'シート入力', inputModeLabel:'入力モード', inputModeTextCommands:'直接入力', inputModeCsv:'ファイル読込', csvReadSettings:'CSV読み込み設定', tvpPanelDownload:'TVPaint用パネル', csvSettingsExportBtn:'プロジェクト保存', shakuEditBtn:'尺編集(演出向け)', shakuEditHint:'青いフレーム線をドラッグして尺を選択', shakuCutBtn:'切る', shakuStretchBtn:'伸ばす', shakuUndoBtn:'取り消し', shakuRedoBtn:'やり直し', shakuFlashCut:'切る 反映', shakuFlashStretch:'伸ばす 反映', dougaSheetCreate:'動画作成', dougaSheetRefresh:'動画更新', dougaSheetTitle:"セル番号と中割点から編集不可の動画欄を作成", cellReadabilityTitle:'Cell文字を大きく表示',
+        textCommandsLabel:'テキストコマンド', csvFileLabel:'CLIP / TVPaint · 選択またはドロップ', csvCommandEditLabel:"読込コマンド",
+        dialogBlocksTitle:'セリフ欄', dialogFormatLabel:"開始 | 終了 | 話者 | セリフ", cameraBlocksTitle:'カメラ欄', cameraFormatLabel:"開始 | 終了 | 前ラベル | 指示 | 後ラベル", cameraExamplesTitle:'例',
         cameraExPan:'流し（A→B）', cameraExTu:'寄り（トラックアップ）', cameraExFi:'フェードイン', cameraExOl:'オーバーラップ（切替）',
-        sheetPreviewTitle:'シートプレビュー', chooseExportDirBtn:"出力先", downloadAllBtn:"書き出し", memoModeBtn:'メモモード', cameraToMemoBtn:'カメラ→メモ', memoPenLabel:'ペン', memoEraserLabel:'消しゴム', memoRightClickNoticeL1:'メモ欄で右クリック', memoRightClickNoticeL2:'：テキスト枠の作成・編集', cellReadabilityNotice:'←原画番号（セルの数字）を大きく表示',
-        unifiedCurrentWork:"編集中の作業", unifiedSelection:"選択した作業 {count}件", unifiedExcluded:"書き出し対象外", unifiedStopped:"中止 {count}件", unifiedExportAction:"{count}件・全{pages}ページを書き出す", unifiedWorkList:"書き出す作業", unifiedSelectAll:"すべて選択", unifiedAllOptions:"すべての出力対象に適用", unifiedCurrentOptions:"現在の作業の出力設定", unifiedSavedDefaults:"変更しない項目は各作業の保存設定を使用します。", unifiedMixed:"混在", unifiedResetOptions:"保存設定に戻す", stageHeading:'段階', stageAddSlotLabel:'段階を追加', stageCustomOption:'直接入力…', stageRenameBtn:'名前を変える', stageDeleteBtn:'削除', stageDeleteLastHint:'最後の1段階は削除できません', hideNonCellCommandsLabel:'Cell以外のコマンドを隠す', hideRightPanelBtn:'セリフ/カメラを隠す', showRightPanelBtn:'セリフ/カメラを表示', settingsExportBtn:"作業を保存", settingsFileBtn:"作業を開く", settingsImportBtn:"作業フォルダー", settingsRefreshBtn:'再読込', textMemoApplyBtn:'適用', textMemoMenuAdd:'テキスト枠を追加', textMemoMenuDelete:'テキスト枠を削除', textMemoMenuEditMode:'テキスト枠位置編集', textMemoMenuEditDone:'テキスト枠編集終了', textMemoMenuAutoArrange:'テキスト枠を自動整列', textMemoInitialHint:'右クリックでテキスト枠を追加・編集できます。', clearSheetDataBtn:'全体初期化', hideSidebarBtn:'UIを隠す', showSidebarBtn:'UIを表示', feedbackHeading:'報告', feedbackFormLink:'Form', feedbackPlaceholder:'不具合や要望を書く', feedbackHint:'わかる範囲で記入してください: 症状、再現手順、使用したCSV/PSD/画像形式、期待した結果、実際の結果、ブラウザ/OS。アプリのバージョンとブラウザ情報は自動的に添付されます。', feedbackSendBtn:'送信', feedbackEmpty:'内容を書いてください。', feedbackSending:'送信中...', feedbackRequested:'送信を依頼しました。受付が確認できるまで本文を残します。', feedbackFailed:'送信できません。Formリンクから送ってください。', shortcutSummaryTopHint:'', workPickerCurrent:"現在開いている作業", workPickerOpened:"作業を開きました：{name}", workPickerNoMatch:"一致する作業ファイルがありません。", workPickerSearch:"ファイル名・フォルダーを検索", outputPixels:"出力 {width} × {height} px", lastOutputFile:"最後のファイル", firstOutputFile:"最初のファイル", outputComposition:"用紙・内容・メモを含む", psdLayers:"PSDレイヤー：メモ / Text Output（シートの内容・貼り付けた画像を含む） / 用紙の罫線 / 用紙画像 / 背景", reviewCaption:"仕上がりプレビュー", reviewRetry:"再表示", reviewFailed:"プレビューを表示できません：{error}", reviewLoading:"プレビューを準備中…", showOutputSettings:"出力設定を表示", focusPreview:"大きく確認", fitWidth:"幅に合わせる", fitPage:"ページ全体", reviewNext:"次のページ", reviewPrev:"前のページ", reviewPage:"{page} / {count}ページ", outputAction:"{count}ページを書き出す", outputSize:"画像サイズ", outputLocation:"出力先", outputFormat:"ファイル形式", outputCellLabel:"セルの見出し", outputDuration:"尺の「＋」", outputHeader:"ヘッダー", outputTemplate:"用紙の罫線", outputContents:"書き出す内容", backToEdit:"編集に戻る", reviewTitle:"仕上がりと書き出し", globalRedo:"やり直す (Ctrl/Cmd+Shift+Z / Ctrl/Cmd+Y)", globalUndo:"元に戻す (Ctrl/Cmd+Z)", sheetHistory:"履歴", outputReview:"仕上がりを確認", libraryTitle:"作業一覧", libraryAdd:"JSON追加", librarySelect:"検索結果を選択", libraryClear:"選択を解除", librarySelected:"{count}件選択", librarySelectFile:"書き出す作業：{name}", libraryOpenFile:"開く：{name}", libraryEmpty:"作業ファイルなし", libraryExport:"書き出す（{count}件）", noticeClose:"通知を閉じる", batchSavedFormat:"保存された形式", batchZip:"ZIPダウンロード", batchReady:"準備完了{count}件・{pages}ページ・エラー{failed}件", batchRenamed:"同名{count}ファイルに連番を追加", batchPreparing:"作業を確認中 {done}/{total}…", batchFinished:"フォルダー保存{folder}ファイル・ZIP依頼{archive}ファイル・エラー{failed}件", batchProgress:"処理 {done}/{total}ファイル", batchStop:"このファイルの後に中止", batchStopping:"中止しています…", batchPages:"ページ", batchState_pending:"確認中", batchState_ready:"準備完了", batchState_running:"出力中", batchState_done:"完了", batchState_error:"エラー", batchState_stopped:"中止", batchMissingPaper:"このJSONが参照する用紙画像・メモの記憶がありません。用紙画像を含めて作業を保存し直してください。", batchChanged:"準備後にページ数が変わりました。", batchFolderCollision:"新しい出力フォルダーを作成できませんでした。", batchPartial:"{count}ファイル処理済み", batchArchiveFailed:"ZIPダウンロード失敗：{error}", batchZipLimit:"ZIP32の容量またはファイル数の上限を超えます。フォルダーに出力するか対象を減らしてください。", batchRetryFailed:"終わらなかった{count}件を最初のページから書き出し直す", outputStop:"このページの後に中止", cacheImagesOmitted:"ブラウザーの記憶から開いたため画像がありません。作業フォルダーを読み込み直すと戻ります。", saveOmittedImagesWarn:"この作業はブラウザーの記憶から画像なしで開いたものです。このまま保存すると、用紙画像も貼り付けた画像も入っていないファイルになります。元のファイルを選ぶと元の画像が失われます。先に作業フォルダーを読み込み直してください。", saveOmittedImagesProceed:"画像なしで保存", psdSizeLimit:"PSD は 1 枚で形式の上限（2GB・1 辺 30000px）を超えます。用紙画像は {width} × {height} px です — 解像度を下げるか、PNG・JPG で書き出してください。", batchCachedNoImages:"この作業はブラウザーの記憶から画像なしで復元されたものです。作業フォルダーを読み込み直してから書き出してください。"
+        sheetPreviewTitle:'シートプレビュー', chooseExportDirBtn:"出力先", downloadAllBtn:"書き出し", memoModeBtn:'メモモード', cameraToMemoBtn:'カメラ→メモ', memoPenLabel:'ペン', memoEraserLabel:'消しゴム', memoRightClickNoticeL1:'メモ欄で右クリック', memoRightClickNoticeL2:'：テキスト枠の作成・編集', cellReadabilityNotice:"原画番号を大きく表示",
+        unifiedCurrentWork:"編集中の作業", unifiedSelection:"選択した作業 {count}件", unifiedExcluded:"書き出し対象外", unifiedStopped:"中止 {count}件", unifiedExportAction:"{count}件・全{pages}ページを書き出す", unifiedWorkList:"書き出す作業", unifiedSelectAll:"すべて選択", unifiedAllOptions:"すべての出力対象に適用", unifiedCurrentOptions:"現在の作業の出力設定", unifiedSavedDefaults:"変更しない項目は各作業の保存設定を使用します。", unifiedMixed:"混在", unifiedResetOptions:"保存設定に戻す", stageHeading:'段階', stageAddSlotLabel:'段階を追加', stageCustomOption:'直接入力…', stageRenameBtn:'名前を変える', stageDeleteBtn:'削除', stageDeleteLastHint:'最後の1段階は削除できません', hideNonCellCommandsLabel:'Cell以外のコマンドを隠す', hideRightPanelBtn:'セリフ/カメラを隠す', showRightPanelBtn:'セリフ/カメラを表示', settingsExportBtn:"作業を保存", settingsFileBtn:"作業を開く", settingsImportBtn:"作業フォルダー", settingsRefreshBtn:'再読込', textMemoApplyBtn:'適用', textMemoMenuAdd:'テキスト枠を追加', textMemoMenuDelete:'テキスト枠を削除', textMemoMenuEditMode:'テキスト枠位置編集', textMemoMenuEditDone:'テキスト枠編集終了', textMemoMenuAutoArrange:'テキスト枠を自動整列', textMemoInitialHint:"右クリックでテキスト枠を追加・編集", clearSheetDataBtn:'全体初期化', hideSidebarBtn:'UIを隠す', showSidebarBtn:'UIを表示', feedbackHeading:'報告', feedbackFormLink:'Form', feedbackPlaceholder:'不具合や要望を書く', feedbackHint:"症状と再現手順を入力してください。アプリの版とブラウザ情報は自動で添付されます。", feedbackSendBtn:'送信', feedbackEmpty:'内容を書いてください。', feedbackSending:'送信中...', feedbackRequested:'送信を依頼しました。受付が確認できるまで本文を残します。', feedbackFailed:'送信できません。Formリンクから送ってください。', shortcutSummaryTopHint:'', workPickerCurrent:"現在開いている作業", workPickerOpened:"作業を開きました：{name}", workPickerNoMatch:"一致する作業ファイルがありません。", workPickerSearch:"ファイル名・フォルダーを検索", outputPixels:"出力 {width} × {height} px", lastOutputFile:"最後のファイル", firstOutputFile:"最初のファイル", outputComposition:"用紙・内容・メモを含む", psdLayers:"PSDレイヤー：メモ / Text Output（シートの内容・貼り付けた画像を含む） / 用紙の罫線 / 用紙画像 / 背景", reviewCaption:"仕上がりプレビュー", reviewRetry:"再表示", reviewFailed:"プレビューを表示できません：{error}", reviewLoading:"プレビューを準備中…", showOutputSettings:"出力設定を表示", focusPreview:"大きく確認", fitWidth:"幅に合わせる", fitPage:"ページ全体", reviewNext:"次のページ", reviewPrev:"前のページ", reviewPage:"{page} / {count}ページ", outputAction:"{count}ページを書き出す", outputSize:"画像サイズ", outputLocation:"出力先", outputFormat:"ファイル形式", outputCellLabel:"セルの見出し", outputDuration:"尺の「＋」", outputHeader:"ヘッダー", outputTemplate:"用紙の罫線", outputContents:"書き出す内容", backToEdit:"編集に戻る", reviewTitle:"仕上がりと書き出し", globalRedo:"やり直す (Ctrl/Cmd+Shift+Z / Ctrl/Cmd+Y)", globalUndo:"元に戻す (Ctrl/Cmd+Z)", sheetHistory:"履歴", outputReview:"仕上がりを確認", libraryTitle:"作業一覧", libraryAdd:"JSON追加", librarySelect:"検索結果を選択", libraryClear:"選択を解除", librarySelected:"{count}件選択", librarySelectFile:"書き出す作業：{name}", libraryOpenFile:"開く：{name}", libraryEmpty:"作業ファイルなし", libraryExport:"書き出す（{count}件）", noticeClose:"通知を閉じる", batchSavedFormat:"保存された形式", batchZip:"ZIPダウンロード", batchReady:"準備完了{count}件・{pages}ページ・エラー{failed}件", batchRenamed:"同名{count}ファイルに連番を追加", batchPreparing:"作業を確認中 {done}/{total}…", batchFinished:"フォルダー保存{folder}ファイル・ZIP依頼{archive}ファイル・エラー{failed}件", batchProgress:"処理 {done}/{total}ファイル", batchStop:"このファイルの後に中止", batchStopping:"中止しています…", batchPages:"ページ", batchState_pending:"確認中", batchState_ready:"準備完了", batchState_running:"出力中", batchState_done:"完了", batchState_error:"エラー", batchState_stopped:"中止", batchMissingPaper:"このJSONが参照する用紙画像・メモの記憶がありません。用紙画像を含めて作業を保存し直してください。", batchChanged:"準備後にページ数が変わりました。", batchFolderCollision:"新しい出力フォルダーを作成できませんでした。", batchPartial:"{count}ファイル処理済み", batchArchiveFailed:"ZIPダウンロード失敗：{error}", batchZipLimit:"ZIP32の容量またはファイル数の上限を超えます。フォルダーに出力するか対象を減らしてください。", batchRetryFailed:"終わらなかった{count}件を最初のページから書き出し直す", outputStop:"このページの後に中止", cacheImagesOmitted:"ブラウザーの記憶から開いたため画像がありません。作業フォルダーを読み込み直すと戻ります。", saveOmittedImagesWarn:"この作業はブラウザーの記憶から画像なしで開いたものです。このまま保存すると、用紙画像も貼り付けた画像も入っていないファイルになります。元のファイルを選ぶと元の画像が失われます。先に作業フォルダーを読み込み直してください。", saveOmittedImagesProceed:"画像なしで保存", psdSizeLimit:"PSD は 1 枚で形式の上限（2GB・1 辺 30000px）を超えます。用紙画像は {width} × {height} px です — 解像度を下げるか、PNG・JPG で書き出してください。", batchCachedNoImages:"この作業はブラウザーの記憶から画像なしで復元されたものです。作業フォルダーを読み込み直してから書き出してください。"
       },
       ko: {
         languageLabel:'언어', headerCardTitle:'헤더', episodeLabel:'화수', titleLabel:'제목', cutNoLabel:'컷 번호', secondsLabel:'길이 초', framesLabel:'길이 프레임', authorLabel:'이름', pageLabel:'페이지',
-        drawingCountTitle:"동화 매수", drawingCountCell:"셀", drawingCountNumbered:"번호 그림", drawingCountInbetweens:"중간그림", drawingCountTotal:"합계", drawingCountPending:"확인 필요", drawingCountDisplay:"표시", drawingCountOff:"표시 안 함", drawingCountBottom:"헤더 우하단", drawingCountTop:"헤더 우상단", drawingCountCsv:"CSV 저장", drawingCountText:"텍스트 저장", drawingCountClose:"닫기", drawingCountHint:"재사용·리피트는 한 번만 셉니다. 가배치 구간은 확인이 필요합니다.", drawingCountWork:"작품", drawingCountEpisode:"화수", drawingCountCut:"컷", cutFolderTitle:"컷 폴더 대조", cutFolderOpened:"연 시트", cutFolderNone:"없음", cutFolderReading:"폴더를 읽는 중…", cutFolderPartial:"앞의 5,000개 파일만 읽었습니다.", cutFolderPaperOnly:"용지 이미지만 열어서 셀 번호는 대조하지 않았습니다.", cutFolderNoSheet:"시트 파일을 찾지 못해 셀 번호는 대조하지 않았습니다.", cutFolderSheetCount:"시트", cutFolderFileCount:"파일", cutFolderSheetOnly:"시트에 있고 파일 없음", cutFolderFileOnly:"파일만 있고 시트에 없음", cutFolderGaps:"파일 번호의 빈 곳", cutFolderUnresolved:"번호 없는 셀 파일", cutFolderUnmapped:"시트에 없는 이름", cutFolderPlates:"BG·BOOK", cutFolderReferences:"참고·가이드", cutFolderOther:"기타 파일", cutFolderCopy:"복사", cutFolderChoose:"시트 파일 선택", cutFolderCancel:"취소", cutFolderOneOnly:"컷 폴더는 하나씩 놓아 주세요.",
-        originalCellTitle:'시트 입력', inputModeLabel:'입력 방식', inputModeTextCommands:'직접 입력', inputModeCsv:'파일에서 가져오기', csvReadSettings:'CSV 읽기 설정', tvpPanelDownload:'TVPaint용 패널', csvSettingsExportBtn:'프로젝트 저장', shakuEditBtn:'연출용 편집툴', shakuEditHint:'파란 프레임선을 드래그해 길이를 선택', shakuCutBtn:'자르기', shakuStretchBtn:'늘리기', shakuUndoBtn:'되돌리기', shakuRedoBtn:'다시 실행', shakuFlashCut:'자르기 반영', shakuFlashStretch:'늘리기 반영', dougaSheetCreate:'동화시트 작성', dougaSheetRefresh:'동화시트 갱신', dougaSheetTitle:'셀 번호와 동화점으로 수정 불가능한 동화칸 생성', cellReadabilityTitle:'셀 글자 크게 보기',
-        textCommandsLabel:'텍스트 커맨드', csvFileLabel:'CLIP / TVPaint · 선택 또는 드롭', csvCommandEditLabel:'CSV에서 생성된 편집 가능 커맨드',
-        dialogBlocksTitle:'대사란', dialogFormatLabel:'예: 0+01 | 1+00 | 화자 | 대사（시작｜끝｜누가｜무엇）', cameraBlocksTitle:'카메라란', cameraFormatLabel:'예: 0+01 | 1+00 | A | PAN | B（시작｜끝｜이전｜움직임｜이후）', cameraExamplesTitle:'예시',
+        drawingCountTitle:"동화 매수", drawingCountCell:"셀", drawingCountNumbered:"번호 그림", drawingCountInbetweens:"중간그림", drawingCountTotal:"합계", drawingCountPending:"확인 필요", drawingCountDisplay:"표시", drawingCountOff:"표시 안 함", drawingCountBottom:"헤더 우하단", drawingCountTop:"헤더 우상단", drawingCountCsv:"CSV 저장", drawingCountText:"텍스트 저장", drawingCountClose:"닫기", drawingCountHint:"재사용·리피트는 한 번만 집계 · 가배치 구간은 확인 필요", drawingCountWork:"작품", drawingCountEpisode:"화수", drawingCountCut:"컷", cutFolderTitle:"컷 폴더 대조", cutFolderOpened:"연 시트", cutFolderNone:"없음", cutFolderReading:"폴더를 읽는 중…", cutFolderPartial:"앞의 5,000개 파일만 읽었습니다.", cutFolderPaperOnly:"용지 이미지만 열어서 셀 번호는 대조하지 않았습니다.", cutFolderNoSheet:"시트 파일을 찾지 못해 셀 번호는 대조하지 않았습니다.", cutFolderSheetCount:"시트", cutFolderFileCount:"파일", cutFolderSheetOnly:"시트에 있고 파일 없음", cutFolderFileOnly:"파일만 있고 시트에 없음", cutFolderGaps:"파일 번호의 빈 곳", cutFolderUnresolved:"번호 없는 셀 파일", cutFolderUnmapped:"시트에 없는 이름", cutFolderPlates:"BG·BOOK", cutFolderReferences:"참고·가이드", cutFolderOther:"기타 파일", cutFolderCopy:"복사", cutFolderChoose:"시트 파일 선택", cutFolderCancel:"취소", cutFolderOneOnly:"컷 폴더는 하나씩 놓아 주세요.",
+        originalCellTitle:'시트 입력', inputModeLabel:'입력 방식', inputModeTextCommands:'직접 입력', inputModeCsv:'파일에서 가져오기', csvReadSettings:'CSV 읽기 설정', tvpPanelDownload:'TVPaint용 패널', csvSettingsExportBtn:'프로젝트 저장', shakuEditBtn:'연출용 편집툴', shakuEditHint:'파란 프레임선을 드래그해 길이를 선택', shakuCutBtn:'자르기', shakuStretchBtn:'늘리기', shakuUndoBtn:'되돌리기', shakuRedoBtn:'다시 실행', shakuFlashCut:'자르기 반영', shakuFlashStretch:'늘리기 반영', dougaSheetCreate:'동화시트 작성', dougaSheetRefresh:'동화시트 갱신', dougaSheetTitle:"셀 번호·동화점으로 읽기 전용 동화칸 생성", cellReadabilityTitle:'셀 글자 크게 보기',
+        textCommandsLabel:'텍스트 커맨드', csvFileLabel:'CLIP / TVPaint · 선택 또는 드롭', csvCommandEditLabel:"가져온 커맨드",
+        dialogBlocksTitle:'대사란', dialogFormatLabel:"시작 | 끝 | 화자 | 대사", cameraBlocksTitle:'카메라란', cameraFormatLabel:"시작 | 끝 | 앞 라벨 | 지시 | 뒤 라벨", cameraExamplesTitle:'예시',
         cameraExPan:'팬 이동（A→B）', cameraExTu:'당김（트랙업）', cameraExFi:'페이드 인', cameraExOl:'오버랩（전환）',
-        sheetPreviewTitle:'시트 프리뷰', chooseExportDirBtn:"출력 위치", downloadAllBtn:"출력", memoModeBtn:'메모 모드', cameraToMemoBtn:'카메라→메모', memoPenLabel:'펜', memoEraserLabel:'지우개', memoRightClickNoticeL1:'메모 영역 우클릭', memoRightClickNoticeL2:'텍스트 박스 생성·편집', cellReadabilityNotice:'← 원화 번호(셀 숫자)를 크게 표시',
-        unifiedCurrentWork:"현재 편집 작업", unifiedSelection:"선택한 작업 {count}개", unifiedExcluded:"출력 제외", unifiedStopped:"중지 {count}개", unifiedExportAction:"작업 {count}개 · 총 {pages}페이지 출력", unifiedWorkList:"출력할 작업", unifiedSelectAll:"전체 선택", unifiedAllOptions:"모든 출력 대상에 적용", unifiedCurrentOptions:"현재 작업의 출력 설정", unifiedSavedDefaults:"변경하지 않은 항목은 각 작업의 저장 설정을 유지합니다.", unifiedMixed:"혼합", unifiedResetOptions:"저장 설정으로 되돌리기", stageHeading:'단계', stageAddSlotLabel:'단계 추가', stageCustomOption:'직접입력…', stageRenameBtn:'이름 변경', stageDeleteBtn:'삭제', stageDeleteLastHint:'마지막 단계는 삭제할 수 없습니다', hideNonCellCommandsLabel:'Cell 외 커맨드 숨기기', hideRightPanelBtn:'대사/카메라 숨기기', showRightPanelBtn:'대사/카메라 보이기', settingsExportBtn:"작업 저장", settingsFileBtn:"작업 열기", settingsImportBtn:"작업 폴더", settingsRefreshBtn:'다시 불러오기', textMemoApplyBtn:'적용', textMemoMenuAdd:'텍스트 박스 추가', textMemoMenuDelete:'텍스트 박스 삭제', textMemoMenuEditMode:'텍스트 박스 위치 편집', textMemoMenuEditDone:'텍스트 박스 편집 종료', textMemoMenuAutoArrange:'텍스트 박스 자동 정렬', textMemoInitialHint:'우클릭으로 텍스트 박스를 추가하거나 편집할 수 있습니다.', clearSheetDataBtn:'전체 초기화', hideSidebarBtn:'UI 숨기기', showSidebarBtn:'UI 펼치기', feedbackHeading:'문의', feedbackFormLink:'Form', feedbackPlaceholder:'버그 내용이나 개선 요청', feedbackHint:'가능하면 아는 것만 적어주세요: 증상, 재현 순서, 사용한 CSV/PSD/이미지 형식, 기대한 결과, 실제 결과, 브라우저/OS. 앱 버전과 브라우저 정보는 자동으로 첨부됩니다.', feedbackSendBtn:'보내기', feedbackEmpty:'내용을 먼저 입력하세요.', feedbackSending:'전송 중...', feedbackRequested:'전송을 요청했습니다. 접수 확인 전까지 원문을 남깁니다.', feedbackFailed:'전송하지 못했습니다. Form 링크로 보내주세요.', shortcutSummaryTopHint:'', workPickerCurrent:"현재 열린 작업", workPickerOpened:"작업을 열었습니다: {name}", workPickerNoMatch:"일치하는 작업 파일이 없습니다.", workPickerSearch:"파일명 또는 폴더 검색", outputPixels:"출력 {width} × {height} px", lastOutputFile:"마지막 파일", firstOutputFile:"첫 파일", outputComposition:"용지·내용·메모 포함", psdLayers:"PSD 레이어: 메모 / Text Output(시트 내용 · 붙여 넣은 이미지 포함) / 용지 틀 / 용지 이미지 / 배경", reviewCaption:"완성본 미리보기", reviewRetry:"다시 표시", reviewFailed:"미리보기를 표시하지 못했습니다: {error}", reviewLoading:"미리보기 준비 중…", showOutputSettings:"출력 설정 보기", focusPreview:"크게 확인", fitWidth:"폭에 맞춤", fitPage:"페이지 전체", reviewNext:"다음 페이지", reviewPrev:"이전 페이지", reviewPage:"{page} / {count}페이지", outputAction:"{count}페이지 출력", outputSize:"이미지 크기", outputLocation:"출력 위치", outputFormat:"파일 형식", outputCellLabel:"셀 머리글", outputDuration:"길이 표시의 ＋", outputHeader:"헤더", outputTemplate:"용지의 틀 선", outputContents:"출력에 포함할 내용", backToEdit:"편집으로 돌아가기", reviewTitle:"완성본 확인 및 출력", globalRedo:"다시 실행 (Ctrl/Cmd+Shift+Z / Ctrl/Cmd+Y)", globalUndo:"실행취소 (Ctrl/Cmd+Z)", sheetHistory:"편집", outputReview:"완성본 확인", libraryTitle:"작업 목록", libraryAdd:"JSON 추가", librarySelect:"검색 결과 선택", libraryClear:"선택 해제", librarySelected:"{count}개 선택", librarySelectFile:"출력 대상으로 선택: {name}", libraryOpenFile:"열기: {name}", libraryEmpty:"작업 없음", libraryExport:"출력 ({count}개)", noticeClose:"안내 닫기", batchSavedFormat:"저장된 형식", batchZip:"ZIP 다운로드", batchReady:"준비된 작업 {count}개 · {pages}페이지 · 오류 {failed}개", batchRenamed:"동일한 파일명 {count}개에 번호 추가", batchPreparing:"작업 확인 중 {done}/{total}…", batchFinished:"폴더 저장 {folder}파일 · ZIP 다운로드 요청 {archive}파일 · 오류 {failed}개", batchProgress:"처리 {done}/{total}파일", batchStop:"현재 파일 후 중지", batchStopping:"중지 중…", batchPages:"페이지", batchState_pending:"확인 중", batchState_ready:"준비 완료", batchState_running:"출력 중", batchState_done:"완료", batchState_error:"오류", batchState_stopped:"중지", batchMissingPaper:"이 JSON이 참조하는 용지 이미지·메모를 찾을 수 없습니다. 용지 이미지를 포함해 작업을 다시 저장하세요.", batchChanged:"준비 후 페이지 수가 달라졌습니다.", batchFolderCollision:"새 출력 폴더를 만들지 못했습니다.", batchPartial:"{count}파일 처리 완료", batchArchiveFailed:"ZIP 다운로드 실패: {error}", batchZipLimit:"ZIP32의 용량 또는 파일 수 한도를 넘습니다. 폴더로 출력하거나 작업을 나눠 선택하세요.", batchRetryFailed:"끝나지 않은 작업 {count}개를 첫 페이지부터 다시 출력", outputStop:"현재 페이지 후 중지", cacheImagesOmitted:"브라우저 기억에서 열어 그림이 빠져 있습니다. 작업 폴더를 다시 읽으면 돌아옵니다.", saveOmittedImagesWarn:"이 작업은 브라우저 기억에서 그림 없이 열었습니다. 지금 저장하면 용지 이미지도 붙여 넣은 이미지도 없는 파일이 됩니다. 원본 파일을 고르면 원본의 그림이 사라집니다. 먼저 작업 폴더를 다시 읽어 주세요.", saveOmittedImagesProceed:"그림 없이 저장", psdSizeLimit:"PSD 한 장이 형식의 한도(파일 2GB · 한 변 30000px)를 넘습니다. 용지 이미지가 {width} × {height} px 입니다 — 해상도를 낮추거나 PNG·JPG로 출력하세요.", batchCachedNoImages:"이 작업은 브라우저 기억에서 그림 없이 복원한 것입니다. 작업 폴더를 다시 읽은 뒤 출력하세요."
+        sheetPreviewTitle:'시트 프리뷰', chooseExportDirBtn:"출력 위치", downloadAllBtn:"출력", memoModeBtn:'메모 모드', cameraToMemoBtn:'카메라→메모', memoPenLabel:'펜', memoEraserLabel:'지우개', memoRightClickNoticeL1:'메모 영역 우클릭', memoRightClickNoticeL2:'텍스트 박스 생성·편집', cellReadabilityNotice:"원화 번호 크게 표시",
+        unifiedCurrentWork:"현재 편집 작업", unifiedSelection:"선택한 작업 {count}개", unifiedExcluded:"출력 제외", unifiedStopped:"중지 {count}개", unifiedExportAction:"작업 {count}개 · 총 {pages}페이지 출력", unifiedWorkList:"출력할 작업", unifiedSelectAll:"전체 선택", unifiedAllOptions:"모든 출력 대상에 적용", unifiedCurrentOptions:"현재 작업의 출력 설정", unifiedSavedDefaults:"변경하지 않은 항목은 각 작업의 저장 설정을 유지합니다.", unifiedMixed:"혼합", unifiedResetOptions:"저장 설정으로 되돌리기", stageHeading:'단계', stageAddSlotLabel:'단계 추가', stageCustomOption:'직접입력…', stageRenameBtn:'이름 변경', stageDeleteBtn:'삭제', stageDeleteLastHint:'마지막 단계는 삭제할 수 없습니다', hideNonCellCommandsLabel:'Cell 외 커맨드 숨기기', hideRightPanelBtn:'대사/카메라 숨기기', showRightPanelBtn:'대사/카메라 보이기', settingsExportBtn:"작업 저장", settingsFileBtn:"작업 열기", settingsImportBtn:"작업 폴더", settingsRefreshBtn:'다시 불러오기', textMemoApplyBtn:'적용', textMemoMenuAdd:'텍스트 박스 추가', textMemoMenuDelete:'텍스트 박스 삭제', textMemoMenuEditMode:'텍스트 박스 위치 편집', textMemoMenuEditDone:'텍스트 박스 편집 종료', textMemoMenuAutoArrange:'텍스트 박스 자동 정렬', textMemoInitialHint:"우클릭: 텍스트 박스 추가·편집", clearSheetDataBtn:'전체 초기화', hideSidebarBtn:'UI 숨기기', showSidebarBtn:'UI 펼치기', feedbackHeading:'문의', feedbackFormLink:'Form', feedbackPlaceholder:'버그 내용이나 개선 요청', feedbackHint:"증상과 재현 순서를 적어 주세요. 앱 버전·브라우저 정보는 자동 첨부됩니다.", feedbackSendBtn:'보내기', feedbackEmpty:'내용을 먼저 입력하세요.', feedbackSending:'전송 중...', feedbackRequested:'전송을 요청했습니다. 접수 확인 전까지 원문을 남깁니다.', feedbackFailed:'전송하지 못했습니다. Form 링크로 보내주세요.', shortcutSummaryTopHint:'', workPickerCurrent:"현재 열린 작업", workPickerOpened:"작업을 열었습니다: {name}", workPickerNoMatch:"일치하는 작업 파일이 없습니다.", workPickerSearch:"파일명 또는 폴더 검색", outputPixels:"출력 {width} × {height} px", lastOutputFile:"마지막 파일", firstOutputFile:"첫 파일", outputComposition:"용지·내용·메모 포함", psdLayers:"PSD 레이어: 메모 / Text Output(시트 내용 · 붙여 넣은 이미지 포함) / 용지 틀 / 용지 이미지 / 배경", reviewCaption:"완성본 미리보기", reviewRetry:"다시 표시", reviewFailed:"미리보기를 표시하지 못했습니다: {error}", reviewLoading:"미리보기 준비 중…", showOutputSettings:"출력 설정 보기", focusPreview:"크게 확인", fitWidth:"폭에 맞춤", fitPage:"페이지 전체", reviewNext:"다음 페이지", reviewPrev:"이전 페이지", reviewPage:"{page} / {count}페이지", outputAction:"{count}페이지 출력", outputSize:"이미지 크기", outputLocation:"출력 위치", outputFormat:"파일 형식", outputCellLabel:"셀 머리글", outputDuration:"길이 표시의 ＋", outputHeader:"헤더", outputTemplate:"용지의 틀 선", outputContents:"출력에 포함할 내용", backToEdit:"편집으로 돌아가기", reviewTitle:"완성본 확인 및 출력", globalRedo:"다시 실행 (Ctrl/Cmd+Shift+Z / Ctrl/Cmd+Y)", globalUndo:"실행취소 (Ctrl/Cmd+Z)", sheetHistory:"편집", outputReview:"완성본 확인", libraryTitle:"작업 목록", libraryAdd:"JSON 추가", librarySelect:"검색 결과 선택", libraryClear:"선택 해제", librarySelected:"{count}개 선택", librarySelectFile:"출력 대상으로 선택: {name}", libraryOpenFile:"열기: {name}", libraryEmpty:"작업 없음", libraryExport:"출력 ({count}개)", noticeClose:"안내 닫기", batchSavedFormat:"저장된 형식", batchZip:"ZIP 다운로드", batchReady:"준비된 작업 {count}개 · {pages}페이지 · 오류 {failed}개", batchRenamed:"동일한 파일명 {count}개에 번호 추가", batchPreparing:"작업 확인 중 {done}/{total}…", batchFinished:"폴더 저장 {folder}파일 · ZIP 다운로드 요청 {archive}파일 · 오류 {failed}개", batchProgress:"처리 {done}/{total}파일", batchStop:"현재 파일 후 중지", batchStopping:"중지 중…", batchPages:"페이지", batchState_pending:"확인 중", batchState_ready:"준비 완료", batchState_running:"출력 중", batchState_done:"완료", batchState_error:"오류", batchState_stopped:"중지", batchMissingPaper:"이 JSON이 참조하는 용지 이미지·메모를 찾을 수 없습니다. 용지 이미지를 포함해 작업을 다시 저장하세요.", batchChanged:"준비 후 페이지 수가 달라졌습니다.", batchFolderCollision:"새 출력 폴더를 만들지 못했습니다.", batchPartial:"{count}파일 처리 완료", batchArchiveFailed:"ZIP 다운로드 실패: {error}", batchZipLimit:"ZIP32의 용량 또는 파일 수 한도를 넘습니다. 폴더로 출력하거나 작업을 나눠 선택하세요.", batchRetryFailed:"끝나지 않은 작업 {count}개를 첫 페이지부터 다시 출력", outputStop:"현재 페이지 후 중지", cacheImagesOmitted:"브라우저 기억에서 열어 그림이 빠져 있습니다. 작업 폴더를 다시 읽으면 돌아옵니다.", saveOmittedImagesWarn:"이 작업은 브라우저 기억에서 그림 없이 열었습니다. 지금 저장하면 용지 이미지도 붙여 넣은 이미지도 없는 파일이 됩니다. 원본 파일을 고르면 원본의 그림이 사라집니다. 먼저 작업 폴더를 다시 읽어 주세요.", saveOmittedImagesProceed:"그림 없이 저장", psdSizeLimit:"PSD 한 장이 형식의 한도(파일 2GB · 한 변 30000px)를 넘습니다. 용지 이미지가 {width} × {height} px 입니다 — 해상도를 낮추거나 PNG·JPG로 출력하세요.", batchCachedNoImages:"이 작업은 브라우저 기억에서 그림 없이 복원한 것입니다. 작업 폴더를 다시 읽은 뒤 출력하세요."
       },
       zh: {
         languageLabel:'语言', headerCardTitle:'页眉', episodeLabel:'集数', titleLabel:'标题', cutNoLabel:'镜头编号', secondsLabel:'时长 秒', framesLabel:'时长 帧', authorLabel:'姓名', pageLabel:'页码',
-        drawingCountTitle:"动画张数", drawingCountCell:"层", drawingCountNumbered:"编号图", drawingCountInbetweens:"中间画", drawingCountTotal:"合计", drawingCountPending:"需确认", drawingCountDisplay:"显示", drawingCountOff:"不显示", drawingCountBottom:"页眉右下", drawingCountTop:"页眉右上", drawingCountCsv:"保存CSV", drawingCountText:"保存文本", drawingCountClose:"关闭", drawingCountHint:"重复使用和循环只计一次。临时区间需确认。", drawingCountWork:"作品", drawingCountEpisode:"集数", drawingCountCut:"镜头", cutFolderTitle:"镜头文件夹核对", cutFolderOpened:"已打开的摄影表", cutFolderNone:"无", cutFolderReading:"正在读取文件夹…", cutFolderPartial:"只读取了前 5,000 个文件。", cutFolderPaperOnly:"只打开了用纸图像，因此未核对层编号。", cutFolderNoSheet:"未找到摄影表文件，因此未核对层编号。", cutFolderSheetCount:"摄影表", cutFolderFileCount:"文件", cutFolderSheetOnly:"摄影表有、文件没有", cutFolderFileOnly:"只有文件、摄影表没有", cutFolderGaps:"文件编号的缺号", cutFolderUnresolved:"没有编号的层文件", cutFolderUnmapped:"摄影表中没有的名称", cutFolderPlates:"BG・BOOK", cutFolderReferences:"参考・指南", cutFolderOther:"其他文件", cutFolderCopy:"复制", cutFolderChoose:"选择摄影表文件", cutFolderCancel:"取消", cutFolderOneOnly:"请一次只拖入一个镜头文件夹。",
-        originalCellTitle:'表格输入', inputModeLabel:'输入模式', inputModeTextCommands:'直接输入', inputModeCsv:'从文件导入', csvReadSettings:'CSV读取设置', tvpPanelDownload:'TVPaint 面板', csvSettingsExportBtn:'保存项目', shakuEditBtn:'时长编辑', shakuEditHint:'拖动蓝色帧线选择范围', shakuCutBtn:'切除', shakuStretchBtn:'延长', shakuUndoBtn:'撤销', shakuRedoBtn:'重做', shakuFlashCut:'切除已应用', shakuFlashStretch:'延长已应用', dougaSheetCreate:'生成动画栏', dougaSheetRefresh:'刷新动画栏', dougaSheetTitle:'由 Cell 编号和动画点生成只读动画栏', cellReadabilityTitle:'放大 Cell 文字',
-        textCommandsLabel:'文本命令', csvFileLabel:'CLIP / TVPaint · 选择或拖放', csvCommandEditLabel:'从 CSV 生成的可编辑命令',
-        dialogBlocksTitle:'对白栏', dialogFormatLabel:'例: 0+01 | 1+00 | 说话人 | 台词（起始｜结束｜谁｜内容）', cameraBlocksTitle:'摄影机栏', cameraFormatLabel:'例: 0+01 | 1+00 | A | PAN | B（起始｜结束｜之前｜运动｜之后）', cameraExamplesTitle:'示例',
+        drawingCountTitle:"动画张数", drawingCountCell:"层", drawingCountNumbered:"编号图", drawingCountInbetweens:"中间画", drawingCountTotal:"合计", drawingCountPending:"需确认", drawingCountDisplay:"显示", drawingCountOff:"不显示", drawingCountBottom:"页眉右下", drawingCountTop:"页眉右上", drawingCountCsv:"保存CSV", drawingCountText:"保存文本", drawingCountClose:"关闭", drawingCountHint:"重复使用和循环只计一次 · 临时排布需确认", drawingCountWork:"作品", drawingCountEpisode:"集数", drawingCountCut:"镜头", cutFolderTitle:"镜头文件夹核对", cutFolderOpened:"已打开的摄影表", cutFolderNone:"无", cutFolderReading:"正在读取文件夹…", cutFolderPartial:"只读取了前 5,000 个文件。", cutFolderPaperOnly:"只打开了用纸图像，因此未核对层编号。", cutFolderNoSheet:"未找到摄影表文件，因此未核对层编号。", cutFolderSheetCount:"摄影表", cutFolderFileCount:"文件", cutFolderSheetOnly:"摄影表有、文件没有", cutFolderFileOnly:"只有文件、摄影表没有", cutFolderGaps:"文件编号的缺号", cutFolderUnresolved:"没有编号的层文件", cutFolderUnmapped:"摄影表中没有的名称", cutFolderPlates:"BG・BOOK", cutFolderReferences:"参考・指南", cutFolderOther:"其他文件", cutFolderCopy:"复制", cutFolderChoose:"选择摄影表文件", cutFolderCancel:"取消", cutFolderOneOnly:"请一次只拖入一个镜头文件夹。",
+        originalCellTitle:'表格输入', inputModeLabel:'输入模式', inputModeTextCommands:'直接输入', inputModeCsv:'从文件导入', csvReadSettings:'CSV读取设置', tvpPanelDownload:'TVPaint 面板', csvSettingsExportBtn:'保存项目', shakuEditBtn:'时长编辑', shakuEditHint:'拖动蓝色帧线选择范围', shakuCutBtn:'切除', shakuStretchBtn:'延长', shakuUndoBtn:'撤销', shakuRedoBtn:'重做', shakuFlashCut:'切除已应用', shakuFlashStretch:'延长已应用', dougaSheetCreate:'生成动画栏', dougaSheetRefresh:'刷新动画栏', dougaSheetTitle:"从Cell编号和中割点生成只读动画栏", cellReadabilityTitle:'放大 Cell 文字',
+        textCommandsLabel:'文本命令', csvFileLabel:'CLIP / TVPaint · 选择或拖放', csvCommandEditLabel:"导入的命令",
+        dialogBlocksTitle:'对白栏', dialogFormatLabel:"开始 | 结束 | 说话人 | 台词", cameraBlocksTitle:'摄影机栏', cameraFormatLabel:"开始 | 结束 | 前标签 | 指示 | 后标签", cameraExamplesTitle:'示例',
         cameraExPan:'摇镜（A→B）', cameraExTu:'推近（Track Up）', cameraExFi:'淡入', cameraExOl:'叠化（切换）',
-        sheetPreviewTitle:'Sheet 预览', chooseExportDirBtn:"输出位置", downloadAllBtn:"导出", memoModeBtn:'备注模式', cameraToMemoBtn:'摄影→备注', memoPenLabel:'笔', memoEraserLabel:'橡皮', memoRightClickNoticeL1:'在备注区右键', memoRightClickNoticeL2:'创建/编辑文本框', cellReadabilityNotice:'← 放大原画编号（单元格数字）',
-        unifiedCurrentWork:"当前编辑工作", unifiedSelection:"已选{count}个工作", unifiedExcluded:"不导出", unifiedStopped:"已停止{count}个", unifiedExportAction:"导出{count}个工作・共{pages}页", unifiedWorkList:"要导出的工作", unifiedSelectAll:"全选", unifiedAllOptions:"应用到全部导出工作", unifiedCurrentOptions:"当前工作的导出设置", unifiedSavedDefaults:"未更改的选项保留各工作的保存设置。", unifiedMixed:"混合", unifiedResetOptions:"恢复保存设置", stageHeading:'阶段', stageAddSlotLabel:'添加阶段', stageCustomOption:'自定义…', stageRenameBtn:'重命名', stageDeleteBtn:'删除', stageDeleteLastHint:'无法删除最后一个阶段', hideNonCellCommandsLabel:'隐藏非 Cell 命令', hideRightPanelBtn:'隐藏对白/摄影', showRightPanelBtn:'显示对白/摄影', settingsExportBtn:"保存工作", settingsFileBtn:"打开工作", settingsImportBtn:"工作文件夹", settingsRefreshBtn:'重新读取', textMemoApplyBtn:'应用', textMemoMenuAdd:'添加文字框', textMemoMenuDelete:'删除文字框', textMemoMenuEditMode:'文字框位置编辑', textMemoMenuEditDone:'结束文字框编辑', textMemoMenuAutoArrange:'自动排列文字框', textMemoInitialHint:'可通过右键添加或编辑文字框。', clearSheetDataBtn:'全部重置', hideSidebarBtn:'隐藏 UI', showSidebarBtn:'显示 UI', feedbackHeading:'反馈', feedbackFormLink:'Form', feedbackPlaceholder:'错误报告或改进建议', feedbackHint:'请尽量填写已知信息: 症状、复现步骤、使用的 CSV/PSD/图片格式、期望结果、实际结果、浏览器/OS。应用版本和浏览器信息会自动附加。', feedbackSendBtn:'发送', feedbackEmpty:'请先输入内容。', feedbackSending:'发送中...', feedbackRequested:'已请求发送。确认收件前保留原文。', feedbackFailed:'发送失败。请使用 Form 链接。', shortcutSummaryTopHint:'', workPickerCurrent:"当前打开的工作", workPickerOpened:"已打开工作：{name}", workPickerNoMatch:"没有匹配的工作文件。", workPickerSearch:"搜索文件名或文件夹", outputPixels:"输出 {width} × {height} px", lastOutputFile:"最后一个文件", firstOutputFile:"第一个文件", outputComposition:"包含纸张、内容和备注", psdLayers:"PSD图层：备注 / Text Output（工作表内容，含粘贴的图像） / 纸张格线 / 纸张图像 / 背景", reviewCaption:"输出预览", reviewRetry:"重新显示", reviewFailed:"无法显示预览：{error}", reviewLoading:"正在准备预览…", showOutputSettings:"显示导出设置", focusPreview:"放大查看", fitWidth:"适合宽度", fitPage:"适合整页", reviewNext:"下一页", reviewPrev:"上一页", reviewPage:"第{page} / {count}页", outputAction:"导出{count}页", outputSize:"图像尺寸", outputLocation:"输出位置", outputFormat:"文件格式", outputCellLabel:"单元格标题", outputDuration:"时长的＋号", outputHeader:"表头", outputTemplate:"纸张格线", outputContents:"导出内容", backToEdit:"返回编辑", reviewTitle:"查看成品并导出", globalRedo:"重做 (Ctrl/Cmd+Shift+Z / Ctrl/Cmd+Y)", globalUndo:"撤销 (Ctrl/Cmd+Z)", sheetHistory:"历史", outputReview:"查看成品", libraryTitle:"工作列表", libraryAdd:"添加JSON", librarySelect:"选择搜索结果", libraryClear:"清除选择", librarySelected:"已选{count}项", librarySelectFile:"选择导出：{name}", libraryOpenFile:"打开：{name}", libraryEmpty:"暂无工作文件", libraryExport:"导出（{count}项）", noticeClose:"关闭通知", batchSavedFormat:"保存的格式", batchZip:"下载ZIP", batchReady:"已准备{count}个工作・{pages}页・{failed}个错误", batchRenamed:"已为{count}个同名文件添加编号", batchPreparing:"正在检查 {done}/{total}…", batchFinished:"文件夹{folder}个文件・已请求ZIP下载{archive}个文件・错误{failed}个", batchProgress:"已处理{done}/{total}个文件", batchStop:"当前文件后停止", batchStopping:"正在停止…", batchPages:"页", batchState_pending:"检查中", batchState_ready:"就绪", batchState_running:"导出中", batchState_done:"完成", batchState_error:"错误", batchState_stopped:"已停止", batchMissingPaper:"找不到此JSON引用的纸张图像或备注。请包含纸张图像重新保存工作。", batchChanged:"准备后页数发生变化。", batchFolderCollision:"无法创建新的导出文件夹。", batchPartial:"已处理{count}个文件", batchArchiveFailed:"ZIP下载失败：{error}", batchZipLimit:"超过ZIP32的大小或文件数限制。请导出到文件夹或减少所选工作。", batchRetryFailed:"从第一页重新导出未完成的{count}个工作", outputStop:"当前页后停止", cacheImagesOmitted:"从浏览器记忆打开，图像缺失。重新读取工作文件夹即可恢复。", saveOmittedImagesWarn:"此工作是从浏览器记忆中不带图像打开的。现在保存会生成既无纸张图像也无粘贴图像的文件；若选择原文件，原有图像将丢失。请先重新读取工作文件夹。", saveOmittedImagesProceed:"不含图像保存", psdSizeLimit:"单张 PSD 超过格式上限（每个文件 2GB・单边 30000px）。纸张图像为 {width} × {height} px — 请降低分辨率，或导出为 PNG、JPG。", batchCachedNoImages:"此工作是从浏览器记忆中不带图像恢复的。请重新读取工作文件夹后再导出。"
+        sheetPreviewTitle:'Sheet 预览', chooseExportDirBtn:"输出位置", downloadAllBtn:"导出", memoModeBtn:'备注模式', cameraToMemoBtn:'摄影→备注', memoPenLabel:'笔', memoEraserLabel:'橡皮', memoRightClickNoticeL1:'在备注区右键', memoRightClickNoticeL2:'创建/编辑文本框', cellReadabilityNotice:"放大原画编号",
+        unifiedCurrentWork:"当前编辑工作", unifiedSelection:"已选{count}个工作", unifiedExcluded:"不导出", unifiedStopped:"已停止{count}个", unifiedExportAction:"导出{count}个工作・共{pages}页", unifiedWorkList:"要导出的工作", unifiedSelectAll:"全选", unifiedAllOptions:"应用到全部导出工作", unifiedCurrentOptions:"当前工作的导出设置", unifiedSavedDefaults:"未更改的选项保留各工作的保存设置。", unifiedMixed:"混合", unifiedResetOptions:"恢复保存设置", stageHeading:'阶段', stageAddSlotLabel:'添加阶段', stageCustomOption:'自定义…', stageRenameBtn:'重命名', stageDeleteBtn:'删除', stageDeleteLastHint:'无法删除最后一个阶段', hideNonCellCommandsLabel:'隐藏非 Cell 命令', hideRightPanelBtn:'隐藏对白/摄影', showRightPanelBtn:'显示对白/摄影', settingsExportBtn:"保存工作", settingsFileBtn:"打开工作", settingsImportBtn:"工作文件夹", settingsRefreshBtn:'重新读取', textMemoApplyBtn:'应用', textMemoMenuAdd:'添加文字框', textMemoMenuDelete:'删除文字框', textMemoMenuEditMode:'文字框位置编辑', textMemoMenuEditDone:'结束文字框编辑', textMemoMenuAutoArrange:'自动排列文字框', textMemoInitialHint:"右键添加或编辑文本框", clearSheetDataBtn:'全部重置', hideSidebarBtn:'隐藏 UI', showSidebarBtn:'显示 UI', feedbackHeading:'反馈', feedbackFormLink:'Form', feedbackPlaceholder:'错误报告或改进建议', feedbackHint:"请填写问题和复现步骤。应用版本和浏览器信息会自动附加。", feedbackSendBtn:'发送', feedbackEmpty:'请先输入内容。', feedbackSending:'发送中...', feedbackRequested:'已请求发送。确认收件前保留原文。', feedbackFailed:'发送失败。请使用 Form 链接。', shortcutSummaryTopHint:'', workPickerCurrent:"当前打开的工作", workPickerOpened:"已打开工作：{name}", workPickerNoMatch:"没有匹配的工作文件。", workPickerSearch:"搜索文件名或文件夹", outputPixels:"输出 {width} × {height} px", lastOutputFile:"最后一个文件", firstOutputFile:"第一个文件", outputComposition:"包含纸张、内容和备注", psdLayers:"PSD图层：备注 / Text Output（工作表内容，含粘贴的图像） / 纸张格线 / 纸张图像 / 背景", reviewCaption:"输出预览", reviewRetry:"重新显示", reviewFailed:"无法显示预览：{error}", reviewLoading:"正在准备预览…", showOutputSettings:"显示导出设置", focusPreview:"放大查看", fitWidth:"适合宽度", fitPage:"适合整页", reviewNext:"下一页", reviewPrev:"上一页", reviewPage:"第{page} / {count}页", outputAction:"导出{count}页", outputSize:"图像尺寸", outputLocation:"输出位置", outputFormat:"文件格式", outputCellLabel:"单元格标题", outputDuration:"时长的＋号", outputHeader:"表头", outputTemplate:"纸张格线", outputContents:"导出内容", backToEdit:"返回编辑", reviewTitle:"查看成品并导出", globalRedo:"重做 (Ctrl/Cmd+Shift+Z / Ctrl/Cmd+Y)", globalUndo:"撤销 (Ctrl/Cmd+Z)", sheetHistory:"历史", outputReview:"查看成品", libraryTitle:"工作列表", libraryAdd:"添加JSON", librarySelect:"选择搜索结果", libraryClear:"清除选择", librarySelected:"已选{count}项", librarySelectFile:"选择导出：{name}", libraryOpenFile:"打开：{name}", libraryEmpty:"暂无工作文件", libraryExport:"导出（{count}项）", noticeClose:"关闭通知", batchSavedFormat:"保存的格式", batchZip:"下载ZIP", batchReady:"已准备{count}个工作・{pages}页・{failed}个错误", batchRenamed:"已为{count}个同名文件添加编号", batchPreparing:"正在检查 {done}/{total}…", batchFinished:"文件夹{folder}个文件・已请求ZIP下载{archive}个文件・错误{failed}个", batchProgress:"已处理{done}/{total}个文件", batchStop:"当前文件后停止", batchStopping:"正在停止…", batchPages:"页", batchState_pending:"检查中", batchState_ready:"就绪", batchState_running:"导出中", batchState_done:"完成", batchState_error:"错误", batchState_stopped:"已停止", batchMissingPaper:"找不到此JSON引用的纸张图像或备注。请包含纸张图像重新保存工作。", batchChanged:"准备后页数发生变化。", batchFolderCollision:"无法创建新的导出文件夹。", batchPartial:"已处理{count}个文件", batchArchiveFailed:"ZIP下载失败：{error}", batchZipLimit:"超过ZIP32的大小或文件数限制。请导出到文件夹或减少所选工作。", batchRetryFailed:"从第一页重新导出未完成的{count}个工作", outputStop:"当前页后停止", cacheImagesOmitted:"从浏览器记忆打开，图像缺失。重新读取工作文件夹即可恢复。", saveOmittedImagesWarn:"此工作是从浏览器记忆中不带图像打开的。现在保存会生成既无纸张图像也无粘贴图像的文件；若选择原文件，原有图像将丢失。请先重新读取工作文件夹。", saveOmittedImagesProceed:"不含图像保存", psdSizeLimit:"单张 PSD 超过格式上限（每个文件 2GB・单边 30000px）。纸张图像为 {width} × {height} px — 请降低分辨率，或导出为 PNG、JPG。", batchCachedNoImages:"此工作是从浏览器记忆中不带图像恢复的。请重新读取工作文件夹后再导出。"
       }
     };
 
@@ -3922,6 +3899,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver988","Shorter labels and help",["Simplified input examples and tool hints in all four languages; removed unused and repeated help."]],
         ["ver986", "Consistent editing tool switches", ["Switching between position, duration, dialogue and memo tools now ends the previous mode. Brush and eraser shortcuts follow the same rules as the buttons."]],
         ["ver985", "Paper Auto Align: header fields, dialog area and camera start; one export button", ["Splits a title and episode field at a faint printed divider, finds a separate episode box beside the header, and no longer adds a title box to headers without one.", "Keeps the narrow frame-number column out of the dialog area, and treats a wide blank gap next to the dialog as part of it.", "Aligns the camera start line between the two page blocks, and reads two identical abutting blocks as a pair.", "Removed the Review output button. Export opens the same preview; use Expand preview there."]],
         ["ver984", "File names and cut folders: shared cuts, assistant director checks, archived takes", ["A shared cut written with a hyphen (0150-0152) is read as one cut number when importing a sheet.", "The _ej suffix is read as an assistant director (演助) check in the stage name. It is not treated as a correction layer.", "Dropping a cut folder skips rewind archives (old2, old3 …) and previous-take archives (_t01, _t02 …) like the existing old folder."]],
@@ -4049,6 +4027,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'Camera column: right marks on load, unbroken line, one memo per connected work', ['Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.', 'The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.', 'The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.', 'When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.', 'Camera works that connect end to end now become a single memo line, for example "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr".']],
       ],
       ja: [
+        ["ver988","案内文を簡潔に",["4言語の入力例・操作案内を整理し、使われていない説明と重複した案内を削除しました。"]],
         ["ver986", "編集ツールの切り替えを統一", ["位置・尺・セリフ・メモのツールを切り替えると前のモードを終了します。ブラシと消しゴムのショートカットもボタンと同じ切り替えになりました。"]],
         ["ver985", "用紙の自動整列：ヘッダー欄・セリフ欄・カメラ開始／書き出しボタンを1つに", ["タイトルと話数の欄を薄い印刷の区切りで分け、ヘッダー横の独立した話数欄を見つけます。タイトル欄のないヘッダーにタイトル欄を足しません。", "狭いコマ番号列をセリフ欄に含めず、セリフ横の広い空き欄はセリフ欄として扱います。", "左右ブロックのカメラ開始線をそろえ、中央で接する同じ形の2ブロックを1組として読みます。", "「仕上がりを確認」ボタンをなくしました。「書き出し」で同じプレビューが開き、「大きく確認」で拡大できます。"]],
         ["ver984", "ファイル名とカットフォルダ：兼用カット・演助チェック・旧テイク", ["ハイフンでつないだ兼用カット（0150-0152）を、シート読み込み時に1つのカット番号として読みます。", "接尾辞 _ej を演助チェックとして段階名に入れます。修正レイヤーとしては扱いません。", "カットフォルダのドロップで、戻し前の保管（old2・old3…）と旧テイクの保管（_t01・_t02…）を、従来の old フォルダと同じく読み飛ばします。"]],
@@ -4176,6 +4155,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', 'カメラ欄：読み込み時のマーク修正・持続線の連結・つながる動きは1行のメモに', ['設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。', '設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。', 'つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。', 'マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。', '端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。']],
       ],
       ko: [
+        ["ver988","안내 문구 정리",["4언어 입력 예시와 도구 안내를 간결하게 다듬고, 쓰지 않는 설명과 중복 안내를 없앴습니다."]],
         ["ver986", "편집 도구 전환 통일", ["위치·尺·대사·메모 도구를 바꾸면 이전 모드를 종료합니다. 브러시와 지우개 단축키도 버튼과 같은 방식으로 전환합니다."]],
         ["ver985", "용지 자동정렬: 헤더 칸·대사 칸·카메라 시작 / 출력 버튼 하나로", ["제목과 화수 칸을 흐린 인쇄 구분선에서 나누고, 헤더 옆의 독립된 화수 칸을 찾습니다. 제목 칸이 없는 헤더에 제목 칸을 만들지 않습니다.", "좁은 프레임 번호 열은 대사 칸에서 빼고, 대사 옆의 넓은 빈칸은 대사 칸으로 봅니다.", "좌우 블록의 카메라 시작선을 맞추고, 가운데서 맞닿은 같은 모양 두 블록을 한 쌍으로 읽습니다.", "「완성본 확인」 버튼을 없앴습니다. 「출력」에서 같은 미리보기가 열리며 「크게 확인」으로 키울 수 있습니다."]],
         ["ver984", "파일 이름과 컷 폴더: 겸용 컷·연출조수 체크·이전 테이크", ["하이픈으로 이은 겸용 컷(0150-0152)을 시트를 불러올 때 컷 번호 하나로 읽습니다.", "접미사 _ej를 연출조수(演助) 체크로 단계 이름에 넣습니다. 수정 레이어로는 다루지 않습니다.", "컷 폴더를 드롭하면 되돌리기 전 보관(old2·old3…)과 이전 테이크 보관(_t01·_t02…)을 기존 old 폴더처럼 건너뜁니다."]],
@@ -4303,6 +4283,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ['ver838', '카메라란: 불러올 때 표식 정정·지속선 연결·이어지는 동작은 메모 한 줄로', ['설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.', '설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. "카메라→메모"를 누를 필요가 없습니다.', '이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.', '표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.', '끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: "・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr").']],
       ],
       zh: [
+        ["ver988","精简操作说明",["简化四种语言的输入示例和工具提示，移除未使用和重复的说明。"]],
         ["ver986", "统一编辑工具切换", ["切换位置、时长、对白和备注工具时会结束原来的模式。画笔和橡皮快捷键与按钮采用相同的切换规则。"]],
         ["ver985", "纸张自动对齐：页眉栏、对白栏与摄影起始／合并为一个导出按钮", ["在浅色印刷分隔线处分开标题与集数栏，识别页眉旁独立的集数框；没有标题栏的页眉不再添加标题框。", "窄的帧号列不计入对白栏，对白旁较宽的空白栏视为对白栏。", "对齐左右两块的摄影起始线，并将在中间相接的两个相同区块读作一对。", "移除了「查看成品」按钮。「导出」会打开同一预览，可在其中「放大查看」。"]],
         ["ver984", "文件名与镜头文件夹：兼用镜头、演出助理检查、旧版本", ["用连字符连接的兼用镜头（0150-0152）在导入表格时读作一个镜头编号。", "后缀 _ej 作为演出助理（演助）检查写入阶段名，不作为修改图层处理。", "拖入镜头文件夹时，与原有的 old 文件夹一样跳过退回前的保管（old2、old3…）和旧版本保管（_t01、_t02…）。"]],
@@ -5092,7 +5073,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     function renderUpdateLog() {
       const doc = getUpdateLogDoc();
       if (updateLogTitleEl) updateLogTitleEl.textContent = doc.title || 'Update History';
-      if (updateLogSubtitleEl) updateLogSubtitleEl.textContent = doc.subtitle || '';
       if (updateLogContentEl) updateLogContentEl.innerHTML = visibleUpdateLogDocs[state.lang] || visibleUpdateLogDocs.en || '';
       if (appTitleEl) {
         appTitleEl.setAttribute('title', doc.title || 'Update History');
@@ -5218,21 +5198,21 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     function clipIntroText(key) {
       const docs = {
-        en:{ title:'Drop a .clip or .tvpp straight onto the sheet',
-             body:'CLIP STUDIO and TVPaint files now load by themselves. You no longer have to export a timesheet first — drag the file onto the sheet and pick what comes in.',
-             note:'A CSV or .xdts still works exactly as before.',
+        en:{ title:"Import CLIP / TVPaint",
+             body:"Drop a .clip or .tvpp onto the sheet, then choose the timelines and cels to import.",
+             note:"Also supports CSV / XDTS",
              close:'Got it', never:'Do not show again' },
-        ja:{ title:'.clip や .tvpp をそのままシートにドロップ',
-             body:'CLIP STUDIO と TVPaint のファイルをそのまま読み込めるようになりました。タイムシートを書き出す手間はもう要りません — ファイルをシートにドラッグして、入れるものを選ぶだけです。',
-             note:'CSV や .xdts もこれまで通り使えます。',
+        ja:{ title:"CLIP / TVPaintを読み込む",
+             body:"シートに.clip / .tvppをドロップし、読み込むタイムラインとセルを選択します。",
+             note:"CSV / XDTSにも対応",
              close:'わかりました', never:'今後表示しない' },
-        ko:{ title:'.clip 이나 .tvpp 를 시트에 그대로 드롭',
-             body:'CLIP STUDIO 와 TVPaint 파일이 그대로 읽힙니다. 타임시트를 먼저 내보낼 필요가 없습니다 — 파일을 시트 위로 끌어다 놓고 가져올 것을 고르면 됩니다.',
-             note:'CSV 와 .xdts 도 전과 똑같이 됩니다.',
+        ko:{ title:"CLIP / TVPaint 불러오기",
+             body:"시트에 .clip / .tvpp를 놓고 가져올 타임라인과 셀을 선택하세요.",
+             note:"CSV / XDTS도 지원",
              close:'알겠습니다', never:'다시 보지 않기' },
-        zh:{ title:'把 .clip 或 .tvpp 直接拖到表上',
-             body:'CLIP STUDIO 和 TVPaint 文件现在可以直接读取，不必先导出时间表 — 把文件拖到表上，选择要导入的内容即可。',
-             note:'CSV 和 .xdts 依然照常可用。',
+        zh:{ title:"导入CLIP / TVPaint",
+             body:"将.clip / .tvpp拖到表格上，选择要导入的时间轴和Cell。",
+             note:"也支持CSV / XDTS",
              close:'知道了', never:'不再显示' }
       };
       const doc = docs[state.lang] || docs.en;
@@ -5390,15 +5370,15 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         title:'External Paper Load',
         hint:'',
         noPaper:'Not selected',
-        loading:'Loading paper image...',
+        loading:"Loading paper…",
         loaded:function(name, size){ return name + (size ? ' · ' + size + ' px' : ''); },
         failed:function(msg){ return 'Paper image load failed: ' + msg; },
         clear:'Clear Paper', reset:'Position Reset', position:'Position Edit', autoAlign:'Auto Align',
         toolbarTitle:'Paper', toolbarPosition:'Position', toolbarReset:'Reset', toolbarClear:'Clear',
         autoAlignStatus:{
-          ready:'Auto Align compares the detected paper grid with the sheet UI.',
-          working:'Analyzing paper lines and matching the sheet boxes...',
-          noPaper:'Load a paper image before Auto Align.',
+          ready:"Ready to align the paper grid",
+          working:"Detecting paper lines…",
+          noPaper:"Load a paper image first",
           columnConflict:function(n){ return "The paper has {n} named columns, but existing input uses more. Auto Align was not applied.".replace('{n}',n); },
           done:'Auto Align applied',
           failed:function(msg){ return 'Auto Align failed: ' + msg; },
@@ -5420,15 +5400,15 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         title:'会社指定用紙を敷く',
         hint:'',
         noPaper:'未選択',
-        loading:'用紙画像を読み込み中...',
+        loading:"用紙を読込中…",
         loaded:function(name, size){ return name + (size ? ' · ' + size + ' px' : ''); },
         failed:function(msg){ return '用紙画像の読込失敗: ' + msg; },
         clear:'用紙をクリア', reset:'位置初期化', position:'位置編集', autoAlign:'自動整列',
         toolbarTitle:'用紙設定', toolbarPosition:'位置編集', toolbarReset:'位置初期化', toolbarClear:'クリア',
         autoAlignStatus:{
-          ready:'自動整列は、検出した用紙グリッドとシートUIを照合する。',
-          working:'用紙の線を解析し、シートの位置ボックスと照合中...',
-          noPaper:'自動整列の前に用紙画像を読み込む。',
+          ready:"用紙の罫線に合わせて配置",
+          working:"用紙の罫線を検出中…",
+          noPaper:"先に用紙画像を読み込んでください",
           columnConflict:function(n){ return "用紙のセル名は{n}列ですが、既存の入力はそれより多い列を使っています。自動整列は適用していません。".replace('{n}',n); },
           done:'自動整列を適用',
           failed:function(msg){ return '自動整列失敗: ' + msg; },
@@ -5450,15 +5430,15 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         title:'외부용지 불러오기',
         hint:'',
         noPaper:'미선택',
-        loading:'용지 이미지를 로드 중...',
+        loading:"용지 불러오는 중…",
         loaded:function(name, size){ return name + (size ? ' · ' + size + ' px' : ''); },
         failed:function(msg){ return '용지 이미지 로드 실패: ' + msg; },
         clear:'용지 삭제', reset:'위치 초기화', position:'위치 편집', autoAlign:'자동 정렬',
         toolbarTitle:'용지설정', toolbarPosition:'위치편집', toolbarReset:'초기화', toolbarClear:'삭제',
         autoAlignStatus:{
-          ready:'자동 정렬은 감지한 용지 격자와 시트 UI를 대조한다.',
-          working:'용지 선을 분석하고 시트 위치 박스와 대조 중...',
-          noPaper:'자동 정렬 전에 용지 이미지를 먼저 불러온다.',
+          ready:"용지 격자에 맞춰 정렬",
+          working:"용지 선 분석 중…",
+          noPaper:"용지 이미지를 먼저 불러오세요",
           columnConflict:function(n){ return "용지 셀 이름은 {n}열이지만 기존 입력은 더 많은 열을 사용합니다. 자동정렬을 적용하지 않았습니다.".replace('{n}',n); },
           done:'자동 정렬 적용',
           failed:function(msg){ return '자동 정렬 실패: ' + msg; },
@@ -5480,15 +5460,15 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         title:'导入外部纸张',
         hint:'',
         noPaper:'未选择',
-        loading:'正在载入纸张图像...',
+        loading:"正在读取纸张…",
         loaded:function(name, size){ return name + (size ? ' · ' + size + ' px' : ''); },
         failed:function(msg){ return '纸张图像载入失败: ' + msg; },
         clear:'清除纸张', reset:'位置重置', position:'位置编辑', autoAlign:'自动对齐',
         toolbarTitle:'纸张', toolbarPosition:'位置', toolbarReset:'重置', toolbarClear:'清除',
         autoAlignStatus:{
-          ready:'自动对齐会比较检测到的纸张网格和 Sheet UI。',
-          working:'正在分析纸张线条并匹配 Sheet 位置框...',
-          noPaper:'请先载入纸张图像，再使用自动对齐。',
+          ready:"按纸张网格对齐",
+          working:"正在检测纸张线条…",
+          noPaper:"请先读取纸张图像",
           columnConflict:function(n){ return "纸张有{n}个命名列，但现有输入使用了更多列，未应用自动对齐。".replace('{n}',n); },
           done:'已应用自动对齐',
           failed:function(msg){ return '自动对齐失败: ' + msg; },
@@ -5513,52 +5493,40 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         title:'Shortcut Settings',
         hint:'',
         none:'None', pressKey:'Press key', clear:'Clear', clearAll:'Clear All', suggested:'Use Defaults',
-        labels:{ brushCycle:'Brush / Color Cycle', eraserToggle:'Eraser', sizeDown:'Brush Size Down', sizeUp:'Brush Size Up', memoOff:'Memo Mode OFF' },
+        labels:{ brushCycle:'Brush / Color Cycle', eraserToggle:'Eraser', sizeDown:"Smaller pen / eraser", sizeUp:"Larger pen / eraser", memoOff:"Memo off" },
         desc:{
-          brushCycle:'OFF → Memo brush. Brush ON → next color. Last color → first color.',
-          eraserToggle:'OFF → Memo eraser. Eraser ON keeps eraser active.',
-          sizeDown:'Changes current pen/eraser size while Memo Mode is ON.',
-          sizeUp:'Changes current pen/eraser size while Memo Mode is ON.',
-          memoOff:'Turns Memo Mode OFF.'
+          brushCycle:"Activate the pen · Press again to cycle colors",
+          eraserToggle:"Activate the eraser · Press again to keep erasing",
         }
       },
       ja: {
         title:'ショートカット設定',
         hint:'',
         none:'未設定', pressKey:'キー入力', clear:'解除', clearAll:'すべて解除', suggested:'初期値に戻す',
-        labels:{ brushCycle:'ブラシ／色 切替', eraserToggle:'消しゴム', sizeDown:'ブラシサイズ ダウン', sizeUp:'ブラシサイズ アップ', memoOff:'メモモード OFF' },
+        labels:{ brushCycle:'ブラシ／色 切替', eraserToggle:'消しゴム', sizeDown:"ペン・消しゴムを小さく", sizeUp:"ペン・消しゴムを大きく", memoOff:"メモを終了" },
         desc:{
-          brushCycle:'OFF → Memo brush。Brush中は次の色へ。最後の色の次は最初の色へ戻る。',
-          eraserToggle:'OFF → Memo eraser。Eraser中はEraserを維持する。',
-          sizeDown:'Memo Mode中、現在のPen/Eraserサイズを小さくする。',
-          sizeUp:'Memo Mode中、現在のPen/Eraserサイズを大きくする。',
-          memoOff:'Memo ModeをOFFにする。'
+          brushCycle:"ペンを有効化 · 続けて押すと色を循環",
+          eraserToggle:"消しゴムを有効化 · 再度押しても維持",
         }
       },
       ko: {
         title:'단축키 설정',
         hint:'',
         none:'미지정', pressKey:'키 입력', clear:'해제', clearAll:'전체 해제', suggested:'기본값으로',
-        labels:{ brushCycle:'브러시/색상 전환', eraserToggle:'지우개', sizeDown:'브러시 크기 축소', sizeUp:'브러시 크기 확대', memoOff:'메모 모드 OFF' },
+        labels:{ brushCycle:'브러시/색상 전환', eraserToggle:'지우개', sizeDown:"펜·지우개 작게", sizeUp:"펜·지우개 크게", memoOff:"메모 끄기" },
         desc:{
-          brushCycle:'OFF → Memo brush. Brush 중에는 다음 색. 마지막 색 다음에는 첫 색으로 돌아간다.',
-          eraserToggle:'OFF → Memo eraser. Eraser 중에는 Eraser를 유지한다.',
-          sizeDown:'Memo Mode 중 현재 Pen/Eraser 크기를 줄인다.',
-          sizeUp:'Memo Mode 중 현재 Pen/Eraser 크기를 키운다.',
-          memoOff:'Memo Mode를 OFF로 전환한다.'
+          brushCycle:"펜 켜기 · 다시 누르면 색상 순환",
+          eraserToggle:"지우개 켜기 · 다시 눌러도 유지",
         }
       },
       zh: {
         title:'快捷键设置',
         hint:'',
         none:'未设置', pressKey:'按键', clear:'清除', clearAll:'全部清除', suggested:'恢复默认',
-        labels:{ brushCycle:'画笔/颜色切换', eraserToggle:'橡皮擦', sizeDown:'画笔尺寸缩小', sizeUp:'画笔尺寸放大', memoOff:'备注模式 OFF' },
+        labels:{ brushCycle:'画笔/颜色切换', eraserToggle:'橡皮擦', sizeDown:"缩小画笔/橡皮擦", sizeUp:"放大画笔/橡皮擦", memoOff:"关闭备注" },
         desc:{
-          brushCycle:'OFF → Memo brush。Brush ON 时切换到下一颜色，最后颜色之后回到第一颜色。',
-          eraserToggle:'OFF → Memo eraser。Eraser ON 时保持 Eraser。',
-          sizeDown:'Memo Mode ON 时缩小当前 Pen/Eraser 尺寸。',
-          sizeUp:'Memo Mode ON 时放大当前 Pen/Eraser 尺寸。',
-          memoOff:'关闭 Memo Mode。'
+          brushCycle:"启用画笔 · 再次按下循环切换颜色",
+          eraserToggle:"启用橡皮擦 · 再次按下保持启用",
         }
       }
     };
@@ -6623,10 +6591,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return normalizeInputModeValue(modeValue) === 'csv';
     }
 
-    function updateCsvHelpText() {
-      document.getElementById('csvHelp').textContent = '';
-    }
-
     function updateCsvSettingsActionVisibility() {
       const mode = getCurrentInputMode();
       const actions = document.querySelector('.csv-settings-actions');
@@ -6675,8 +6639,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       renderPaperLayoutTexts();
       refreshShortcutInputs();
       document.getElementById('textHelp').textContent = t('textHelp');
-      updateCsvHelpText();
-      document.getElementById('csvEditHelp').textContent = '';
       document.getElementById('dialogHelp').textContent = t('dialogHelp');
       document.getElementById('cameraHelp').textContent = t('cameraHelp');
       updatePreviewMetaText();
@@ -15497,7 +15459,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           apply:'Apply',
           selected:'Selected',
           actualClose:'closing mouth',
-          conflict:'Existing explicit actual tokens will be overwritten when applied.',
+          conflict:"Applying replaces drawings explicitly entered in this range.",
           emptySelection:'Select a Cell range first.',
           noTarget:'Target Cell was not found.'
         },
@@ -15520,7 +15482,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           apply:'確認して反映',
           selected:'選択範囲',
           actualClose:'閉じ口',
-          conflict:'既存の明示入力がある実入力コマは、反映時に上書きされます。',
+          conflict:"反映すると、この範囲で明示した絵指定を上書きします。",
           emptySelection:'先にCell範囲を選択してください。',
           noTarget:'入力先Cellが見つかりません。'
         },
@@ -15543,7 +15505,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           apply:'확인 후 반영',
           selected:'선택 범위',
           actualClose:'닫은입',
-          conflict:'기존 명시 실제 입력 프레임은 반영 시 덮어씁니다.',
+          conflict:"적용하면 이 구간에 직접 지정한 그림을 덮어씁니다.",
           emptySelection:'먼저 Cell 범위를 선택하세요.',
           noTarget:'입력할 Cell을 찾지 못했습니다.'
         },
@@ -15566,7 +15528,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           apply:'确认应用',
           selected:'选择范围',
           actualClose:'闭口',
-          conflict:'应用时会覆盖已有的实际明确输入。',
+          conflict:"应用后会覆盖此区间明确指定的画面输入。",
           emptySelection:'请先选择 Cell 范围。',
           noTarget:'找不到目标 Cell。'
         }
@@ -17606,10 +17568,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     // ══ 셀 설정 — 원본 행을 보존하는 임시 편집 · 공용 헤더 미리보기 ════════════════════════════════════════════════════════
     function cellSettingsText(key) {
       const texts = {
-        ko:{title:'셀 · BOOK 설정', hint:'왼쪽은 아래 레이어, 오른쪽은 위 레이어입니다. BOOK은 셀 사이에 여러 개 놓을 수 있습니다.', labelHint:'클릭: 이름 수정 / 우클릭·길게 누르기: 셀 · BOOK 설정', add:'BOOK 추가', name:'이름', drag:'순서 이동', sortHint:'드래그로 이동 · 방향키로 한 칸씩', remove:'태그 삭제', select:'BOOK 선택', cancel:'취소', apply:'적용', invalid:'이름에 줄바꿈이나 콜론(:)은 사용할 수 없습니다.'},
-        ja:{title:'セル・BOOK設定', hint:'左は下のレイヤー、右は上のレイヤーです。セルの間に複数のBOOKを置けます。', labelHint:'クリック：名前編集 / 右クリック・長押し：セル・BOOK設定', add:'BOOK追加', name:'名前', drag:'並べ替え', sortHint:'ドラッグで移動・矢印キーで一つずつ', remove:'タグを削除', select:'BOOKを選択', cancel:'キャンセル', apply:'適用', invalid:'名前に改行やコロン(:)は使えません。'},
-        en:{title:'Cell / BOOK settings', hint:'Left means a lower layer; right means an upper layer. Several BOOKs can share a cell boundary.', labelHint:'Click: rename / Right-click or hold: Cell / BOOK settings', add:'Add BOOK', name:'Name', drag:'Reorder', sortHint:'Drag to reorder · Arrow keys to move one step', remove:'Delete tag', select:'Select BOOK', cancel:'Cancel', apply:'Apply', invalid:'Names cannot contain line breaks or a colon (:).'},
-        zh:{title:'Cell / BOOK 设置', hint:'左侧是下层，右侧是上层。同一单元边界可放置多个BOOK。', labelHint:'单击：改名 / 右键或长按：Cell / BOOK 设置', add:'添加BOOK', name:'名称', drag:'调整顺序', sortHint:'拖动排序 · 方向键逐项移动', remove:'删除标签', select:'选择BOOK', cancel:'取消', apply:'应用', invalid:'名称不能包含换行或冒号(:)。'}
+        ko:{title:'셀 · BOOK 설정', hint:"왼쪽: 아래 레이어 · 오른쪽: 위 레이어\n셀 사이에 BOOK 여러 개 배치 가능", labelHint:'클릭: 이름 수정 / 우클릭·길게 누르기: 셀 · BOOK 설정', add:'BOOK 추가', name:'이름', drag:'순서 이동', sortHint:'드래그로 이동 · 방향키로 한 칸씩', remove:'태그 삭제', select:'BOOK 선택', cancel:'취소', apply:'적용', invalid:'이름에 줄바꿈이나 콜론(:)은 사용할 수 없습니다.'},
+        ja:{title:'セル・BOOK設定', hint:"左：下のレイヤー · 右：上のレイヤー。セル間に複数のBOOKを配置できます。", labelHint:'クリック：名前編集 / 右クリック・長押し：セル・BOOK設定', add:'BOOK追加', name:'名前', drag:'並べ替え', sortHint:'ドラッグで移動・矢印キーで一つずつ', remove:'タグを削除', select:'BOOKを選択', cancel:'キャンセル', apply:'適用', invalid:'名前に改行やコロン(:)は使えません。'},
+        en:{title:'Cell / BOOK settings', hint:"Left: lower layers · Right: upper layers. Multiple BOOKs can sit between cels.", labelHint:'Click: rename / Right-click or hold: Cell / BOOK settings', add:'Add BOOK', name:'Name', drag:'Reorder', sortHint:'Drag to reorder · Arrow keys to move one step', remove:'Delete tag', select:'Select BOOK', cancel:'Cancel', apply:'Apply', invalid:'Names cannot contain line breaks or a colon (:).'},
+        zh:{title:'Cell / BOOK 设置', hint:"左：下层 · 右：上层。Cell之间可放置多个BOOK。", labelHint:'单击：改名 / 右键或长按：Cell / BOOK 设置', add:'添加BOOK', name:'名称', drag:'调整顺序', sortHint:'拖动排序 · 方向键逐项移动', remove:'删除标签', select:'选择BOOK', cancel:'取消', apply:'应用', invalid:'名称不能包含换行或冒号(:)。'}
       };
       return (texts[state.lang] || texts.en)[key] || texts.en[key] || key;
     }
@@ -22296,10 +22258,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     // ══ [출력] 상태 안내와 복구 선택 ═══════════════════════════════════════════════════════════════════════
     function ioText(key, values) {
       const docs = {
-        en:{ directImportRecommended:'CLIP and TVPaint files are supported. Direct import of .clip or .tvpp is recommended. CSV and XDTS remain available.', workLoaded:"Work loaded.", fileLoaded:"Loaded: {name}", workCacheFailed:"Could not remember this list. Reopening may show the previous list. Original files are unchanged.", normal:'Browser download', unsupported:'Folder selection is unavailable in this browser. Files use browser downloads.', selected:'Output folder: {name}', choose:'Choose folder', cancel:'Cancel', downloadOnce:'Download this time', permission:'The output folder cannot be accessed. Choose how to continue.', missing:'The output folder is unavailable. It was disconnected; remaining pages use browser downloads.', memoryFailed:'Browser backup could not be saved. Save your work file before closing.', forgetFailed:'Folder disconnected for this session. The browser could not remove its saved setting.', preparing:'Preparing {count} page(s)…', progress:'Processed {done}/{count} · Folder: {folder} · Download requests: {download}', complete:'Finished · Folder: {folder} · Download requests: {download}', failed:'Stopped at page {page}: {error}', savedSettings:'Work saved: {name}', downloadedSettings:'Work file download requested: {name}', canceled:'Canceled.', settingsFailed:'Work save failed: {error}', loadFailed:'File load failed; the current sheet was kept: {error}', partial:'Folder scan: {count} work files, {skipped} skipped.', folderFailed:'Folder unavailable. The cached list is kept: {error}', cache:'Cached work (folder unavailable)', notRemembered:'Folder selected for this session; browser memory could not be updated.', selectFailed:'Folder selection failed: {error}'},
-        ja:{ directImportRecommended:'CLIP・TVPaintファイルに対応しています。.clip / .tvpp の直接読み込みを推奨します。CSV・XDTSも読み込めます。', workLoaded:"作業を読み込みました。", fileLoaded:"読み込みました：{name}", workCacheFailed:"この一覧を記憶できませんでした。次回は以前の一覧に戻る場合があります。元のファイルは変更していません。", normal:'通常ダウンロード', unsupported:'このブラウザーでは保存先フォルダーを指定できません。通常ダウンロードを使用します。', selected:'保存先：{name}', choose:'フォルダーを選ぶ', cancel:'キャンセル', downloadOnce:'今回はダウンロード', permission:'保存先を使用できません。続行方法を選んでください。', missing:'保存先を使用できなくなったため解除しました。残りは通常ダウンロードします。', memoryFailed:'ブラウザーに記憶できませんでした。閉じる前に作業ファイルを保存してください。', forgetFailed:'この画面では保存先を解除しましたが、ブラウザーの記憶を削除できませんでした。', preparing:'{count}ページを準備中…', progress:'処理 {done}/{count} · フォルダー保存 {folder} · ダウンロード依頼 {download}', complete:'完了 · フォルダー保存 {folder} · ダウンロード依頼 {download}', failed:'{page}ページ目で停止：{error}', savedSettings:'作業を保存しました：{name}', downloadedSettings:'作業ファイルのダウンロードを依頼しました：{name}', canceled:'キャンセルしました。', settingsFailed:'作業の保存に失敗しました：{error}', loadFailed:'読込に失敗しました。現在のシートは保持しています：{error}', partial:'フォルダー読込：作業 {count}件、スキップ {skipped}件。', folderFailed:'フォルダーを使用できません。記憶済みの一覧は保持しています：{error}', cache:'記憶済みの作業（フォルダー使用不可）', notRemembered:'この画面では選択しましたが、次回のための記憶に失敗しました。', selectFailed:'フォルダー選択に失敗しました：{error}'},
-        ko:{ directImportRecommended:'CLIP·TVPaint 파일을 지원합니다. .clip / .tvpp 직접 불러오기를 권장합니다. CSV·XDTS도 가져올 수 있습니다.', workLoaded:"작업을 불러왔습니다.", fileLoaded:"불러왔습니다: {name}", workCacheFailed:"목록을 기억하지 못했습니다. 다시 열면 이전 목록이 표시될 수 있습니다. 원본 파일은 그대로입니다.", normal:'기본 다운로드', unsupported:'이 브라우저에서는 저장 폴더를 지정할 수 없습니다. 기본 다운로드를 사용합니다.', selected:'저장 폴더: {name}', choose:'폴더 선택', cancel:'취소', downloadOnce:'이번에는 다운로드', permission:'저장 폴더에 접근할 수 없습니다. 계속할 방법을 선택하세요.', missing:'저장 폴더를 사용할 수 없어 해제했습니다. 남은 페이지는 기본 다운로드로 보냅니다.', memoryFailed:'브라우저에 기억하지 못했습니다. 닫기 전에 작업 파일을 저장하세요.', forgetFailed:'이번 화면에서는 폴더를 해제했지만 브라우저의 기억은 삭제하지 못했습니다.', preparing:'{count}페이지 준비 중…', progress:'처리 {done}/{count} · 폴더 저장 {folder} · 다운로드 요청 {download}', complete:'완료 · 폴더 저장 {folder} · 다운로드 요청 {download}', failed:'{page}페이지에서 중단: {error}', savedSettings:'작업 저장 완료: {name}', downloadedSettings:'작업 파일 다운로드 요청: {name}', canceled:'취소했습니다.', settingsFailed:'작업 저장 실패: {error}', loadFailed:'파일을 읽지 못했습니다. 현재 시트는 유지했습니다: {error}', partial:'폴더 읽기: 작업 {count}개, 건너뜀 {skipped}개.', folderFailed:'폴더를 사용할 수 없습니다. 기억한 목록은 유지했습니다: {error}', cache:'기억한 작업 (폴더 사용 불가)', notRemembered:'이번 화면에서는 선택했지만 다음 실행을 위한 기억에 실패했습니다.', selectFailed:'폴더 선택 실패: {error}'},
-        zh:{ directImportRecommended:'支持CLIP和TVPaint文件，推荐直接导入.clip / .tvpp。仍可导入CSV和XDTS。', workLoaded:"已读取工作。", fileLoaded:"已读取：{name}", workCacheFailed:"无法记住此列表。再次打开时可能显示旧列表。原始文件未变更。", normal:'默认下载', unsupported:'此浏览器不能选择保存文件夹，将使用默认下载。', selected:'保存文件夹：{name}', choose:'选择文件夹', cancel:'取消', downloadOnce:'本次下载', permission:'无法访问保存文件夹。请选择继续方式。', missing:'保存文件夹不可用，已解除。剩余页面将使用默认下载。', memoryFailed:'无法保存浏览器备份。关闭前请保存工作文件。', forgetFailed:'本次已解除文件夹，但无法删除浏览器中保存的设置。', preparing:'正在准备 {count} 页…', progress:'已处理 {done}/{count} · 文件夹 {folder} · 下载请求 {download}', complete:'完成 · 文件夹 {folder} · 下载请求 {download}', failed:'在第 {page} 页停止：{error}', savedSettings:'工作已保存：{name}', downloadedSettings:'已请求下载工作文件：{name}', canceled:'已取消。', settingsFailed:'工作保存失败：{error}', loadFailed:'读取失败，当前工作表已保留：{error}', partial:'文件夹读取：{count} 个工作，跳过 {skipped} 个。', folderFailed:'文件夹不可用，已保留缓存列表：{error}', cache:'缓存工作（文件夹不可用）', notRemembered:'本次已选择文件夹，但无法记住此设置。', selectFailed:'选择文件夹失败：{error}'}
+        en:{ directImportRecommended:"Import .clip / .tvpp / .csv / .xdts", workLoaded:"Work loaded.", fileLoaded:"Loaded: {name}", workCacheFailed:"Could not remember this list. Reopening may show the previous list. Original files are unchanged.", normal:'Browser download', unsupported:'Folder selection is unavailable in this browser. Files use browser downloads.', selected:'Output folder: {name}', choose:'Choose folder', cancel:'Cancel', downloadOnce:'Download this time', permission:'The output folder cannot be accessed. Choose how to continue.', missing:'The output folder is unavailable. It was disconnected; remaining pages use browser downloads.', memoryFailed:'Browser backup could not be saved. Save your work file before closing.', forgetFailed:'Folder disconnected for this session. The browser could not remove its saved setting.', preparing:'Preparing {count} page(s)…', progress:'Processed {done}/{count} · Folder: {folder} · Download requests: {download}', complete:'Finished · Folder: {folder} · Download requests: {download}', failed:'Stopped at page {page}: {error}', savedSettings:'Work saved: {name}', downloadedSettings:'Work file download requested: {name}', canceled:'Canceled.', settingsFailed:'Work save failed: {error}', loadFailed:'File load failed; the current sheet was kept: {error}', partial:'Folder scan: {count} work files, {skipped} skipped.', folderFailed:'Folder unavailable. The cached list is kept: {error}', cache:'Cached work (folder unavailable)', notRemembered:'Folder selected for this session; browser memory could not be updated.', selectFailed:'Folder selection failed: {error}'},
+        ja:{ directImportRecommended:"対応形式：.clip / .tvpp / .csv / .xdts", workLoaded:"作業を読み込みました。", fileLoaded:"読み込みました：{name}", workCacheFailed:"この一覧を記憶できませんでした。次回は以前の一覧に戻る場合があります。元のファイルは変更していません。", normal:'通常ダウンロード', unsupported:'このブラウザーでは保存先フォルダーを指定できません。通常ダウンロードを使用します。', selected:'保存先：{name}', choose:'フォルダーを選ぶ', cancel:'キャンセル', downloadOnce:'今回はダウンロード', permission:'保存先を使用できません。続行方法を選んでください。', missing:'保存先を使用できなくなったため解除しました。残りは通常ダウンロードします。', memoryFailed:'ブラウザーに記憶できませんでした。閉じる前に作業ファイルを保存してください。', forgetFailed:'この画面では保存先を解除しましたが、ブラウザーの記憶を削除できませんでした。', preparing:'{count}ページを準備中…', progress:'処理 {done}/{count} · フォルダー保存 {folder} · ダウンロード依頼 {download}', complete:'完了 · フォルダー保存 {folder} · ダウンロード依頼 {download}', failed:'{page}ページ目で停止：{error}', savedSettings:'作業を保存しました：{name}', downloadedSettings:'作業ファイルのダウンロードを依頼しました：{name}', canceled:'キャンセルしました。', settingsFailed:'作業の保存に失敗しました：{error}', loadFailed:'読込に失敗しました。現在のシートは保持しています：{error}', partial:'フォルダー読込：作業 {count}件、スキップ {skipped}件。', folderFailed:'フォルダーを使用できません。記憶済みの一覧は保持しています：{error}', cache:'記憶済みの作業（フォルダー使用不可）', notRemembered:'この画面では選択しましたが、次回のための記憶に失敗しました。', selectFailed:'フォルダー選択に失敗しました：{error}'},
+        ko:{ directImportRecommended:"지원 형식: .clip / .tvpp / .csv / .xdts", workLoaded:"작업을 불러왔습니다.", fileLoaded:"불러왔습니다: {name}", workCacheFailed:"목록을 기억하지 못했습니다. 다시 열면 이전 목록이 표시될 수 있습니다. 원본 파일은 그대로입니다.", normal:'기본 다운로드', unsupported:'이 브라우저에서는 저장 폴더를 지정할 수 없습니다. 기본 다운로드를 사용합니다.', selected:'저장 폴더: {name}', choose:'폴더 선택', cancel:'취소', downloadOnce:'이번에는 다운로드', permission:'저장 폴더에 접근할 수 없습니다. 계속할 방법을 선택하세요.', missing:'저장 폴더를 사용할 수 없어 해제했습니다. 남은 페이지는 기본 다운로드로 보냅니다.', memoryFailed:'브라우저에 기억하지 못했습니다. 닫기 전에 작업 파일을 저장하세요.', forgetFailed:'이번 화면에서는 폴더를 해제했지만 브라우저의 기억은 삭제하지 못했습니다.', preparing:'{count}페이지 준비 중…', progress:'처리 {done}/{count} · 폴더 저장 {folder} · 다운로드 요청 {download}', complete:'완료 · 폴더 저장 {folder} · 다운로드 요청 {download}', failed:'{page}페이지에서 중단: {error}', savedSettings:'작업 저장 완료: {name}', downloadedSettings:'작업 파일 다운로드 요청: {name}', canceled:'취소했습니다.', settingsFailed:'작업 저장 실패: {error}', loadFailed:'파일을 읽지 못했습니다. 현재 시트는 유지했습니다: {error}', partial:'폴더 읽기: 작업 {count}개, 건너뜀 {skipped}개.', folderFailed:'폴더를 사용할 수 없습니다. 기억한 목록은 유지했습니다: {error}', cache:'기억한 작업 (폴더 사용 불가)', notRemembered:'이번 화면에서는 선택했지만 다음 실행을 위한 기억에 실패했습니다.', selectFailed:'폴더 선택 실패: {error}'},
+        zh:{ directImportRecommended:"支持格式：.clip / .tvpp / .csv / .xdts", workLoaded:"已读取工作。", fileLoaded:"已读取：{name}", workCacheFailed:"无法记住此列表。再次打开时可能显示旧列表。原始文件未变更。", normal:'默认下载', unsupported:'此浏览器不能选择保存文件夹，将使用默认下载。', selected:'保存文件夹：{name}', choose:'选择文件夹', cancel:'取消', downloadOnce:'本次下载', permission:'无法访问保存文件夹。请选择继续方式。', missing:'保存文件夹不可用，已解除。剩余页面将使用默认下载。', memoryFailed:'无法保存浏览器备份。关闭前请保存工作文件。', forgetFailed:'本次已解除文件夹，但无法删除浏览器中保存的设置。', preparing:'正在准备 {count} 页…', progress:'已处理 {done}/{count} · 文件夹 {folder} · 下载请求 {download}', complete:'完成 · 文件夹 {folder} · 下载请求 {download}', failed:'在第 {page} 页停止：{error}', savedSettings:'工作已保存：{name}', downloadedSettings:'已请求下载工作文件：{name}', canceled:'已取消。', settingsFailed:'工作保存失败：{error}', loadFailed:'读取失败，当前工作表已保留：{error}', partial:'文件夹读取：{count} 个工作，跳过 {skipped} 个。', folderFailed:'文件夹不可用，已保留缓存列表：{error}', cache:'缓存工作（文件夹不可用）', notRemembered:'本次已选择文件夹，但无法记住此设置。', selectFailed:'选择文件夹失败：{error}'}
       };
       const doc = docs[state.lang] || docs.en;
       return String(doc[key] || docs.en[key] || key).replace(/\{(\w+)\}/g, function(_, name){ return values && values[name] != null ? String(values[name]) : ''; });
@@ -26860,10 +26822,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     function csvImportText(key, values) {
       const docs = {
-        ko:{ western:'서유럽', central:'중부 유럽', cyrillic:'키릴 문자', greek:'그리스어', turkish:'튀르키예어', hebrew:'히브리어', arabic:'아랍어', baltic:'발트어', vietnamese:'베트남어', thai:'태국어', title:'CSV 불러오기', settings:'CSV 읽기 설정', encoding:'문자 인코딩', auto:'자동 판별', detected:'판별: {encoding}', review:'글자와 표식을 확인하세요. 깨져 보이면 인코딩을 바꿔 주세요.', preview:'원본 미리보기', columns:'가져올 열', hint:'Hide는 데이터를 유지한 채 숨깁니다. 인코딩을 바꾸면 열 설정이 다시 만들어집니다.', reopen:'원본 CSV를 다시 읽습니다. CSV 커맨드에서 직접 편집한 내용은 새 열 설정으로 다시 생성됩니다.', apply:'불러오기', cancel:'취소', empty:'가져올 열을 하나 이상 선택하세요.', name:'열 이름', role:'역할', error:'읽을 수 없습니다: {error}', ready:'{source} · {columns}열 · {frames}프레임' },
-        ja:{ western:'西欧', central:'中欧', cyrillic:'キリル文字', greek:'ギリシャ語', turkish:'トルコ語', hebrew:'ヘブライ語', arabic:'アラビア語', baltic:'バルト語', vietnamese:'ベトナム語', thai:'タイ語', title:'CSVを読み込む', settings:'CSV読み込み設定', encoding:'文字コード', auto:'自動判定', detected:'判定: {encoding}', review:'文字と記号を確認してください。文字化けする場合は文字コードを変更してください。', preview:'元データのプレビュー', columns:'読み込む列', hint:'Hideはデータを残して非表示にします。文字コードを変えると列設定を作り直します。', reopen:'元のCSVを読み直します。CSVコマンドで直接編集した内容は列設定から再生成されます。', apply:'読み込む', cancel:'キャンセル', empty:'読み込む列を選択してください。', name:'列名', role:'役割', error:'読み込めません: {error}', ready:'{source} · {columns}列 · {frames}フレーム' },
-        en:{ western:'Western Europe', central:'Central Europe', cyrillic:'Cyrillic', greek:'Greek', turkish:'Turkish', hebrew:'Hebrew', arabic:'Arabic', baltic:'Baltic', vietnamese:'Vietnamese', thai:'Thai', title:'Import CSV', settings:'CSV read settings', encoding:'Text encoding', auto:'Auto detect', detected:'Detected: {encoding}', review:'Check the text and marks. If they look wrong, choose another encoding.', preview:'Source preview', columns:'Columns to import', hint:'Hide keeps the data but hides the column. Changing encoding rebuilds column settings.', reopen:'This rereads the original CSV. Direct CSV command edits will be regenerated from the column settings.', apply:'Import', cancel:'Cancel', empty:'Select at least one column.', name:'Column name', role:'Role', error:'Cannot read: {error}', ready:'{source} · {columns} columns · {frames} frames' },
-        zh:{ western:'西欧', central:'中欧', cyrillic:'西里尔文', greek:'希腊文', turkish:'土耳其文', hebrew:'希伯来文', arabic:'阿拉伯文', baltic:'波罗的海文', vietnamese:'越南文', thai:'泰文', title:'导入 CSV', settings:'CSV读取设置', encoding:'字符编码', auto:'自动检测', detected:'检测: {encoding}', review:'请检查文字和符号。如有乱码，请更改编码。', preview:'原始内容预览', columns:'导入的列', hint:'Hide保留数据并隐藏该列。更改编码会重新生成列设置。', reopen:'将重新读取原始CSV。直接编辑的CSV命令将根据列设置重新生成。', apply:'导入', cancel:'取消', empty:'请至少选择一列。', name:'列名', role:'角色', error:'无法读取: {error}', ready:'{source} · {columns}列 · {frames}帧' }
+        ko:{ western:'서유럽', central:'중부 유럽', cyrillic:'키릴 문자', greek:'그리스어', turkish:'튀르키예어', hebrew:'히브리어', arabic:'아랍어', baltic:'발트어', vietnamese:'베트남어', thai:'태국어', title:'CSV 불러오기', settings:'CSV 읽기 설정', encoding:'문자 인코딩', auto:'자동 판별', detected:'판별: {encoding}', review:"글자·표식이 깨지면 인코딩 변경", preview:'원본 미리보기', columns:'가져올 열', hint:'Hide는 데이터를 유지한 채 숨깁니다. 인코딩을 바꾸면 열 설정이 다시 만들어집니다.', reopen:'원본 CSV를 다시 읽습니다. CSV 커맨드에서 직접 편집한 내용은 새 열 설정으로 다시 생성됩니다.', apply:'불러오기', cancel:'취소', empty:'가져올 열을 하나 이상 선택하세요.', name:'열 이름', role:'역할', error:'읽을 수 없습니다: {error}', ready:'{source} · {columns}열 · {frames}프레임' },
+        ja:{ western:'西欧', central:'中欧', cyrillic:'キリル文字', greek:'ギリシャ語', turkish:'トルコ語', hebrew:'ヘブライ語', arabic:'アラビア語', baltic:'バルト語', vietnamese:'ベトナム語', thai:'タイ語', title:'CSVを読み込む', settings:'CSV読み込み設定', encoding:'文字コード', auto:'自動判定', detected:'判定: {encoding}', review:"文字・記号が化けていたら文字コードを変更", preview:'元データのプレビュー', columns:'読み込む列', hint:'Hideはデータを残して非表示にします。文字コードを変えると列設定を作り直します。', reopen:'元のCSVを読み直します。CSVコマンドで直接編集した内容は列設定から再生成されます。', apply:'読み込む', cancel:'キャンセル', empty:'読み込む列を選択してください。', name:'列名', role:'役割', error:'読み込めません: {error}', ready:'{source} · {columns}列 · {frames}フレーム' },
+        en:{ western:'Western Europe', central:'Central Europe', cyrillic:'Cyrillic', greek:'Greek', turkish:'Turkish', hebrew:'Hebrew', arabic:'Arabic', baltic:'Baltic', vietnamese:'Vietnamese', thai:'Thai', title:'Import CSV', settings:'CSV read settings', encoding:'Text encoding', auto:'Auto detect', detected:'Detected: {encoding}', review:"Check the text and marks; change encoding if they look garbled", preview:'Source preview', columns:'Columns to import', hint:'Hide keeps the data but hides the column. Changing encoding rebuilds column settings.', reopen:'This rereads the original CSV. Direct CSV command edits will be regenerated from the column settings.', apply:'Import', cancel:'Cancel', empty:'Select at least one column.', name:'Column name', role:'Role', error:'Cannot read: {error}', ready:'{source} · {columns} columns · {frames} frames' },
+        zh:{ western:'西欧', central:'中欧', cyrillic:'西里尔文', greek:'希腊文', turkish:'土耳其文', hebrew:'希伯来文', arabic:'阿拉伯文', baltic:'波罗的海文', vietnamese:'越南文', thai:'泰文', title:'导入 CSV', settings:'CSV读取设置', encoding:'字符编码', auto:'自动检测', detected:'检测: {encoding}', review:"文字或标记乱码时请更换编码", preview:'原始内容预览', columns:'导入的列', hint:'Hide保留数据并隐藏该列。更改编码会重新生成列设置。', reopen:'将重新读取原始CSV。直接编辑的CSV命令将根据列设置重新生成。', apply:'导入', cancel:'取消', empty:'请至少选择一列。', name:'列名', role:'角色', error:'无法读取: {error}', ready:'{source} · {columns}列 · {frames}帧' }
       };
       let text = (docs[state.lang] || docs.en)[key] || docs.en[key] || key;
       Object.keys(values || {}).forEach(function(name){ text = text.replace('{'+name+'}', String(values[name])); });
@@ -27665,7 +27627,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         en:{ paperFailed:"Paper failed to load; the sheet was imported. See the paper panel for details.", paperCanceled:"Paper canceled; the current paper was kept.", sideHidden:"Hidden in TVPaint ({count})", paperPreviewFallback:"Could not composite at full size. The saved preview ({width}×{height}) may blur lines and text. Import that preview? For full quality, cancel and choose a PNG exported from CLIP STUDIO PAINT.", paperPreviewContinue:"Import preview", paperPreviewMeta:"CLIP preview {width}×{height} · not full resolution", paperCompositeUnsupported:"This CLIP needs layer effects that cannot be reproduced for paper import. Export a merged PNG or PSD from CLIP STUDIO PAINT.", orderTitle:"Cel order",  paperAnimation:"This CLIP has an animation timeline and may not be a paper template. Import its saved composite as paper? To read cel timing, cancel and drop it onto the sheet preview.", paperContinue:"Import as paper", paperFullMissing:"The full-size CLIP composite is unavailable. Export a PNG or PSD from CLIP STUDIO PAINT and choose that file.", revisionE:"Direction", revisionS:"Animation director", revisionSS:"Chief animation director", revisionK:"Director", numberingAuto:'Instance names not set', numberingMixed:'Some instance names not set', numberingDetail:'Automatic numbers (source frames): {values}', cutReference:'Cut-number reference', revision:'Revision: {name}', revisionGeneration:' · round {count}', sideUnread:'No exposure or unreadable ({count})', sideAside:'Background and reference ({count})', sideOffstage:'Cels from another step ({count})', paper:'Paper', paperDrop:'Choose or drop paper image', paperKeep:'Not selected · keep current paper', paperChosen:'Will be replaced with {name}', identity:'Work info', identityTitle:'Title', identityEpisode:'Ep.', identityCut:'Cut no.', identityStage:'Stage name', identityStageHint:'The stage name is given to the first stage only.', tidyNumbers:'Tidy cel numbers', pickedRows:'{count} picked', blockedStart:'starts at frame {start} — not supported yet', allBlocked:'Every timeline in this file starts at a frame other than 0. That layout has not been verified, so nothing was loaded.', noExposure:'no exposure in this timeline', failed:'could not be read: {error}', emptyPick:'Nothing is checked in \"{name}\", so the sheet was left as it is.', oddTiming:'{count} timeline(s) are not 24fps (read as {fps}fps) — the frames were copied as they are.', title:'Read a sheet from {app}', timelines:'Timelines', timelineHint:'Each timeline you pick becomes one stage.', rows:'Rows to load', komaNames:'Cel names', renumber:'Renumber', manualInput:'Manual input', resetOriginal:'Restore original', name:'Name', role:'Role', confirm:'Load', cancel:'Cancel', cel:'cel', hidden:'hidden in {app}', empty:'No rows that can be read as cels were found in this file.', reading:'Reading the {app} file…', loaded:'{app} loaded: {name} · {stages} stage(s)', noPick:'Nothing was selected, so the sheet was left as it is.' },
         ja:{ paperFailed:"用紙の読込に失敗しました。シートは読み込み済みです。用紙欄で詳細を確認してください。", paperCanceled:"用紙の読込はキャンセルしました。現在の用紙を保持しています。", sideHidden:"TVPaintで非表示（{count}）", paperPreviewFallback:"原寸で合成できませんでした。保存されたプレビュー（{width}×{height}）を使うと線や文字がぼやける場合があります。プレビューを使いますか？原寸が必要な場合はキャンセルし、CLIP STUDIO PAINTから書き出したPNGを選んでください。", paperPreviewContinue:"プレビューを使う", paperPreviewMeta:"CLIPプレビュー {width}×{height} · 原寸ではありません", paperCompositeUnsupported:"このCLIPには用紙取り込みで再現できないレイヤー効果があります。CLIP STUDIO PAINTから合成済みのPNGまたはPSDを書き出してください。", orderTitle:"セルの並び",  paperAnimation:"このCLIPにはアニメーションのタイムラインがあり、用紙ではない可能性があります。保存時の合成画像を用紙として読み込みますか？セルの配置を読む場合はキャンセルしてシートプレビューに置いてください。", paperContinue:"用紙として読み込む", paperFullMissing:"CLIPの原寸合成画像を読み取れません。CLIP STUDIO PAINTからPNGまたはPSDを書き出して選んでください。", revisionE:"演出", revisionS:"作監", revisionSS:"総作監", revisionK:"監督", numberingAuto:'インスタンス名未設定', numberingMixed:'一部インスタンス名未設定', numberingDetail:'自動番号（元のフレーム）：{values}', cutReference:'カット番号の参考レイヤー', revision:'修正工程：{name}', revisionGeneration:' · {count}次', sideUnread:'露出なし・読めない行（{count}）', sideAside:'背景・参考（{count}）', sideOffstage:'他工程のセル（{count}）', paper:'用紙', paperDrop:'用紙画像を選択・ドロップ', paperKeep:'未選択 · 現在の用紙を使用', paperChosen:'{name} に差し替えます', identity:'作品情報', identityTitle:'作品名', identityEpisode:'話数', identityCut:'カット番号', identityStage:'段階名', identityStageHint:'段階名は最初の段階だけに付きます。', tidyNumbers:'セル番号を整える', pickedRows:'選択 {count}', blockedStart:'{start} フレーム開始 — 未対応', allBlocked:'このファイルのタイムラインはすべて0フレーム以外から始まります。未確認の並びのため読み込みませんでした。', noExposure:'このタイムラインに露出なし', failed:'読み取れませんでした：{error}', emptyPick:'「{name}」で何も選ばれていないため、シートはそのままです。', oddTiming:'24fps でないタイムラインが {count} 件あります（{fps}fps）。コマ数はそのまま移しました。', title:'{app} からシートを読む', timelines:'タイムライン', timelineHint:'選んだタイムラインごとに段階が1つ作られます。', rows:'読み込む行', komaNames:'セル番号', renumber:'順番に振り直す', manualInput:'手入力', resetOriginal:'元に戻す', name:'名前', role:'役割', confirm:'読み込む', cancel:'キャンセル', cel:'セル', hidden:'{app} で非表示', empty:'このファイルにセルとして読める行が見つかりませんでした。', reading:'{app} のファイルを読み込み中…', loaded:'{app} のファイルを読み込みました：{name} · 段階 {stages}個', noPick:'何も選ばれなかったため、シートはそのままです。' },
         ko:{ paperFailed:"용지를 읽지 못했습니다. 시트는 불러왔습니다. 용지 영역에서 원인을 확인하세요.", paperCanceled:"용지 불러오기를 취소해 현재 용지를 유지했습니다.", sideHidden:"TVPaint에서 비표시 ({count})", paperPreviewFallback:"원본 크기로 합성하지 못했습니다. 저장된 미리보기({width}×{height})로 가져오면 선이나 글자가 흐려질 수 있습니다. 미리보기를 사용할까요? 원본 품질이 필요하면 취소하고 CLIP STUDIO PAINT에서 출력한 PNG를 골라 주세요.", paperPreviewContinue:"미리보기로 가져오기", paperPreviewMeta:"CLIP 미리보기 {width}×{height} · 원본 해상도 아님", paperCompositeUnsupported:"이 CLIP에는 용지 불러오기에서 재현할 수 없는 레이어 효과가 있습니다. CLIP STUDIO PAINT에서 합성된 PNG 또는 PSD로 출력해 주세요.", orderTitle:"셀 순서",  paperAnimation:"애니메이션 타임라인이 있는 CLIP이라 용지 파일이 아닐 수 있습니다. 저장 당시 합성 이미지를 용지로 가져올까요? 셀 배치를 읽으려면 취소하고 시트 미리보기에 놓아 주세요.", paperContinue:"용지로 가져오기", paperFullMissing:"CLIP 원본 크기 합성 이미지가 없습니다. CLIP STUDIO PAINT에서 PNG 또는 PSD로 출력한 파일을 골라 주세요.", revisionE:"연출", revisionS:"작감", revisionSS:"총작감", revisionK:"감독", numberingAuto:'인스턴스 이름 미지정', numberingMixed:'일부 인스턴스 이름 미지정', numberingDetail:'자동 번호(원본 프레임): {values}', cutReference:'컷번호 참고 레이어', revision:'리비전: {name}', revisionGeneration:' · {count}차', sideUnread:'노출 없음 · 읽지 못함 ({count})', sideAside:'배경 · 참고 ({count})', sideOffstage:'다른 공정의 셀 ({count})', paper:'용지', paperDrop:'용지 이미지 선택 · 드롭', paperKeep:'미선택 · 현재 용지 유지', paperChosen:'{name} 으로 바꿉니다', identity:'작품 정보', identityTitle:'작품명', identityEpisode:'화수', identityCut:'컷번호', identityStage:'단계 이름', identityStageHint:'단계 이름은 첫 단계에만 붙습니다.', tidyNumbers:'셀 번호 다듬기', pickedRows:'고른 행 {count}', blockedStart:'{start} 프레임에서 시작 — 아직 지원하지 않음', allBlocked:'이 파일의 타임라인이 전부 0프레임이 아닌 자리에서 시작합니다. 확인되지 않은 배치라 아무것도 읽지 않았습니다.', noExposure:'이 타임라인에 노출 없음', failed:'읽지 못했습니다: {error}', emptyPick:'「{name}」에서 아무것도 고르지 않아 시트를 그대로 두었습니다.', oddTiming:'24fps가 아닌 타임라인이 {count}개 있습니다({fps}fps). 칸 수는 그대로 옮겼습니다.', title:'{app}에서 시트 읽기', timelines:'타임라인', timelineHint:'고른 타임라인마다 단계가 하나씩 만들어집니다.', rows:'가져올 행', komaNames:'셀 이름', renumber:'순번대로 재배치', manualInput:'수동 입력', resetOriginal:'원본 복원', name:'이름', role:'역할', confirm:'불러오기', cancel:'취소', cel:'셀', hidden:'{app}에서 숨김', empty:'이 파일에서 셀로 읽을 줄을 찾지 못했습니다.', reading:'{app} 파일을 읽는 중…', loaded:'{app} 파일을 읽었습니다: {name} · 단계 {stages}개', noPick:'아무것도 고르지 않아 시트를 그대로 두었습니다.' },
-        zh:{ paperFailed:"纸张读取失败，工作表已导入。请在纸张区域查看原因。", paperCanceled:"已取消纸张读取，保留当前纸张。", sideHidden:"在TVPaint中隐藏（{count}）", paperPreviewFallback:"无法以原尺寸合成。使用保存的预览（{width}×{height}）可能使线条和文字模糊。要导入预览吗？如需原始质量，请取消并选择从CLIP STUDIO PAINT导出的PNG。", paperPreviewContinue:"导入预览", paperPreviewMeta:"CLIP预览 {width}×{height} · 非原始分辨率", paperCompositeUnsupported:"此CLIP含有纸张导入无法重现的图层效果。请从CLIP STUDIO PAINT导出合成后的PNG或PSD。", orderTitle:"赛璐璐顺序",  paperAnimation:"此CLIP包含动画时间轴，可能不是纸张模板。要将保存时的合成图像作为纸张导入吗？如需读取赛璐璐时间，请取消并拖到摄影表预览中。", paperContinue:"作为纸张导入", paperFullMissing:"无法读取CLIP的原尺寸合成图像。请从CLIP STUDIO PAINT导出PNG或PSD后选择该文件。", revisionE:"演出", revisionS:"作画监督", revisionSS:"总作画监督", revisionK:"导演", numberingAuto:'未设置实例名称', numberingMixed:'部分实例名称未设置', numberingDetail:'自动编号（原始帧）：{values}', cutReference:'镜头编号参考图层', revision:'修正工序：{name}', revisionGeneration:' · 第{count}次', sideUnread:'无曝光 · 无法读取（{count}）', sideAside:'背景 · 参考（{count}）', sideOffstage:'其他工序的赛璐璐（{count}）', paper:'纸张', paperDrop:'选择或拖入纸张图像', paperKeep:'未选择 · 保留当前纸张', paperChosen:'将替换为 {name}', identity:'作品信息', identityTitle:'作品名', identityEpisode:'话数', identityCut:'镜号', identityStage:'阶段名', identityStageHint:'阶段名仅用于第一个阶段。', tidyNumbers:'整理赛璐璐编号', pickedRows:'已选 {count}', blockedStart:'从第 {start} 帧开始 — 尚不支持', allBlocked:'此文件的时间轴都不是从第 0 帧开始。该排列尚未验证，因此未读取任何内容。', noExposure:'此时间轴没有曝光', failed:'无法读取：{error}', emptyPick:'「{name}」中未选择任何内容，工作表保持不变。', oddTiming:'有 {count} 条时间轴不是 24fps（{fps}fps）。格子数按原样移入。', title:'从 {app} 读取表', timelines:'时间轴', timelineHint:'所选的每条时间轴都会生成一个阶段。', rows:'要读取的行', komaNames:'赛璐璐编号', renumber:'按顺序重编', manualInput:'手动输入', resetOriginal:'恢复原始', name:'名称', role:'角色', confirm:'读取', cancel:'取消', cel:'赛璐璐', hidden:'在 {app} 中隐藏', empty:'在此文件中未找到可作为赛璐璐读取的行。', reading:'正在读取 {app} 文件…', loaded:'已读取 {app} 文件：{name} · {stages} 个阶段', noPick:'未选择任何内容，工作表保持不变。' }
+        zh:{ paperFailed:"纸张读取失败，工作表已导入。请在纸张区域查看原因。", paperCanceled:"已取消纸张读取，保留当前纸张。", sideHidden:"在TVPaint中隐藏（{count}）", paperPreviewFallback:"无法以原尺寸合成。使用保存的预览（{width}×{height}）可能使线条和文字模糊。要导入预览吗？如需原始质量，请取消并选择从CLIP STUDIO PAINT导出的PNG。", paperPreviewContinue:"导入预览", paperPreviewMeta:"CLIP预览 {width}×{height} · 非原始分辨率", paperCompositeUnsupported:"此CLIP含有纸张导入无法重现的图层效果。请从CLIP STUDIO PAINT导出合成后的PNG或PSD。", orderTitle:"赛璐璐顺序",  paperAnimation:"此CLIP包含动画时间轴，可能不是纸张模板。要将保存时的合成图像作为纸张导入吗？如需读取Cell的时间配置，请取消并拖到摄影表预览中。", paperContinue:"作为纸张导入", paperFullMissing:"无法读取CLIP的原尺寸合成图像。请从CLIP STUDIO PAINT导出PNG或PSD后选择该文件。", revisionE:"演出", revisionS:"作画监督", revisionSS:"总作画监督", revisionK:"导演", numberingAuto:'未设置实例名称', numberingMixed:'部分实例名称未设置', numberingDetail:'自动编号（原始帧）：{values}', cutReference:'镜头编号参考图层', revision:'修正工序：{name}', revisionGeneration:' · 第{count}次', sideUnread:'无曝光 · 无法读取（{count}）', sideAside:'背景 · 参考（{count}）', sideOffstage:'其他工序的赛璐璐（{count}）', paper:'纸张', paperDrop:'选择或拖入纸张图像', paperKeep:'未选择 · 保留当前纸张', paperChosen:'将替换为 {name}', identity:'作品信息', identityTitle:'作品名', identityEpisode:'话数', identityCut:'镜号', identityStage:'阶段名', identityStageHint:'阶段名仅用于第一个阶段。', tidyNumbers:'整理赛璐璐编号', pickedRows:'已选 {count}', blockedStart:'从第 {start} 帧开始 — 尚不支持', allBlocked:'此文件的时间轴都不是从第 0 帧开始。该排列尚未验证，因此未读取任何内容。', noExposure:'此时间轴没有曝光', failed:'无法读取：{error}', emptyPick:'「{name}」中未选择任何内容，工作表保持不变。', oddTiming:'有 {count} 条时间轴不是 24fps（{fps}fps）。格子数按原样移入。', title:'从 {app} 读取表', timelines:'时间轴', timelineHint:'所选的每条时间轴都会生成一个阶段。', rows:'要读取的行', komaNames:'赛璐璐编号', renumber:'按顺序重编', manualInput:'手动输入', resetOriginal:'恢复原始', name:'名称', role:'角色', confirm:'读取', cancel:'取消', cel:'赛璐璐', hidden:'在 {app} 中隐藏', empty:'在此文件中未找到可作为赛璐璐读取的行。', reading:'正在读取 {app} 文件…', loaded:'已读取 {app} 文件：{name} · {stages} 个阶段', noPick:'未选择任何内容，工作表保持不变。' }
       };
       const doc = docs[state.lang] || docs.en;
       const fill = Object.assign({ app:app || CLIP_SHEET_APPS.clip }, values || {});
@@ -29906,7 +29868,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       document.getElementById('csvImportDetails').classList.toggle('hidden', !isCsvMode(mode) || !state.csvRawRows.length);
       refreshCommandCellViews();
       updateCsvSettingsActionVisibility();
-      updateCsvHelpText();
     }
 
     function updateModeUI(options) {
