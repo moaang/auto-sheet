@@ -2603,7 +2603,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '993';
+    const APP_VERSION = '994';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3910,6 +3910,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver994", "Two-finger tap to undo", ["Tap the sheet with two fingers to undo; tap again right away to redo. Works without a keyboard."]],
         ["ver993", "Fingers no longer draw while you pinch to zoom on iPad", ["After you draw with Apple Pencil, fingers move and zoom the sheet instead of drawing. While drawing with a finger, a second finger touching the screen cancels that line, so a pinch leaves nothing behind.", "Undo and Redo can now be set in Shortcut Settings.", "Automatically placed memos with several lines no longer lose their lower lines."]],
         ["ver992", "Auto Align re-reads faint lines before the single-block reading", ["When the left and right blocks could not be paired because the printed lines came out faint (photos, re-saved scans), Auto Align now re-reads faint lines first instead of treating the paper as one wide block. Papers that really are one block are unchanged."]],
         ["ver991", "Mouth notes beside in-between dots from MoArt", ["Sheets sent from MoArt now show the mouth to draw (closed, mid, open) in small red text beside the in-between dot, inside the same cell."]],
@@ -4043,6 +4044,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "Camera marks, continuation lines and merged memos", ["Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.", "The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.", "The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.", "When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.", "Camera works that connect end to end now become a single memo line, for example \"・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr\"."]],
       ],
       ja: [
+        ["ver994", "2本指タップで元に戻す", ["シートを2本指でタップすると元に戻し、続けてもう一度タップするとやり直します。キーボードがなくても使えます。"]],
         ["ver993", "iPadで指で拡大縮小しても線が引かれない", ["Apple Pencilで描いた後は、指はシートの移動・拡大縮小になり、線を引きません。指で描いている途中で2本目の指が触れると、その線を取り消して拡大縮小だけにします。", "ショートカット設定で「元に戻す」「やり直す」を割り当てられるようにしました。", "複数行の自動配置メモで2行目以降が切れていたのを直しました。"]],
         ["ver992", "自動整列で薄い線を先に読み直す", ["写真や保存し直しで線が薄くなり、左右のブロックの対応が取れない用紙を、1ブロックの用紙として扱う前に薄い線を読み直すようにしました。本当に1ブロックの用紙は今までどおりです。"]],
         ["ver991", "MoArtの中セリフを動画点の横に表示", ["MoArtから送ったシートで、動画点の横に描く口（トジ・中・アキ）を同じコマの中に赤い小さな文字で表示します。"]],
@@ -4176,6 +4178,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "カメラ記号・持続線・メモの連結", ["設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。", "設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。", "つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。", "マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。", "端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。"]],
       ],
       ko: [
+        ["ver994", "두 손가락 탭으로 실행취소", ["시트를 두 손가락으로 탭하면 실행취소, 이어서 한 번 더 탭하면 다시 실행합니다. 키보드 없이 쓸 수 있습니다."]],
         ["ver993", "iPad에서 손가락으로 확대·축소해도 선이 그어지지 않음", ["Apple Pencil로 그린 뒤에는 손가락으로 시트를 이동·확대·축소하고 선을 긋지 않습니다. 손가락으로 그리는 중에 두 번째 손가락이 닿으면 그 선을 지우고 확대·축소만 합니다.", "단축키 설정에서 「실행취소」「다시 실행」을 지정할 수 있습니다.", "여러 줄 자동 배치 메모의 둘째 줄부터 잘리던 문제를 고쳤습니다."]],
         ["ver992", "자동정렬이 흐린 선을 먼저 다시 읽음", ["사진·재저장으로 선이 흐려져 좌우 블록의 짝을 못 찾는 용지를 1블록 용지로 보기 전에 흐린 선을 먼저 다시 읽습니다. 실제 1블록 용지는 지금과 같습니다."]],
         ["ver991", "MoArt의 中セリフ를 동화점 옆에 표시", ["MoArt에서 보낸 시트에서 동화점 옆에 그릴 입(トジ・中・アキ)을 같은 칸 안에 빨간 작은 글씨로 보입니다."]],
@@ -4309,6 +4312,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "카메라 표식·지속선·메모 연결", ["설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.", "설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. \"카메라→메모\"를 누를 필요가 없습니다.", "이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.", "표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.", "끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: \"・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr\")."]],
       ],
       zh: [
+        ["ver994", "双指轻点撤销", ["用双指轻点表格即可撤销，紧接着再点一次即可重做。无需键盘。"]],
         ["ver993", "在 iPad 上用手指缩放时不再画线", ["用 Apple Pencil 画过之后，手指用于移动和缩放表格，不再画线。用手指画线时如果第二根手指触碰屏幕，会取消这条线，只进行缩放。", "可以在快捷键设置中指定“撤销”“重做”。", "修正了多行自动排列备注从第二行起被截断的问题。"]],
         ["ver992", "自动对齐先重新读取浅线", ["照片或重新保存导致线条变浅、左右区块无法配对的用纸，会先重新读取浅线，再判断为单区块用纸。真正的单区块用纸保持不变。"]],
         ["ver991", "在动画点旁显示MoArt的中台词口型", ["从MoArt发送的摄影表会在动画点旁、同一格内用红色小字显示要画的口型（トジ・中・アキ）。"]],
@@ -24140,6 +24144,60 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (event.stopImmediatePropagation) event.stopImmediatePropagation();
     }
 
+    // ══ 두 손가락 탭 — 취소 · 이어서 한 번 더 = 다시 실행 (MoArt 와 같은 자: 16px · 420ms · 350ms) ══════════════════
+    // 키보드 없는 iPad 에는 단축키가 없다. 확대·이동과 같은 손가락이라 어느 손가락이든 16px 넘게 움직이거나 오래
+    // 누르면 탭이 아니다. 펜 메모 중 첫 손가락이 긋던 선은 둘째 손가락이 닿을 때 이미 걷혔다(beginPreviewPan).
+    const TWO_FINGER_TAP_MOVE_MAX = 16, TWO_FINGER_TAP_MAX_MS = 420, TWO_FINGER_DOUBLE_TAP_MS = 350;
+    const previewTouches = new Map();   // pointerId → 처음 닿은 자리
+    let twoFingerTap = null;            // 두 손가락째에 연 후보 { t, zoom, panX, panY, moved }
+    let twoFingerLastTapAt = 0, twoFingerLastTapUndid = false;
+
+    function trackPreviewTouchDown(event) {
+      if (event.pointerType !== 'touch') return;
+      // isPrimary = 다른 손가락이 없다는 플랫폼의 선언. 남은 항목은 떼는 신호를 못 받은 것이다 — 탭이 부른 취소가
+      // 다시 그려 둘째 손가락이 놓였던 노드가 사라지면 그 pointerup 이 여기까지 오지 않는다.
+      if (event.isPrimary) { previewTouches.clear(); twoFingerTap = null; }
+      previewTouches.set(event.pointerId, { x:event.clientX, y:event.clientY });
+      twoFingerTap = previewTouches.size === 2
+        ? { t:Date.now(), zoom:state.sheetZoom, panX:state.viewPanX, panY:state.viewPanY, moved:false }
+        : null;   // 세 손가락 이상은 탭이 아니다
+    }
+
+    function trackPreviewTouchMove(event) {
+      const start = previewTouches.get(event.pointerId);
+      if (start && twoFingerTap && Math.hypot(event.clientX - start.x, event.clientY - start.y) > TWO_FINGER_TAP_MOVE_MAX) twoFingerTap.moved = true;
+    }
+
+    function trackPreviewTouchUp(event) {
+      if (!previewTouches.delete(event.pointerId)) return;
+      const tap = twoFingerTap;
+      twoFingerTap = null;
+      if (!tap || event.type !== 'pointerup' || tap.moved || Date.now() - tap.t > TWO_FINGER_TAP_MAX_MS) return;
+      // 탭 동안 제스처가 낸 작은 확대·이동은 되돌린다 — 탭은 화면을 움직이지 않는다.
+      state.sheetZoom = tap.zoom; state.viewPanX = tap.panX; state.viewPanY = tap.panY;
+      applySheetZoom();
+      cancelPreviewPan();
+      suppressNextClickBriefly();
+      runTwoFingerTap();
+    }
+
+    function runTwoFingerTap() {
+      if (isEditorHistoryBlocked() || isHistoryTextTarget(document.activeElement)) return;
+      const now = Date.now();
+      if (now - twoFingerLastTapAt <= TWO_FINGER_DOUBLE_TAP_MS) {
+        // 첫 탭이 실제로 되돌렸으면 그것부터 다시 실행한다 — 두 번 탭 = 다시 실행 한 번, 그 뒤 연타는 탭마다 한 번 더.
+        twoFingerLastTapAt = now;
+        if (twoFingerLastTapUndid) {
+          twoFingerLastTapUndid = false;
+          if (contentRedo() !== true) return;
+        }
+        contentRedo();
+        return;
+      }
+      twoFingerLastTapAt = now;
+      twoFingerLastTapUndid = contentUndo() === true;
+    }
+
     // ══ [출력] ① 파일명 규칙 + SVG 직렬화 → 래스터 블롭 ═════════════════════════════════════════════════════════════
     function makeFilenameBase(pageNumber) {
       const numbering = String((pageNumber !== undefined && pageNumber !== null) ? pageNumber : 1).padStart(2, '0');
@@ -30166,6 +30224,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       previewWrapEl.addEventListener('pointerup', endPreviewPan);
       previewWrapEl.addEventListener('pointercancel', endPreviewPan);
       previewWrapEl.addEventListener('click', cancelSuppressedPreviewClick, true);
+      // 캡처 단계 — 칸·메모가 전파를 멈춰도 손가락 수는 세야 한다
+      previewWrapEl.addEventListener('pointerdown', trackPreviewTouchDown, true);
+      previewWrapEl.addEventListener('pointermove', trackPreviewTouchMove, true);
+      previewWrapEl.addEventListener('pointerup', trackPreviewTouchUp, true);
+      previewWrapEl.addEventListener('pointercancel', trackPreviewTouchUp, true);
       previewWrapEl.addEventListener('dragover', handlePreviewFileDragOver);
       previewWrapEl.addEventListener('dragleave', clearPreviewFileDropActive);
       previewWrapEl.addEventListener('drop', handlePreviewFileDrop);
