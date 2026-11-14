@@ -2603,7 +2603,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '996';
+    const APP_VERSION = '997';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3907,6 +3907,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver997", "1-frame dialogue text shows again", ["The text of a dialogue line only one frame long now appears in the dialogue column."]],
         ["ver996", "Serifu Sheet reads the dialogue", ["In Serifu Sheet mode, click a line in the dialogue column to select its range; right-click opens Serifu Sheet right away.", "New placement \"From dialogue\" fills the mouth drawings from the kana of the dialogue (closed, mid, open) at a 2- or 3-frame interval.", "Serifu Sheet remembers your mouth numbers and settings for next time."]],
         ["ver994", "Two-finger tap to undo", ["Tap the sheet with two fingers to undo; tap again right away to redo. Works without a keyboard."]],
         ["ver993", "Fingers no longer draw while you pinch to zoom on iPad", ["After you draw with Apple Pencil, fingers move and zoom the sheet instead of drawing. While drawing with a finger, a second finger touching the screen cancels that line, so a pinch leaves nothing behind.", "Undo and Redo can now be set in Shortcut Settings.", "Automatically placed memos with several lines no longer lose their lower lines."]],
@@ -4042,6 +4043,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "Camera marks, continuation lines and merged memos", ["Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.", "The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.", "The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.", "When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.", "Camera works that connect end to end now become a single memo line, for example \"・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr\"."]],
       ],
       ja: [
+        ["ver997", "1コマのセリフの文字が出るように", ["1コマだけのセリフの本文がセリフ欄に表示されるようになりました。"]],
         ["ver996", "セリフシートがセリフを読む", ["セリフシートモードでセリフ欄のセリフをクリックすると、その範囲を選びます。右クリックでそのままセリフシートを開きます。", "配置に「セリフから」を追加しました。セリフのかなから口（閉じ口・中口・開き口）を2コマまたは3コマ間隔で入れます。", "口の番号と設定は次に開いたときも残ります。"]],
         ["ver994", "2本指タップで元に戻す", ["シートを2本指でタップすると元に戻し、続けてもう一度タップするとやり直します。キーボードがなくても使えます。"]],
         ["ver993", "iPadで指で拡大縮小しても線が引かれない", ["Apple Pencilで描いた後は、指はシートの移動・拡大縮小になり、線を引きません。指で描いている途中で2本目の指が触れると、その線を取り消して拡大縮小だけにします。", "ショートカット設定で「元に戻す」「やり直す」を割り当てられるようにしました。", "複数行の自動配置メモで2行目以降が切れていたのを直しました。"]],
@@ -4177,6 +4179,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "カメラ記号・持続線・メモの連結", ["設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。", "設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。", "つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。", "マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。", "端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。"]],
       ],
       ko: [
+        ["ver997", "1코마 대사의 글자가 보이게 됨", ["1코마짜리 대사의 본문이 대사란에 나오도록 고쳤습니다."]],
         ["ver996", "세리후 시트가 대사를 읽음", ["세리후 시트 모드에서 대사란의 대사를 클릭하면 그 구간이 선택됩니다. 우클릭하면 바로 세리후 시트가 열립니다.", "배치에 「대사에서」를 추가했습니다. 대사의 가나를 보고 입(닫힌 입·중간 입·연 입)을 2코마 또는 3코마 간격으로 넣습니다.", "입 번호와 설정은 다음에 열 때도 남습니다."]],
         ["ver994", "두 손가락 탭으로 실행취소", ["시트를 두 손가락으로 탭하면 실행취소, 이어서 한 번 더 탭하면 다시 실행합니다. 키보드 없이 쓸 수 있습니다."]],
         ["ver993", "iPad에서 손가락으로 확대·축소해도 선이 그어지지 않음", ["Apple Pencil로 그린 뒤에는 손가락으로 시트를 이동·확대·축소하고 선을 긋지 않습니다. 손가락으로 그리는 중에 두 번째 손가락이 닿으면 그 선을 지우고 확대·축소만 합니다.", "단축키 설정에서 「실행취소」「다시 실행」을 지정할 수 있습니다.", "여러 줄 자동 배치 메모의 둘째 줄부터 잘리던 문제를 고쳤습니다."]],
@@ -4312,6 +4315,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "카메라 표식·지속선·메모 연결", ["설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.", "설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. \"카메라→메모\"를 누를 필요가 없습니다.", "이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.", "표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.", "끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: \"・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr\")."]],
       ],
       zh: [
+        ["ver997", "1格台词的文字恢复显示", ["只有1格的台词，其文字现在会显示在台词栏中。"]],
         ["ver996", "台词表读取台词", ["在台词表模式下点击台词栏中的台词即可选中其范围，右键可直接打开台词表。", "分配新增“按台词”：根据台词的假名，以2格或3格间隔填入口型（闭口、中口、开口）。", "口型编号和设置会在下次打开时保留。"]],
         ["ver994", "双指轻点撤销", ["用双指轻点表格即可撤销，紧接着再点一次即可重做。无需键盘。"]],
         ["ver993", "在 iPad 上用手指缩放时不再画线", ["用 Apple Pencil 画过之后，手指用于移动和缩放表格，不再画线。用手指画线时如果第二根手指触碰屏幕，会取消这条线，只进行缩放。", "可以在快捷键设置中指定“撤销”“重做”。", "修正了多行自动排列备注从第二行起被截断的问题。"]],
@@ -15740,7 +15744,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     // 규칙의 이유는 원본 주석에 있다. 바꿀 때는 MoArt 와 함께 맞춘다 — 두 앱에서 같은 대사가 다른 입이 되면 안 된다.
     // 입: あ·お 연 입, い·え 중간 입, う·ん·っ 닫은 입. 부호는 쉼, 장음·같은 모음은 앞 입을 끈다. 간격(2·3코마) 격자에 맞추고
     // 같은 입이 이어지지 않게 한다(말하는 구간의 첫 입은 닫힘이 아니다, 양순음 앞은 닫기 쉽게).
-    // 글자 자리는 이 앱 대사란의 배치(getTimelineTextLayout)를 따른다 — 3코마 미만 대사만 MoArt(시작 min(1.5행, 길이/2))와 다르다.
+    // 글자 자리는 대사란의 배치(getTimelineTextLayout, MoArt 와 같은 식)를 따른다.
     const SERIFU_KANA_VOWEL = (function(){
       const rows = { a:'あかさたなはまやらわがざだばぱぁゃゎ', i:'いきしちにひみりぎじぢびぴぃゐ', u:'うくすつぬふむゆるぐずづぶぷぅゅゔ', e:'えけせてねへめれげぜでべぺぇゑ', o:'おこそとのほもよろをごぞどぼぽぉょ' };
       const map = new Map();
@@ -19188,9 +19192,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return Array.from(String(textValue || '')).map(function(ch){ return ch === ' ' ? ' ' : ch; });
     }
 
+    // 첫 글자는 1.5행(짧은 구간은 가운데) — 1코마 대사는 1.5행이 구간 밖이라 본문이 그려지지 않았다. MoArt gengaDialogueTextLayout 과 같은 식.
     function getTimelineTextLayout(totalHeight, rowH, charCount) {
       if (!charCount) return null;
-      const startOffset = rowH * 1.5;
+      const startOffset = Math.min(rowH * 1.5, totalHeight / 2);
       const endOffset = Math.max(startOffset, totalHeight - rowH * 0.6);
       const rawStep = charCount > 1 ? (endOffset - startOffset) / (charCount - 1) : 0;
       return { startOffset:startOffset, step:Math.min(rowH * 3, rawStep) };
