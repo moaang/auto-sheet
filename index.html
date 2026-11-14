@@ -2603,7 +2603,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '994';
+    const APP_VERSION = '995';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -2938,7 +2938,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       csv:Object.values(CSV_SETTINGS_FIELDS).map(function(field){ return field[0]; }),
       csvBuffer:["csvFileBuffer"],
       csvGenerated:["lastCsvGeneratedDialogLines","lastCsvGeneratedCameraLines"],
-      guides:["serifuSheetGuides"],
       readability:["cellReadabilityLarge"],
       columns:["cellColumnCount","inbetweenColumnCount"],
       columnOrder:["cellDisplayOrder"],
@@ -2955,11 +2954,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       loadReset:["previewSpacePanKey","shakuFlash","shakuMode","shakuSelection","textMemoEditMode"]
     };
     const SHEET_STATE_SCOPES = {
-      settings:["csv","csvBuffer","guides","readability","columns","columnOrder","douga","overrides","paperImage","paperOutput","paperLayout","memo","pastedImages","workPreferences","loadReset"],
-      csv:["csv","csvBuffer","csvGenerated","columnOrder","douga","guides","overrides"],
-      historySource:["csv","csvBuffer","csvGenerated","guides","readability"],
+      settings:["csv","csvBuffer","readability","columns","columnOrder","douga","overrides","paperImage","paperOutput","paperLayout","memo","pastedImages","workPreferences","loadReset"],
+      csv:["csv","csvBuffer","csvGenerated","columnOrder","douga","overrides"],
+      historySource:["csv","csvBuffer","csvGenerated","readability"],
       content:["columns","columnOrder","douga","overrides"],
-      snapshot:["csv","csvBuffer","csvGenerated","guides","readability","columns","columnOrder","douga","overrides","paperImage","paperOutput","paperLayout","memo","pastedImages","stages","workPreferences","renderContext"]
+      snapshot:["csv","csvBuffer","csvGenerated","readability","columns","columnOrder","douga","overrides","paperImage","paperOutput","paperLayout","memo","pastedImages","stages","workPreferences","renderContext"]
     };
     const SHEET_HEADER_INPUTS = ['episode','title','cutNo','seconds','frames','author','page'];
     const SHEET_COMMAND_INPUTS = { timeline:'timelineCommandInput', csv:'csvCommandEdit', dialog:'dialogManual', camera:'cameraManual' };
@@ -2985,7 +2984,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         inlineTextEditor: null,
         speakerSuffixMenu: null,
         serifuMode: false,
-        serifuRangeAnchor: null,
         serifuRangeDrag: null,
         serifuRangeSelection: null,
         serifuRangeContextMenu: null,
@@ -3091,7 +3089,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       cellColumnCount: 8,
       inbetweenColumnCount: 0,
       cellDisplayOrder: [],
-      serifuSheetGuides: [],
       layoutBoxes: {},
       layoutGrid: null,
       paperGeneratedOutput: null,
@@ -12902,14 +12899,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       prepareTouchDragHit(hit);
       hit.setAttribute('data-inline-editable', 'shift-only');
       hit.setAttribute('title', getUiText('editCelLabel'));
-      attachSerifuEmptyRangeDrag(hit, entry, absFrame, options.dragRange || {});
       hit.addEventListener('click', function(event){
-        if (handleSerifuRangeShiftClick(event, entry, absFrame)) return;
         if (state.suppressNextClick || event.shiftKey) return;
         event.preventDefault();
         event.stopPropagation();
         if (event.stopImmediatePropagation) event.stopImmediatePropagation();
-        setSerifuRangeAnchor(entry, absFrame, { armed:true });
         openInlineTextEditor(hit, {
           get:function(){ return ''; },
           set:function(v){ updateCommandFrameTokenByEntry(entry, absFrame, v); }
@@ -12920,7 +12914,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     function openCellFrameTextEditor(hitNode, entry, absFrame, initialValue, event, preserveCross) {
       if (!hitNode || !entry) return;
-      setSerifuRangeAnchor(entry, absFrame, { armed:true });
       openInlineTextEditor(hitNode, {
         get:function(){ return initialValue == null ? '' : String(initialValue); },
         set:function(v){
@@ -12954,14 +12947,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       hit.setAttribute('data-inline-editable', 'shift-only');
       hit.setAttribute('title', options.title || getUiText('editTextMark'));
       const contextAction = typeof options.onShiftClick === 'function' ? options.onShiftClick : options.onClick;
-      hit.addEventListener('pointerdown', function(event){
-        if (handleSerifuRangeShiftClick(event, entry, absFrame)) return;
-      }, { passive:false });
       attachContextAction(hit, contextAction);
       if (options.dragRange) attachCellLongPressDrag(hit, entry, absFrame, options.dragRange, options.dragOptions || {});
       hit.addEventListener('click', function(event){
         if (state.suppressNextClick) return;
-        if (handleSerifuRangeShiftClick(event, entry, absFrame)) return;
         if (event.shiftKey) {
           const shiftAction = typeof options.onShiftClick === 'function' ? options.onShiftClick : options.onClick;
           if (typeof shiftAction === 'function') {
@@ -15483,7 +15472,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       prepareTouchDragHit(node);
       if (options && options.tokenDragCursor) node.classList.add('cell-token-drag-hit');
       node.addEventListener('pointerdown', function(event){
-        if (handleSerifuRangeShiftClick(event, entry, frame)) return;
         beginCellLongPressDrag(event, entry, frame, range, options || {});
       }, { passive:false });
       return node;
@@ -15595,35 +15583,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return docs[state.lang] || docs.ja;
     }
 
-    // ══ 세리후 시트 ② 셀 범위 선택 — 클릭 · Shift · 드래그 · 컨텍스트 메뉴 ══════════════════════════════════════════════════════════════
+    // ══ 세리후 시트 ② 셀 범위 선택 — 드래그 · 컨텍스트 메뉴 ══════════════════════════════════════════════════════════════
     function normalizeSerifuFrame(frame) {
       return Math.max(1, Math.round(Number(frame || 1)));
-    }
-
-    function makeSerifuCellRef(entry, frame) {
-      if (!entry) return null;
-      return {
-        uid:String(entry.uid || ''),
-        label:String(entry.label || ''),
-        frame:normalizeSerifuFrame(frame),
-        pageIndex:state.currentPreviewPage || 0,
-        createdAt:Date.now(),
-        armed:true
-      };
-    }
-
-    function setSerifuRangeAnchor(entry, frame, options) {
-      const ref = makeSerifuCellRef(entry, frame);
-      if (!ref || !ref.uid) return null;
-      if (options && options.armed === false) ref.armed = false;
-      state.serifuRangeAnchor = ref;
-      return ref;
-    }
-
-    function isSerifuRangeAnchorArmed() {
-      const anchor = state.serifuRangeAnchor;
-      if (!anchor || !anchor.uid || !anchor.armed) return false;
-      return Date.now() - Number(anchor.createdAt || 0) < 12000;
     }
 
     function makeSerifuRangeSelection(anchor, entry, frame) {
@@ -15637,35 +15599,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         toFrame:Math.max(a, b),
         pageIndex:state.currentPreviewPage || 0
       };
-    }
-
-    function setSerifuRangeSelection(selection) {
-      if (!selection || !selection.uid) return false;
-      state.serifuRangeSelection = selection;
-      state.serifuRangeAnchor = {
-        uid:selection.uid,
-        label:selection.label || '',
-        frame:selection.fromFrame,
-        pageIndex:state.currentPreviewPage || 0,
-        createdAt:Date.now(),
-        armed:false
-      };
-      requestPreviewOverlay('range');
-      return true;
-    }
-
-    function handleSerifuRangeShiftClick(event, entry, frame) {
-      if (!state.serifuMode) return false;
-      if (!event || !event.shiftKey || !entry || !isSerifuRangeAnchorArmed()) return false;
-      const selection = makeSerifuRangeSelection(state.serifuRangeAnchor, entry, frame);
-      if (!selection) return false;
-      event.preventDefault();
-      event.stopPropagation();
-      if (event.stopImmediatePropagation) event.stopImmediatePropagation();
-      if (state.inlineTextEditor) closeInlineTextEditor({ cancel:true, render:false });
-      setSerifuRangeSelection(selection);
-      suppressNextClickBriefly(300);
-      return true;
     }
 
     // Coordinate hit-test for the 口パク capture overlay: which cel column + frame is under the pointer.
@@ -15691,9 +15624,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     function beginSerifuRangeDrag(event, entry, frame, range) {
       if (!entry || !state.serifuMode || state.memoMode || state.positionMode || state.textMemoEditMode || state.textMemoEditor || state.shakuMode) return;
-      if (event.shiftKey || (event.button !== undefined && event.button !== 0)) return;
-      const anchor = setSerifuRangeAnchor(entry, frame, { armed:false });
-      if (!anchor) return;
+      if ((event.button !== undefined && event.button !== 0) || !String(entry.uid || '')) return;
       state.serifuRangeDrag = {
         pointerId:event.pointerId,
         entry:entry,
@@ -15764,15 +15695,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       document.documentElement.classList.remove('serifu-range-dragging');
     }
 
-    function attachSerifuEmptyRangeDrag(node, entry, frame, range) {
-      if (!node || !entry) return node;
-      node.addEventListener('pointerdown', function(event){
-        if (handleSerifuRangeShiftClick(event, entry, frame)) return;
-        beginSerifuRangeDrag(event, entry, frame, range || {});
-      }, { passive:false });
-      return node;
-    }
-
     function closeSerifuRangeContextMenu() {
       const menu = state.serifuRangeContextMenu;
       state.serifuRangeContextMenu = null;
@@ -15781,10 +15703,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     function clearSerifuRangeSelection(options) {
       const opts = options || {};
-      const hadState = !!(state.serifuRangeSelection || state.serifuRangeAnchor || state.serifuRangeContextMenu || state.serifuRangeDrag);
+      const hadState = !!(state.serifuRangeSelection || state.serifuRangeContextMenu || state.serifuRangeDrag);
       closeSerifuRangeContextMenu();
       cancelSerifuRangeDrag();
-      state.serifuRangeAnchor = null;
       state.serifuRangeSelection = null;
       if (hadState && opts.render !== false) requestPreviewOverlay('range');
     }
@@ -16022,11 +15943,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       generated.generated.forEach(function(token, offset){
         const frame = from + offset;
         const existing = existingTokens[frame - 1] || '';
-        changes.push({ frame:frame, token:token, existing:existing, conflict:isOccupiedCommandToken(existing) && String(existing).trim() !== String(token).trim(), actual:true });
+        changes.push({ frame:frame, token:token, existing:existing, conflict:isOccupiedCommandToken(existing) && String(existing).trim() !== String(token).trim() });
       });
       const closeFrame = to + 1;
       const closeExisting = existingTokens[closeFrame - 1] || '';
-      changes.push({ frame:closeFrame, token:generated.closeToken, existing:closeExisting, conflict:isOccupiedCommandToken(closeExisting) && String(closeExisting).trim() !== String(generated.closeToken).trim(), close:true, actual:true });
+      changes.push({ frame:closeFrame, token:generated.closeToken, existing:closeExisting, conflict:isOccupiedCommandToken(closeExisting) && String(closeExisting).trim() !== String(generated.closeToken).trim(), close:true });
       const roles = (options.mouths || []).map(function(mouth){ return mouth.role || 'その他'; });
       return { valid:true, targetEntry:targetEntry, mouthTokens:generated.mouthTokens, roles:roles, changes:changes, distribution:options.distribution || 'provisional' };
     }
@@ -16065,7 +15986,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const preview = buildSerifuSheetPreview(selection, options);
       modal.preview = preview;
       modal.previewEl.textContent = formatSerifuSheetPreview(selection, preview);
-      const hasConflict = preview.valid && preview.changes.some(function(change){ return change.actual !== false && change.conflict; });
+      const hasConflict = preview.valid && preview.changes.some(function(change){ return change.conflict; });
       modal.warningEl.textContent = hasConflict ? getSerifuSheetTexts().conflict : '';
       modal.applyBtn.disabled = !preview.valid;
     }
@@ -16076,17 +15997,15 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (!preview || !preview.valid || !preview.targetEntry) return;
       const info = getCommandLineInfoForEntry(preview.targetEntry, true);
       if (!info) return;
-      preview.changes.filter(function(change){ return change.actual !== false; }).forEach(function(change){
+      preview.changes.forEach(function(change){
         const idx = normalizeSerifuFrame(change.frame) - 1;
         while (info.tokens.length <= idx) info.tokens.push('n');
         info.tokens[idx] = String(change.token || 'n');
         clearCellFrameTransientOverrides(preview.targetEntry, change.frame);
       });
-      state.serifuSheetGuides = [];
       writeCommandLineInfo(info);
       state.dotOverrides = {};
       state.serifuRangeSelection = null;
-      state.serifuRangeAnchor = null;
       closeSerifuSheetModal();
       render();
     }
@@ -16163,8 +16082,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       mountAppDialog(backdrop,{ onRequestClose:closeSerifuSheetModal,initialFocus:modal.count });
     }
 
-    // ══ 세리후 시트 ④ 선택 범위 오버레이 렌더 ═════════════════════════════════════════════════════════════════════════════════════
-    // ══ 口パク 세리프 범위 선택 캡처 레이어 — 메모 사이에 끼어든 남의 것 ═════════════════════════════════════════════════════════════════════
+    // ══ 세리후 시트 ④ 범위 선택 — 캡처 레이어 · 선택 오버레이 렌더 ═════════════════════════════════════════════════════════════════════
     function renderSerifuCaptureArea(interactive) {
       if (!interactive || !state.serifuMode || state.memoMode || state.positionMode || state.shakuMode || state.textMemoEditMode || currentSvgTarget !== svg) return;
       previewSelectionBlocks.forEach(function(item){
@@ -16188,16 +16106,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           if (sel) {
             const pt = getSvgPointFromPointerEvent(event);
             const rect = getSerifuSelectionRect(tempBlock, entries, sel);
-            if (rect) {
-              const btnSize = 16, pad = 6;
-              const bx = rect.x + rect.w + 4, by = rect.y + rect.h - btnSize;
-              if (pt.x >= bx - pad && pt.x <= bx + btnSize + pad && pt.y >= by - pad && pt.y <= by + btnSize + pad) { clearSerifuRangeSelection(); return; }
-            }
+            if (rect && isPointInSerifuClearButton(pt, rect)) { clearSerifuRangeSelection(); return; }
           }
           beginSerifuRangeDrag(event, info.entry, info.frame, info.range);
         }, { passive:false });
-        // Same reason: the overlay's own contextmenu listener never fires while this
-        // capture layer is on top, so the right-click → sheet menu lives here too.
+        // The selected range lies under this layer too, so the right-click → sheet menu lives here.
         attachContextAction(hit, function(event){
           const sel = state.serifuRangeSelection;
           if (!sel) return;
@@ -16224,6 +16137,17 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return { x:bounds.x1, y:y, w:bounds.x2 - bounds.x1, h:h, from:from, to:to };
     }
 
+    // 선택 범위 오른쪽 아래의 지우기(X) — 그리는 오버레이와, 그 위를 덮는 캡처 레이어의 판정이 같은 자리를 쓴다.
+    const SERIFU_CLEAR_BUTTON_SIZE = 16, SERIFU_CLEAR_BUTTON_HIT_PAD = 6;
+    function getSerifuClearButtonBox(rect) {
+      return { x:rect.x + rect.w + 4, y:rect.y + rect.h - SERIFU_CLEAR_BUTTON_SIZE, size:SERIFU_CLEAR_BUTTON_SIZE };
+    }
+
+    function isPointInSerifuClearButton(pt, rect) {
+      const b = getSerifuClearButtonBox(rect), pad = SERIFU_CLEAR_BUTTON_HIT_PAD;
+      return pt.x >= b.x - pad && pt.x <= b.x + b.size + pad && pt.y >= b.y - pad && pt.y <= b.y + b.size + pad;
+    }
+
     function renderSerifuRangeOverlay(block, entries, interactive) {
       renderPreviewOverlayGroup('data-serifu-selection-' + block.start, interactive, function(){
         const selection = state.serifuRangeSelection;
@@ -16231,7 +16155,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const box = getSerifuSelectionRect(block, entries, selection);
         if (!box) return;
         withDrawLayer('output', function(){
-          const hit = el('rect', {
+          appendSvgNode(el('rect', {
             x:box.x + 1,
             y:box.y + 1,
             width:Math.max(1, box.w - 2),
@@ -16243,14 +16167,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
             rx:4,
             ry:4,
             'data-serifu-range-overlay':'true',
-            'pointer-events':interactive ? 'all' : 'none'
-          });
-          if (interactive) {
-            hit.style.cursor = 'context-menu';
-            attachContextAction(hit, openSerifuRangeContextMenu);
-            hit.addEventListener('click', function(event){ event.preventDefault(); event.stopPropagation(); });
-          }
-          appendSvgNode(hit);
+            'pointer-events':'none'
+          }));
           appendSvgNode(el('text', {
             x:box.x + 5,
             y:Math.max(box.y + 14, getOutputRowTop(block, block.start, 'cell') + 14),
@@ -16261,10 +16179,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
             'pointer-events':'none'
           }, getSerifuSheetTexts().menu));
           if (interactive) {
-            const btnSize = 16;
-            const hitPad = 4;
-            const btnX = box.x + box.w + 4;
-            const btnY = box.y + box.h - btnSize;
+            const btn = getSerifuClearButtonBox(box), btnSize = btn.size, hitPad = SERIFU_CLEAR_BUTTON_HIT_PAD;
+            const btnX = btn.x, btnY = btn.y;
             const btnCx = btnX + btnSize / 2;
             const btnCy = btnY + btnSize / 2;
             const iconPad = 5;
@@ -17951,7 +17867,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           tag.bookOrder=sourceCount-1+(index+1)/(members.length+1);
         });
       });
-      if(modelChanged||bookNamesChanged){state.serifuRangeAnchor=null;state.serifuRangeSelection=null;render();}
+      if(modelChanged||bookNamesChanged){state.serifuRangeSelection=null;render();}
       else refreshLayerNameTagOverlay();
       commitContentHistory();
     }
@@ -19295,7 +19211,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const cameraArea = cameraRows.area, cameraRowH = cameraRows.rowH;
       const cameraConnections = prepareCameraConnections(cameraSegs);
       dialogSegs.forEach(function(seg){
-        if (isSilentDialogBlock(seg)) return;
         const from = Math.max(seg.from, block.start);
         const to = Math.min(seg.to, block.end);
         if (to < from) return;
@@ -19711,7 +19626,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
                 attachCellLongPressDrag(hit, entry, absFrame, { minFrame:params.startFrame, maxFrame:params.startFrame + params.frameCount - 1 }, { block:tempBlock, colIndex:colIndex });
                 attachContextAction(hit, function(contextEvent){ openCellFrameTextEditor(hit, entry, absFrame, '', contextEvent, false); });
                 hit.addEventListener('click', function(event){
-                  if (handleSerifuRangeShiftClick(event, entry, absFrame)) return;
                   if (event.shiftKey) {
                     event.preventDefault();
                     event.stopPropagation();
@@ -19719,7 +19633,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
                     openCellFrameTextEditor(hit, entry, absFrame, '', event, false);
                     return;
                   }
-                  setSerifuRangeAnchor(entry, absFrame, { armed:true });
                   handleDotClick(event, entry, absFrame, baseLayer);
                 });
                 appendSvgNode(hit);
@@ -19759,7 +19672,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
                 attachContextAction(labelNode, function(contextEvent){ handleCellMarkerClick(contextEvent, entry, absFrame, seg, key); });
               labelNode.addEventListener('click', function(event){
                 if (state.suppressNextClick) return;
-                if (handleSerifuRangeShiftClick(event, entry, absFrame)) return;
                 if (event.shiftKey) {
                   handleCellMarkerClick(event, entry, absFrame, seg, key);
                   return;
@@ -19767,7 +19679,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
                   event.preventDefault();
                   event.stopPropagation();
                   if (event.stopImmediatePropagation) event.stopImmediatePropagation();
-                  setSerifuRangeAnchor(entry, absFrame, { armed:true });
                   openInlineTextEditor(labelNode, labelEditConfig, event);
                 });
               }
@@ -19810,7 +19721,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
               attachCellLongPressDrag(dotHit, entry, absFrame, { minFrame:params.startFrame, maxFrame:params.startFrame + params.frameCount - 1 }, { tokenDragCursor:true, block:tempBlock, colIndex:colIndex });
               attachContextAction(dotHit, function(contextEvent){ openCellFrameTextEditor(dotHit, entry, absFrame, '', contextEvent, false); });
               dotHit.addEventListener('click', function(event){
-                if (handleSerifuRangeShiftClick(event, entry, absFrame)) return;
                 if (event.shiftKey) {
                   event.preventDefault();
                   event.stopPropagation();
@@ -19818,7 +19728,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
                   openCellFrameTextEditor(dotHit, entry, absFrame, '', event, false);
                   return;
                 }
-                setSerifuRangeAnchor(entry, absFrame, { armed:true });
                 handleDotClick(event, entry, absFrame, baseLayer);
               });
               appendSvgNode(dotHit);
@@ -19980,7 +19889,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       attachCellLongPressDrag(hit, entry, frame, { minFrame:block.start, maxFrame:block.end }, { block:block, colIndex:columnIndex });
       attachContextAction(hit, function(contextEvent){ openCellFrameTextEditor(hit, entry, frame, '', contextEvent, false); });
       hit.addEventListener('click', function(event){
-        if (handleSerifuRangeShiftClick(event, entry, frame)) return;
         if (event.shiftKey) {
           event.preventDefault();
           event.stopPropagation();
@@ -19988,7 +19896,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           openCellFrameTextEditor(hit, entry, frame, '', event, false);
           return;
         }
-        setSerifuRangeAnchor(entry, frame, { armed:true });
         handleDotClick(event, entry, frame, baseLayer);
       });
       appendSvgNode(hit);
@@ -26396,7 +26303,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         state.drawingCountPosition = ['top','bottom'].includes(ui.drawingCountPosition) ? ui.drawingCountPosition : '';
         state.dougaSheetEnabled = !!ui.dougaSheetEnabled;
         state.dougaSheetData = ui.dougaSheetData && typeof ui.dougaSheetData === 'object' ? ui.dougaSheetData : null;
-        state.serifuSheetGuides = [];
         state.shakuMode = false;
         state.shakuSelection = null;
         state.shakuFlash = null;
@@ -26984,7 +26890,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       state.cellDisplayOrder = [];
       state.dougaSheetEnabled = false;
       state.dougaSheetData = null;
-      state.serifuSheetGuides = [];
     }
 
     function prepareCsvImport(buffer, options) {
@@ -28346,8 +28251,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         undo: (state.contentUndoStack || []).slice(),
         redo: (state.contentRedoStack || []).slice(),
         baseline: contentHistoryBaseline,
-        // 내용 스냅샷 밖에 사는 것 — 취입이 비우거나(대사 가이드) 덮어쓰는(생성 줄 기록, 카메라 메모) 상태다.
-        serifuSheetGuides: cloneSheetData(state.serifuSheetGuides || []),
+        // 내용 스냅샷 밖에 사는 것 — 취입이 덮어쓰는(생성 줄 기록, 카메라 메모) 상태다.
         dialogLines: state.lastCsvGeneratedDialogLines,
         cameraLines: state.lastCsvGeneratedCameraLines,
         textMemoPages: cloneSheetData(state.textMemoPages || {}),
@@ -28378,7 +28282,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         });
         saveHeaderMemoryNow();
         applyContentSnapshot(backup.content, { render:false });
-        state.serifuSheetGuides = backup.serifuSheetGuides;
         state.lastCsvGeneratedDialogLines = backup.dialogLines;
         state.lastCsvGeneratedCameraLines = backup.cameraLines;
         state.textMemoPages = backup.textMemoPages;
@@ -28556,9 +28459,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       state.activeTimelineDrag = null;
       state.cellLabelDrag = null;
       state.cellLongPressDrag = null;
-      state.serifuRangeAnchor = null;
       state.serifuRangeSelection = null;
-      state.serifuSheetGuides = [];
       state.shakuMode = false;
       state.shakuDrag = null;
       state.shakuSelection = null;
