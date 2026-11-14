@@ -2318,6 +2318,16 @@
                 <input class="shortcut-input" data-shortcut-action="memoOff" readonly placeholder="None" />
                 <button class="shortcut-mini-btn" type="button" data-shortcut-clear="memoOff">Clear</button>
               </div>
+              <div class="shortcut-row">
+                <div class="shortcut-label"><span data-shortcut-label="undo">Undo</span></div>
+                <input class="shortcut-input" data-shortcut-action="undo" readonly placeholder="None" />
+                <button class="shortcut-mini-btn" type="button" data-shortcut-clear="undo">Clear</button>
+              </div>
+              <div class="shortcut-row">
+                <div class="shortcut-label"><span data-shortcut-label="redo">Redo</span></div>
+                <input class="shortcut-input" data-shortcut-action="redo" readonly placeholder="None" />
+                <button class="shortcut-mini-btn" type="button" data-shortcut-clear="redo">Clear</button>
+              </div>
             </div>
             <div class="shortcut-actions">
               <button id="shortcutSuggestedBtn" class="shortcut-mini-btn" type="button">Use Defaults</button>
@@ -2593,7 +2603,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '992';
+    const APP_VERSION = '993';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -2776,8 +2786,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     const PAPER_AUTO_ALIGN_PAIR_CANDIDATE_LIMIT = 72;
     const PAPER_AUTO_ALIGN_PAIR_CENTER_TOLERANCE = PAGE_W * 0.20;
     const MEMO_MIN_POINT_DISTANCE = 1.5;
-    const SHORTCUT_ACTIONS = ['brushCycle', 'eraserToggle', 'sizeDown', 'sizeUp', 'memoOff'];
-    const SHORTCUT_DEFAULTS = { brushCycle:'b', eraserToggle:'e', sizeDown:'[', sizeUp:']', memoOff:'backspace' };
+    const SHORTCUT_ACTIONS = ['brushCycle', 'eraserToggle', 'sizeDown', 'sizeUp', 'memoOff', 'undo', 'redo'];
+    // undo/redo 는 기본 키가 없다 — Ctrl/Cmd+Z 계열이 늘 동작하고, 한 글자 키를 정해 두면 시트 위 입력과 부딪힌다.
+    const SHORTCUT_DEFAULTS = { brushCycle:'b', eraserToggle:'e', sizeDown:'[', sizeUp:']', memoOff:'backspace', undo:'', redo:'' };
     let paperMemorySaveTimer = null;
     let paperMemoryWriteQueue = Promise.resolve();
     let paperMemoryRevision = 0;
@@ -3018,6 +3029,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         pastedImageDrag: null,
         memoPointerId: null,
         memoCurrentStroke: null,
+        memoStrokeStart: null,
+        memoPenSeen: false,
         manualSourceSyncTimer: null
       };
     }
@@ -3054,7 +3067,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       memoColor: '#111111',
       memoPenSize: 2,
       memoEraserSize: 100,
-      shortcuts: { brushCycle:'b', eraserToggle:'e', sizeDown:'[', sizeUp:']', memoOff:'backspace' },
+      shortcuts: { brushCycle:'b', eraserToggle:'e', sizeDown:'[', sizeUp:']', memoOff:'backspace', undo:'', redo:'' },
       sheetZoom: 1,
       paperImageDataUrl: '',
       paperImageMemoDataUrl: '',
@@ -3897,6 +3910,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver993", "Fingers no longer draw while you pinch to zoom on iPad", ["After you draw with Apple Pencil, fingers move and zoom the sheet instead of drawing. While drawing with a finger, a second finger touching the screen cancels that line, so a pinch leaves nothing behind.", "Undo and Redo can now be set in Shortcut Settings.", "Automatically placed memos with several lines no longer lose their lower lines."]],
         ["ver992", "Auto Align re-reads faint lines before the single-block reading", ["When the left and right blocks could not be paired because the printed lines came out faint (photos, re-saved scans), Auto Align now re-reads faint lines first instead of treating the paper as one wide block. Papers that really are one block are unchanged."]],
         ["ver991", "Mouth notes beside in-between dots from MoArt", ["Sheets sent from MoArt now show the mouth to draw (closed, mid, open) in small red text beside the in-between dot, inside the same cell."]],
         ["ver990", "Shorter camera guidance", ["Removed camera-term explanations beside the input examples and clarified the display-style selector."]],
@@ -4029,6 +4043,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "Camera marks, continuation lines and merged memos", ["Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.", "The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.", "The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.", "When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.", "Camera works that connect end to end now become a single memo line, for example \"・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr\"."]],
       ],
       ja: [
+        ["ver993", "iPadで指で拡大縮小しても線が引かれない", ["Apple Pencilで描いた後は、指はシートの移動・拡大縮小になり、線を引きません。指で描いている途中で2本目の指が触れると、その線を取り消して拡大縮小だけにします。", "ショートカット設定で「元に戻す」「やり直す」を割り当てられるようにしました。", "複数行の自動配置メモで2行目以降が切れていたのを直しました。"]],
         ["ver992", "自動整列で薄い線を先に読み直す", ["写真や保存し直しで線が薄くなり、左右のブロックの対応が取れない用紙を、1ブロックの用紙として扱う前に薄い線を読み直すようにしました。本当に1ブロックの用紙は今までどおりです。"]],
         ["ver991", "MoArtの中セリフを動画点の横に表示", ["MoArtから送ったシートで、動画点の横に描く口（トジ・中・アキ）を同じコマの中に赤い小さな文字で表示します。"]],
         ["ver990", "カメラ欄の案内を整理", ["入力例の用語説明を削除し、表示形式の選択案内を整理しました。"]],
@@ -4161,6 +4176,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "カメラ記号・持続線・メモの連結", ["設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。", "設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。", "つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。", "マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。", "端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。"]],
       ],
       ko: [
+        ["ver993", "iPad에서 손가락으로 확대·축소해도 선이 그어지지 않음", ["Apple Pencil로 그린 뒤에는 손가락으로 시트를 이동·확대·축소하고 선을 긋지 않습니다. 손가락으로 그리는 중에 두 번째 손가락이 닿으면 그 선을 지우고 확대·축소만 합니다.", "단축키 설정에서 「실행취소」「다시 실행」을 지정할 수 있습니다.", "여러 줄 자동 배치 메모의 둘째 줄부터 잘리던 문제를 고쳤습니다."]],
         ["ver992", "자동정렬이 흐린 선을 먼저 다시 읽음", ["사진·재저장으로 선이 흐려져 좌우 블록의 짝을 못 찾는 용지를 1블록 용지로 보기 전에 흐린 선을 먼저 다시 읽습니다. 실제 1블록 용지는 지금과 같습니다."]],
         ["ver991", "MoArt의 中セリフ를 동화점 옆에 표시", ["MoArt에서 보낸 시트에서 동화점 옆에 그릴 입(トジ・中・アキ)을 같은 칸 안에 빨간 작은 글씨로 보입니다."]],
         ["ver990", "카메라 안내 정리", ["예시 뒤의 용어 풀이를 빼고 표시 방식 선택 안내를 정리했습니다. 한국어 dot 안내는 동화 기호로 통일했습니다."]],
@@ -4293,6 +4309,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "카메라 표식·지속선·메모 연결", ["설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.", "설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. \"카메라→메모\"를 누를 필요가 없습니다.", "이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.", "표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.", "끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: \"・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr\")."]],
       ],
       zh: [
+        ["ver993", "在 iPad 上用手指缩放时不再画线", ["用 Apple Pencil 画过之后，手指用于移动和缩放表格，不再画线。用手指画线时如果第二根手指触碰屏幕，会取消这条线，只进行缩放。", "可以在快捷键设置中指定“撤销”“重做”。", "修正了多行自动排列备注从第二行起被截断的问题。"]],
         ["ver992", "自动对齐先重新读取浅线", ["照片或重新保存导致线条变浅、左右区块无法配对的用纸，会先重新读取浅线，再判断为单区块用纸。真正的单区块用纸保持不变。"]],
         ["ver991", "在动画点旁显示MoArt的中台词口型", ["从MoArt发送的摄影表会在动画点旁、同一格内用红色小字显示要画的口型（トジ・中・アキ）。"]],
         ["ver990", "精简摄影栏说明", ["移除输入示例旁的术语解释，明确显示样式选择说明。"]],
@@ -5507,7 +5524,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         title:'Shortcut Settings',
         hint:'',
         none:'None', pressKey:'Press key', clear:'Clear', clearAll:'Clear All', suggested:'Use Defaults',
-        labels:{ brushCycle:'Brush / Color Cycle', eraserToggle:'Eraser', sizeDown:"Smaller pen / eraser", sizeUp:"Larger pen / eraser", memoOff:"Memo off" },
+        labels:{ brushCycle:'Brush / Color Cycle', eraserToggle:'Eraser', sizeDown:"Smaller pen / eraser", sizeUp:"Larger pen / eraser", memoOff:"Memo off", undo:"Undo", redo:"Redo" },
         desc:{
           brushCycle:"Activate the pen · Press again to cycle colors",
           eraserToggle:"Activate the eraser · Press again to keep erasing",
@@ -5517,7 +5534,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         title:'ショートカット設定',
         hint:'',
         none:'未設定', pressKey:'キー入力', clear:'解除', clearAll:'すべて解除', suggested:'初期値に戻す',
-        labels:{ brushCycle:'ブラシ／色 切替', eraserToggle:'消しゴム', sizeDown:"ペン・消しゴムを小さく", sizeUp:"ペン・消しゴムを大きく", memoOff:"メモを終了" },
+        labels:{ brushCycle:'ブラシ／色 切替', eraserToggle:'消しゴム', sizeDown:"ペン・消しゴムを小さく", sizeUp:"ペン・消しゴムを大きく", memoOff:"メモを終了", undo:"元に戻す", redo:"やり直す" },
         desc:{
           brushCycle:"ペンを有効化 · 続けて押すと色を循環",
           eraserToggle:"消しゴムを有効化 · 再度押しても維持",
@@ -5527,7 +5544,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         title:'단축키 설정',
         hint:'',
         none:'미지정', pressKey:'키 입력', clear:'해제', clearAll:'전체 해제', suggested:'기본값으로',
-        labels:{ brushCycle:'브러시/색상 전환', eraserToggle:'지우개', sizeDown:"펜·지우개 작게", sizeUp:"펜·지우개 크게", memoOff:"메모 끄기" },
+        labels:{ brushCycle:'브러시/색상 전환', eraserToggle:'지우개', sizeDown:"펜·지우개 작게", sizeUp:"펜·지우개 크게", memoOff:"메모 끄기", undo:"실행취소", redo:"다시 실행" },
         desc:{
           brushCycle:"펜 켜기 · 다시 누르면 색상 순환",
           eraserToggle:"지우개 켜기 · 다시 눌러도 유지",
@@ -5537,7 +5554,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         title:'快捷键设置',
         hint:'',
         none:'未设置', pressKey:'按键', clear:'清除', clearAll:'全部清除', suggested:'恢复默认',
-        labels:{ brushCycle:'画笔/颜色切换', eraserToggle:'橡皮擦', sizeDown:"缩小画笔/橡皮擦", sizeUp:"放大画笔/橡皮擦", memoOff:"关闭备注" },
+        labels:{ brushCycle:'画笔/颜色切换', eraserToggle:'橡皮擦', sizeDown:"缩小画笔/橡皮擦", sizeUp:"放大画笔/橡皮擦", memoOff:"关闭备注", undo:"撤销", redo:"重做" },
         desc:{
           brushCycle:"启用画笔 · 再次按下循环切换颜色",
           eraserToggle:"启用橡皮擦 · 再次按下保持启用",
@@ -20418,11 +20435,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const gapRight = gap.x + gap.w, gapBottom = gap.y + gap.h;
       let colX = gap.x, colW = 0, y = gap.y;
       autos.forEach(function(memo){
-        const fontSize = Number(memo.fontSize) || 18;
-        const oneLine = Math.ceil(estimateTextMemoTextWidth(String(memo.text || ''), fontSize)) + 16; // +16 ≈ the box inset
-        const w = clampNumber(Math.min(oneLine, halfW), TEXT_MEMO_MIN_W, Math.max(TEXT_MEMO_MIN_W, gap.w), TEXT_MEMO_DEFAULT_W);
-        const lines = Math.max(1, Math.ceil(oneLine / Math.max(1, w)));
-        const h = Math.max(TEXT_MEMO_MIN_H, Math.round(fontSize * 1.5 * lines) + 10);
+        const size = measureTextMemoBox(memo, String(memo.text || ''), halfW);
+        const w = size.w, h = Math.max(TEXT_MEMO_MIN_H, size.h);
         // walk down this column, hopping over any manual memo in the way; fall to the next column at the bottom
         for (let guard = 0; guard < 400; guard++) {
           if (y + h > gapBottom) { colX += colW + AUTO_MEMO_COL_GAP; colW = 0; y = gap.y; }
@@ -21456,27 +21470,25 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return Math.ceil(maxLineW + 30);
     }
 
+    // 본문이 들어갈 상자 — 폭은 maxW 안의 getTextMemoFitWidth, 높이는 실제 줄바꿈 수. 손으로 맞추기와 자동 배치
+    //   (layoutAutoTextMemos)가 같이 쓴다. 자동 배치가 줄바꿈을 무시하고 폭 비율로 줄을 세던 탓에 여러 줄 메모의
+    //   둘째 줄부터 잘렸다(2026-11-09 관찰).
+    // ver875: 何行になるかは **折り返しと同じ関数** に訊く。文字数で見積もると実際の折り返しが増えても高さが足りない。
+    function measureTextMemoBox(memo, textValue, maxW) {
+      const fontSize = clampNumber(Number(memo && memo.fontSize) || 18, 8, 96);
+      const limit = Math.max(1, Number(maxW) || 1);
+      const w = clampNumber(getTextMemoFitWidth(memo, textValue), Math.min(TEXT_MEMO_MIN_W, limit), limit);
+      const lineCount = Math.max(1, wrapTextMemoLines(textValue, {
+        w:w, h:Number.MAX_SAFE_INTEGER, fontSize:fontSize, rich:memo && memo.rich
+      }).length);
+      return { w:w, h:Math.ceil(lineCount * fontSize * 1.25 + 14), fontSize:fontSize };
+    }
+
     function fitTextMemoBoxToContent(memo) {
       if (!memo) return false;
       const textValue = String(memo.text == null ? '' : memo.text);
       if (!textValue.length) return false;
-      const gap = getTextMemoGapRect();
-      const fontSize = clampNumber(Number(memo.fontSize) || 18, 8, 96);
-      const lineH = fontSize * 1.25;
-      const lines = getTextMemoRawLinesForFit(textValue);
-      const minW = Math.min(TEXT_MEMO_MIN_W, Math.max(1, Number(gap.w) || 1));
-      const maxW = Math.max(1, Number(gap.w) || 1);
-      const targetW = clampNumber(getTextMemoFitWidth(memo, textValue), minW, maxW);
-      // ver875: 何行になるかは **折り返しと同じ関数** に訊く。ここだけ文字数で見積もっていたので、
-      //   実際の折り返しが増えても高さが足りず、はみ出た行が描かれないままになっていた。
-      const visualLineCount = Math.max(1, wrapTextMemoLines(textValue, {
-        w:targetW, h:Number.MAX_SAFE_INTEGER, fontSize:fontSize, rich:memo.rich
-      }).length);
-      const next = Object.assign({}, memo, {
-        w:targetW,
-        h:Math.ceil(visualLineCount * lineH + 14),
-        fontSize:fontSize
-      });
+      const next = Object.assign({}, memo, measureTextMemoBox(memo, textValue, getTextMemoGapRect().w));
       const before = { x:memo.x, y:memo.y, w:memo.w, h:memo.h };
       Object.assign(memo, clampTextMemoBox(next));
       return Math.round(before.x) !== Math.round(memo.x) ||
@@ -23521,6 +23533,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     function beginPreviewGestureZoom(event) {
       if (!event || !previewWrapEl) return;
       event.preventDefault();
+      discardMemoTouchStroke();
       state.gestureStartZoom = clampSheetZoom(state.sheetZoom);
     }
 
@@ -23699,6 +23712,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         resetSheetZoom();
         return true;
       }
+      if ((state.shortcuts.undo && key === state.shortcuts.undo) || (state.shortcuts.redo && key === state.shortcuts.redo)) {
+        event.preventDefault();
+        if (!isEditorHistoryBlocked()) { if (key === state.shortcuts.undo) contentUndo(); else contentRedo(); }
+        return true;
+      }
       if (state.shortcuts.memoOff && key === state.shortcuts.memoOff) {
         event.preventDefault();
         deactivateMemoShortcut();
@@ -23867,6 +23885,22 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     function clearMemoPointerState() {
       state.memoPointerId = null;
       state.memoCurrentStroke = null;
+      state.memoStrokeStart = null;
+    }
+
+    // 두 손가락 확대·축소의 첫 손가락이 이미 긋기 시작한 선을 걷는다(손가락 획만, 시작 전 redo 도 돌려놓는다).
+    function discardMemoTouchStroke() {
+      const start = state.memoStrokeStart, stroke = state.memoCurrentStroke;
+      if (!start || !start.touch || !stroke) return;
+      const at = start.page.strokes.lastIndexOf(stroke);
+      if (at !== -1) start.page.strokes.splice(at, 1);
+      start.page.redo = start.redo;
+      if (memoCanvas.releasePointerCapture) {
+        try { memoCanvas.releasePointerCapture(state.memoPointerId); } catch (err) {}
+      }
+      clearMemoPointerState();
+      redrawMemoCanvas();
+      updateMemoUI();
     }
 
     function getMemoPointFromEvent(event) {
@@ -23881,12 +23915,16 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     function beginMemoStroke(event) {
+      if (event.pointerType === 'pen') state.memoPenSeen = true;
       if (!state.memoMode) return;
       if (isPreviewSpacePanActive()) {
         event.preventDefault();
         return;
       }
       if (event.button !== undefined && event.button !== 0) return;
+      // 손가락: Pencil 을 한 번 쓴 뒤로는 그리지 않고 화면 이동(beginPreviewPan)·확대(제스처)에 넘긴다.
+      // 둘째 손가락은 그리지 않는다 — 긋던 선은 미리보기 전체에서 받는 beginPreviewPan 이 걷는다.
+      if (event.pointerType === 'touch' && (state.memoPenSeen || !event.isPrimary)) return;
       event.preventDefault();
       commitContentHistory();
       const resized = updateMemoCanvasSize();
@@ -23903,6 +23941,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         lineEnd: null
       };
       if (stroke.shape === 'line') stroke.lineEnd = stroke.points[0];
+      state.memoStrokeStart = { touch:event.pointerType === 'touch', page:pageData, redo:pageData.redo };
       pageData.strokes.push(stroke);
       pageData.redo = [];
       state.memoPointerId = event.pointerId;
@@ -23957,8 +23996,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         }
         redrawMemoCanvas();
       }
-      state.memoPointerId = null;
-      state.memoCurrentStroke = null;
+      clearMemoPointerState();
       commitContentHistory();
       updateMemoUI();
     }
@@ -24034,11 +24072,13 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     function beginPreviewPan(event) {
+      // 둘째 손가락은 시트 밖 여백에 닿을 수도 있어 메모 캔버스가 아니라 여기서 본다(두 손가락 확대·축소).
+      if (event.pointerType === 'touch' && !event.isPrimary) discardMemoTouchStroke();
       if (state.activeTimelineDrag || state.layoutDrag) return;
       const spacePan = isPreviewSpacePanActive();
       const middlePan = event.button === 1; // wheel-click drags the canvas, like space-drag
-      // touch has no scrollbars/wheel — a plain one-finger drag pans (outside memo drawing)
-      const touchPan = event.pointerType === 'touch' && !state.memoMode;
+      // touch has no scrollbars/wheel — a plain one-finger drag pans (in memo mode only once the Pencil draws)
+      const touchPan = event.pointerType === 'touch' && (!state.memoMode || state.memoPenSeen);
       if (!previewWrapEl) return;
       if (event.button !== undefined && event.button !== 0 && !middlePan) return;
       if (!spacePan && !middlePan && !touchPan && (state.memoMode || Number(state.sheetZoom || 1) <= 1.001)) return;
