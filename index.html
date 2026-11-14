@@ -2603,7 +2603,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '995';
+    const APP_VERSION = '996';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3907,6 +3907,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver996", "Serifu Sheet reads the dialogue", ["In Serifu Sheet mode, click a line in the dialogue column to select its range; right-click opens Serifu Sheet right away.", "New placement \"From dialogue\" fills the mouth drawings from the kana of the dialogue (closed, mid, open) at a 2- or 3-frame interval.", "Serifu Sheet remembers your mouth numbers and settings for next time."]],
         ["ver994", "Two-finger tap to undo", ["Tap the sheet with two fingers to undo; tap again right away to redo. Works without a keyboard."]],
         ["ver993", "Fingers no longer draw while you pinch to zoom on iPad", ["After you draw with Apple Pencil, fingers move and zoom the sheet instead of drawing. While drawing with a finger, a second finger touching the screen cancels that line, so a pinch leaves nothing behind.", "Undo and Redo can now be set in Shortcut Settings.", "Automatically placed memos with several lines no longer lose their lower lines."]],
         ["ver992", "Auto Align re-reads faint lines before the single-block reading", ["When the left and right blocks could not be paired because the printed lines came out faint (photos, re-saved scans), Auto Align now re-reads faint lines first instead of treating the paper as one wide block. Papers that really are one block are unchanged."]],
@@ -4041,6 +4042,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "Camera marks, continuation lines and merged memos", ["Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.", "The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.", "The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.", "When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.", "Camera works that connect end to end now become a single memo line, for example \"・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr\"."]],
       ],
       ja: [
+        ["ver996", "セリフシートがセリフを読む", ["セリフシートモードでセリフ欄のセリフをクリックすると、その範囲を選びます。右クリックでそのままセリフシートを開きます。", "配置に「セリフから」を追加しました。セリフのかなから口（閉じ口・中口・開き口）を2コマまたは3コマ間隔で入れます。", "口の番号と設定は次に開いたときも残ります。"]],
         ["ver994", "2本指タップで元に戻す", ["シートを2本指でタップすると元に戻し、続けてもう一度タップするとやり直します。キーボードがなくても使えます。"]],
         ["ver993", "iPadで指で拡大縮小しても線が引かれない", ["Apple Pencilで描いた後は、指はシートの移動・拡大縮小になり、線を引きません。指で描いている途中で2本目の指が触れると、その線を取り消して拡大縮小だけにします。", "ショートカット設定で「元に戻す」「やり直す」を割り当てられるようにしました。", "複数行の自動配置メモで2行目以降が切れていたのを直しました。"]],
         ["ver992", "自動整列で薄い線を先に読み直す", ["写真や保存し直しで線が薄くなり、左右のブロックの対応が取れない用紙を、1ブロックの用紙として扱う前に薄い線を読み直すようにしました。本当に1ブロックの用紙は今までどおりです。"]],
@@ -4175,6 +4177,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "カメラ記号・持続線・メモの連結", ["設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。", "設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。", "つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。", "マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。", "端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。"]],
       ],
       ko: [
+        ["ver996", "세리후 시트가 대사를 읽음", ["세리후 시트 모드에서 대사란의 대사를 클릭하면 그 구간이 선택됩니다. 우클릭하면 바로 세리후 시트가 열립니다.", "배치에 「대사에서」를 추가했습니다. 대사의 가나를 보고 입(닫힌 입·중간 입·연 입)을 2코마 또는 3코마 간격으로 넣습니다.", "입 번호와 설정은 다음에 열 때도 남습니다."]],
         ["ver994", "두 손가락 탭으로 실행취소", ["시트를 두 손가락으로 탭하면 실행취소, 이어서 한 번 더 탭하면 다시 실행합니다. 키보드 없이 쓸 수 있습니다."]],
         ["ver993", "iPad에서 손가락으로 확대·축소해도 선이 그어지지 않음", ["Apple Pencil로 그린 뒤에는 손가락으로 시트를 이동·확대·축소하고 선을 긋지 않습니다. 손가락으로 그리는 중에 두 번째 손가락이 닿으면 그 선을 지우고 확대·축소만 합니다.", "단축키 설정에서 「실행취소」「다시 실행」을 지정할 수 있습니다.", "여러 줄 자동 배치 메모의 둘째 줄부터 잘리던 문제를 고쳤습니다."]],
         ["ver992", "자동정렬이 흐린 선을 먼저 다시 읽음", ["사진·재저장으로 선이 흐려져 좌우 블록의 짝을 못 찾는 용지를 1블록 용지로 보기 전에 흐린 선을 먼저 다시 읽습니다. 실제 1블록 용지는 지금과 같습니다."]],
@@ -4309,6 +4312,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "카메라 표식·지속선·메모 연결", ["설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.", "설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. \"카메라→메모\"를 누를 필요가 없습니다.", "이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.", "표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.", "끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: \"・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr\")."]],
       ],
       zh: [
+        ["ver996", "台词表读取台词", ["在台词表模式下点击台词栏中的台词即可选中其范围，右键可直接打开台词表。", "分配新增“按台词”：根据台词的假名，以2格或3格间隔填入口型（闭口、中口、开口）。", "口型编号和设置会在下次打开时保留。"]],
         ["ver994", "双指轻点撤销", ["用双指轻点表格即可撤销，紧接着再点一次即可重做。无需键盘。"]],
         ["ver993", "在 iPad 上用手指缩放时不再画线", ["用 Apple Pencil 画过之后，手指用于移动和缩放表格，不再画线。用手指画线时如果第二根手指触碰屏幕，会取消这条线，只进行缩放。", "可以在快捷键设置中指定“撤销”“重做”。", "修正了多行自动排列备注从第二行起被截断的问题。"]],
         ["ver992", "自动对齐先重新读取浅线", ["照片或重新保存导致线条变浅、左右区块无法配对的用纸，会先重新读取浅线，再判断为单区块用纸。真正的单区块用纸保持不变。"]],
@@ -15501,6 +15505,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           distribute:'Placement',
           provisional:'Temp entry',
           random:'Random',
+          dialogue:'From dialogue',
+          step:'Interval',
+          frames2:'2 frames',
+          frames3:'3 frames',
+          noDialogue:'No dialogue overlaps this range.',
           preview:'Preview',
           cancel:'Cancel',
           apply:'Apply',
@@ -15524,6 +15533,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           distribute:'配置',
           provisional:'仮置き',
           random:'ランダム配置',
+          dialogue:'セリフから',
+          step:'間隔',
+          frames2:'2コマ',
+          frames3:'3コマ',
+          noDialogue:'この範囲にセリフがありません。',
           preview:'プレビュー',
           cancel:'キャンセル',
           apply:"反映",
@@ -15547,6 +15561,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           distribute:'배치',
           provisional:'임시 배치',
           random:'랜덤 배치',
+          dialogue:'대사에서',
+          step:'간격',
+          frames2:'2코마',
+          frames3:'3코마',
+          noDialogue:'이 범위에 대사가 없습니다.',
           preview:"미리보기",
           cancel:'취소',
           apply:"적용",
@@ -15570,6 +15589,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           distribute:'分配',
           provisional:'临时放置',
           random:'随机分配',
+          dialogue:'按台词',
+          step:'间隔',
+          frames2:'2格',
+          frames3:'3格',
+          noDialogue:'此范围内没有台词。',
           preview:'预览',
           cancel:'取消',
           apply:"应用",
@@ -15710,7 +15734,224 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (hadState && opts.render !== false) requestPreviewOverlay('range');
     }
 
-    // ══ 세리후 시트 ③ 모달 — 입 그림 생성(랜덤·가입력) · 프리뷰 · 적용 ═══════════════════════════════════════════════════════════════════
+    // ══ 세리후 시트 ③ 대사 가나 → 입 모양 — MoArt 립싱크 가나 추정의 기본 3입판 ═══════════════════════════════════════════════════
+    // 이식 원본: MoArt #conte/moart.html 의 gengaLipsyncMoras · gengaLipsyncKanaTrack · gengaLipsyncAlignShapes(고정 격자) ·
+    // gengaLipsyncAvoidRepeat · gengaLipsyncOrderShapes(2026-11-15). 확장·사용자 입과 음성은 옮기지 않았다(사용자 결정 2026-11-15).
+    // 규칙의 이유는 원본 주석에 있다. 바꿀 때는 MoArt 와 함께 맞춘다 — 두 앱에서 같은 대사가 다른 입이 되면 안 된다.
+    // 입: あ·お 연 입, い·え 중간 입, う·ん·っ 닫은 입. 부호는 쉼, 장음·같은 모음은 앞 입을 끈다. 간격(2·3코마) 격자에 맞추고
+    // 같은 입이 이어지지 않게 한다(말하는 구간의 첫 입은 닫힘이 아니다, 양순음 앞은 닫기 쉽게).
+    // 글자 자리는 이 앱 대사란의 배치(getTimelineTextLayout)를 따른다 — 3코마 미만 대사만 MoArt(시작 min(1.5행, 길이/2))와 다르다.
+    const SERIFU_KANA_VOWEL = (function(){
+      const rows = { a:'あかさたなはまやらわがざだばぱぁゃゎ', i:'いきしちにひみりぎじぢびぴぃゐ', u:'うくすつぬふむゆるぐずづぶぷぅゅゔ', e:'えけせてねへめれげぜでべぺぇゑ', o:'おこそとのほもよろをごぞどぼぽぉょ' };
+      const map = new Map();
+      Object.keys(rows).forEach(function(v){ Array.from(rows[v]).forEach(function(ch){ map.set(ch, v); }); });
+      return map;
+    })();
+    const SERIFU_VOWEL_SHAPE = { a:'open', o:'open', i:'mid', e:'mid', u:'closed' };
+    const SERIFU_OPEN_RANK = { closed:0, mid:1, open:2 };
+    const SERIFU_BILABIAL = new Set(Array.from('まみむめもばびぶべぼぱぴぷぺぽ'));
+    const SERIFU_SMALL_KANA = new Set(Array.from('ぁぃぅぇぉゃゅょゎ'));
+    const SERIFU_LONG_MARK = new Set(['ー', '〜', '~']);
+    const SERIFU_BARE_VOWEL = new Set(Array.from('あいうえお'));
+    const SERIFU_STRETCH_MIN = 3, SERIFU_ORDER_MONO = 0.6, SERIFU_FLAP_FREE = 4, SERIFU_FLAP_STEP = 0.4, SERIFU_BILABIAL_BONUS = 0.9;
+
+    function serifuHira(ch) {
+      const c = String(ch || '').normalize('NFKC');
+      const code = c.charCodeAt(0);
+      return (c.length === 1 && code >= 0x30A1 && code <= 0x30F6) ? String.fromCharCode(code - 0x60) : c;
+    }
+
+    function serifuIsMark(raw) { return !SERIFU_LONG_MARK.has(serifuHira(raw)) && /^[\p{P}\p{S}\p{Z}\s]$/u.test(raw); }
+
+    // 앞 모라를 끄는 글자: 장음, 같은 모음, お단 뒤 う · え단 뒤 い(ろう=ろー・せい=せー).
+    function serifuExtendsMora(prevVowel, c) {
+      if (SERIFU_LONG_MARK.has(c)) return true;
+      if (!prevVowel || !SERIFU_BARE_VOWEL.has(c)) return false;
+      const v = SERIFU_KANA_VOWEL.get(c);
+      return v === prevVowel || (prevVowel === 'o' && v === 'u') || (prevVowel === 'e' && v === 'i');
+    }
+
+    // 대사 한 줄(len 코마)의 코마별 입과 말함 여부. 글자 자리는 대사란에 그리는 자리(getTimelineTextLayout)와 같다.
+    function buildSerifuKanaTrack(text, len, step) {
+      const chars = dialogCharsFromText(text), layout = getTimelineTextLayout(len, 1, chars.length), moras = [];
+      let cut = false;   // 바로 앞이 부호(쉼) — 앞 모라와 잇지 않는다
+      chars.forEach(function(raw, i){
+        const off = layout.startOffset - 0.5 + layout.step * i;
+        if (serifuIsMark(raw)) { cut = true; return; }
+        const c = serifuHira(raw), last = cut ? null : moras[moras.length - 1];
+        cut = false;
+        if (SERIFU_SMALL_KANA.has(c) && last) {
+          const v = SERIFU_KANA_VOWEL.get(c);
+          if (v) { last.vowel = v; last.shape = SERIFU_VOWEL_SHAPE[v]; }
+          last.tail = off;
+          return;
+        }
+        const cont = !!last && serifuExtendsMora(last.vowel, c);
+        let shape = 'mid', vowel = null;   // 읽기를 모르는 글자(한자 등)는 말하는 중으로만 본다
+        if (SERIFU_LONG_MARK.has(c) || cont) { shape = last ? last.shape : 'mid'; vowel = last ? last.vowel : null; }
+        else if (c === 'っ' || c === 'ん') shape = 'closed';
+        else if (SERIFU_KANA_VOWEL.has(c)) { vowel = SERIFU_KANA_VOWEL.get(c); shape = SERIFU_VOWEL_SHAPE[vowel]; }
+        moras.push({ off:off, tail:off, shape:shape, vowel:vowel, bilabial:SERIFU_BILABIAL.has(c),
+          bare:SERIFU_LONG_MARK.has(c) || SERIFU_BARE_VOWEL.has(c), run:cont ? last.run : moras.length + 1 });
+      });
+      const arr = new Array(len).fill('closed'), speak = new Array(len).fill(false), stretch = new Array(len).fill(0), lips = new Set();
+      const runSize = new Map();
+      moras.forEach(function(m){ runSize.set(m.run, (runSize.get(m.run) || 0) + 1); });
+      const starts = moras.map(function(m){ return Math.max(0, Math.min(len - 1, Math.round(m.off) - 1)); });
+      moras.forEach(function(m, k){
+        // 다음 모라 시작까지 잇되 마지막 글자에서 간격(step)을 넘기지 않는다 — 넘친 칸은 무음(닫힘)이다.
+        const next = k + 1 < moras.length ? Math.max(starts[k] + 1, starts[k + 1]) : len;
+        const end = Math.min(next, Math.max(starts[k], Math.round(m.tail) - 1) + step, len);
+        const run = (runSize.get(m.run) || 0) >= SERIFU_STRETCH_MIN ? m.run : 0;
+        const head = run > 0 && m.run === k + 1 && !m.bare && SERIFU_VOWEL_SHAPE[m.vowel] === 'open';   // もおお → 中・アキ・アキ
+        const shape = head ? 'mid' : m.vowel ? SERIFU_VOWEL_SHAPE[m.vowel] : m.shape;
+        for (let f = starts[k]; f < end; f++) { arr[f] = shape; speak[f] = true; stretch[f] = run; }
+        if (m.bilabial && shape !== 'closed') lips.add(starts[k]);
+      });
+      return { arr:arr, speak:speak, stretch:stretch, lips:lips };
+    }
+
+    // 간격 격자: 짧은 무음은 앞 입으로 잇고, 칸마다 말함·쉼을 다수결, 말하는 칸은 가장 많은 입.
+    function alignSerifuKanaTrack(track, step) {
+      const out = track.arr.slice(), len = out.length, talk = track.speak.slice(), str = track.stretch.slice();
+      for (let i = 0; i < len;) {
+        if (talk[i] || out[i] !== 'closed') { i++; continue; }
+        let j = i; while (j < len && !talk[j] && out[j] === 'closed') j++;
+        if (i > 0 && talk[i - 1] && j < len && j - i < step) for (let k = i; k < j; k++) { out[k] = out[i - 1]; talk[k] = true; str[k] = str[i - 1]; }
+        i = j;
+      }
+      const res = new Array(len).fill('closed'), cells = [];
+      for (let start = 0; start < len; start += step) cells.push([start, Math.min(len, start + step)]);
+      if (cells.length > 1 && cells[cells.length - 1][1] - cells[cells.length - 1][0] < step) { cells[cells.length - 2][1] = len; cells.pop(); }
+      cells.forEach(function(c){
+        const count = new Map(); let n = 0, best = 'closed', bestN = 0, at = c[0];
+        for (let k = c[0]; k < c[1]; k++) if (talk[k]) { n++; const v = (count.get(out[k]) || 0) + 1; count.set(out[k], v); if (v > bestN) { best = out[k]; bestN = v; at = k; } }
+        const on = n * 2 >= c[1] - c[0];
+        for (let k = c[0]; k < c[1]; k++) { res[k] = on ? best : 'closed'; talk[k] = on; str[k] = on ? str[at] : 0; }
+      });
+      return avoidSerifuRepeat(res, talk, step, str, track.lips);
+    }
+
+    // 같은 입 덩어리를 간격 단위 사건으로 나누고, 말하는 사건이 이어진 구간마다 비용이 가장 작은 입 열을 고른다.
+    // 늘임 안은 같은 입을 이어도 되고, 늘임 바로 뒤가 쉼이면 끝 사건을 한 단계 내려 닫는다.
+    function avoidSerifuRepeat(res, talk, step, stretch, lips) {
+      const len = res.length, ev = [];
+      for (let i = 0; i < len;) {
+        let j = i; while (j < len && res[j] === res[i] && talk[j] === talk[i]) j++;
+        for (let a = i; a < j;) {
+          let b = Math.min(j, a + step);
+          if (j - b < step) b = j;
+          ev.push({ a:a, b:b, shape:res[i], talk:talk[i], run:stretch[a] && stretch[a] === stretch[b - 1] ? stretch[a] : 0 });
+          a = b;
+        }
+        i = j;
+      }
+      const out = res.slice();
+      for (let i = 0; i < ev.length;) {
+        if (!ev[i].talk) { i++; continue; }
+        let j = i; while (j < ev.length && ev[j].talk) j++;
+        const seg = ev.slice(i, j);
+        const hold = seg.map(function(e, n){ return n > 0 && e.run > 0 && seg[n - 1].run === e.run; });
+        const fixed = seg.map(function(e, n){
+          if (!hold[n] || n + 1 < seg.length) return null;
+          return SERIFU_OPEN_RANK[e.shape] === 2 ? 'mid' : SERIFU_OPEN_RANK[e.shape] === 1 ? 'closed' : null;
+        });
+        const bilab = seg.map(function(e){ return lips.has(e.b); });
+        const shapes = orderSerifuShapes(seg.map(function(e, n){ return fixed[n] || e.shape; }), hold, fixed, bilab);
+        seg.forEach(function(e, n){ for (let k = e.a; k < e.b; k++) out[k] = shapes[n]; });
+        i = j;
+      }
+      return out;
+    }
+
+    // 비용: 같은 입 연속 금지 / 원래 입에서 벗어난 단계 / 닫힘·중간·열림이 차례로 셋 / 닫힘 없이 오래 뻐끔거림.
+    // 상태 = (앞 입, 지금 입, 닫힘 없이 이어진 사건 수).
+    function orderSerifuShapes(want, hold, fixed, bilab) {
+      const R = SERIFU_OPEN_RANK, n = want.length;
+      const cands = function(i){ return fixed[i] ? [fixed[i]] : i === 0 ? ['mid', 'open'] : ['mid', 'open', 'closed']; };
+      const local = function(i, sh){
+        if (sh === want[i]) return 0;
+        const bonus = sh === 'closed' && bilab[i] ? SERIFU_BILABIAL_BONUS : 0;
+        return Math.max(0, Math.abs(R[sh] - R[want[i]]) * (1 + 0.001 * (n - i)) + (sh === 'closed' ? 0.01 : 0) - bonus);
+      };
+      const streakOf = function(prev, i, c){ return c === 'closed' ? 0 : (hold[i] ? prev : Math.min(prev + 1, 64)); };
+      const flap = function(st){ return st > SERIFU_FLAP_FREE ? (st - SERIFU_FLAP_FREE) * SERIFU_FLAP_STEP : 0; };
+      const stages = [];
+      let dp = new Map();
+      cands(0).forEach(function(c){ const s0 = streakOf(0, 0, c); dp.set('|' + c + '|' + s0, { cost:local(0, c) + flap(s0), back:null, p:null, c:c, s:s0 }); });
+      stages.push(dp);
+      for (let i = 1; i < n; i++) {
+        const next = new Map();
+        dp.forEach(function(st, key){
+          cands(i).forEach(function(c){
+            if (c === st.c && !hold[i]) return;
+            const s1 = streakOf(st.s, i, c);
+            let cost = st.cost + local(i, c) + (hold[i] ? 0 : flap(s1));
+            if (st.p !== null) {
+              const a = R[st.p], b = R[st.c], x = R[c];
+              if ((a < b && b < x) || (a > b && b > x)) cost += SERIFU_ORDER_MONO;
+            }
+            const k = st.c + '|' + c + '|' + s1, cur = next.get(k);
+            if (!cur || cost < cur.cost - 1e-9) next.set(k, { cost:cost, back:key, p:st.c, c:c, s:s1 });
+          });
+        });
+        dp = next; stages.push(dp);
+      }
+      let key = null, best = Infinity;
+      dp.forEach(function(st, k){ if (st.cost < best - 1e-9) { best = st.cost; key = k; } });
+      const shapes = new Array(n);
+      for (let i = n - 1; i >= 0; i--) { const st = stages[i].get(key); shapes[i] = st.c; key = st.back; }
+      return shapes;
+    }
+
+    // 범위(from~to)에 걸친 본문 있는 대사.
+    function getSerifuDialogueBlocks(from, to) {
+      const model = getSyncedRenderModel();
+      return ((model && model.dialogBlocks) || []).filter(function(b){ return b.to >= from && b.from <= to && String(b.text || '').trim(); });
+    }
+
+    // 범위(from~to)에 걸친 대사들의 코마별 입. 대사마다 자기 시작에서 격자를 잡는다. 걸친 대사가 없으면 null.
+    function buildSerifuDialogueShapes(from, to, step) {
+      const blocks = getSerifuDialogueBlocks(from, to);
+      if (!blocks.length) return null;
+      const shapes = new Array(to - from + 1).fill('closed');
+      blocks.forEach(function(b){
+        const track = alignSerifuKanaTrack(buildSerifuKanaTrack(String(b.text || ''), b.to - b.from + 1, step), step);
+        for (let f = Math.max(from, b.from); f <= Math.min(to, b.to); f++) shapes[f - from] = track[f - b.from];
+      });
+      return shapes;
+    }
+
+    // 입 모양 → 셀 번호: 창의 「입 모양」 역할이 정한다. 역할이 없는 모양은 번호 순서(닫힘·중간·열림)로 채운다.
+    const SERIFU_SHAPE_ROLES = { closed:'閉じ口', mid:'中口', open:'開き口' };
+    function makeSerifuShapeTokens(mouths) {
+      const list = (mouths || []).map(function(m){ return { token:sanitizeCommandToken(m.token), role:m.role }; }).filter(function(m){ return m.token; });
+      const out = {};
+      ['closed', 'mid', 'open'].forEach(function(shape, i){
+        const hit = list.find(function(m){ return m.role === SERIFU_SHAPE_ROLES[shape]; });
+        out[shape] = hit ? hit.token : (list[Math.min(i, list.length - 1)] || { token:'1' }).token;
+      });
+      return out;
+    }
+
+    function normalizeSerifuStep(value) { return Number(value) === 2 ? 2 : 3; }
+
+    // 창에서 고른 값은 다음에 열 때 그대로 쓴다(이 기기의 브라우저에만, 시트에는 저장하지 않는다).
+    const SERIFU_SHEET_STORAGE_KEY = 'autoSheetSerifuSheet.v1';
+    function loadSerifuSheetDefaults() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(SERIFU_SHEET_STORAGE_KEY) || 'null');
+        return saved && typeof saved === 'object' ? saved : {};
+      } catch (err) { return {}; }
+    }
+
+    function saveSerifuSheetDefaults(options) {
+      try {
+        localStorage.setItem(SERIFU_SHEET_STORAGE_KEY, JSON.stringify({ mode:options.mode, targetUid:options.targetUid, count:options.count, mouths:options.mouths, distribution:options.distribution, step:options.step }));
+      } catch (err) {}
+    }
+
+    // ══ 세리후 시트 ④ 모달 — 입 그림 생성(대사·랜덤·가입력) · 프리뷰 · 적용 ═══════════════════════════════════════════════════════════════════
     function closeSerifuSheetModal() {
       const modal = state.serifuSheetModal;
       state.serifuSheetModal = null;
@@ -15878,13 +16119,13 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return pickRandomMouthToken(candidates, previous, events);
     }
 
-    function buildSerifuRandomEntryTokens(tokens, length) {
+    function buildSerifuRandomEntryTokens(tokens, length, step) {
       const cleanTokens = (tokens || []).map(function(token){ return sanitizeCommandToken(token); }).filter(Boolean);
       const frameLength = Math.max(1, Math.round(Number(length) || 1));
       const closeToken = cleanTokens[0] || '1';
       const generated = Array.from({ length:frameLength }, function(){ return 'n'; });
       const eventOffsets = [];
-      for (let offset = 0; offset < frameLength; offset += 3) eventOffsets.push(offset);
+      for (let offset = 0; offset < frameLength; offset += step) eventOffsets.push(offset);
       if (!eventOffsets.length) eventOffsets.push(0);
       const events = []; // 打たれた口だけを順に貯める（重み付けはこれを見る）
       let previous = '';
@@ -15922,12 +16163,16 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const from = normalizeSerifuFrame(selection.fromFrame);
       const to = normalizeSerifuFrame(selection.toFrame);
       const length = Math.max(1, to - from + 1);
-      const generated = [];
-      if (options.distribution === 'random') {
-        buildSerifuRandomEntryTokens(tokens, length).forEach(function(token){ generated.push(token); });
-      } else {
-        buildSerifuProvisionalEntryTokens(tokens, length).forEach(function(token){ generated.push(token); });
+      const step = normalizeSerifuStep(options.step);
+      if (options.distribution === 'dialogue') {
+        const shapes = buildSerifuDialogueShapes(from, to, step);
+        if (!shapes) return null;
+        const tokenOf = makeSerifuShapeTokens(mouths);
+        const generated = shapes.map(function(shape, k){ return k === 0 || tokenOf[shape] !== tokenOf[shapes[k - 1]] ? tokenOf[shape] : 'n'; });
+        // 대사가 닫힌 입으로 끝나면 닫힘이 이미 찍혔다 — 범위 뒤에 다시 찍지 않는다.
+        return { mouthTokens:tokens, generated:generated, closeToken:shapes[shapes.length - 1] === 'closed' ? '' : tokenOf.closed };
       }
+      const generated = options.distribution === 'random' ? buildSerifuRandomEntryTokens(tokens, length, step) : buildSerifuProvisionalEntryTokens(tokens, length);
       return { mouthTokens:tokens, generated:generated, closeToken:tokens[0] || '1' };
     }
 
@@ -15935,6 +16180,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const targetEntry = findOriginalEntryByUid(options.targetUid || selection.uid);
       if (!targetEntry) return { valid:false, message:getSerifuSheetTexts().noTarget, changes:[] };
       const generated = buildSerifuGeneratedTokens(selection, options);
+      if (!generated) return { valid:false, message:getSerifuSheetTexts().noDialogue, changes:[] };
       const info = getCommandLineInfoForEntry(targetEntry, false);
       const existingTokens = info ? info.tokens.slice() : [];
       const from = normalizeSerifuFrame(selection.fromFrame);
@@ -15945,9 +16191,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const existing = existingTokens[frame - 1] || '';
         changes.push({ frame:frame, token:token, existing:existing, conflict:isOccupiedCommandToken(existing) && String(existing).trim() !== String(token).trim() });
       });
-      const closeFrame = to + 1;
-      const closeExisting = existingTokens[closeFrame - 1] || '';
-      changes.push({ frame:closeFrame, token:generated.closeToken, existing:closeExisting, conflict:isOccupiedCommandToken(closeExisting) && String(closeExisting).trim() !== String(generated.closeToken).trim(), close:true });
+      if (generated.closeToken) {
+        const closeFrame = to + 1;
+        const closeExisting = existingTokens[closeFrame - 1] || '';
+        changes.push({ frame:closeFrame, token:generated.closeToken, existing:closeExisting, conflict:isOccupiedCommandToken(closeExisting) && String(closeExisting).trim() !== String(generated.closeToken).trim(), close:true });
+      }
       const roles = (options.mouths || []).map(function(mouth){ return mouth.role || 'その他'; });
       return { valid:true, targetEntry:targetEntry, mouthTokens:generated.mouthTokens, roles:roles, changes:changes, distribution:options.distribution || 'provisional' };
     }
@@ -15974,7 +16222,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         targetUid:modal.target.value || '',
         count:clampSerifuMouthCount(modal.count.value),
         mouths:mouths.length ? mouths : makeDefaultSerifuMouths(modal.mode.value || 'composite', modal.count.value || 3),
-        distribution:modal.distribution.value || 'provisional'
+        distribution:modal.distribution.value || 'provisional',
+        step:normalizeSerifuStep(modal.step.value)
       };
     }
 
@@ -15995,6 +16244,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const modal = state.serifuSheetModal;
       const preview = modal && modal.preview;
       if (!preview || !preview.valid || !preview.targetEntry) return;
+      saveSerifuSheetDefaults(collectSerifuSheetModalOptions(modal));
       const info = getCommandLineInfoForEntry(preview.targetEntry, true);
       if (!info) return;
       preview.changes.forEach(function(change){
@@ -16026,7 +16276,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
             '<div class="ui-field"><label>' + escapeStatusHtml(texts.mode) + '</label><select data-serifu-field="mode"><option value="composite">' + escapeStatusHtml(texts.composite) + '</option><option value="cover">' + escapeStatusHtml(texts.cover) + '</option></select></div>' +
             '<div class="ui-field"><label>' + escapeStatusHtml(texts.target) + '</label><select data-serifu-field="target">' + getOriginalEntryOptionsHtml(selectedUid) + '</select></div>' +
             '<div class="ui-field"><label>' + escapeStatusHtml(texts.count) + '</label><input data-serifu-field="count" type="number" min="1" max="12" step="1" value="3" /></div>' +
-            '<div class="ui-field"><label>' + escapeStatusHtml(texts.distribute) + '</label><select data-serifu-field="distribution"><option value="provisional">' + escapeStatusHtml(texts.provisional) + '</option><option value="random">' + escapeStatusHtml(texts.random) + '</option></select></div>' +
+            '<div class="ui-field"><label>' + escapeStatusHtml(texts.distribute) + '</label><select data-serifu-field="distribution"><option value="dialogue">' + escapeStatusHtml(texts.dialogue) + '</option><option value="provisional">' + escapeStatusHtml(texts.provisional) + '</option><option value="random">' + escapeStatusHtml(texts.random) + '</option></select></div>' +
+            '<div class="ui-field"><label>' + escapeStatusHtml(texts.step) + '</label><select data-serifu-field="step"><option value="2">' + escapeStatusHtml(texts.frames2) + '</option><option value="3">' + escapeStatusHtml(texts.frames3) + '</option></select></div>' +
             '<div class="ui-field full"><label>' + escapeStatusHtml(texts.mouthValues) + '</label><div class="serifu-mouth-list" data-serifu-mouth-rows></div></div>' +
             '<div class="ui-field full"><label>' + escapeStatusHtml(texts.preview) + '</label><div class="serifu-sheet-preview" data-serifu-preview></div><div class="serifu-sheet-warning" data-serifu-warning></div></div>' +
           '</div>' +
@@ -16041,6 +16292,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         count:backdrop.querySelector('[data-serifu-field="count"]'),
         mouthRows:backdrop.querySelector('[data-serifu-mouth-rows]'),
         distribution:backdrop.querySelector('[data-serifu-field="distribution"]'),
+        step:backdrop.querySelector('[data-serifu-field="step"]'),
         previewEl:backdrop.querySelector('[data-serifu-preview]'),
         warningEl:backdrop.querySelector('[data-serifu-warning]'),
         applyBtn:backdrop.querySelector('[data-serifu-apply]'),
@@ -16055,11 +16307,18 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         renderSerifuMouthRows(modal);
         refreshSerifuSheetModalPreview();
       });
-      [modal.target, modal.distribution].forEach(function(node){
+      [modal.target, modal.distribution, modal.step].forEach(function(node){
         node.addEventListener('input', refreshSerifuSheetModalPreview);
         node.addEventListener('change', refreshSerifuSheetModalPreview);
       });
-      renderSerifuMouthRows(modal, makeDefaultSerifuMouths('composite', 3));
+      // 지난번 값으로 연다. 범위에 대사가 걸쳐 있으면 배치는 「대사에서」, 아니면 지난번 값(대사에서였으면 가입력).
+      const last = loadSerifuSheetDefaults();
+      if (last.mode === 'cover') modal.mode.value = 'cover';
+      modal.count.value = String(clampSerifuMouthCount(last.count || 3));
+      modal.step.value = String(normalizeSerifuStep(last.step));
+      const lastDistribution = last.distribution === 'random' ? 'random' : 'provisional';
+      modal.distribution.value = getSerifuDialogueBlocks(normalizeSerifuFrame(selection.fromFrame), normalizeSerifuFrame(selection.toFrame)).length ? 'dialogue' : lastDistribution;
+      renderSerifuMouthRows(modal, Array.isArray(last.mouths) && last.mouths.length ? last.mouths : makeDefaultSerifuMouths(modal.mode.value, modal.count.value));
       backdrop.querySelector('[data-serifu-cancel]').addEventListener('click', function(event){
         event.preventDefault();
         closeSerifuSheetModal();
@@ -16082,7 +16341,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       mountAppDialog(backdrop,{ onRequestClose:closeSerifuSheetModal,initialFocus:modal.count });
     }
 
-    // ══ 세리후 시트 ④ 범위 선택 — 캡처 레이어 · 선택 오버레이 렌더 ═════════════════════════════════════════════════════════════════════
+    // ══ 세리후 시트 ⑤ 범위 선택 — 캡처 레이어 · 선택 오버레이 렌더 ═════════════════════════════════════════════════════════════════════
     function renderSerifuCaptureArea(interactive) {
       if (!interactive || !state.serifuMode || state.memoMode || state.positionMode || state.shakuMode || state.textMemoEditMode || currentSvgTarget !== svg) return;
       previewSelectionBlocks.forEach(function(item){
@@ -16121,7 +16380,37 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           openSerifuRangeContextMenu(event);
         });
         appendSvgNode(hit);
+        // 대사란: 대사를 누르면 그 구간이 범위가 된다(대상 셀은 지난번 셀). 우클릭은 고른 뒤 바로 메뉴.
+        const dialogArea = getOutputRowGeometry(tempBlock, 'dialog').area;
+        const dialogHit = el('rect', { x:dialogArea.x, y:dialogArea.y, width:dialogArea.w, height:dialogArea.h, fill:'transparent', stroke:'transparent', 'pointer-events':'all', class:'serifu-capture-area' });
+        dialogHit.style.cursor = 'pointer';
+        dialogHit.addEventListener('pointerdown', function(event){
+          if (event.button !== undefined && event.button !== 0) return;
+          if (!selectSerifuDialogueAt(tempBlock, entries, event)) return;
+          event.preventDefault();
+          event.stopPropagation();
+        }, { passive:false });
+        attachContextAction(dialogHit, function(event){ if (selectSerifuDialogueAt(tempBlock, entries, event)) openSerifuRangeContextMenu(event); });
+        appendSvgNode(dialogHit);
       });
+    }
+
+    function selectSerifuDialogueAt(block, entries, event) {
+      const p = getSvgPointFromPointerEvent(event), frame = getOutputFrameAtY(block, 'dialog', p.y);
+      const model = getSyncedRenderModel(), area = getOutputRowGeometry(block, 'dialog').area;
+      // 겹친 대사는 레인으로 나뉘어 그려진다(renderRangeSegments) — 누른 가로 위치에서 가장 가까운 레인의 대사를 고른다.
+      const laneGap = function(b){
+        const r = getDistributedLaneBounds(area.x, area.w, b.lane || 0, (model && model.dialogLaneCount) || 1, 12);
+        return p.x < r.x ? r.x - p.x : Math.max(0, p.x - r.x - r.w);
+      };
+      const dialogue = getSerifuDialogueBlocks(frame, frame).sort(function(a, b){ return laneGap(a) - laneGap(b); })[0];
+      if (!dialogue) return false;
+      const remembered = String(loadSerifuSheetDefaults().targetUid || '');
+      const entry = entries.find(function(e){ return String(e.uid || '') === remembered; }) || entries[0];
+      if (!entry) return false;
+      state.serifuRangeSelection = { uid:String(entry.uid || ''), label:String(entry.label || ''), fromFrame:dialogue.from, toFrame:dialogue.to, pageIndex:state.currentPreviewPage || 0 };
+      requestPreviewOverlay('range');
+      return true;
     }
 
     function getSerifuSelectionRect(block, entries, selection) {
