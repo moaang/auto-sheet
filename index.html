@@ -46,8 +46,7 @@
       --ink-active: #23262b;
       --focus-ring: rgba(28, 30, 34, .32);
       /* UI contract: role sizes only. Sheet SVG and direct-edit handles keep their own units. */
-      --ui-h-toolbar: 22px;
-      --ui-h-memo: 24px;
+      --ui-h-toolbar: 24px;
       --ui-h-control: 24px;
       --ui-h-action: 28px;
       --ui-h-line-control: 20px; /* maximum for a control attached to a text line */
@@ -281,13 +280,14 @@
     :is(.sidebar,.rightpanel,.app-dialog,.paper-panel) :is(input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="hidden"]),select) {
       min-height:var(--control-h,var(--ui-h-control)); height:var(--control-h,var(--ui-h-control)); padding-block:0 1px;
     }
-    .toolbar-actions .toolbar-btn.icon-only { width:var(--ui-h-memo); min-width:var(--ui-h-memo); }
-    .page-nav, .stage-bar, .export-actions, .paper-toolbar-group {
+    .toolbar-actions .toolbar-btn.icon-only { width:var(--ui-h-toolbar); min-width:var(--ui-h-toolbar); }
+    /* Every toolbar group: one plate, 2/3px inside, 3px between controls. */
+    .page-nav, .stage-bar, .export-actions, .paper-toolbar-group, .memo-controls {
+      padding:2px 3px; gap:3px; align-items:center;
       border:1px solid var(--soft); border-radius:var(--r-ctl);
       background:rgba(255,255,255,.92); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
       box-shadow:var(--ui-toolbar-shadow);
     }
-    .stage-bar, .export-actions, .paper-toolbar-group { padding:2px 3px; gap:3px; min-height:28px; align-items:center; }
     .memo-tool-pair { display:inline-flex; align-items:center; gap:var(--ui-gap-sm); flex:none; }
     .floating-bars .toolbar-notice { padding:2px 5px; font-size:var(--ui-fs-help); min-width:0; white-space:normal; }
     .floating-bars .toolbar-notice .side-notice-close { flex:none; }
@@ -531,6 +531,8 @@
    충분하고 가로 스크롤은 필요 없다. */
     .stage-bar { display:flex; align-items:center; --control-h:var(--ui-h-toolbar); --control-pad:var(--ui-pad-compact); }
     .stage-slot-row { display: flex; flex-wrap: wrap; gap: 3px; }
+    /* A title, not a button: icon + name in the toolbar type, no border. */
+    .stage-bar-title { display:inline-flex; align-items:center; gap:4px; padding:0 4px; font-size:var(--ui-fs-body); font-weight:700; color:var(--muted); white-space:nowrap; }
     .stage-slot { flex:0 0 auto; min-width:44px; white-space:nowrap; }
 
     .stage-slot.empty { min-width:0; width:var(--control-h); padding:0; border-style:dashed; border-color:var(--soft-strong); background:transparent; color:var(--muted); }
@@ -936,10 +938,8 @@
     .count-chip:hover { color:var(--text); text-decoration:underline; }
     .count-chip:focus-visible { outline:2px solid var(--focus-ring); outline-offset:2px; border-radius:2px; }
     .preview-meta { display: block; font-variant-numeric: tabular-nums; white-space: nowrap; }
-    .toolbar-actions { --control-h:var(--ui-h-toolbar); --control-pad:var(--ui-pad-compact); display:flex; align-items:center; justify-content:flex-end; gap:6px; flex-wrap:wrap; margin-left:auto; }
-    .page-nav { display:flex; align-items:center; min-width:0; height:28px; overflow:hidden; }
-    .page-nav .toolbar-btn.icon-only { border:0; border-radius:0; background:transparent; }
-    .page-nav .page-indicator { border-left:1px solid var(--soft-strong); border-right:1px solid var(--soft-strong); padding:0 7px 1px; }
+    .toolbar-actions { --control-h:var(--ui-h-toolbar); --control-pad:var(--ui-pad-compact); display:flex; align-items:center; justify-content:flex-end; gap:4px; flex-wrap:wrap; margin-left:auto; }
+    .page-nav { display:flex; min-width:0; }
     /* 첫 칸을 58px 로 고정했더니 PNG 의 글자가 잘렸다 — 셀렉트는 글자에 더해 화살표와 좌우 여백이
        필요하고 그 합은 글꼴·언어에 따라 달라진다. 내용이 칸을 정하게 둔다. */
     .export-actions { display:grid; grid-template-columns:minmax(0,max-content) minmax(0,max-content) minmax(0,max-content); width:auto; max-width:100%; min-width:0; }
@@ -952,26 +952,8 @@
 
     .paper-toolbar-group { display:inline-flex; flex-wrap:wrap; flex:0 0 auto; }
     .paper-toolbar-group [hidden] { display:none; }
-    .paper-toolbar-title {
-      border: 0; border-radius: var(--r-ctl); background: transparent; font-family: inherit; gap: 4px;
-      color: var(--muted);
-      font-size:var(--ui-fs-help);
-      font-weight: 900;
-      line-height: 1;
-      white-space: nowrap;
-      flex: 0 0 auto;
-      cursor: pointer;
-      padding: 0 6px 0 4px;
-      margin-right: 1px;
-      border-right: 1px solid var(--soft);
-      align-self: stretch;
-      display: inline-flex;
-      align-items: center;
-    }
-    .paper-toolbar-title:hover, .paper-toolbar-title[aria-expanded="true"] { color: var(--text); }
-    .paper-toolbar-title[aria-expanded="true"] { background: var(--soft); }
+    .paper-toolbar-title[aria-expanded="true"] { background:var(--soft); border-color:var(--soft-strong); }
     .paper-toolbar-btn { min-width:0; flex:0 0 auto; }
-    .paper-toolbar-title .ic-svg { flex:none; width:var(--ui-icon-sm); height:var(--ui-icon-sm); }
     .paper-position-row { display:grid; grid-template-columns:1fr 1fr; gap:var(--ui-gap-sm); margin-bottom:var(--ui-gap); }
 
     .toolbar-btn, .export-select { max-width: 100%; }
@@ -980,10 +962,11 @@
     .toolbar-btn.icon-only { width:var(--control-h,var(--ui-h-control)); min-width:var(--control-h,var(--ui-h-control)); padding:0; }
 
     .toolbar-btn.with-icon .ic-svg { width:var(--ui-icon-sm); height:var(--ui-icon-sm); flex:none; }
+    .floating-bars :is(button:not(.ui-gauge-step), .stage-bar-title) > .ic-svg { width:var(--ui-icon); height:var(--ui-icon); flex:none; }
     /* The one primary (ink-filled) action per toolbar — reserved for the final,
        confirming step (書き出し), so it stays meaningful instead of decorative. */
 
-    .toolbar-btn.paper-toolbar-btn { --control-font:var(--ui-fs-help); overflow:visible; text-overflow:clip; }
+    .toolbar-btn.paper-toolbar-btn { overflow:visible; text-overflow:clip; }
 
     /* width:100% 는 칸이 정한 폭을 그대로 받는다 — 칸이 좁으면 글자가 잘린다.
        셀렉트가 제 내용(글자+화살표+여백)으로 폭을 정하게 두고, 칸은 그 폭을 따른다. */
@@ -995,7 +978,7 @@
       box-shadow: 0 0 0 2px rgba(0,0,0,.06);
     }
 
-    .page-indicator { min-width:48px; height:100%; display:flex; align-items:center; justify-content:center; text-align:center; font-size:var(--ui-fs-body); line-height:1; font-weight:700; color:var(--text); font-variant-numeric:tabular-nums; }
+    .page-indicator { min-width:40px; height:var(--control-h); padding:0 4px 1px; display:flex; align-items:center; justify-content:center; text-align:center; font-size:var(--ui-fs-body); line-height:1; font-weight:700; color:var(--text); font-variant-numeric:tabular-nums; }
     .preview-wrap.file-drop-active {
       outline: 2px solid var(--focus-ring);
       outline-offset: -7px;
@@ -1645,28 +1628,26 @@
     .memo-controls-wrap {
       margin-bottom: 0;
     }
-    .memo-controls { --control-h:var(--ui-h-memo); --control-pad:var(--ui-pad-compact); display:flex; align-items:center; gap:6px; flex-wrap:wrap; width:100%; padding:4px 8px; border:1px solid var(--soft); border-radius:var(--r-ctl); background:rgba(255,255,255,.92); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); box-shadow:0 6px 18px rgba(0,0,0,.10); }
+    .memo-controls { --control-h:var(--ui-h-toolbar); --control-pad:var(--ui-pad-compact); display:flex; flex-wrap:wrap; width:100%; }
 
     .memo-btn .ic-svg { width:var(--ui-icon); height:var(--ui-icon); flex:none; }
 
-    .memo-btn.icon-only { width:var(--ui-h-memo); min-width:var(--ui-h-memo); padding:0; }
+    .memo-btn.icon-only { width:var(--ui-h-toolbar); min-width:var(--ui-h-toolbar); padding:0; }
 
     .memo-toolbar-divider { width:1px; align-self:stretch; margin:2px 0; background:var(--soft); flex:none; }
 
     .memo-size-select { width:64px; }
-    /* Seamless segmented zoom pill: inner controls are borderless ghosts. */
-    .memo-tool-group, .view-controls { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+    .memo-tool-group, .view-controls { display:flex; align-items:center; gap:3px; flex-wrap:wrap; }
     .memo-tool-group[hidden] { display:none; }
     .view-controls { margin-left:auto; }
-    .zoom-controls { --control-h:var(--ui-h-toolbar); display:inline-flex; align-items:center; gap:0; padding:0; border:1px solid var(--soft); border-radius:var(--r-ctl); background:var(--panel); }
-    .zoom-controls .memo-btn { border:0; background:transparent; }
+    .zoom-controls { display:inline-flex; align-items:center; gap:3px; }
 
-    .zoom-btn { width:var(--ui-h-memo); min-width:var(--ui-h-memo); padding:0; }
+    .zoom-btn { width:var(--ui-h-toolbar); min-width:var(--ui-h-toolbar); padding:0; }
     .zoom-reset-btn { min-width:44px; padding-inline:5px; font-variant-numeric:tabular-nums; }
     /* Value gauge (after MoArt .ggauge-flat): a well whose fill is the level, name left, value right.
        Drag = relative change, side arrows = one step, double click / Enter = typed value. */
     .ui-gauge { --p:0; position:relative; display:inline-flex; align-items:center; gap:var(--ui-gap-sm); flex:none; width:112px;
-      height:var(--ui-h-memo); padding:0 14px; box-sizing:border-box; border:1px solid var(--soft); border-radius:var(--r-ctl);
+      height:var(--ui-h-toolbar); padding:0 14px; box-sizing:border-box; border:1px solid var(--soft); border-radius:var(--r-ctl);
       background:var(--panel); overflow:hidden; cursor:ew-resize; touch-action:none; user-select:none;
       font-size:var(--ui-fs-body); font-weight:700; color:var(--text); }
     .ui-gauge:focus-visible { outline:2px solid var(--focus-ring); outline-offset:1px; }
@@ -1988,9 +1969,15 @@
     @container (max-width:640px) {
       .toolbar-actions, .memo-controls, .view-controls { gap:4px; }
       .memo-controls { padding-inline:6px; }
-      .paper-toolbar-title span, #chooseExportDirBtn span { display:none; }
+      .paper-toolbar-title span, #chooseExportDirBtn span, .stage-bar-title span { display:none; }
       #chooseExportDirBtn { width:var(--control-h); padding:0; justify-content:center; }
       .ui-gauge { width:100px; }
+    }
+    /* Every single-line select uses the same drawn chevron instead of the platform arrow. */
+    :root select:not([multiple]):not([size]):not(#languageSelect) {
+      appearance:none; -webkit-appearance:none; padding-right:20px;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236e7480' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6.5 9.5 12 15l5.5-5.5'/%3E%3C/svg%3E");
+      background-repeat:no-repeat; background-position:right 5px center; background-size:12px;
     }
   </style>
 </head>
@@ -2132,10 +2119,10 @@
       </section>
       <div id="floatingBars" class="floating-bars">
       <div class="preview-toolbar">
-        <div class="stage-bar"><div id="stageSlotRow" class="stage-slot-row" role="group" aria-label="Stage" data-ui-title="stageHeading"></div></div>
+        <div class="stage-bar"><span class="stage-bar-title"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 7.5 12 4l8 3.5-8 3.5z"/><path d="M4 12.5 12 16l8-3.5"/><path d="M4 17 12 20.5 20 17"/></svg><span data-ui-text="stageHeading">Stage</span></span><div id="stageSlotRow" class="stage-slot-row" role="group" aria-label="Stage" data-ui-title="stageHeading"></div></div>
         <div class="toolbar-actions">
           <div id="paperToolbarGroup" class="paper-toolbar-group" aria-label="Paper settings">
-            <button id="paperToolbarTitle" class="paper-toolbar-title" type="button" aria-controls="paperPanel" aria-expanded="false"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="4" y="4.5" width="16" height="15" rx="1.5"/><circle cx="9" cy="9.5" r="1.5"/><path d="m4.5 17 4.5-4.5 3.5 3.5 2.5-2.5 4.5 4.5"/></svg><span>用紙設定</span></button>
+            <button id="paperToolbarTitle" class="toolbar-btn paper-toolbar-title" type="button" aria-controls="paperPanel" aria-expanded="false"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="4" y="4.5" width="16" height="15" rx="1.5"/><circle cx="9" cy="9.5" r="1.5"/><path d="m4.5 17 4.5-4.5 3.5 3.5 2.5-2.5 4.5 4.5"/></svg><span>用紙設定</span></button>
             <button id="paperToolbarClearBtn" class="toolbar-btn paper-toolbar-btn" type="button">クリア</button>
           </div>
           <div class="page-nav">
@@ -2427,7 +2414,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '1010';
+    const APP_VERSION = '1011';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3779,6 +3766,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver1011", "One toolbar style", ["Both preview toolbar rows use the same button height, type, 14px icons and group plates. Stage has an icon and title, Paper settings is a regular icon button, and page and zoom buttons match the rest.", "Every dropdown uses the same drawn arrow."]],
         ["ver1010", "Stages in the toolbar", ["Stages moved from the side panel to the left of the preview toolbar; one + after them adds a stage.", "Undo and redo sit at the right end of the size and drawing-count line. Position edit and reset moved into the Paper window, and the Paper button shows an icon.", "Sheet Input has a folded How to write like Dialogue and Camera; those folds are now named How to write.", "Phones no longer show the panel collapse buttons. The output folder button shows its folder icon again."]],
         ["ver1009", "Paper settings in the toolbar", ["The Import paper card left the side panel. The preview toolbar's Paper button opens its settings in a small window; press outside or Esc to close. Drop a paper on the preview as before.", "The size and drawing count sit just under the toolbar in the same small type, without adding space above the sheet.", "On a narrow preview (phones, or both panels open) the toolbar shows icons for Paper and the output folder so rows no longer wrap; the language arrow matches the other icons."]],
         ["ver1008", "BOOK names in one line", ["In the Cell/BOOK order preview, BOOK names that fit are written in one line instead of stacked letters. The sheet itself is unchanged."]],
@@ -3928,6 +3916,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "Camera marks, continuation lines and merged memos", ["Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.", "The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.", "The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.", "When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.", "Camera works that connect end to end now become a single memo line, for example \"・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr\"."]],
       ],
       ja: [
+        ["ver1011", "ツールバーの規格をそろえる", ["プレビュー上の2行のボタンの高さ・文字・14pxアイコン・まとまりの板をそろえました。段階にアイコンと名前を付け、用紙設定は通常のアイコン付きボタンに、ページ送りと拡大縮小も同じ形にしました。", "選択欄の矢印をアプリ全体で同じ形にしました。"]],
         ["ver1010", "段階をツールバーへ", ["段階を左欄からプレビューのツールバー左に移しました。並びの後ろの＋ひとつで追加します。", "元に戻す・やり直しはサイズと動画枚数の行の右端に移しました。位置編集・初期化は用紙設定の窓に入り、用紙設定ボタンにアイコンを付けました。", "シート入力にもセリフ欄・カメラ欄と同じ折りたたみの書き方を付け、名前を「書き方」にそろえました。", "スマホでは欄の開閉ボタンを出しません。出力先ボタンのフォルダアイコンが再び表示されます。"]],
         ["ver1009", "用紙設定をツールバーへ", ["左欄の「用紙を読み込む」をなくし、プレビューのツールバー「用紙設定」から小さな窓で設定します。外を押すかEscで閉じます。用紙はこれまで通りプレビューに置けます。", "サイズと動画枚数はツールバーのすぐ下に同じ小さな文字で浮かび、シートの上に余白を足しません。", "プレビューが狭いとき（スマホや両欄を開いたとき）は用紙と出力先をアイコンにして行の折り返しをなくしました。言語の矢印も他のアイコンにそろえました。"]],
         ["ver1008", "BOOK名を一行で", ["セル・BOOK順のプレビューで、収まるBOOK名は縦積みではなく一行で表示します。シート本体は変わりません。"]],
@@ -4077,6 +4066,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "カメラ記号・持続線・メモの連結", ["設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。", "設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。", "つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。", "マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。", "端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。"]],
       ],
       ko: [
+        ["ver1011", "툴바 규격 통일", ["미리보기 위 두 줄의 단추 높이·글자·14px 아이콘·묶음 판을 맞췄습니다. 단계에 아이콘과 이름을 붙이고, 용지 설정은 아이콘이 있는 보통 단추로, 페이지 넘기기와 확대·축소도 같은 모양으로 바꿨습니다.", "고르기 상자의 화살표를 앱 전체에서 같은 모양으로 맞췄습니다."]],
         ["ver1010", "단계를 툴바로", ["단계를 왼쪽 패널에서 미리보기 툴바 왼쪽으로 옮겼습니다. 단계 뒤의 + 하나로 추가합니다.", "되돌리기·다시 실행은 크기·동화 매수 줄 오른쪽 끝으로 옮겼습니다. 위치 편집·초기화는 용지 설정 창 안으로 들어가고, 용지 설정 단추에 아이콘을 붙였습니다.", "시트 입력에도 대사란·카메라란처럼 접는 「쓰는 법」을 두고, 접는 이름을 「쓰는 법」으로 맞췄습니다.", "폰에서는 패널 접기 단추를 보이지 않습니다. 출력 위치 단추의 폴더 아이콘이 다시 보입니다."]],
         ["ver1009", "용지 설정을 툴바로", ["왼쪽의 「외부 용지 불러오기」 카드를 없애고, 미리보기 툴바의 「용지 설정」을 누르면 뜨는 작은 창에서 설정합니다. 바깥을 누르거나 Esc로 닫습니다. 용지는 전처럼 미리보기에 놓아도 됩니다.", "크기와 동화 매수는 툴바 바로 아래에 같은 작은 글씨로 떠 있고, 시트 위에 여백을 더하지 않습니다.", "미리보기가 좁을 때(폰, 좌우 패널을 모두 연 화면)는 용지·출력 위치를 아이콘으로 줄여 줄이 꺾이지 않습니다. 언어 화살표도 다른 아이콘과 맞췄습니다."]],
         ["ver1008", "BOOK 이름 한 줄로", ["셀·BOOK 순서 미리보기에서 칸에 들어가는 BOOK 이름은 세로로 쌓지 않고 한 줄로 씁니다. 시트 출력은 그대로입니다."]],
@@ -4226,6 +4216,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "카메라 표식·지속선·메모 연결", ["설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.", "설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. \"카메라→메모\"를 누를 필요가 없습니다.", "이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.", "표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.", "끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: \"・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr\")."]],
       ],
       zh: [
+        ["ver1011", "统一工具栏规格", ["预览上方两行的按钮高度、字体、14px 图标和分组底板统一。阶段带上图标和名称，纸张设置改为普通图标按钮，翻页和缩放也改为同样样式。", "整个应用的下拉框箭头统一为同一种。"]],
         ["ver1010", "阶段移到工具栏", ["阶段从左栏移到预览工具栏左侧，后面的一个 + 用于添加。", "撤销和重做移到尺寸与动画张数一行的右端。位置编辑和重置放进纸张窗口，纸张按钮带上图标。", "表格输入也加上与台词栏、摄影机栏相同的可折叠“写法”，折叠标题统一为“写法”。", "手机上不再显示栏位折叠按钮。输出位置按钮重新显示文件夹图标。"]],
         ["ver1009", "纸张设置移到工具栏", ["左栏的“导入外部纸张”卡片已移除，点击预览工具栏的“纸张”会弹出小窗口进行设置；点击外部或按 Esc 关闭。纸张仍可直接拖到预览上。", "尺寸和动画张数以同样的小字浮在工具栏下方，不再在表格上方增加空白。", "预览较窄时（手机或同时打开左右栏）纸张和输出位置改为图标，行不再换行；语言箭头也与其他图标统一。"]],
         ["ver1008", "BOOK名称单行显示", ["在单元格/BOOK顺序预览中，放得下的BOOK名称改为单行显示，而不是竖排字母。表格本身不变。"]],
