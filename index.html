@@ -1819,9 +1819,11 @@
       /* 데스크톱에서 못박은 grid-column: 1/2/3 을 여기서 풀지 않으면 트랙이 1개뿐인 이
          쌓인 레이아웃에서도 암시 트랙이 새로 생겨 나란히 벌어진다 — auto 로 되돌려 DOM 순서대로 쌓는다. */
       .sidebar, .main, .rightpanel { grid-column: auto; }
-      .sidebar { border-right: 0; border-bottom: 1px solid var(--soft); height: auto; max-height: 45vh; }
+      .sidebar { border-right: 0; border-bottom: 1px solid var(--soft); height: auto; max-height: none; overflow-y: visible; }
       /* 오른쪽 탭은 DOM 순서상 .main 뒤에 오므로, 쌓인 레이아웃에서도 자동으로 그 아래에 온다. */
-      .rightpanel { border-left: 0; border-top: 1px solid var(--soft); height: auto; max-height: 45vh; }
+      /* 패널은 따로 스크롤하지 않고 페이지 하나로 내려간다(겹친 스크롤 상자는 손가락 끌기를 가둔다). */
+      .rightpanel { border-left: 0; border-top: 1px solid var(--soft); height: auto; max-height: none; overflow-y: visible; }
+      .preview-wrap.touch-page-scroll #sheetSvg { touch-action: pan-y; }
       .panel-resize-handle { display: none; } /* 쌓인 레이아웃엔 세로경계가 없다 */
       /* Stacked layout: floating bars would cover half the short pane, so fall back to the
          normal in-flow arrangement (bars above the canvas card). */
@@ -2476,7 +2478,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '1004';
+    const APP_VERSION = '1005';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3829,6 +3831,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver1005", "Narrow screens scroll as one page", ["On a phone-width screen, when the whole sheet fits in the preview, dragging an empty part of the preview scrolls the page. It used to do nothing. When the sheet is zoomed in or larger than the preview, a drag still moves the sheet, and cel drags, edge drags and long-press menus work as before.", "On narrow screens the side panels no longer scroll inside their own short boxes; the whole page scrolls.", "On touch screens the draggable start/end lines of camera lines stay faintly visible, since there is no hover to reveal them."]],
         ["ver1004", "Edit dialogue and camera lines on the sheet preview", ["Right-click or press and hold the dialogue or camera column on the sheet preview to add or delete a line, edit the speaker, line, direction or start/end name, and switch camera keys between ▲ and a dash.", "Click a speaker box and choose Name to rename it, and click a circled A/B on the camera column to rename it. Both used to need Shift-click or were not clickable.", "Works the same with a mouse, a trackpad, a finger or Apple Pencil: grips are easier to grab by touch, pinching no longer jumps, pinching the side panels no longer zooms the page, and the memo pen has a straight-line button. Text boxes get Larger/Smaller text in their menu.", "Mac and iPad show ⌘ and ⌫ in key names. The paper and feedback groups have icons, and the paper group now sits above Feedback. Secondary text (format hints, example notes, page size) shares one lighter style, and the camera display-style notes read like the examples above them."]],
         ["ver1003", "Drawing count beside the preview title", ["The drawing count shows as a chip beside the sheet size (for example, 8 drawings); press it for the count window. ? means a mark still needs checking.", "Dialogue area examples fold away like the camera examples, as the same code lines."]],
         ["ver1002", "Camera area order", ["Camera area: the box, then Add to memo area (was Camera→Memo), then the folded examples, which now also hold the display-mode list.", "Folds look the same open or closed.", "The language and Settings controls at the top left share one look."]],
@@ -3972,6 +3975,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "Camera marks, continuation lines and merged memos", ["Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.", "The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.", "The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.", "When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.", "Camera works that connect end to end now become a single memo line, for example \"・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr\"."]],
       ],
       ja: [
+        ["ver1005", "狭い画面はページ全体でスクロール", ["スマホ幅でシート全体がプレビューに収まっているとき、プレビューの空いた所をドラッグするとページがスクロールします（以前は何も動きませんでした）。拡大中やシートがプレビューより大きいときは今まで通りシートが動き、セルのドラッグ・端のドラッグ・長押しメニューもそのままです。", "狭い画面では左右の欄が短い枠の中で別にスクロールせず、ページ全体がスクロールします。", "タッチ画面ではホバーがないため、カメラ行の始点・終点のドラッグ線を常に薄く表示します。"]],
         ["ver1004", "シートプレビューでセリフ・カメラを編集", ["シートプレビューのセリフ欄・カメラ欄を右クリックまたは長押しすると、行の追加・削除、話者名・セリフ・指示・始点/終点名の編集、カメラのキーの▲/横線の切り替えができます。", "話者の枠をクリックして「名前」を選ぶと名前を変えられます。カメラ欄の丸付きA/Bもクリックで変えられます（以前はShift＋クリックが必要、またはクリックできませんでした）。", "マウス・トラックパッド・指・Apple Pencilで同じように操作できます。つまみを指でつかみやすくし、ピンチ中に画面が跳ばないようにし、左右の欄をピンチしてもページ全体が拡大されないようにしました。メモのペンに直線ボタンを、テキスト枠のメニューに文字の拡大・縮小を加えました。", "Mac・iPadではキー名を⌘・⌫で表示します。用紙と問い合わせのまとまりにアイコンを付け、用紙を問い合わせの上に移しました。補助の文字（形式・例の注記・ページサイズ）を同じ薄さにそろえ、カメラの表示形式の説明を上の例と同じ書式にしました。"]],
         ["ver1003", "動画枚数をプレビュー見出しの横に", ["動画枚数はシートの大きさの横に「動画 8枚」のように表示し、押すと枚数の画面を開きます。? は確認が必要な記号がある状態です。", "セリフ欄の例もカメラ欄と同じく折りたたみ、同じコードの行で表示します。"]],
         ["ver1002", "カメラ欄の並び", ["カメラ欄は入力欄、「メモ欄に反映」(旧カメラ→メモ)、折りたたんだ例の順にし、表示方式の一覧も例に入れました。", "折りたたみは開いても閉じても同じ見た目にしました。", "左上の言語と設定を同じ見た目にそろえました。"]],
@@ -4115,6 +4119,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "カメラ記号・持続線・メモの連結", ["設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。", "設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。", "つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。", "マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。", "端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。"]],
       ],
       ko: [
+        ["ver1005", "좁은 화면은 페이지 하나로 스크롤", ["폰 폭에서 시트 전체가 미리보기에 들어와 있으면 미리보기 빈 곳을 끌어 페이지를 스크롤합니다(전에는 아무것도 움직이지 않았습니다). 확대했거나 시트가 미리보기보다 크면 지금처럼 시트가 움직이고, 셀 끌기·끝 끌기·길게 누르기 메뉴도 그대로입니다.", "좁은 화면에서는 좌우 패널이 짧은 상자 안에서 따로 스크롤하지 않고 페이지 전체가 스크롤됩니다.", "터치 화면에는 호버가 없어 카메라 줄의 시작·끝 드래그 선을 늘 희미하게 보입니다."]],
         ["ver1004", "시트 미리보기에서 대사·카메라 편집", ["시트 미리보기의 대사란·카메라란을 우클릭하거나 길게 누르면 줄 추가·삭제, 화자명·대사·지시·시작/끝 이름 편집, 카메라 키의 ▲/가로선 바꾸기를 할 수 있습니다.", "화자 칸을 눌러 「이름」을 고르면 이름을 바꿉니다. 카메라란의 원 안 A/B도 눌러서 바꿉니다(전에는 Shift+클릭이 필요했거나 눌리지 않았습니다).", "마우스·트랙패드·손가락·Apple Pencil에서 똑같이 조작됩니다. 손잡이를 손가락으로 잡기 쉽게 했고, 핀치 중 화면이 튀지 않으며, 좌우 패널을 핀치해도 페이지 전체가 확대되지 않습니다. 메모 펜에 직선 단추, 텍스트 박스 메뉴에 글자 크게·작게를 넣었습니다.", "맥·아이패드에서는 키 이름을 ⌘·⌫로 표시합니다. 외부 용지·문의 묶음에 아이콘을 달고 외부 용지를 문의 위로 옮겼습니다. 보조 글씨(형식·예시 설명·페이지 크기)를 같은 연하기로 맞추고, 카메라 표시 방식 설명을 위 예시와 같은 형식으로 바꿨습니다."]],
         ["ver1003", "동화 매수를 미리보기 제목 옆에", ["동화 매수는 시트 크기 옆에 「동화 8매」처럼 보이고, 누르면 매수 창이 열립니다. ?는 확인이 필요한 표시가 있는 상태입니다.", "대사란 예시도 카메라란처럼 접히고 같은 코드 줄로 보입니다."]],
         ["ver1002", "카메라란 정리", ["카메라란은 입력란, 「메모란에 반영」(옛 카메라→메모), 접힌 예시 순서로 바꾸고 표시 방식 목록도 예시 안에 넣었습니다.", "접기는 펼쳐도 접어도 같은 모양입니다.", "왼쪽 위 언어와 설정을 같은 모양으로 맞췄습니다."]],
@@ -4258,6 +4263,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "카메라 표식·지속선·메모 연결", ["설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.", "설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. \"카메라→메모\"를 누를 필요가 없습니다.", "이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.", "표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.", "끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: \"・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr\")."]],
       ],
       zh: [
+        ["ver1005", "窄屏整页滚动", ["在手机宽度下，摄影表完整显示在预览中时，拖动预览的空白处会滚动页面（以前没有任何反应）。放大时或摄影表大于预览时仍会移动摄影表，图层拖动、端点拖动和长按菜单不变。", "窄屏下左右栏不再在各自的小框内单独滚动，而是整页滚动。", "触摸屏没有悬停，因此摄影行起点/终点的拖动线始终以淡色显示。"]],
         ["ver1004", "在摄影表预览中编辑对白和摄影", ["在摄影表预览的对白栏、摄影栏上右键单击或长按，可添加、删除行，编辑说话人、对白、指示、起点/终点名称，并切换摄影关键帧的 ▲ / 横线。", "点击说话人框并选择“名称”即可改名；摄影栏中带圈的 A/B 也可点击修改（以前需要 Shift+点击或无法点击）。", "鼠标、触控板、手指和 Apple Pencil 的操作一致：手柄更容易用手指抓取，捏合时画面不再跳动，在侧栏捏合不会放大整个页面。备注笔新增直线按钮，文字框菜单新增放大/缩小文字。", "Mac 和 iPad 上按键名称显示为 ⌘、⌫。纸张和反馈分组加上了图标，纸张移到了反馈上方。辅助文字（格式、示例说明、页面尺寸）统一为同一浅色，摄影显示样式的说明改为与上方示例相同的格式。"]],
         ["ver1003", "动画张数移到预览标题旁", ["动画张数以「动画 8张」显示在表格尺寸旁，点击打开张数窗口。? 表示有需要确认的标记。", "对白栏示例也和摄影机栏一样折叠，并以相同的代码行显示。"]],
         ["ver1002", "摄影机栏整理", ["摄影机栏改为输入框、「写入备注栏」(原摄影→备注)、折叠的示例的顺序，显示方式列表也放入示例。", "折叠展开与收起外观一致。", "左上角语言与设置外观统一。"]],
@@ -19193,9 +19199,14 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         class:'timeline-edge-guide',
         'pointer-events':'none'
       });
-      node.style.opacity = isDraggingThisEdge ? '1' : '0';
+      node.style.opacity = isDraggingThisEdge ? '1' : getTimelineEdgeGuideIdleOpacity();
       appendSvgNode(node);
       return node;
+    }
+
+    // 마우스는 올리면 보인다. 호버가 없는 터치 기기는 끌 수 있는 자리를 늘 희미하게 보인다.
+    function getTimelineEdgeGuideIdleOpacity() {
+      return window.matchMedia && window.matchMedia('(hover: none)').matches ? '0.35' : '0';
     }
 
     function isTimelineEdgeBeingDragged(blockType, seg, edge) {
@@ -19228,7 +19239,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (edgeGuideNode) {
         hit.addEventListener('pointerenter', function(){ edgeGuideNode.style.opacity = '1'; });
         hit.addEventListener('pointerleave', function(){
-          if (!isTimelineEdgeBeingDragged(blockType, seg, edge)) edgeGuideNode.style.opacity = '0';
+          if (!isTimelineEdgeBeingDragged(blockType, seg, edge)) edgeGuideNode.style.opacity = getTimelineEdgeGuideIdleOpacity();
         });
       }
       appendSvgNode(hit);
@@ -22741,6 +22752,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     function render() {
+      syncPreviewTouchScroll();
       previewOverlayFrames.forEach(function(frame){ cancelAnimationFrame(frame); });
       previewOverlayFrames.clear();
       if (queuedRenderFrame !== null || queuedRenderDeferred) {
@@ -23533,6 +23545,23 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const limY = usableH - sheetStageEl.offsetHeight * zoom;
       state.viewPanX = Math.min(Math.max(Number(state.viewPanX) || 0, Math.min(0, limX)), Math.max(0, limX));
       state.viewPanY = Math.min(Math.max(Number(state.viewPanY) || 0, Math.min(0, limY)), Math.max(0, limY));
+      syncPreviewTouchScroll(limX, limY);
+    }
+
+    // 좁은 화면(쌓인 배치)에서 시트가 미리보기에 다 들어와 움직일 데가 없으면, 미리보기 빈 곳의
+    // 한 손가락 끌기는 페이지 스크롤이다. 시트가 넘치거나 확대했거나 편집 모드면 지금처럼 시트 쪽이 받는다.
+    // 셀·끝 손잡이·메모 같은 끌기 칸은 각자 touch-action:none 이라 어느 경우든 그대로다.
+    function syncPreviewTouchScroll(limX, limY) {
+      if (!previewWrapEl) return;
+      if (limX === undefined) {
+        if (!sheetStageEl) return;
+        const zoom = clampSheetZoom(state.sheetZoom), pad = getPreviewPadding();
+        limX = previewWrapEl.clientWidth - pad.left - pad.right - sheetStageEl.offsetWidth * zoom;
+        limY = previewWrapEl.clientHeight - pad.top - pad.bottom - sheetStageEl.offsetHeight * zoom;
+      }
+      const stacked = !!(window.matchMedia && window.matchMedia('(max-width: 1200px)').matches);
+      const editing = state.memoMode || state.shakuMode || state.serifuMode || state.positionMode || state.textMemoEditMode;
+      previewWrapEl.classList.toggle('touch-page-scroll', stacked && !editing && limX >= -0.5 && limY >= -0.5);
     }
 
     // The memo notice beside the sheet is pinned to the cell-block top-left: it tracks the
@@ -24221,7 +24250,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (state.activeTimelineDrag || state.layoutDrag) return;
       const spacePan = isPreviewSpacePanActive();
       const middlePan = event.button === 1; // wheel-click drags the canvas, like space-drag
-      // touch has no scrollbars/wheel — a plain one-finger drag pans (in memo mode only once the Pencil draws)
+      // touch has no scrollbars/wheel — a plain one-finger drag pans (in memo mode only once the Pencil draws),
+      // unless the sheet fits and the browser scrolls the page instead (syncPreviewTouchScroll).
+      if (event.pointerType === 'touch' && previewWrapEl && previewWrapEl.classList.contains('touch-page-scroll')) return;
       const touchPan = event.pointerType === 'touch' && (!state.memoMode || state.memoPenSeen);
       if (!previewWrapEl) return;
       if (event.button !== undefined && event.button !== 0 && !middlePan) return;
