@@ -239,7 +239,7 @@
     :is(.toolbar-btn,.memo-btn,.paper-mini-btn,.section-mini-btn,
         .settings-mini-btn,.stage-slot,.shortcut-mini-btn,
         .sheet-reset-btn,.update-log-close,:where(.app-dialog-actions) button,
-        .export-select,.memo-size-select,.stage-slot-picker) {
+        .export-select,.stage-slot-picker) {
       height:var(--control-h,var(--ui-h-control));
       min-height:var(--control-h,var(--ui-h-control));
       padding:0 var(--control-pad,var(--ui-pad-control)) 1px;
@@ -276,7 +276,7 @@
     :is(.toolbar-btn,.memo-btn,.paper-mini-btn,.section-mini-btn,
         .settings-mini-btn,.stage-slot,.shortcut-mini-btn,
         .sheet-reset-btn,.update-log-close,:where(.app-dialog-actions) button,
-        .export-select,.memo-size-select,.stage-slot-picker):disabled { opacity:var(--ui-disabled); cursor:default; }
+        .export-select,.stage-slot-picker):disabled { opacity:var(--ui-disabled); cursor:default; }
     :is(.sidebar,.rightpanel,.app-dialog,.paper-panel) :is(input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="hidden"]),select) {
       min-height:var(--control-h,var(--ui-h-control)); height:var(--control-h,var(--ui-h-control)); padding-block:0 1px;
     }
@@ -288,7 +288,6 @@
       background:rgba(255,255,255,.92); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
       box-shadow:var(--ui-toolbar-shadow);
     }
-    .memo-tool-pair { display:inline-flex; align-items:center; gap:var(--ui-gap-sm); flex:none; }
     .floating-bars .toolbar-notice { padding:2px 5px; font-size:var(--ui-fs-help); min-width:0; white-space:normal; }
     .floating-bars .toolbar-notice .side-notice-close { flex:none; }
     .app-dialog-header { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:var(--ui-gap-lg); margin-bottom:var(--ui-gap-lg); }
@@ -1636,7 +1635,6 @@
 
     .memo-toolbar-divider { width:1px; align-self:stretch; margin:2px 0; background:var(--soft); flex:none; }
 
-    .memo-size-select { width:64px; }
     .memo-tool-group, .view-controls { display:flex; align-items:center; gap:3px; flex-wrap:wrap; }
     .memo-tool-group[hidden] { display:none; }
     .view-controls { margin-left:auto; }
@@ -1663,6 +1661,17 @@
     .ui-gauge-edit { position:absolute; inset:0; z-index:2; width:100%; height:100%; box-sizing:border-box; margin:0; padding:0 6px;
       border:0; box-shadow:inset 0 0 0 1px var(--ink-active); background:var(--panel); font:inherit; text-align:right; }
     .memo-color-group { display:flex; align-items:center; gap:4px; padding:2px; flex-wrap:nowrap; }
+    /* Pen / eraser: the icon wears the current colour, a small corner mark says a second tap opens sizes. */
+    .memo-tool-btn { position:relative; }
+    .memo-tool-btn::after { content:''; position:absolute; right:2px; bottom:2px; border:3px solid transparent; border-right-color:currentColor; border-bottom-color:currentColor; opacity:.55; }
+    .memo-tool-btn.active { background:var(--soft); border-color:var(--text); color:var(--text); }
+    .memo-tool-btn.active:enabled:hover { background:var(--soft); border-color:var(--text); color:var(--text); }
+    #memoPenToolBtn { color:var(--memo-pen-color, var(--text)); }
+    .tool-popover { position:fixed; z-index:41; display:grid; gap:var(--ui-gap-sm); padding:6px; background:var(--panel); border:1px solid var(--soft-strong); border-radius:var(--r-grp); box-shadow:0 10px 28px rgba(28,30,34,.16); }
+    .tool-popover[hidden] { display:none; }
+    .tool-popover-sizes { display:flex; gap:3px; }
+    .tool-popover .memo-size-preset { --control-h:var(--ui-h-toolbar); min-width:30px; padding:0 4px; }
+    .memo-size-preset i { display:block; width:16px; border-radius:3px; background:currentColor; }
     .memo-color-btn { width:20px; height:20px; padding:0; border-radius:50%; border:1px solid rgba(0,0,0,.14); cursor:pointer; background:white; position:relative; flex:none; }
     .memo-color-btn.active { box-shadow:0 0 0 1px white,0 0 0 2px var(--text); }
     .memo-color-btn .swatch { position:absolute; inset:2px; border-radius:50%; border:1px solid rgba(0,0,0,.1); }
@@ -1852,7 +1861,11 @@
     .work-library-actions { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)) auto; gap:6px; }
     .work-library-actions button { width:100%; min-width:0; height:auto; white-space:normal; }
     .work-library-source, .work-library-count, .work-library-empty { line-height:1.5; overflow-wrap:anywhere; }
-    .work-library-source:empty { display:none; }
+    .work-library-source-row { display:flex; align-items:center; gap:4px; min-width:0; }
+    .work-library-source-row[hidden] { display:none; }
+    /* Small plate-less x like the output folder's: forgets the folder and empties the list. */
+    .work-library-disconnect { flex:none; width:18px; height:18px; padding:0; border:0; border-radius:3px; background:transparent; color:var(--muted); font:inherit; font-size:var(--ui-fs-body); line-height:1; cursor:pointer; }
+    .work-library-disconnect:hover { color:var(--text); background:var(--soft); }
     .work-library-search-wrap { position:relative; display:block; }
     .work-library-search-wrap .ic-svg { position:absolute; left:8px; top:50%; transform:translateY(-50%); width:13px; height:13px; color:var(--muted); }
     .work-library-search-wrap[hidden] { display:none; }
@@ -2017,7 +2030,7 @@
           <summary><span class="summary-heading"><svg class="summary-icon ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="7.5" y="3.5" width="12" height="15" rx="1.5"/><path d="M4.5 7v11.5A2 2 0 0 0 6.5 20.5H15"/></svg><span id="workLibraryTitle" class="manual-summary-title" data-ui-text="libraryTitle"></span></span><span id="workLibrarySummaryCount" class="work-library-count"></span><svg class="manual-chevron ic-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 9.5 12 15l5.5-5.5"/></svg></summary>
           <div class="work-library-body">
         <div class="work-library-actions"><button id="currentSettingsImportBtn" class="toolbar-btn with-icon" type="button"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3.5 7A1.5 1.5 0 0 1 5 5.5h4l2 2.5h8A1.5 1.5 0 0 1 20.5 9.5V17A1.5 1.5 0 0 1 19 18.5H5A1.5 1.5 0 0 1 3.5 17Z"/></svg><span data-ui-text="settingsImportBtn">読込先</span></button><button class="toolbar-btn" id="workLibraryAddBtn" type="button" data-ui-text="libraryAdd"></button><button id="currentSettingsRefreshBtn" class="toolbar-btn icon-only" type="button" data-ui-title="settingsRefreshBtn" title="Reload" aria-label="Reload"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3L19.5 9"/><path d="M19.5 4.5V9H15"/></svg></button></div>
-        <div class="work-library-source" id="workLibrarySource"></div>
+        <div class="work-library-source-row" id="workLibrarySourceRow"><span class="work-library-source" id="workLibrarySource"></span><button id="workLibraryDisconnectBtn" class="work-library-disconnect" type="button" data-ui-title="libraryDisconnect">×</button></div>
         <div id="workLibraryCacheStatus" class="persistent-warning-banner" role="status" hidden></div>
         <label id="workLibrarySearchWrap" class="work-library-search-wrap"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="6.2"/><path d="m15.2 15.2 4.6 4.6"/></svg><input id="workLibrarySearch" class="work-library-search" type="search" autocomplete="off" spellcheck="false" /></label>
         <div class="work-library-selection" id="workLibrarySelectionTools"><button class="toolbar-btn" id="workLibrarySelectBtn" type="button" data-ui-text="librarySelect"></button><button class="toolbar-btn" id="workLibraryClearBtn" type="button" data-ui-text="libraryClear"></button><span id="workLibraryCount" class="work-library-count" role="status"></span></div>
@@ -2093,6 +2106,13 @@
     </aside>
 
     <main class="main">
+      <div id="memoPenPopover" class="tool-popover" role="group" data-ui-title="memoPenLabel" hidden>
+        <div id="memoPenSizes" class="tool-popover-sizes"></div>
+        <label class="ui-check-row"><input id="memoLineToggle" type="checkbox" /> <span data-ui-text="memoLineLabel">Straight line (Shift)</span></label>
+      </div>
+      <div id="memoEraserPopover" class="tool-popover" role="group" data-ui-title="memoEraserLabel" hidden>
+        <div id="memoEraserSizes" class="tool-popover-sizes"></div>
+      </div>
       <section id="paperPanel" class="paper-panel" role="group" aria-labelledby="paperPanelTitle" hidden>
         <div class="paper-panel-head"><span id="paperPanelTitle"></span><button id="paperPanelCloseBtn" class="toolbar-btn icon-only" type="button" data-ui-title="panelClose" aria-label="Close"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 7l10 10M17 7 7 17"/></svg></button></div>
         <div class="paper-layout-content">
@@ -2148,15 +2168,8 @@
           <button id="memoModeBtn" class="memo-btn" type="button"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 20l1-4.5L15.5 5a2.12 2.12 0 0 1 3 0l.5.5a2.12 2.12 0 0 1 0 3L8.5 19 4 20ZM13.5 7 17 10.5"/></svg><span data-ui-text="memoModeBtn">Memo Mode</span></button>
           <div id="memoToolGroup" class="memo-tool-group" hidden>
             <div class="memo-toolbar-divider" aria-hidden="true"></div>
-            <div class="memo-tool-pair">
-            <button id="memoPenToolBtn" class="memo-btn icon-only" type="button" aria-label="Pen tool" data-ui-title="memoPenLabel"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 20l1-4.5L15.5 5a2.12 2.12 0 0 1 3 0l.5.5a2.12 2.12 0 0 1 0 3L8.5 19 4 20ZM13.5 7 17 10.5"/></svg></button>
-            <select id="memoPenSizeSelect" class="memo-size-select" aria-label="Memo pen size" data-ui-title="memoPenLabel"></select>
-            <button id="memoLineToolBtn" class="memo-btn icon-only" type="button" aria-pressed="false" aria-label="Straight line" data-ui-title="memoLineLabel"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 18 18 6"/><circle cx="6" cy="18" r="1.6"/><circle cx="18" cy="6" r="1.6"/></svg></button>
-            </div>
-            <div class="memo-tool-pair">
-            <button id="memoEraserToolBtn" class="memo-btn icon-only" type="button" aria-label="Eraser tool" data-ui-title="memoEraserLabel"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8.5 19.5 3.9 14.9a1.5 1.5 0 0 1 0-2.1l8.5-8.5a1.5 1.5 0 0 1 2.1 0l5.2 5.2a1.5 1.5 0 0 1 0 2.1l-8.4 8.4M8.5 19.5H20M6.5 11.5l6 6"/></svg></button>
-            <select id="memoEraserSizeSelect" class="memo-size-select" aria-label="Memo eraser size" data-ui-title="memoEraserLabel"></select>
-            </div>
+            <button id="memoPenToolBtn" class="memo-btn icon-only memo-tool-btn" aria-haspopup="true" aria-controls="memoPenPopover" aria-expanded="false" type="button" aria-label="Pen tool" data-ui-title="memoPenLabel"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 20l1-4.5L15.5 5a2.12 2.12 0 0 1 3 0l.5.5a2.12 2.12 0 0 1 0 3L8.5 19 4 20ZM13.5 7 17 10.5"/></svg></button>
+            <button id="memoEraserToolBtn" class="memo-btn icon-only memo-tool-btn" aria-haspopup="true" aria-controls="memoEraserPopover" aria-expanded="false" type="button" aria-label="Eraser tool" data-ui-title="memoEraserLabel"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8.5 19.5 3.9 14.9a1.5 1.5 0 0 1 0-2.1l8.5-8.5a1.5 1.5 0 0 1 2.1 0l5.2 5.2a1.5 1.5 0 0 1 0 2.1l-8.4 8.4M8.5 19.5H20M6.5 11.5l6 6"/></svg></button>
             <div class="memo-toolbar-divider" aria-hidden="true"></div>
             <div class="memo-color-group" aria-label="Memo colors" data-ui-title="memoColors">
               <button class="memo-color-btn active" type="button" data-tool="pen" data-color="#111111" aria-label="Black" data-ui-title="colorBlack"><span class="swatch" style="background:#111111"></span></button>
@@ -2414,7 +2427,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '1011';
+    const APP_VERSION = '1012';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -2493,8 +2506,6 @@
     const memoCtx = memoCanvas.getContext('2d');
     const memoModeBtn = document.getElementById('memoModeBtn');
     const serifuModeBtn = document.getElementById('serifuModeBtn');
-    const memoPenSizeSelectEl = document.getElementById('memoPenSizeSelect');
-    const memoEraserSizeSelectEl = document.getElementById('memoEraserSizeSelect');
     const zoomOutBtn = document.getElementById('zoomOutBtn');
     const zoomResetBtn = document.getElementById('zoomResetBtn');
     const zoomInBtn = document.getElementById('zoomInBtn');
@@ -2541,7 +2552,7 @@
     const paperAutoAlignStatusEl = document.getElementById('paperAutoAlignStatus');
     const memoColorButtons = Array.from(document.querySelectorAll('.memo-color-btn'));
     const memoPenToolBtn = document.getElementById('memoPenToolBtn');
-    const memoLineToolBtn = document.getElementById('memoLineToolBtn');
+    const memoLineToggle = document.getElementById('memoLineToggle');
     const memoEraserToolBtn = document.getElementById('memoEraserToolBtn');
     const shortcutInputs = Array.from(document.querySelectorAll('.shortcut-input'));
     const shortcutClearButtons = Array.from(document.querySelectorAll('[data-shortcut-clear]'));
@@ -2967,7 +2978,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         drawingCountTitle:"Drawing count", drawingCountChip:"{n} drawings", drawingCountCell:"Cel", drawingCountNumbered:"Numbered entries", drawingCountInbetweens:"Inbetweens", drawingCountTotal:"Total", drawingCountPending:"Check required", drawingCountDisplay:"Display", drawingCountOff:"Off", drawingCountBottom:"Header bottom right", drawingCountTop:"Header top right", drawingCountCsv:"Save CSV", drawingCountText:"Save text", drawingCountClose:"Close", drawingCountHint:"Reused and repeated drawings count once · Check provisional timing", drawingCountWork:"Work", drawingCountEpisode:"Episode", drawingCountCut:"Cut", cutFolderTitle:"Cut folder check", cutFolderOpened:"Opened sheet", cutFolderNone:"none", cutFolderReading:"Reading folder…", cutFolderPartial:"Only the first 5,000 files were read.", cutFolderPaperOnly:"Only a paper image was opened, so cel numbers were not compared.", cutFolderNoSheet:"No sheet file was found, so cel numbers were not compared.", cutFolderSheetCount:"sheet", cutFolderFileCount:"files", cutFolderSheetOnly:"On the sheet, no file", cutFolderFileOnly:"File only, not on the sheet", cutFolderGaps:"Missing file numbers", cutFolderUnresolved:"Cel file without a number", cutFolderUnmapped:"Names not on the sheet", cutFolderPlates:"BG / BOOK", cutFolderReferences:"References and guides", cutFolderOther:"Other files", cutFolderCopy:"Copy", cutFolderChoose:"Choose the sheet file", cutFolderCancel:"Cancel", cutFolderOneOnly:"Drop one cut folder at a time.",
         originalCellTitle:'Sheet Input', appSettingsTitle:'Settings', serifuModeBtn:'Dialogue sheet', serifuModeTitle:'Dialogue sheet: drag to select a range, right-click the range for the sheet', cellPlacementTitle:'Cel placement', cellPlacement_letter:'Match letters', cellPlacement_source:'File order', cellPlacement_alpha:'A to Z', sheetToolsTitle:'Edit tools', shakuEditBtn:'Length Edit', shakuEditHint:'Drag a blue frame line to select a range.', shakuCutBtn:'Cut', shakuStretchBtn:'Extend', shakuFlashCut:'Cut applied', shakuFlashStretch:'Extend applied', dougaSheetCreate:"Fill drawing columns", dougaSheetRefresh:"Refill drawing columns", dougaSheetTitle:"Generate read-only drawing columns from drawing numbers and inbetween marks", cellTextScaleLabel:"Text", cellTextScaleTitle:"Sheet text size",
         dialogBlocksTitle:"Dialogue area", dialogFormatLabel:"Start | End | Speaker | Dialogue", cameraBlocksTitle:'Camera Area', cameraFormatLabel:"Start | End | Label | Instruction | Label", examplesTitle:'How to write',
-        panelClose:'Close', sheetPreviewTitle:'Sheet Preview', chooseExportDirBtn:"Output folder", downloadAllBtn:"Export", memoModeBtn:'Memo', cameraToMemoBtn:'Add to memo area', memoPenLabel:'Pen', memoEraserLabel:'Eraser', memoRightClickNoticeL1:'Right-click or long-press the memo area', memoRightClickNoticeL2:'to create / edit a text box', unifiedCurrentWork:"Current project", unifiedSelection:"{count} projects selected", unifiedExcluded:"Excluded from export", unifiedStopped:"{count} stopped", unifiedExportAction:"Export {count} projects · {pages} pages", unifiedWorkList:"Projects to export", unifiedSelectAll:"Select all", unifiedAllOptions:"Apply to all export targets", unifiedCurrentOptions:"Current project export settings", unifiedSavedDefaults:"Unchanged options keep each project’s saved settings.", unifiedMixed:"Mixed", unifiedResetOptions:"Restore saved settings", stageHeading:'Stage', stageAddSlotLabel:'Add a stage', stageCustomOption:'Custom…', stageRenameBtn:'Rename', stageDeleteBtn:'Delete', stageDeleteLastHint:'Cannot delete the last remaining stage', hideNonCellCommandsLabel:'Hide non-Cell commands', hideRightPanelBtn:"Hide dialogue/camera", showRightPanelBtn:"Show dialogue/camera", settingsExportBtn:"Save project", settingsFileBtn:"Open project", settingsImportBtn:"Project folder", settingsRefreshBtn:'Reload', textMemoApplyBtn:'Apply', textMemoMenuAdd:'Add text box', textMemoMenuDelete:'Delete text box', textMemoMenuEditMode:"Move/resize text boxes", textMemoMenuEditDone:"Finish editing", textMemoMenuAutoArrange:'Auto arrange text boxes', textMemoMenuBigger:"Larger text", textMemoMenuSmaller:"Smaller text", memoLineLabel:"Straight line (Shift)", laneMenuNewDialog:"New dialogue here", laneMenuNewCamera:"New camera direction here", laneMenuSpeaker:"Edit speaker", laneMenuDialogText:"Edit line", laneMenuCameraText:"Edit direction", laneMenuStartLabel:"Edit start name", laneMenuEndLabel:"Edit end name", laneMenuTriangle:"▲ Triangle", laneMenuDash:"- Dash", laneMenuDelete:"Delete", speakerNameEdit:"Name", textMemoInitialHint:"Right-click or long-press to add or edit a text box", clearSheetDataBtn:'New sheet', hideSidebarBtn:'Hide UI', showSidebarBtn:'Show UI', feedbackHeading:'Feedback', feedbackFormLink:"Feedback form", feedbackPlaceholder:'Bug report or request', feedbackHint:"Include the issue and steps to reproduce. App version and browser details are attached automatically.", feedbackSendBtn:'Send', feedbackEmpty:'Write a message first.', feedbackSending:'Sending...', feedbackRequested:"Submission requested. This text stays here until receipt is confirmed.", feedbackFailed:"Could not send. Use the feedback form.", workPickerCurrent:"Currently opened", workPickerOpened:"Opened project: {name}", workPickerNoMatch:"No matching project files.", workPickerSearch:"Search filename or folder", outputPixels:"{width} × {height} px", lastOutputFile:"Last file", firstOutputFile:"First file", outputComposition:"Paper, content and memos", psdLayers:"PSD layers: Memo / Text Output (sheet content, including pasted images) / Template / Paper Image / Background", reviewCaption:"Output preview", reviewRetry:"Retry preview", reviewFailed:"Preview failed: {error}", reviewLoading:"Preparing preview…", showOutputSettings:"Show output settings", focusPreview:"Expand preview", fitWidth:"Fit width", fitPage:"Fit page", reviewNext:"Next page", reviewPrev:"Previous page", reviewPage:"Page {page} / {count}", outputAction:"Export {count} page(s)", outputSize:"Image size", outputLocation:"Output location", outputFormat:"File format", outputCellLabel:"Cel names", outputDuration:"Duration “+”", outputHeader:"Header", outputTemplate:"Template lines", outputContents:"Include in the output", backToEdit:"Back to editing", reviewTitle:"Review and export", globalRedo:"Redo (Ctrl/Cmd+Shift+Z / Ctrl/Cmd+Y)", globalUndo:"Undo (Ctrl/Cmd+Z)", sheetHistory:"History", outputReview:"Review output", libraryTitle:"Project library", libraryAdd:"Add JSON", librarySelect:"Select all", libraryClear:"Clear", librarySelected:"{count} selected", librarySelectFile:"Select for export: {name}", libraryOpenFile:"Open: {name}", libraryEmpty:"No project files", libraryExport:"Export ({count})", noticeClose:"Dismiss notification", batchSavedFormat:"Saved file format", batchZip:"Download ZIP", batchReady:"{count} ready project files · {pages} pages · {failed} errors", batchRenamed:"{count} duplicate names numbered", batchPreparing:"Checking project {done}/{total}…", batchFinished:"Folder: {folder} files · ZIP download requested: {archive} files · Errors: {failed}", batchProgress:"Processed {done}/{total} files", batchStop:"Stop after this file", batchStopping:"Stopping…", batchPages:"pages", batchState_pending:"Checking", batchState_ready:"Ready", batchState_running:"Exporting", batchState_done:"Complete", batchState_error:"Error", batchState_stopped:"Stopped", batchMissingPaper:"The paper image or memo backup referenced by this JSON is unavailable. Open and save the project with its paper image included.", batchChanged:"Page count changed after preparation.", batchFolderCollision:"Could not create a new output folder.", batchPartial:"{count} files already processed", batchArchiveFailed:"ZIP download failed: {error}", batchZipLimit:"This ZIP exceeds the ZIP32 size or file-count limit. Export to a folder or select fewer project files.", batchRetryFailed:"Export the {count} unfinished project files again from page 1", outputStop:"Stop after this page", cacheImagesOmitted:"The browser copy has no images. Reload the project folder to restore them.", saveOmittedImagesWarn:"This browser copy has no images. Saving it omits paper and pasted images. Overwriting the original file will remove its images too. Reload the project folder first.", saveOmittedImagesProceed:"Save without images", psdSizeLimit:"This PSD page exceeds the format limit (2GB per file, 30000px per side). The paper image is {width} × {height} px — use a smaller paper image, or export as PNG or JPG.", batchCachedNoImages:"This browser copy has no images. Reload the project folder before exporting."
+        panelClose:'Close', libraryDisconnect:'Disconnect folder and clear the list', sheetPreviewTitle:'Sheet Preview', chooseExportDirBtn:"Output folder", downloadAllBtn:"Export", memoModeBtn:'Memo', cameraToMemoBtn:'Add to memo area', memoPenLabel:'Pen', memoEraserLabel:'Eraser', memoRightClickNoticeL1:'Right-click or long-press the memo area', memoRightClickNoticeL2:'to create / edit a text box', unifiedCurrentWork:"Current project", unifiedSelection:"{count} projects selected", unifiedExcluded:"Excluded from export", unifiedStopped:"{count} stopped", unifiedExportAction:"Export {count} projects · {pages} pages", unifiedWorkList:"Projects to export", unifiedSelectAll:"Select all", unifiedAllOptions:"Apply to all export targets", unifiedCurrentOptions:"Current project export settings", unifiedSavedDefaults:"Unchanged options keep each project’s saved settings.", unifiedMixed:"Mixed", unifiedResetOptions:"Restore saved settings", stageHeading:'Stage', stageAddSlotLabel:'Add a stage', stageCustomOption:'Custom…', stageRenameBtn:'Rename', stageDeleteBtn:'Delete', stageDeleteLastHint:'Cannot delete the last remaining stage', hideNonCellCommandsLabel:'Hide non-Cell commands', hideRightPanelBtn:"Hide dialogue/camera", showRightPanelBtn:"Show dialogue/camera", settingsExportBtn:"Save project", settingsFileBtn:"Open project", settingsImportBtn:"Project folder", settingsRefreshBtn:'Reload', textMemoApplyBtn:'Apply', textMemoMenuAdd:'Add text box', textMemoMenuDelete:'Delete text box', textMemoMenuEditMode:"Move/resize text boxes", textMemoMenuEditDone:"Finish editing", textMemoMenuAutoArrange:'Auto arrange text boxes', textMemoMenuBigger:"Larger text", textMemoMenuSmaller:"Smaller text", memoLineLabel:"Straight line (Shift)", laneMenuNewDialog:"New dialogue here", laneMenuNewCamera:"New camera direction here", laneMenuSpeaker:"Edit speaker", laneMenuDialogText:"Edit line", laneMenuCameraText:"Edit direction", laneMenuStartLabel:"Edit start name", laneMenuEndLabel:"Edit end name", laneMenuTriangle:"▲ Triangle", laneMenuDash:"- Dash", laneMenuDelete:"Delete", speakerNameEdit:"Name", textMemoInitialHint:"Right-click or long-press to add or edit a text box", clearSheetDataBtn:'New sheet', hideSidebarBtn:'Hide UI', showSidebarBtn:'Show UI', feedbackHeading:'Feedback', feedbackFormLink:"Feedback form", feedbackPlaceholder:'Bug report or request', feedbackHint:"Include the issue and steps to reproduce. App version and browser details are attached automatically.", feedbackSendBtn:'Send', feedbackEmpty:'Write a message first.', feedbackSending:'Sending...', feedbackRequested:"Submission requested. This text stays here until receipt is confirmed.", feedbackFailed:"Could not send. Use the feedback form.", workPickerCurrent:"Currently opened", workPickerOpened:"Opened project: {name}", workPickerNoMatch:"No matching project files.", workPickerSearch:"Search filename or folder", outputPixels:"{width} × {height} px", lastOutputFile:"Last file", firstOutputFile:"First file", outputComposition:"Paper, content and memos", psdLayers:"PSD layers: Memo / Text Output (sheet content, including pasted images) / Template / Paper Image / Background", reviewCaption:"Output preview", reviewRetry:"Retry preview", reviewFailed:"Preview failed: {error}", reviewLoading:"Preparing preview…", showOutputSettings:"Show output settings", focusPreview:"Expand preview", fitWidth:"Fit width", fitPage:"Fit page", reviewNext:"Next page", reviewPrev:"Previous page", reviewPage:"Page {page} / {count}", outputAction:"Export {count} page(s)", outputSize:"Image size", outputLocation:"Output location", outputFormat:"File format", outputCellLabel:"Cel names", outputDuration:"Duration “+”", outputHeader:"Header", outputTemplate:"Template lines", outputContents:"Include in the output", backToEdit:"Back to editing", reviewTitle:"Review and export", globalRedo:"Redo (Ctrl/Cmd+Shift+Z / Ctrl/Cmd+Y)", globalUndo:"Undo (Ctrl/Cmd+Z)", sheetHistory:"History", outputReview:"Review output", libraryTitle:"Project library", libraryAdd:"Add JSON", librarySelect:"Select all", libraryClear:"Clear", librarySelected:"{count} selected", librarySelectFile:"Select for export: {name}", libraryOpenFile:"Open: {name}", libraryEmpty:"No project files", libraryExport:"Export ({count})", noticeClose:"Dismiss notification", batchSavedFormat:"Saved file format", batchZip:"Download ZIP", batchReady:"{count} ready project files · {pages} pages · {failed} errors", batchRenamed:"{count} duplicate names numbered", batchPreparing:"Checking project {done}/{total}…", batchFinished:"Folder: {folder} files · ZIP download requested: {archive} files · Errors: {failed}", batchProgress:"Processed {done}/{total} files", batchStop:"Stop after this file", batchStopping:"Stopping…", batchPages:"pages", batchState_pending:"Checking", batchState_ready:"Ready", batchState_running:"Exporting", batchState_done:"Complete", batchState_error:"Error", batchState_stopped:"Stopped", batchMissingPaper:"The paper image or memo backup referenced by this JSON is unavailable. Open and save the project with its paper image included.", batchChanged:"Page count changed after preparation.", batchFolderCollision:"Could not create a new output folder.", batchPartial:"{count} files already processed", batchArchiveFailed:"ZIP download failed: {error}", batchZipLimit:"This ZIP exceeds the ZIP32 size or file-count limit. Export to a folder or select fewer project files.", batchRetryFailed:"Export the {count} unfinished project files again from page 1", outputStop:"Stop after this page", cacheImagesOmitted:"The browser copy has no images. Reload the project folder to restore them.", saveOmittedImagesWarn:"This browser copy has no images. Saving it omits paper and pasted images. Overwriting the original file will remove its images too. Reload the project folder first.", saveOmittedImagesProceed:"Save without images", psdSizeLimit:"This PSD page exceeds the format limit (2GB per file, 30000px per side). The paper image is {width} × {height} px — use a smaller paper image, or export as PNG or JPG.", batchCachedNoImages:"This browser copy has no images. Reload the project folder before exporting."
       },
       ja: {
         resizeSidebar:"サイドバーの幅", resizeRightPanel:"セリフ・撮影欄の幅", updateHistory:"更新履歴", feedbackTarget:"問い合わせ送信", memoColors:"ペンの色", colorBlack:"黒", colorRed:"赤", colorBlue:"青", colorGreen:"緑", colorYellow:"黄", previewZoom:"プレビュー倍率", zoomReset:"倍率を戻す", zoomOut:"縮小", zoomIn:"拡大", memoOverlay:"描き込みメモ", editHeaderText:"クリックで見出しを編集", durationStepper:"尺", speakerSuffix:"話者名の接尾辞", editSpeakerSuffix:"クリック：名前・接尾辞", editSpeakerText:"クリック：名前・接尾辞", editSheetText:"シートの文字を編集", clickEdit:"クリックで編集", editCelLabel:"クリックでセル名を編集", editTextMark:"クリック：編集・Shift＋クリック・長押し：記号", editMarkMove:"クリック：編集・Shift＋クリック・長押し：記号・ドラッグ：移動", toggleDotText:"クリック：中割記号の切替・Shift＋クリック・長押し：文字", cameraLine:"撮影指示", leftSide:"左", rightSide:"右", mainSide:"全体", drawingColumns:"動画欄", boldText:"太字", boxedText:"囲み", textMemoLabel:"文字メモ", shortcutLabel:"ショートカット", supportDonate:"応援する", mouthRole0:"閉じ口", mouthRole1:"中口", mouthRole2:"開き口", mouthRole3:"歯口", mouthRole4:"「お」の口", mouthRole5:"「う」の口", mouthRole6:"その他",
@@ -2975,7 +2986,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         drawingCountTitle:"動画枚数", drawingCountChip:"動画 {n}枚", drawingCountCell:"セル", drawingCountNumbered:"番号指定分", drawingCountInbetweens:"中割り", drawingCountTotal:"合計", drawingCountPending:"要確認", drawingCountDisplay:"表示", drawingCountOff:"非表示", drawingCountBottom:"ヘッダー右下", drawingCountTop:"ヘッダー右上", drawingCountCsv:"CSV保存", drawingCountText:"テキスト保存", drawingCountClose:"閉じる", drawingCountHint:"再使用・リピートは1枚として集計 · 仮配置は要確認", drawingCountWork:"作品", drawingCountEpisode:"話数", drawingCountCut:"カット", cutFolderTitle:"カットフォルダ照合", cutFolderOpened:"開いたシート", cutFolderNone:"なし", cutFolderReading:"フォルダを読み込み中…", cutFolderPartial:"先頭の5,000ファイルだけ読み込みました。", cutFolderPaperOnly:"用紙画像だけを開いたため、セル番号は照合していません。", cutFolderNoSheet:"シートファイルが見つからないため、セル番号は照合していません。", cutFolderSheetCount:"シート", cutFolderFileCount:"ファイル", cutFolderSheetOnly:"シートにあってファイルがない", cutFolderFileOnly:"ファイルだけでシートにない", cutFolderGaps:"ファイル番号の抜け", cutFolderUnresolved:"番号のないセルファイル", cutFolderUnmapped:"シートにない名前", cutFolderPlates:"BG・BOOK", cutFolderReferences:"参考・ガイド", cutFolderOther:"その他のファイル", cutFolderCopy:"コピー", cutFolderChoose:"シートファイルを選択", cutFolderCancel:"キャンセル", cutFolderOneOnly:"カットフォルダは1つずつドロップしてください。",
         originalCellTitle:'シート入力', appSettingsTitle:'設定', serifuModeBtn:'セリフシート', serifuModeTitle:'セリフシート：ドラッグで範囲選択、範囲を右クリックでシート', cellPlacementTitle:'セルの並び', cellPlacement_letter:'列名どおり', cellPlacement_source:'ファイルの順', cellPlacement_alpha:'アルファベット順', sheetToolsTitle:'編集ツール', shakuEditBtn:"尺編集", shakuEditHint:'青いフレーム線をドラッグして尺を選択', shakuCutBtn:'切る', shakuStretchBtn:'伸ばす', shakuFlashCut:'切る 反映', shakuFlashStretch:'伸ばす 反映', dougaSheetCreate:"動画欄を作成", dougaSheetRefresh:"動画欄を更新", dougaSheetTitle:"セル番号と中割記号から編集不可の動画欄を作成", cellTextScaleLabel:"文字", cellTextScaleTitle:"シートの文字サイズ",
         dialogBlocksTitle:'セリフ欄', dialogFormatLabel:"開始 | 終了 | 話者 | セリフ", cameraBlocksTitle:'カメラ欄', cameraFormatLabel:"開始 | 終了 | 前ラベル | 指示 | 後ラベル", examplesTitle:'書き方',
-        panelClose:'閉じる', sheetPreviewTitle:'シートプレビュー', chooseExportDirBtn:"出力先", downloadAllBtn:"書き出し", memoModeBtn:'メモモード', cameraToMemoBtn:'メモ欄に反映', memoPenLabel:'ペン', memoEraserLabel:'消しゴム', memoRightClickNoticeL1:'メモ欄で右クリック・長押し', memoRightClickNoticeL2:'：テキスト枠の作成・編集', unifiedCurrentWork:"編集中の作業", unifiedSelection:"選択した作業 {count}件", unifiedExcluded:"書き出し対象外", unifiedStopped:"中止 {count}件", unifiedExportAction:"{count}件・全{pages}ページを書き出す", unifiedWorkList:"書き出す作業", unifiedSelectAll:"すべて選択", unifiedAllOptions:"すべての出力対象に適用", unifiedCurrentOptions:"現在の作業の出力設定", unifiedSavedDefaults:"変更しない項目は各作業の保存設定を使用します。", unifiedMixed:"混在", unifiedResetOptions:"保存設定に戻す", stageHeading:'段階', stageAddSlotLabel:'段階を追加', stageCustomOption:'直接入力…', stageRenameBtn:'名前を変える', stageDeleteBtn:'削除', stageDeleteLastHint:'最後の1段階は削除できません', hideNonCellCommandsLabel:'Cell以外のコマンドを隠す', hideRightPanelBtn:'セリフ/カメラを隠す', showRightPanelBtn:'セリフ/カメラを表示', settingsExportBtn:"作業を保存", settingsFileBtn:"作業を開く", settingsImportBtn:"作業フォルダー", settingsRefreshBtn:'再読込', textMemoApplyBtn:'適用', textMemoMenuAdd:'テキスト枠を追加', textMemoMenuDelete:'テキスト枠を削除', textMemoMenuEditMode:"テキスト枠の移動・サイズ変更", textMemoMenuEditDone:"編集を終了", textMemoMenuAutoArrange:'テキスト枠を自動整列', textMemoMenuBigger:"文字を大きく", textMemoMenuSmaller:"文字を小さく", memoLineLabel:"直線（Shift）", laneMenuNewDialog:"ここにセリフを追加", laneMenuNewCamera:"ここにカメラ指示を追加", laneMenuSpeaker:"話者名を編集", laneMenuDialogText:"セリフを編集", laneMenuCameraText:"指示を編集", laneMenuStartLabel:"始点の名前を編集", laneMenuEndLabel:"終点の名前を編集", laneMenuTriangle:"▲ 三角", laneMenuDash:"- 横線", laneMenuDelete:"削除", speakerNameEdit:"名前", textMemoInitialHint:"右クリック・長押しでテキスト枠を追加・編集", clearSheetDataBtn:'新規シート', hideSidebarBtn:'UIを隠す', showSidebarBtn:'UIを表示', feedbackHeading:'報告', feedbackFormLink:"フォーム", feedbackPlaceholder:'不具合や要望を書く', feedbackHint:"症状と再現手順を入力してください。アプリの版とブラウザ情報は自動で添付されます。", feedbackSendBtn:'送信', feedbackEmpty:'内容を書いてください。', feedbackSending:'送信中...', feedbackRequested:'送信を依頼しました。受付が確認できるまで本文を残します。', feedbackFailed:"送信できません。フォームから送ってください。", workPickerCurrent:"現在開いている作業", workPickerOpened:"作業を開きました：{name}", workPickerNoMatch:"一致する作業ファイルがありません。", workPickerSearch:"ファイル名・フォルダーを検索", outputPixels:"{width} × {height} px", lastOutputFile:"最後のファイル", firstOutputFile:"最初のファイル", outputComposition:"用紙・内容・メモを含む", psdLayers:"PSDレイヤー：メモ / Text Output（シートの内容・貼り付けた画像を含む） / 用紙の罫線 / 用紙画像 / 背景", reviewCaption:"仕上がりプレビュー", reviewRetry:"再表示", reviewFailed:"プレビューを表示できません：{error}", reviewLoading:"プレビューを準備中…", showOutputSettings:"出力設定を表示", focusPreview:"大きく確認", fitWidth:"幅に合わせる", fitPage:"ページ全体", reviewNext:"次のページ", reviewPrev:"前のページ", reviewPage:"{page} / {count}ページ", outputAction:"{count}ページを書き出す", outputSize:"画像サイズ", outputLocation:"出力先", outputFormat:"ファイル形式", outputCellLabel:"セル名", outputDuration:"尺の「＋」", outputHeader:"ヘッダー", outputTemplate:"用紙の罫線", outputContents:"書き出す内容", backToEdit:"編集に戻る", reviewTitle:"仕上がりと書き出し", globalRedo:"やり直す (Ctrl/Cmd+Shift+Z / Ctrl/Cmd+Y)", globalUndo:"元に戻す (Ctrl/Cmd+Z)", sheetHistory:"履歴", outputReview:"仕上がりを確認", libraryTitle:"作業一覧", libraryAdd:"JSON追加", librarySelect:"すべて選択", libraryClear:"選択を解除", librarySelected:"{count}件選択", librarySelectFile:"書き出す作業：{name}", libraryOpenFile:"開く：{name}", libraryEmpty:"作業ファイルなし", libraryExport:"書き出す（{count}件）", noticeClose:"通知を閉じる", batchSavedFormat:"保存された形式", batchZip:"ZIPダウンロード", batchReady:"準備完了{count}件・{pages}ページ・エラー{failed}件", batchRenamed:"同名{count}ファイルに連番を追加", batchPreparing:"作業を確認中 {done}/{total}…", batchFinished:"フォルダー保存{folder}ファイル・ZIP依頼{archive}ファイル・エラー{failed}件", batchProgress:"処理 {done}/{total}ファイル", batchStop:"このファイルの後に中止", batchStopping:"中止しています…", batchPages:"ページ", batchState_pending:"確認中", batchState_ready:"準備完了", batchState_running:"出力中", batchState_done:"完了", batchState_error:"エラー", batchState_stopped:"中止", batchMissingPaper:"このJSONが参照する用紙画像・メモの記憶がありません。用紙画像を含めて作業を保存し直してください。", batchChanged:"準備後にページ数が変わりました。", batchFolderCollision:"新しい出力フォルダーを作成できませんでした。", batchPartial:"{count}ファイル処理済み", batchArchiveFailed:"ZIPダウンロード失敗：{error}", batchZipLimit:"ZIP32の容量またはファイル数の上限を超えます。フォルダーに出力するか対象を減らしてください。", batchRetryFailed:"終わらなかった{count}件を最初のページから書き出し直す", outputStop:"このページの後に中止", cacheImagesOmitted:"ブラウザーの保存データには画像がありません。作業フォルダーを読み込み直すと復元されます。", saveOmittedImagesWarn:"画像のないブラウザー保存データです。このまま保存すると用紙画像と貼り付けた画像が含まれません。元のファイルに上書きすると元の画像も失われます。先に作業フォルダーを読み込み直してください。", saveOmittedImagesProceed:"画像なしで保存", psdSizeLimit:"PSD は 1 枚で形式の上限（2GB・1 辺 30000px）を超えます。用紙画像は {width} × {height} px です — 解像度を下げるか、PNG・JPG で書き出してください。", batchCachedNoImages:"ブラウザーの保存データには画像がありません。作業フォルダーを読み込み直してから書き出してください。"
+        panelClose:'閉じる', libraryDisconnect:'フォルダの接続を解除して一覧を空にする', sheetPreviewTitle:'シートプレビュー', chooseExportDirBtn:"出力先", downloadAllBtn:"書き出し", memoModeBtn:'メモモード', cameraToMemoBtn:'メモ欄に反映', memoPenLabel:'ペン', memoEraserLabel:'消しゴム', memoRightClickNoticeL1:'メモ欄で右クリック・長押し', memoRightClickNoticeL2:'：テキスト枠の作成・編集', unifiedCurrentWork:"編集中の作業", unifiedSelection:"選択した作業 {count}件", unifiedExcluded:"書き出し対象外", unifiedStopped:"中止 {count}件", unifiedExportAction:"{count}件・全{pages}ページを書き出す", unifiedWorkList:"書き出す作業", unifiedSelectAll:"すべて選択", unifiedAllOptions:"すべての出力対象に適用", unifiedCurrentOptions:"現在の作業の出力設定", unifiedSavedDefaults:"変更しない項目は各作業の保存設定を使用します。", unifiedMixed:"混在", unifiedResetOptions:"保存設定に戻す", stageHeading:'段階', stageAddSlotLabel:'段階を追加', stageCustomOption:'直接入力…', stageRenameBtn:'名前を変える', stageDeleteBtn:'削除', stageDeleteLastHint:'最後の1段階は削除できません', hideNonCellCommandsLabel:'Cell以外のコマンドを隠す', hideRightPanelBtn:'セリフ/カメラを隠す', showRightPanelBtn:'セリフ/カメラを表示', settingsExportBtn:"作業を保存", settingsFileBtn:"作業を開く", settingsImportBtn:"作業フォルダー", settingsRefreshBtn:'再読込', textMemoApplyBtn:'適用', textMemoMenuAdd:'テキスト枠を追加', textMemoMenuDelete:'テキスト枠を削除', textMemoMenuEditMode:"テキスト枠の移動・サイズ変更", textMemoMenuEditDone:"編集を終了", textMemoMenuAutoArrange:'テキスト枠を自動整列', textMemoMenuBigger:"文字を大きく", textMemoMenuSmaller:"文字を小さく", memoLineLabel:"直線（Shift）", laneMenuNewDialog:"ここにセリフを追加", laneMenuNewCamera:"ここにカメラ指示を追加", laneMenuSpeaker:"話者名を編集", laneMenuDialogText:"セリフを編集", laneMenuCameraText:"指示を編集", laneMenuStartLabel:"始点の名前を編集", laneMenuEndLabel:"終点の名前を編集", laneMenuTriangle:"▲ 三角", laneMenuDash:"- 横線", laneMenuDelete:"削除", speakerNameEdit:"名前", textMemoInitialHint:"右クリック・長押しでテキスト枠を追加・編集", clearSheetDataBtn:'新規シート', hideSidebarBtn:'UIを隠す', showSidebarBtn:'UIを表示', feedbackHeading:'報告', feedbackFormLink:"フォーム", feedbackPlaceholder:'不具合や要望を書く', feedbackHint:"症状と再現手順を入力してください。アプリの版とブラウザ情報は自動で添付されます。", feedbackSendBtn:'送信', feedbackEmpty:'内容を書いてください。', feedbackSending:'送信中...', feedbackRequested:'送信を依頼しました。受付が確認できるまで本文を残します。', feedbackFailed:"送信できません。フォームから送ってください。", workPickerCurrent:"現在開いている作業", workPickerOpened:"作業を開きました：{name}", workPickerNoMatch:"一致する作業ファイルがありません。", workPickerSearch:"ファイル名・フォルダーを検索", outputPixels:"{width} × {height} px", lastOutputFile:"最後のファイル", firstOutputFile:"最初のファイル", outputComposition:"用紙・内容・メモを含む", psdLayers:"PSDレイヤー：メモ / Text Output（シートの内容・貼り付けた画像を含む） / 用紙の罫線 / 用紙画像 / 背景", reviewCaption:"仕上がりプレビュー", reviewRetry:"再表示", reviewFailed:"プレビューを表示できません：{error}", reviewLoading:"プレビューを準備中…", showOutputSettings:"出力設定を表示", focusPreview:"大きく確認", fitWidth:"幅に合わせる", fitPage:"ページ全体", reviewNext:"次のページ", reviewPrev:"前のページ", reviewPage:"{page} / {count}ページ", outputAction:"{count}ページを書き出す", outputSize:"画像サイズ", outputLocation:"出力先", outputFormat:"ファイル形式", outputCellLabel:"セル名", outputDuration:"尺の「＋」", outputHeader:"ヘッダー", outputTemplate:"用紙の罫線", outputContents:"書き出す内容", backToEdit:"編集に戻る", reviewTitle:"仕上がりと書き出し", globalRedo:"やり直す (Ctrl/Cmd+Shift+Z / Ctrl/Cmd+Y)", globalUndo:"元に戻す (Ctrl/Cmd+Z)", sheetHistory:"履歴", outputReview:"仕上がりを確認", libraryTitle:"作業一覧", libraryAdd:"JSON追加", librarySelect:"すべて選択", libraryClear:"選択を解除", librarySelected:"{count}件選択", librarySelectFile:"書き出す作業：{name}", libraryOpenFile:"開く：{name}", libraryEmpty:"作業ファイルなし", libraryExport:"書き出す（{count}件）", noticeClose:"通知を閉じる", batchSavedFormat:"保存された形式", batchZip:"ZIPダウンロード", batchReady:"準備完了{count}件・{pages}ページ・エラー{failed}件", batchRenamed:"同名{count}ファイルに連番を追加", batchPreparing:"作業を確認中 {done}/{total}…", batchFinished:"フォルダー保存{folder}ファイル・ZIP依頼{archive}ファイル・エラー{failed}件", batchProgress:"処理 {done}/{total}ファイル", batchStop:"このファイルの後に中止", batchStopping:"中止しています…", batchPages:"ページ", batchState_pending:"確認中", batchState_ready:"準備完了", batchState_running:"出力中", batchState_done:"完了", batchState_error:"エラー", batchState_stopped:"中止", batchMissingPaper:"このJSONが参照する用紙画像・メモの記憶がありません。用紙画像を含めて作業を保存し直してください。", batchChanged:"準備後にページ数が変わりました。", batchFolderCollision:"新しい出力フォルダーを作成できませんでした。", batchPartial:"{count}ファイル処理済み", batchArchiveFailed:"ZIPダウンロード失敗：{error}", batchZipLimit:"ZIP32の容量またはファイル数の上限を超えます。フォルダーに出力するか対象を減らしてください。", batchRetryFailed:"終わらなかった{count}件を最初のページから書き出し直す", outputStop:"このページの後に中止", cacheImagesOmitted:"ブラウザーの保存データには画像がありません。作業フォルダーを読み込み直すと復元されます。", saveOmittedImagesWarn:"画像のないブラウザー保存データです。このまま保存すると用紙画像と貼り付けた画像が含まれません。元のファイルに上書きすると元の画像も失われます。先に作業フォルダーを読み込み直してください。", saveOmittedImagesProceed:"画像なしで保存", psdSizeLimit:"PSD は 1 枚で形式の上限（2GB・1 辺 30000px）を超えます。用紙画像は {width} × {height} px です — 解像度を下げるか、PNG・JPG で書き出してください。", batchCachedNoImages:"ブラウザーの保存データには画像がありません。作業フォルダーを読み込み直してから書き出してください。"
       },
       ko: {
         resizeSidebar:"사이드바 너비", resizeRightPanel:"대사·촬영 패널 너비", updateHistory:"업데이트 기록", feedbackTarget:"문의 전송", memoColors:"펜 색상", colorBlack:"검정", colorRed:"빨강", colorBlue:"파랑", colorGreen:"초록", colorYellow:"노랑", previewZoom:"미리보기 배율", zoomReset:"배율 초기화", zoomOut:"축소", zoomIn:"확대", memoOverlay:"그림 메모", editHeaderText:"클릭하여 머리글 편집", durationStepper:"길이", speakerSuffix:"화자 접미사", editSpeakerSuffix:"클릭: 이름·접미사", editSpeakerText:"클릭: 이름·접미사", editSheetText:"시트 글자 편집", clickEdit:"클릭하여 편집", editCelLabel:"클릭하여 셀 이름 편집", editTextMark:"클릭: 편집 · Shift+클릭·길게 누르기: 기호", editMarkMove:"클릭: 편집 · Shift+클릭·길게 누르기: 기호 · 드래그: 이동", toggleDotText:"클릭: 동화 기호 켜기·끄기 · Shift+클릭·길게 누르기: 글자", cameraLine:"촬영 지시", leftSide:"왼쪽", rightSide:"오른쪽", mainSide:"전체", drawingColumns:"동화 칸", boldText:"굵게", boxedText:"테두리", textMemoLabel:"글 메모", shortcutLabel:"단축키", supportDonate:"후원", mouthRole0:"닫힌 입", mouthRole1:"반쯤 열린 입", mouthRole2:"열린 입", mouthRole3:"이 보이는 입", mouthRole4:"오 모양", mouthRole5:"우 모양", mouthRole6:"기타",
@@ -2983,7 +2994,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         drawingCountTitle:"동화 매수", drawingCountChip:"동화 {n}매", drawingCountCell:"셀", drawingCountNumbered:"번호 지정", drawingCountInbetweens:"기호 지정", drawingCountTotal:"합계", drawingCountPending:"확인 필요", drawingCountDisplay:"표시", drawingCountOff:"표시 안 함", drawingCountBottom:"헤더 우하단", drawingCountTop:"헤더 우상단", drawingCountCsv:"CSV 저장", drawingCountText:"텍스트 저장", drawingCountClose:"닫기", drawingCountHint:"재사용·리피트는 한 번만 집계 · 가배치 구간은 확인 필요", drawingCountWork:"작품", drawingCountEpisode:"화수", drawingCountCut:"컷", cutFolderTitle:"컷 폴더 대조", cutFolderOpened:"불러온 시트", cutFolderNone:"없음", cutFolderReading:"폴더를 읽는 중…", cutFolderPartial:"앞의 5,000개 파일만 읽었습니다.", cutFolderPaperOnly:"용지 이미지만 열어서 셀 번호는 대조하지 않았습니다.", cutFolderNoSheet:"시트 파일을 찾지 못해 셀 번호는 대조하지 않았습니다.", cutFolderSheetCount:"시트", cutFolderFileCount:"파일", cutFolderSheetOnly:"시트에 있고 파일 없음", cutFolderFileOnly:"파일만 있고 시트에 없음", cutFolderGaps:"빠진 파일 번호", cutFolderUnresolved:"번호 없는 셀 파일", cutFolderUnmapped:"시트에 없는 이름", cutFolderPlates:"BG·BOOK", cutFolderReferences:"참고·가이드", cutFolderOther:"기타 파일", cutFolderCopy:"복사", cutFolderChoose:"시트 파일 선택", cutFolderCancel:"취소", cutFolderOneOnly:"컷 폴더는 하나씩 놓아 주세요.",
         originalCellTitle:'시트 입력', appSettingsTitle:'설정', serifuModeBtn:'대사 시트', serifuModeTitle:'대사 시트: 드래그로 범위 선택, 범위를 우클릭해 시트', cellPlacementTitle:'칸 배치', cellPlacement_letter:'이름 칸에 맞춤', cellPlacement_source:'파일 순서', cellPlacement_alpha:'알파벳순', sheetToolsTitle:'편집 도구', shakuEditBtn:"길이 편집", shakuEditHint:'파란 프레임선을 드래그해 길이를 선택', shakuCutBtn:'자르기', shakuStretchBtn:'늘리기', shakuFlashCut:'자르기 반영', shakuFlashStretch:'늘리기 반영', dougaSheetCreate:"동화란 채우기", dougaSheetRefresh:"동화란 다시 채우기", dougaSheetTitle:"그림 번호·동화 기호로 동화란을 채웁니다(읽기 전용)", cellTextScaleLabel:"글자", cellTextScaleTitle:"시트 글자 크기",
         dialogBlocksTitle:'대사란', dialogFormatLabel:"시작 | 끝 | 화자 | 대사", cameraBlocksTitle:'카메라란', cameraFormatLabel:"시작 | 끝 | 앞 라벨 | 지시 | 뒤 라벨", examplesTitle:'쓰는 법',
-        panelClose:'닫기', sheetPreviewTitle:"시트 미리보기", chooseExportDirBtn:"출력 위치", downloadAllBtn:"출력", memoModeBtn:'메모 모드', cameraToMemoBtn:'메모란에 반영', memoPenLabel:'펜', memoEraserLabel:'지우개', memoRightClickNoticeL1:'메모 영역 우클릭·길게 누르기', memoRightClickNoticeL2:'텍스트 박스 생성·편집', unifiedCurrentWork:"현재 편집 작업", unifiedSelection:"선택한 작업 {count}개", unifiedExcluded:"출력 제외", unifiedStopped:"중지 {count}개", unifiedExportAction:"작업 {count}개 · 총 {pages}페이지 출력", unifiedWorkList:"출력할 작업", unifiedSelectAll:"전체 선택", unifiedAllOptions:"모든 출력 대상에 적용", unifiedCurrentOptions:"현재 작업의 출력 설정", unifiedSavedDefaults:"변경하지 않은 항목은 각 작업의 저장 설정을 유지합니다.", unifiedMixed:"혼합", unifiedResetOptions:"저장 설정으로 되돌리기", stageHeading:'단계', stageAddSlotLabel:'단계 추가', stageCustomOption:"직접 입력…", stageRenameBtn:'이름 변경', stageDeleteBtn:'삭제', stageDeleteLastHint:'마지막 단계는 삭제할 수 없습니다', hideNonCellCommandsLabel:"셀 외 명령 숨기기", hideRightPanelBtn:'대사/카메라 숨기기', showRightPanelBtn:'대사/카메라 보이기', settingsExportBtn:"작업 저장", settingsFileBtn:"작업 열기", settingsImportBtn:"작업 폴더", settingsRefreshBtn:'다시 불러오기', textMemoApplyBtn:'적용', textMemoMenuAdd:'텍스트 박스 추가', textMemoMenuDelete:'텍스트 박스 삭제', textMemoMenuEditMode:"글상자 이동·크기 조절", textMemoMenuEditDone:"편집 끝내기", textMemoMenuAutoArrange:'텍스트 박스 자동 정렬', textMemoMenuBigger:"글자 크게", textMemoMenuSmaller:"글자 작게", memoLineLabel:"직선 (Shift)", laneMenuNewDialog:"여기에 대사 추가", laneMenuNewCamera:"여기에 카메라 지시 추가", laneMenuSpeaker:"화자명 편집", laneMenuDialogText:"대사 편집", laneMenuCameraText:"지시 편집", laneMenuStartLabel:"시작 이름 편집", laneMenuEndLabel:"끝 이름 편집", laneMenuTriangle:"▲ 삼각형", laneMenuDash:"- 가로선", laneMenuDelete:"삭제", speakerNameEdit:"이름", textMemoInitialHint:"우클릭·길게 누르기: 텍스트 박스 추가·편집", clearSheetDataBtn:'새 시트', hideSidebarBtn:'UI 숨기기', showSidebarBtn:'UI 펼치기', feedbackHeading:'문의', feedbackFormLink:"문의 양식", feedbackPlaceholder:'버그 내용이나 개선 요청', feedbackHint:"증상과 재현 순서를 적어 주세요. 앱 버전·브라우저 정보는 자동 첨부됩니다.", feedbackSendBtn:'보내기', feedbackEmpty:'내용을 먼저 입력하세요.', feedbackSending:'전송 중...', feedbackRequested:'전송을 요청했습니다. 접수 확인 전까지 원문을 남깁니다.', feedbackFailed:"전송하지 못했습니다. 문의 양식을 이용하세요.", workPickerCurrent:"현재 열린 작업", workPickerOpened:"작업을 열었습니다: {name}", workPickerNoMatch:"일치하는 작업 파일이 없습니다.", workPickerSearch:"파일명 또는 폴더 검색", outputPixels:"{width} × {height} px", lastOutputFile:"마지막 파일", firstOutputFile:"첫 파일", outputComposition:"용지·내용·메모 포함", psdLayers:"PSD 레이어: 메모 / Text Output(시트 내용 · 붙여 넣은 이미지 포함) / 용지 틀 / 용지 이미지 / 배경", reviewCaption:"출력 미리보기", reviewRetry:"다시 표시", reviewFailed:"미리보기를 표시하지 못했습니다: {error}", reviewLoading:"미리보기 준비 중…", showOutputSettings:"출력 설정 보기", focusPreview:"크게 확인", fitWidth:"폭에 맞춤", fitPage:"페이지 전체", reviewNext:"다음 페이지", reviewPrev:"이전 페이지", reviewPage:"{page} / {count}페이지", outputAction:"{count}페이지 출력", outputSize:"이미지 크기", outputLocation:"출력 위치", outputFormat:"파일 형식", outputCellLabel:"셀 이름", outputDuration:"길이 표시의 ＋", outputHeader:"헤더", outputTemplate:"용지 격자선", outputContents:"출력에 포함할 내용", backToEdit:"편집으로 돌아가기", reviewTitle:"출력 확인 및 내보내기", globalRedo:"다시 실행 (Ctrl/Cmd+Shift+Z / Ctrl/Cmd+Y)", globalUndo:"실행취소 (Ctrl/Cmd+Z)", sheetHistory:"편집", outputReview:"출력 확인", libraryTitle:"작업 목록", libraryAdd:"JSON 추가", librarySelect:"모두 선택", libraryClear:"선택 해제", librarySelected:"{count}개 선택", librarySelectFile:"출력 대상으로 선택: {name}", libraryOpenFile:"열기: {name}", libraryEmpty:"작업 없음", libraryExport:"출력 ({count}개)", noticeClose:"안내 닫기", batchSavedFormat:"저장된 형식", batchZip:"ZIP 다운로드", batchReady:"준비된 작업 {count}개 · {pages}페이지 · 오류 {failed}개", batchRenamed:"동일한 파일명 {count}개에 번호 추가", batchPreparing:"작업 확인 중 {done}/{total}…", batchFinished:"폴더 저장 {folder}파일 · ZIP 다운로드 요청 {archive}파일 · 오류 {failed}개", batchProgress:"처리 {done}/{total}파일", batchStop:"현재 파일 후 중지", batchStopping:"중지 중…", batchPages:"페이지", batchState_pending:"확인 중", batchState_ready:"준비 완료", batchState_running:"출력 중", batchState_done:"완료", batchState_error:"오류", batchState_stopped:"중지", batchMissingPaper:"이 JSON이 참조하는 용지 이미지·메모를 찾을 수 없습니다. 용지 이미지를 포함해 작업을 다시 저장하세요.", batchChanged:"준비 후 페이지 수가 달라졌습니다.", batchFolderCollision:"새 출력 폴더를 만들지 못했습니다.", batchPartial:"{count}파일 처리 완료", batchArchiveFailed:"ZIP 다운로드 실패: {error}", batchZipLimit:"ZIP32의 용량 또는 파일 수 한도를 넘습니다. 폴더로 출력하거나 작업을 나눠 선택하세요.", batchRetryFailed:"끝나지 않은 작업 {count}개를 첫 페이지부터 다시 출력", outputStop:"현재 페이지 후 중지", cacheImagesOmitted:"브라우저 저장본에 이미지가 없습니다. 작업 폴더를 다시 읽으면 복원됩니다.", saveOmittedImagesWarn:"이미지 없는 브라우저 저장본입니다. 지금 저장하면 용지 이미지와 붙여 넣은 이미지가 빠집니다. 원본 파일에 덮어쓰면 원본 이미지도 사라집니다. 먼저 작업 폴더를 다시 읽어 주세요.", saveOmittedImagesProceed:"그림 없이 저장", psdSizeLimit:"PSD 한 장이 형식의 한도(파일 2GB · 한 변 30000px)를 넘습니다. 용지 이미지가 {width} × {height} px 입니다 — 해상도를 낮추거나 PNG·JPG로 출력하세요.", batchCachedNoImages:"브라우저 저장본에 이미지가 없습니다. 작업 폴더를 다시 읽은 뒤 출력하세요."
+        panelClose:'닫기', libraryDisconnect:'폴더 연결 해제(목록 비우기)', sheetPreviewTitle:"시트 미리보기", chooseExportDirBtn:"출력 위치", downloadAllBtn:"출력", memoModeBtn:'메모 모드', cameraToMemoBtn:'메모란에 반영', memoPenLabel:'펜', memoEraserLabel:'지우개', memoRightClickNoticeL1:'메모 영역 우클릭·길게 누르기', memoRightClickNoticeL2:'텍스트 박스 생성·편집', unifiedCurrentWork:"현재 편집 작업", unifiedSelection:"선택한 작업 {count}개", unifiedExcluded:"출력 제외", unifiedStopped:"중지 {count}개", unifiedExportAction:"작업 {count}개 · 총 {pages}페이지 출력", unifiedWorkList:"출력할 작업", unifiedSelectAll:"전체 선택", unifiedAllOptions:"모든 출력 대상에 적용", unifiedCurrentOptions:"현재 작업의 출력 설정", unifiedSavedDefaults:"변경하지 않은 항목은 각 작업의 저장 설정을 유지합니다.", unifiedMixed:"혼합", unifiedResetOptions:"저장 설정으로 되돌리기", stageHeading:'단계', stageAddSlotLabel:'단계 추가', stageCustomOption:"직접 입력…", stageRenameBtn:'이름 변경', stageDeleteBtn:'삭제', stageDeleteLastHint:'마지막 단계는 삭제할 수 없습니다', hideNonCellCommandsLabel:"셀 외 명령 숨기기", hideRightPanelBtn:'대사/카메라 숨기기', showRightPanelBtn:'대사/카메라 보이기', settingsExportBtn:"작업 저장", settingsFileBtn:"작업 열기", settingsImportBtn:"작업 폴더", settingsRefreshBtn:'다시 불러오기', textMemoApplyBtn:'적용', textMemoMenuAdd:'텍스트 박스 추가', textMemoMenuDelete:'텍스트 박스 삭제', textMemoMenuEditMode:"글상자 이동·크기 조절", textMemoMenuEditDone:"편집 끝내기", textMemoMenuAutoArrange:'텍스트 박스 자동 정렬', textMemoMenuBigger:"글자 크게", textMemoMenuSmaller:"글자 작게", memoLineLabel:"직선 (Shift)", laneMenuNewDialog:"여기에 대사 추가", laneMenuNewCamera:"여기에 카메라 지시 추가", laneMenuSpeaker:"화자명 편집", laneMenuDialogText:"대사 편집", laneMenuCameraText:"지시 편집", laneMenuStartLabel:"시작 이름 편집", laneMenuEndLabel:"끝 이름 편집", laneMenuTriangle:"▲ 삼각형", laneMenuDash:"- 가로선", laneMenuDelete:"삭제", speakerNameEdit:"이름", textMemoInitialHint:"우클릭·길게 누르기: 텍스트 박스 추가·편집", clearSheetDataBtn:'새 시트', hideSidebarBtn:'UI 숨기기', showSidebarBtn:'UI 펼치기', feedbackHeading:'문의', feedbackFormLink:"문의 양식", feedbackPlaceholder:'버그 내용이나 개선 요청', feedbackHint:"증상과 재현 순서를 적어 주세요. 앱 버전·브라우저 정보는 자동 첨부됩니다.", feedbackSendBtn:'보내기', feedbackEmpty:'내용을 먼저 입력하세요.', feedbackSending:'전송 중...', feedbackRequested:'전송을 요청했습니다. 접수 확인 전까지 원문을 남깁니다.', feedbackFailed:"전송하지 못했습니다. 문의 양식을 이용하세요.", workPickerCurrent:"현재 열린 작업", workPickerOpened:"작업을 열었습니다: {name}", workPickerNoMatch:"일치하는 작업 파일이 없습니다.", workPickerSearch:"파일명 또는 폴더 검색", outputPixels:"{width} × {height} px", lastOutputFile:"마지막 파일", firstOutputFile:"첫 파일", outputComposition:"용지·내용·메모 포함", psdLayers:"PSD 레이어: 메모 / Text Output(시트 내용 · 붙여 넣은 이미지 포함) / 용지 틀 / 용지 이미지 / 배경", reviewCaption:"출력 미리보기", reviewRetry:"다시 표시", reviewFailed:"미리보기를 표시하지 못했습니다: {error}", reviewLoading:"미리보기 준비 중…", showOutputSettings:"출력 설정 보기", focusPreview:"크게 확인", fitWidth:"폭에 맞춤", fitPage:"페이지 전체", reviewNext:"다음 페이지", reviewPrev:"이전 페이지", reviewPage:"{page} / {count}페이지", outputAction:"{count}페이지 출력", outputSize:"이미지 크기", outputLocation:"출력 위치", outputFormat:"파일 형식", outputCellLabel:"셀 이름", outputDuration:"길이 표시의 ＋", outputHeader:"헤더", outputTemplate:"용지 격자선", outputContents:"출력에 포함할 내용", backToEdit:"편집으로 돌아가기", reviewTitle:"출력 확인 및 내보내기", globalRedo:"다시 실행 (Ctrl/Cmd+Shift+Z / Ctrl/Cmd+Y)", globalUndo:"실행취소 (Ctrl/Cmd+Z)", sheetHistory:"편집", outputReview:"출력 확인", libraryTitle:"작업 목록", libraryAdd:"JSON 추가", librarySelect:"모두 선택", libraryClear:"선택 해제", librarySelected:"{count}개 선택", librarySelectFile:"출력 대상으로 선택: {name}", libraryOpenFile:"열기: {name}", libraryEmpty:"작업 없음", libraryExport:"출력 ({count}개)", noticeClose:"안내 닫기", batchSavedFormat:"저장된 형식", batchZip:"ZIP 다운로드", batchReady:"준비된 작업 {count}개 · {pages}페이지 · 오류 {failed}개", batchRenamed:"동일한 파일명 {count}개에 번호 추가", batchPreparing:"작업 확인 중 {done}/{total}…", batchFinished:"폴더 저장 {folder}파일 · ZIP 다운로드 요청 {archive}파일 · 오류 {failed}개", batchProgress:"처리 {done}/{total}파일", batchStop:"현재 파일 후 중지", batchStopping:"중지 중…", batchPages:"페이지", batchState_pending:"확인 중", batchState_ready:"준비 완료", batchState_running:"출력 중", batchState_done:"완료", batchState_error:"오류", batchState_stopped:"중지", batchMissingPaper:"이 JSON이 참조하는 용지 이미지·메모를 찾을 수 없습니다. 용지 이미지를 포함해 작업을 다시 저장하세요.", batchChanged:"준비 후 페이지 수가 달라졌습니다.", batchFolderCollision:"새 출력 폴더를 만들지 못했습니다.", batchPartial:"{count}파일 처리 완료", batchArchiveFailed:"ZIP 다운로드 실패: {error}", batchZipLimit:"ZIP32의 용량 또는 파일 수 한도를 넘습니다. 폴더로 출력하거나 작업을 나눠 선택하세요.", batchRetryFailed:"끝나지 않은 작업 {count}개를 첫 페이지부터 다시 출력", outputStop:"현재 페이지 후 중지", cacheImagesOmitted:"브라우저 저장본에 이미지가 없습니다. 작업 폴더를 다시 읽으면 복원됩니다.", saveOmittedImagesWarn:"이미지 없는 브라우저 저장본입니다. 지금 저장하면 용지 이미지와 붙여 넣은 이미지가 빠집니다. 원본 파일에 덮어쓰면 원본 이미지도 사라집니다. 먼저 작업 폴더를 다시 읽어 주세요.", saveOmittedImagesProceed:"그림 없이 저장", psdSizeLimit:"PSD 한 장이 형식의 한도(파일 2GB · 한 변 30000px)를 넘습니다. 용지 이미지가 {width} × {height} px 입니다 — 해상도를 낮추거나 PNG·JPG로 출력하세요.", batchCachedNoImages:"브라우저 저장본에 이미지가 없습니다. 작업 폴더를 다시 읽은 뒤 출력하세요."
       },
       zh: {
         resizeSidebar:"侧栏宽度", resizeRightPanel:"对白・摄影栏宽度", updateHistory:"更新记录", feedbackTarget:"发送反馈", memoColors:"画笔颜色", colorBlack:"黑色", colorRed:"红色", colorBlue:"蓝色", colorGreen:"绿色", colorYellow:"黄色", previewZoom:"预览缩放", zoomReset:"重置缩放", zoomOut:"缩小", zoomIn:"放大", memoOverlay:"手绘备注", editHeaderText:"点击编辑表头", durationStepper:"时长", speakerSuffix:"说话人后缀", editSpeakerSuffix:"点击：名称・后缀", editSpeakerText:"点击：名称・后缀", editSheetText:"编辑摄影表文字", clickEdit:"点击编辑", editCelLabel:"点击编辑图层名称", editTextMark:"点击：编辑・Shift+点击/长按：符号", editMarkMove:"点击：编辑・Shift+点击/长按：符号・拖动：移动", toggleDotText:"点击：切换中间画标记・Shift+点击/长按：文字", cameraLine:"摄影指示", leftSide:"左", rightSide:"右", mainSide:"全表", drawingColumns:"动画栏", boldText:"粗体", boxedText:"边框", textMemoLabel:"文字备注", shortcutLabel:"快捷键", supportDonate:"支持", mouthRole0:"闭口", mouthRole1:"半开口", mouthRole2:"开口", mouthRole3:"露齿", mouthRole4:"O口型", mouthRole5:"U口型", mouthRole6:"其他",
@@ -2991,7 +3002,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         drawingCountTitle:"动画张数", drawingCountChip:"动画 {n}张", drawingCountCell:"层", drawingCountNumbered:"编号指定", drawingCountInbetweens:"中间画", drawingCountTotal:"合计", drawingCountPending:"需确认", drawingCountDisplay:"显示", drawingCountOff:"不显示", drawingCountBottom:"页眉右下", drawingCountTop:"页眉右上", drawingCountCsv:"保存CSV", drawingCountText:"保存文本", drawingCountClose:"关闭", drawingCountHint:"重复使用和循环只计一次 · 临时排布需确认", drawingCountWork:"作品", drawingCountEpisode:"集数", drawingCountCut:"镜头", cutFolderTitle:"镜头文件夹核对", cutFolderOpened:"已打开的摄影表", cutFolderNone:"无", cutFolderReading:"正在读取文件夹…", cutFolderPartial:"只读取了前 5,000 个文件。", cutFolderPaperOnly:"只打开了用纸图像，因此未核对层编号。", cutFolderNoSheet:"未找到摄影表文件，因此未核对层编号。", cutFolderSheetCount:"摄影表", cutFolderFileCount:"文件", cutFolderSheetOnly:"摄影表有、文件没有", cutFolderFileOnly:"只有文件、摄影表没有", cutFolderGaps:"缺失的文件编号", cutFolderUnresolved:"没有编号的层文件", cutFolderUnmapped:"摄影表中没有的名称", cutFolderPlates:"BG・BOOK", cutFolderReferences:"参考・指南", cutFolderOther:"其他文件", cutFolderCopy:"复制", cutFolderChoose:"选择摄影表文件", cutFolderCancel:"取消", cutFolderOneOnly:"请一次只拖入一个镜头文件夹。",
         originalCellTitle:'表格输入', appSettingsTitle:'设置', serifuModeBtn:'台词表', serifuModeTitle:'台词表：拖动选择范围，右键点击范围打开台词表', cellPlacementTitle:'列排列', cellPlacement_letter:'按列名对齐', cellPlacement_source:'文件顺序', cellPlacement_alpha:'按字母排序', sheetToolsTitle:'编辑工具', shakuEditBtn:'时长编辑', shakuEditHint:'拖动蓝色帧线选择范围', shakuCutBtn:'切除', shakuStretchBtn:'延长', shakuFlashCut:'切除已应用', shakuFlashStretch:'延长已应用', dougaSheetCreate:'填充动画栏', dougaSheetRefresh:'重新填充动画栏', dougaSheetTitle:"根据画稿编号和中间画标记生成只读动画栏", cellTextScaleLabel:"文字", cellTextScaleTitle:"表格文字大小",
         dialogBlocksTitle:'对白栏', dialogFormatLabel:"开始 | 结束 | 说话人 | 台词", cameraBlocksTitle:'摄影机栏', cameraFormatLabel:"开始 | 结束 | 前标签 | 指示 | 后标签", examplesTitle:'写法',
-        panelClose:'关闭', sheetPreviewTitle:"摄影表预览", chooseExportDirBtn:"输出位置", downloadAllBtn:"导出", memoModeBtn:'备注模式', cameraToMemoBtn:'写入备注栏', memoPenLabel:'笔', memoEraserLabel:'橡皮', memoRightClickNoticeL1:'在备注区右键或长按', memoRightClickNoticeL2:'创建/编辑文本框', unifiedCurrentWork:"当前项目", unifiedSelection:"已选{count}个项目", unifiedExcluded:"不导出", unifiedStopped:"已停止{count}个", unifiedExportAction:"导出{count}个项目・共{pages}页", unifiedWorkList:"要导出的项目", unifiedSelectAll:"全选", unifiedAllOptions:"应用到全部导出项目", unifiedCurrentOptions:"当前项目的导出设置", unifiedSavedDefaults:"未更改的选项保留各项目的保存设置。", unifiedMixed:"混合", unifiedResetOptions:"恢复保存设置", stageHeading:'阶段', stageAddSlotLabel:'添加阶段', stageCustomOption:'自定义…', stageRenameBtn:'重命名', stageDeleteBtn:'删除', stageDeleteLastHint:'无法删除最后一个阶段', hideNonCellCommandsLabel:"隐藏非画面指令", hideRightPanelBtn:'隐藏对白/摄影', showRightPanelBtn:'显示对白/摄影', settingsExportBtn:"保存项目", settingsFileBtn:"打开项目", settingsImportBtn:"项目文件夹", settingsRefreshBtn:'重新读取', textMemoApplyBtn:'应用', textMemoMenuAdd:'添加文字框', textMemoMenuDelete:'删除文字框', textMemoMenuEditMode:"移动/缩放文本框", textMemoMenuEditDone:"完成编辑", textMemoMenuAutoArrange:'自动排列文字框', textMemoMenuBigger:"文字放大", textMemoMenuSmaller:"文字缩小", memoLineLabel:"直线（Shift）", laneMenuNewDialog:"在此添加对白", laneMenuNewCamera:"在此添加摄影指示", laneMenuSpeaker:"编辑说话人", laneMenuDialogText:"编辑对白", laneMenuCameraText:"编辑指示", laneMenuStartLabel:"编辑起点名称", laneMenuEndLabel:"编辑终点名称", laneMenuTriangle:"▲ 三角", laneMenuDash:"- 横线", laneMenuDelete:"删除", speakerNameEdit:"名称", textMemoInitialHint:"右键或长按添加或编辑文本框", clearSheetDataBtn:'新建表格', hideSidebarBtn:'隐藏 UI', showSidebarBtn:'显示 UI', feedbackHeading:'反馈', feedbackFormLink:"反馈表单", feedbackPlaceholder:'错误报告或改进建议', feedbackHint:"请填写问题和复现步骤。应用版本和浏览器信息会自动附加。", feedbackSendBtn:'发送', feedbackEmpty:'请先输入内容。', feedbackSending:'发送中...', feedbackRequested:'已请求发送。确认收件前保留原文。', feedbackFailed:"发送失败。请使用反馈表单。", workPickerCurrent:"当前打开的项目", workPickerOpened:"已打开项目：{name}", workPickerNoMatch:"没有匹配的项目文件。", workPickerSearch:"搜索文件名或文件夹", outputPixels:"{width} × {height} px", lastOutputFile:"最后一个文件", firstOutputFile:"第一个文件", outputComposition:"包含纸张、内容和备注", psdLayers:"PSD图层：备注 / Text Output（工作表内容，含粘贴的图像） / 纸张格线 / 纸张图像 / 背景", reviewCaption:"输出预览", reviewRetry:"重新显示", reviewFailed:"无法显示预览：{error}", reviewLoading:"正在准备预览…", showOutputSettings:"显示导出设置", focusPreview:"放大查看", fitWidth:"适合宽度", fitPage:"适合整页", reviewNext:"下一页", reviewPrev:"上一页", reviewPage:"第{page} / {count}页", outputAction:"导出{count}页", outputSize:"图像尺寸", outputLocation:"输出位置", outputFormat:"文件格式", outputCellLabel:"图层名称", outputDuration:"时长的＋号", outputHeader:"表头", outputTemplate:"纸张格线", outputContents:"导出内容", backToEdit:"返回编辑", reviewTitle:"预览并导出", globalRedo:"重做 (Ctrl/Cmd+Shift+Z / Ctrl/Cmd+Y)", globalUndo:"撤销 (Ctrl/Cmd+Z)", sheetHistory:"历史", outputReview:"输出预览", libraryTitle:"项目列表", libraryAdd:"添加JSON", librarySelect:"全选", libraryClear:"清除选择", librarySelected:"已选{count}项", librarySelectFile:"选择导出：{name}", libraryOpenFile:"打开：{name}", libraryEmpty:"暂无项目文件", libraryExport:"导出（{count}项）", noticeClose:"关闭通知", batchSavedFormat:"保存的格式", batchZip:"下载ZIP", batchReady:"已准备{count}个项目・{pages}页・{failed}个错误", batchRenamed:"已为{count}个同名文件添加编号", batchPreparing:"正在检查 {done}/{total}…", batchFinished:"文件夹{folder}个文件・已请求ZIP下载{archive}个文件・错误{failed}个", batchProgress:"已处理{done}/{total}个文件", batchStop:"当前文件后停止", batchStopping:"正在停止…", batchPages:"页", batchState_pending:"检查中", batchState_ready:"就绪", batchState_running:"导出中", batchState_done:"完成", batchState_error:"错误", batchState_stopped:"已停止", batchMissingPaper:"找不到此JSON引用的纸张图像或备注。请包含纸张图像重新保存项目。", batchChanged:"准备后页数发生变化。", batchFolderCollision:"无法创建新的导出文件夹。", batchPartial:"已处理{count}个文件", batchArchiveFailed:"ZIP下载失败：{error}", batchZipLimit:"超过ZIP32的大小或文件数限制。请导出到文件夹或减少所选项目。", batchRetryFailed:"从第一页重新导出未完成的{count}个项目", outputStop:"当前页后停止", cacheImagesOmitted:"浏览器缓存中没有图像。重新读取项目文件夹即可恢复。", saveOmittedImagesWarn:"此浏览器缓存不含图像。保存时将不包含纸张图像和粘贴图像；覆盖原文件会丢失原有图像。请先重新读取项目文件夹。", saveOmittedImagesProceed:"不含图像保存", psdSizeLimit:"单张 PSD 超过格式上限（每个文件 2GB・单边 30000px）。纸张图像为 {width} × {height} px — 请降低分辨率，或导出为 PNG、JPG。", batchCachedNoImages:"浏览器缓存中没有图像。请重新读取项目文件夹后再导出。"
+        panelClose:'关闭', libraryDisconnect:'断开文件夹并清空列表', sheetPreviewTitle:"摄影表预览", chooseExportDirBtn:"输出位置", downloadAllBtn:"导出", memoModeBtn:'备注模式', cameraToMemoBtn:'写入备注栏', memoPenLabel:'笔', memoEraserLabel:'橡皮', memoRightClickNoticeL1:'在备注区右键或长按', memoRightClickNoticeL2:'创建/编辑文本框', unifiedCurrentWork:"当前项目", unifiedSelection:"已选{count}个项目", unifiedExcluded:"不导出", unifiedStopped:"已停止{count}个", unifiedExportAction:"导出{count}个项目・共{pages}页", unifiedWorkList:"要导出的项目", unifiedSelectAll:"全选", unifiedAllOptions:"应用到全部导出项目", unifiedCurrentOptions:"当前项目的导出设置", unifiedSavedDefaults:"未更改的选项保留各项目的保存设置。", unifiedMixed:"混合", unifiedResetOptions:"恢复保存设置", stageHeading:'阶段', stageAddSlotLabel:'添加阶段', stageCustomOption:'自定义…', stageRenameBtn:'重命名', stageDeleteBtn:'删除', stageDeleteLastHint:'无法删除最后一个阶段', hideNonCellCommandsLabel:"隐藏非画面指令", hideRightPanelBtn:'隐藏对白/摄影', showRightPanelBtn:'显示对白/摄影', settingsExportBtn:"保存项目", settingsFileBtn:"打开项目", settingsImportBtn:"项目文件夹", settingsRefreshBtn:'重新读取', textMemoApplyBtn:'应用', textMemoMenuAdd:'添加文字框', textMemoMenuDelete:'删除文字框', textMemoMenuEditMode:"移动/缩放文本框", textMemoMenuEditDone:"完成编辑", textMemoMenuAutoArrange:'自动排列文字框', textMemoMenuBigger:"文字放大", textMemoMenuSmaller:"文字缩小", memoLineLabel:"直线（Shift）", laneMenuNewDialog:"在此添加对白", laneMenuNewCamera:"在此添加摄影指示", laneMenuSpeaker:"编辑说话人", laneMenuDialogText:"编辑对白", laneMenuCameraText:"编辑指示", laneMenuStartLabel:"编辑起点名称", laneMenuEndLabel:"编辑终点名称", laneMenuTriangle:"▲ 三角", laneMenuDash:"- 横线", laneMenuDelete:"删除", speakerNameEdit:"名称", textMemoInitialHint:"右键或长按添加或编辑文本框", clearSheetDataBtn:'新建表格', hideSidebarBtn:'隐藏 UI', showSidebarBtn:'显示 UI', feedbackHeading:'反馈', feedbackFormLink:"反馈表单", feedbackPlaceholder:'错误报告或改进建议', feedbackHint:"请填写问题和复现步骤。应用版本和浏览器信息会自动附加。", feedbackSendBtn:'发送', feedbackEmpty:'请先输入内容。', feedbackSending:'发送中...', feedbackRequested:'已请求发送。确认收件前保留原文。', feedbackFailed:"发送失败。请使用反馈表单。", workPickerCurrent:"当前打开的项目", workPickerOpened:"已打开项目：{name}", workPickerNoMatch:"没有匹配的项目文件。", workPickerSearch:"搜索文件名或文件夹", outputPixels:"{width} × {height} px", lastOutputFile:"最后一个文件", firstOutputFile:"第一个文件", outputComposition:"包含纸张、内容和备注", psdLayers:"PSD图层：备注 / Text Output（工作表内容，含粘贴的图像） / 纸张格线 / 纸张图像 / 背景", reviewCaption:"输出预览", reviewRetry:"重新显示", reviewFailed:"无法显示预览：{error}", reviewLoading:"正在准备预览…", showOutputSettings:"显示导出设置", focusPreview:"放大查看", fitWidth:"适合宽度", fitPage:"适合整页", reviewNext:"下一页", reviewPrev:"上一页", reviewPage:"第{page} / {count}页", outputAction:"导出{count}页", outputSize:"图像尺寸", outputLocation:"输出位置", outputFormat:"文件格式", outputCellLabel:"图层名称", outputDuration:"时长的＋号", outputHeader:"表头", outputTemplate:"纸张格线", outputContents:"导出内容", backToEdit:"返回编辑", reviewTitle:"预览并导出", globalRedo:"重做 (Ctrl/Cmd+Shift+Z / Ctrl/Cmd+Y)", globalUndo:"撤销 (Ctrl/Cmd+Z)", sheetHistory:"历史", outputReview:"输出预览", libraryTitle:"项目列表", libraryAdd:"添加JSON", librarySelect:"全选", libraryClear:"清除选择", librarySelected:"已选{count}项", librarySelectFile:"选择导出：{name}", libraryOpenFile:"打开：{name}", libraryEmpty:"暂无项目文件", libraryExport:"导出（{count}项）", noticeClose:"关闭通知", batchSavedFormat:"保存的格式", batchZip:"下载ZIP", batchReady:"已准备{count}个项目・{pages}页・{failed}个错误", batchRenamed:"已为{count}个同名文件添加编号", batchPreparing:"正在检查 {done}/{total}…", batchFinished:"文件夹{folder}个文件・已请求ZIP下载{archive}个文件・错误{failed}个", batchProgress:"已处理{done}/{total}个文件", batchStop:"当前文件后停止", batchStopping:"正在停止…", batchPages:"页", batchState_pending:"检查中", batchState_ready:"就绪", batchState_running:"导出中", batchState_done:"完成", batchState_error:"错误", batchState_stopped:"已停止", batchMissingPaper:"找不到此JSON引用的纸张图像或备注。请包含纸张图像重新保存项目。", batchChanged:"准备后页数发生变化。", batchFolderCollision:"无法创建新的导出文件夹。", batchPartial:"已处理{count}个文件", batchArchiveFailed:"ZIP下载失败：{error}", batchZipLimit:"超过ZIP32的大小或文件数限制。请导出到文件夹或减少所选项目。", batchRetryFailed:"从第一页重新导出未完成的{count}个项目", outputStop:"当前页后停止", cacheImagesOmitted:"浏览器缓存中没有图像。重新读取项目文件夹即可恢复。", saveOmittedImagesWarn:"此浏览器缓存不含图像。保存时将不包含纸张图像和粘贴图像；覆盖原文件会丢失原有图像。请先重新读取项目文件夹。", saveOmittedImagesProceed:"不含图像保存", psdSizeLimit:"单张 PSD 超过格式上限（每个文件 2GB・单边 30000px）。纸张图像为 {width} × {height} px — 请降低分辨率，或导出为 PNG、JPG。", batchCachedNoImages:"浏览器缓存中没有图像。请重新读取项目文件夹后再导出。"
       }
     };
 
@@ -3766,6 +3777,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver1012", "Compact memo tools", ["The memo bar keeps Pen, Eraser and the five colours. Tap the tool already in use (or long-press / right-click it) for its sizes; the pen window also has the Straight line switch. The pen icon shows the current colour.", "Work list: the x beside the folder name disconnects the folder and empties the list (files are untouched).", "Paper images kept for the next visit are stored once instead of twice, leaving browser storage room for the work list; leftover copies are cleaned up at start."]],
         ["ver1011", "One toolbar style", ["Both preview toolbar rows use the same button height, type, 14px icons and group plates. Stage has an icon and title, Paper settings is a regular icon button, and page and zoom buttons match the rest.", "Every dropdown uses the same drawn arrow."]],
         ["ver1010", "Stages in the toolbar", ["Stages moved from the side panel to the left of the preview toolbar; one + after them adds a stage.", "Undo and redo sit at the right end of the size and drawing-count line. Position edit and reset moved into the Paper window, and the Paper button shows an icon.", "Sheet Input has a folded How to write like Dialogue and Camera; those folds are now named How to write.", "Phones no longer show the panel collapse buttons. The output folder button shows its folder icon again."]],
         ["ver1009", "Paper settings in the toolbar", ["The Import paper card left the side panel. The preview toolbar's Paper button opens its settings in a small window; press outside or Esc to close. Drop a paper on the preview as before.", "The size and drawing count sit just under the toolbar in the same small type, without adding space above the sheet.", "On a narrow preview (phones, or both panels open) the toolbar shows icons for Paper and the output folder so rows no longer wrap; the language arrow matches the other icons."]],
@@ -3916,6 +3928,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "Camera marks, continuation lines and merged memos", ["Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.", "The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.", "The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.", "When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.", "Camera works that connect end to end now become a single memo line, for example \"・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr\"."]],
       ],
       ja: [
+        ["ver1012", "メモ道具をコンパクトに", ["メモの行はペン・消しゴム・5色だけにしました。使用中の道具をもう一度押す（長押し・右クリックでも可）と太さが選べ、ペンの窓には直線スイッチもあります。ペンのアイコンは今の色になります。", "作業一覧：フォルダ名の横の×でフォルダの接続を解除し、一覧を空にします（ファイルはそのまま）。", "次回用に覚える用紙画像を二重ではなく一か所に保存し、作業一覧のための保存容量を空けました。残った古い複製は起動時に片づけます。"]],
         ["ver1011", "ツールバーの規格をそろえる", ["プレビュー上の2行のボタンの高さ・文字・14pxアイコン・まとまりの板をそろえました。段階にアイコンと名前を付け、用紙設定は通常のアイコン付きボタンに、ページ送りと拡大縮小も同じ形にしました。", "選択欄の矢印をアプリ全体で同じ形にしました。"]],
         ["ver1010", "段階をツールバーへ", ["段階を左欄からプレビューのツールバー左に移しました。並びの後ろの＋ひとつで追加します。", "元に戻す・やり直しはサイズと動画枚数の行の右端に移しました。位置編集・初期化は用紙設定の窓に入り、用紙設定ボタンにアイコンを付けました。", "シート入力にもセリフ欄・カメラ欄と同じ折りたたみの書き方を付け、名前を「書き方」にそろえました。", "スマホでは欄の開閉ボタンを出しません。出力先ボタンのフォルダアイコンが再び表示されます。"]],
         ["ver1009", "用紙設定をツールバーへ", ["左欄の「用紙を読み込む」をなくし、プレビューのツールバー「用紙設定」から小さな窓で設定します。外を押すかEscで閉じます。用紙はこれまで通りプレビューに置けます。", "サイズと動画枚数はツールバーのすぐ下に同じ小さな文字で浮かび、シートの上に余白を足しません。", "プレビューが狭いとき（スマホや両欄を開いたとき）は用紙と出力先をアイコンにして行の折り返しをなくしました。言語の矢印も他のアイコンにそろえました。"]],
@@ -4066,6 +4079,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "カメラ記号・持続線・メモの連結", ["設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。", "設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。", "つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。", "マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。", "端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。"]],
       ],
       ko: [
+        ["ver1012", "메모 도구 압축", ["메모 줄에는 펜·지우개·색 5개만 둡니다. 쓰고 있는 도구를 한 번 더 누르면(길게 누르기·우클릭도 됨) 굵기를 고르는 창이 뜨고, 펜 창에는 직선 스위치도 있습니다. 펜 아이콘이 지금 색으로 바뀝니다.", "작업 목록: 폴더 이름 옆 ×로 폴더 연결을 끊고 목록을 비웁니다(파일은 그대로).", "다음 방문용으로 기억하는 용지 이미지를 두 곳이 아니라 한 곳에만 저장해, 작업 목록이 쓸 브라우저 저장 공간을 비웠습니다. 남은 옛 사본은 시작할 때 정리합니다."]],
         ["ver1011", "툴바 규격 통일", ["미리보기 위 두 줄의 단추 높이·글자·14px 아이콘·묶음 판을 맞췄습니다. 단계에 아이콘과 이름을 붙이고, 용지 설정은 아이콘이 있는 보통 단추로, 페이지 넘기기와 확대·축소도 같은 모양으로 바꿨습니다.", "고르기 상자의 화살표를 앱 전체에서 같은 모양으로 맞췄습니다."]],
         ["ver1010", "단계를 툴바로", ["단계를 왼쪽 패널에서 미리보기 툴바 왼쪽으로 옮겼습니다. 단계 뒤의 + 하나로 추가합니다.", "되돌리기·다시 실행은 크기·동화 매수 줄 오른쪽 끝으로 옮겼습니다. 위치 편집·초기화는 용지 설정 창 안으로 들어가고, 용지 설정 단추에 아이콘을 붙였습니다.", "시트 입력에도 대사란·카메라란처럼 접는 「쓰는 법」을 두고, 접는 이름을 「쓰는 법」으로 맞췄습니다.", "폰에서는 패널 접기 단추를 보이지 않습니다. 출력 위치 단추의 폴더 아이콘이 다시 보입니다."]],
         ["ver1009", "용지 설정을 툴바로", ["왼쪽의 「외부 용지 불러오기」 카드를 없애고, 미리보기 툴바의 「용지 설정」을 누르면 뜨는 작은 창에서 설정합니다. 바깥을 누르거나 Esc로 닫습니다. 용지는 전처럼 미리보기에 놓아도 됩니다.", "크기와 동화 매수는 툴바 바로 아래에 같은 작은 글씨로 떠 있고, 시트 위에 여백을 더하지 않습니다.", "미리보기가 좁을 때(폰, 좌우 패널을 모두 연 화면)는 용지·출력 위치를 아이콘으로 줄여 줄이 꺾이지 않습니다. 언어 화살표도 다른 아이콘과 맞췄습니다."]],
@@ -4216,6 +4230,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "카메라 표식·지속선·메모 연결", ["설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.", "설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. \"카메라→메모\"를 누를 필요가 없습니다.", "이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.", "표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.", "끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: \"・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr\")."]],
       ],
       zh: [
+        ["ver1012", "精简备注工具", ["备注栏只保留笔、橡皮和 5 种颜色。再按一次正在使用的工具（长按或右键也可）即可选择粗细，笔的窗口里还有直线开关。笔图标显示当前颜色。", "作业列表：文件夹名旁的 × 可断开文件夹并清空列表（文件不受影响）。", "为下次访问保存的纸张图像只存一处而不是两处，为作业列表腾出浏览器存储空间；残留的旧副本会在启动时清理。"]],
         ["ver1011", "统一工具栏规格", ["预览上方两行的按钮高度、字体、14px 图标和分组底板统一。阶段带上图标和名称，纸张设置改为普通图标按钮，翻页和缩放也改为同样样式。", "整个应用的下拉框箭头统一为同一种。"]],
         ["ver1010", "阶段移到工具栏", ["阶段从左栏移到预览工具栏左侧，后面的一个 + 用于添加。", "撤销和重做移到尺寸与动画张数一行的右端。位置编辑和重置放进纸张窗口，纸张按钮带上图标。", "表格输入也加上与台词栏、摄影机栏相同的可折叠“写法”，折叠标题统一为“写法”。", "手机上不再显示栏位折叠按钮。输出位置按钮重新显示文件夹图标。"]],
         ["ver1009", "纸张设置移到工具栏", ["左栏的“导入外部纸张”卡片已移除，点击预览工具栏的“纸张”会弹出小窗口进行设置；点击外部或按 Esc 关闭。纸张仍可直接拖到预览上。", "尺寸和动画张数以同样的小字浮在工具栏下方，不再在表格上方增加空白。", "预览较窄时（手机或同时打开左右栏）纸张和输出位置改为图标，行不再换行；语言箭头也与其他图标统一。"]],
@@ -23448,22 +23463,46 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return resized;
     }
 
-    function syncMemoSizeSelect(selectEl, options, value) {
-      if (!selectEl) return;
-      // Size choices are fixed; tool/state updates only change the selection.
-      if (!selectEl.options.length) {
-        selectEl.innerHTML = options.map(function(size){
-          return '<option value="' + size + '">' + size + 'px</option>';
-        }).join('');
-      }
-      selectEl.value = String(value);
-    }
-
-    function syncMemoSizeSelects() {
+    // Size presets live in the pen / eraser popovers. They are built once; updates only move the mark.
+    function syncMemoSizePresets() {
       if (!MEMO_PEN_SIZES.includes(Number(state.memoPenSize))) state.memoPenSize = MEMO_PEN_SIZES[0];
       if (!MEMO_ERASER_SIZES.includes(Number(state.memoEraserSize))) state.memoEraserSize = 100;
-      syncMemoSizeSelect(memoPenSizeSelectEl, MEMO_PEN_SIZES, state.memoPenSize);
-      syncMemoSizeSelect(memoEraserSizeSelectEl, MEMO_ERASER_SIZES, state.memoEraserSize);
+      [['memoPenSizes', MEMO_PEN_SIZES, state.memoPenSize, 'pen'], ['memoEraserSizes', MEMO_ERASER_SIZES, state.memoEraserSize, 'eraser']].forEach(function([id, sizes, value, tool]){
+        const host = document.getElementById(id);
+        if (!host.childElementCount) sizes.forEach(function(size){
+          const btn = document.createElement('button');
+          btn.type = 'button'; btn.className = 'memo-btn memo-size-preset'; btn.dataset.size = String(size); btn.setAttribute('aria-label', size + 'px');
+          if (tool === 'pen') { const line = document.createElement('i'); line.style.height = size + 'px'; btn.appendChild(line); }
+          else btn.textContent = String(size);
+          btn.addEventListener('click', function(){
+            if (tool === 'pen') state.memoPenSize = size; else state.memoEraserSize = size;
+            state.memoTool = tool; closeMemoToolPopovers(); updateMemoUI();
+          });
+          host.appendChild(btn);
+        });
+        Array.from(host.children).forEach(function(btn){
+          const on = Number(btn.dataset.size) === Number(value);
+          btn.classList.toggle('active', on); btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+        });
+      });
+    }
+
+    function placeToolPopover(popover, anchor) {
+      const r = anchor.getBoundingClientRect();
+      popover.style.top = Math.round(r.bottom + 6) + 'px';
+      popover.style.left = Math.round(Math.max(8, Math.min(window.innerWidth - popover.offsetWidth - 8, r.left))) + 'px';
+    }
+    function closeMemoToolPopovers() {
+      [[memoPenToolBtn, 'memoPenPopover'], [memoEraserToolBtn, 'memoEraserPopover']].forEach(function([btn, id]){
+        document.getElementById(id).hidden = true; btn.setAttribute('aria-expanded', 'false');
+      });
+    }
+    function openMemoToolPopover(btn, id) {
+      const popover = document.getElementById(id), wasOpen = !popover.hidden;
+      closeMemoToolPopovers();
+      if (wasOpen) return;
+      popover.hidden = false; btn.setAttribute('aria-expanded', 'true');
+      placeToolPopover(popover, btn);
     }
 
     // ══ 프리뷰 뷰 변환 — 자유 줌·팬 클램프 · 휠/핀치 줌 ═════════════════════════════════════════════════════════════════════════════
@@ -23939,17 +23978,17 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       // Pen, eraser, sizes and colors only matter while drawing memos or styling a text memo.
       document.getElementById('memoToolGroup').hidden = !(state.memoMode || state.textMemoEditMode || state.activeTextMemo);
       memoCanvas.classList.toggle('memo-active', !!state.memoMode);
-      syncMemoSizeSelects();
+      syncMemoSizePresets();
       memoColorButtons.forEach(function(btn){
         const isActive = (btn.dataset.tool === 'eraser' && state.memoTool === 'eraser') ||
           (btn.dataset.tool === 'pen' && state.memoTool === 'pen' && (btn.dataset.color || '') === state.memoColor);
         btn.classList.toggle('active', !!isActive);
       });
-      if (memoPenToolBtn) memoPenToolBtn.classList.toggle('active', state.memoTool === 'pen');
-      if (memoLineToolBtn) {
-        memoLineToolBtn.classList.toggle('active', !!state.memoLineMode);
-        memoLineToolBtn.setAttribute('aria-pressed', state.memoLineMode ? 'true' : 'false');
+      if (memoPenToolBtn) {
+        memoPenToolBtn.classList.toggle('active', state.memoTool === 'pen');
+        memoPenToolBtn.style.setProperty('--memo-pen-color', state.memoColor || '#111111');
       }
+      if (memoLineToggle) memoLineToggle.checked = !!state.memoLineMode;
       if (memoEraserToolBtn) memoEraserToolBtn.classList.toggle('active', state.memoTool === 'eraser');
       updateGlobalHistoryUI();
     }
@@ -24041,8 +24080,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       event.preventDefault();
       commitContentHistory();
       const resized = updateMemoCanvasSize();
-      state.memoPenSize = Number(memoPenSizeSelectEl.value || state.memoPenSize || 2);
-      state.memoEraserSize = Number(memoEraserSizeSelectEl.value || state.memoEraserSize || 100);
       const activeMemoSize = state.memoTool === 'eraser' ? state.memoEraserSize : state.memoPenSize;
       const pageData = getMemoPageData(state.currentPreviewPage || 0);
       const stroke = {
@@ -26021,15 +26058,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         payload.paper.memoStoredInDb = backedUp && !!payload.paper.memoDataUrl;
         payload.paper.memoryId = backedUp ? memoryId : '';
         try {
-          const storage = window.localStorage;
-          try { storage.setItem(PAPER_MEMORY_STORAGE_KEY, JSON.stringify(payload)); }
-          catch (err) {
-            if (!backedUp) throw err;
-            const light = Object.assign({}, payload, {
-              paper:Object.assign({}, payload.paper, { imageDataUrl:'', memoDataUrl:'' })
-            });
-            storage.setItem(PAPER_MEMORY_STORAGE_KEY, JSON.stringify(light));
-          }
+          // Backed-up images live in IndexedDB only; localStorage keeps the light record (its quota is shared).
+          const stored = backedUp ? Object.assign({}, payload, {
+            paper:Object.assign({}, payload.paper, { imageDataUrl:'', memoDataUrl:'' })
+          }) : payload;
+          window.localStorage.setItem(PAPER_MEMORY_STORAGE_KEY, JSON.stringify(stored));
           if (previousId && previousId !== memoryId) await removePaperMemoryRecord(previousId);
           return true;
         } catch (err) {
@@ -26083,11 +26116,27 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       try {
         if (!window.localStorage) return false;
         const raw = localStorage.getItem(PAPER_MEMORY_STORAGE_KEY);
-        if (!raw) return false;
-        return applyPaperMemoryPayload(JSON.parse(raw));
+        const payload = raw ? JSON.parse(raw) : null;
+        prunePaperMemoryRecords(payload && payload.paper ? payload.paper.memoryId || PAPER_IMAGE_MEMORY_KEY : '');
+        return payload ? applyPaperMemoryPayload(payload) : false;
       } catch (err) {
         return false;
       }
+    }
+
+    // Only records older than ten minutes go, so another tab's save in flight keeps its new record.
+    function prunePaperMemoryRecords(keepId) {
+      useSheetMemoryDb(openPaperImageMemoryDb, PAPER_IMAGE_STORE_NAME, 'readwrite', function(store){
+        const request = store.getAllKeys();
+        request.onsuccess = function(){
+          request.result.forEach(function(key){
+            if (key === keepId) return;
+            const born = parseInt(String(key).split('-')[0], 36);
+            if (key === PAPER_IMAGE_MEMORY_KEY || (born && Date.now() - born > 600000)) store.delete(key);
+          });
+        };
+        return request;
+      }).catch(function(err){ console.warn('Paper backup cleanup skipped', err); });
     }
 
     // Position edit/reset also move the generated header, so they stay; only Clear and Auto Align need a paper.
@@ -26695,7 +26744,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       syncPaperLayoutControls();
       updatePaperImageStatus();
       updateModeUI({ render:false });
-      syncMemoSizeSelects();
+      syncMemoSizePresets();
       refreshShortcutInputs();
       saveHeaderMemoryNow();
       if (!(paperRestore.shouldRestoreImageFromDb || paperRestore.shouldRestoreMemoFromDb)) queueSavePaperMemory();
@@ -28861,6 +28910,19 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       } catch (err) { return null; }
     }
 
+    // Forget the work folder and empty the list; the files themselves are untouched.
+    function disconnectWorkLibrary() {
+      settingsDirectoryGeneration++;
+      state.loadedSettingsDirectoryHandle = null; state.loadedSettingsDirectoryName = '';
+      state.loadedSettingsDirectoryScanned = false; state.loadedSettingsDirectoryUnavailable = false;
+      state.loadedSettingsFiles = []; workLibrarySelection.clear(); loadedSettingsSelectedId = '';
+      workLibraryCacheFailed = false; updateWorkLibraryCacheStatus();
+      document.getElementById('workLibrarySearch').value = '';
+      storeSettingsDirectoryHandle(null);
+      try { localStorage.removeItem(SETTINGS_JSON_CACHE_STORAGE_KEY); } catch (err) { /* list is already empty in memory */ }
+      refreshLoadedSettingsSelect();
+    }
+
     function storeSettingsDirectoryHandle(handle) {
       return storeDirectoryHandleByKey(handle, SETTINGS_DIRECTORY_HANDLE_KEY);
     }
@@ -28991,6 +29053,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       document.getElementById('workLibrarySelectionTools').hidden=!list.length;
       search.setAttribute('aria-label', exportUiText('workPickerSearch'));
       document.getElementById('workLibrarySource').textContent = (state.loadedSettingsDirectoryName || '') + (state.loadedSettingsDirectoryUnavailable ? ' · ' + ioText('cache') : '');
+      document.getElementById('workLibrarySourceRow').hidden = !(state.loadedSettingsDirectoryHandle || state.loadedSettingsDirectoryName || list.length);
       currentSettingsRefreshBtn.hidden = !(state.loadedSettingsDirectoryHandle || state.loadedSettingsDirectoryName);
       const visible = getVisibleWorkLibraryItems();
       let cursor = container.firstElementChild;
@@ -30295,14 +30358,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     document.getElementById('drawingCountBtn').addEventListener('click', openDrawingCountDialog);
     if (dougaSheetBtn) dougaSheetBtn.addEventListener('click', refreshDougaSheetFromCells);
     if (cellTextScaleGauge) bindCellTextScaleGauge(cellTextScaleGauge);
-    memoPenSizeSelectEl.addEventListener('change', function(){
-      state.memoPenSize = Number(memoPenSizeSelectEl.value || 2);
-      updateMemoUI();
-    });
-    memoEraserSizeSelectEl.addEventListener('change', function(){
-      state.memoEraserSize = Number(memoEraserSizeSelectEl.value || 100);
-      updateMemoUI();
-    });
     memoColorButtons.forEach(function(btn){
       btn.addEventListener('click', function(){
         state.memoTool = btn.dataset.tool || 'pen';
@@ -30311,21 +30366,35 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         applyMemoColorToActiveTextMemo();
       });
     });
-    // Tool icons beside the size selects double as tool selectors (pen keeps its current color).
-    if (memoLineToolBtn) memoLineToolBtn.addEventListener('click', function(){
-      state.memoLineMode = !state.memoLineMode;
+    if (memoLineToggle) memoLineToggle.addEventListener('change', function(){
+      state.memoLineMode = !!memoLineToggle.checked;
       updateMemoUI();
     });
-    if (memoPenToolBtn) memoPenToolBtn.addEventListener('click', function(){
-      state.memoTool = 'pen';
-      updateMemoUI();
-      applyMemoColorToActiveTextMemo();
+    // One tap picks the tool; a tap on the tool already in use, a long press or right-click opens its sizes.
+    [[memoPenToolBtn, 'pen', 'memoPenPopover'], [memoEraserToolBtn, 'eraser', 'memoEraserPopover']].forEach(function([btn, tool, popover]){
+      btn.addEventListener('click', function(){
+        if (state.memoTool === tool) { openMemoToolPopover(btn, popover); return; }
+        state.memoTool = tool; closeMemoToolPopovers();
+        updateMemoUI();
+        applyMemoColorToActiveTextMemo();
+      });
+      attachContextAction(btn, function(){
+        if (state.memoTool !== tool) { state.memoTool = tool; updateMemoUI(); applyMemoColorToActiveTextMemo(); }
+        openMemoToolPopover(btn, popover);
+      });
     });
-    if (memoEraserToolBtn) memoEraserToolBtn.addEventListener('click', function(){
-      state.memoTool = 'eraser';
-      updateMemoUI();
-      applyMemoColorToActiveTextMemo();
-    });
+    document.addEventListener('pointerdown', function(event){
+      if (event.target.closest && event.target.closest('.tool-popover, .memo-tool-btn')) return;
+      closeMemoToolPopovers();
+    }, true);
+    document.addEventListener('keydown', function(event){
+      if (event.key !== 'Escape') return;
+      const open = document.querySelector('.tool-popover:not([hidden])');
+      if (!open) return;
+      event.preventDefault(); event.stopPropagation();
+      const btn = document.querySelector('[aria-controls="' + open.id + '"]');
+      closeMemoToolPopovers(); if (btn) btn.focus();
+    }, true);
     shortcutInputs.forEach(function(input){
       input.addEventListener('focus', function(){
         input.classList.add('listening');
@@ -30388,6 +30457,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     if (currentSettingsFileBtn) currentSettingsFileBtn.addEventListener('click', chooseCurrentSettingsFile);
     if (currentSettingsImportBtn) currentSettingsImportBtn.addEventListener('click', function(){ trackEvent('project_load'); chooseCurrentSettingsDirectory(); });
     if (currentSettingsRefreshBtn) currentSettingsRefreshBtn.addEventListener('click', refreshCurrentSettingsDirectory);
+    document.getElementById('workLibraryDisconnectBtn').addEventListener('click', disconnectWorkLibrary);
     document.getElementById('workLibrarySearch').addEventListener('input',refreshLoadedSettingsSelect);
     document.getElementById('appSettingsBtn').addEventListener('click', openAppSettings);
     document.getElementById('appSettingsCloseBtn').addEventListener('click', closeAppSettings);
