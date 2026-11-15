@@ -2480,7 +2480,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '1006';
+    const APP_VERSION = '1007';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3833,6 +3833,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver1007", "Cell/BOOK order on phones", ["The order strip in Cell/BOOK settings no longer starts with an empty gap, so more cells fit on narrow screens."]],
         ["ver1006", "Top row on phones", ["On phone-width screens the Settings button and the save/open/new sheet row no longer run under the panel toggle buttons."]],
         ["ver1005", "Narrow screens scroll as one page", ["On a phone-width screen, when the whole sheet fits in the preview, dragging an empty part of the preview scrolls the page. It used to do nothing. When the sheet is zoomed in or larger than the preview, a drag still moves the sheet, and cel drags, edge drags and long-press menus work as before.", "On narrow screens the side panels no longer scroll inside their own short boxes; the whole page scrolls.", "On touch screens the draggable start/end lines of camera lines stay faintly visible, since there is no hover to reveal them."]],
         ["ver1004", "Edit dialogue and camera lines on the sheet preview", ["Right-click or press and hold the dialogue or camera column on the sheet preview to add or delete a line, edit the speaker, line, direction or start/end name, and switch camera keys between ▲ and a dash.", "Click a speaker box and choose Name to rename it, and click a circled A/B on the camera column to rename it. Both used to need Shift-click or were not clickable.", "Works the same with a mouse, a trackpad, a finger or Apple Pencil: grips are easier to grab by touch, pinching no longer jumps, pinching the side panels no longer zooms the page, and the memo pen has a straight-line button. Text boxes get Larger/Smaller text in their menu.", "Mac and iPad show ⌘ and ⌫ in key names. The paper and feedback groups have icons, and the paper group now sits above Feedback. Secondary text (format hints, example notes, page size) shares one lighter style, and the camera display-style notes read like the examples above them."]],
@@ -3978,6 +3979,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "Camera marks, continuation lines and merged memos", ["Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.", "The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.", "The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.", "When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.", "Camera works that connect end to end now become a single memo line, for example \"・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr\"."]],
       ],
       ja: [
+        ["ver1007", "スマホのセル・BOOK順", ["セル・BOOK設定の並び順の帯が空白から始まらなくなり、狭い画面でも多くのセルが見えます。"]],
         ["ver1006", "スマホの最上段", ["スマホ幅で「設定」ボタンと保存・開く・新規シートの行が、欄の開閉ボタンの下に隠れなくなりました。"]],
         ["ver1005", "狭い画面はページ全体でスクロール", ["スマホ幅でシート全体がプレビューに収まっているとき、プレビューの空いた所をドラッグするとページがスクロールします（以前は何も動きませんでした）。拡大中やシートがプレビューより大きいときは今まで通りシートが動き、セルのドラッグ・端のドラッグ・長押しメニューもそのままです。", "狭い画面では左右の欄が短い枠の中で別にスクロールせず、ページ全体がスクロールします。", "タッチ画面ではホバーがないため、カメラ行の始点・終点のドラッグ線を常に薄く表示します。"]],
         ["ver1004", "シートプレビューでセリフ・カメラを編集", ["シートプレビューのセリフ欄・カメラ欄を右クリックまたは長押しすると、行の追加・削除、話者名・セリフ・指示・始点/終点名の編集、カメラのキーの▲/横線の切り替えができます。", "話者の枠をクリックして「名前」を選ぶと名前を変えられます。カメラ欄の丸付きA/Bもクリックで変えられます（以前はShift＋クリックが必要、またはクリックできませんでした）。", "マウス・トラックパッド・指・Apple Pencilで同じように操作できます。つまみを指でつかみやすくし、ピンチ中に画面が跳ばないようにし、左右の欄をピンチしてもページ全体が拡大されないようにしました。メモのペンに直線ボタンを、テキスト枠のメニューに文字の拡大・縮小を加えました。", "Mac・iPadではキー名を⌘・⌫で表示します。用紙と問い合わせのまとまりにアイコンを付け、用紙を問い合わせの上に移しました。補助の文字（形式・例の注記・ページサイズ）を同じ薄さにそろえ、カメラの表示形式の説明を上の例と同じ書式にしました。"]],
@@ -4123,6 +4125,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "カメラ記号・持続線・メモの連結", ["設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。", "設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。", "つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。", "マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。", "端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。"]],
       ],
       ko: [
+        ["ver1007", "폰의 셀·BOOK 순서", ["셀·BOOK 설정의 순서 줄이 빈칸으로 시작하지 않아 좁은 화면에서도 더 많은 칸이 보입니다."]],
         ["ver1006", "폰 화면 맨 위 줄", ["폰 폭에서 「설정」 버튼과 저장·열기·새 시트 줄이 패널 접기 단추에 가려지지 않습니다."]],
         ["ver1005", "좁은 화면은 페이지 하나로 스크롤", ["폰 폭에서 시트 전체가 미리보기에 들어와 있으면 미리보기 빈 곳을 끌어 페이지를 스크롤합니다(전에는 아무것도 움직이지 않았습니다). 확대했거나 시트가 미리보기보다 크면 지금처럼 시트가 움직이고, 셀 끌기·끝 끌기·길게 누르기 메뉴도 그대로입니다.", "좁은 화면에서는 좌우 패널이 짧은 상자 안에서 따로 스크롤하지 않고 페이지 전체가 스크롤됩니다.", "터치 화면에는 호버가 없어 카메라 줄의 시작·끝 드래그 선을 늘 희미하게 보입니다."]],
         ["ver1004", "시트 미리보기에서 대사·카메라 편집", ["시트 미리보기의 대사란·카메라란을 우클릭하거나 길게 누르면 줄 추가·삭제, 화자명·대사·지시·시작/끝 이름 편집, 카메라 키의 ▲/가로선 바꾸기를 할 수 있습니다.", "화자 칸을 눌러 「이름」을 고르면 이름을 바꿉니다. 카메라란의 원 안 A/B도 눌러서 바꿉니다(전에는 Shift+클릭이 필요했거나 눌리지 않았습니다).", "마우스·트랙패드·손가락·Apple Pencil에서 똑같이 조작됩니다. 손잡이를 손가락으로 잡기 쉽게 했고, 핀치 중 화면이 튀지 않으며, 좌우 패널을 핀치해도 페이지 전체가 확대되지 않습니다. 메모 펜에 직선 단추, 텍스트 박스 메뉴에 글자 크게·작게를 넣었습니다.", "맥·아이패드에서는 키 이름을 ⌘·⌫로 표시합니다. 외부 용지·문의 묶음에 아이콘을 달고 외부 용지를 문의 위로 옮겼습니다. 보조 글씨(형식·예시 설명·페이지 크기)를 같은 연하기로 맞추고, 카메라 표시 방식 설명을 위 예시와 같은 형식으로 바꿨습니다."]],
@@ -4268,6 +4271,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "카메라 표식·지속선·메모 연결", ["설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.", "설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. \"카메라→메모\"를 누를 필요가 없습니다.", "이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.", "표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.", "끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: \"・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr\")."]],
       ],
       zh: [
+        ["ver1007", "手机上的单元格/BOOK顺序", ["单元格/BOOK设置中的顺序条不再以空白开头，窄屏上能显示更多单元格。"]],
         ["ver1006", "手机屏幕顶部一行", ["在手机宽度下，“设置”按钮以及保存/打开/新建表格一行不再被栏位折叠按钮遮挡。"]],
         ["ver1005", "窄屏整页滚动", ["在手机宽度下，摄影表完整显示在预览中时，拖动预览的空白处会滚动页面（以前没有任何反应）。放大时或摄影表大于预览时仍会移动摄影表，图层拖动、端点拖动和长按菜单不变。", "窄屏下左右栏不再在各自的小框内单独滚动，而是整页滚动。", "触摸屏没有悬停，因此摄影行起点/终点的拖动线始终以淡色显示。"]],
         ["ver1004", "在摄影表预览中编辑对白和摄影", ["在摄影表预览的对白栏、摄影栏上右键单击或长按，可添加、删除行，编辑说话人、对白、指示、起点/终点名称，并切换摄影关键帧的 ▲ / 横线。", "点击说话人框并选择“名称”即可改名；摄影栏中带圈的 A/B 也可点击修改（以前需要 Shift+点击或无法点击）。", "鼠标、触控板、手指和 Apple Pencil 的操作一致：手柄更容易用手指抓取，捏合时画面不再跳动，在侧栏捏合不会放大整个页面。备注笔新增直线按钮，文字框菜单新增放大/缩小文字。", "Mac 和 iPad 上按键名称显示为 ⌘、⌫。纸张和反馈分组加上了图标，纸张移到了反馈上方。辅助文字（格式、示例说明、页面尺寸）统一为同一浅色，摄影显示样式的说明改为与上方示例相同的格式。"]],
@@ -17725,7 +17729,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       host.replaceChildren();
       const viewport=document.createElement('div');viewport.className='clip-import-order-viewport';viewport.setAttribute('aria-label',cellSettingsText('hint'));
       const preview=document.createElement('div');preview.className='clip-import-order';viewport.appendChild(preview);host.appendChild(viewport);
-      let signature='', previewTop=0;
+      let signature='', previewTop=0, previewLeft=0;
       function select(key) {host.dataset.selectedOrder=key;syncChooser();if(onSelect)onSelect(key);}
       function syncChooser() {
         const active=Array.from(preview.children).find(function(node){return JSON.parse(node.dataset.orderKeys).includes(host.dataset.selectedOrder);});
@@ -17769,13 +17773,15 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           return [node.dataset.orderKeys,{x:box.left-origin.left,y:box.top-origin.top}];
         }));
         signature=nextSignature;
-        const data=cellOrderPreviewData(displayRows),area={x:60,y:0,w:Math.max(1,data.entries.length)*58,h:30};
+        const data=cellOrderPreviewData(displayRows),area={x:0,y:0,w:Math.max(1,data.entries.length)*58,h:30};
         const boxes=layoutLayerNameTagGroups(data.tags,data.entries,area);
-        // Reserve the tallest layout reached during this drag, so the controls do not jump.
+        // Reserve the tallest/widest layout reached during this drag, so the controls do not jump.
         previewTop=Math.min(previewTop,...boxes.map(function(box){return box.y;}));
-        preview.style.width=(area.w+120)+'px';preview.style.height=(30-previewTop)+'px';preview.replaceChildren();
-        data.entries.forEach(function(entry,index){buttonFor([entry.uid],entry.label,{x:area.x+index*58,y:0,w:58,h:30},null);});
-        boxes.forEach(function(box){buttonFor(box.members.map(function(tag){return tag.id;}),'',box,box);});
+        // Edge BOOK tags hang past the cells; pad only by what they actually use.
+        previewLeft=Math.min(previewLeft,...boxes.map(function(box){return box.x;}));const minX=previewLeft,maxX=Math.max(area.w,...boxes.map(function(box){return box.x+box.w;}));
+        preview.style.width=(maxX-minX)+'px';preview.style.height=(30-previewTop)+'px';preview.replaceChildren();
+        data.entries.forEach(function(entry,index){buttonFor([entry.uid],entry.label,{x:index*58-minX,y:0,w:58,h:30},null);});
+        boxes.forEach(function(box){const shifted=Object.assign({},box,{x:box.x-minX});buttonFor(box.members.map(function(tag){return tag.id;}),'',shifted,shifted);});
         Array.from(preview.children).forEach(function(node){
           if (dragId && JSON.parse(node.dataset.orderKeys).includes(dragId)) node.classList.add('cell-order-moving');
           const old=before.get(node.dataset.orderKeys);
