@@ -1127,8 +1127,6 @@
       z-index: 6;
     }
     /* セリフシート is the one tool that colors the sheet, so it keeps the shu accent. */
-    #serifuModeBtn { color:var(--red); }
-    #serifuModeBtn.active { background:var(--red); border-color:var(--red); color:#fff; }
     .sheet-side-notice {
       display: flex;
       flex-direction: column;
@@ -2429,7 +2427,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '1015';
+    const APP_VERSION = '1016';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3779,6 +3777,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver1016", "Plain Lip-sync sheet button", ["The Lip-sync sheet button no longer stands out in red; it looks like Length Edit."]],
         ["ver1015", "Memo mode and memo area apart", ["The Quick Guide has separate Memo and Memo area topics. Drawn memos are called Pen memo everywhere, including the export option."]],
         ["ver1014", "Terminology check", ["Names were checked against anime production terms in each language. The mouth-shape cel tool is now Lip-sync sheet everywhere (its window title used to say Serifu Sheet), and \"Cell\" inside it reads cel.", "Dialog area → Dialogue area, Camera Area → Camera area."]],
         ["ver1013", "Quick Guide by topic", ["Settings > Quick Guide now opens on Basics and splits the rest into Sheet Input, Preview, Memo, Paper, Export & projects and Dialogue sheet. It covers only right-clicks, long-presses and results you would not guess; the data notice folds under every topic.", "The pen shortcut is named Pen / Color Cycle."]],
@@ -3933,6 +3932,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "Camera marks, continuation lines and merged memos", ["Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.", "The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.", "The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.", "When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.", "Camera works that connect end to end now become a single memo line, for example \"・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr\"."]],
       ],
       ja: [
+        ["ver1016", "セリフシートのボタンを通常色に", ["セリフシートのボタンだけ赤かった表示をやめ、尺編集と同じ見た目にしました。"]],
         ["ver1015", "メモモードとメモ欄を分ける", ["使い方の分類を「メモモード」と「メモ欄」に分けました。描いたメモは書き出しの選択肢も含めて「ペンメモ」にそろえ、ショートカットは「メモモードを終了」にしました。"]],
         ["ver1014", "用語の見直し", ["業界用語に照らして名前を見直しました。セリフシート窓の「Cell」を「セル」に、「読込」を「読み込み」にそろえました。", "「セリフ・撮影欄の幅」を「セリフ・カメラ欄の幅」に、「文字メモ」を「テキストメモ」に、記憶まわりの言い方を「保存データ・バックアップ」に直しました。"]],
         ["ver1013", "使い方を分類別に", ["設定の使い方は「基本」から開き、シート入力・プレビュー・メモ・用紙・書き出し・作業・セリフシートに分けました。右クリック・長押しなど見えない操作と、予想しにくい結果だけを書きます。データの説明はどの分類でも下に折りたたんであります。", "ショートカットの名前を「ペン／色切替」にそろえました。"]],
@@ -4087,6 +4087,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "カメラ記号・持続線・メモの連結", ["設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。", "設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。", "つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。", "マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。", "端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。"]],
       ],
       ko: [
+        ["ver1016", "대사 시트 단추 색 통일", ["대사 시트 단추만 빨갛던 것을 길이 편집과 같은 모양으로 바꿨습니다."]],
         ["ver1015", "메모 모드와 메모란 구분", ["사용법 분류를 「메모 모드」와 「메모란」으로 나눴습니다. 그린 메모는 출력 선택지까지 「펜 메모」로 맞추고, 단축키는 「메모 모드 끄기」로 고쳤습니다."]],
         ["ver1014", "용어 정리", ["업계 용어에 맞춰 이름을 점검했습니다. 대사 시트 창 제목의 「세리후 시트」를 버튼과 같은 「대사 시트」로, 「메모 영역」을 「메모란」으로, 「글 메모·글상자」를 「텍스트 메모·텍스트 박스」로 맞췄습니다.", "「대사·촬영 패널 너비」를 「대사·카메라란 너비」로, 「실행취소」를 「실행 취소」로, 백업 안내 문구를 더 정확하게 고쳤습니다."]],
         ["ver1013", "사용법을 분류별로", ["설정의 사용법은 「기본」부터 열리고, 시트 입력·미리보기·메모·용지·출력·작업·대사 시트로 나눴습니다. 우클릭·길게 누르기처럼 보이지 않는 조작과 예상하기 어려운 결과만 적습니다. 데이터 안내는 어느 분류에서나 아래에 접혀 있습니다.", "단축키 이름을 「펜/색 전환」으로 맞췄습니다."]],
@@ -4241,6 +4242,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "카메라 표식·지속선·메모 연결", ["설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.", "설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. \"카메라→메모\"를 누를 필요가 없습니다.", "이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.", "표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.", "끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: \"・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr\")."]],
       ],
       zh: [
+        ["ver1016", "口型表按钮恢复常规样式", ["口型表按钮不再单独显示为红色，与时长编辑相同。"]],
         ["ver1015", "区分备注模式与备注栏", ["使用说明分为“备注模式”和“备注栏”两类。手绘内容统一称为“手绘备注”，快捷键改为“关闭备注模式”。"]],
         ["ver1014", "术语校对", ["按动画行业用语校对名称：台词表改为口型表，摄影机栏改为摄影栏，工作表统一为摄影表，页眉改为表头，备注区改为备注栏，文字框统一为文本框。", "画稿编号不再写成层编号；导入窗口的“角色”改为“用途”，话数改为集数。"]],
         ["ver1013", "使用说明按主题分类", ["设置中的使用说明从“基本”打开，其余分为表格输入、预览、备注、纸张、导出·项目、台词表。只写右键、长按等隐藏操作和不易预料的结果；数据说明在每个分类下方折叠。", "快捷键名称统一为“笔/颜色切换”。"]],
