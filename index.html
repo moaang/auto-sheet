@@ -939,6 +939,7 @@
     .count-chip:hover { color:var(--text); text-decoration:underline; }
     .count-chip:focus-visible { outline:2px solid var(--focus-ring); outline-offset:2px; border-radius:2px; }
     .preview-meta { display: block; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .floating-bars .paper-drop-hint { white-space:normal; pointer-events:none; }
     .toolbar-actions { --control-h:var(--ui-h-toolbar); --control-pad:var(--ui-pad-compact); display:flex; align-items:center; justify-content:flex-end; gap:4px; flex-wrap:wrap; margin-left:auto; }
     .page-nav { display:flex; min-width:0; }
     /* 첫 칸을 58px 로 고정했더니 PNG 의 글자가 잘렸다 — 셀렉트는 글자에 더해 화살표와 좌우 여백이
@@ -1978,11 +1979,11 @@
     .global-history button:focus-visible, .zoom-controls button:focus-visible {
       outline:2px solid var(--text); outline-offset:-4px;
     }
-    /* Narrow preview (phone, or both panels open): icon-only where an icon exists, tighter gaps, so rows stop wrapping. */
+    /* Narrow preview: keep the paper name visible; compact secondary labels and gaps. */
     @container (max-width:640px) {
       .toolbar-actions, .memo-controls, .view-controls { gap:4px; }
       .memo-controls { padding-inline:6px; }
-      .paper-toolbar-title span, #chooseExportDirBtn span, .stage-bar-title span { display:none; }
+      #chooseExportDirBtn span, .stage-bar-title span { display:none; }
       #chooseExportDirBtn { width:var(--control-h); padding:0; justify-content:center; }
       .ui-gauge { width:100px; }
     }
@@ -2142,7 +2143,7 @@
         <div class="stage-bar"><span class="stage-bar-title"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 7.5 12 4l8 3.5-8 3.5z"/><path d="M4 12.5 12 16l8-3.5"/><path d="M4 17 12 20.5 20 17"/></svg><span data-ui-text="stageHeading">Stage</span></span><div id="stageSlotRow" class="stage-slot-row" role="group" aria-label="Stage" data-ui-title="stageHeading"></div></div>
         <div class="toolbar-actions">
           <div id="paperToolbarGroup" class="paper-toolbar-group" aria-label="Paper settings">
-            <button id="paperToolbarTitle" class="toolbar-btn paper-toolbar-title" type="button" aria-controls="paperPanel" aria-expanded="false"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="4" y="4.5" width="16" height="15" rx="1.5"/><circle cx="9" cy="9.5" r="1.5"/><path d="m4.5 17 4.5-4.5 3.5 3.5 2.5-2.5 4.5 4.5"/></svg><span>用紙設定</span></button>
+            <button id="paperToolbarTitle" class="toolbar-btn paper-toolbar-title" type="button" aria-controls="paperPanel" aria-expanded="false"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="4" y="4.5" width="16" height="15" rx="1.5"/><circle cx="9" cy="9.5" r="1.5"/><path d="m4.5 17 4.5-4.5 3.5 3.5 2.5-2.5 4.5 4.5"/></svg><span>用紙</span></button>
             <button id="paperToolbarClearBtn" class="toolbar-btn paper-toolbar-btn" type="button">クリア</button>
           </div>
           <div class="page-nav">
@@ -2189,6 +2190,7 @@
           </div>
         </div>
       </div>
+      <div id="paperPreviewDropHint" class="preview-meta paper-drop-hint"></div>
       <div class="preview-facts">
         <div id="previewMeta" class="preview-meta"></div>
         <button id="drawingCountBtn" class="count-chip" type="button" data-ui-title="drawingCountTitle"></button>
@@ -2427,7 +2429,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '1017';
+    const APP_VERSION = '1018';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3777,6 +3779,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver1018", "Paper controls stay visible", ["The Paper button keeps its name in narrow windows. A hint above the preview explains how to drag and drop JPG, PNG and PSD paper images."]],
         ["ver1017", "Export window tidied", ["The export window's options use the same names as the Paper window: Built-in form and Seconds “+”. The fixed summary box is gone, and the chosen output location shows as the pressed button instead of being repeated below.", "Switch rows use the same label weight as the other setting rows."]],
         ["ver1016", "Plain Lip-sync sheet button", ["The Lip-sync sheet button no longer stands out in red; it looks like Length Edit."]],
         ["ver1015", "Memo mode and memo area apart", ["The Quick Guide has separate Memo and Memo area topics. Drawn memos are called Pen memo everywhere, including the export option."]],
@@ -3933,6 +3936,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "Camera marks, continuation lines and merged memos", ["Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.", "The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.", "The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.", "When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.", "Camera works that connect end to end now become a single memo line, for example \"・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr\"."]],
       ],
       ja: [
+        ["ver1018", "用紙ボタンと読み込み案内", ["ウィンドウを狭くしても「用紙」の文字が残ります。プレビューの上に、JPG・PNG・PSDの用紙画像をドラッグ＆ドロップできる案内を加えました。"]],
         ["ver1017", "書き出し確認を整理", ["書き出し確認の項目名を用紙設定とそろえました（内蔵の様式・秒数の「＋」）。固定の説明枠をなくし、出力先は選んだ方のボタンが押された表示になります。", "スイッチの行も他の設定行と同じ文字の太さにしました。"]],
         ["ver1016", "セリフシートのボタンを通常色に", ["セリフシートのボタンだけ赤かった表示をやめ、尺編集と同じ見た目にしました。"]],
         ["ver1015", "メモモードとメモ欄を分ける", ["使い方の分類を「メモモード」と「メモ欄」に分けました。描いたメモは書き出しの選択肢も含めて「ペンメモ」にそろえ、ショートカットは「メモモードを終了」にしました。"]],
@@ -4089,6 +4093,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "カメラ記号・持続線・メモの連結", ["設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。", "設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。", "つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。", "マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。", "端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。"]],
       ],
       ko: [
+        ["ver1018", "용지 버튼과 불러오기 안내", ["창을 좁혀도 용지 버튼의 글자가 보입니다. 미리보기 위에 JPG·PNG·PSD 용지 이미지를 드래그 앤 드롭할 수 있다는 안내를 넣었습니다."]],
         ["ver1017", "출력 확인 창 정리", ["출력 확인 창의 항목 이름을 용지 설정과 맞췄습니다(내장 양식·초수 ＋). 바뀌지 않던 요약 상자를 없애고, 출력 위치는 고른 쪽 단추가 눌린 모양으로 보입니다.", "스위치 줄도 다른 설정 줄과 같은 글자 굵기로 맞췄습니다."]],
         ["ver1016", "대사 시트 단추 색 통일", ["대사 시트 단추만 빨갛던 것을 길이 편집과 같은 모양으로 바꿨습니다."]],
         ["ver1015", "메모 모드와 메모란 구분", ["사용법 분류를 「메모 모드」와 「메모란」으로 나눴습니다. 그린 메모는 출력 선택지까지 「펜 메모」로 맞추고, 단축키는 「메모 모드 끄기」로 고쳤습니다."]],
@@ -4245,6 +4250,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "카메라 표식·지속선·메모 연결", ["설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.", "설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. \"카메라→메모\"를 누를 필요가 없습니다.", "이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.", "표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.", "끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: \"・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr\")."]],
       ],
       zh: [
+        ["ver1018", "纸张按钮与导入提示", ["窗口变窄时仍显示纸张按钮的文字。在预览上方添加了拖放 JPG、PNG、PSD 纸张图像的提示。"]],
         ["ver1017", "整理导出确认窗口", ["导出确认的选项名称与纸张设置统一（内置版式、秒数＋号）。去掉固定的说明框，输出位置以按下的按钮表示当前选择。", "开关行的文字粗细与其他设置行一致。"]],
         ["ver1016", "口型表按钮恢复常规样式", ["口型表按钮不再单独显示为红色，与时长编辑相同。"]],
         ["ver1015", "区分备注模式与备注栏", ["使用说明分为“备注模式”和“备注栏”两类。手绘内容统一称为“手绘备注”，快捷键改为“关闭备注模式”。"]],
@@ -5332,7 +5338,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           { key:"preview", label:"プレビュー", html:"<ul><li>セルの枠をドラッグすると絵の位置、セル名をドラッグすると列の順番が変わる。</li><li>セリフ欄・カメラ欄を右クリック：行の追加・削除、話者・指示・前後ラベルの編集、カメラの▲／横線。区間の端をドラッグすると長さが変わる。</li><li><strong>段階</strong>の＋は今の内容を複製して新しい段階を作る。段階名を右クリックで名前変更・削除（最後の段階は消せない）。</li><li>タッチ：2本指タップで元に戻す、素早く2回タップでやり直し。</li></ul>" },
           { key:"memo", label:"メモモード", html:"<ul><li>使用中のペン・消しゴムをもう一度押すか長押しすると太さ・サイズの窓が開く。ペン窓の<strong>直線（Shift）</strong>で直線、Shiftは押している間この設定を反転する。</li></ul>" },
           { key:"memoArea", label:"メモ欄", html:"<ul><li>メモ欄を右クリックして<strong>テキスト枠を追加</strong>。</li><li>カメラ欄の<strong>メモ欄に反映</strong>はカメラ指示をメモ欄に文字で入れる。</li></ul>" },
-          { key:"paper", label:"用紙", html:"<ul><li><strong>用紙設定</strong>でJPG / PNG / PSD / .clipを選ぶ。JPG / PNG / PSDはプレビューにドロップしても用紙として読む（.clipはシートとして読む）。</li><li><strong>自動整列</strong>で枠を合わせ、<strong>位置編集</strong>で手直し。<strong>初期化</strong>は枠の位置を既定の配置に戻す。</li><li>用紙を入れなければ内蔵の様式を使う。</li></ul>" },
+          { key:"paper", label:"用紙", html:"<ul><li><strong>用紙</strong>でJPG / PNG / PSD / .clipを選ぶ。JPG / PNG / PSDはプレビューにドロップしても用紙として読む（.clipはシートとして読む）。</li><li><strong>自動整列</strong>で枠を合わせ、<strong>位置編集</strong>で手直し。<strong>初期化</strong>は枠の位置を既定の配置に戻す。</li><li>用紙を入れなければ内蔵の様式を使う。</li></ul>" },
           { key:"output", label:"書き出し・作業", html:"<ul><li><strong>出力先</strong>でフォルダーを選ぶとそこに保存（対応ブラウザーのみ）。×で既定のダウンロードに戻る。</li><li><strong>作業一覧</strong>：<strong>作業フォルダー</strong>か<strong>JSON追加</strong>で集めた作業はファイル名を押して開き、チェックするとまとめて書き出す。再読込でフォルダーを読み直し、フォルダー名の横の×で接続を解除して一覧を空にする（ファイルはそのまま）。</li></ul>" },
           { key:"serifu", label:"セリフシート", html:"<ul><li><strong>セリフシート</strong>をオンにしてセリフ欄を押すとそのセリフの範囲を選び、右クリックですぐ設定が開く。セルの枠をドラッグして範囲を選んでから右クリックしてもよい。</li><li>口の形に合わせてセル番号を並べる。適用すると範囲内の絵の指定が変わる。</li></ul>" },
         ]
@@ -5346,7 +5352,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           { key:"preview", label:"미리보기", html:"<ul><li>셀 칸을 끌면 그림 위치를, 셀 이름을 끌면 열 순서를 바꿉니다.</li><li>대사란·카메라란을 우클릭: 줄 추가·삭제, 화자·지시·앞뒤 이름 편집, 카메라 ▲/가로선. 구간 끝을 끌면 길이가 바뀝니다.</li><li><strong>단계</strong>의 ＋는 현재 내용을 복사해 새 단계를 만듭니다. 단계 이름을 우클릭하면 이름 변경·삭제(마지막 단계는 지울 수 없음).</li><li>터치: 두 손가락 탭으로 되돌리고, 빠르게 두 번 탭하면 다시 실행합니다.</li></ul>" },
           { key:"memo", label:"메모 모드", html:"<ul><li>쓰고 있는 펜·지우개를 다시 누르거나 길게 누르면 굵기·크기 창이 열립니다. 펜 창의 <strong>직선 (Shift)</strong>을 켜면 직선, Shift는 누르는 동안 이 설정을 반대로 바꿉니다.</li></ul>" },
           { key:"memoArea", label:"메모란", html:"<ul><li>메모란을 우클릭해 <strong>텍스트 박스 추가</strong>.</li><li>카메라란의 <strong>메모란에 반영</strong>은 카메라 지시를 메모란에 글로 넣습니다.</li></ul>" },
-          { key:"paper", label:"용지", html:"<ul><li><strong>용지 설정</strong>에서 JPG / PNG / PSD / .clip을 고릅니다. JPG / PNG / PSD는 미리보기에 놓아도 용지로 읽습니다(.clip은 시트로 읽음).</li><li><strong>자동 정렬</strong>로 칸을 맞추고 <strong>위치 편집</strong>으로 직접 조정합니다. <strong>초기화</strong>는 칸 위치를 기본 배치로 돌립니다.</li><li>용지를 넣지 않으면 내장 양식을 씁니다.</li></ul>" },
+          { key:"paper", label:"용지", html:"<ul><li><strong>용지</strong>에서 JPG / PNG / PSD / .clip을 고릅니다. JPG / PNG / PSD는 미리보기에 놓아도 용지로 읽습니다(.clip은 시트로 읽음).</li><li><strong>자동 정렬</strong>로 칸을 맞추고 <strong>위치 편집</strong>으로 직접 조정합니다. <strong>초기화</strong>는 칸 위치를 기본 배치로 돌립니다.</li><li>용지를 넣지 않으면 내장 양식을 씁니다.</li></ul>" },
           { key:"output", label:"출력·작업", html:"<ul><li><strong>출력 위치</strong>에서 폴더를 고르면 그곳에 저장합니다(지원 브라우저만). ×는 기본 다운로드로 돌립니다.</li><li><strong>작업 목록</strong>: <strong>작업 폴더</strong>나 <strong>JSON 추가</strong>로 모은 작업은 파일명을 눌러 열고, 체크하면 함께 출력합니다. 새로고침은 폴더를 다시 읽고, 폴더 이름 옆 ×는 연결을 끊고 목록을 비웁니다(파일은 그대로).</li></ul>" },
           { key:"serifu", label:"대사 시트", html:"<ul><li><strong>대사 시트</strong>를 켜고 대사란을 누르면 그 대사의 범위가 선택되고, 우클릭하면 바로 설정이 열립니다. 셀 칸을 끌어 범위를 고른 뒤 우클릭해도 됩니다.</li><li>입 모양에 맞춰 셀 번호를 배치합니다. 적용하면 범위 안의 그림 지정이 바뀝니다.</li></ul>" },
         ]
@@ -5375,6 +5381,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         loaded:function(name, size){ return name + (size ? ' · ' + size + ' px' : ''); },
         failed:function(msg){ return 'Paper image load failed: ' + msg; },
         clear:'Clear Paper', reset:'Position Reset', position:'Position Edit', autoAlign:'Auto Align',
+        previewDropHint:"Drag and drop paper images (JPG / PNG / PSD) onto the sheet",
         toolbarTitle:'Paper', toolbarPosition:'Position', toolbarReset:'Reset', toolbarClear:'Clear',
         autoAlignStatus:{
           ready:"Ready to align the paper grid",
@@ -5402,7 +5409,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         loaded:function(name, size){ return name + (size ? ' · ' + size + ' px' : ''); },
         failed:function(msg){ return '用紙画像の読込失敗: ' + msg; },
         clear:'用紙をクリア', reset:'位置初期化', position:'位置編集', autoAlign:'自動整列',
-        toolbarTitle:'用紙設定', toolbarPosition:'位置編集', toolbarReset:'初期化', toolbarClear:'クリア',
+        previewDropHint:"用紙画像（JPG / PNG / PSD）はシートにドラッグ＆ドロップ",
+        toolbarTitle:'用紙', toolbarPosition:'位置編集', toolbarReset:'初期化', toolbarClear:'クリア',
         autoAlignStatus:{
           ready:"用紙の罫線に合わせて配置",
           working:"用紙の罫線を検出中…",
@@ -5429,7 +5437,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         loaded:function(name, size){ return name + (size ? ' · ' + size + ' px' : ''); },
         failed:function(msg){ return '용지 이미지 로드 실패: ' + msg; },
         clear:'용지 삭제', reset:'위치 초기화', position:'위치 편집', autoAlign:'자동 정렬',
-        toolbarTitle:"용지 설정", toolbarPosition:"위치 편집", toolbarReset:'초기화', toolbarClear:'삭제',
+        previewDropHint:"용지 이미지(JPG / PNG / PSD)를 시트에 드래그 앤 드롭",
+        toolbarTitle:"용지", toolbarPosition:"위치 편집", toolbarReset:'초기화', toolbarClear:'삭제',
         autoAlignStatus:{
           ready:"용지 격자에 맞춰 정렬",
           working:"용지 선 분석 중…",
@@ -5456,6 +5465,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         loaded:function(name, size){ return name + (size ? ' · ' + size + ' px' : ''); },
         failed:function(msg){ return '纸张图像载入失败: ' + msg; },
         clear:'清除纸张', reset:'位置重置', position:'位置编辑', autoAlign:'自动对齐',
+        previewDropHint:"将纸张图像（JPG / PNG / PSD）拖放到摄影表上",
         toolbarTitle:'纸张', toolbarPosition:'位置', toolbarReset:'重置', toolbarClear:'清除',
         autoAlignStatus:{
           ready:"按纸张网格对齐",
@@ -5573,6 +5583,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     function renderPaperLayoutTexts() {
       const doc = getPaperLayoutTexts();
       if (paperImageInputLabelEl) paperImageInputLabelEl.textContent = clipSheetText('paperDrop');
+      document.getElementById('paperPreviewDropHint').textContent = doc.previewDropHint;
       if (paperToolbarTitleEl) {
         const paperTitle = doc.toolbarTitle || doc.title || 'Paper';
         paperToolbarTitleEl.querySelector('span').textContent = paperTitle;
