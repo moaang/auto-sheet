@@ -28,10 +28,8 @@
   </script>
   <style>
     :root {
-      /* Ink / paper / shu — chrome stays monochrome, the single accent (shu, a red-pencil
-         red) is reserved for the one tool that colors the sheet itself (セリフシート) and
-         danger actions. Everything else in the sheet SVG uses its own JS color constants
-         (RED/SHAKU_BLUE etc.) and is untouched by this palette. */
+      /* UI chrome is monochrome except blue discovery guidance and red danger actions.
+         Sheet SVG colors use their own JS constants (RED/SHAKU_BLUE etc.). */
       --bg: #f5f5f2;
       --panel: #ffffff;
       --panel-2: #fcfcfb;
@@ -43,6 +41,7 @@
       --faint: #a2a7b0;   /* syntax reminders under an input: present but quiet */
       --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI Variable Text", "Segoe UI", Inter, "Hiragino Kaku Gothic ProN", "Yu Gothic UI", "Noto Sans JP", ui-sans-serif, system-ui, sans-serif;
       --red: #c7402d;
+      --ui-guide: #175bb5;
       --ink-active: #23262b;
       --focus-ring: rgba(28, 30, 34, .32);
       /* UI contract: role sizes only. Sheet SVG and direct-edit handles keep their own units. */
@@ -288,8 +287,6 @@
       background:rgba(255,255,255,.92); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
       box-shadow:var(--ui-toolbar-shadow);
     }
-    .floating-bars .toolbar-notice { padding:2px 5px; font-size:var(--ui-fs-help); min-width:0; white-space:normal; }
-    .floating-bars .toolbar-notice .side-notice-close { flex:none; }
     .app-dialog-header { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:var(--ui-gap-lg); margin-bottom:var(--ui-gap-lg); }
     .app-dialog-header > :first-child { min-width:0; }
     .app-dialog-header button { flex:none; }
@@ -938,7 +935,7 @@
     .count-chip:hover { color:var(--text); text-decoration:underline; }
     .count-chip:focus-visible { outline:2px solid var(--focus-ring); outline-offset:2px; border-radius:2px; }
     .preview-meta { display: block; font-variant-numeric: tabular-nums; white-space: nowrap; }
-    .preview-toolbar .file-drop-hint { flex:1 1 max-content; min-width:0; color:#175bb5; font-size:clamp(14px, 2cqw, 16px); font-weight:600; line-height:1.5; white-space:nowrap; text-align:center; pointer-events:none; }
+    .preview-toolbar .file-drop-hint { flex:1 1 max-content; min-width:0; color:var(--ui-guide); font-size:clamp(14px, 2cqw, 16px); font-weight:600; line-height:1.5; white-space:nowrap; text-align:center; pointer-events:none; }
     .file-drop-hint-short { display:none; }
     .toolbar-actions { --control-h:var(--ui-h-toolbar); --control-pad:var(--ui-pad-compact); display:flex; align-items:center; justify-content:flex-end; gap:4px; flex-wrap:wrap; margin-left:auto; }
     .page-nav { display:flex; min-width:0; }
@@ -1120,25 +1117,23 @@
       color: var(--red);
     }
 
-    /* Anchors the セリフシート BUTTON at a fixed spot; the notice floats above it (absolute),
-       so dismissing the notice never shifts the button. */
+    /* The memo onboarding notice follows the sheet without taking up layout space. */
     .sheet-side-stack {
       position: absolute;
       left: 2px;
       top: 387px;
       z-index: 6;
     }
-    /* セリフシート is the one tool that colors the sheet, so it keeps the shu accent. */
     .sheet-side-notice {
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 2px;
       padding: 6px 3px;
-      border: 1px solid rgba(46,125,79,.18);
+      border: 1px solid var(--ui-guide);
       border-radius: 9px;
-      background: #edf6ef;
-      color: #1f6b41;
+      background: var(--panel);
+      color: var(--ui-guide);
       box-shadow: var(--sh-card);
       user-select: none;
     }
@@ -1153,7 +1148,7 @@
     .side-notice-close {
       border: none;
       background: none;
-      color: #1f6b41;
+      color: var(--ui-guide);
       opacity: .65;
       line-height: 1;
       padding: 3px;
@@ -1164,22 +1159,8 @@
       justify-content: center;
     }
     .side-notice-close svg { width: 11px; height: 11px; display: block; }
-    .side-notice-close:hover { background: rgba(31,107,65,.1); opacity: 1; }
+    .side-notice-close:hover { background: var(--ui-hover); opacity: 1; }
     .sheet-side-notice.hidden { display: none; }
-    .toolbar-notice {
-      display: inline-flex;
-      align-items: center;
-      gap: 3px;
-      padding: 4px 5px 4px 10px;
-      border: 1px solid rgba(46,125,79,.18);
-      border-radius: 9px;
-      background: #edf6ef;
-      color: #1f6b41;
-      font-weight: 700;
-      font-size:var(--ui-fs-help);
-      white-space: nowrap;
-    }
-    .toolbar-notice.hidden { display: none; }
     .serifu-sheet-context-menu {
       position: fixed;
       z-index: 10006;
@@ -2433,7 +2414,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '1019';
+    const APP_VERSION = '1020';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3783,6 +3764,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver1020", "Consistent guidance color", ["The memo-area right-click and long-press hint now uses the same blue as the file-drop hint."]],
         ["ver1019", "Drop files anywhere", ["Drop CSV, TVPP, CLIP files or paper images anywhere in the window. A screen-wide outline and message show where to release the file.", "The toolbar hint is larger, blue and always on one line. The first-use guide now includes paper images."]],
         ["ver1018", "Paper controls stay visible", ["The Paper button keeps its name in narrow windows. A hint above the preview explains how to drag and drop JPG, PNG and PSD paper images."]],
         ["ver1017", "Export window tidied", ["The export window's options use the same names as the Paper window: Built-in form and Seconds “+”. The fixed summary box is gone, and the chosen output location shows as the pressed button instead of being repeated below.", "Switch rows use the same label weight as the other setting rows."]],
@@ -3941,6 +3923,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "Camera marks, continuation lines and merged memos", ["Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.", "The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.", "The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.", "When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.", "Camera works that connect end to end now become a single memo line, for example \"・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr\"."]],
       ],
       ja: [
+        ["ver1020", "操作案内の色を統一", ["メモ欄の右クリック・長押しの案内を、ファイルドロップの案内と同じ青色にそろえました。"]],
         ["ver1019", "画面のどこでもドロップ", ["CSV・TVPP・CLIPや用紙画像を、画面のどこにでもドロップして読み込めます。ドラッグ中は画面全体の枠と案内で、ファイルを置けることが分かります。", "上部の案内は青く大きな文字で常に1行に表示します。最初の案内にも用紙画像の読み込み方を加えました。"]],
         ["ver1018", "用紙ボタンと読み込み案内", ["ウィンドウを狭くしても「用紙」の文字が残ります。プレビューの上に、JPG・PNG・PSDの用紙画像をドラッグ＆ドロップできる案内を加えました。"]],
         ["ver1017", "書き出し確認を整理", ["書き出し確認の項目名を用紙設定とそろえました（内蔵の様式・秒数の「＋」）。固定の説明枠をなくし、出力先は選んだ方のボタンが押された表示になります。", "スイッチの行も他の設定行と同じ文字の太さにしました。"]],
@@ -4099,6 +4082,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "カメラ記号・持続線・メモの連結", ["設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。", "設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。", "つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。", "マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。", "端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。"]],
       ],
       ko: [
+        ["ver1020", "조작 안내 색상 통일", ["메모란 우클릭·길게 누르기 안내를 파일 드롭 안내와 같은 파란색으로 맞췄습니다."]],
         ["ver1019", "화면 어디에나 파일 드롭", ["CSV·TVPP·CLIP 파일과 용지 이미지를 화면 어디에나 놓아 불러올 수 있습니다. 끌어오는 동안 화면 전체 테두리와 안내로 드롭할 수 있음을 표시합니다.", "상단 안내를 크고 진한 파란색 한 줄로 표시하며, 첫 안내에도 용지 이미지 불러오기를 포함했습니다."]],
         ["ver1018", "용지 버튼과 불러오기 안내", ["창을 좁혀도 용지 버튼의 글자가 보입니다. 미리보기 위에 JPG·PNG·PSD 용지 이미지를 드래그 앤 드롭할 수 있다는 안내를 넣었습니다."]],
         ["ver1017", "출력 확인 창 정리", ["출력 확인 창의 항목 이름을 용지 설정과 맞췄습니다(내장 양식·초수 ＋). 바뀌지 않던 요약 상자를 없애고, 출력 위치는 고른 쪽 단추가 눌린 모양으로 보입니다.", "스위치 줄도 다른 설정 줄과 같은 글자 굵기로 맞췄습니다."]],
@@ -4257,6 +4241,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "카메라 표식·지속선·메모 연결", ["설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.", "설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. \"카메라→메모\"를 누를 필요가 없습니다.", "이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.", "표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.", "끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: \"・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr\")."]],
       ],
       zh: [
+        ["ver1020", "统一操作提示颜色", ["备注栏的右键和长按提示现与文件拖放提示使用相同的蓝色。"]],
         ["ver1019", "在窗口任意位置拖放", ["将 CSV、TVPP、CLIP 文件或纸张图像拖到窗口任意位置即可导入。拖动时，全屏边框和提示会显示文件可以放下的位置。", "顶部提示使用更大的蓝色文字，始终保持一行。首次使用指南也加入了纸张图像的导入说明。"]],
         ["ver1018", "纸张按钮与导入提示", ["窗口变窄时仍显示纸张按钮的文字。在预览上方添加了拖放 JPG、PNG、PSD 纸张图像的提示。"]],
         ["ver1017", "整理导出确认窗口", ["导出确认的选项名称与纸张设置统一（内置版式、秒数＋号）。去掉固定的说明框，输出位置以按下的按钮表示当前选择。", "开关行的文字粗细与其他设置行一致。"]],
@@ -5359,12 +5344,12 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         title:"Quick Guide", dataTitle:"Data",
         data:"<ul><li>Sheets and images are processed in the browser. Save a project as an editable <code>_settei.json</code> file.</li><li>Usage reporting sends feature use, app version, language, browser and device details, region, city, time zone, errors and paper-layout measurements. If the paper template is not identified, its filename is also sent.</li><li>Sending feedback or opening its form sends your message, app version and browser details to Google Forms. Google Analytics and Ko-fi also connect to external services.</li></ul>",
         cats:[
-          { key:"basic", label:"Basics", html:"<div class=\"manual-step\"><span class=\"manual-step-no\">1</span>Import</div><ul><li><strong>Open project</strong> opens <code>.clip / .tvpp / .csv / .xdts</code> or a saved project JSON. Sheet files can also be dropped on Sheet Input or the preview.</li><li>To type: one cel column per line, <code>A: 1 n n dot n n 2</code>. Symbols are under <strong>How to write</strong> below Sheet Input.</li></ul><div class=\"manual-step\"><span class=\"manual-step-no\">2</span>Edit</div><ul><li>Click text in the preview to edit it. Cel names, the dialogue and camera areas and the memo area have a right-click menu (long-press on touch).</li></ul><div class=\"manual-step\"><span class=\"manual-step-no\">3</span>Export & save</div><ul><li><strong>Export</strong> makes PNG / JPG / PSD; <strong>Save project</strong> makes a JSON you can reopen and edit.</li></ul>" },
+          { key:"basic", label:"Basics", html:"<div class=\"manual-step\"><span class=\"manual-step-no\">1</span>Import</div><ul><li><strong>Open project</strong> opens <code>.clip / .tvpp / .csv / .xdts</code> or a saved project JSON. Sheet files can also be dropped anywhere in the window.</li><li>To type: one cel column per line, <code>A: 1 n n dot n n 2</code>. Symbols are under <strong>How to write</strong> below Sheet Input.</li></ul><div class=\"manual-step\"><span class=\"manual-step-no\">2</span>Edit</div><ul><li>Click text in the preview to edit it. Cel names, the dialogue and camera areas and the memo area have a right-click menu (long-press on touch).</li></ul><div class=\"manual-step\"><span class=\"manual-step-no\">3</span>Export & save</div><ul><li><strong>Export</strong> makes PNG / JPG / PSD; <strong>Save project</strong> makes a JSON you can reopen and edit.</li></ul>" },
           { key:"input", label:"Sheet Input", html:"<ul><li><strong>Cel / BOOK settings</strong> also opens from a right-click on a cel name in the preview.</li><li><strong>Fill drawing columns</strong> builds read-only drawing columns from drawing numbers and inbetween marks. After editing cels, use <strong>Refill drawing columns</strong>.</li><li><strong>Restore original</strong> in the CLIP / TVPaint import window returns changed drawing names and numbers to the file’s values.</li></ul><details class=\"manual-tvp\"><summary>TVPaint panel (optional)</summary><p>Paste the <strong>AutoSheet TXT</strong> result into Sheet Input.</p><ul><li><strong>Instance Numbering</strong> — Renumber drawings in the current layer</li><li><strong>Type Name of All Instance</strong> — Edit drawing names together</li><li><strong>Toggle Image Mark</strong> — Toggle an inbetween mark (<code>dot</code>)</li><li><strong>AutoSheet TXT</strong> — Export the Mark In/Out range as text</li></ul><a class=\"manual-tvp-dl\" href=\"AutoSheet.tvpx\" download=\"AutoSheet.tvpx\"><svg class=\"ic-svg\" viewBox=\"0 0 24 24\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M12 4v10m0 0 4-4m-4 4-4-4M5 18.5h14\"/></svg>Download the TVPaint panel (.tvpx)</a></details>" },
           { key:"preview", label:"Preview", html:"<ul><li>Drag a cel cell to move the drawing; drag a cel name to reorder columns.</li><li>Right-click the dialogue or camera area to add or delete lines, edit speaker, instruction or labels, and switch camera keys between ▲ and a dash. Drag a span’s end to change its length.</li><li><strong>Stage</strong> + copies the current content into a new stage. Right-click a stage name to rename or delete it (the last stage cannot be deleted).</li><li>Touch: two-finger tap undoes; tap twice quickly to redo.</li></ul>" },
           { key:"memo", label:"Memo", html:"<ul><li>Tap the pen or eraser in use again, or long-press it, for size. In the pen window <strong>Straight line (Shift)</strong> draws straight lines; holding Shift flips that setting while you draw.</li></ul>" },
           { key:"memoArea", label:"Memo area", html:"<ul><li>Right-click the memo area and choose <strong>Add text box</strong>.</li><li><strong>Add to memo area</strong> in the camera area writes camera instructions into the memo area as text.</li></ul>" },
-          { key:"paper", label:"Paper", html:"<ul><li>Choose JPG / PNG / PSD / .clip in <strong>Paper</strong>. JPG / PNG / PSD dropped on the preview are also read as paper (.clip is read as a sheet).</li><li><strong>Auto Align</strong> fits the cells; <strong>Position</strong> adjusts them by hand; <strong>Reset</strong> returns cell positions to the default layout.</li><li>Without paper the built-in form is used.</li></ul>" },
+          { key:"paper", label:"Paper", html:"<ul><li>Choose JPG / PNG / PSD / .clip in <strong>Paper</strong>. JPG / PNG / PSD dropped anywhere in the window are read as paper (.clip is read as a sheet).</li><li><strong>Auto Align</strong> fits the cells; <strong>Position</strong> adjusts them by hand; <strong>Reset</strong> returns cell positions to the default layout.</li><li>Without paper the built-in form is used.</li></ul>" },
           { key:"output", label:"Export & projects", html:"<ul><li>Choose a folder in <strong>Output folder</strong> to save there (supported browsers only); × returns to normal downloads.</li><li><strong>Project library</strong>: projects gathered with <strong>Project folder</strong> or <strong>Add JSON</strong> open by clicking the filename; checked ones export together. Reload rescans the folder; × beside the folder name disconnects it and empties the list (files are untouched).</li></ul>" },
           { key:"serifu", label:"Lip-sync sheet", html:"<ul><li>Turn on <strong>Lip-sync sheet</strong> and click a dialogue line to select its range; right-click it to open the settings at once. You can also drag over cel cells to select a range and right-click it.</li><li>It places cel numbers to match mouth shapes. Applying changes the drawing entries in the range.</li></ul>" },
         ]
@@ -5387,7 +5372,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         title:"사용법", dataTitle:"데이터",
         data:"<ul><li>시트와 이미지는 브라우저에서 처리합니다. 편집용 작업은 <code>_settei.json</code>으로 저장합니다.</li><li>사용 기능, 앱 버전·언어, 브라우저·기기 정보, 지역·도시·시간대, 오류, 용지 괘선 정보를 사용 통계로 보냅니다. 용지 종류를 판별하지 못하면 파일명도 보냅니다.</li><li>문의 전송이나 문의 양식을 열 때는 입력한 글·앱 버전·브라우저 정보를 Google Forms로 보냅니다. Google Analytics와 Ko-fi도 외부 서비스에 연결합니다.</li></ul>",
         cats:[
-          { key:"basic", label:"기본", html:"<div class=\"manual-step\"><span class=\"manual-step-no\">1</span>불러오기</div><ul><li><strong>작업 열기</strong>로 <code>.clip / .tvpp / .csv / .xdts</code>나 저장한 작업 JSON을 엽니다. 시트 파일은 시트 입력·미리보기에 놓아도 됩니다.</li><li>직접 쓸 때는 한 줄에 셀 한 열: <code>A: 1 n n dot n n 2</code>. 기호는 시트 입력 아래 <strong>쓰는 법</strong>.</li></ul><div class=\"manual-step\"><span class=\"manual-step-no\">2</span>편집</div><ul><li>미리보기의 글자를 눌러 편집합니다. 셀 이름·대사란·카메라란·메모란은 우클릭(터치는 길게 누르기)하면 메뉴가 뜹니다.</li></ul><div class=\"manual-step\"><span class=\"manual-step-no\">3</span>출력·저장</div><ul><li><strong>출력</strong>은 PNG / JPG / PSD, <strong>작업 저장</strong>은 다시 열어 편집할 JSON입니다.</li></ul>" },
+          { key:"basic", label:"기본", html:"<div class=\"manual-step\"><span class=\"manual-step-no\">1</span>불러오기</div><ul><li><strong>작업 열기</strong>로 <code>.clip / .tvpp / .csv / .xdts</code>나 저장한 작업 JSON을 엽니다. 시트 파일은 화면 어디에나 놓아도 됩니다.</li><li>직접 쓸 때는 한 줄에 셀 한 열: <code>A: 1 n n dot n n 2</code>. 기호는 시트 입력 아래 <strong>쓰는 법</strong>.</li></ul><div class=\"manual-step\"><span class=\"manual-step-no\">2</span>편집</div><ul><li>미리보기의 글자를 눌러 편집합니다. 셀 이름·대사란·카메라란·메모란은 우클릭(터치는 길게 누르기)하면 메뉴가 뜹니다.</li></ul><div class=\"manual-step\"><span class=\"manual-step-no\">3</span>출력·저장</div><ul><li><strong>출력</strong>은 PNG / JPG / PSD, <strong>작업 저장</strong>은 다시 열어 편집할 JSON입니다.</li></ul>" },
           { key:"input", label:"시트 입력", html:"<ul><li><strong>셀 · BOOK 설정</strong>은 미리보기의 셀 이름을 우클릭해도 열립니다.</li><li><strong>동화란 채우기</strong>는 그림 번호·동화 기호로 읽기 전용 동화란을 만듭니다. 셀을 고친 뒤에는 <strong>동화란 다시 채우기</strong>.</li><li>CLIP·TVPaint 가져오기 창의 <strong>원본 복원</strong>은 바꾼 그림 이름·번호를 파일의 원래 값으로 돌립니다.</li></ul><details class=\"manual-tvp\"><summary>TVPaint 패널(선택)</summary><p><strong>AutoSheet TXT</strong> 결과를 시트 입력에 붙여 넣기</p><ul><li><strong>Instance Numbering</strong> — 현재 레이어의 그림에 번호 다시 매기기</li><li><strong>Type Name of All Instance</strong> — 그림 이름 한꺼번에 편집</li><li><strong>Toggle Image Mark</strong> — 동화 기호(<code>dot</code>) 켜기·끄기</li><li><strong>AutoSheet TXT</strong> — Mark In/Out 범위를 텍스트로 내보내기</li></ul><a class=\"manual-tvp-dl\" href=\"AutoSheet.tvpx\" download=\"AutoSheet.tvpx\"><svg class=\"ic-svg\" viewBox=\"0 0 24 24\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M12 4v10m0 0 4-4m-4 4-4-4M5 18.5h14\"/></svg>TVPaint용 패널 다운로드 (.tvpx)</a></details>" },
           { key:"preview", label:"미리보기", html:"<ul><li>셀 칸을 끌면 그림 위치를, 셀 이름을 끌면 열 순서를 바꿉니다.</li><li>대사란·카메라란을 우클릭: 줄 추가·삭제, 화자·지시·앞뒤 이름 편집, 카메라 ▲/가로선. 구간 끝을 끌면 길이가 바뀝니다.</li><li><strong>단계</strong>의 ＋는 현재 내용을 복사해 새 단계를 만듭니다. 단계 이름을 우클릭하면 이름 변경·삭제(마지막 단계는 지울 수 없음).</li><li>터치: 두 손가락 탭으로 되돌리고, 빠르게 두 번 탭하면 다시 실행합니다.</li></ul>" },
           { key:"memo", label:"메모 모드", html:"<ul><li>쓰고 있는 펜·지우개를 다시 누르거나 길게 누르면 굵기·크기 창이 열립니다. 펜 창의 <strong>직선 (Shift)</strong>을 켜면 직선, Shift는 누르는 동안 이 설정을 반대로 바꿉니다.</li></ul>" },
@@ -5401,12 +5386,12 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         title:"使用说明", dataTitle:"数据",
         data:"<ul><li>摄影表和图像在浏览器中处理。可编辑的数据保存为<code>_settei.json</code>。</li><li>使用统计会发送所用功能、应用版本、语言、浏览器与设备信息、地区、城市、时区、错误及纸张格线信息。无法识别纸张类型时，也会发送文件名。</li><li>发送反馈或打开反馈表单时，会向Google Forms发送输入内容、应用版本和浏览器信息。Google Analytics和Ko-fi也会连接外部服务。</li></ul>",
         cats:[
-          { key:"basic", label:"基本", html:"<div class=\"manual-step\"><span class=\"manual-step-no\">1</span>导入</div><ul><li>用<strong>打开项目</strong>打开<code>.clip / .tvpp / .csv / .xdts</code>或保存的项目JSON。表格文件也可以拖到表格输入或预览上。</li><li>直接输入时每行一层：<code>A: 1 n n dot n n 2</code>。符号见表格输入下方的<strong>写法</strong>。</li></ul><div class=\"manual-step\"><span class=\"manual-step-no\">2</span>编辑</div><ul><li>点击预览中的文字即可编辑。图层名、对白栏、摄影栏和备注栏可右键（触屏长按）打开菜单。</li></ul><div class=\"manual-step\"><span class=\"manual-step-no\">3</span>导出与保存</div><ul><li><strong>导出</strong>生成PNG / JPG / PSD，<strong>保存项目</strong>生成可再次打开编辑的JSON。</li></ul>" },
+          { key:"basic", label:"基本", html:"<div class=\"manual-step\"><span class=\"manual-step-no\">1</span>导入</div><ul><li>用<strong>打开项目</strong>打开<code>.clip / .tvpp / .csv / .xdts</code>或保存的项目JSON。摄影表文件也可以拖到窗口任意位置。</li><li>直接输入时每行一层：<code>A: 1 n n dot n n 2</code>。符号见表格输入下方的<strong>写法</strong>。</li></ul><div class=\"manual-step\"><span class=\"manual-step-no\">2</span>编辑</div><ul><li>点击预览中的文字即可编辑。图层名、对白栏、摄影栏和备注栏可右键（触屏长按）打开菜单。</li></ul><div class=\"manual-step\"><span class=\"manual-step-no\">3</span>导出与保存</div><ul><li><strong>导出</strong>生成PNG / JPG / PSD，<strong>保存项目</strong>生成可再次打开编辑的JSON。</li></ul>" },
           { key:"input", label:"表格输入", html:"<ul><li>在预览中右键图层名也能打开<strong>图层 / BOOK 设置</strong>。</li><li><strong>填充动画栏</strong>根据画稿编号和中间画标记生成只读的动画栏。修改图层后用<strong>重新填充动画栏</strong>。</li><li>CLIP·TVPaint导入窗口中的<strong>恢复原始</strong>会把改过的画稿名称和编号恢复为文件原值。</li></ul><details class=\"manual-tvp\"><summary>TVPaint面板（可选）</summary><p>将<strong>AutoSheet TXT</strong>的结果粘贴到表格输入。</p><ul><li><strong>Instance Numbering</strong> — 为当前图层的画稿重新编号</li><li><strong>Type Name of All Instance</strong> — 批量编辑画稿名称</li><li><strong>Toggle Image Mark</strong> — 切换中间画标记（<code>dot</code>）</li><li><strong>AutoSheet TXT</strong> — 将Mark In/Out范围导出为文本</li></ul><a class=\"manual-tvp-dl\" href=\"AutoSheet.tvpx\" download=\"AutoSheet.tvpx\"><svg class=\"ic-svg\" viewBox=\"0 0 24 24\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M12 4v10m0 0 4-4m-4 4-4-4M5 18.5h14\"/></svg>下载 TVPaint 面板（.tvpx）</a></details>" },
           { key:"preview", label:"预览", html:"<ul><li>拖动图层格子可移动画稿位置，拖动图层名可调整列顺序。</li><li>右键对白栏或摄影栏：添加、删除行，编辑说话人、指示和前后标签，切换摄影机关键帧▲/横线。拖动区间末端可改变长度。</li><li><strong>阶段</strong>的＋会复制当前内容新建阶段。右键阶段名可改名或删除（最后一个阶段不能删除）。</li><li>触屏：双指轻点撤销，快速连点两次重做。</li></ul>" },
           { key:"memo", label:"备注模式", html:"<ul><li>再按一次正在使用的笔或橡皮（或长按）可打开粗细窗口。笔窗口中的<strong>直线（Shift）</strong>画直线，按住Shift时会反转此设置。</li></ul>" },
           { key:"memoArea", label:"备注栏", html:"<ul><li>右键备注栏，选择<strong>添加文本框</strong>。</li><li>摄影栏的<strong>写入备注栏</strong>会把摄影机指示以文字写入备注栏。</li></ul>" },
-          { key:"paper", label:"纸张", html:"<ul><li>在<strong>纸张</strong>中选择JPG / PNG / PSD / .clip。JPG / PNG / PSD拖到预览上也会作为纸张读取（.clip作为表格读取）。</li><li><strong>自动对齐</strong>对齐格子，<strong>位置</strong>手动调整，<strong>重置</strong>把格子位置恢复为默认布局。</li><li>不放纸张时使用内置版式。</li></ul>" },
+          { key:"paper", label:"纸张", html:"<ul><li>在<strong>纸张</strong>中选择JPG / PNG / PSD / .clip。JPG / PNG / PSD拖到窗口任意位置也会作为纸张读取（.clip作为表格读取）。</li><li><strong>自动对齐</strong>对齐格子，<strong>位置</strong>手动调整，<strong>重置</strong>把格子位置恢复为默认布局。</li><li>不放纸张时使用内置版式。</li></ul>" },
           { key:"output", label:"导出·项目", html:"<ul><li>在<strong>输出位置</strong>选择文件夹后保存到该处（仅支持的浏览器），×恢复为默认下载。</li><li><strong>项目列表</strong>：通过<strong>项目文件夹</strong>或<strong>添加JSON</strong>收集的项目，点击文件名打开，勾选后可一起导出。刷新会重新读取文件夹，文件夹名旁的×会断开并清空列表（文件不受影响）。</li></ul>" },
           { key:"serifu", label:"口型表", html:"<ul><li>打开<strong>口型表</strong>后点击对白栏即选中该台词范围，右键直接打开设置。也可以拖过图层格子选择范围后右键。</li><li>按口型排列图画稿编号。应用后范围内的画稿指定会改变。</li></ul>" },
         ]
@@ -28817,21 +28802,12 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     async function handleAppFileDrop(event) {
       const cutEntries = getDroppedCutFolderEntries(event);
       if (cutEntries.length) {
-        event.preventDefault();
-        event.stopPropagation();
-        clearAppFileDropActive();
         await handleCutFolderDrop(cutEntries);
         return;
       }
       cutFolderJob++;  // 진행 중인 폴더 작업이 있으면 그 결과를 버린다
       const files = getDroppedFiles(event);
-      if (!files.length) {
-        clearAppFileDropActive();
-        return;
-      }
-      event.preventDefault();
-      event.stopPropagation();
-      clearAppFileDropActive();
+      if (!files.length) return;
       const settingsFile = files.find(isSettingsJsonDropFile);
       if (settingsFile) {
         await loadDroppedSettingsJsonFile(settingsFile);
