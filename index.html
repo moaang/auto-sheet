@@ -751,7 +751,6 @@
       display: none;
     }
     .sheet-command-box { display:flex; flex-direction:column; gap:var(--ui-stack-gap); }
-    .sheet-tool-row { display:flex; flex-wrap:wrap; gap:var(--ui-gap); }
     .cell-placement-choices { display:flex; flex-wrap:wrap; gap:var(--ui-gap-sm); }
     .cell-placement-section[hidden] { display:none; }
     .card .hint[hidden] { display:none; }
@@ -910,7 +909,8 @@
       background: white;
       border: none;
       border-radius: 0;
-      padding: 150px 14px 14px 30px; /* top padding kept in sync with the floating bar stack by JS */
+      --side-room: 36px; /* 2px edge + 30px side rail + 4px to the sheet */
+      padding: 150px var(--side-room) 14px; /* top padding kept in sync with the floating bar stack by JS */
       overflow: hidden; /* free pan/zoom canvas — no scrollbars, navigation is transform-based */
       box-shadow: none;
     }
@@ -935,7 +935,7 @@
     .count-chip:hover { color:var(--text); text-decoration:underline; }
     .count-chip:focus-visible { outline:2px solid var(--focus-ring); outline-offset:2px; border-radius:2px; }
     .preview-meta { display: block; font-variant-numeric: tabular-nums; white-space: nowrap; }
-    .file-drop-hint, .sheet-side-notice .notice-line { font-family:var(--font-ui); font-size:10px; font-weight:800; letter-spacing:1px; line-height:1.5; }
+    .file-drop-hint, .notice-line { font-family:var(--font-ui); font-size:10px; font-weight:800; letter-spacing:1px; line-height:1.5; }
     .preview-toolbar .file-drop-hint { flex:1 1 max-content; min-width:0; color:var(--ui-guide); white-space:nowrap; text-align:center; pointer-events:none; }
     .file-drop-hint-short { display:none; }
     .toolbar-actions { --control-h:var(--ui-h-toolbar); --control-pad:var(--ui-pad-compact); display:flex; align-items:center; justify-content:flex-end; gap:4px; flex-wrap:wrap; margin-left:auto; }
@@ -1118,31 +1118,26 @@
       color: var(--red);
     }
 
-    /* The memo onboarding notice follows the sheet without taking up layout space. */
-    .sheet-side-stack {
-      position: absolute;
-      left: 2px;
-      top: 387px;
-      z-index: 6;
+    /* Side rails: the vertical twin of a toolbar plate, one in each side gutter of the preview
+       (left: memo notice, right: sheet edit tools). One width, plate and spacing; the preview
+       padding (--side-room) keeps both off the sheet. Positions follow the sheet in JS. */
+    .sheet-side-stack, .sheet-tool-rail { position:absolute; left:2px; top:387px; z-index:6; }
+    .sheet-side-notice, .sheet-tool-rail {
+      display:flex; flex-direction:column; align-items:center; gap:3px;
+      width:calc(var(--ui-h-toolbar) + 6px); padding:3px 2px;
+      border:1px solid var(--soft); border-radius:var(--r-ctl);
+      background:rgba(255,255,255,.92); box-shadow:var(--ui-toolbar-shadow);
+      user-select:none;
     }
-    .sheet-side-notice {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2px;
-      padding: 6px 3px;
-      border: 1px solid var(--ui-guide);
-      border-radius: 9px;
-      background: var(--panel);
-      color: var(--ui-guide);
-      box-shadow: var(--sh-card);
-      user-select: none;
+    .sheet-side-notice { padding-bottom:var(--ui-gap); }
+    .sheet-tool-rail .toolbar-btn {
+      --control-h:auto; width:var(--ui-h-toolbar); min-width:0;
+      padding:var(--ui-gap) 0; writing-mode:vertical-rl; text-orientation:mixed; overflow:visible;
     }
-    .sheet-side-notice .notice-line {
-      display: block;
-      writing-mode: vertical-rl;
-      text-orientation: mixed;
-    }
+    .sheet-tool-rail .ic-svg { width:var(--ui-icon); height:var(--ui-icon); flex:none; }
+    .notice-line { display:block; color:var(--ui-guide); writing-mode:vertical-rl; text-orientation:mixed; }
+    .notice-line[hidden] { display:none; }
+    .sheet-tool-rail .notice-line { padding-block:var(--ui-gap-sm); }
     .side-notice-close {
       border: none;
       background: none;
@@ -1784,7 +1779,7 @@
         margin-top: 10px;
         border: 1px solid var(--soft);
         border-radius: 20px;
-        padding: 14px 14px 14px 22px !important; /* beats the JS-synced desktop top padding */
+        padding: 14px var(--side-room) !important; /* beats the JS-synced desktop top padding */
         box-shadow: 0 10px 24px rgba(0,0,0,.06);
         max-height: 80vh;
       }
@@ -2191,6 +2186,11 @@
             <span class="notice-line" data-ui-text="memoRightClickNoticeL2">：テキスト枠の作成・編集</span>
           </div>
         </div>
+        <div id="sheetToolRail" class="sheet-tool-rail" role="group" data-ui-title="sheetToolsTitle">
+          <button id="shakuEditBtn" class="toolbar-btn" type="button"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3.5" y="8" width="17" height="8" rx="1.5"/><path d="M7.5 8v3.5M11 8v2.5M14.5 8v3.5M18 8v2.5"/></svg><span data-ui-text="shakuEditBtn">尺編集</span></button>
+          <button id="serifuModeBtn" class="toolbar-btn" type="button" data-ui-title="serifuModeTitle"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3.5 12c2.6-3.4 5.4-4.4 8.5-2.2 3.1-2.2 5.9-1.2 8.5 2.2-2.4 3.6-5.2 5.2-8.5 5.2s-6.1-1.6-8.5-5.2Z"/><path d="M3.5 12h17"/></svg><span data-ui-text="serifuModeBtn">セリフシート</span></button>
+          <span id="shakuEditHint" class="notice-line" data-ui-text="shakuEditHint" hidden>青い線をドラッグして尺を選択</span>
+        </div>
         <div id="sheetStage" class="sheet-stage">
           <svg id="sheetSvg" viewBox="0 0 1753 2480" xmlns="http://www.w3.org/2000/svg" aria-label="timesheet preview" data-ui-title="sheetPreviewTitle"></svg>
           <svg id="positionDragOverlaySvg" class="position-drag-overlay" viewBox="0 0 1753 2480" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"></svg>
@@ -2229,15 +2229,6 @@
           <summary class="fold-title" data-ui-text="examplesTitle">Examples</summary>
           <div id="sheetInputHelp"></div>
         </details>
-      </div>
-
-      <div class="card">
-        <h3><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="8" width="17" height="8" rx="1.5"/><path d="M7.5 8v3.5M11 8v2.5M14.5 8v3.5M18 8v2.5"/></svg><span data-ui-text="sheetToolsTitle">編集ツール</span></h3>
-        <div class="sheet-tool-row">
-          <button id="shakuEditBtn" class="toolbar-btn" type="button" data-ui-text="shakuEditBtn">尺編集</button>
-          <button id="serifuModeBtn" class="toolbar-btn" type="button" data-ui-text="serifuModeBtn" data-ui-title="serifuModeTitle">セリフシート</button>
-        </div>
-        <div id="shakuEditHint" class="hint" data-ui-text="shakuEditHint" hidden>青い線をドラッグして尺を選択</div>
       </div>
 
       <div class="card">
@@ -2412,7 +2403,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '1021';
+    const APP_VERSION = '1022';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3762,6 +3753,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver1022", "Edit tools beside the sheet", ["Length Edit and Lip-sync sheet moved from the right panel to a slim vertical rail on the sheet's right edge, mirroring the memo hint on the left.", "The preview keeps equal room on both sides so neither rail covers the sheet."]],
         ["ver1021", "Consistent guidance and cel labels", ["The drop hint now shares the memo hint’s font, size and weight while staying on one line.", "Cel role names and related controls now follow the selected language in sheet input, settings and import windows."]],
         ["ver1020", "Consistent guidance color", ["The memo-area right-click and long-press hint now uses the same blue as the file-drop hint."]],
         ["ver1019", "Drop files anywhere", ["Drop CSV, TVPP, CLIP files or paper images anywhere in the window. A screen-wide outline and message show where to release the file.", "The toolbar hint is larger, blue and always on one line. The first-use guide now includes paper images."]],
@@ -3922,6 +3914,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "Camera marks, continuation lines and merged memos", ["Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.", "The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.", "The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.", "When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.", "Camera works that connect end to end now become a single memo line, for example \"・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr\"."]],
       ],
       ja: [
+        ["ver1022", "編集ツールをシートの横へ", ["尺編集とセリフシートを右パネルから、シート右端の細い縦帯へ移しました。左のメモ案内と対になる配置です。", "プレビューの左右に同じ余白を取り、どちらの帯もシートに重なりません。"]],
         ["ver1021", "案内文字とセル表記を統一", ["ドロップ案内の書体・文字サイズ・太さをメモ欄の案内と揃え、1行表示を維持しました。", "シート入力・設定・読み込み画面のセルなどの役割名と関連表示を、選択した言語に統一しました。"]],
         ["ver1020", "操作案内の色を統一", ["メモ欄の右クリック・長押しの案内を、ファイルドロップの案内と同じ青色にそろえました。"]],
         ["ver1019", "画面のどこでもドロップ", ["CSV・TVPP・CLIPや用紙画像を、画面のどこにでもドロップして読み込めます。ドラッグ中は画面全体の枠と案内で、ファイルを置けることが分かります。", "上部の案内は青く大きな文字で常に1行に表示します。最初の案内にも用紙画像の読み込み方を加えました。"]],
@@ -4082,6 +4075,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "カメラ記号・持続線・メモの連結", ["設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。", "設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。", "つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。", "マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。", "端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。"]],
       ],
       ko: [
+        ["ver1022", "편집 도구를 시트 옆으로", ["길이 편집과 대사 시트를 오른쪽 패널에서 시트 오른쪽 끝의 가는 세로 띠로 옮겼습니다. 왼쪽 메모 안내와 짝을 이루는 자리입니다.", "미리보기 좌우에 같은 여백을 두어 두 띠가 시트를 가리지 않습니다."]],
         ["ver1021", "안내 글꼴과 셀 표기 통일", ["드롭 안내의 글꼴·크기·굵기를 메모 안내와 맞추고 한 줄 표시를 유지했습니다.", "시트 입력·설정·가져오기 화면의 셀 등 역할 이름과 관련 표기를 선택한 언어로 통일했습니다."]],
         ["ver1020", "조작 안내 색상 통일", ["메모란 우클릭·길게 누르기 안내를 파일 드롭 안내와 같은 파란색으로 맞췄습니다."]],
         ["ver1019", "화면 어디에나 파일 드롭", ["CSV·TVPP·CLIP 파일과 용지 이미지를 화면 어디에나 놓아 불러올 수 있습니다. 끌어오는 동안 화면 전체 테두리와 안내로 드롭할 수 있음을 표시합니다.", "상단 안내를 크고 진한 파란색 한 줄로 표시하며, 첫 안내에도 용지 이미지 불러오기를 포함했습니다."]],
@@ -4242,6 +4236,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "카메라 표식·지속선·메모 연결", ["설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.", "설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. \"카메라→메모\"를 누를 필요가 없습니다.", "이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.", "표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.", "끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: \"・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr\")."]],
       ],
       zh: [
+        ["ver1022", "编辑工具移到表格旁", ["时长编辑和口型表从右侧面板移到表格右边缘的细竖条，与左侧的备注提示对称。", "预览左右留出相同空白，两侧竖条都不会遮住表格。"]],
         ["ver1021", "统一提示字体与图层名称", ["拖放提示的字体、字号和粗细与备注提示保持一致，并维持单行显示。", "摄影表输入、设置及导入窗口中的图层等用途名称和相关文字统一跟随所选语言。"]],
         ["ver1020", "统一操作提示颜色", ["备注栏的右键和长按提示现与文件拖放提示使用相同的蓝色。"]],
         ["ver1019", "在窗口任意位置拖放", ["将 CSV、TVPP、CLIP 文件或纸张图像拖到窗口任意位置即可导入。拖动时，全屏边框和提示会显示文件可以放下的位置。", "顶部提示使用更大的蓝色文字，始终保持一行。首次使用指南也加入了纸张图像的导入说明。"]],
@@ -17050,13 +17045,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     // ══ ▲ 카메라란 ② 끝 ▲  아래부터는 尺(shaku) 편집 ════════════════════════════════════════════════════════════════════════════
     function updateShakuEditUI() {
-      if (shakuEditBtn) {
-        shakuEditBtn.classList.toggle('active', !!state.shakuMode);
-        shakuEditBtn.textContent = getUiText('shakuEditBtn');
-      }
+      if (shakuEditBtn) shakuEditBtn.classList.toggle('active', !!state.shakuMode);
       if (shakuEditHintEl) {
-        shakuEditHintEl.textContent = getUiText('shakuEditHint');
         shakuEditHintEl.hidden = !state.shakuMode;
+        updateSheetSideStackPosition(); // the hint lengthens the rail; keep it inside the pane
       }
     }
 
@@ -23608,24 +23600,31 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       previewWrapEl.classList.toggle('touch-page-scroll', stacked && !editing && limX >= -0.5 && limY >= -0.5);
     }
 
-    // The memo notice beside the sheet is pinned to the cell-block top-left: it tracks the
-    // stage through pan/zoom horizontally, while its vertical position clamps to the visible
-    // band (below the floating bars, above the pane bottom) so it never scrolls out of reach.
+    // The side rails sit in the preview's side gutters at the cell-block top: the memo notice
+    // left of the sheet, the edit tools right of it. They track the stage through pan/zoom
+    // horizontally (clamped inside the pane), while their vertical position clamps to the
+    // visible band (below the floating bars, above the pane bottom) so they never scroll out of reach.
     function updateSheetSideStackPosition() {
-      const stack = document.getElementById('sheetSideStack');
-      if (!stack || !previewWrapEl || !sheetStageEl) return;
+      const rails = [document.getElementById('sheetSideStack'), document.getElementById('sheetToolRail')];
+      if (!rails[0] || !rails[1] || !previewWrapEl || !sheetStageEl) return;
       const zoom = clampSheetZoom(state.sheetZoom);
       const pad = getPreviewPadding();
-      const pageScale = (sheetStageEl.offsetWidth * zoom) / PAGE_W;
-      const x = Math.max(2, pad.left + (Number(state.viewPanX) || 0) - stack.offsetWidth - 6);
-      let y = pad.top + (Number(state.viewPanY) || 0) + 450 * pageScale; // 450 = grid top in page coords
+      const sheetW = sheetStageEl.offsetWidth * zoom;
+      const sheetLeft = pad.left + (Number(state.viewPanX) || 0);
+      const y0 = pad.top + (Number(state.viewPanY) || 0) + 450 * sheetW / PAGE_W; // 450 = grid top in page coords
       const floatingBars = document.getElementById('floatingBars');
       const barsFloating = floatingBars && getComputedStyle(floatingBars).position === 'absolute';
       const yMin = barsFloating ? floatingBars.offsetTop + floatingBars.offsetHeight + 8 : 8;
-      const yMax = previewWrapEl.clientHeight - stack.offsetHeight - 8;
-      y = Math.min(Math.max(y, yMin), Math.max(yMin, yMax));
-      stack.style.left = Math.round(x) + 'px';
-      stack.style.top = Math.round(y) + 'px';
+      const xMax = previewWrapEl.clientWidth - 2;
+      // Both rails share one top: the taller one decides how far up the bottom clamp pushes.
+      const yMax = previewWrapEl.clientHeight - Math.max(rails[0].offsetHeight, rails[1].offsetHeight) - 8;
+      const top = Math.round(Math.min(Math.max(y0, yMin), Math.max(yMin, yMax))) + 'px';
+      rails.forEach(function(rail, i){
+        const w = rail.offsetWidth;
+        const x = i === 0 ? sheetLeft - w - 4 : sheetLeft + sheetW + 4;
+        rail.style.left = Math.round(Math.min(Math.max(2, x), xMax - w)) + 'px';
+        rail.style.top = top;
+      });
     }
 
     function applySheetZoom() {
