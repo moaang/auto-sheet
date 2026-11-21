@@ -2403,7 +2403,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '1023';
+    const APP_VERSION = '1024';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -2720,7 +2720,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       columns:["cellColumnCount","inbetweenColumnCount"],
       columnOrder:["cellDisplayOrder","cellColumnPlacement"],
       douga:["dougaSheetEnabled","dougaSheetData"],
-      overrides:["markerOverrides","cameraPreviewStyles","cameraEndpointFr","cameraSeries","dotOverrides","dotNotes","layerNameTags","bookNames"],
+      overrides:["markerOverrides","cameraPreviewStyles","cameraEndpointFr","cameraSeries","dotOverrides","dotNotes","layerNameTags","bookNames","sheetDirectives"],
       paperImage:["paperImageDataUrl","paperImageMemoDataUrl","paperImageMemoLayerCount","paperImageName","paperImageMeta","paperImagePixelInfo","paperImageSourceWidth","paperImageSourceHeight"],
       paperOutput:["showTemplate","showHeaderOutput","showDurationPlusOutput","showCellLabelOutput","showPsdMemo"],
       paperLayout:["layoutBoxes","layoutBoxBaseRects","layoutGrid","paperGeneratedOutput"],
@@ -2873,6 +2873,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       pastedImages: {},
       layerNameTags: [],
       bookNames: {},
+      sheetDirectives: [],
       memoPages: {}
     }, createCsvState(), createSheetTransientState());
     const settingsDocumentDefaults = captureSheetSnapshot();
@@ -3753,6 +3754,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver1024", "Cel transfer arrows", ["Sheets now draw a cel transfer (「Cセル Aセルへ」): an arrow from the sending cel's last frame to the receiving cel's inbetween dot or drawing number, with the label beside it.", "Work files keep these instructions. Creating them on the sheet itself comes in a later version."]],
         ["ver1023", "Side hints fit on phones", ["Shorter Length Edit and memo hints so both side rails fit on narrow phone screens."]],
         ["ver1022", "Edit tools beside the sheet", ["Length Edit and Lip-sync sheet moved from the right panel to a slim vertical rail on the sheet's right edge, mirroring the memo hint on the left.", "The preview keeps equal room on both sides so neither rail covers the sheet."]],
         ["ver1021", "Consistent guidance and cel labels", ["The drop hint now shares the memo hint’s font, size and weight while staying on one line.", "Cel role names and related controls now follow the selected language in sheet input, settings and import windows."]],
@@ -3915,6 +3917,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "Camera marks, continuation lines and merged memos", ["Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.", "The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.", "The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.", "When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.", "Camera works that connect end to end now become a single memo line, for example \"・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr\"."]],
       ],
       ja: [
+        ["ver1024", "セル移動の矢印", ["シートにセル移動（「Cセル Aセルへ」）を描くようになりました。送る側のセルの直前のコマから、受ける側のセルの中割点または番号へ矢印を引き、横に表記を添えます。", "作業ファイルはこの指示を保存します。シート上で作る操作は今後の版で追加します。"]],
         ["ver1023", "横の案内をスマホに収める", ["尺編集とメモの案内を短くし、幅の狭いスマホでも左右の帯が切れずに収まるようにしました。"]],
         ["ver1022", "編集ツールをシートの横へ", ["尺編集とセリフシートを右パネルから、シート右端の細い縦帯へ移しました。左のメモ案内と対になる配置です。", "プレビューの左右に同じ余白を取り、どちらの帯もシートに重なりません。"]],
         ["ver1021", "案内文字とセル表記を統一", ["ドロップ案内の書体・文字サイズ・太さをメモ欄の案内と揃え、1行表示を維持しました。", "シート入力・設定・読み込み画面のセルなどの役割名と関連表示を、選択した言語に統一しました。"]],
@@ -4077,6 +4080,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "カメラ記号・持続線・メモの連結", ["設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。", "設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。", "つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。", "マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。", "端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。"]],
       ],
       ko: [
+        ["ver1024", "셀 이관 화살표", ["시트에 셀 이관(「Cセル Aセルへ」)을 그립니다. 보내는 셀의 직전 칸에서 받는 셀의 동화점이나 번호로 화살표를 긋고 옆에 표기를 붙입니다.", "작업 파일에 이 지시가 저장됩니다. 시트에서 직접 만드는 조작은 다음 판에 더합니다."]],
         ["ver1023", "옆 안내가 폰에 들어가게", ["길이 편집과 메모 안내를 짧게 줄여, 좁은 폰 화면에서도 좌우 띠가 잘리지 않습니다."]],
         ["ver1022", "편집 도구를 시트 옆으로", ["길이 편집과 대사 시트를 오른쪽 패널에서 시트 오른쪽 끝의 가는 세로 띠로 옮겼습니다. 왼쪽 메모 안내와 짝을 이루는 자리입니다.", "미리보기 좌우에 같은 여백을 두어 두 띠가 시트를 가리지 않습니다."]],
         ["ver1021", "안내 글꼴과 셀 표기 통일", ["드롭 안내의 글꼴·크기·굵기를 메모 안내와 맞추고 한 줄 표시를 유지했습니다.", "시트 입력·설정·가져오기 화면의 셀 등 역할 이름과 관련 표기를 선택한 언어로 통일했습니다."]],
@@ -4239,6 +4243,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "카메라 표식·지속선·메모 연결", ["설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.", "설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. \"카메라→메모\"를 누를 필요가 없습니다.", "이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.", "표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.", "끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: \"・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr\")."]],
       ],
       zh: [
+        ["ver1024", "图层转移箭头", ["摄影表现在会绘制图层转移（「Cセル Aセルへ」）：从转出图层的前一格画箭头，指向接收图层的中间画标记或编号，并在旁边标注。", "工作文件会保存这些指示。在摄影表上直接创建的操作将在之后的版本加入。"]],
         ["ver1023", "侧边提示适配手机", ["缩短时长编辑和备注提示，窄屏手机上左右竖条也能完整显示。"]],
         ["ver1022", "编辑工具移到表格旁", ["时长编辑和口型表从右侧面板移到表格右边缘的细竖条，与左侧的备注提示对称。", "预览左右留出相同空白，两侧竖条都不会遮住表格。"]],
         ["ver1021", "统一提示字体与图层名称", ["拖放提示的字体、字号和粗细与备注提示保持一致，并维持单行显示。", "摄影表输入、设置及导入窗口中的图层等用途名称和相关文字统一跟随所选语言。"]],
@@ -6389,6 +6394,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       state.cameraSeries = [];
       state.dotOverrides = {};
       state.dotNotes = {};
+      state.sheetDirectives = [];
     }
 
     function findOrCreateCommandLineForEntry(lines, entry) {
@@ -16306,6 +16312,182 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return true;
     }
 
+    // ══ 시트 지시 — 셀 이관(セル移動) · 텍스트 줄 문법 · 판정 ══════════════════════════════════
+    // A sheet directive is an instruction between cell columns that the token grammar cannot carry. It names
+    // columns by command name (line order can change) and a 1-based frame, and is kept in overrides.sheetDirectives.
+    // celTransfer: from `frame` on, the content of `from` is drawn in `to` (「Cセル Aセルへ」). On paper the arrow
+    // starts at from's frame-1 cell and points at to's dot or drawing at `frame`. whole=true: everything moves and
+    // `from` is empty (×) from `frame`. whole=false: only a part is split off and `from` keeps exposing.
+    // Whether the target is a dot or a drawing is read from the sheet, never stored, so an edit cannot desync it.
+    // Rules and their reasons: docs/sheet_directives.md. Text line: `celTransfer | 3+16 | C | A [| part]`.
+    const SHEET_DIRECTIVE_KINDS = {
+      celTransfer: {
+        normalize: function(d) {
+          const from = String(d.from == null ? '' : d.from).trim(), to = String(d.to == null ? '' : d.to).trim();
+          const frame = Math.round(Number(d.frame));
+          if (!from || !to || !Number.isFinite(frame) || frame < 1) return null;
+          return { kind:'celTransfer', from:from, to:to, frame:frame, whole:d.whole !== false };
+        },
+        fromParts: function(parts) {
+          const frame = parseTimecode(parts[0]);
+          if (!frame) return { error:'bad-frame' };
+          if (!parts[1] || !parts[2]) return { error:'missing-column' };
+          const option = String(parts[3] || '').trim().toLowerCase();
+          if (option && option !== 'part') return { error:'bad-option' };
+          return { directive:{ kind:'celTransfer', from:parts[1], to:parts[2], frame:frame, whole:option !== 'part' } };
+        },
+        toParts: function(d) {
+          return [frameToShakuPosition(d.frame), d.from, d.to].concat(d.whole ? [] : ['part']);
+        },
+        columns: ['from', 'to'],
+        analyze: analyzeCelTransfer
+      }
+    };
+
+    function normalizeSheetDirectives(list) {
+      if (!Array.isArray(list)) return [];
+      return list.map(function(d){
+        const def = d && typeof d === 'object' && Object.prototype.hasOwnProperty.call(SHEET_DIRECTIVE_KINDS, d.kind) ? SHEET_DIRECTIVE_KINDS[d.kind] : null;
+        return def ? def.normalize(d) : null;
+      }).filter(Boolean);
+    }
+
+    // One directive per line: `kind | field | field …`. Blank and `#` lines are skipped; bad lines are reported, not guessed.
+    function parseSheetDirectiveText(text) {
+      const directives = [], errors = [];
+      String(text || '').replace(/\r/g, '').split('\n').forEach(function(raw, index){
+        const line = raw.trim();
+        if (!line || line.charAt(0) === '#') return;
+        const parts = line.split('|').map(function(part){ return part.trim(); });
+        const def = Object.prototype.hasOwnProperty.call(SHEET_DIRECTIVE_KINDS, parts[0]) ? SHEET_DIRECTIVE_KINDS[parts[0]] : null;
+        if (!def) { errors.push({ line:index + 1, code:'unknown-kind', text:line }); return; }
+        const read = def.fromParts(parts.slice(1));
+        if (read.error) { errors.push({ line:index + 1, code:read.error, text:line }); return; }
+        const directive = def.normalize(read.directive);
+        if (directive) directives.push(directive);
+        else errors.push({ line:index + 1, code:'invalid', text:line });
+      });
+      return { directives:directives, errors:errors };
+    }
+
+    function formatSheetDirectiveText(list) {
+      return normalizeSheetDirectives(list).map(function(d){
+        return [d.kind].concat(SHEET_DIRECTIVE_KINDS[d.kind].toParts(d)).join(' | ');
+      }).join('\n');
+    }
+
+    // State of one parsed cell column (parseCommandText layer) at a frame: key / dot / hold / cross / empty / repeat / wavy.
+    function getSheetDirectiveCellState(layer, frame) {
+      const segments = layer.segments || [];
+      const start = segments.find(function(seg){ return seg.from === frame; });
+      if (start) return start.kind === 'cross' ? { state:'cross' } : { state:'key', label:start.label };
+      const mark = (layer.marks || []).find(function(m){ return m.frame === frame; });
+      const seg = segments.find(function(s){ return s.from <= frame && frame <= s.to; });
+      if (mark && mark.type !== 'dot') return { state:mark.type };
+      if (!seg || seg.kind === 'cross') return { state:mark ? 'dot-in-empty' : 'empty' };
+      return { state:mark ? 'dot' : 'hold', label:seg.label };
+    }
+
+    function getSheetDirectiveDots(layer, fromFrame, beforeFrame) {
+      return (layer.marks || []).filter(function(m){ return m.type === 'dot' && m.frame >= fromFrame && m.frame < beforeFrame; })
+        .map(function(m){ return m.frame; }).sort(function(a, b){ return a - b; });
+    }
+
+    // The first event after `frame` in a column: the next drawing, or the cross/repeat/end that comes first.
+    function getSheetDirectiveNextDrawing(layer, frame) {
+      const events = [];
+      (layer.segments || []).forEach(function(seg){ if (seg.from > frame) events.push({ frame:seg.from, kind:seg.kind === 'cross' ? 'cross' : 'key', label:seg.label }); });
+      (layer.marks || []).forEach(function(m){ if (m.frame > frame && m.type !== 'dot') events.push({ frame:m.frame, kind:m.type }); });
+      events.sort(function(a, b){ return a.frame - b.frame; });
+      return events.length && events[0].kind === 'key' ? events[0] : null;
+    }
+
+    function analyzeCelTransfer(d, columns, totalFrames) {
+      const issues = [];
+      const from = columns.get(d.from), to = columns.get(d.to);
+      if (d.from === d.to) issues.push({ code:'same-column' });
+      [['from', d.from, from], ['to', d.to, to]].forEach(function(item){
+        if (!item[2]) issues.push({ code:'unknown-column', side:item[0], column:item[1] });
+        else if (item[2].length > 1) issues.push({ code:'ambiguous-column', side:item[0], column:item[1] });
+      });
+      if (d.frame < 2 || (totalFrames && d.frame > totalFrames)) issues.push({ code:'frame-out-of-range' });
+      const result = { anchor:null, receiving:null, inbetweens:[], sourceInbetweens:[], previewHold:null, issues:issues };
+      if (issues.length) return result;
+      const src = from[0], dst = to[0], f = d.frame;
+      const before = getSheetDirectiveCellState(src, f - 1);
+      const sending = before.state === 'key' || before.state === 'hold' || before.state === 'dot' ? before.label : '';
+      if (!sending) issues.push({ code:'nothing-to-send', state:before.state });
+      const at = getSheetDirectiveCellState(src, f);
+      if (d.whole && at.state !== 'cross') issues.push({ code:'missing-cross', state:at.state });
+      if (!d.whole && (at.state === 'cross' || at.state === 'empty')) issues.push({ code:'unexpected-cross', state:at.state });
+      const target = getSheetDirectiveCellState(dst, f);
+      if (target.state === 'key') {
+        result.anchor = 'key';
+        result.receiving = { frame:f, label:target.label };
+      } else if (target.state === 'dot' || target.state === 'dot-in-empty') {
+        // A dot sits between drawings; its earlier drawing may be the sender's, so only a later one is required.
+        result.anchor = 'dot';
+        const next = getSheetDirectiveNextDrawing(dst, f);
+        if (!next) issues.push({ code:'no-following-drawing' });
+        else {
+          result.receiving = { frame:next.frame, label:next.label };
+          result.inbetweens = getSheetDirectiveDots(dst, f, next.frame);
+        }
+      } else {
+        issues.push({ code:'target-not-drawing', state:target.state });
+      }
+      if (!d.whole) {
+        const nextOwn = at.state === 'key' ? { frame:f } : getSheetDirectiveNextDrawing(src, f);
+        result.sourceInbetweens = getSheetDirectiveDots(src, f, nextOwn ? nextOwn.frame : (totalFrames || f) + 1);
+      }
+      if (!issues.length && d.whole && result.anchor === 'dot') {
+        result.previewHold = { column:d.from, label:sending, from:f, to:result.receiving.frame - 1 };
+      }
+      return result;
+    }
+
+    // layers = parseCommandText() cell layers. Returns one entry per directive with issues (empty = ok) and the
+    // derived facts: anchor (dot/key), the receiving drawing, the inbetweens that must carry the moved content,
+    // the sender's inbetweens that must leave it out (part), and the preview hold of the sender (whole, dot anchor).
+    function analyzeSheetDirectives(layers, directives, totalFrames) {
+      const columns = new Map();
+      (layers || []).forEach(function(layer){
+        const name = String(layer.name || '').trim();
+        if (!columns.has(name)) columns.set(name, []);
+        columns.get(name).push(layer);
+      });
+      const seen = new Set();
+      return normalizeSheetDirectives(directives).map(function(d, index){
+        const key = JSON.stringify([d.kind, d.from, d.to, d.frame]);
+        const out = SHEET_DIRECTIVE_KINDS[d.kind].analyze(d, columns, totalFrames);
+        if (seen.has(key)) out.issues.push({ code:'duplicate-directive' });
+        seen.add(key);
+        return Object.assign({ index:index, directive:d, ok:!out.issues.length }, out);
+      });
+    }
+
+    // A duration cut removes the directives inside the cut range and moves later ones; an insert moves frames at or after it.
+    function shiftSheetDirectivesForShaku(list, fromFrame, frameCount, mode) {
+      return normalizeSheetDirectives(list).map(function(d){
+        if (mode === 'cut') {
+          if (d.frame >= fromFrame + frameCount) return Object.assign({}, d, { frame:d.frame - frameCount });
+          return d.frame >= fromFrame ? null : d;
+        }
+        return d.frame >= fromFrame ? Object.assign({}, d, { frame:d.frame + frameCount }) : d;
+      }).filter(Boolean);
+    }
+
+    // Agent CLI entry (tools/sheet_cli.cjs calls it by name in the page): the line grammar and the checks.
+    const SHEET_DIRECTIVE_AGENT_API = { parse:parseSheetDirectiveText, format:formatSheetDirectiveText, analyze:analyzeSheetDirectives };
+
+    function renameSheetDirectiveColumn(list, oldName, newName) {
+      return normalizeSheetDirectives(list).map(function(d){
+        const next = Object.assign({}, d);
+        SHEET_DIRECTIVE_KINDS[d.kind].columns.forEach(function(field){ if (next[field] === oldName) next[field] = newName; });
+        return next;
+      });
+    }
+
     // ══ 셀·동화 칸 수와 칸 라벨 (A/B/C ↔ 인덱스 · 동화는 델타 저장) ═══════════════════════════════════════════════════════════════════
     function clampCellColumnCount(value) {
       const parsed = Math.round(Number(value));
@@ -17436,6 +17618,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       updateDurationByFrameDelta(mode === 'cut' ? -frameCount : frameCount);
       state.markerOverrides = {};
       state.dotNotes = {};
+      state.sheetDirectives = shiftSheetDirectivesForShaku(state.sheetDirectives, fromFrame, frameCount, mode);
       // cameraPreviewStyles is remapped line-by-line inside rebuildManualBlockText, and cameraEndpointFr is keyed
       // by boundary label (which a duration edit does not rename), so neither is cleared here any more. Clearing
       // them reverted every conte-authored camera mark to the default triangle, and the snapshot did not carry
@@ -17861,6 +18044,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         if(!next||next===row.originalName)return;
         setBookNameOverride(row.bookNameKey,next,row.originalName);
         bookNamesChanged=true;
+      });
+      // Cell renames carry the sheet directives that name the column (セル移動 from/to).
+      rows.filter(function(row){return row.kind==='cell'&&row.lineIndex>=0&&row.name.trim()&&row.name.trim()!==row.originalName;}).forEach(function(row){
+        state.sheetDirectives=renameSheetDirectiveColumn(state.sheetDirectives,row.originalName,row.name.trim());
       });
       // Empty printed columns become commands only when explicitly renamed.
       rows.filter(function(row){return row.kind==='cell'&&row.lineIndex<0&&row.name!==row.originalName;}).forEach(function(row){
@@ -19854,6 +20041,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       renderDougaSheet(returnedBlock, params.originalEntries, state.dougaSheetData);
       renderDurationHoldExtensions(returnedBlock, params.originalEntries, params.layersById, params.durationFrame || 0);
       renderPreviewEndMarkers(returnedBlock, params.originalEntries, params.layersById);
+      renderSheetDirectiveArrows(returnedBlock, params.originalEntries, params.layersById);
       withDrawLayer('output', function(){
         const labelTempBlock = { blockX:params.blockX, blockW:params.blockW, originalColW:originalColW, originalAreaW:params.originalAreaW, originalEntriesCount:params.originalEntries.length, top:top, nameStripH:nameStripH, rowH:rowH, frameCount:frameCountForBox, start:params.startFrame };
         const labelArea = getCellLabelArea(labelTempBlock);
@@ -20036,6 +20224,55 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           const rowH = getOutputRowH(block, 'cell', endFrame);
           const node = text(getCellTextX(bounds.x1, bounds.x2), rowTop + rowH / 2, '止メ', cellOutputSize(8), getCellTextAnchor(), '800', '#111');
           node.setAttribute('pointer-events', 'none');
+        });
+      });
+    }
+
+    // セル移動 on the sheet: an arrow from the sender's frame-1 cell to the receiver's value (dot or number) at
+    // `frame`, plus the label 「Cセル / Aセルへ」 beside it. The start has no mark — a dot there reads as an inbetween.
+    // When frame-1 is in the previous block, the arrow starts at the top edge of this block's `frame` row.
+    // Live sheet and output share this through renderBlock.
+    function renderSheetDirectiveArrows(block, originalEntries, layersById) {
+      const list = normalizeSheetDirectives(state.sheetDirectives);
+      if (!block || !layersById || !list.length) return;
+      const columns = new Map();
+      (originalEntries || []).forEach(function(entry, columnIndex){
+        if (!entry || !entry.isActual || !layersById.has(entry.uid)) return;
+        const layer = layersById.get(entry.uid);
+        const name = String(layer && layer.name != null ? layer.name : entry.label || '').trim();
+        if (name && !columns.has(name)) columns.set(name, { index:columnIndex, layer:layer });
+      });
+      const cellArea = getCellArea(block), cellAreaRight = cellArea.x + cellArea.w;
+      withDrawLayer('output', function(){
+        list.forEach(function(d){
+          if (d.kind !== 'celTransfer' || d.frame < block.start || d.frame > block.end) return;
+          const from = columns.get(d.from), to = columns.get(d.to);
+          if (!from || !to || from === to) return;
+          const fromBounds = getOutputCellBounds(block, from.index), toBounds = getOutputCellBounds(block, to.index);
+          const rowTop = getOutputRowTop(block, d.frame, 'cell'), rowH = getOutputRowH(block, 'cell', d.frame);
+          const sx = (fromBounds.x1 + fromBounds.x2) / 2;
+          const sy = d.frame - 1 >= block.start ? getOutputRowTop(block, d.frame - 1, 'cell') + getOutputRowH(block, 'cell', d.frame - 1) / 2 : rowTop;
+          const cx = (toBounds.x1 + toBounds.x2) / 2, cy = rowTop + rowH / 2;
+          // Stop short of the value so the arrowhead never covers it: a dot is small, a number sits in a ring.
+          const target = getSheetDirectiveCellState(to.layer || {}, d.frame);
+          const gap = target.state === 'key' ? Math.min(toBounds.x2 - toBounds.x1, rowH) * 0.5 : 4;
+          const len = Math.hypot(cx - sx, cy - sy) || 1, ux = (cx - sx) / len, uy = (cy - sy) / len;
+          const ex = cx - ux * gap, ey = cy - uy * gap, head = Math.max(5, rowH * 0.32), width = 1.3;
+          line(sx, sy, ex, ey, '#111', width);
+          [0.45, -0.45].forEach(function(turn){
+            const cos = Math.cos(turn), sin = Math.sin(turn);
+            line(ex, ey, ex - head * (ux * cos - uy * sin), ey - head * (uy * cos + ux * sin), '#111', width);
+          });
+          // Label beside the arrow, above the target row: right of the two columns, or left of them when it would leave the cell area.
+          const size = cellOutputSize(9), lines = [d.from + 'セル', d.to + 'セルへ'];
+          const textW = Math.max.apply(null, lines.map(function(v){ return Array.from(v).length; })) * size;
+          const right = Math.max(fromBounds.x2, toBounds.x2) + 3, left = Math.min(fromBounds.x1, toBounds.x1) - 3;
+          const toRight = right + textW <= cellAreaRight || left - textW < cellArea.x;
+          const ly = Math.max(block.top + block.nameStripH + size * 0.6, rowTop - size * 1.7);
+          lines.forEach(function(value, i){
+            const node = text(toRight ? right : left, ly + i * size * 1.15, value, size, toRight ? 'start' : 'end', '600', '#111');
+            node.setAttribute('pointer-events', 'none');
+          });
         });
       });
     }
@@ -22861,7 +23098,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         cameraSeries:state.cameraSeries || [],
         dotOverrides:state.dotOverrides || {},
         dotNotes:state.dotNotes || {},
-        bookNames:state.bookNames || {}
+        bookNames:state.bookNames || {},
+        sheetDirectives:state.sheetDirectives || []
       };
     }
 
@@ -22894,6 +23132,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       state.dotOverrides = snap.dotOverrides && typeof snap.dotOverrides === 'object' ? cloneSheetData(snap.dotOverrides) : {};
       state.dotNotes = snap.dotNotes && typeof snap.dotNotes === 'object' ? cloneSheetData(snap.dotNotes) : {};
       state.bookNames = snap.bookNames && typeof snap.bookNames === 'object' ? cloneSheetData(snap.bookNames) : {};
+      state.sheetDirectives = normalizeSheetDirectives(snap.sheetDirectives);
     }
 
     function applyContentSnapshot(snap, options) {
@@ -26590,6 +26829,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const overrides = copy.overrides || {};
       ['markerOverrides','cameraPreviewStyles','cameraEndpointFr','dotOverrides','dotNotes','bookNames'].forEach(function(key){ record(overrides[key], 'overrides.' + key); });
       array(overrides.layerNameTags, 'overrides.layerNameTags', item);
+      array(overrides.sheetDirectives, 'overrides.sheetDirectives', item);
       array(overrides.cameraSeries, 'overrides.cameraSeries', function(series,path){ item(series,path); array(series.lines,path + '.lines',scalar); scalar(series.name,path + '.name'); });
       const memo = copy.memo || {};
       record(memo.pages,'memo.pages'); record(memo.textPages,'memo.textPages');
@@ -26609,7 +26849,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       array(copy.stages && copy.stages.list, 'stages.list', function(stage,path){
         item(stage,path); record(stage.content,path + '.content');
         const content = stage.content || {};
-        ['cellDisplayOrder','layerNameTags','cameraSeries'].forEach(function(key){ array(content[key],path + '.content.' + key, key === 'cellDisplayOrder' ? scalar : item); });
+        ['cellDisplayOrder','layerNameTags','cameraSeries','sheetDirectives'].forEach(function(key){ array(content[key],path + '.content.' + key, key === 'cellDisplayOrder' ? scalar : item); });
         ['header','markerOverrides','cameraPreviewStyles','cameraEndpointFr','dotOverrides','dotNotes','bookNames','dougaSheetData'].forEach(function(key){ record(content[key],path + '.content.' + key); });
       });
       return migrateCsvSettingsPayload(copy);
