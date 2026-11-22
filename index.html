@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-6F358KW73K"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -12,16 +11,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Auto Sheet</title>
-  <script id="autoSheetMaintenanceInstruction" type="application/json">
-    {
-      "priority": "highest-inside-html",
-      "instruction": "When ChatGPT updates this Auto Sheet Prototype HTML, update the in-program changelog only for changes that matter to real users: user-facing bug fixes, visible features, data compatibility, import/export behavior, or workflow changes. Omit internal maintenance, diagnostics, scoring cleanup, and refactors, or summarize them as \"Other fixes\" only when useful. Remove duplicates, cancelled items, and obsolete notes that no longer explain a current feature. Support English/Japanese/Korean/Chinese, and keep the changelog as an independent overlay layer that does not conflict with program functions."
-    }
-  </script>
   <style>
     :root {
-      /* UI chrome is monochrome except blue discovery guidance and red danger actions.
-         Sheet SVG colors use their own JS constants (RED/SHAKU_BLUE etc.). */
       --bg: #f5f5f2;
       --panel: #ffffff;
       --panel-2: #fcfcfb;
@@ -30,17 +21,16 @@
       --text: #1c1e22;
       --text-2: #3a3d44;
       --muted: #6e7480;
-      --faint: #a2a7b0;   /* syntax reminders under an input: present but quiet */
+      --faint: #a2a7b0;
       --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI Variable Text", "Segoe UI", Inter, "Hiragino Kaku Gothic ProN", "Yu Gothic UI", "Noto Sans JP", ui-sans-serif, system-ui, sans-serif;
       --red: #c7402d;
       --ui-guide: #175bb5;
       --ink-active: #23262b;
       --focus-ring: rgba(28, 30, 34, .32);
-      /* UI contract: role sizes only. Sheet SVG and direct-edit handles keep their own units. */
       --ui-h-toolbar: 24px;
       --ui-h-control: 24px;
       --ui-h-action: 28px;
-      --ui-h-line-control: 20px; /* maximum for a control attached to a text line */
+      --ui-h-line-control: 20px;
       --ui-fs-micro: 10px;
       --ui-fs-help: 11px;
       --ui-fs-body: 12px;
@@ -49,10 +39,10 @@
       --ui-gap-sm: 4px;
       --ui-gap: 8px;
       --ui-gap-lg: 12px;
-      --ui-panel-pad: 8px;      /* side panel edge */
-      --ui-card-pad: 8px 10px;  /* inside a section box */
-      --ui-card-gap: 6px;       /* between section boxes */
-      --ui-stack-gap: 6px;    /* between rows inside a card */
+      --ui-panel-pad: 8px;
+      --ui-card-pad: 8px 10px;
+      --ui-card-gap: 6px;
+      --ui-stack-gap: 6px;
       --ui-pad-control: 10px;
       --ui-pad-compact: 6px;
       --ui-pad-dialog: 16px;
@@ -67,8 +57,6 @@
       --r-grp: 11px;
       --r-card: 10px;
       --sh-card: 0 1px 2px rgba(28, 30, 34, .05);
-      /* 사이드바·오른쪽 탭 너비. 드래그·접기는 이 두 값만 바꾼다 — 실제 트랙 폭(.app)과
-         토글 버튼·리사이즈 손잡이 위치(전부 fixed)가 전부 여기서 갈라져 나간다. */
       --sidebar-w: 500px;
       --rightpanel-w: 420px;
     }
@@ -2347,9 +2335,6 @@
   <script>
     const PAGE_W = 1753;
     const PAGE_H = 2480;
-    // 블록 하나(원화/대사/카메라 칸)의 세로 구성 — renderBlock 이 그리는 실측값. 7곳에서 리터럴로
-    // 따로 하드코딩돼 있던 걸 여기 하나로 모았다(2026-08-02). renderBlock 자체는 params.offsetY(항상 0)
-    // 만큼 top 을 밀 수 있게 돼 있었지만 실제로 그 값을 넣는 호출부가 없어 지금은 항상 이 상수와 같다.
     const SHEET_BLOCK_TOP = 450;
     const SHEET_BLOCK_NAME_STRIP_H = 44;
     const SHEET_BLOCK_BODY_H = 1912;
@@ -2359,17 +2344,11 @@
     const SHEET_ZOOM_MAX = 4;
     const SHEET_ZOOM_BUTTON_FACTOR = 1.12;
     const CELL_LONG_PRESS_MOVE_TOLERANCE = 4;
-    // 셀 마커(○·△) 표기. 선을 얇게 하고 반투명으로 둬, 숫자와 겹쳐도 숫자가 읽히게 한다 —
-    // 3자리 숫자는 삼각형 안에 기하학적으로 들어가지 않으므로(2026-08-08 실측) 겹침을 없애는
-    // 대신 방해를 줄이는 쪽을 택했다. 숫자 크기·자간은 건드리지 않는다.
-    const CELL_MARKER_STROKE = 0.8;          // 이전 1.1
+    const CELL_MARKER_STROKE = 0.8;
     const CELL_MARKER_OPACITY = 0.5;
-    // 삼각형은 **밑변 위치를 그대로 두고** 좌우와 꼭짓점만 넓힌다. 밑변을 내리면 삼각형이 길어져
-    // 숫자가 놓이는 높이가 상대적으로 위쪽(좁은 쪽)이 되어 오히려 좁아진다.
-    const CELL_MARKER_TRI_SIDE_PAD = 1;      // 좌우 여백 (이전에는 markerPad 와 같은 4)
-    const CELL_MARKER_TRI_APEX_RISE = 1;     // 꼭짓점을 셀 위로 빼는 양 (윗칸 ○ 와 1.1 여유)
+    const CELL_MARKER_TRI_SIDE_PAD = 1;
+    const CELL_MARKER_TRI_APEX_RISE = 1;
     const SHAKU_BLUE = '#1f6feb';
-    // 尺 바깥 구간을 덮는 흰색의 진하기. 0 이면 표시 없음, 1 이면 완전히 가려진다.
     const PAST_DURATION_DIM_OPACITY = 0.62;
     const SHAKU_FLASH_DURATION_MS = 6000;
     const SHAKU_FLASH_FADE_MS = 650;
@@ -2386,18 +2365,14 @@
       '0+01 | 1+00 | BG1 | OL | BG2'
     ].join('\n');
     const CAMERA_DIRECTIVE_COMPLETION_OPTIONS = ['▲', '-', 'FI', 'FO', 'OL'];
-    // A run of this many connected camera segments is one long continuous camera work, and ▲ marks a single
-    // instant: allowing it there would split the 持続線 that has to read as one move (see
-    // splitsConnectedStartMark). At that length the centre line is forced and ▲ leaves the dropdown.
     const CAMERA_GROUPED_RUN_MIN = 3;
     const CAMERA_TARGET_SHAPE_DIRECTIVE_SET = new Set(['FI', 'FO', 'OL']);
     const MAX_CELL_COLUMN_PLACEMENT_COUNT = 32;
-    // Sheet cell text scale (preview and export). The cell box caps it, so the range stays narrow.
     const CELL_TEXT_SCALE = { min:1, max:1.75, step:0.05, base:1.15 };
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '1027';
+    const APP_VERSION = '1028';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
