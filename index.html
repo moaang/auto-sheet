@@ -12,14 +12,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Auto Sheet</title>
-  <!--
-    AUTO SHEET PROTOTYPE · MAINTENANCE INSTRUCTION FOR CHATGPT
-    This instruction has the highest priority inside this HTML when ChatGPT is asked to update the program.
-    Every time this HTML is modified, update the in-program update history / changelog only when the change matters to real users.
-    The changelog must prioritize actual user-facing fixes, visible feature changes, data compatibility, import/export behavior, and workflow changes. Internal maintenance, scoring cleanup, diagnostics, refactors, and small implementation-only changes should be omitted or folded into a short "Other fixes" note when useful.
-    Remove cancelled items, duplicate notes, and obsolete notes that no longer explain a current feature. Keep the visible changelog concise and available in all supported UI languages: English, Japanese, Korean, and Chinese.
-    The changelog UI must work as an independent overlay layer and must not interfere with sheet preview, memo, position editing, CSV import, export, or text editing.
-  -->
   <script id="autoSheetMaintenanceInstruction" type="application/json">
     {
       "priority": "highest-inside-html",
@@ -2405,21 +2397,15 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '1026';
+    const APP_VERSION = '1027';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
-    // ══ 용지 지문 ① 회사별 헤더 템플릿 지문 테이블 · 매칭 임계값  (아래 textMemoMeasureCanvas 한 줄은 남의 것) ═════════════════════
+    // ══ 용지 지문 ① 회사별 헤더 템플릿 지문 테이블 · 매칭 임계값 ═════════════════════
     const PAPER_HEADER_TEMPLATE_KNOWN_MIN_SCORE = 0.84;
     const PAPER_HEADER_TEMPLATE_LIKELY_MIN_SCORE = 0.76;
     const PAPER_HEADER_TEMPLATE_KNOWN_MIN_SEPARATION = 0.08;
     const PAPER_HEADER_TEMPLATE_LIKELY_MIN_SEPARATION = 0.045;
-    let textMemoMeasureCanvas = null;
-    // ver874: 幅の実測(canvas measureText)は同じ文字列で何度も呼ばれる — 一文字打つたびに全行・全書式
-    //   セグメントを測り直していたので、テキスト編集がもたついていた。文字列＋サイズをキーに憶える。
-    //   フォントは '600 <size>px Arial…' 固定なので、この二つでキーは足りる。
-    const textMemoWidthCache = new Map();
-    const TEXT_MEMO_WIDTH_CACHE_MAX = 4000;
     const PAPER_HEADER_TEMPLATE_FINGERPRINTS = [
       { company:'8bit', top:0.0363, h:0.0440, split:1, splitRatio:0.330, x:[0.001,0.103,0.365,0.436,0.513,0.603,0.698,0.775,0.890,0.921,0.943,0.963,0.975,0.999] },
       { company:'a1', top:0.0266, h:0.0484, split:1, splitRatio:0.642, x:[0.016,0.026,0.036,0.057,0.087,0.138,0.192,0.242,0.294,0.346,0.398,0.449,0.501,0.552,0.603,0.615,0.622,0.655,0.724,0.843,0.886,0.896,0.948,0.999] },
@@ -3760,6 +3746,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver1027", "Keep the latest file’s status", ["If you open another project while a cut folder is being read or its sheet is being selected, the status now stays with the project you opened."]],
         ["ver1026", "Cel transfer follows the sheet more strictly", ["A cel transfer can no longer start from an inbetween (its mark or the frames holding it): the moving part has to start from a key or its hold.", "If the sending cel keeps moving at that frame, only a part can be split off, so nothing is asked. Moving an all-move arrow takes its × along, and switching an arrow to a part lifts the ×.", "A cel whose last frames are left blank in the command still counts as held to the end of the cut."]],
         ["ver1025", "Draw cel transfers on the sheet", ["Turn on Cel transfer in the edit tools beside the sheet and drag from the sending cel to the receiving cel’s inbetween mark or number. If the sending cel is not already × there, choose to move everything (adds ×) or split off a part.", "Drag an arrow to move its end; right-click it to switch or delete it. Each change undoes in one step."]],
         ["ver1024", "Cel transfer arrows", ["Sheets now draw a cel transfer (「Cセル Aセルへ」): an arrow from the sending cel's last frame to the receiving cel's inbetween dot or drawing number, with the label beside it.", "Work files keep these instructions. Creating them on the sheet itself comes in a later version."]],
@@ -3925,6 +3912,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "Camera marks, continuation lines and merged memos", ["Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.", "The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.", "The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.", "When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.", "Camera works that connect end to end now become a single memo line, for example \"・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr\"."]],
       ],
       ja: [
+        ["ver1027", "最後に開いた作業の結果を表示", ["カットフォルダーの読み込み中やシート選択中に別の作業を開いても、その作業の読み込み結果が表示され続けます。"]],
         ["ver1026", "セル移動の判定をシートどおりに", ["中割（記号とそれを止めているコマ）からはセル移動を始められなくなりました。移る部分は原画かその止めから始まります。", "送るセルがそのコマでも動いているときは一部だけ分けるので、選択を聞きません。すべて移す矢印を動かすと×も一緒に動き、一部に切り替えると×を外します。", "コマンドで末尾を省いたセルも、尺の終わりまで止めているものとして判定します。"]],
         ["ver1025", "セル移動をシート上で作成", ["シート横の編集ツールでセル移動をオンにし、送るセルから受けるセルの中割記号か番号へドラッグします。送るセルがそのコマで×でなければ、すべて移す（×を入れる）か一部だけ分けるかを選びます。", "矢印をドラッグすると先端を移動、右クリックで切り替え・削除できます。変更はそれぞれ1回で元に戻せます。"]],
         ["ver1024", "セル移動の矢印", ["シートにセル移動（「Cセル Aセルへ」）を描くようになりました。送る側のセルの直前のコマから、受ける側のセルの中割点または番号へ矢印を引き、横に表記を添えます。", "作業ファイルはこの指示を保存します。シート上で作る操作は今後の版で追加します。"]],
@@ -4090,6 +4078,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "カメラ記号・持続線・メモの連結", ["設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。", "設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。", "つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。", "マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。", "端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。"]],
       ],
       ko: [
+        ["ver1027", "마지막으로 연 작업의 결과 표시", ["컷 폴더를 읽거나 폴더 안에서 시트를 고르는 중에 다른 작업을 열면, 나중에 연 작업의 불러오기 결과가 화면에 남습니다."]],
         ["ver1026", "셀 이관 판정을 시트대로", ["동화(동화 기호와 그 그림을 유지하는 칸)에서는 셀 이관을 시작할 수 없습니다. 넘어가는 부분은 원화나 그 유지에서 시작합니다.", "보내는 셀이 그 칸에서도 움직이면 일부만 떼어내므로 묻지 않습니다. 전부 넘기는 화살표를 옮기면 ×도 따라가고, 일부로 바꾸면 ×를 걷습니다.", "명령에서 끝을 생략한 셀도 尺 끝까지 유지하는 것으로 판정합니다."]],
         ["ver1025", "시트에서 셀 이관 만들기", ["시트 옆 편집 도구에서 셀 이관을 켜고, 보내는 셀에서 받는 셀의 동화 기호나 번호로 끕니다. 보내는 셀이 그 칸에서 ×가 아니면 전부 넘김(× 넣음)과 일부만 떼어냄 중에서 고릅니다.", "화살표를 끌면 끝을 옮기고, 우클릭하면 바꾸거나 지울 수 있습니다. 바꿀 때마다 되돌리기 한 번으로 돌아갑니다."]],
         ["ver1024", "셀 이관 화살표", ["시트에 셀 이관(「Cセル Aセルへ」)을 그립니다. 보내는 셀의 직전 칸에서 받는 셀의 동화점이나 번호로 화살표를 긋고 옆에 표기를 붙입니다.", "작업 파일에 이 지시가 저장됩니다. 시트에서 직접 만드는 조작은 다음 판에 더합니다."]],
@@ -4255,6 +4244,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "카메라 표식·지속선·메모 연결", ["설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.", "설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. \"카메라→메모\"를 누를 필요가 없습니다.", "이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.", "표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.", "끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: \"・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr\")."]],
       ],
       zh: [
+        ["ver1027", "保留最近打开的作业状态", ["读取镜头文件夹或选择其中的摄影表时，如果打开另一份作业，界面会保留这份作业的读取结果。"]],
         ["ver1026", "图层转移按摄影表更严格判定", ["不能再从中间画（标记及保持该画的格）开始图层转移，转移的部分须从原画或其保持开始。", "转出图层在该格仍在动时只能分出一部分，因此不再询问。移动全部转移的箭头时×随之移动，切换为部分转移时去掉×。", "命令中省略末尾的图层也按保持到时长结束来判定。"]],
         ["ver1025", "在摄影表上创建图层转移", ["在表格旁的编辑工具中打开图层转移，从转出图层拖到接收图层的中间画标记或编号。若转出图层在该格不是×，可选择全部转移（加入×）或只分出一部分。", "拖动箭头可移动其终点，右键点击可切换或删除。每次更改都可一步撤销。"]],
         ["ver1024", "图层转移箭头", ["摄影表现在会绘制图层转移（「Cセル Aセルへ」）：从转出图层的前一格画箭头，指向接收图层的中间画标记或编号，并在旁边标注。", "工作文件会保存这些指示。在摄影表上直接创建的操作将在之后的版本加入。"]],
@@ -6369,18 +6359,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     function updateCommandSegmentLabelByUid(uid, frame, nextLabel) {
       const textarea = getCommandTextarea();
       if (!textarea) return;
-      const lines = String(getCommandTextValue(textarea) || '').replace(/\r/g, '').split('\n');
-      const lineIndex = findCommandLineIndexByUid(lines, uid);
-      if (lineIndex === -1) return;
-      const colonIndex = lines[lineIndex].indexOf(':');
-      if (colonIndex === -1) return;
-      const namePart = lines[lineIndex].slice(0, colonIndex + 1);
-      const tokens = lines[lineIndex].slice(colonIndex + 1).trim().split(/\s+/).filter(Boolean);
-      const idx = Math.max(0, Number(frame || 1) - 1);
-      setCommandLabelAtFrame(tokens, idx, nextLabel);
-      clearCellFrameTransientOverrides({ uid:uid }, frame);
-      lines[lineIndex] = tokens.length ? (namePart + ' ' + tokens.join(' ')) : namePart;
-      setCommandTextValue(textarea, lines.join('\n'));
+      const lines = getCommandTextValue(textarea).replace(/\r/g, '').split('\n');
+      const info = readCommandLineInfo(textarea, lines, findCommandLineIndexByUid(lines, uid));
+      if (!info) return;
+      setCommandLabelAtFrame(info.tokens, Math.max(0, Number(frame || 1) - 1), nextLabel);
+      writeCommandFrameEdit(info, {uid}, frame, false);
     }
 
     function getCommandTextarea() {
@@ -6424,64 +6407,42 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return entry._createdLineIndex;
     }
 
-    function updateCommandFrameTokenByEntry(entry, frame, nextLabel) {
-      const textarea = getCommandTextarea();
-      if (!textarea || !entry) return;
-      const lines = String(getCommandTextValue(textarea) || '').replace(/\r/g, '').split('\n');
-      const lineIndex = findOrCreateCommandLineForEntry(lines, entry);
-      if (lineIndex === -1) return;
-      const colonIndex = lines[lineIndex].indexOf(':');
-      const namePart = colonIndex === -1 ? ((String(entry.label || '').trim() || 'A') + ':') : lines[lineIndex].slice(0, colonIndex + 1);
-      const bodyPart = colonIndex === -1 ? '' : lines[lineIndex].slice(colonIndex + 1).trim();
-      const tokens = bodyPart ? bodyPart.split(/\s+/).filter(Boolean) : [];
-      const idx = Math.max(0, Number(frame || 1) - 1);
-      setCommandLabelAtFrame(tokens, idx, nextLabel);
-      clearCellFrameTransientOverrides(entry, frame);
-      lines[lineIndex] = tokens.length ? (namePart + ' ' + tokens.join(' ')) : namePart;
-      setCommandTextValue(textarea, lines.join('\n'));
+    function readCommandLineInfo(textarea, lines, lineIndex, fallbackName) {
+      if (lineIndex < 0) return null;
+      const line = lines[lineIndex];
+      const colon = line.indexOf(':');
+      if (colon < 0 && !fallbackName) return null;
+      const namePart = colon < 0 ? fallbackName + ':' : line.slice(0, colon + 1);
+      const text = colon < 0 ? '' : line.slice(colon + 1).trim();
+      return { textarea, lines, lineIndex, namePart, tokens:text ? text.split(/\s+/) : [] };
     }
 
-    function updateCommandFrameTokenPreserveCrossByEntry(entry, frame, nextLabel) {
-      const textarea = getCommandTextarea();
-      if (!textarea || !entry) return;
-      const token = sanitizeCommandToken(nextLabel);
-      const lines = String(getCommandTextValue(textarea) || '').replace(/\r/g, '').split('\n');
-      const lineIndex = findOrCreateCommandLineForEntry(lines, entry);
-      if (lineIndex === -1) return;
-      const colonIndex = lines[lineIndex].indexOf(':');
-      const namePart = colonIndex === -1 ? ((String(entry.label || '').trim() || 'A') + ':') : lines[lineIndex].slice(0, colonIndex + 1);
-      const bodyPart = colonIndex === -1 ? '' : lines[lineIndex].slice(colonIndex + 1).trim();
-      const tokens = bodyPart ? bodyPart.split(/\s+/).filter(Boolean) : [];
-      const idx = Math.max(0, Number(frame || 1) - 1);
-      if (!token) {
-        setCommandLabelAtFrame(tokens, idx, nextLabel);
-      } else {
-        while (tokens.length <= idx) tokens.push('n');
-        tokens[idx] = token;
-      }
+    function writeCommandFrameEdit(info, entry, frame, trimFillers) {
       clearCellFrameTransientOverrides(entry, frame);
-      trimTrailingCommandFillers(tokens);
-      lines[lineIndex] = tokens.length ? (namePart + ' ' + tokens.join(' ')) : namePart;
-      setCommandTextValue(textarea, lines.join('\n'));
+      writeCommandLineInfo(info, trimFillers);
+    }
+
+    function updateCommandFrameTokenByEntry(entry, frame, nextLabel, preserveCross = false) {
+      const info = getCommandLineInfoForEntry(entry, true, getCommandTextValue('text'));
+      if (!info) return;
+      const index = Math.max(0, Number(frame || 1) - 1);
+      const replacement = preserveCross && sanitizeCommandToken(nextLabel);
+      if (replacement) {
+        while (info.tokens.length <= index) info.tokens.push('n');
+        info.tokens[index] = replacement;
+      } else {
+        setCommandLabelAtFrame(info.tokens, index, nextLabel);
+      }
+      writeCommandFrameEdit(info, entry, frame, preserveCross);
     }
 
     function setCommandRawTokenByEntry(entry, frame, rawToken) {
-      const textarea = getCommandTextarea();
-      if (!textarea || !entry) return false;
-      const lines = String(getCommandTextValue(textarea) || '').replace(/\r/g, '').split('\n');
-      const lineIndex = findOrCreateCommandLineForEntry(lines, entry);
-      if (lineIndex === -1) return false;
-      const colonIndex = lines[lineIndex].indexOf(':');
-      const namePart = colonIndex === -1 ? ((String(entry.label || '').trim() || 'A') + ':') : lines[lineIndex].slice(0, colonIndex + 1);
-      const bodyPart = colonIndex === -1 ? '' : lines[lineIndex].slice(colonIndex + 1).trim();
-      const tokens = bodyPart ? bodyPart.split(/\s+/).filter(Boolean) : [];
-      const idx = Math.max(0, Number(frame || 1) - 1);
-      while (tokens.length <= idx) tokens.push('n');
-      tokens[idx] = String(rawToken || '_');
-      clearCellFrameTransientOverrides(entry, frame);
-      trimTrailingCommandFillers(tokens);
-      lines[lineIndex] = tokens.length ? (namePart + ' ' + tokens.join(' ')) : namePart;
-      setCommandTextValue(textarea, lines.join('\n'));
+      const info = getCommandLineInfoForEntry(entry, true, getCommandTextValue('text'));
+      if (!info) return false;
+      const index = Math.max(0, Number(frame || 1) - 1);
+      while (info.tokens.length <= index) info.tokens.push('n');
+      info.tokens[index] = String(rawToken || '_');
+      writeCommandFrameEdit(info, entry, frame, true);
       return true;
     }
 
@@ -9408,14 +9369,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return Math.round((Number(value) || 0) * scale) / scale;
     }
 
-    function isPaperAutoAlignContinuousSlashInfo(slashInfo) {
-      const runRatio = Number(slashInfo && slashInfo.runRatio || 0);
-      const continuityRatio = Number(slashInfo && slashInfo.continuityRatio || 0);
-      return runRatio >= 0.18 || (runRatio >= 0.13 && continuityRatio >= 0.42);
-    }
-
-    function hasPaperAutoAlignDiagonalStrokeEvidence(slashInfo) {
-      if (!slashInfo || !isPaperAutoAlignContinuousSlashInfo(slashInfo)) return false;
+    function getPaperAutoAlignDiagonalStroke(slashInfo) {
+      if (!slashInfo) return null;
       const score = Number(slashInfo.score || 0);
       const cornerScore = Number(slashInfo.cornerScore || 0);
       const centerScore = Number(slashInfo.centerScore || 0);
@@ -9431,13 +9386,18 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         continuityRatio >= 0.58 &&
         runCount <= 5;
       const cleanLine = offRatio <= hitRatio * 1.35 + 0.035;
-      if (!compactLine || !cleanLine) return false;
-      if (runCount > 4 && continuityRatio < 0.72 && fragmentPenalty > 6) return false;
+      if (!compactLine || !cleanLine) return null;
+      if (runCount > 4 && continuityRatio < 0.72 && fragmentPenalty > 6) return null;
       const cornerStroke = cornerScore > 118 && edgeTouchScore >= 96;
       const centerStroke = centerScore > 70 && hitRatio > 0.13;
       const scoredStroke = score > 72 && hitRatio >= 0.14;
       const continuousStroke = runRatio >= 0.24 && continuityRatio >= 0.72;
-      return cornerStroke || centerStroke || scoredStroke || continuousStroke;
+      if (!(cornerStroke || centerStroke || scoredStroke || continuousStroke)) return null;
+      return {
+        cornerConnected:cornerStroke,
+        headerCenterSlash:centerScore > 70 && hitRatio > 0.14,
+        pageCenterSlash:centerScore > 58 && hitRatio > 0.12
+      };
     }
 
     function makePaperAutoAlignHeaderDiagonalDetection(interval, slashInfo, source, inputY, inputH) {
@@ -9456,11 +9416,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const fragmentPenalty = Number(slashInfo.fragmentPenalty || 0);
       if (!slashInfo.mode) return null;
       if (score < 8 && cornerScore < 18 && centerScore < 14 && hitRatio < 0.035) return null;
-      const strokeEvidence = hasPaperAutoAlignDiagonalStrokeEvidence(slashInfo);
-      if (!strokeEvidence) return null;
-      const continuousEnough = isPaperAutoAlignContinuousSlashInfo(slashInfo);
-      const inferredCornerConnected = cornerScore > 118 && edgeTouchScore >= 96 && continuousEnough;
-      const inferredCenterSlash = centerScore > 70 && hitRatio > 0.14 && continuousEnough;
+      const stroke = getPaperAutoAlignDiagonalStroke(slashInfo);
+      if (!stroke) return null;
       return {
         source:source || 'header-cell',
         index:Number.isFinite(Number(interval.index)) ? Number(interval.index) : -1,
@@ -9482,9 +9439,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         runCount:roundPaperAutoAlignValue(runCount, 0),
         fragmentPenalty:roundPaperAutoAlignValue(fragmentPenalty, 1),
         mode:slashInfo.mode || '',
-        strokeEvidence:strokeEvidence,
-        cornerConnected:!!slashInfo.cornerConnected || inferredCornerConnected,
-        centerSlash:!!slashInfo.centerSlash || inferredCenterSlash,
+        strokeEvidence:true,
+        cornerConnected:!!slashInfo.cornerConnected || stroke.cornerConnected,
+        centerSlash:!!slashInfo.centerSlash || stroke.headerCenterSlash,
         selected:false
       };
     }
@@ -9495,10 +9452,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const left = interval.left, right = interval.right, w = right - left;
       const rightBias = (left - range.left) / range.width;
       const rightEdgeBias = (right - range.left) / range.width;
-      const continuousEnough = isPaperAutoAlignContinuousSlashInfo(slashInfo);
-      const strokeEvidence = hasPaperAutoAlignDiagonalStrokeEvidence(slashInfo);
-      const cornerConnected = strokeEvidence && Number(slashInfo.cornerScore || 0) > 118 && Number(slashInfo.edgeTouchScore || 0) >= 96 && continuousEnough;
-      const centerSlash = strokeEvidence && Number(slashInfo.centerScore || 0) > 58 && Number(slashInfo.hitRatio || 0) > 0.12 && continuousEnough;
+      const stroke = getPaperAutoAlignDiagonalStroke(slashInfo);
+      if (!stroke) return null;
+      const {cornerConnected, pageCenterSlash:centerSlash} = stroke;
       let score = Number(slashInfo.score || 0) + rightBias * 38 + rightEdgeBias * 34 + rightEdgeBias * rightEdgeBias * 92 - Math.max(0, w - 230) * 0.10 - Math.max(0, 46 - w) * 0.70;
       if (right < range.right - range.width * 0.30) score -= 170;
       if (right < range.right - range.width * 0.18) score -= 62;
@@ -9506,8 +9462,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (right > range.right - range.width * 0.18) score += 34;
       if (cornerConnected && right > range.right - range.width * 0.20) score += 82;
       if (centerSlash) score += 36;
-      if (strokeEvidence && (Number(slashInfo.score || 0) > 42 || cornerConnected || centerSlash)) {
-        return { left:left, right:right, interval:interval, score:score, slashScore:Number(slashInfo.score || 0), rawScore:Number(slashInfo.rawScore || 0), cornerScore:Number(slashInfo.cornerScore || 0), centerScore:Number(slashInfo.centerScore || 0), edgeTouchScore:Number(slashInfo.edgeTouchScore || 0), hitRatio:Number(slashInfo.hitRatio || 0), offRatio:Number(slashInfo.offRatio || 0), runRatio:Number(slashInfo.runRatio || 0), continuityRatio:Number(slashInfo.continuityRatio || 0), runCount:Number(slashInfo.runCount || 0), fragmentPenalty:Number(slashInfo.fragmentPenalty || 0), strokeEvidence:strokeEvidence, cornerConnected:cornerConnected, centerSlash:centerSlash, mode:slashInfo.mode || '' };
+      if (Number(slashInfo.score || 0) > 42 || cornerConnected || centerSlash) {
+        return { left:left, right:right, interval:interval, score:score, slashScore:Number(slashInfo.score || 0), rawScore:Number(slashInfo.rawScore || 0), cornerScore:Number(slashInfo.cornerScore || 0), centerScore:Number(slashInfo.centerScore || 0), edgeTouchScore:Number(slashInfo.edgeTouchScore || 0), hitRatio:Number(slashInfo.hitRatio || 0), offRatio:Number(slashInfo.offRatio || 0), runRatio:Number(slashInfo.runRatio || 0), continuityRatio:Number(slashInfo.continuityRatio || 0), runCount:Number(slashInfo.runCount || 0), fragmentPenalty:Number(slashInfo.fragmentPenalty || 0), strokeEvidence:true, cornerConnected:cornerConnected, centerSlash:centerSlash, mode:slashInfo.mode || '' };
       }
       return null;
     }
@@ -9978,7 +9934,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           const cornerScore = Number(slash && slash.cornerScore || 0);
           const centerScore = Number(slash && slash.centerScore || 0);
           const hitRatio = Number(slash && slash.hitRatio || 0);
-          const pageLikeSlash = hasPaperAutoAlignDiagonalStrokeEvidence(slash) &&
+          const pageLikeSlash = !!getPaperAutoAlignDiagonalStroke(slash) &&
             (slashScore >= 58 || cornerScore >= 118 || (centerScore >= 60 && hitRatio >= 0.10));
           if (!pageLikeSlash) return;
           const rightBias = (breakX - headerLeft) / Math.max(1, headerRight - headerLeft);
@@ -11004,28 +10960,26 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
               const edgeScore = Number(slashInfo.edgeTouchScore || 0);
               const runRatio = Number(slashInfo.runRatio || 0);
               const continuityRatio = Number(slashInfo.continuityRatio || 0);
-              const continuousEnough = isPaperAutoAlignContinuousSlashInfo(slashInfo);
-              const strokeEvidence = hasPaperAutoAlignDiagonalStrokeEvidence(slashInfo);
               if (durationPlus && left <= durationPlus.x + Math.max(24, headerWidth * 0.025)) continue;
               if (slashRightLimit - right < 30 && width <= 90) continue;
               // 매수 사선은 한 칸 안에 있다. 칸 경계를 가로지른 창은 세로선과 글자를 사선으로 읽는다(MAD: 시트·촬영 사이 이중선과 「枚目」).
               if (headerLines.some(function(x){ return x > left + 4 && x < right - 4; })) continue;
-              if (!strokeEvidence) continue;
+              const stroke = getPaperAutoAlignDiagonalStroke(slashInfo);
+              if (!stroke) continue;
               if (overlapRatio < 0.16 && cornerScore < 240 && centerScore < 120) continue;
               if (rawScore < 88 && cornerScore < 118 && centerScore < 72) continue;
               const rightEdgeBias = (right - slashLeftLimit) / slashWidth;
-              const cornerConnected = strokeEvidence && cornerScore > 118 && edgeScore >= 96 && continuousEnough;
-              const centerSlash = strokeEvidence && centerScore > 70 && Number(slashInfo.hitRatio || 0) > 0.14 && continuousEnough;
+              const {cornerConnected, headerCenterSlash:centerSlash} = stroke;
               let score = rawScore + rightEdgeBias * 44 + rightEdgeBias * rightEdgeBias * 86 + overlapRatio * 82;
               if (right < slashRightLimit - slashWidth * 0.30) score -= 160;
               if (right < slashRightLimit - slashWidth * 0.18) score -= 56;
               if (cornerConnected) score += 54;
               if (centerSlash) score += 28;
               if (right > slashRightLimit - slashWidth * 0.20 && cornerConnected) score += 26;
-              const candidate = { left:left, right:right, score:score, slashScore:rawScore, rawScore:Number(slashInfo.rawScore || rawScore), cornerScore:cornerScore, centerScore:centerScore, edgeTouchScore:edgeScore, hitRatio:Number(slashInfo.hitRatio || 0), offRatio:Number(slashInfo.offRatio || 0), runRatio:runRatio, continuityRatio:continuityRatio, runCount:Number(slashInfo.runCount || 0), fragmentPenalty:Number(slashInfo.fragmentPenalty || 0), strokeEvidence:strokeEvidence, cornerConnected:cornerConnected, centerSlash:centerSlash, mode:slashInfo.mode || 'sliding' };
+              const candidate = { left:left, right:right, score:score, slashScore:rawScore, rawScore:Number(slashInfo.rawScore || rawScore), cornerScore:cornerScore, centerScore:centerScore, edgeTouchScore:edgeScore, hitRatio:Number(slashInfo.hitRatio || 0), offRatio:Number(slashInfo.offRatio || 0), runRatio:runRatio, continuityRatio:continuityRatio, runCount:Number(slashInfo.runCount || 0), fragmentPenalty:Number(slashInfo.fragmentPenalty || 0), strokeEvidence:true, cornerConnected:cornerConnected, centerSlash:centerSlash, mode:slashInfo.mode || 'sliding' };
               addHeaderDiagonalDetection(candidate, Object.assign({}, slashInfo, {
                 score:rawScore,
-                strokeEvidence:strokeEvidence,
+                strokeEvidence:true,
                 cornerConnected:cornerConnected,
                 centerSlash:centerSlash,
                 mode:(slashInfo.mode || 'sliding') + ':scan'
@@ -11040,8 +10994,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
             selectedSlash = bestSlidingSlash;
             if (containing) {
               const fullIntervalSlashInfo = getIntervalSlashInfo(containing);
-              const fullIntervalHasStroke = hasPaperAutoAlignDiagonalStrokeEvidence(fullIntervalSlashInfo);
-              if (fullIntervalHasStroke) {
+              if (getPaperAutoAlignDiagonalStroke(fullIntervalSlashInfo)) {
                 selectedSlash = Object.assign({}, bestSlidingSlash, {
                   left:containing.left,
                   right:containing.right,
@@ -12840,8 +12793,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       openInlineTextEditor(hitNode, {
         get:function(){ return initialValue == null ? '' : String(initialValue); },
         set:function(v){
-          if (preserveCross) updateCommandFrameTokenPreserveCrossByEntry(entry, absFrame, v);
-          else updateCommandFrameTokenByEntry(entry, absFrame, v);
+          updateCommandFrameTokenByEntry(entry, absFrame, v, preserveCross);
         }
       }, event);
     }
@@ -14712,17 +14664,12 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       requestRender({ syncCommandText:true });
     }
 
-    function getCommandLineInfoForEntry(entry, createIfMissing) {
+    function getCommandLineInfoForEntry(entry, createIfMissing, commandText) {
       const textarea = getCommandTextarea();
       if (!textarea || !entry) return null;
-      const lines = String(textarea.value || '').replace(/\r/g, '').split('\n');
+      const lines = String(commandText === undefined ? textarea.value : commandText).replace(/\r/g, '').split('\n');
       const lineIndex = createIfMissing ? findOrCreateCommandLineForEntry(lines, entry) : findCommandLineIndexForEntry(lines, entry);
-      if (lineIndex === -1) return null;
-      const colonIndex = lines[lineIndex].indexOf(':');
-      const namePart = colonIndex === -1 ? ((String(entry.label || '').trim() || 'A') + ':') : lines[lineIndex].slice(0, colonIndex + 1);
-      const bodyPart = colonIndex === -1 ? '' : lines[lineIndex].slice(colonIndex + 1).trim();
-      const tokens = bodyPart ? bodyPart.split(/\s+/).filter(Boolean) : [];
-      return { textarea:textarea, lines:lines, lineIndex:lineIndex, namePart:namePart, tokens:tokens };
+      return readCommandLineInfo(textarea, lines, lineIndex, String(entry.label || '').trim() || 'A');
     }
 
     function applyCommandLineDotOverridesForEntry(info, entry) {
@@ -14811,8 +14758,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return true;
     }
 
-    function writeCommandLineInfo(info) {
-      trimTrailingCommandFillers(info.tokens);
+    function writeCommandLineInfo(info, trimFillers = true) {
+      if (trimFillers) trimTrailingCommandFillers(info.tokens);
       info.lines[info.lineIndex] = info.tokens.length ? (info.namePart + ' ' + info.tokens.join(' ')) : info.namePart;
       setCommandTextValue(info.textarea, info.lines.join('\n'));
     }
@@ -14931,7 +14878,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         if (!gesture) return;
         if (event.pointerId !== gesture.id && !gesture.released) {
           cancelCellLongPressDrag(); cancelCellLabelDrag(); cancelSerifuRangeDrag(); cancelTextMemoPointerIntent(gesture.event);
-          if (state.textMemoResize && state.textMemoResize.pointerId === gesture.id) cancelTextMemoResize(gesture.event);
+          if (state.textMemoResize && state.textMemoResize.pointerId === gesture.id) finishTextMemoResize(gesture.event, true);
         }
         if (event.pointerId !== gesture.id || gesture.released) clear();
       }
@@ -14947,7 +14894,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         if(!gesture||gesture.fired||!node.isConnected)return;
         gesture.fired=true;clearTimeout(gesture.timer);
         cancelCellLongPressDrag();cancelCellLabelDrag();cancelSerifuRangeDrag();cancelTextMemoPointerIntent(event);
-        if(state.textMemoResize && state.textMemoResize.pointerId===event.pointerId)cancelTextMemoResize(event);
+        if(state.textMemoResize && state.textMemoResize.pointerId===event.pointerId)finishTextMemoResize(event, true);
         // Suppress the release click for this gesture, even if the finger stays down
         // longer than the old fixed 450ms or the action replaces its SVG hit node.
         document.addEventListener('click',consumeClick,true);
@@ -14979,7 +14926,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       node.addEventListener('contextmenu',function(event){
         stop(event); if(gesture){if(!gesture.fired)fire(gesture.event);return;}
         cancelCellLongPressDrag();cancelCellLabelDrag();cancelTextMemoPointerIntent(event);
-        if(state.textMemoResize)cancelTextMemoResize(event);
+        if(state.textMemoResize)finishTextMemoResize(event, true);
         action(event);
       });
       node.addEventListener('keydown',function(event){
@@ -19294,16 +19241,16 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return best;
     }
 
+    function getBlockBodyArea(block, kind, x, w) {
+      const frameCount = Math.max(1, block.frameCount || ((block.end && block.start) ? block.end - block.start + 1 : 72));
+      const y = (block.top || 450) + (block.nameStripH || 44);
+      const h = (block.rowH || 26.555) * frameCount;
+      return getLayoutBoxRect(kind + '-' + getBlockSideKey(block), {x, y, w, h});
+    }
+
     function getCellArea(block) {
-      const side = getBlockSideKey(block);
       const colCount = Math.max(1, block.originalEntriesCount || block.originalColCount || 8);
-      const baseW = block.originalAreaW || ((block.originalColW || 1) * colCount);
-      const frameCount = Math.max(1, block.frameCount || ((block.end && block.start) ? (block.end - block.start + 1) : 72));
-      const headerH = block.nameStripH || 44;
-      const bodyTop = (block.top || 450) + headerH;
-      const bodyH = (block.rowH || 26.555) * frameCount;
-      const base = { x:block.blockX || 0, y:bodyTop, w:baseW, h:bodyH };
-      return getLayoutBoxRect('cell-' + side, base);
+      return getBlockBodyArea(block, 'cell', block.blockX || 0, block.originalAreaW || (block.originalColW || 1) * colCount);
     }
 
     function getCellLabelArea(block) {
@@ -19338,23 +19285,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     function getCellTextAnchor() { return 'middle'; }
 
     function getDialogArea(block) {
-      const side = getBlockSideKey(block);
-      const frameCount = Math.max(1, block.frameCount || ((block.end && block.start) ? (block.end - block.start + 1) : 72));
-      const headerH = block.nameStripH || 44;
-      const bodyTop = (block.top || 450) + headerH;
-      const bodyH = (block.rowH || 26.555) * frameCount;
-      const base = { x:block.xOriginalRight || 0, y:bodyTop, w:block.dialogW || 96, h:bodyH };
-      return getLayoutBoxRect('dialog-' + side, base);
+      return getBlockBodyArea(block, 'dialog', block.xOriginalRight || 0, block.dialogW || 96);
     }
 
     function getCameraArea(block) {
-      const side = getBlockSideKey(block);
-      const frameCount = Math.max(1, block.frameCount || ((block.end && block.start) ? (block.end - block.start + 1) : 72));
-      const headerH = block.nameStripH || 44;
-      const bodyTop = (block.top || 450) + headerH;
-      const bodyH = (block.rowH || 26.555) * frameCount;
-      const base = { x:block.xInbetweenRight || 0, y:bodyTop, w:block.cameraW || 120, h:bodyH };
-      return getLayoutBoxRect('camera-' + side, base);
+      return getBlockBodyArea(block, 'camera', block.xInbetweenRight || 0, block.cameraW || 120);
     }
 
     function getInbetweenArea(block) {
@@ -19989,19 +19924,42 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const xOriginalRight = params.blockX + params.originalAreaW;
       const xDialogRight = xOriginalRight + params.dialogW;
       const xInbetweenRight = xDialogRight + params.inbetweenW;
-      const frameCountForBox = params.frameCount;
       const blockSide = getBlockSideKey({ blockX:params.blockX, blockW:params.blockW });
 
       const templateBlock = {
         blockX:params.blockX, blockW:params.blockW, originalColW:originalColW, originalAreaW:params.originalAreaW,
         originalEntriesCount:params.originalEntries.length, top:top, nameStripH:nameStripH, rowH:rowH,
-        frameCount:frameCountForBox, start:params.startFrame, xOriginalRight:xOriginalRight, xDialogRight:xDialogRight,
+        frameCount:params.frameCount, start:params.startFrame, xOriginalRight:xOriginalRight, xDialogRight:xDialogRight,
         xInbetweenRight:xInbetweenRight, dialogW:params.dialogW, cameraW:params.cameraW
       };
       const templateLayoutKeys = ['cell-' + blockSide, 'dialog-' + blockSide, 'camera-' + blockSide, 'cell-label-' + blockSide];
       const useAdjustedTemplate = templateLayoutKeys.some(function(key){
         return !!(state.layoutBoxes && Object.prototype.hasOwnProperty.call(state.layoutBoxes, key));
       });
+
+      function renderColumnLabels(area) {
+        const entries = params.originalEntries;
+        const dragArea = params.interactive ? getCellLabelDragArea(area, templateBlock, entries.length) : null;
+        entries.forEach(function(entry, index){
+          const display = params.generatedDisplay.cells['cell-' + blockSide][index];
+          if (!display.visible) return;
+          withDrawLayer(display.layer, function(){
+            const bounds = dragArea ? dragArea.columns[index] : getOutputColumnBounds(area, templateBlock, index);
+            if (dragArea) {
+              const hit = el('rect', {x:bounds.x1, y:area.y, width:bounds.x2 - bounds.x1, height:area.h, fill:'transparent', stroke:'transparent', 'pointer-events':'all'});
+              attachCellLabelDrag(hit, index, entries, dragArea);
+              hit.style.cursor = 'pointer';
+              hit.setAttribute('title', cellSettingsText('labelHint'));
+              hit.addEventListener('click', function(event){ handleCellLabelClick(event, entry, hit); });
+              appendSvgNode(hit);
+            }
+            const label = text((bounds.x1 + bounds.x2) / 2, area.y + area.h / 2, entry.label, 13, getCellTextAnchor(), '700', '#7a7a7a');
+            label.style.cursor = 'pointer';
+            label.setAttribute('pointer-events', 'none');
+            label.setAttribute('data-inline-editable', 'shift-only');
+          });
+        });
+      }
 
       if (useAdjustedTemplate) {
         const templateCellArea = getCellArea(templateBlock);
@@ -20039,29 +19997,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           }
           text(templateDialogArea.x + templateDialogArea.w / 2, templateHeaderY + templateHeaderH / 2, 'Dialog', 14, 'middle', '700', '#7a7a7a');
           text(templateCameraArea.x + templateCameraArea.w / 2, templateHeaderY + templateHeaderH / 2, 'CAMERA', 14, 'middle', '700', '#7a7a7a');
-          {
-            params.originalEntries.forEach(function(entry, idx){
-              const display=params.generatedDisplay.cells['cell-'+blockSide][idx];
-              if(!display.visible) return;
-              withDrawLayer(display.layer, function(){
-                const labelBounds = getOutputColumnBounds(templateLabelArea, templateBlock, idx);
-                const cellNameX = (labelBounds.x1 + labelBounds.x2) / 2;
-                const cellNameY = templateLabelArea.y + templateLabelArea.h / 2;
-                if (params.interactive) {
-                  const labelHit = el('rect', { x:labelBounds.x1, y:templateLabelArea.y, width:labelBounds.x2 - labelBounds.x1, height:templateLabelArea.h, fill:'transparent', stroke:'transparent', 'pointer-events':'all' });
-                  attachCellLabelDrag(labelHit, idx, params.originalEntries, getCellLabelDragArea(templateLabelArea, templateBlock, params.originalEntries.length));
-                  labelHit.style.cursor = 'pointer';
-                  labelHit.setAttribute('title', cellSettingsText('labelHint'));
-                  labelHit.addEventListener('click', function(event){ handleCellLabelClick(event, entry, labelHit); });
-                  appendSvgNode(labelHit);
-                }
-                const labelNode = text(cellNameX, cellNameY, entry.label, 13, getCellTextAnchor(), '700', '#7a7a7a');
-                labelNode.style.cursor = 'pointer';
-                labelNode.setAttribute('pointer-events', 'none');
-                labelNode.setAttribute('data-inline-editable', 'shift-only');
-              });
-            });
-          }
+          renderColumnLabels(templateLabelArea);
           inbetweenEntries.forEach(function(entry, idx){
             const display=params.generatedDisplay.cells['follow-'+blockSide][idx];
             if (templateInbetweenW <= 0 || !display.visible) return;
@@ -20099,31 +20035,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
           text(xOriginalRight + params.dialogW / 2, top + nameStripH / 2, 'Dialog', 14, 'middle', '700', '#7a7a7a');
           text(xInbetweenRight + params.cameraW / 2, top + nameStripH / 2, 'CAMERA', 14, 'middle', '700', '#7a7a7a');
-          {
-            params.originalEntries.forEach(function(entry, idx){
-              const display=params.generatedDisplay.cells['cell-'+blockSide][idx];
-              if(!display.visible) return;
-              withDrawLayer(display.layer, function(){
-                const cellNameTempBlock = { blockX:params.blockX, blockW:params.blockW, originalColW:originalColW, originalAreaW:params.originalAreaW, originalEntriesCount:params.originalEntries.length, top:top, nameStripH:nameStripH, rowH:rowH, frameCount:frameCountForBox, start:params.startFrame };
-                const labelArea = getCellLabelArea(cellNameTempBlock);
-                const labelBounds = getOutputColumnBounds(labelArea, cellNameTempBlock, idx);
-                const cellNameX = (labelBounds.x1 + labelBounds.x2) / 2;
-                const cellNameY = labelArea.y + labelArea.h / 2;
-                if (params.interactive) {
-                  const labelHit = el('rect', { x:labelBounds.x1, y:labelArea.y, width:labelBounds.x2 - labelBounds.x1, height:labelArea.h, fill:'transparent', stroke:'transparent', 'pointer-events':'all' });
-                  attachCellLabelDrag(labelHit, idx, params.originalEntries, getCellLabelDragArea(labelArea, cellNameTempBlock, params.originalEntries.length));
-                  labelHit.style.cursor = 'pointer';
-                  labelHit.setAttribute('title', cellSettingsText('labelHint'));
-                  labelHit.addEventListener('click', function(event){ handleCellLabelClick(event, entry, labelHit); });
-                  appendSvgNode(labelHit);
-                }
-                const labelNode = text(cellNameX, cellNameY, entry.label, 13, getCellTextAnchor(), '700', '#7a7a7a');
-                labelNode.style.cursor = 'pointer';
-                labelNode.setAttribute('pointer-events', 'none');
-                labelNode.setAttribute('data-inline-editable', 'shift-only');
-              });
-            });
-          }
+          renderColumnLabels(getCellLabelArea(templateBlock));
           inbetweenEntries.forEach(function(entry, idx){
             const display=params.generatedDisplay.cells['follow-'+blockSide][idx];
             if(display.visible) withDrawLayer(display.layer,function(){text(xDialogRight + idx * inbetweenColW + inbetweenColW / 2, top + nameStripH / 2, entry.label, 13, 'middle', '700', '#7a7a7a');});
@@ -20150,21 +20062,19 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       }
 
       withStaticLayer(function(){ withDrawLayer('output', function(){
-      const cellBlock = { blockX:params.blockX, blockW:params.blockW, originalColW:originalColW, originalAreaW:params.originalAreaW, originalEntriesCount:params.originalEntries.length, top:top, nameStripH:nameStripH, rowH:rowH, frameCount:frameCountForBox, start:params.startFrame };
       const holdTargetEnd = Math.max(0, Math.round(Number(params.durationFrame) || 0));
       params.originalEntries.forEach(function(entry, colIndex){
         const layer = params.layersById.get(entry.uid);
         const baseLayer = params.baseLayersById.get(entry.uid);
         const holdBoundaryFrames = getCellHoldBoundaryFrames(layer);
         const frameRows = prepareCellBlockFrames(layer, params.startFrame, params.frameCount);
-        const bounds = getOutputCellBounds(cellBlock, colIndex);
+        const bounds = getOutputCellBounds(templateBlock, colIndex);
         const x1 = bounds.x1, x2 = bounds.x2;
         const previewEndFrame = Math.max(0, Math.round(Number(layer && layer.previewEndFrame) || 0));
         for (let i = 0; i < params.frameCount; i++) {
           const absFrame = params.startFrame + i;
-          const tempBlock = cellBlock;
-          const y1 = getOutputRowTop(cellBlock, absFrame, 'cell');
-          const y2 = getOutputRowTop(cellBlock, absFrame + 1, 'cell');
+          const y1 = getOutputRowTop(templateBlock, absFrame, 'cell');
+          const y2 = getOutputRowTop(templateBlock, absFrame + 1, 'cell');
           const frameRow = frameRows[i];
           const seg = frameRow.seg;
           const repeatMark = frameRow.repeat;
@@ -20175,7 +20085,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           const isExplicitCrossSeg = !!(seg && seg.kind === 'cross' && !seg.autoLeadingCross);
           const isPreviewEndFrame = !!(layer && previewEndFrame === absFrame);
           if (params.interactive && (!seg || isAutoLeadingCrossSeg) && !dotMark && !repeatMark && !wavyMark && !crossMark) {
-            addEmptyCellInlineEditHit(entry, absFrame, { x1:x1, y1:y1, x2:x2, y2:y2 }, { dragRange:{ minFrame:params.startFrame, maxFrame:params.startFrame + params.frameCount - 1 }, block:tempBlock, colIndex:colIndex });
+            addEmptyCellInlineEditHit(entry, absFrame, { x1:x1, y1:y1, x2:x2, y2:y2 }, { dragRange:{ minFrame:params.startFrame, maxFrame:params.startFrame + params.frameCount - 1 }, block:templateBlock, colIndex:colIndex });
           }
           if (!layer && !seg && !dotMark && !repeatMark && !wavyMark && !crossMark) continue;
           if (seg) {
@@ -20190,7 +20100,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
                 markCellFrameHit(hit);
                 prepareTouchDragHit(hit);
                 hit.setAttribute('title', getUiText('toggleDotText'));
-                attachCellLongPressDrag(hit, entry, absFrame, { minFrame:params.startFrame, maxFrame:params.startFrame + params.frameCount - 1 }, { block:tempBlock, colIndex:colIndex });
+                attachCellLongPressDrag(hit, entry, absFrame, { minFrame:params.startFrame, maxFrame:params.startFrame + params.frameCount - 1 }, { block:templateBlock, colIndex:colIndex });
                 attachContextAction(hit, function(contextEvent){ openCellFrameTextEditor(hit, entry, absFrame, '', contextEvent, false); });
                 hit.addEventListener('click', function(event){
                   if (event.shiftKey) {
@@ -20213,7 +20123,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
                   preserveCross:seg.kind === 'cross',
                   cursor:'pointer',
                   dragRange:{ minFrame:params.startFrame, maxFrame:params.startFrame + params.frameCount - 1 },
-                  dragOptions:{ tokenDragCursor:true, block:tempBlock, colIndex:colIndex },
+                  dragOptions:{ tokenDragCursor:true, block:templateBlock, colIndex:colIndex },
                   onClick:function(event){ return handleCellMarkerClick(event, entry, absFrame, seg, key); }
                 });
               }
@@ -20235,7 +20145,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
                 prepareTouchDragHit(labelNode);
                 labelNode.setAttribute('data-inline-editable', 'shift-only');
                 labelNode.setAttribute('title', getUiText('editMarkMove'));
-                attachCellLongPressDrag(labelNode, entry, absFrame, { minFrame:params.startFrame, maxFrame:params.startFrame + params.frameCount - 1 }, { tokenDragCursor:false, block:tempBlock, colIndex:colIndex });
+                attachCellLongPressDrag(labelNode, entry, absFrame, { minFrame:params.startFrame, maxFrame:params.startFrame + params.frameCount - 1 }, { tokenDragCursor:false, block:templateBlock, colIndex:colIndex });
                 attachContextAction(labelNode, function(contextEvent){ handleCellMarkerClick(contextEvent, entry, absFrame, seg, key); });
               labelNode.addEventListener('click', function(event){
                 if (state.suppressNextClick) return;
@@ -20259,7 +20169,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
                 cursor:'pointer',
                 title:'Click to edit / drag to move',
                 dragRange:{ minFrame:params.startFrame, maxFrame:params.startFrame + params.frameCount - 1 },
-                dragOptions:{ tokenDragCursor:true, block:tempBlock, colIndex:colIndex }
+                dragOptions:{ tokenDragCursor:true, block:templateBlock, colIndex:colIndex }
               });
             }
           }
@@ -20285,7 +20195,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
               markCellFrameHit(dotHit);
               prepareTouchDragHit(dotHit);
               dotHit.setAttribute('title', getUiText('toggleDotText'));
-              attachCellLongPressDrag(dotHit, entry, absFrame, { minFrame:params.startFrame, maxFrame:params.startFrame + params.frameCount - 1 }, { tokenDragCursor:true, block:tempBlock, colIndex:colIndex });
+              attachCellLongPressDrag(dotHit, entry, absFrame, { minFrame:params.startFrame, maxFrame:params.startFrame + params.frameCount - 1 }, { tokenDragCursor:true, block:templateBlock, colIndex:colIndex });
               attachContextAction(dotHit, function(contextEvent){ openCellFrameTextEditor(dotHit, entry, absFrame, '', contextEvent, false); });
               dotHit.addEventListener('click', function(event){
                 if (event.shiftKey) {
@@ -20308,7 +20218,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
                 cursor:'pointer',
                 title:'Click to edit / drag to move',
                 dragRange:{ minFrame:params.startFrame, maxFrame:params.startFrame + params.frameCount - 1 },
-                dragOptions:{ tokenDragCursor:true, block:tempBlock, colIndex:colIndex }
+                dragOptions:{ tokenDragCursor:true, block:templateBlock, colIndex:colIndex }
               });
             }
           }
@@ -20321,7 +20231,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
                 cursor:'pointer',
                 title:'Click to edit / drag to move',
                 dragRange:{ minFrame:params.startFrame, maxFrame:params.startFrame + params.frameCount - 1 },
-                dragOptions:{ tokenDragCursor:true, block:tempBlock, colIndex:colIndex }
+                dragOptions:{ tokenDragCursor:true, block:templateBlock, colIndex:colIndex }
               });
             }
           }
@@ -20329,14 +20239,13 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       });
       }); });
 
-      const returnedBlock = { blockX:params.blockX, blockW:params.blockW, originalColW:originalColW, originalAreaW:params.originalAreaW, originalEntriesCount:params.originalEntries.length, top:top, rowH:rowH, frameCount:params.frameCount, nameStripH:nameStripH, xOriginalRight:xOriginalRight, xDialogRight:xDialogRight, xInbetweenRight:xInbetweenRight, dialogW:params.dialogW, cameraW:params.cameraW, start:params.startFrame, end:params.startFrame + params.frameCount - 1, durationFrame:params.durationFrame || 0 };
+      const returnedBlock = {...templateBlock, end:params.startFrame + params.frameCount - 1, durationFrame:params.durationFrame || 0};
       renderDougaSheet(returnedBlock, params.originalEntries, state.dougaSheetData);
       renderDurationHoldExtensions(returnedBlock, params.originalEntries, params.layersById, params.durationFrame || 0);
       renderPreviewEndMarkers(returnedBlock, params.originalEntries, params.layersById);
       renderSheetDirectiveArrows(returnedBlock, params.originalEntries, params.layersById);
       withDrawLayer('output', function(){
-        const labelTempBlock = { blockX:params.blockX, blockW:params.blockW, originalColW:originalColW, originalAreaW:params.originalAreaW, originalEntriesCount:params.originalEntries.length, top:top, nameStripH:nameStripH, rowH:rowH, frameCount:frameCountForBox, start:params.startFrame };
-        const labelArea = getCellLabelArea(labelTempBlock);
+        const labelArea = getCellLabelArea(templateBlock);
         addPositionEditBox('cell-label-' + blockSide, labelArea, getUiText('outputCellLabel') + ' · ' + getUiText(blockSide + 'Side'), { grips:['n'], lockMove:true });
         addPositionEditBox('cell-' + blockSide, { x:params.blockX, y:top + nameStripH, w:params.originalAreaW, h:bodyH }, getUiText('drawingCountCell') + ' · ' + getUiText(blockSide + 'Side'), { columnGuideCount:params.originalEntries.length });
         addPositionEditBox('dialog-' + blockSide, { x:xOriginalRight, y:top + nameStripH, w:params.dialogW, h:bodyH }, getUiText('dialogBlocksTitle') + ' · ' + getUiText(blockSide + 'Side'));
@@ -21989,29 +21898,23 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       requestPreviewOverlay('image');
     }
 
-    function cancelPastedImageDrag(event) {
-      const drag = state.pastedImageDrag;
-      if (!drag) return;
-      const img = getActivePastedImage();
-      if (img && drag.origin) Object.assign(img, drag.origin);
+    function releaseDragCapture(drag, pointerId) {
       const target = drag.sourceTarget;
-      if (target && target.releasePointerCapture && event && event.pointerId !== undefined) {
-        try { target.releasePointerCapture(event.pointerId); } catch (err) {}
+      if (target && target.releasePointerCapture && pointerId !== undefined) {
+        try { target.releasePointerCapture(pointerId); } catch (err) {}
       }
-      state.pastedImageDrag = null;
-      document.documentElement.classList.remove('pasted-image-dragging');
-      refreshPreviewOverlay('image', true);
-      commitPendingContentHistory();
     }
 
-    function endPastedImageDrag(event) {
+    function finishPastedImageDrag(event, cancel = false) {
       const drag = state.pastedImageDrag;
-      if (!drag || drag.pointerId !== event.pointerId) return;
-      event.preventDefault();
-      const target = drag.sourceTarget;
-      if (target && target.releasePointerCapture) {
-        try { target.releasePointerCapture(event.pointerId); } catch (err) {}
+      if (!drag || (!cancel && drag.pointerId !== event.pointerId)) return;
+      if (cancel) {
+        const item = getActivePastedImage();
+        if (item && drag.origin) Object.assign(item, drag.origin);
+      } else {
+        event.preventDefault();
       }
+      releaseDragCapture(drag, event && event.pointerId);
       state.pastedImageDrag = null;
       document.documentElement.classList.remove('pasted-image-dragging');
       refreshPreviewOverlay('image', true);
@@ -22102,6 +22005,10 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     // ══ 촬영지시 메모 ⑤ 문자폭 측정 · 내용에 맞춘 박스 자동 리사이즈 ═══════════════════════════════════════════════════════════════════════
+    let textMemoMeasureCanvas = null;
+    const textMemoWidthCache = new Map();
+    const TEXT_MEMO_WIDTH_CACHE_MAX = 4000;
+
     function estimateTextMemoTextWidth(value, fontSize) {
       const source = String(value || '');
       const size = Math.max(1, Number(fontSize || 18));
@@ -22602,13 +22509,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     // ══ 촬영지시 메모 ⑩ 포인터 조작 — 클릭/드래그 의도 판정 · 모서리 리사이즈 ═════════════════════════════════════════════════════════════════
-    function releaseTextMemoPointerIntentCapture(intent, pointerId) {
-      const target = intent && intent.sourceTarget;
-      if (target && target.releasePointerCapture) {
-        try { target.releasePointerCapture(pointerId); } catch (err) {}
-      }
-    }
-
     function beginTextMemoPointerIntent(event, id, pageIndex) {
       if (!event || state.memoMode || state.shakuMode || state.positionMode || state.textMemoResize) return;
       if (event.button !== undefined && event.button !== 0) return;
@@ -22646,7 +22546,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       state.activeTextMemo = { pageIndex:Number(intent.pageIndex || 0), id:intent.id };
       const memo = getActiveTextMemo();
       if (!memo) {
-        releaseTextMemoPointerIntentCapture(intent, event.pointerId);
+        releaseDragCapture(intent, event.pointerId);
         state.textMemoPointerIntent = null;
         return;
       }
@@ -22671,7 +22571,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (!intent || intent.pointerId !== event.pointerId) return;
       event.preventDefault();
       event.stopPropagation();
-      releaseTextMemoPointerIntentCapture(intent, event.pointerId);
+      releaseDragCapture(intent, event.pointerId);
       state.textMemoPointerIntent = null;
       state.activeTextMemo = { pageIndex:Number(intent.pageIndex || 0), id:intent.id };
       if (!state.textMemoEditMode && !state.memoMode) openActiveTextMemoEditor();
@@ -22681,7 +22581,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     function cancelTextMemoPointerIntent(event) {
       const intent = state.textMemoPointerIntent;
       if (!intent || intent.pointerId !== event.pointerId) return;
-      releaseTextMemoPointerIntentCapture(intent, event.pointerId);
+      releaseDragCapture(intent, event.pointerId);
       state.textMemoPointerIntent = null;
     }
 
@@ -22728,32 +22628,19 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       requestPreviewOverlay('memo');
     }
 
-    function cancelTextMemoResize(event) {
+    function finishTextMemoResize(event, cancel = false) {
       const drag = state.textMemoResize;
-      if (!drag) return;
-      const memo = getActiveTextMemo();
-      if (memo && drag.origin) Object.assign(memo, drag.origin);
-      const target = drag.sourceTarget;
-      if (target && target.releasePointerCapture && event && event.pointerId !== undefined) {
-        try { target.releasePointerCapture(event.pointerId); } catch (err) {}
+      if (!drag || (!cancel && drag.pointerId !== event.pointerId)) return;
+      if (cancel) {
+        const item = getActiveTextMemo();
+        if (item && drag.origin) Object.assign(item, drag.origin);
+      } else {
+        event.preventDefault();
       }
+      releaseDragCapture(drag, event && event.pointerId);
       state.textMemoResize = null;
       document.documentElement.classList.remove('text-memo-dragging');
-      refreshPreviewOverlay('memo', true);
-      commitPendingContentHistory();
-    }
-
-    function endTextMemoResize(event) {
-      const drag = state.textMemoResize;
-      if (!drag || drag.pointerId !== event.pointerId) return;
-      event.preventDefault();
-      const target = drag.sourceTarget;
-      if (target && target.releasePointerCapture) {
-        try { target.releasePointerCapture(event.pointerId); } catch (err) {}
-      }
-      state.textMemoResize = null;
-      document.documentElement.classList.remove('text-memo-dragging');
-      if (!state.textMemoEditMode && !state.memoMode && drag.openEditorOnEnd !== false) openActiveTextMemoEditor();
+      if (!cancel && !state.textMemoEditMode && !state.memoMode && drag.openEditorOnEnd !== false) openActiveTextMemoEditor();
       else refreshPreviewOverlay('memo', true);
       commitPendingContentHistory();
     }
@@ -23100,6 +22987,16 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return raw;
     }
 
+    function formatSheetMessage(docs, key, values) {
+      const doc = docs[state.lang] || docs.en;
+      const template = String(doc[key] || docs.en[key] || key);
+      return template.replace(/\{(\w+)\}/g, function(_, name){
+        const value = values?.[name];
+        if (value == null) return '';
+        return name === 'error' ? sheetErrorText(value) : String(value);
+      });
+    }
+
     function ioText(key, values) {
       const docs = {
         en:{ directImportRecommended:"Import .clip / .tvpp / .csv / .xdts", workLoaded:"Project loaded.", fileLoaded:"Loaded: {name}", workCacheFailed:"Could not save the project list. The previous list may appear next time. Original files are unchanged.", normal:'Browser download', unsupported:'Folder selection is unavailable in this browser. Files use browser downloads.', selected:'Output folder: {name}', choose:'Choose folder', cancel:'Cancel', downloadOnce:'Download this time', permission:'The output folder cannot be accessed. Choose how to continue.', missing:'The output folder is unavailable. It was disconnected; remaining pages use browser downloads.', memoryFailed:'Browser backup could not be saved. Save your project file before closing.', forgetFailed:"The current folder was disconnected, but its saved setting could not be removed.", preparing:'Preparing {count} page(s)…', progress:'Processed {done}/{count} · Folder: {folder} · Download requests: {download}', complete:'Finished · Folder: {folder} · Download requests: {download}', failed:'Stopped at page {page}: {error}', savedSettings:'Project saved: {name}', downloadedSettings:'Project file download requested: {name}', canceled:'Canceled.', settingsFailed:'Project save failed: {error}', loadFailed:'File load failed; the current sheet was kept: {error}', partial:'Folder scan: {count} project files, {skipped} skipped.', folderFailed:'Folder unavailable. The cached list is kept: {error}', cache:'Cached project (folder unavailable)', notRemembered:"The folder is selected, but its setting could not be saved for next time.", selectFailed:'Folder selection failed: {error}'},
@@ -23107,8 +23004,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ko:{ directImportRecommended:"지원 형식: .clip / .tvpp / .csv / .xdts", workLoaded:"작업을 불러왔습니다.", fileLoaded:"불러왔습니다: {name}", workCacheFailed:"작업 목록을 저장하지 못했습니다. 다음 실행에는 이전 목록이 표시될 수 있습니다. 원본 파일은 그대로입니다.", normal:'기본 다운로드', unsupported:'이 브라우저에서는 저장 폴더를 지정할 수 없습니다. 기본 다운로드를 사용합니다.', selected:'저장 폴더: {name}', choose:'폴더 선택', cancel:'취소', downloadOnce:'이번에는 다운로드', permission:'저장 폴더에 접근할 수 없습니다. 계속할 방법을 선택하세요.', missing:'저장 폴더를 사용할 수 없어 해제했습니다. 남은 페이지는 기본 다운로드로 보냅니다.', memoryFailed:'브라우저에 백업을 저장하지 못했습니다. 닫기 전에 작업 파일을 저장하세요.', forgetFailed:"현재 폴더 연결은 해제했지만 저장된 폴더 설정은 지우지 못했습니다.", preparing:'{count}페이지 준비 중…', progress:'처리 {done}/{count} · 폴더 저장 {folder} · 다운로드 요청 {download}', complete:'완료 · 폴더 저장 {folder} · 다운로드 요청 {download}', failed:'{page}페이지에서 중단: {error}', savedSettings:'작업 저장 완료: {name}', downloadedSettings:'작업 파일 다운로드 요청: {name}', canceled:'취소했습니다.', settingsFailed:'작업 저장 실패: {error}', loadFailed:'파일을 읽지 못했습니다. 현재 시트는 유지했습니다: {error}', partial:'폴더 읽기: 작업 {count}개, 건너뜀 {skipped}개.', folderFailed:'폴더를 사용할 수 없습니다. 기억한 목록은 유지했습니다: {error}', cache:'기억한 작업 (폴더 사용 불가)', notRemembered:"폴더는 선택했지만 다음 실행에 사용할 설정을 저장하지 못했습니다.", selectFailed:'폴더 선택 실패: {error}'},
         zh:{ directImportRecommended:"支持格式：.clip / .tvpp / .csv / .xdts", workLoaded:"已读取项目。", fileLoaded:"已读取：{name}", workCacheFailed:"无法保存项目列表。下次打开时可能显示旧列表。原始文件未变更。", normal:'默认下载', unsupported:'此浏览器不能选择保存文件夹，将使用默认下载。', selected:'保存文件夹：{name}', choose:'选择文件夹', cancel:'取消', downloadOnce:'本次下载', permission:'无法访问保存文件夹。请选择继续方式。', missing:'保存文件夹不可用，已解除。剩余页面将使用默认下载。', memoryFailed:'无法保存浏览器备份。关闭前请保存项目文件。', forgetFailed:"已断开当前文件夹连接，但无法删除已保存的文件夹设置。", preparing:'正在准备 {count} 页…', progress:'已处理 {done}/{count} · 文件夹 {folder} · 下载请求 {download}', complete:'完成 · 文件夹 {folder} · 下载请求 {download}', failed:'在第 {page} 页停止：{error}', savedSettings:'项目已保存：{name}', downloadedSettings:'已请求下载项目文件：{name}', canceled:'已取消。', settingsFailed:'项目保存失败：{error}', loadFailed:'读取失败，当前摄影表已保留：{error}', partial:'文件夹读取：{count} 个项目，跳过 {skipped} 个。', folderFailed:'文件夹不可用，已保留缓存列表：{error}', cache:'缓存项目（文件夹不可用）', notRemembered:"已选择文件夹，但无法保存供下次使用的设置。", selectFailed:'选择文件夹失败：{error}'}
       };
-      const doc = docs[state.lang] || docs.en;
-      return String(doc[key] || docs.en[key] || key).replace(/\{(\w+)\}/g, function(_, name){ return values && values[name] != null ? (name === 'error' ? sheetErrorText(values[name]) : String(values[name])) : ''; });
+      return formatSheetMessage(docs, key, values);
     }
 
     function chooseExportRecovery() {
@@ -27561,7 +27457,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return entries.some(function(entry){ return entry.isDirectory; }) ? entries : [];
     }
 
-    async function readCutFolderEntries(roots, job) {
+    async function readCutFolderEntries(roots, isCurrent) {
       const files = [], skippedDirs = [];
       let partial = false;
       // readEntries()는 한 번에 일부만 돌려준다. 빈 배열이 나올 때까지 부르되, 작업이 바뀌거나 상한을 넘으면 멈춘다.
@@ -27570,7 +27466,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
           const reader = dir.createReader(), out = [];
           let fileCount = 0;  // 파일만 센다(폴더 항목은 상한에 넣지 않는다)
           (function next(){
-            if (job !== cutFolderJob) { resolve([]); return; }
+            if (!isCurrent()) { resolve([]); return; }
             if (files.length + fileCount > CUT_FOLDER_FILE_LIMIT) { resolve(out); return; }  // 넘친 몫은 walk가 잘림으로 표시한다
             reader.readEntries(function(batch){
               if (!batch.length) { resolve(out); return; }
@@ -27583,7 +27479,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       }
       function fileOf(entry) { return new Promise(function(resolve, reject){ entry.file(resolve, reject); }); }
       async function walk(entry, prefix) {
-        if (job !== cutFolderJob) return;
+        if (!isCurrent()) return;
         if (files.length >= CUT_FOLDER_FILE_LIMIT) { partial = true; return; }
         if (entry.isFile) {
           files.push({ path:prefix + entry.name, file:await fileOf(entry) });
@@ -27603,12 +27499,15 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return { files:files, skippedDirs:skippedDirs, partial:partial, root:dir ? dir.name : '' };
     }
 
-    async function isAutoSheetSettingsFile(file) {
-      try { return JSON.parse(await readDroppedTextFile(file)).schema === 'auto-sheet-current-settings'; } catch (err) { return false; }
+    async function isAutoSheetSettingsFile(file, isCurrent) {
+      try {
+        const text = await readDroppedTextFile(file);
+        return isCurrent() && isCurrentSettingsPayload(JSON.parse(text));
+      } catch (err) { return false; }
     }
 
     // 시트 자료 우선순위: 설정 JSON > XDTS > CLIP > TVPaint > CSV > 용지 이미지. 같은 순위가 여럿이면 고르게 한다.
-    async function pickCutFolderSheet(entries, rootName, job) {
+    async function pickCutFolderSheet(entries, rootName, isCurrent) {
       const rank = [
         { kind:'json', test:function(e){ return /\.json$/i.test(e.path); } },
         { kind:'xdts', test:function(e){ return isXdtsDropFile(e.file); } },
@@ -27621,10 +27520,13 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         let found = entries.filter(function(e){ return (e.info.kind === 'sheet' || e.info.kind === 'paper') && rank[i].test(e); });
         if (rank[i].kind === 'json') {
           const checked = [];
-          for (let k = 0; k < found.length; k++) if (await isAutoSheetSettingsFile(found[k].file)) checked.push(found[k]);
+          for (const entry of found) {
+            if (!isCurrent()) return null;
+            if (await isAutoSheetSettingsFile(entry.file, isCurrent)) checked.push(entry);
+          }
           found = checked;
         }
-        if (job !== cutFolderJob) return null;
+        if (!isCurrent()) return null;
         if (!found.length) continue;
         // 폴더 이름의 컷 번호가 든 파일을 앞에 둔다
         const cutKey = (String(rootName || '').match(/\d{2,}/g) || []).pop() || '';
@@ -27753,12 +27655,13 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const current = function(){ return job === cutFolderJob && docGen === documentLoadGeneration && paperGen === paperLoadGeneration; };
       setExportStatus(doc.cutFolderReading);
       let scan;
-      try { scan = await readCutFolderEntries(roots, job); }
-      catch (err) { if (job === cutFolderJob) setExportStatus(ioText('loadFailed', { error:err.message || err }), { level:'error' }); return; }
+      try { scan = await readCutFolderEntries(roots, current); }
+      catch (err) { if (current()) setExportStatus(ioText('loadFailed', { error:err.message || err }), { level:'error' }); return; }
       if (!current()) return;
       const entries = scan.files.map(function(f){ return { path:f.path, file:f.file, info:classifyCutFolderFile(f.path, []) }; });
-      const picked = await pickCutFolderSheet(entries, scan.root, job);
-      if (!current() || !picked) { if (job === cutFolderJob) setExportStatus(''); return; }
+      const picked = await pickCutFolderSheet(entries, scan.root, current);
+      if (!current()) return;
+      if (!picked) { setExportStatus(''); return; }
       const meta = { root:scan.root, sheet:picked.entry ? picked.entry.path : '', partial:scan.partial };
       if (picked.entry) {
         const ok = picked.kind === 'json' ? await loadDroppedSettingsJsonFile(picked.entry.file)
@@ -27796,20 +27699,28 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       });
     }
 
-    async function loadDroppedSettingsJsonFile(file) {
+    async function runDocumentFileLoad(file, load, kind) {
       if (!file) return false;
       const generation = ++documentLoadGeneration;
+      const isCurrent = () => generation === documentLoadGeneration;
       try {
+        return await load(isCurrent);
+      } catch (err) {
+        if (kind === 'clip') console.warn('CLIP import failed', err);
+        if (isCurrent()) setExportStatus(ioText('loadFailed', { error:err.message || err }), { level:'error' });
+        return false;
+      }
+    }
+
+    function loadDroppedSettingsJsonFile(file) {
+      return runDocumentFileLoad(file, async function(isCurrent){
         const text = await readDroppedTextFile(file);
-        if (generation !== documentLoadGeneration) return false;
+        if (!isCurrent()) return false;
         const payload = JSON.parse(text);
         applyCurrentSettingsPayload(payload);
         setExportStatus(ioText('fileLoaded', { name:file.name || 'settings.json' }));
         return true;
-      } catch (err) {
-        if (generation === documentLoadGeneration) setExportStatus(ioText('loadFailed', { error:err.message || err }), { level:'error' });
-        return false;
-      }
+      });
     }
 
     function looksLikeTvpaintCsvRows(rows) {
@@ -27984,22 +27895,17 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return applyClipSheetStages([{ text:snapshot.commandText, read:{ duration:duration } }], snapshot.importIdentity, snapshot.cellPlacement);
     }
 
-    async function loadDroppedCsvFile(file) {
-      if (!file) return false;
-      const generation = ++documentLoadGeneration;
-      try {
+    function loadDroppedCsvFile(file) {
+      return runDocumentFileLoad(file, async function(isCurrent){
         const buffer = await file.arrayBuffer();
-        if (generation !== documentLoadGeneration) return false;
+        if (!isCurrent()) return false;
         const snapshot = await openCsvImportDialog(buffer, file.name || 'file.csv');
-        if (!snapshot || generation !== documentLoadGeneration) return false;
+        if (!snapshot || !isCurrent()) return false;
         commitCsvImport(snapshot);
         setExportStatus(ioText('fileLoaded', { name:file.name || 'file.csv' }));
         trackEvent('csv_import', { bytes:buffer.byteLength });
         return true;
-      } catch (err) {
-        if (generation === documentLoadGeneration) setExportStatus(ioText('loadFailed', { error:err.message || err }), { level:'error' });
-        return false;
-      }
+      });
     }
 
     // -----------------------------------------------------------------------
@@ -28119,25 +28025,20 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       });
     }
 
-    async function loadDroppedXdtsFile(file) {
-      if (!file) return false;
-      const generation = ++documentLoadGeneration;
-      try {
+    function loadDroppedXdtsFile(file) {
+      return runDocumentFileLoad(file, async function(isCurrent){
         const text = await readDroppedTextFile(file);
-        if (generation !== documentLoadGeneration) return false;
+        if (!isCurrent()) return false;
         const braceIndex = text.indexOf('{');
         if (braceIndex < 0) throw new Error('Not an XDTS file');
         const json = JSON.parse(text.slice(braceIndex));
         const sheet = readXdtsSheet(json);
         if (!sheet) throw new Error('No Cell field found in this XDTS file');
-        if (!(await confirmXdtsImport()) || generation !== documentLoadGeneration) return false;
+        if (!(await confirmXdtsImport()) || !isCurrent()) return false;
         applyClipSheetStages([{ text:sheet.text, read:{ duration:sheet.duration }, label:'' }], null);
         setExportStatus(ioText('fileLoaded', { name:file.name || 'dropped.xdts' }));
         return true;
-      } catch (err) {
-        if (generation === documentLoadGeneration) setExportStatus(ioText('loadFailed', { error:err.message || err }), { level:'error' });
-        return false;
-      }
+      });
     }
 
     // ══ [입력] TVPaint 타임시트 해독 (레이어 · 노출 → 커맨드 텍스트) ═══════════════════════════════
@@ -28421,28 +28322,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return Boolean(file) && /\.tvpp$/i.test(String(file.name || ''));
     }
 
-    async function loadDroppedTvppFile(file) {
-      if (!file) return false;
-      const app = clipSheetAppName('tvpp');
-      const generation = ++documentLoadGeneration;
-      setExportStatus(clipSheetText('reading', null, app));
-      try {
-        const buffer = await file.arrayBuffer();
-        if (generation !== documentLoadGeneration) return false;
-        const reads = await tvppSheetRead(buffer);
-        if (generation !== documentLoadGeneration) return false;
-        if (!reads[0].items.some(function(item) { return item.kind === 'cel'; })) {
-          setExportStatus(clipSheetText('empty', null, app), { level:'error' });
-          return false;
-        }
-        const result = await openClipSheetImportDialog(reads, file.name || 'tvpp', 'tvpp');
-        if (!result) return false;
-        if (generation !== documentLoadGeneration) return false;
-        return await finishSheetFileImport(result, file, 'tvpp', generation);
-      } catch (err) {
-        if (generation === documentLoadGeneration) setExportStatus(ioText('loadFailed', { error:err.message || err }), { level:'error' });
-        return false;
-      }
+    function loadDroppedTvppFile(file) {
+      return loadDroppedTimelineFile(file, 'tvpp');
     }
 
     // ── .clip 취입 ─────────────────────────────────────────────────────────────────────────────────
@@ -28687,9 +28568,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ko:{ paperFailed:"용지를 읽지 못했습니다. 시트는 불러왔습니다. 용지 영역에서 원인을 확인하세요.", paperCanceled:"용지 불러오기를 취소해 현재 용지를 유지했습니다.", sideHidden:"TVPaint에서 비표시 ({count})", paperPreviewFallback:"원본 크기로 합성하지 못했습니다. 저장된 미리보기({width}×{height})로 가져오면 선이나 글자가 흐려질 수 있습니다. 미리보기를 사용할까요? 원본 품질이 필요하면 취소하고 CLIP STUDIO PAINT에서 출력한 PNG를 골라 주세요.", paperPreviewContinue:"미리보기로 가져오기", paperPreviewMeta:"CLIP 미리보기 {width}×{height} · 원본 해상도 아님", paperCompositeUnsupported:"이 CLIP에는 용지 불러오기에서 재현할 수 없는 레이어 효과가 있습니다. CLIP STUDIO PAINT에서 합성된 PNG 또는 PSD로 출력해 주세요.", orderTitle:"셀 순서",  paperAnimation:"애니메이션 타임라인이 있는 CLIP이라 용지 파일이 아닐 수 있습니다. 저장 당시 합성 이미지를 용지로 가져올까요? 셀 배치를 읽으려면 취소하고 시트 미리보기에 놓아 주세요.", paperContinue:"용지로 가져오기", paperFullMissing:"CLIP 원본 크기 합성 이미지가 없습니다. CLIP STUDIO PAINT에서 PNG 또는 PSD로 출력한 파일을 골라 주세요.", revisionE:"연출", revisionS:"작감", revisionSS:"총작감", revisionK:"감독", numberingAuto:'인스턴스 이름 미지정', numberingMixed:'일부 인스턴스 이름 미지정', numberingDetail:'자동 번호(원본 프레임): {values}', cutReference:'컷번호 참고 레이어', revision:"수정 공정: {name}", revisionGeneration:' · {count}차', sideUnread:"셀 지정 없음·읽기 실패 ({count})", sideAside:'배경 · 참고 ({count})', sideOffstage:'다른 공정의 셀 ({count})', paper:'용지', paperDrop:'용지 이미지 선택 · 드롭', paperKeep:'미선택 · 현재 용지 유지', paperChosen:'{name} 으로 바꿉니다', identity:'작품 정보', identityTitle:'작품명', identityEpisode:'화수', identityCut:'컷번호', identityStage:'단계 이름', identityStageHint:'단계 이름은 첫 단계에만 붙습니다.', tidyNumbers:'셀 번호 다듬기', pickedRows:'고른 행 {count}', blockedStart:'{start} 프레임에서 시작 — 아직 지원하지 않음', allBlocked:'이 파일의 타임라인이 전부 0프레임이 아닌 자리에서 시작합니다. 확인되지 않은 배치라 아무것도 읽지 않았습니다.', noExposure:"이 타임라인에 셀 지정 없음", failed:'읽지 못했습니다: {error}', emptyPick:'「{name}」에서 아무것도 고르지 않아 시트를 그대로 두었습니다.', oddTiming:'24fps가 아닌 타임라인이 {count}개 있습니다({fps}fps). 프레임 수는 그대로 옮겼습니다.', title:'{app}에서 시트 읽기', timelines:'타임라인', timelineHint:'고른 타임라인마다 단계가 하나씩 만들어집니다.', rows:'가져올 행', komaNames:"그림 이름/번호", renumber:"순서대로 번호 매기기", manualInput:'수동 입력', resetOriginal:'원본 복원', name:'이름', role:'역할', confirm:'불러오기', cancel:'취소', cel:'셀', hidden:'{app}에서 숨김', empty:'이 파일에서 셀로 읽을 줄을 찾지 못했습니다.', reading:'{app} 파일을 읽는 중…', loaded:'{app} 파일을 읽었습니다: {name} · 단계 {stages}개', noPick:'아무것도 고르지 않아 시트를 그대로 두었습니다.' },
         zh:{ paperFailed:"纸张读取失败，摄影表已导入。请在纸张区域查看原因。", paperCanceled:"已取消纸张读取，保留当前纸张。", sideHidden:"在TVPaint中隐藏（{count}）", paperPreviewFallback:"无法以原尺寸合成。使用保存的预览（{width}×{height}）可能使线条和文字模糊。要导入预览吗？如需原始质量，请取消并选择从CLIP STUDIO PAINT导出的PNG。", paperPreviewContinue:"导入预览", paperPreviewMeta:"CLIP预览 {width}×{height} · 非原始分辨率", paperCompositeUnsupported:"此CLIP含有纸张导入无法重现的图层效果。请从CLIP STUDIO PAINT导出合成后的PNG或PSD。", orderTitle:"图层顺序",  paperAnimation:"此CLIP包含动画时间轴，可能不是纸张模板。要将保存时的合成图像作为纸张导入吗？如需读取图层的时间配置，请取消并拖到摄影表预览中。", paperContinue:"作为纸张导入", paperFullMissing:"无法读取CLIP的原尺寸合成图像。请从CLIP STUDIO PAINT导出PNG或PSD后选择该文件。", revisionE:"演出", revisionS:"作画监督", revisionSS:"总作画监督", revisionK:"导演", numberingAuto:'未设置实例名称', numberingMixed:'部分实例名称未设置', numberingDetail:'自动编号（原始帧）：{values}', cutReference:'镜头编号参考图层', revision:'修正工序：{name}', revisionGeneration:' · 第{count}次', sideUnread:"无画面指定或读取失败（{count}）", sideAside:'背景 · 参考（{count}）', sideOffstage:"其他工序的图层（{count}）", paper:'纸张', paperDrop:'选择或拖入纸张图像', paperKeep:'未选择 · 保留当前纸张', paperChosen:'将替换为 {name}', identity:'作品信息', identityTitle:'作品名', identityEpisode:'集数', identityCut:'镜号', identityStage:'阶段名', identityStageHint:'阶段名仅用于第一个阶段。', tidyNumbers:"整理画稿编号", pickedRows:'已选 {count}', blockedStart:'从第 {start} 帧开始 — 尚不支持', allBlocked:'此文件的时间轴都不是从第 0 帧开始。该排列尚未验证，因此未读取任何内容。', noExposure:"此时间轴未指定画面", failed:'无法读取：{error}', emptyPick:'「{name}」中未选择任何内容，摄影表保持不变。', oddTiming:'有 {count} 条时间轴不是 24fps（{fps}fps）。帧数按原样移入。', title:'从 {app} 读取摄影表', timelines:'时间轴', timelineHint:'所选的每条时间轴都会生成一个阶段。', rows:'要读取的行', komaNames:"画稿名称/编号", renumber:'按顺序重编', manualInput:'手动输入', resetOriginal:'恢复原始', name:'名称', role:'用途', confirm:'读取', cancel:'取消', cel:"图层", hidden:'在 {app} 中隐藏', empty:"此文件中没有可导入的画稿图层。", reading:'正在读取 {app} 文件…', loaded:'已读取 {app} 文件：{name} · {stages} 个阶段', noPick:'未选择任何内容，摄影表保持不变。' }
       };
-      const doc = docs[state.lang] || docs.en;
-      const fill = Object.assign({ app:app || CLIP_SHEET_APPS.clip }, values || {});
-      return String(doc[key] || docs.en[key] || key).replace(/\{(\w+)\}/g, function(_, name){ return fill[name] != null ? (name === 'error' ? sheetErrorText(fill[name]) : String(fill[name])) : ''; });
+      return formatSheetMessage(docs, key, Object.assign({app:app || CLIP_SHEET_APPS.clip}, values));
     }
 
     // 무엇이 들어올지 보여 주고 고르게 한다. 타임라인은 여러 벌을 한 번에 고를 수 있다 —
@@ -29260,13 +29139,12 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     // Both formats share the commit boundary. A paper failure does not undo the imported sheet.
-    async function finishSheetFileImport(result, file, kind, generation) {
-      if (generation !== documentLoadGeneration) return false;
+    async function finishSheetFileImport(result, file, kind, isCurrent) {
       const app = clipSheetAppName(kind), plan = prepareClipSheetStages(result);
       if (plan.error) { setExportStatus(plan.error, { level:'error' }); return false; }
       const made = applyClipSheetStages(plan.stages, result.identity, result.cellPlacement);
       const paper = result.paperFile ? await handlePaperImageUpload(result.paperFile) : 'loaded';
-      if (generation !== documentLoadGeneration || paper === 'stale') return false;
+      if (!isCurrent() || paper === 'stale') return false;
       // Preserve source frame positions; a different fps changes the displayed duration, not the cels.
       const odd = plan.stages.filter(function(entry){ return Number(entry.read.fps) !== FIXED_FPS; });
       const messages = [clipSheetText('loaded', { name:file.name || kind, stages:made }, app)];
@@ -29276,39 +29154,46 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return true;
     }
 
-    async function loadDroppedClipFile(file) {
-      if (!file) return false;
-      const generation = ++documentLoadGeneration;
-      setExportStatus(clipSheetText('reading'));
-      try {
+    async function readClipImportTimelines(buffer, isCurrent) {
+      const ctx = clipSheetOpenFile(buffer);
+      const reads = [];
+      for (let i = 0; i < ctx.timelines.list.length; i++) {
+        const read = await clipSheetReadTimeline(ctx, ctx.timelines.list[i]);
+        if (!isCurrent()) return [];
+        if (read.items.some(function(item) { return item.kind === 'cel'; })) reads.push(read);
+      }
+      // 저장된 현재 타임라인이 맨 앞에 오게 한다 — 창에서 기본으로 켜지는 것이 그것이다.
+      const activeId = String(ctx.timelines.active && ctx.timelines.active.MainId);
+      reads.sort(function(a, b) {
+        return (String(b.timeline.MainId) === activeId ? 1 : 0) - (String(a.timeline.MainId) === activeId ? 1 : 0);
+      });
+      return reads;
+    }
+
+    function loadDroppedTimelineFile(file, kind) {
+      return runDocumentFileLoad(file, async function(isCurrent){
+        const app = clipSheetAppName(kind);
+        setExportStatus(clipSheetText('reading', null, app));
         const buffer = await file.arrayBuffer();
-        if (generation !== documentLoadGeneration) return false;
-        const ctx = clipSheetOpenFile(buffer);
-        const reads = [];
-        for (let i = 0; i < ctx.timelines.list.length; i++) {
-          const read = await clipSheetReadTimeline(ctx, ctx.timelines.list[i]);
-          if (generation !== documentLoadGeneration) return false;
-          if (read.items.some(function(item) { return item.kind === 'cel'; })) reads.push(read);
-        }
-        if (!reads.length) { setExportStatus(clipSheetText('empty'), { level:'error' }); return false; }
-        if (reads.every(function(read) { return read.blocked; })) {
-          setExportStatus(clipSheetText('allBlocked'), { level:'error' });
+        if (!isCurrent()) return false;
+        const reads = kind === 'clip' ? await readClipImportTimelines(buffer, isCurrent) : await tvppSheetRead(buffer);
+        if (!isCurrent()) return false;
+        if (kind === 'tvpp' ? !reads[0].items.some(item => item.kind === 'cel') : !reads.length) {
+          setExportStatus(clipSheetText('empty', null, app), { level:'error' });
           return false;
         }
-        // 저장된 현재 타임라인이 맨 앞에 오게 한다 — 창에서 기본으로 켜지는 것이 그것이다.
-        const activeId = String(ctx.timelines.active && ctx.timelines.active.MainId);
-        reads.sort(function(a, b) {
-          return (String(b.timeline.MainId) === activeId ? 1 : 0) - (String(a.timeline.MainId) === activeId ? 1 : 0);
-        });
-        const result = await openClipSheetImportDialog(reads, file.name || 'clip', 'clip');
-        if (!result) return false;
-        if (generation !== documentLoadGeneration) return false;
-        return await finishSheetFileImport(result, file, 'clip', generation);
-      } catch (err) {
-        console.warn('CLIP import failed', err);
-        if (generation === documentLoadGeneration) setExportStatus(ioText('loadFailed', { error:err.message || err }), { level:'error' });
-        return false;
-      }
+        if (kind === 'clip' && reads.every(read => read.blocked)) {
+          setExportStatus(clipSheetText('allBlocked', null, app), { level:'error' });
+          return false;
+        }
+        const result = await openClipSheetImportDialog(reads, file.name || kind, kind);
+        if (!result || !isCurrent()) return false;
+        return finishSheetFileImport(result, file, kind, isCurrent);
+      }, kind);
+    }
+
+    function loadDroppedClipFile(file) {
+      return loadDroppedTimelineFile(file, 'clip');
     }
 
     function getFileDropContext(event) {
@@ -30231,8 +30116,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     // ══ [출력] ③ 내보내기 프리플라이트 · 실행 ══════════════════════════════════════════════════════════════════════
     function exportUiText(key, values) {
-      const doc = uiTexts[state.lang] || uiTexts.en;
-      return String(doc[key] || uiTexts.en[key] || key).replace(/\{(\w+)\}/g, function(_, name){ return values && values[name] != null ? (name === 'error' ? sheetErrorText(values[name]) : String(values[name])) : ''; });
+      return formatSheetMessage(uiTexts, key, values);
     }
 
     function refreshExportSnapshotNames(snapshot) {
@@ -31209,8 +31093,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (state.shakuDrag) { endShakuSelection(event); return; }
       if (state.celTransferDrag) { endCelTransferDrag(event); return; }
       if (state.textMemoPointerIntent) { endTextMemoPointerIntent(event); return; }
-      if (state.textMemoResize) { endTextMemoResize(event); return; }
-      if (state.pastedImageDrag) { endPastedImageDrag(event); return; }
+      if (state.textMemoResize) { finishTextMemoResize(event); return; }
+      if (state.pastedImageDrag) { finishPastedImageDrag(event); return; }
     }
 
     function handleGlobalPointerCancel(event) {
@@ -31221,8 +31105,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (state.shakuDrag) { cancelShakuSelection(event); return; }
       if (state.celTransferDrag) { cancelCelTransferDrag(); return; }
       if (state.textMemoPointerIntent) { cancelTextMemoPointerIntent(event); return; }
-      if (state.textMemoResize) { cancelTextMemoResize(event); return; }
-      if (state.pastedImageDrag) { cancelPastedImageDrag(event); return; }
+      if (state.textMemoResize) { finishTextMemoResize(event, true); return; }
+      if (state.pastedImageDrag) { finishPastedImageDrag(event, true); return; }
     }
 
     document.addEventListener('pointermove', handleGlobalPointerMove, { passive:false });
