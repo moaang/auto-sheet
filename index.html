@@ -2267,7 +2267,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '1031';
+    const APP_VERSION = '1032';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -2418,7 +2418,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     const SETTINGS_SAVE_PICKER_ID = 'settings-json-save';
     const OUTPUT_DIRECTORY_PICKER_ID = 'output-directory';
     const PAPER_AUTO_ALIGN_MIN_COLUMNS = 7;
-    const PAPER_AUTO_ALIGN_MAX_COLUMNS = 10;
+    const PAPER_AUTO_ALIGN_PAIRED_MAX_COLUMNS = 10;
     const PAPER_AUTO_ALIGN_SINGLE_MAX_COLUMNS = 20;
     const PAPER_AUTO_ALIGN_TARGET_BODY_LINES = 73;
     const PAPER_AUTO_ALIGN_PAIR_CANDIDATE_LIMIT = 72;
@@ -8223,8 +8223,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     }
 
     function buildPaperAutoAlignColumnGroups(xLines, xDetailed, bodyGrid, analysis, maxColumns, minCellW, maxCellW) {
-      const columnCeiling = Math.max(PAPER_AUTO_ALIGN_MAX_COLUMNS, Math.round(Number(maxColumns) || 0) || PAPER_AUTO_ALIGN_MAX_COLUMNS);
-      const wideMode = columnCeiling > PAPER_AUTO_ALIGN_MAX_COLUMNS;
+      const columnCeiling = Math.max(PAPER_AUTO_ALIGN_PAIRED_MAX_COLUMNS, Math.round(Number(maxColumns) || 0) || PAPER_AUTO_ALIGN_PAIRED_MAX_COLUMNS);
+      const wideMode = columnCeiling > PAPER_AUTO_ALIGN_PAIRED_MAX_COLUMNS;
       const lines = (xLines || []).map(Number).filter(Number.isFinite).sort(function(a,b){ return a-b; });
       const groups = [];
       const seen = new Set();
@@ -8522,9 +8522,9 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (startIndex + 5 >= searchEndIndex) return null;
       let best = null;
       const minColumns = Math.max(6, group.columns - 2);
-      const maxColumns = group.columns > PAPER_AUTO_ALIGN_MAX_COLUMNS
+      const maxColumns = group.columns > PAPER_AUTO_ALIGN_PAIRED_MAX_COLUMNS
         ? group.columns + 2
-        : Math.min(PAPER_AUTO_ALIGN_MAX_COLUMNS, group.columns + 2);
+        : Math.min(PAPER_AUTO_ALIGN_PAIRED_MAX_COLUMNS, group.columns + 2);
       const maxFollowerSpan = Math.max(group.actionW * 2.55, group.cellW * (group.columns + 7));
       const hasDottedBoundaryLines = Array.isArray(lineDetails) && lineDetails.some(function(line){ return !!(line && line.dotted); });
       function hasStrongCameraDividerAfterFollower(endIndex, columns) {
@@ -16078,8 +16078,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const n = Math.round(Number(value));
       if (!Number.isFinite(n)) return 0;
       if (n > 0) {
-        const cellColumns = clampCellColumnCount(state.cellColumnCount || 8);
-        return n - cellColumns <= -1 ? -1 : 0;
+        return n < getCellColumnCount() ? -1 : 0;
       }
       return n < 0 ? -1 : 0;
     }
@@ -18323,9 +18322,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     function shouldRenderCellEndHoldLine(boundaryFrames, seg, targetEnd) {
       if (!seg) return false;
       const segTo = Math.max(1, Math.round(Number(seg.to) || 1));
-      const target = Math.max(segTo, Math.round(Number(targetEnd) || segTo));
-      const info = getCellHoldLineInfoAtFrame(boundaryFrames, seg, segTo + 1, target);
-      return !!(info && info.blankCount >= CELL_HOLD_LINE_MIN_BLANKS);
+      return shouldRenderCellHoldLineAtFrame(boundaryFrames, seg, segTo + 1, targetEnd);
     }
     function renderCellContinuationLine(x, y1, y2, stroke, width, wavy) {
       if (wavy) wavyVerticalLine(x, y1, y2, stroke, width);
