@@ -2267,7 +2267,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '1032';
+    const APP_VERSION = '1033';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3239,7 +3239,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       );
     }
 
-    function matchPaperTemplateFingerprint(result, analysis) {
+    function matchPaperTemplateFingerprint(result) {
       const headerFingerprint = makePaperHeaderIdentityFingerprint(result);
       if (!headerFingerprint.x.length || !PAPER_HEADER_TEMPLATE_FINGERPRINTS.length) {
         return { company:'unknown', score:0, confidence:'unknown', headerFingerprint:headerFingerprint };
@@ -3270,7 +3270,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       };
     }
 
-    function sendPaperAutoAlignUsage(result, analysis, match) {
+    function sendPaperAutoAlignUsage(result, match) {
       try {
         const headerFingerprint = match && match.headerFingerprint ? match.headerFingerprint : {};
         const headerX = Array.isArray(headerFingerprint.x)
@@ -11774,7 +11774,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const used=getInputLayers();
         if(result.diagnostics.cellLabelsKnown && (computeOriginalDisplayEntries(used,result.cellColumnCount).length>result.cellColumnCount || used.some(function(layer){return cellColumnLabelToIndex(layer.name)>=result.cellColumnCount;})))
           throw taggedExportError(doc.columnConflict(result.cellColumnCount),'paper-columns-conflict');
-        const templateMatch = matchPaperTemplateFingerprint(result, analysis);
+        const templateMatch = matchPaperTemplateFingerprint(result);
         const generatedFacts = state.paperGeneratedOutput ? collectPaperGeneratedFacts(analysis,result) : null;
         commitPendingContentHistory();
         state.paperImageDataUrl=resolved.dataUrl;
@@ -11793,7 +11793,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         syncPaperLayoutControls();
         if (!options.skipHistory) scheduleContentHistoryCommit();
         queueSavePaperMemory();
-        sendPaperAutoAlignUsage(result, analysis, templateMatch);
+        sendPaperAutoAlignUsage(result, templateMatch);
         render();
         return {transform:resolved.transform};
       } catch (err) {
@@ -13176,7 +13176,6 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const CSV_BLACK_DOT_MARK_RE = /[\u25cf\u26ab\u2b24\u23fa\u2022]/g;
     const CSV_DOT_MARK_RE = /[\u25cb\u3007\u25ef\u25cf\u26ab\u2b24\u23fa\u2022]/g;
-    const CSV_DOT_MARK_VALUE_RE = /^[\u25cb\u3007\u25ef\u25cf\u26ab\u2b24\u23fa\u2022]$/;
 
     function hasLikelyCsvMojibake(textValue) {
       const text = String(textValue || '');
@@ -13304,7 +13303,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     function isCsvDotValue(value) {
       const symbol = normalizeCsvSymbolValue(value);
-      return symbol === 'dot' || symbol === 'o' || CSV_DOT_MARK_VALUE_RE.test(symbol) || symbol === '컷';
+      return symbol === 'dot' || symbol === 'o' || (symbol.length === 1 && symbol.search(CSV_DOT_MARK_RE) === 0) || symbol === '컷';
     }
 
     function isCsvCrossValue(value) {
@@ -15155,20 +15154,15 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const frameLength = Math.max(1, Math.round(Number(length) || 1));
       const closeToken = cleanTokens[0] || '1';
       const generated = Array.from({ length:frameLength }, function(){ return 'n'; });
-      const eventOffsets = [];
-      for (let offset = 0; offset < frameLength; offset += step) eventOffsets.push(offset);
-      if (!eventOffsets.length) eventOffsets.push(0);
       const events = [];
-      let previous = '';
-      eventOffsets.forEach(function(offset, index){
-        const isLastEvent = index === eventOffsets.length - 1;
-        const token = isLastEvent
+      for (let offset = 0; offset < frameLength; offset += step) {
+        const previous = events[events.length - 1] || '';
+        const token = offset + step >= frameLength
           ? pickRandomNonClosingMouthToken(cleanTokens, closeToken, previous, events)
           : pickRandomMouthToken(cleanTokens, previous, events);
         generated[offset] = token;
         events.push(token);
-        previous = token;
-      });
+      }
       return generated;
     }
 
