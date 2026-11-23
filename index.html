@@ -2372,7 +2372,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '1028';
+    const APP_VERSION = '1029';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -3721,6 +3721,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver1029", "Open saved work and sheet files", ["Choosing a saved project or a sheet file in the file picker now opens it again."]],
         ["ver1027", "Keep the latest file’s status", ["If you open another project while a cut folder is being read or its sheet is being selected, the status now stays with the project you opened."]],
         ["ver1026", "Cel transfer follows the sheet more strictly", ["A cel transfer can no longer start from an inbetween (its mark or the frames holding it): the moving part has to start from a key or its hold.", "If the sending cel keeps moving at that frame, only a part can be split off, so nothing is asked. Moving an all-move arrow takes its × along, and switching an arrow to a part lifts the ×.", "A cel whose last frames are left blank in the command still counts as held to the end of the cut."]],
         ["ver1025", "Draw cel transfers on the sheet", ["Turn on Cel transfer in the edit tools beside the sheet and drag from the sending cel to the receiving cel’s inbetween mark or number. If the sending cel is not already × there, choose to move everything (adds ×) or split off a part.", "Drag an arrow to move its end; right-click it to switch or delete it. Each change undoes in one step."]],
@@ -3887,6 +3888,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "Camera marks, continuation lines and merged memos", ["Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.", "The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.", "The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.", "When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.", "Camera works that connect end to end now become a single memo line, for example \"・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr\"."]],
       ],
       ja: [
+        ["ver1029", "ファイル選択画面から作業を開く", ["ファイル選択画面から保存した作業やシートファイルを再び開けるようになりました。"]],
         ["ver1027", "最後に開いた作業の結果を表示", ["カットフォルダーの読み込み中やシート選択中に別の作業を開いても、その作業の読み込み結果が表示され続けます。"]],
         ["ver1026", "セル移動の判定をシートどおりに", ["中割（記号とそれを止めているコマ）からはセル移動を始められなくなりました。移る部分は原画かその止めから始まります。", "送るセルがそのコマでも動いているときは一部だけ分けるので、選択を聞きません。すべて移す矢印を動かすと×も一緒に動き、一部に切り替えると×を外します。", "コマンドで末尾を省いたセルも、尺の終わりまで止めているものとして判定します。"]],
         ["ver1025", "セル移動をシート上で作成", ["シート横の編集ツールでセル移動をオンにし、送るセルから受けるセルの中割記号か番号へドラッグします。送るセルがそのコマで×でなければ、すべて移す（×を入れる）か一部だけ分けるかを選びます。", "矢印をドラッグすると先端を移動、右クリックで切り替え・削除できます。変更はそれぞれ1回で元に戻せます。"]],
@@ -4053,6 +4055,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "カメラ記号・持続線・メモの連結", ["設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。", "設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。", "つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。", "マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。", "端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。"]],
       ],
       ko: [
+        ["ver1029", "파일 선택창에서 작업 열기", ["파일 선택창에서 저장한 작업과 시트 파일을 다시 열 수 있습니다."]],
         ["ver1027", "마지막으로 연 작업의 결과 표시", ["컷 폴더를 읽거나 폴더 안에서 시트를 고르는 중에 다른 작업을 열면, 나중에 연 작업의 불러오기 결과가 화면에 남습니다."]],
         ["ver1026", "셀 이관 판정을 시트대로", ["동화(동화 기호와 그 그림을 유지하는 칸)에서는 셀 이관을 시작할 수 없습니다. 넘어가는 부분은 원화나 그 유지에서 시작합니다.", "보내는 셀이 그 칸에서도 움직이면 일부만 떼어내므로 묻지 않습니다. 전부 넘기는 화살표를 옮기면 ×도 따라가고, 일부로 바꾸면 ×를 걷습니다.", "명령에서 끝을 생략한 셀도 尺 끝까지 유지하는 것으로 판정합니다."]],
         ["ver1025", "시트에서 셀 이관 만들기", ["시트 옆 편집 도구에서 셀 이관을 켜고, 보내는 셀에서 받는 셀의 동화 기호나 번호로 끕니다. 보내는 셀이 그 칸에서 ×가 아니면 전부 넘김(× 넣음)과 일부만 떼어냄 중에서 고릅니다.", "화살표를 끌면 끝을 옮기고, 우클릭하면 바꾸거나 지울 수 있습니다. 바꿀 때마다 되돌리기 한 번으로 돌아갑니다."]],
@@ -4219,6 +4222,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "카메라 표식·지속선·메모 연결", ["설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.", "설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. \"카메라→메모\"를 누를 필요가 없습니다.", "이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.", "표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.", "끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: \"・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr\")."]],
       ],
       zh: [
+        ["ver1029", "从文件选择器打开作业", ["现在可以再次从文件选择器打开已保存的作业和摄影表文件。"]],
         ["ver1027", "保留最近打开的作业状态", ["读取镜头文件夹或选择其中的摄影表时，如果打开另一份作业，界面会保留这份作业的读取结果。"]],
         ["ver1026", "图层转移按摄影表更严格判定", ["不能再从中间画（标记及保持该画的格）开始图层转移，转移的部分须从原画或其保持开始。", "转出图层在该格仍在动时只能分出一部分，因此不再询问。移动全部转移的箭头时×随之移动，切换为部分转移时去掉×。", "命令中省略末尾的图层也按保持到时长结束来判定。"]],
         ["ver1025", "在摄影表上创建图层转移", ["在表格旁的编辑工具中打开图层转移，从转出图层拖到接收图层的中间画标记或编号。若转出图层在该格不是×，可选择全部转移（加入×）或只分出一部分。", "拖动箭头可移动其终点，右键点击可切换或删除。每次更改都可一步撤销。"]],
@@ -29214,14 +29218,14 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       handleAppFileDrop(event).catch(function(err){ setExportStatus(ioText('loadFailed', { error:err.message || err }), { level:'error' }); });
     }
 
-    async function loadSheetImportFile(file) {
-      if (!file || state.isExporting) return false;
+    async function loadSheetImportFile(file, fallback) {
+      if (!file) return false;
       const loader = isCsvDropFile(file) ? loadDroppedCsvFile
         : isXdtsDropFile(file) ? loadDroppedXdtsFile
         : isClipDropFile(file) ? loadDroppedClipFile
         : isTvppDropFile(file) ? loadDroppedTvppFile : null;
-      if (!loader) return false;
-      return loader(file);
+      if (!loader) return fallback ? fallback(file) : false;
+      return state.isExporting ? false : loader(file);
     }
 
     async function handleAppFileDrop(event) {
@@ -30974,7 +30978,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
     document.getElementById('workLibrary').addEventListener('keydown',function(event){ event.stopPropagation(); });
     document.getElementById('dismissIoStatusBtn').addEventListener('click',function(){ setExportStatus(''); });
     document.getElementById('stopExportBtn').addEventListener('click',function(){ singleExportCancelled = true; updateSingleExportStopButton(true); });
-    if (currentSettingsInputEl) currentSettingsInputEl.addEventListener('change', function(){ const file = currentSettingsInputEl.files && currentSettingsInputEl.files[0]; currentSettingsInputEl.value = ''; if (file && isSheetImportFile(file)) loadSheetImportFile(file); else loadCurrentSettingsFile(file); });
+    if (currentSettingsInputEl) currentSettingsInputEl.addEventListener('change', function(){
+      const file = currentSettingsInputEl.files && currentSettingsInputEl.files[0];
+      currentSettingsInputEl.value = '';
+      loadSheetImportFile(file, loadCurrentSettingsFile);
+    });
     if (previewWrapEl) {
       previewWrapEl.addEventListener('wheel', handlePreviewWheelZoom, { passive:false });
       previewWrapEl.addEventListener('gesturestart', beginPreviewGestureZoom, { passive:false });
