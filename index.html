@@ -2267,7 +2267,7 @@
     const FEEDBACK_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/viewform?usp=header';
     const FEEDBACK_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdry_8FH3Ouv2u7MOYgpGh7QIqBQdslT8McCT8czTJ2Lbjag/formResponse';
     const FEEDBACK_FORM_MESSAGE_ENTRY = 'entry.1858865602';
-    const APP_VERSION = '1033';
+    const APP_VERSION = '1034';
     (function(){ const chip = document.getElementById('appVersionChip'); if (chip) chip.textContent = 'v' + APP_VERSION; })();
     const USAGE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2Dr0BtQLFHvJW6z4ge2PHbL38mjRvxZ3NuKzTM-e7GK4p60lHW5TgDGpWU3bEpZwJYg/exec';
     const USAGE_GEO_ENDPOINT = 'https://ipapi.co/json/';
@@ -2569,7 +2569,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       columns:["cellColumnCount","inbetweenColumnCount"],
       columnOrder:["cellDisplayOrder","cellColumnPlacement"],
       douga:["dougaSheetEnabled","dougaSheetData"],
-      overrides:["markerOverrides","cameraPreviewStyles","cameraEndpointFr","cameraSeries","dotOverrides","dotNotes","layerNameTags","bookNames","sheetDirectives"],
+      overrides:["markerOverrides","cameraPreviewStyles","cameraEndpointFr","cameraSeries","dotOverrides","dotNotes","layerNameTags","bookNames","sheetDirectives","dialogueLayout"],
       paperImage:["paperImageDataUrl","paperImageMemoDataUrl","paperImageMemoLayerCount","paperImageName","paperImageMeta","paperImagePixelInfo","paperImageSourceWidth","paperImageSourceHeight"],
       paperOutput:["showTemplate","showHeaderOutput","showDurationPlusOutput","showCellLabelOutput","showPsdMemo"],
       paperLayout:["layoutBoxes","layoutBoxBaseRects","layoutGrid","paperGeneratedOutput"],
@@ -2722,6 +2722,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       layerNameTags: [],
       bookNames: {},
       sheetDirectives: [],
+      dialogueLayout: {},
       memoPages: {}
     }, createCsvState(), createSheetTransientState());
     const settingsDocumentDefaults = captureSheetSnapshot();
@@ -3565,6 +3566,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
 
     const updateLogRecentDocs = {
       en: [
+        ["ver1034", "Dialogue placement from MoArt", ["Sheets made in MoArt keep MoArt’s dialogue columns and the frames where you placed each character, on the sheet and in 「セリフから」.", "If you change a line’s timing, speaker or text, that line goes back to automatic placement."]],
         ["ver1031", "Export confirmation buttons", ["Single and batch export buttons now use “내보내기” in Korean. Retry buttons have shorter labels in Korean and English."]],
         ["ver1029", "Open saved work and sheet files", ["Choosing a saved project or a sheet file in the file picker now opens it again."]],
         ["ver1027", "Keep the latest file’s status", ["If you open another project while a cut folder is being read or its sheet is being selected, the status now stays with the project you opened."]],
@@ -3733,6 +3735,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "Camera marks, continuation lines and merged memos", ["Loading a settings file now rebuilds the camera column mark selectors. They used to keep the selectors from the file loaded before, so a line could show the wrong mark (a stray O.L) and any extra lines got no mark at all.", "The camera memo is now written automatically when a settings file is loaded, so there is no need to press the camera-to-memo button first.", "The vertical continuation line no longer breaks where two connected camera works meet: it runs through the boundary and the mark sits on top of it.", "When the mark style is a triangle, a junction now draws both marks (the end of the previous work and the start of the next one), because a triangle marks a single instant and cannot show a shared boundary. The dash style still shares one mark.", "Camera works that connect end to end now become a single memo line, for example \"・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr\"."]],
       ],
       ja: [
+        ["ver1034", "MoArtのセリフ配置を保持", ["MoArtで作ったシートは、セリフの列と文字を置いたコマをそのまま使います。シート表示と「セリフから」の両方に反映されます。", "その行の時間・話者・本文を変えると、その行は自動配置に戻ります。"]],
         ["ver1031", "書き出しの確認ボタン", ["韓国語表示では、個別・一括の書き出しボタンに「내보내기」と表示されます。韓国語と英語では、再試行ボタンの文言も短くなりました。"]],
         ["ver1029", "ファイル選択画面から作業を開く", ["ファイル選択画面から保存した作業やシートファイルを再び開けるようになりました。"]],
         ["ver1027", "最後に開いた作業の結果を表示", ["カットフォルダーの読み込み中やシート選択中に別の作業を開いても、その作業の読み込み結果が表示され続けます。"]],
@@ -3901,6 +3904,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "カメラ記号・持続線・メモの連結", ["設定ファイルを読み込んだときに、カメラ欄のマーク選択を作り直すようにしました。これまでは前に読み込んだファイルの選択が残り、間違ったマーク（不要なO.L）が表示されたり、増えた行にマークが出ないことがありました。", "設定ファイルを読み込んだ時点でカメラのメモを自動生成するようにしました。「カメラ→メモ」を押す必要はありません。", "つながっているカメラワークの境目で持続線が切れなくなりました。境目を貫いて1本で描かれ、マークはその上に乗ります。", "マークが三角の場合、境目に両方のマーク（前の動きの終わりと次の動きの始まり）を描くようにしました。三角は一瞬を指す記号で、共有された境目を表せないためです。ダッシュ（-）は従来どおり1つを共有します。", "端が接してつながるカメラワークは、1行のメモにまとめるようにしました（例：「・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr」）。"]],
       ],
       ko: [
+        ["ver1034", "MoArt 대사 배치 유지", ["MoArt에서 만든 시트는 대사 열과 글자를 놓은 코마를 그대로 씁니다. 시트 표시와 「セリフから」에 모두 반영됩니다.", "그 줄의 시간·화자·본문을 고치면 그 줄은 자동 배치로 돌아갑니다."]],
         ["ver1031", "파일 내보내기 버튼", ["현재 시트나 여러 작업을 파일로 만들 때 확인 버튼에 ‘내보내기’가 표시됩니다. 한국어와 영어의 다시 내보내기 문구도 짧아졌습니다."]],
         ["ver1029", "파일 선택창에서 작업 열기", ["파일 선택창에서 저장한 작업과 시트 파일을 다시 열 수 있습니다."]],
         ["ver1027", "마지막으로 연 작업의 결과 표시", ["컷 폴더를 읽거나 폴더 안에서 시트를 고르는 중에 다른 작업을 열면, 나중에 연 작업의 불러오기 결과가 화면에 남습니다."]],
@@ -4069,6 +4073,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         ["ver838", "카메라 표식·지속선·메모 연결", ["설정 파일을 불러올 때 카메라란의 표식 선택을 다시 만들도록 했습니다. 이전에는 먼저 불러온 파일의 선택이 남아서 엉뚱한 표식(불필요한 O.L)이 뜨거나, 늘어난 줄에는 표식이 아예 안 나오는 일이 있었습니다.", "설정 파일을 불러온 시점에 카메라 메모를 자동으로 생성합니다. \"카메라→메모\"를 누를 필요가 없습니다.", "이어지는 카메라워크의 경계에서 지속선이 끊기지 않습니다. 경계를 관통해 한 줄로 그려지고 표식이 그 위에 얹힙니다.", "표식이 삼각형일 때는 경계에 두 표식(앞 동작의 끝과 다음 동작의 시작)을 모두 그립니다. 삼각형은 한 순간을 가리키는 기호라 공유된 경계를 표현할 수 없기 때문입니다. 대시(-)는 종전대로 하나를 공유합니다.", "끝이 맞닿아 이어지는 카메라워크는 메모 한 줄로 합칩니다(예: \"・Ⓐ→Ⓑ PAN Ⓑ→Ⓒ T.B 100Fr→114Fr\")."]],
       ],
       zh: [
+        ["ver1034", "保留 MoArt 的台词排布", ["在 MoArt 中制作的摄影表会沿用台词所在的列以及每个字所放的格，摄影表显示和「セリフから」都会使用。", "修改该行的时间、说话人或台词后，该行会恢复自动排布。"]],
         ["ver1031", "导出确认按钮", ["韩语界面的单个和批量导出按钮现在使用“내보내기”（导出）。韩语和英语的重试按钮文字也更简短。"]],
         ["ver1029", "从文件选择器打开作业", ["现在可以再次从文件选择器打开已保存的作业和摄影表文件。"]],
         ["ver1027", "保留最近打开的作业状态", ["读取镜头文件夹或选择其中的摄影表时，如果打开另一份作业，界面会保留这份作业的读取结果。"]],
@@ -14824,11 +14829,11 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return v === prevVowel || (prevVowel === 'o' && v === 'u') || (prevVowel === 'e' && v === 'i');
     }
 
-    function buildSerifuKanaTrack(text, len, step) {
+    function buildSerifuKanaTrack(text, len, step, charFrames) {
       const chars = dialogCharsFromText(text), layout = getTimelineTextLayout(len, 1, chars.length), moras = [];
       let cut = false;
       chars.forEach(function(raw, i){
-        const off = layout.startOffset - 0.5 + layout.step * i;
+        const off = charFrames ? charFrames[i] : layout.startOffset - 0.5 + layout.step * i;
         if (serifuIsMark(raw)) { cut = true; return; }
         const c = serifuHira(raw), last = cut ? null : moras[moras.length - 1];
         cut = false;
@@ -14960,7 +14965,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       if (!blocks.length) return null;
       const shapes = new Array(to - from + 1).fill('closed');
       blocks.forEach(function(b){
-        const track = alignSerifuKanaTrack(buildSerifuKanaTrack(String(b.text || ''), b.to - b.from + 1, step), step);
+        const track = alignSerifuKanaTrack(buildSerifuKanaTrack(String(b.text || ''), b.to - b.from + 1, step, b.chars), step);
         for (let f = Math.max(from, b.from); f <= Math.min(to, b.to); f++) shapes[f - from] = track[f - b.from];
       });
       return shapes;
@@ -16258,6 +16263,72 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         const br = rank.has(String(b.uid || '')) ? rank.get(String(b.uid || '')) : 999999;
         return ar - br || compareAlphabetLayerNames(a && a.name, b && b.name);
       });
+    }
+
+    function dialogueLayoutKey(seg) { return JSON.stringify([seg.from, seg.to, seg.label, seg.text]); }
+
+    function normalizeDialogueLayout(raw) {
+      if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return {};
+      const out = {};
+      Object.keys(raw).forEach(function(key){
+        const v = raw[key];
+        if (!v || typeof v !== 'object' || Array.isArray(v)) return;
+        const item = {};
+        if (Number.isFinite(Number(v.lane)) && Number(v.lane) >= 0) item.lane = Math.round(Number(v.lane));
+        if (Array.isArray(v.chars) && v.chars.every(function(c){ return Number.isFinite(Number(c)); })) item.chars = v.chars.map(Number);
+        if (Object.keys(item).length) out[key] = item;
+      });
+      return out;
+    }
+
+    function countDialogueLayoutKeys(segments) {
+      const counts = new Map();
+      segments.forEach(function(seg){ const key = dialogueLayoutKey(seg); counts.set(key, (counts.get(key) || 0) + 1); });
+      return counts;
+    }
+
+    function pruneDialogueLayout(layout, dialogText) {
+      const source = normalizeDialogueLayout(layout);
+      if (!Object.keys(source).length) return {};
+      const counts = countDialogueLayoutKeys(getRenderableDialogBlocks(parseManualBlocks(dialogText)));
+      const out = {};
+      Object.keys(source).forEach(function(key){ if (counts.get(key) === 1) out[key] = source[key]; });
+      return out;
+    }
+
+    function fitDialogueChars(chars, n, len) {
+      if (!Array.isArray(chars) || chars.length !== n || !n || n > len) return null;
+      const out = chars.map(function(v){ return Math.max(0, Math.round(Number(v) || 0)); });
+      for (let i = 1; i < n; i++) out[i] = Math.max(out[i - 1] + 1, out[i]);
+      for (let i = n - 1; i >= 0; i--) out[i] = Math.min(i === n - 1 ? len - 1 : out[i + 1] - 1, out[i]);
+      return out;
+    }
+
+    function assignDialogLanes(segments) {
+      const layout = normalizeDialogueLayout(state.dialogueLayout);
+      if (!Object.keys(layout).length) return assignLanes(segments);
+      const counts = countDialogueLayoutKeys(segments);
+      const reserved = [], rest = [], placed = [];
+      segments.forEach(function(seg){
+        const key = dialogueLayoutKey(seg), v = counts.get(key) === 1 ? layout[key] : null;
+        if (v) {
+          const chars = fitDialogueChars(v.chars, dialogCharsFromText(seg.text).length, seg.to - seg.from + 1);
+          if (chars) seg.chars = chars;
+        }
+        if (v && v.lane != null) { seg.lane = v.lane; seg.layoutKey = key; reserved.push(seg); } else { seg.lane = 0; rest.push(seg); }
+      });
+      reserved.sort(function(a,b){ return a.from - b.from || a.to - b.to || a.lane - b.lane || (a.layoutKey < b.layoutKey ? -1 : a.layoutKey > b.layoutKey ? 1 : 0); });
+      rest.sort(function(a,b){ return a.from - b.from || a.to - b.to; });
+      reserved.concat(rest).forEach(function(seg){
+        let lane = seg.lane;
+        while (placed.some(function(o){ return o.lane === lane && !(o.to < seg.from || o.from > seg.to); })) lane++;
+        seg.lane = lane;
+        placed.push(seg);
+      });
+      const dense = new Map();
+      placed.map(function(seg){ return seg.lane; }).sort(function(a,b){ return a - b; }).forEach(function(l){ if (!dense.has(l)) dense.set(l, dense.size); });
+      placed.forEach(function(seg){ seg.lane = dense.get(seg.lane); });
+      return placed.sort(function(a,b){ return a.from - b.from || a.to - b.to; });
     }
 
     function assignLanes(segments) {
@@ -18545,7 +18616,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       return { startOffset:startOffset, step:Math.min(rowH * 3, rawStep) };
     }
 
-    function getTimelineCharSlice(textValue, segFrom, segTo, visibleFrom, visibleTo, rowH) {
+    function getTimelineCharSlice(textValue, segFrom, segTo, visibleFrom, visibleTo, rowH, charFrames) {
       const chars = dialogCharsFromText(textValue);
       if (!chars.length) return [];
       const totalFrames = Math.max(1, segTo - segFrom + 1);
@@ -18554,7 +18625,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const sliceTop = (visibleFrom - segFrom) * rowH;
       const sliceBottom = (visibleTo - segFrom + 1) * rowH;
       return chars.map(function(ch, i){
-        return { ch:ch, offset:layout.startOffset + layout.step * i };
+        return { ch:ch, offset:charFrames ? (charFrames[i] + 0.5) * rowH : layout.startOffset + layout.step * i };
       }).filter(function(item){
         return item.offset >= sliceTop && item.offset < sliceBottom;
       }).map(function(item){
@@ -18859,7 +18930,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         if (showsSegmentStart) line(dialogLaneBounds.x, rowTop, dialogLaneBounds.x + dialogLaneBounds.w, rowTop, RED, 2.6);
         if (showsSegmentEnd) line(dialogLaneBounds.x, rowTop + height, dialogLaneBounds.x + dialogLaneBounds.w, rowTop + height, RED, 2.6);
         line(guideX, rowTop, guideX, rowTop + height, RED, 1.1);
-        const chars = getTimelineCharSlice(seg.text, seg.from, seg.to, from, to, dialogRowH);
+        const chars = getTimelineCharSlice(seg.text, seg.from, seg.to, from, to, dialogRowH, seg.chars);
         drawDialogTextSlice(x, w, rowTop, seg.lane || 0, dialogLaneCount, chars, { laneMenu:true, get:function(){ return seg.text || ''; }, set:function(v){ updateManualBlockField('dialog', seg.id, 'text', v); } });
         if (interactive !== false && showsSegmentStart) addTimelineEdgeHandle(block, rowTop, 'dialog', seg, 'from', dialogLaneBounds.x, dialogLaneBounds.w);
         if (interactive !== false && showsSegmentEnd) addTimelineEdgeHandle(block, rowTop + height, 'dialog', seg, 'to', dialogLaneBounds.x, dialogLaneBounds.w);
@@ -19750,7 +19821,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       const durationInputFrame = getDurationFrameCount();
       const baseLayers = getBaseInputLayers();
       const layers = resolvePreviewEndFrames(applyLeadingCrossSegments(applyDotOverrides(baseLayers)), durationInputFrame);
-      const dialogBlocks = assignLanes(getRenderableDialogBlocks(parseManualBlocks(getSheetInputValue('dialogManual'))));
+      const dialogBlocks = assignDialogLanes(getRenderableDialogBlocks(parseManualBlocks(getSheetInputValue('dialogManual'))));
       const cameraBlocks = assignCameraLanes(applyCameraPreviewStyles(parseManualBlocks(getSheetInputValue('cameraManual'))));
       const contentMaxFrame = getContentMaxFrame(layers, dialogBlocks, cameraBlocks);
       const hasContent = hasRenderableTimelineContent(layers, dialogBlocks, cameraBlocks);
@@ -22273,7 +22344,8 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         dotOverrides:state.dotOverrides || {},
         dotNotes:state.dotNotes || {},
         bookNames:state.bookNames || {},
-        sheetDirectives:state.sheetDirectives || []
+        sheetDirectives:state.sheetDirectives || [],
+        dialogueLayout:state.dialogueLayout || {}
       };
     }
 
@@ -22307,6 +22379,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       state.dotNotes = snap.dotNotes && typeof snap.dotNotes === 'object' ? cloneSheetData(snap.dotNotes) : {};
       state.bookNames = snap.bookNames && typeof snap.bookNames === 'object' ? cloneSheetData(snap.bookNames) : {};
       state.sheetDirectives = normalizeSheetDirectives(snap.sheetDirectives);
+      state.dialogueLayout = normalizeDialogueLayout(snap.dialogueLayout);
     }
 
     function applyContentSnapshot(snap, options) {
@@ -22827,7 +22900,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
             id:item.id,
             code:item.code,
             customLabel:item.code === SHEET_STAGE_CUSTOM_CODE ? String(item.customLabel || '') : '',
-            content:item.content ? JSON.parse(JSON.stringify(item.content)) : null
+            content:item.content ? Object.assign(JSON.parse(JSON.stringify(item.content)), { dialogueLayout:pruneDialogueLayout(item.content.dialogueLayout, item.content.dialog) }) : null
           };
         })
       };
@@ -25633,7 +25706,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         },
         stages:collectSheetStagesForSave(content),
         paper:collectPaperSubschema(content),
-        overrides:Object.fromEntries(SHEET_STATE_GROUPS.overrides.map(function(key){ return [key,content[key]]; })),
+        overrides:Object.fromEntries(SHEET_STATE_GROUPS.overrides.map(function(key){ return [key,key === 'dialogueLayout' ? pruneDialogueLayout(content.dialogueLayout, content.dialog) : content[key]]; })),
         memo:{
           mode:!!state.memoMode,
           tool:state.memoTool,
@@ -25785,7 +25858,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
       Object.entries(paper.layoutBoxes || {}).forEach(function(entry){ item(entry[1], 'paper.layoutBoxes.' + entry[0]); });
       array(paper.cellDisplayOrder, 'paper.cellDisplayOrder', scalar);
       const overrides = copy.overrides || {};
-      ['markerOverrides','cameraPreviewStyles','cameraEndpointFr','dotOverrides','dotNotes','bookNames'].forEach(function(key){ record(overrides[key], 'overrides.' + key); });
+      ['markerOverrides','cameraPreviewStyles','cameraEndpointFr','dotOverrides','dotNotes','bookNames','dialogueLayout'].forEach(function(key){ record(overrides[key], 'overrides.' + key); });
       array(overrides.layerNameTags, 'overrides.layerNameTags', item);
       array(overrides.sheetDirectives, 'overrides.sheetDirectives', item);
       array(overrides.cameraSeries, 'overrides.cameraSeries', function(series,path){ item(series,path); array(series.lines,path + '.lines',scalar); scalar(series.name,path + '.name'); });
@@ -25808,7 +25881,7 @@ const APP_PANEL_LAYOUT_STORAGE_KEY = 'autoSheetPanelLayout.v1';
         item(stage,path); record(stage.content,path + '.content');
         const content = stage.content || {};
         ['cellDisplayOrder','layerNameTags','cameraSeries','sheetDirectives'].forEach(function(key){ array(content[key],path + '.content.' + key, key === 'cellDisplayOrder' ? scalar : item); });
-        ['header','markerOverrides','cameraPreviewStyles','cameraEndpointFr','dotOverrides','dotNotes','bookNames','dougaSheetData'].forEach(function(key){ record(content[key],path + '.content.' + key); });
+        ['header','markerOverrides','cameraPreviewStyles','cameraEndpointFr','dotOverrides','dotNotes','bookNames','dialogueLayout','dougaSheetData'].forEach(function(key){ record(content[key],path + '.content.' + key); });
       });
       return migrateCsvSettingsPayload(copy);
     }
